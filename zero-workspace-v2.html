@@ -6212,7 +6212,7 @@ function presPills(){
 const ME={name:'Sanjay', i:'SC', c:'#6f7f9c'};
 /* ===== merged from the team's stage build (zero-workspace-proto) ===== */
 let reqAskActive=false;
-const READY_RE=/\b(i'?m good|good to go|all good|we can (move|go|start|proceed|begin)|let'?s (go|start|move|do it|begin|get (going|started)|roll)|move forward|i'?m ready|all set|i'?m set|sounds good|looks good|no (questions|q|doubts)|proceed)\b/i;
+const READY_RE=/\b(ye[sa]h?|yep|yup|ok|okay|kk|sure|cool|perfect|great|done|ready|next|go ahead|carry on|crack on|i'?m good|good to go|all good|we can (move|go|start|proceed|begin)|let'?s (go|start|move|do it|begin|get (going|started)|roll)|move forward|i'?m ready|all set|i'?m set|sounds good|looks good|no (questions|q|doubts)|proceed)\b/i;
 const PANEL=[
   {k:'a',name:'Avery Kim',role:'Engineering Manager',c:'#7c6f9c',i:'AK'},
   {k:'p',name:'Jordan Lee',role:'Product Lead',c:'#5f8a7a',i:'JL'}
@@ -8648,7 +8648,7 @@ function send(v){
       else if(attachments.some(f=>f.kind!=='file')){ /* a screenshot / media share (with or without text) → fall through to the media handler */ }
       else if(planSubPhase==='time'){ input.value=''; input.style.height='auto'; refreshComposer(); if(v&&parseTimeMins(v))planTime(v); return; }
       else if(!v){ input.value=''; input.style.height='auto'; refreshComposer(); return; }   // confirm window, empty text AND no media
-      else if(planSubPhase==='confirm' && isReady(v)){   // the learner typed that they're good → advance to the time question
+      else if(planSubPhase==='confirm' && (isReady(v)||isAck(v))){   // anything that reads as "yes" moves on — a bare 👍 here would strand you
         input.value=''; input.style.height='auto'; refreshComposer();
         const u=addMsg({type:'user',text:bodyHTML||escToBr(v)},false); anchorTop(u); ZSND.play('select');
         planToTime(); return;
