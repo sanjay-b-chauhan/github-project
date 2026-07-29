@@ -240,6 +240,73 @@ svg{display:block}
 .datacard .t td,.datacard .t th{padding:6px 10px!important}
 .how-card{margin-top:10px;padding:8px 12px;font-size:12.5px}
 
+/* ══════════════════════════════════════════════════════════════════════
+   KICKOFF PLAYER — back item, one container, arrow-to-advance, Continue.
+   Built entirely from workspace tokens: --card / --line / --r-comp / --soft,
+   Google Sans Flex, Supply Mono for the micro-labels, and the XP gold that
+   already exists on the xp-chip for the mark.
+   ══════════════════════════════════════════════════════════════════════ */
+.ko2{position:fixed;inset:0;z-index:200;background:var(--bg);display:none;flex-direction:column;padding:14px}
+.ko2.show{display:flex}
+.ko2-top{flex:0 0 auto;height:66px;display:flex;align-items:center;justify-content:space-between;padding:0 10px}
+.ko2-back{width:44px;height:44px;border-radius:99px;background:var(--soft);border:var(--bw) solid var(--line);
+  display:grid;place-items:center;color:var(--tx-2);cursor:pointer;
+  transition:background var(--t-q) var(--ease),color var(--t-q) var(--ease),transform var(--t-q) var(--ease)}
+.ko2-back:hover{background:var(--hover);color:var(--tx);transform:translateX(-2px)}
+.ko2-back svg{width:20px;height:20px}
+/* the gold mark, same star the XP chip uses */
+.ko2-mark{width:46px;height:46px;border-radius:99px;display:grid;place-items:center;
+  background:var(--soft);border:1.5px solid rgba(250,204,21,.5);color:#facc15;position:relative}
+.ko2-mark svg{width:22px;height:22px}
+.ko2-mark::after{content:"";position:absolute;inset:-4px;border-radius:99px;
+  border:1.5px solid transparent;border-top-color:rgba(250,204,21,.85);animation:ko2spin 2.6s linear infinite}
+@keyframes ko2spin{to{transform:rotate(360deg)}}
+
+/* the container everything happens inside */
+.ko2-stage{flex:1;min-height:0;position:relative;border:var(--bw) solid var(--line);
+  border-radius:var(--r-comp);background:var(--card);overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:76px 48px 104px;text-align:center}
+.ko2-scrub{position:absolute;top:26px;left:50%;transform:translateX(-50%);
+  display:flex;gap:6px;width:min(420px,44%)}
+.ko2-scrub i{flex:1;height:3px;border-radius:99px;background:var(--line);overflow:hidden;cursor:pointer}
+.ko2-scrub i>b{display:block;height:100%;width:0;border-radius:99px;background:var(--accent)}
+.ko2-chap{position:absolute;top:42px;left:50%;transform:translateX(-50%);
+  font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:1.4px;
+  text-transform:uppercase;color:var(--tx-3)}
+.ko2-visual{min-height:190px;display:flex;align-items:center;justify-content:center;margin-bottom:36px;width:100%}
+.ko2-text{font-family:var(--sans);font-size:clamp(21px,2.6vw,28px);line-height:1.45;
+  font-weight:600;letter-spacing:-.02em;color:var(--tx);max-width:640px}
+.ko2-text b{font-weight:700}
+/* the advance arrow */
+.ko2-next{position:absolute;right:26px;bottom:26px;width:52px;height:52px;border-radius:99px;
+  background:var(--accent);color:var(--on-accent);display:grid;place-items:center;border:none;cursor:pointer;
+  transition:transform var(--t-q) var(--ease),opacity var(--t-q) var(--ease)}
+.ko2-next:hover{transform:translateX(3px)}
+.ko2-next svg{width:20px;height:20px}
+.ko2-skip{position:absolute;left:28px;bottom:34px;font-size:12.5px;font-weight:600;color:var(--tx-3);
+  background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:4px}
+.ko2-skip:hover{color:var(--tx)}
+/* the end CTA replaces the arrow on the last panel */
+.ko2-cta{position:absolute;left:50%;bottom:30px;transform:translateX(-50%);
+  display:none;align-items:center;gap:9px;height:46px;padding:0 28px;border-radius:var(--pill);
+  background:var(--accent);color:var(--on-accent);font-family:var(--sans);font-size:14.5px;font-weight:600;
+  letter-spacing:-.01em;border:none;cursor:pointer;transition:transform var(--t-q) var(--ease)}
+.ko2-cta.show{display:inline-flex}
+.ko2-cta:hover{transform:translateX(-50%) translateY(-2px)}
+.ko2-cta svg{width:16px;height:16px}
+/* the 5-stage arc, panel 0 */
+.ko2-arc{display:flex;flex-direction:column;gap:0;text-align:left;width:100%;max-width:520px;margin:0 auto}
+.ko2-arc .a-row{display:flex;align-items:flex-start;gap:15px;padding:9px 0}
+.ko2-arc .a-n{flex:0 0 auto;width:32px;height:32px;border-radius:99px;background:transparent;
+  border:1.5px solid var(--line);color:var(--tx-3);display:grid;place-items:center;
+  font-family:var(--mono);font-size:11px;font-weight:700}
+.ko2-arc .a-row.lit .a-n{border-color:var(--accent);color:var(--tx)}
+.ko2-arc .a-t{font-size:15px;font-weight:600;letter-spacing:-.01em;color:var(--tx);line-height:1.3}
+.ko2-arc .a-d{font-size:13px;color:var(--tx-3);margin-top:2px;line-height:1.45}
+/* stage UI assembling piece by piece after Continue */
+.stage-in{opacity:0}
+
 /* kickoff keeps one CTA, and it is black */
 .wu-cta{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:44px;padding:0 26px;
   border-radius:var(--pill);background:var(--accent);color:var(--on-accent);
@@ -866,8 +933,25 @@ td.cell-active::after{border-color:var(--accent)}
   </div>
 </div>
 
-<!-- KICKOFF -->
-<div class="kickoff show" id="kickoff">
+<!-- KICKOFF PLAYER -->
+<div class="ko2 show" id="ko2">
+  <div class="ko2-top">
+    <button class="ko2-back" id="ko2Back" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <span class="ko2-mark"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l2.2 7.8L22 12l-7.8 2.2L12 22l-2.2-7.8L2 12l7.8-2.2z"/></svg></span>
+  </div>
+  <div class="ko2-stage">
+    <div class="ko2-scrub" id="ko2Scrub"></div>
+    <div class="ko2-chap" id="ko2Chap"></div>
+    <div class="ko2-visual" id="ko2Visual"></div>
+    <div class="ko2-text" id="ko2Text"></div>
+    <button class="ko2-skip" id="ko2Skip">Skip</button>
+    <button class="ko2-next" id="ko2Next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    <button class="ko2-cta" id="ko2Cta">Continue<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </div>
+</div>
+
+<!-- KICKOFF (legacy, superseded by .ko2) -->
+<div class="kickoff" id="kickoff" hidden>
   <div class="ko-holder"><div class="ko-in">
     <div class="ko-eyebrow">Your warm-up</div>
     <h1 class="ko-title">Here's the whole arc, start to finish.</h1>
@@ -949,6 +1033,15 @@ function applyConfig(){
   }catch(e){ console.warn('applyConfig:', e); }
 }
 applyConfig();
+
+/* the five moves, panel 0 of the kickoff player */
+const KO_ARC = [
+  {t:'Investigate',     d:'Pull the cancellation data and read what it says'},
+  {t:'Find the driver', d:'Notes and tenure, who is really cancelling'},
+  {t:'Size the cost',   d:'Put a dollar figure on it, $1.6B a year'},
+  {t:'The fix',         d:'Near-ready dispatch, kill the root cause'},
+  {t:'Pitch it',        d:'8% to 5%, about $600M back a year'},
+];
 
 /* ================= worksheet ================= */
 const STAGES=[
@@ -2374,6 +2467,130 @@ document.addEventListener('keydown',e=>{
 buildDots();
 startKickoff();
 calibrate();
+/* ══════════════ KICKOFF PLAYER ══════════════
+   Panel 0 is the five-move arc; panels 1..n are the story beats. One arrow
+   walks them, a scrubber tracks them, and the last panel swaps the arrow for
+   Continue — which assembles the stage UI piece by piece. */
+const KO_PANELS = [{arc:true}].concat(STORY.map(b=>({beat:b})));
+let koI = 0;
+let koTimer = null;
+
+function koWordMs(html){
+  const w = String(html).replace(/<[^>]*>/g,' ').trim().split(/\s+/).filter(Boolean).length;
+  return Math.round(w * (80/(typeof SPD!=='undefined'?SPD:1.2)) + 1600);
+}
+function koScrub(idx, ms){
+  const segs=[...document.getElementById('ko2Scrub').children];
+  segs.forEach((s,i)=>{ const f=s.firstElementChild; if(!f)return;
+    f.style.transition='none'; f.style.width = i<idx ? '100%' : '0%'; });
+  const cur=segs[idx]; if(!cur)return;
+  const f=cur.firstElementChild; if(!f)return;
+  void f.offsetWidth;
+  f.style.transition='width '+Math.max(400,ms)+'ms linear';
+  f.style.width='100%';
+}
+function koBuild(){
+  document.getElementById('ko2Scrub').innerHTML = KO_PANELS.map(()=>'<i><b></b></i>').join('');
+  document.getElementById('ko2Scrub').addEventListener('click',e=>{
+    const seg=e.target.closest('i'); if(!seg)return;
+    const i=[...e.currentTarget.children].indexOf(seg);
+    if(i>=0 && i!==koI){ try{sfx.tap()}catch(_){}; koGo(i); }
+  });
+}
+function koRender(){
+  const p = KO_PANELS[koI];
+  const vis = document.getElementById('ko2Visual');
+  const txt = document.getElementById('ko2Text');
+  const next= document.getElementById('ko2Next');
+  const cta = document.getElementById('ko2Cta');
+  const chap= document.getElementById('ko2Chap');
+  chap.textContent = (koI+1)+' / '+KO_PANELS.length;
+  const last = koI === KO_PANELS.length-1;
+  next.style.display = last ? 'none' : 'grid';
+  cta.classList.toggle('show', last);
+
+  if(p.arc){
+    vis.innerHTML='';
+    txt.innerHTML = '<div style="font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--tx-2);margin-bottom:14px">Your warm-up</div>'
+      + '<div style="font-size:clamp(24px,3vw,31px);font-weight:700;letter-spacing:-.02em;line-height:1.2;margin-bottom:10px">Here\'s the whole arc, start to finish.</div>'
+      + '<div style="font-size:14.5px;line-height:1.6;color:var(--tx-2);margin-bottom:26px">Five moves take you from a vague worry to a funded pitch. You\'ll run each one with '+CONFIG.managerName.split(' ')[0]+'.</div>'
+      + '<div class="ko2-arc">'
+      + KO_ARC.map((s,i)=>'<div class="a-row" data-i="'+i+'"><span class="a-n">'+(i+1)+'</span><div><div class="a-t">'+s.t+'</div><div class="a-d">'+s.d+'</div></div></div>').join('')
+      + '</div>';
+    const rows=[...txt.querySelectorAll('.a-row')];
+    rows.forEach((r,i)=>G.fromTo(r,{opacity:0,y:14},{opacity:1,y:0,duration:.44,delay:.16+i*.09,ease:'power3.out',
+      onStart:()=>setTimeout(()=>{r.classList.add('lit');try{sfx.tick()}catch(_){}} ,120)}));
+    koScrub(koI, 2600);
+    koTimer=setTimeout(()=>{koTimer=null; if(koI===0) koGo(1);}, 4200);
+  } else {
+    const b=p.beat;
+    if(VISUALS[b.v]){ vis.innerHTML=''; VISUALS[b.v](vis);
+      G.fromTo(vis,{opacity:0,y:14},{opacity:1,y:0,duration:.5,ease:'power3.out'}); }
+    beatSkip=false;
+    koScrub(koI, koWordMs(b.t));
+    streamInto(txt, b.t, 80).then(()=>{
+      if(koI < KO_PANELS.length-1) koTimer=setTimeout(()=>{koTimer=null; koGo(koI+1);}, 1600);
+    });
+  }
+}
+function koGo(i){
+  if(koTimer){clearTimeout(koTimer);koTimer=null}
+  try{skipAllStreams()}catch(_){}
+  koI = Math.max(0, Math.min(KO_PANELS.length-1, i));
+  const st=document.querySelector('.ko2-stage');
+  G.fromTo(st,{opacity:.35},{opacity:1,duration:.34,ease:'power2.out'});
+  koRender();
+}
+
+/* ── Continue: the stage UI assembles, one piece at a time ── */
+function koLaunch(){
+  if(koTimer){clearTimeout(koTimer);koTimer=null}
+  try{skipAllStreams()}catch(_){}
+  try{sfx.ok()}catch(_){}
+  const ko=document.getElementById('ko2');
+  const app=document.getElementById('app');
+
+  /* hide every piece of the shell, then bring them in in order */
+  const pieces=['.topbar .back','.topbar .xp-chip','.topbar .perf','.topbar .hic',
+                '.rail .brand','.chat-peer .pava','.chat-peer .pmeta','.wu-prog','.dbg-nav']
+    .map(s=>document.querySelector(s)).filter(Boolean);
+  pieces.forEach(el=>{el.style.opacity='0'});
+
+  G.to(ko,{opacity:0,scale:.985,duration:.42,ease:'power2.in'});
+  setTimeout(()=>{
+    ko.classList.remove('show'); ko.style.opacity=''; ko.style.transform='';
+    app.classList.add('show');
+    document.documentElement.classList.add('in-app');
+    S.started=Date.now();
+  {const nv=$('dbgNav'); if(nv) nv.hidden=false;}
+    {const nv=document.getElementById('dbgNav'); if(nv) nv.hidden=false;}
+    renderSide();
+    /* one by one */
+    pieces.forEach((el,i)=>{
+      G.fromTo(el,{opacity:0,y:-10},{opacity:1,y:0,duration:.44,delay:i*.075,ease:'power3.out'});
+    });
+    /* the first stage lands after the chrome has settled */
+    setTimeout(()=>{ mountStep(); }, pieces.length*75 + 260);
+  }, 420);
+}
+
+/* ── wiring ── */
+(function(){
+  const n=document.getElementById('ko2Next'), c=document.getElementById('ko2Cta'),
+        s=document.getElementById('ko2Skip'), b=document.getElementById('ko2Back');
+  if(n) n.onclick=()=>{try{sfx.tap()}catch(_){}; koGo(koI+1)};
+  if(c) c.onclick=koLaunch;
+  if(s) s.onclick=()=>{try{sfx.tap()}catch(_){}; koLaunch()};
+  if(b) b.onclick=()=>{try{sfx.tap()}catch(_){}; koGo(koI-1)};
+  document.addEventListener('keydown',e=>{
+    if(!document.getElementById('ko2').classList.contains('show'))return;
+    if(e.key==='ArrowRight'){e.preventDefault(); koGo(koI+1)}
+    if(e.key==='ArrowLeft'){e.preventDefault(); koGo(koI-1)}
+    if(e.key==='Enter' && koI===KO_PANELS.length-1){e.preventDefault(); koLaunch()}
+  });
+  koBuild(); koRender();
+})();
+
 /* ================= story = a kickoff video ================= */
 /* Each beat's real length: the word-stream at 80ms/word (scaled by playback
    speed) plus the hold before it advances. The scrubber fills over exactly
