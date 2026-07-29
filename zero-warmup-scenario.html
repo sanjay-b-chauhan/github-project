@@ -51,10 +51,8 @@ input{font-family:inherit}
 :root{
   --ok-soft:rgba(63,185,104,.14); --ok-glow:rgba(63,185,104,.28);
   --fix-soft:rgba(255,106,77,.14); --hi-soft:rgba(224,160,32,.14);
-  --wash:rgba(13,13,13,.055);       /* the key-phrase highlight sweep */
-  --maxw:640px;
+  --maxw:600px;                     /* the workspace's column, unchanged */
 }
-:root[data-theme="dark"]{ --wash:rgba(255,255,255,.06); }
 .lbl{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--tx-2)}
 .group-h .lbl{color:inherit}   /* a collapsed/inactive section dims its label with it */
 svg{display:block}
@@ -187,10 +185,20 @@ svg{display:block}
 .wu-prog .wu-track>i{display:block;height:100%;width:0;border-radius:99px;background:var(--accent);transition:width .6s var(--ease)}
 .wu-prog .wu-pct{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--tx-2);font-variant-numeric:tabular-nums;min-width:30px;text-align:right}
 .wu-prog .wu-pct.tick{animation:xpbump .5s cubic-bezier(.34,1.56,.64,1)}
-.c-top{border-bottom:var(--bw) solid var(--line-2)}
+
+/* ============ DEBUG: step back and forth through every mechanic ============ */
+.dbg-nav{position:fixed;left:18px;bottom:18px;z-index:120;display:flex;align-items:center;gap:2px;
+  background:var(--card);border:var(--bw) solid var(--line);border-radius:99px;padding:4px;box-shadow:var(--shadow)}
+.dbg-nav button{width:30px;height:30px;border-radius:99px;display:grid;place-items:center;color:var(--tx-2);
+  background:none;border:none;cursor:pointer;transition:background var(--t-q) var(--ease),color var(--t-q) var(--ease)}
+.dbg-nav button:hover{background:var(--hover);color:var(--tx)}
+.dbg-nav button:disabled{opacity:.3;pointer-events:none}
+.dbg-nav button svg{width:17px;height:17px}
+.dbg-nav .dbg-n{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.6px;color:var(--tx-3);
+  padding:0 9px 0 5px;font-variant-numeric:tabular-nums;white-space:nowrap}
 
 /* the one affordance on the canvas: a quiet text link, never a button */
-.wu-link{display:inline-block;margin:16px 0 0 38px;font-size:12.5px;font-weight:600;color:var(--tx-3);
+.wu-link{display:inline-block;margin:16px 0 0 0;font-size:12.5px;font-weight:600;color:var(--tx-3);
   text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;
   background:none;border:none;padding:0;cursor:pointer;transition:color var(--t-q) var(--ease)}
 .wu-link:hover{color:var(--tx)}
@@ -227,7 +235,7 @@ body.focusmode .segment.done{display:none}
 .beat .btext .w{display:inline-block;opacity:0;filter:blur(9px);transform:translateY(6px)}
 .beat .btext .w.vis{opacity:1;filter:blur(0);transform:none;transition:opacity .42s ease,filter .5s ease,transform .42s ease}
 .beat .btext .hl{border-radius:6px;padding:0 4px;margin:0 -2px;background:linear-gradient(100deg,transparent,transparent);transition:background 1.1s ease}
-.beat .btext .hl.on{background:linear-gradient(100deg,var(--wash),var(--wash) 50%,var(--wash))}
+.beat .btext .hl.on{background:linear-gradient(100deg,transparent,transparent 50%,transparent)}
 
 .after{margin:26px 0 0 50px;opacity:0}
 .after.vis{opacity:1}
@@ -243,7 +251,7 @@ body.focusmode .segment.done{display:none}
 .resp .r-text .w{display:inline-block;opacity:0;filter:blur(6px)}
 .resp .r-text .w.vis{opacity:1;filter:blur(0);transition:opacity .3s ease,filter .35s ease}
 .resp .r-text .hl{border-radius:5px;padding:0 3px;background:linear-gradient(100deg,transparent,transparent);transition:background .9s ease}
-.resp .r-text .hl.on{background:linear-gradient(100deg,var(--wash),var(--wash) 50%,var(--wash))}
+.resp .r-text .hl.on{background:linear-gradient(100deg,transparent,transparent 50%,transparent)}
 .resp .r-xp{margin:9px 0 0 38px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ok)}
 .whybody{display:none;margin:14px 0 0 88px;border-left:2px solid var(--accent);padding:10px 15px;font-size:13.5px;line-height:1.65;color:var(--tx-2);background:var(--soft);border-radius:0 12px 12px 0;max-width:500px}
 .whybody.open{display:block}
@@ -346,7 +354,7 @@ td.cell-active input::placeholder{color:#9CC7AF;font-weight:400}
 .st-text .w{display:inline-block;opacity:0;filter:blur(10px);transform:translateY(7px)}
 .st-text .w.vis{opacity:1;filter:blur(0);transform:none;transition:opacity .45s ease,filter .55s ease,transform .45s ease}
 .st-text .hl{border-radius:7px;padding:0 5px;background:linear-gradient(100deg,transparent,transparent);transition:background 1.1s ease}
-.st-text .hl.on{background:linear-gradient(100deg,var(--wash),var(--wash) 50%,var(--wash))}
+.st-text .hl.on{background:linear-gradient(100deg,transparent,transparent 50%,transparent)}
 
 .st-dots{position:absolute;top:26px;left:50%;transform:translateX(-50%);display:flex;gap:7px;z-index:6}
 .st-dots i{width:7px;height:7px;border-radius:50%;background:var(--line-2);transition:background .3s,transform .3s}
@@ -678,6 +686,32 @@ td.cell-active::after{border-color:var(--accent)}
 .beat .bub{display:none!important}
 .beat{display:block;margin-bottom:26px!important}
 
+/* ══ ONE LEFT EDGE ══
+   Every block in a segment was indented 50px to clear the 36px avatar + 14px
+   gap. With the avatar gone those indents are orphaned, and they were stacking
+   three different left edges (sticky 504, text 476, cards 526). Everything now
+   starts on the column line. */
+.beat .btext{padding-top:0}
+.after{margin:26px 0 0 0}
+.resp{margin:24px 0 0 0}
+.resp .r-xp{margin-left:0}
+.whybody{margin:14px 0 0 0}
+.chat-peer{padding:0}
+.holder{padding-left:24px;padding-right:24px}   /* same inset as .c-top, so both centre the column identically at every width */
+
+/* ══ ONE WIDTH ══
+   Each block carried its own max-width (520px text, 540px options). They all
+   take the column's width now. */
+.opts,.resp .r-text,.whybody,.blankline{max-width:none}
+
+/* ══ NO HIGHLIGHTING ══
+   The workspace has no highlight idiom. The warm-up turned every <b> into a
+   .hl span, so emphasis becomes weight, with no wash behind it. */
+.hl,.hl.on,.beat .btext .hl,.beat .btext .hl.on,
+.resp .r-text .hl,.resp .r-text .hl.on,
+.st-text .hl,.st-text .hl.on{background:none;padding:0;margin:0;border-radius:0}
+.beat .btext .hl.on,.resp .r-text .hl.on,.st-text .hl.on{font-weight:600;color:var(--tx)}
+
 /* ============ warm-up type: Google Sans Flex, stepped up from the chat scale ============ */
 /* the warm-up set its manager voice in 23px serif. In sans that reads as a
    hero line, not a conversation — 17.5px is a step up from the workspace's
@@ -692,10 +726,6 @@ td.cell-active::after{border-color:var(--accent)}
 .ko-sub{font-size:14.5px;line-height:1.6;color:var(--tx-2)}
 .resp .r-text{font-size:15px;line-height:1.62}
 .opt{font-size:14.5px}
-/* The warm-up turns every <b> into a highlight span, so the sweep is the ONLY
-   thing carrying emphasis. On the dark shell a wash strong enough to read looks
-   like selected text, so give the weight back and keep the wash as a hint. */
-.beat .btext .hl.on,.resp .r-text .hl.on,.st-text .hl.on{font-weight:600;color:var(--tx)}
 /* the kickoff rail is a preview of the arc — nothing is complete yet, so the
    numbers read as accent, never as a green tick */
 .ko-n{background:transparent;border:1.5px solid var(--line);color:var(--tx-3)}
@@ -745,6 +775,13 @@ td.cell-active::after{border-color:var(--accent)}
       </div>
       <div class="holder scroll" id="holder"><div class="holder-in" id="holderIn"></div></div>
     </main>
+  </div>
+
+  <!-- DEBUG: walk every step to review the mechanics -->
+  <div class="dbg-nav" id="dbgNav" hidden>
+    <button id="dbgPrev" aria-label="Previous step" title="Previous step"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <button id="dbgNextBtn" aria-label="Next step" title="Next step"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+    <span class="dbg-n" id="dbgLabel">1 / 12</span>
   </div>
 </div>
 
@@ -1061,6 +1098,25 @@ function renderSide(){
   const f=$('wuFill'), p=$('wuPct');
   if(f)f.style.width=pct+'%';
   if(p&&p.textContent!==pct+'%'){p.textContent=pct+'%';p.classList.remove('tick');void p.offsetWidth;p.classList.add('tick')}
+  updateDbg();
+}
+/* ---- debug stepper: jump straight to any step to review its mechanic ---- */
+function updateDbg(){
+  const l=$('dbgLabel'); if(l) l.textContent=Math.min(S.i+1,STEPS.length)+' / '+STEPS.length;
+  const p=$('dbgPrev'); if(p) p.disabled = S.i<=0;
+  const n=$('dbgNextBtn'); if(n) n.disabled = S.i>=STEPS.length-1;
+}
+function dbgGo(i){
+  i=Math.max(0,Math.min(STEPS.length-1,i));
+  cancelAuto(); try{skipAllStreams()}catch(e){}
+  /* reset the run state so the target step mounts clean */
+  S.i=i; S.answered=false; S.trans=false; S.streaming=false; S._ended=false;
+  STAGES.forEach(s=>s.qs.forEach(q=>q.a=null));
+  for(let k=0;k<i;k++){ const st=STEPS[k]; if(st&&st.fill) try{STAGES[st.fill[0]].qs[st.fill[1]].a=st.fill[2]}catch(e){} }
+  const h=$('holderIn'); if(h) h.innerHTML='';
+  curSeg=null;
+  mountStep();
+  const sc=$('holder'); if(sc) sc.scrollTop=0;
 }
 
 /* ================= header ================= */
@@ -2186,6 +2242,7 @@ function startRun(){
   $('story').classList.remove('show');
   $('app').classList.add('show');document.documentElement.classList.add('in-app');
   S.started=Date.now();
+  {const nv=$('dbgNav'); if(nv) nv.hidden=false;}
   renderSide();
   mountStep();
 }
@@ -2217,6 +2274,20 @@ buildDots();
 startKickoff();
 calibrate();
 </script>
+/* ================= debug stepper wiring ================= */
+(function(){
+  const p=$('dbgPrev'), n=$('dbgNextBtn');
+  if(p) p.onclick=()=>{try{sfx.tap()}catch(e){} dbgGo(S.i-1)};
+  if(n) n.onclick=()=>{try{sfx.tap()}catch(e){} dbgGo(S.i+1)};
+  document.addEventListener('keydown',e=>{
+    const tag=(e.target.tagName||'').toLowerCase();
+    if(tag==='input'||tag==='textarea'||e.target.isContentEditable)return;
+    if(e.key==='['){e.preventDefault();dbgGo(S.i-1)}
+    if(e.key===']'){e.preventDefault();dbgGo(S.i+1)}
+  });
+  updateDbg();
+})();
+
 </script>
 </body>
 </html>
