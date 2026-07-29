@@ -670,9 +670,13 @@ td.cell-active input::placeholder{color:#9CC7AF;font-weight:400}
    view scrolls up to meet them. It just STARTS lower, so a stage sits nearer
    the middle of the canvas instead of jammed against the sticky bar.
    The same 16% offset drives scrollToCurrent, so every stage lands there. */
+/* NO fade at the top. The scroller used to dissolve its first 24px, which ate
+   the opening line of any stage sitting near that edge. The sticky bar is a
+   flex sibling, not an overlay, so a clean top edge is safe — text is never
+   obscured. Only the bottom keeps a soft edge. */
 .holder{position:static;flex:1;min-height:0;overflow-y:auto;padding:16vh 24px 55vh;
-  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 24px,#000 calc(100% - 24px),transparent 100%);
-  mask-image:linear-gradient(180deg,transparent 0,#000 24px,#000 calc(100% - 24px),transparent 100%)}
+  -webkit-mask-image:linear-gradient(180deg,#000 0,#000 calc(100% - 20px),transparent 100%);
+  mask-image:linear-gradient(180deg,#000 0,#000 calc(100% - 20px),transparent 100%)}
 .holder-in{max-width:var(--maxw)!important;width:100%;margin:0 auto}
 .segment{padding:0 0 76px}
 /* !important because GSAP's mount tween leaves an inline opacity:1 on the
@@ -1280,10 +1284,9 @@ function scrollToCurrent(instant){
   requestAnimationFrame(()=>{
     let t=h.scrollHeight;
     if(curSeg){
-      const st=curSeg.offsetTop-Math.round(h.clientHeight*.16);                                    /* anchor current segment near the top */
-      const sb=curSeg.offsetTop+curSeg.offsetHeight-h.clientHeight+150; /* unless it outgrows the viewport */
-      t=Math.max(st,sb);
-      if(!S.answered) t=Math.min(t,curSeg.offsetTop);
+      const st=curSeg.offsetTop-Math.round(h.clientHeight*.16);   /* stage top parks 16% down — never against the edge */
+      if(!S.answered){ t=st; }                                    /* arriving: read from the top, nothing clipped */
+      else { const sb=curSeg.offsetTop+curSeg.offsetHeight-h.clientHeight+120; t=Math.max(st,sb); }
       t=Math.max(0,t);
     }
     h.scrollTo({top:t,behavior:instant?'auto':'smooth'});
