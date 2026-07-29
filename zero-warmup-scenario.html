@@ -194,6 +194,18 @@ svg{display:block}
 .dbg-nav button:hover{background:var(--hover);color:var(--tx)}
 .dbg-nav button:disabled{opacity:.3;pointer-events:none}
 .dbg-nav button svg{width:17px;height:17px}
+.dbg-nav button.on{background:var(--soft);color:var(--tx)}
+/* ══ CHAT BUBBLES (debug toggle) ══
+   Wraps Sophia's lines in the workspace's manager-bubble shape — same
+   surface, border and 6/18/18/18 radius the workspace chat uses. */
+.app.bubbles .beat .btext,
+.app.bubbles .resp .r-text{
+  display:inline-block;width:fit-content;max-width:88%;
+  background:var(--soft);border:var(--bw) solid var(--line-2);
+  border-radius:6px 18px 18px 18px;padding:13px 17px;
+  font-size:15px!important;line-height:1.58!important}
+.app.bubbles .beat{margin-bottom:14px!important}
+.app.bubbles .resp{margin-top:18px!important}
 .dbg-nav .dbg-n{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.6px;color:var(--tx-3);
   padding:0 9px 0 5px;font-variant-numeric:tabular-nums;white-space:nowrap}
 
@@ -990,6 +1002,7 @@ td.cell-active::after{border-color:var(--accent)}
   <div class="dbg-nav" id="dbgNav" hidden>
     <button id="dbgPrev" aria-label="Previous step" title="Previous step"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
     <button id="dbgNextBtn" aria-label="Next step" title="Next step"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+    <button id="dbgBubble" aria-label="Toggle chat bubbles" title="Chat bubbles on / off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.9 8.9 0 0 1-4-.9L3 21l1.9-4.6A8.4 8.4 0 0 1 4 11.5a8.4 8.4 0 0 1 9-8.4 8.4 8.4 0 0 1 8 8.4z"/></svg></button>
     <span class="dbg-n" id="dbgLabel">1 / 12</span>
   </div>
 </div>
@@ -2946,6 +2959,13 @@ function celebrate(){
   const p=$('dbgPrev'), n=$('dbgNextBtn');
   if(p) p.onclick=()=>{try{sfx.tap()}catch(e){} dbgGo(S.i-1)};
   if(n) n.onclick=()=>{try{sfx.tap()}catch(e){} dbgGo(S.i+1)};
+  const bb=document.getElementById('dbgBubble');
+  if(bb) bb.onclick=()=>{
+    const app=document.getElementById('app');
+    const on=app.classList.toggle('bubbles');
+    bb.classList.toggle('on',on);
+    try{sfx.tap()}catch(e){}
+  };
   document.addEventListener('keydown',e=>{
     const tag=(e.target.tagName||'').toLowerCase();
     if(tag==='input'||tag==='textarea'||e.target.isContentEditable)return;
