@@ -768,6 +768,11 @@ td.cell-active input::placeholder{color:#9CC7AF;font-weight:400}
 .story .st-visual{margin-bottom:52px}
 :root[data-theme="dark"] .story,:root[data-theme="dark"] .kickoff{background:var(--bg)}
 :root[data-theme="dark"] .story .st-holder,:root[data-theme="dark"] .kickoff .ko-holder{background:var(--card)}
+.oslot.over{border-color:var(--accent)!important;background:var(--accent-soft)!important}
+.obit,.oslot.filled .o-body{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.obit:active,.oslot.filled .o-body:active{cursor:grabbing}
+.obit.dragging,.oslot.dragging{opacity:.35}
+
 
 /* ══════════════════════════════════════════════════════════════════════
    Everything below OVERRIDES the ported warm-up CSS. It has to sit after
@@ -2152,43 +2157,101 @@ MECHS.order=(st,z)=>{
   z.innerHTML=`<div class="d-tag">${st.tag}</div>
     <div class="ord-slots">${st.slides.map((_,i)=>`<div class="oslot" data-pos="${i}"><span class="o-n">${i+1}</span><div class="o-body"><div class="o-t"></div><div class="o-d"></div></div><button class="o-x" title="remove">\u00d7</button></div>`).join('')}</div>
     <div class="order-bank">${st.slides.slice().sort(()=>Math.random()-.5).map(sl=>`<button class="obit" data-t="${sl.t}">${sl.t}</button>`).join('')}</div>
-    <div class="a-note" style="margin-top:12px">Tap a section to drop it in the next slot. Tap a filled slot's \u00d7 to pull it back.</div>`;
+    <div class="a-note" style="margin-top:12px">Drag a section into a slot, drag it out to remove it. Tapping works too.</div>`;
   const slots=[...z.querySelectorAll('.oslot')];
-  const seq=[]; /* array of slide titles in placed order */
+  const bank=[...z.querySelectorAll('.obit')];
+  const seq=new Array(N).fill(null);          /* positional, not a stack */
+  const titleOf=t=>st.slides.find(s=>s.t===t);
+  const filled=()=>seq.filter(Boolean).length;
+
   const render=()=>{
     slots.forEach((slot,i)=>{
       const t=seq[i];
-      if(t){const sl=st.slides.find(s=>s.t===t);slot.classList.add('filled');slot.querySelector('.o-t').textContent=sl.t;slot.querySelector('.o-d').textContent=sl.d;}
-      else{slot.classList.remove('filled');slot.querySelector('.o-t').textContent='';slot.querySelector('.o-d').textContent='';}
+      if(t){ const sl=titleOf(t);
+        slot.classList.add('filled');
+        slot.querySelector('.o-t').textContent=sl.t;
+        slot.querySelector('.o-d').textContent=sl.d||'';
+      } else {
+        slot.classList.remove('filled');
+        slot.querySelector('.o-t').textContent='';
+        slot.querySelector('.o-d').textContent='';
+      }
     });
-    z.querySelectorAll('.obit').forEach(b=>b.classList.toggle('used',seq.includes(b.dataset.t)));
+    bank.forEach(b=>b.classList.toggle('used',seq.includes(b.dataset.t)));
   };
   const check=()=>{
-    if(seq.length!==N)return;
+    if(filled()!==N||S.answered)return;
     const okO=seq.every((t,i)=>t===st.slides[i].t);
-    if(S.answered)return;
-    setTimeout(()=>{
-      if(okO)correct(st);
-      else wrong(st,st.bad,null);
-    },260);
+    setTimeout(()=>{ if(okO)correct(st); else wrong(st,st.bad,null); },260);
   };
-  z.querySelectorAll('.obit').forEach(b=>{
-    b.onclick=()=>{
-      if(S.answered||b.classList.contains('used'))return;sfx.tap();
-      seq.push(b.dataset.t);
-      const slot=slots[seq.length-1];
-      render();G.fromTo(slot,{scale:.96},{scale:1,duration:.3,ease:'back.out(2)'});
-      check();
+  const putAt=(t,i)=>{
+    if(S.answered||i==null||i<0||i>=N)return;
+    const prev=seq.indexOf(t); if(prev>=0) seq[prev]=null;   /* moving, not duplicating */
+    seq[i]=t;
+    render();
+    G.fromTo(slots[i],{scale:.96},{scale:1,duration:.3,ease:'back.out(2)'});
+    try{sfx.tap()}catch(e){}
+    check();
+  };
+  const clearAt=i=>{ if(S.answered||!seq[i])return; seq[i]=null; render(); try{sfx.tap()}catch(e){} };
+  const firstEmpty=()=>{ const i=seq.indexOf(null); return i<0?null:i; };
+  const slotUnder=(x,y)=>slots.find(s=>{const b=s.getBoundingClientRect();
+    return x>b.left&&x<b.right&&y>b.top-10&&y<b.bottom+10;})||null;
+
+  /* one drag routine for both directions: bank -> slot, and slot -> anywhere */
+  function startDrag(sourceEl,title,fromSlot,e){
+    if(S.answered)return;
+    e.preventDefault();
+    const r=sourceEl.getBoundingClientRect();
+    const g=document.createElement('div');
+    g.className='cb-ghost obit';
+    g.textContent=title;
+    g.style.cssText='position:fixed;z-index:300;pointer-events:none;left:'+r.left+'px;top:'+r.top+'px';
+    document.body.appendChild(g);
+    sourceEl.classList.add('dragging');
+    const ox=e.clientX-r.left, oy=e.clientY-r.top;
+    let moved=false, over=null;
+    const move=ev=>{
+      moved=true;
+      g.style.left=(ev.clientX-ox)+'px'; g.style.top=(ev.clientY-oy)+'px';
+      const s=slotUnder(ev.clientX,ev.clientY);
+      if(over&&over!==s) over.classList.remove('over');
+      over=s; if(s) s.classList.add('over');
     };
+    const up=ev=>{
+      document.removeEventListener('pointermove',move);
+      document.removeEventListener('pointerup',up);
+      sourceEl.classList.remove('dragging'); g.remove();
+      if(over) over.classList.remove('over');
+      const target=slotUnder(ev.clientX,ev.clientY);
+      if(!moved){                                  /* a tap, not a drag */
+        if(fromSlot!=null) clearAt(fromSlot);
+        else putAt(title, firstEmpty());
+      } else if(target){
+        putAt(title, +target.dataset.pos);
+      } else if(fromSlot!=null){
+        clearAt(fromSlot);                         /* dragged off = remove */
+      }
+    };
+    document.addEventListener('pointermove',move);
+    document.addEventListener('pointerup',up);
+  }
+
+  bank.forEach(b=>{
+    b.addEventListener('pointerdown',e=>{
+      if(b.classList.contains('used'))return;
+      startDrag(b,b.dataset.t,null,e);
+    });
   });
   slots.forEach((slot,i)=>{
-    slot.querySelector('.o-x').onclick=(e)=>{
-      e.stopPropagation();
-      if(S.answered||!seq[i])return;sfx.tap();
-      seq.splice(i,1);render();
-    };
+    slot.querySelector('.o-x').onclick=e=>{ e.stopPropagation(); clearAt(i); };
+    slot.querySelector('.o-body').addEventListener('pointerdown',e=>{
+      if(!seq[i])return;
+      startDrag(slot,seq[i],i,e);
+    });
   });
-  setAlt('Hint',()=>hint("A CFO reads the answer first, then the story that proves it: problem, cause, cost, fix, impact."));
+  render();
+  setAlt('Show a hint',()=>hint("A CFO reads the answer first, then the story that proves it: problem, cause, cost, fix, impact."));
 };
 
 /* ================= recap (inline) ================= */
