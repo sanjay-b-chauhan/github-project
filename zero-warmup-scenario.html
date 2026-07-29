@@ -197,6 +197,22 @@ svg{display:block}
 .dbg-nav .dbg-n{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.6px;color:var(--tx-3);
   padding:0 9px 0 5px;font-variant-numeric:tabular-nums;white-space:nowrap}
 
+/* ══ THE ACTION BAR ══
+   Continue lives at the BOTTOM, on the column's centre line — where the
+   composer used to sit — rather than inline after the reply. */
+.wu-bar{flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+  padding:10px 24px 24px;min-height:0}
+.wu-bar:empty{padding:0}
+.wu-bar .wu-continue{margin:0}
+
+/* Sophia's reply is a LINE OF TEXT. The check icon read as chrome and pushed
+   the line off the column edge. */
+.resp .r-dot{display:none!important}
+.resp .r-line{gap:0!important}
+
+/* opacity is driven by which stage you're actually looking at (paintStageFocus) */
+.segment{transition:opacity .38s var(--ease)}
+
 /* the one affordance on the canvas: a quiet text link, never a button */
 .wu-link{display:inline-block;margin:16px 0 0 0;font-size:12.5px;font-weight:600;color:var(--tx-3);
   text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;
@@ -922,6 +938,7 @@ td.cell-active::after{border-color:var(--accent)}
         </div>
       </div>
       <div class="holder scroll" id="holder"><div class="holder-in" id="holderIn"></div></div>
+      <div class="wu-bar" id="wuBar"></div>
     </main>
   </div>
 
@@ -1423,16 +1440,15 @@ const wait=ms=>new Promise(r=>setTimeout(r,ms));
 
 /* ================= action bar ================= */
 function setContinue(state){
-  if(!curSeg)return;
-  const old=curSeg.querySelector('.wu-continue'); if(old)old.remove();
+  const bar=$('wuBar'); if(!bar)return;
+  bar.innerHTML='';
   if(state!=='ready')return;
   const b=document.createElement('button');
   b.className='wu-cta wu-continue';
   b.innerHTML='Continue <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
   b.onclick=()=>{ try{sfx.tap()}catch(e){} nextSegment(); };
-  curSeg.appendChild(b);
-  G.fromTo(b,{opacity:0,y:8},{opacity:1,y:0,duration:.34,ease:'power3.out'});
-  scrollToCurrent();
+  bar.appendChild(b);
+  G.fromTo(b,{opacity:0,y:10},{opacity:1,y:0,duration:.36,ease:'power3.out'});
 }
 function setAlt(label,fn){
   if(!curSeg)return;
@@ -1452,10 +1468,11 @@ function scrollToCurrent(instant){
   requestAnimationFrame(()=>{
     let t=h.scrollHeight;
     if(curSeg){
-      const st=curSeg.offsetTop-Math.round(h.clientHeight*.16);   /* stage top parks 16% down — never against the edge */
-      if(!S.answered){ t=st; }                                    /* arriving: read from the top, nothing clipped */
-      else { const sb=curSeg.offsetTop+curSeg.offsetHeight-h.clientHeight+120; t=Math.max(st,sb); }
-      t=Math.max(0,t);
+      /* ALWAYS park the live stage at its own top, 28px of air above it.
+         Two things fall out of this: the finished stage ends up entirely
+         out of view, and the opening line is never scrolled past — the
+         bottom-follow branch used to cut it off on the taller stages. */
+      t=Math.max(0,curSeg.offsetTop-28);
     }
     h.scrollTo({top:t,behavior:instant?'auto':'smooth'});
   });
@@ -1490,12 +1507,12 @@ function nextSegment(){
   const seg=curSeg;
   sfx.woosh();
   seg.classList.add('done');
-  /* The finished stage STAYS — you can scroll back to it. It just recedes so
-     the active one is obviously the live thing. Dimming is set as an inline
-     tween rather than a CSS rule because GSAP's mount tween already wrote
-     opacity:1 inline, which no plain class rule can beat. */
+  /* The finished stage stays in the document so you can scroll back, but the
+     new one is scrolled hard against the top edge so the old one is fully out
+     of view. Opacity is owned by paintStageFocus — whichever stage you are
+     actually looking at is the bright one. */
   seg.style.pointerEvents='none';
-  G.to(seg,{opacity:.32,duration:.42,ease:'power2.out'});
+  setTimeout(()=>{try{paintStageFocus()}catch(e){}},480);
   S.i++;
   renderSide();
   const st=STEPS[S.i-1];
@@ -1557,8 +1574,8 @@ function skipStep(){
       G.fromTo(lock,{y:14,opacity:0},{y:0,opacity:1,duration:.5,ease:'power3.out'});
       sfx.done();
     }
-    setContinue('ready');
-    if(st.why)setAlt('Why this matters',()=>{curSeg.querySelector('.whyEl').classList.toggle('open');scrollToCurrent()});
+    setAlt(null);
+  setContinue('ready');
     scrollToCurrent();
     startAuto(3200);
   });
@@ -1600,8 +1617,8 @@ async function correct(st,gainOverride){
     G.fromTo(lock,{y:14,opacity:0},{y:0,opacity:1,duration:.5,ease:'power3.out'});
     sfx.done();
   }
+  setAlt(null);
   setContinue('ready');
-  if(st.why)setAlt('Why this matters',()=>{curSeg.querySelector('.whyEl').classList.toggle('open');scrollToCurrent()});
   scrollToCurrent();
   startAuto(STAGES[st.fill[0]].qs.every(q=>q.a)?1500:800);
 }
@@ -2467,6 +2484,34 @@ document.addEventListener('keydown',e=>{
 buildDots();
 startKickoff();
 calibrate();
+/* ══════════════ WHICH STAGE ARE YOU LOOKING AT ══════════════
+   A finished stage isn't permanently ghosted — it's dim because you're not
+   looking at it. Scroll back and it becomes the live-looking one again. */
+function paintStageFocus(){
+  const h=$('holder'); if(!h)return;
+  const segs=[...document.querySelectorAll('.segment')];
+  if(!segs.length)return;
+  const hb=h.getBoundingClientRect();
+  const eye=hb.top + hb.height*0.34;         /* the reading line */
+  let best=null, bestD=Infinity;
+  segs.forEach(s=>{
+    const r=s.getBoundingClientRect();
+    if(r.bottom < hb.top+8 || r.top > hb.bottom-8) return;   /* off screen */
+    const d=Math.abs(r.top - eye);
+    if(d < bestD){ bestD=d; best=s; }
+  });
+  if(!best) best = segs[segs.length-1];
+  segs.forEach(s=>{ s.style.opacity = (s===best) ? '1' : '0.3'; });
+}
+(function(){
+  const h=$('holder'); if(!h)return;
+  let tick=false;
+  h.addEventListener('scroll',()=>{
+    if(tick)return; tick=true;
+    requestAnimationFrame(()=>{ tick=false; paintStageFocus(); });
+  },{passive:true});
+})();
+
 /* ══════════════ KICKOFF PLAYER ══════════════
    Panel 0 is the five-move arc; panels 1..n are the story beats. One arrow
    walks them, a scrubber tracks them, and the last panel swaps the arrow for
