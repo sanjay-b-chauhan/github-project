@@ -1510,7 +1510,7 @@ async function mountStep(){
   if(pre){pre.classList.add('vis');G.fromTo(pre,{y:18,opacity:0},{y:0,opacity:1,duration:.5,ease:'power3.out'})}
   mech.classList.add('vis');
   MECHS[st.mech](st,mech,seg);
-  setAlt('Show a hint',revealAnswer);
+  if(!seg.querySelector('.wu-link')) setAlt('Show a hint',revealAnswer);
   G.fromTo(mech,{y:18,opacity:0},{y:0,opacity:1,duration:.5,delay:pre?.1:0,ease:'power3.out'});
   scrollToCurrent();
 }
@@ -2251,7 +2251,21 @@ MECHS.order=(st,z)=>{
     });
   });
   render();
-  setAlt('Show a hint',()=>hint("A CFO reads the answer first, then the story that proves it: problem, cause, cost, fix, impact."));
+  /* A hint on an ordering puzzle has to SHOW you positions, not describe them.
+     Place the next few sections where they actually belong and let the user
+     finish; putAt clears each title's old slot, so the board opens up. */
+  setAlt('Show a hint',()=>{
+    if(S.answered)return;
+    let placed=0, first=null;
+    for(let i=0;i<N && placed<3;i++){
+      if(seq[i]!==st.slides[i].t){ if(first===null)first=i+1; putAt(st.slides[i].t,i); placed++; }
+    }
+    hint(placed
+      ? 'Put the next '+placed+' in place for you, starting at slot '+first+'. A CFO reads the answer first, then the story that proves it: problem, cause, cost, fix, impact.'
+      : 'That opening is right. Keep the order: problem, cause, cost, fix, impact.');
+    S.missed[S.i]=(S.missed[S.i]||0)+1;
+    try{calibrate()}catch(e){}
+  });
 };
 
 /* ================= recap (inline) ================= */
