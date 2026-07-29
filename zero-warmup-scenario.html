@@ -666,11 +666,14 @@ td.cell-active input::placeholder{color:#9CC7AF;font-weight:400}
 .app{display:none}
 .app.show{display:flex}
 .center{position:relative}
-.holder{position:static;flex:1;min-height:0;overflow-y:auto;padding:44px 32px 55vh;
+/* Each stage sits in the MIDDLE of the canvas, not pinned to the top.
+   A flex column plus margin:auto centres a short stage and, unlike
+   justify-content:center, never clips the top when one runs long. */
+.holder{position:static;flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;padding:28px 24px;
   -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 24px,#000 calc(100% - 24px),transparent 100%);
   mask-image:linear-gradient(180deg,transparent 0,#000 24px,#000 calc(100% - 24px),transparent 100%)}
-.holder-in{max-width:var(--maxw)!important;margin:0 auto}
-.segment{padding:0 0 76px}
+.holder-in{max-width:var(--maxw)!important;width:100%;margin:auto}
+.segment{padding:0}
 .segment.done{opacity:.28;pointer-events:none;filter:none}
 
 /* the warm-up hung a coloured glow under its CTAs; the workspace runs near-flat */
@@ -698,6 +701,13 @@ td.cell-active::after{border-color:var(--accent)}
 .whybody{margin:14px 0 0 0}
 .chat-peer{padding:0}
 .holder{padding-left:24px;padding-right:24px}   /* same inset as .c-top, so both centre the column identically at every width */
+
+/* ══ THE INTERACTION SITS IN A CONTAINER ══
+   Loose controls on an open page don't read as "your move". Everything the
+   user has to act on gets a card around it. */
+.mechEl{background:var(--panel);border:var(--bw) solid var(--line);border-radius:16px;padding:20px 22px}
+/* mechanics that ship their own card (the workbook) must not double up */
+.mechEl:has(.datacard),.mechEl:has(.wbtabs),.mechEl:has(.sh){background:none;border:none;padding:0}
 
 /* ══ ONE WIDTH ══
    Each block carried its own max-width (520px text, 540px options). They all
@@ -2242,6 +2252,7 @@ function startRun(){
   $('story').classList.remove('show');
   $('app').classList.add('show');document.documentElement.classList.add('in-app');
   S.started=Date.now();
+  document.body.classList.add('focusmode');
   {const nv=$('dbgNav'); if(nv) nv.hidden=false;}
   renderSide();
   mountStep();
