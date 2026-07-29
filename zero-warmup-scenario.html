@@ -711,10 +711,17 @@ td.cell-active input::placeholder{color:#9CC7AF;font-weight:400}
    the opening line of any stage sitting near that edge. The sticky bar is a
    flex sibling, not an overlay, so a clean top edge is safe — text is never
    obscured. Only the bottom keeps a soft edge. */
-.holder{position:static;flex:1;min-height:0;overflow-y:auto;padding:22px 24px 26px;
+.holder{position:static;flex:1;min-height:0;overflow-y:auto;padding:44px 24px 26px;
   -webkit-mask-image:linear-gradient(180deg,#000 0,#000 calc(100% - 20px),transparent 100%);
   mask-image:linear-gradient(180deg,#000 0,#000 calc(100% - 20px),transparent 100%)}
-.holder-in{max-width:var(--maxw)!important;width:100%;margin:0 auto}
+.holder-in{max-width:var(--maxw)!important;width:100%;margin:0 auto;position:relative}
+
+/* ══ RIGHT vs NOT-RIGHT ══
+   A wrong pick is amber, never red — this is a warm-up, not an error state.
+   Both answers stay fully legible so you can see what you chose against what
+   was right, instead of the wrong one fading out. */
+.opt.wrongpick{border-color:var(--hi)!important;background:var(--hi-soft)!important;opacity:1!important}
+.opt.right{border-color:var(--ok)!important;background:var(--ok-soft)!important;opacity:1!important}
 .segment{padding:0 0 20px}
 /* A finished stage now LEAVES rather than dimming in place, so it must not
    pin its own opacity — an !important here would fight the exit tween. */
@@ -1352,7 +1359,7 @@ async function mountStep(){
     <div class="whybody whyEl">${st.why||''}</div>`;
   $('holderIn').appendChild(seg);
   curSeg=seg;
-  G.fromTo(seg,{y:44,opacity:0},{y:0,opacity:1,duration:.55,ease:'power4.out'});
+  G.fromTo(seg,{y:34,opacity:0},{y:0,opacity:1,duration:.54,delay:.1,ease:'power3.out'});
   setTimeout(()=>{const h=$('holder');h.scrollTo({top:Math.max(0,seg.offsetTop-Math.round(h.clientHeight*.16)),behavior:'smooth'})},80);
   setAlt(null);setContinue('off');
   await playBeats(seg.querySelector('.beats'),st.beats,true,undefined,VOICE[S.i]);
@@ -1369,9 +1376,15 @@ function nextSegment(){
   const seg=curSeg;
   sfx.woosh();
   seg.classList.add('done');
+  /* Freeze the finished stage OUT OF FLOW at exactly where it sits, so the
+     container doesn't collapse under it. The arriving stage then rises into
+     the same place instead of the page snapping when this one is removed. */
   seg.style.pointerEvents='none';
-  G.to(seg,{y:-30,opacity:0,duration:.3,ease:'power2.in'});
-  setTimeout(()=>{try{seg.remove()}catch(e){}},320);   /* a plain timeout, not the tween's onComplete — removal must not depend on a tween that a CSS rule or an interrupt could override */
+  { const _t=seg.offsetTop;
+    seg.style.position='absolute'; seg.style.top=_t+'px';
+    seg.style.left='0'; seg.style.right='0'; }
+  G.to(seg,{y:-34,opacity:0,duration:.4,ease:'power2.inOut'});
+  setTimeout(()=>{try{seg.remove()}catch(e){}},420);   /* a plain timeout, not the tween's onComplete — removal must not hang off a tween a CSS rule could override */
   S.i++;
   renderSide();
   const st=STEPS[S.i-1];
@@ -2055,7 +2068,7 @@ async function renderEnd(){
   seg.innerHTML=`<div class="beats"></div><div class="recap-block after vis" id="endFlow" style="margin-left:50px"></div>`;
   $('holderIn').appendChild(seg);curSeg=seg;
   setAlt(null);setContinue('off');
-  G.fromTo(seg,{y:44,opacity:0},{y:0,opacity:1,duration:.55,ease:'power4.out'});
+  G.fromTo(seg,{y:34,opacity:0},{y:0,opacity:1,duration:.54,delay:.1,ease:'power3.out'});
   var _sb=$('skipBtn');if(_sb)_sb.style.display='none';
   await playBeats(seg.querySelector('.beats'),[
     `That's the whole investigation. And you ran it.`,
