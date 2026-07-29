@@ -807,12 +807,20 @@ td.cell-active input::placeholder{color:#9CC7AF;font-weight:400}
    was right, instead of the wrong one fading out. */
 .opt.wrongpick{border-color:var(--hi)!important;background:var(--hi-soft)!important;opacity:1!important}
 .opt.right{border-color:var(--ok)!important;background:var(--ok-soft)!important;opacity:1!important}
-.segment{padding:0 0 20px}
+/* Every stage claims a full canvas from the moment it mounts. This is the
+   thing that stops the previous stage peeking at the top: a short stage can't
+   be scrolled far enough to push the old one off, and it then RESIZES as it
+   types. Viewport units, deliberately — a JS-measured height reads 0 if the
+   canvas hasn't painted yet, which is precisely when this matters. */
+.segment{padding:0 0 20px;min-height:calc(100vh - 250px)}
 /* A finished stage stays and stays scrollable; nextSegment tweens its opacity
    inline. No !important here — it would fight that tween. */
 .segment.done{pointer-events:none;filter:none}
-/* generous separation so the active stage never reads as part of the last one */
-.segment+.segment{margin-top:30px}
+/* The gap between stages is deliberately much larger than the 28px of air the
+   scroll leaves above the live stage. That difference is what guarantees the
+   finished stage is off screen rather than peeking by a few pixels — it holds
+   even if a measurement drifts. */
+.segment+.segment{margin-top:150px}
 
 /* the warm-up hung a coloured glow under its CTAs; the workspace runs near-flat */
 .btn,.runbtn{box-shadow:var(--shadow)}
@@ -1490,9 +1498,11 @@ async function mountStep(){
     <div class="whybody whyEl">${st.why||''}</div>`;
   $('holderIn').appendChild(seg);
   curSeg=seg;
-  G.fromTo(seg,{y:34,opacity:0},{y:0,opacity:1,duration:.54,delay:.1,ease:'power3.out'});
+  {const _h=$('holder'); if(_h && _h.clientHeight>200) seg.style.minHeight=(_h.clientHeight-76)+'px';}   /* refine on top of the CSS floor, but only when the canvas has actually painted */
+  G.fromTo(seg,{opacity:0},{opacity:1,duration:.42,delay:.22,ease:'power2.out'});
   setTimeout(()=>{const h=$('holder');h.scrollTo({top:Math.max(0,seg.offsetTop-Math.round(h.clientHeight*.16)),behavior:'smooth'})},80);
   setAlt(null);setContinue('off');
+  await new Promise(r=>setTimeout(r,470));   /* the old stage clears the view first, THEN this one starts typing */
   await playBeats(seg.querySelector('.beats'),st.beats,true,undefined,VOICE[S.i]);
   const pre=seg.querySelector('.preEl'),mech=seg.querySelector('.mechEl');
   if(pre){pre.classList.add('vis');G.fromTo(pre,{y:18,opacity:0},{y:0,opacity:1,duration:.5,ease:'power3.out'})}
@@ -2196,7 +2206,7 @@ async function renderEnd(){
   seg.innerHTML=`<div class="beats"></div><div class="recap-block after vis" id="endFlow" style="margin-left:50px"></div>`;
   $('holderIn').appendChild(seg);curSeg=seg;
   setAlt(null);setContinue('off');
-  G.fromTo(seg,{y:34,opacity:0},{y:0,opacity:1,duration:.54,delay:.1,ease:'power3.out'});
+  G.fromTo(seg,{opacity:0},{opacity:1,duration:.42,delay:.22,ease:'power2.out'});
   var _sb=$('skipBtn');if(_sb)_sb.style.display='none';
   await playBeats(seg.querySelector('.beats'),[
     `That's the whole investigation. And you ran it.`,
