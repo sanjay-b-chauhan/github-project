@@ -666,15 +666,19 @@ td.cell-active input::placeholder{color:#9CC7AF;font-weight:400}
 .app{display:none}
 .app.show{display:flex}
 .center{position:relative}
-/* Each stage sits in the MIDDLE of the canvas, not pinned to the top.
-   A flex column plus margin:auto centres a short stage and, unlike
-   justify-content:center, never clips the top when one runs long. */
-.holder{position:static;flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;padding:28px 24px;
+/* Content flows from the top like a chat — new blocks arrive below and the
+   view scrolls up to meet them. It just STARTS lower, so a stage sits nearer
+   the middle of the canvas instead of jammed against the sticky bar.
+   The same 16% offset drives scrollToCurrent, so every stage lands there. */
+.holder{position:static;flex:1;min-height:0;overflow-y:auto;padding:16vh 24px 55vh;
   -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 24px,#000 calc(100% - 24px),transparent 100%);
   mask-image:linear-gradient(180deg,transparent 0,#000 24px,#000 calc(100% - 24px),transparent 100%)}
-.holder-in{max-width:var(--maxw)!important;width:100%;margin:auto}
-.segment{padding:0}
-.segment.done{opacity:.28;pointer-events:none;filter:none}
+.holder-in{max-width:var(--maxw)!important;width:100%;margin:0 auto}
+.segment{padding:0 0 76px}
+/* !important because GSAP's mount tween leaves an inline opacity:1 on the
+   segment, which a plain class rule can never beat — without this, finished
+   stages never dim */
+.segment.done{opacity:0.28 !important;pointer-events:none;filter:none;transition:opacity var(--t-m) var(--ease)}
 
 /* the warm-up hung a coloured glow under its CTAs; the workspace runs near-flat */
 .btn,.runbtn{box-shadow:var(--shadow)}
@@ -1276,9 +1280,11 @@ function scrollToCurrent(instant){
   requestAnimationFrame(()=>{
     let t=h.scrollHeight;
     if(curSeg){
-      const st=curSeg.offsetTop-84;                                    /* anchor current segment near the top */
+      const st=curSeg.offsetTop-Math.round(h.clientHeight*.16);                                    /* anchor current segment near the top */
       const sb=curSeg.offsetTop+curSeg.offsetHeight-h.clientHeight+150; /* unless it outgrows the viewport */
-      t=Math.max(0,Math.max(st,sb));
+      t=Math.max(st,sb);
+      if(!S.answered) t=Math.min(t,curSeg.offsetTop);
+      t=Math.max(0,t);
     }
     h.scrollTo({top:t,behavior:instant?'auto':'smooth'});
   });
@@ -1297,7 +1303,7 @@ async function mountStep(){
   $('holderIn').appendChild(seg);
   curSeg=seg;
   G.fromTo(seg,{y:44,opacity:0},{y:0,opacity:1,duration:.55,ease:'power4.out'});
-  setTimeout(()=>{const h=$('holder');h.scrollTo({top:Math.max(0,seg.offsetTop-84),behavior:'smooth'})},80);
+  setTimeout(()=>{const h=$('holder');h.scrollTo({top:Math.max(0,seg.offsetTop-Math.round(h.clientHeight*.16)),behavior:'smooth'})},80);
   setAlt(null);setContinue('off');
   await playBeats(seg.querySelector('.beats'),st.beats,true,undefined,VOICE[S.i]);
   const pre=seg.querySelector('.preEl'),mech=seg.querySelector('.mechEl');
@@ -2252,7 +2258,6 @@ function startRun(){
   $('story').classList.remove('show');
   $('app').classList.add('show');document.documentElement.classList.add('in-app');
   S.started=Date.now();
-  document.body.classList.add('focusmode');
   {const nv=$('dbgNav'); if(nv) nv.hidden=false;}
   renderSide();
   mountStep();
