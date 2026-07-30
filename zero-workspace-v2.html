@@ -4262,6 +4262,11 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .qas-face.on{transform:translate(-50%,-50%) scale(1);opacity:1;z-index:3;filter:none}
 /* the photo sits over the initials, so a failed load still reads as that person */
 .zface{position:relative;overflow:hidden}
+/* .zface and .qas-face/.qgat-f are both single-class selectors, and .zface comes later — so it was
+   winning and forcing the absolutely-positioned faces back into normal flow (they stacked 104px
+   apart instead of sharing a centreline). Two-class selectors settle it. */
+.qas-stack .qas-face{position:absolute}
+.qgat-faces .qgat-f{position:absolute}
 .zface>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .zface>b{font-weight:600}
 .qas-face:nth-child(2){transform:translate(-50%,-50%) translateX(34px) scale(.58)}   /* the one waiting sits BEHIND, on the same line, still visible */
@@ -4415,15 +4420,11 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
   opacity:.8;transition:background .6s var(--osmo),opacity .6s var(--osmo)}
 .rpt[data-band="exceptional"]::before{
   background:linear-gradient(to bottom, color-mix(in srgb,var(--bc) 20%,transparent), transparent 80%);opacity:1}
-.rpt .rpt-scroll{position:relative;z-index:1}
+.rpt .rpt-scroll{position:absolute;inset:0;z-index:1;overflow-y:auto}   /* it only needed to sit ABOVE the band glow (z-index), not leave the fill — relative made it grow with its content instead of scrolling */
 /* the pills carry the band, quietly: a dot of colour, the rest neutral */
-.rpt .rp2-bands{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 28px}
-.rpt .rp2-bands .zpill{padding:8px 15px;font-size:12.5px;color:var(--tx-2)}
-.rpt .rp2-bands .zpill.on{background:color-mix(in srgb,var(--bc) 12%,var(--card));color:var(--tx);
   border-color:color-mix(in srgb,var(--bc) 32%,transparent)}
 .rpt .zp-d{width:7px;height:7px;border-radius:99px;background:var(--bc);flex:0 0 7px;opacity:.55;
   transition:opacity .3s var(--ease)}
-.rpt .rp2-bands .zpill.on .zp-d{opacity:1}
 /* the verdict is ours, not the band's */
 .rpt .rp2-verdict{color:var(--tx)}
 .rpt .rp2-prose{color:var(--tx-2)}
@@ -7881,11 +7882,6 @@ function roomReport(secs){
    +'</div></div></div>';
 
   /* switching a band re-reads the whole card from that band's data */
-  ov.querySelectorAll('#rp2Bands .zpill').forEach(function(b){
-    b.onclick=function(){ if(b.dataset.b===rptBand)return;
-      rptBand=b.dataset.b; try{ ZSND.play('select'); }catch(e){}
-      roomReport(secs); };
-  });
   ov.querySelectorAll('.rp2-row').forEach(function(r){
     r.querySelector('.rp2-head').onclick=function(){ r.classList.toggle('open'); try{ ZSND.play('tap'); }catch(e){} };
   });
