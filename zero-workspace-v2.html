@@ -3353,18 +3353,17 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .rpt .rp2-mlab{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.16em;
   color:var(--tx-3);margin:30px 0 13px}
 .rpt .rp2-list{display:flex;flex-direction:column;gap:9px}
-.rpt .rp2-row{border-radius:14px;background:var(--soft);overflow:hidden;border:1px solid var(--line);
+.rpt .rp2-row{border-radius:14px;background:var(--soft);overflow:hidden;border:1px solid var(--line-2);
   transition:background .18s var(--ease)}
 .rpt .rp2-row:hover{background:var(--hover)}
 .rpt .rp2-head{display:flex;align-items:center;gap:14px;padding:14px 17px;cursor:pointer}
-.rpt .rp2-t{font-family:var(--mono);font-size:14px;font-weight:700;width:44px;flex:none;font-variant-numeric:tabular-nums}
 .rpt .rp2-cat{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:4px 10px;
   border-radius:999px;flex:none;white-space:nowrap}
 .rpt .rp2-desc{font-size:15px;line-height:1.45;color:var(--tx);flex:1}
 .rpt .rp2-chev{width:16px;height:16px;flex:none;color:var(--tx-3);transition:transform .22s var(--ease)}
 .rpt .rp2-chev svg{width:16px;height:16px}
 .rpt .rp2-row.open .rp2-chev{transform:rotate(180deg)}
-.rpt .rp2-body{display:none;padding:0 17px 15px 75px;font-size:14.5px;line-height:1.6;color:var(--tx-2)}
+.rpt .rp2-body{display:none;padding:0 17px 15px 17px;font-size:14.5px;line-height:1.6;color:var(--tx-2)}
 .rpt .rp2-row.open .rp2-body{display:block}
 @media(max-width:560px){ .rp2-body{padding-left:17px} .rp2-desc{font-size:14px} }
 /* the two ways out */
@@ -4237,7 +4236,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .rpt .rp2-prose{font-size:15.5px;line-height:1.62;margin:16px 0 0;max-width:none}
 .rpt .rp2-row.on{background:var(--hover);box-shadow:inset 0 0 0 1.5px var(--c)}
 .rpt .rp2-cat{display:inline-flex;align-items:center;gap:6px}
-.rpt .rp2-cat svg{width:11px;height:11px}
+.rpt .rp2-cat svg{width:12px;height:12px;stroke-width:1.6}
 /* two ways out, and the recommended one is obvious */
 .rpt .rp2-cta{margin-top:26px;justify-content:flex-end;gap:10px}
 /* sized to its words, not stretched across the page — but it is still the white CTA */
@@ -4487,14 +4486,29 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 /* THE THING THEY ARE LOOKING AT. The run is on screen, scanning through, and the two of them go
    round it — so the wait is them watching your presentation, which is what is actually happening. */
 .rvv{position:relative;width:100%;height:300px;margin-top:18px;display:flex;align-items:center;justify-content:center}
-.rvv-scr{position:relative;width:320px;height:180px;border-radius:16px;overflow:hidden;z-index:2;
-  background:linear-gradient(150deg,#241f1a,#141110);border:var(--bw) solid var(--line);
-  box-shadow:0 26px 64px rgba(0,0,0,.55)}
-.rvv-lab{position:absolute;left:12px;top:11px;z-index:3;font-family:var(--mono);font-size:9.5px;
-  letter-spacing:.1em;color:rgba(255,255,255,.5)}
-.rvv-play{position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px 0 0 -20px;z-index:3;
-  border-radius:99px;display:grid;place-items:center;background:rgba(255,255,255,.9);color:#111}
-.rvv-play svg{width:15px;height:15px;margin-left:2px}
+.rvv-scr{position:relative;width:340px;height:191px;border-radius:16px;overflow:hidden;z-index:2;
+  background:#0e0d0c;border:var(--bw) solid var(--line);box-shadow:0 26px 64px rgba(0,0,0,.55)}
+/* your deck, on the screen */
+.rvv-deck{position:absolute;left:14px;right:14px;top:26px;bottom:26px;border-radius:8px;background:#f5f3ee;
+  padding:14px 16px;display:flex;flex-direction:column;gap:7px;overflow:hidden}
+.rvv-deck .dk-eyebrow{display:block;width:38%;height:4px;border-radius:2px;background:#c9c4ba}
+.rvv-deck .dk-h{display:block;width:82%;height:9px;border-radius:3px;background:#1a1815;margin-top:2px}
+.rvv-deck .dk-h.two{width:54%}
+.rvv-deck .dk-cols{margin-top:auto;display:flex;align-items:flex-end;gap:7px;height:46%}
+.rvv-deck .dk-cols i{flex:1;border-radius:2px 2px 0 0;background:#1a1815;opacity:.82}
+.rvv-deck .dk-cols i:nth-child(4){background:#ff6a4d;opacity:1}
+/* and you, in the corner, the way you were on the call */
+.rvv-pip{position:absolute;right:10px;bottom:22px;width:66px;height:44px;border-radius:7px;overflow:hidden;z-index:4;
+  background:#1c1a18;border:1px solid rgba(255,255,255,.14);box-shadow:0 6px 18px rgba(0,0,0,.5);
+  display:grid;place-items:center}
+.rvv-pip img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.rvv-pip b{font-size:14px;font-weight:600;color:#fff}
+.rvv-pip em{position:absolute;left:4px;bottom:3px;z-index:2;font-style:normal;font-family:var(--mono);
+  font-size:6.5px;letter-spacing:.08em;text-transform:uppercase;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.9)}
+.rvv-lab{position:absolute;left:12px;top:9px;z-index:5;display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:rgba(255,255,255,.55)}
+.rvv-rec{width:5px;height:5px;border-radius:99px;background:#ff5d55;animation:rvvRec 1.6s var(--ease) infinite}
+@keyframes rvvRec{0%,100%{opacity:1}50%{opacity:.25}}
 .rvv-sweep{position:absolute;left:0;right:0;top:0;height:34%;z-index:2;pointer-events:none;
   background:linear-gradient(180deg,transparent,rgba(255,255,255,.16),rgba(111,209,137,.22),transparent);
   animation:rvvSweep 2.4s var(--ease) infinite}
@@ -7905,8 +7919,12 @@ function roomReviewing(){
    +'  <h2 class="rvw2-h">Avery and Jordan are talking it over.</h2>'
    +'  <div class="rvv" id="rvVid">'
    +'    <div class="rvv-scr" id="rvScreen">'
-   +'      <span class="rvv-lab">final-presentation.mp4</span>'
-   +'      <span class="rvv-play">'+PIC.play+'</span>'
+   +'      <div class="rvv-deck">'
+   +'        <span class="dk-eyebrow"></span><span class="dk-h"></span><span class="dk-h two"></span>'
+   +'        <span class="dk-cols"><i style="height:38%"></i><i style="height:62%"></i><i style="height:47%"></i><i style="height:88%"></i><i style="height:71%"></i></span>'
+   +'      </div>'
+   +'      <span class="rvv-pip">'+(ME.img?'<img src="'+ME.img+'" alt="">':'<b>'+ME.i+'</b>')+'<em>'+escHtml(ME.name)+'</em></span>'
+   +'      <span class="rvv-lab"><i class="rvv-rec"></i>final-presentation.mp4</span>'
    +'      <i class="rvv-sweep"></i>'
    +'      <span class="rvv-bar"><i id="rvVidBar"></i></span>'
    +'    </div>'
@@ -7944,11 +7962,11 @@ function roomReviewing(){
     const old=stage.lastElementChild;
     stage.appendChild(node);
     if(old){
-      if(G) G.to(old,{opacity:0,y:-22,filter:'blur(6px)',duration:.42,ease:'power2.in'});
+      if(G) G.to(old,{opacity:0,y:-20,duration:.42,ease:'power2.in'});
       setTimeout(function(){ try{ old.remove(); }catch(e){} }, G?460:0);   /* never leave the last one behind */
     }
     handOver(i2);   /* the beat changes hands with the line */
-    if(G) G.fromTo(node,{opacity:0,y:26,filter:'blur(8px)'},{opacity:1,y:0,filter:'blur(0px)',duration:.62,ease:'power3.out'});
+    if(G) G.fromTo(node,{opacity:0,y:24},{opacity:1,y:0,duration:.62,ease:'power3.out'});
     try{ ZSND.play('tap'); }catch(e){}
     rail.style.width=Math.round(((i2+1)/STEPS.length)*100)+'%';
     if(vbar) vbar.style.width=Math.round(((i2+1)/STEPS.length)*100)+'%';   /* the recording plays through with them */
@@ -7965,7 +7983,7 @@ function roomReviewing(){
     /* they come to rest under the recording, level, at the size the report will wear them */
     if(G) G.to(sf,{ x:function(k){ return k?19:-19; }, y:126, scale:.34, duration:.8, ease:'power3.inOut' });
     else vwrap.classList.add('settled');
-    if(G) G.to(last,{opacity:0,y:-18,filter:'blur(6px)',duration:.4,ease:'power2.in'});
+    if(G) G.to(last,{opacity:0,y:-18,duration:.4,ease:'power2.in'});
     const node=document.createElement('div'); node.className='rvw2-step';
     node.innerHTML='<span class="rvw2-lbl settled">They have their read</span>';
     stage.appendChild(node);
@@ -8096,7 +8114,6 @@ function roomReport(secs){
    +'<div class="rp2-list">'
    +  RP2.moments.map(function(m,i2){ return '<div class="rp2-row" data-i="'+i2+'">'
        +'<div class="rp2-head">'
-       +'  <span class="rp2-t" style="color:var(--c-'+m.key+')">'+m.t+'</span>'
        +'  <span class="rp2-cat" style="background:color-mix(in srgb,var(--c-'+m.key+') 15%,transparent);color:var(--c-'+m.key+')">'+(MOM_IC[m.key]||'')+m.cat+'</span>'
        +'  <span class="rp2-desc">'+m.d+'</span>'
        +'  <span class="rp2-chev">'+CH+'</span>'
@@ -8117,46 +8134,48 @@ function roomReport(secs){
    +'</div></div></div>';
 
   /* the same two faces that were circling a second ago land here */
-  if(R.rptAvFrom){
-    /* THE ARRIVAL. They fly up into the corner, the band blooms out of where they land, and the
-       report comes in behind it one section at a time — so the verdict is read to you rather than
-       dumped on you. Two frames first: a transition set on a node inserted in the same frame has no
-       from-state to leave and simply does not run. */
-    const _from=R.rptAvFrom; R.rptAvFrom=null;
+  /* ONE reveal, whether you just walked out of the room or you switched the band from the gear.
+     It runs in the order you read in: the verdict and the read, then the recording arriving, then
+     the moments. Nothing lands out of turn, and nothing is blurred on its way in. */
+  const _from=R.rptAvFrom, _vid=R.rptVidFrom, _replay=R.rptReplay;
+  R.rptAvFrom=null; R.rptVidFrom=null; R.rptReplay=false;
+  if(_from||_replay){
     const G2=window.gsap, bloom=ov.querySelector('#rptBloom');
-    const _vid=R.rptVidFrom; R.rptVidFrom=null;
-    const secs=ov.querySelectorAll('.rp2-verdict,.rp2-prose,.rp2-rule,.rp2-mlab,.rp2-row,.rp2-cta');
+    const head=ov.querySelectorAll('.rp2-verdict,.rp2-prose,.rp2-rule');
+    const tail=ov.querySelectorAll('.rp2-mlab,.rp2-row,.rp2-cta');
     const vidEl=ov.querySelector('.rp2-video');
-    if(G2) G2.set(secs,{opacity:0,y:20});
-    /* hold the player with a CLASS, not an inline style: morphIn snapshots the inline style when it
-       is called and restores it at the end, so an inline opacity:0 came back from the dead and the
-       player finished invisible */
+    const nm=ov.querySelector('.rpt-bynm');
+    if(G2){ G2.set(head,{opacity:0,y:20}); G2.set(tail,{opacity:0,y:20}); }
+    /* hold the player with a CLASS, never an inline style: morphIn snapshots the inline style when
+       it is called and puts it back at the end, so an inline opacity:0 came back from the dead */
     if(vidEl) vidEl.classList.add('rpt-hold');
-    ov.querySelector('.rpt-bynm').style.opacity=0;
+    if(nm) nm.style.opacity=0;
     requestAnimationFrame(function(){ requestAnimationFrame(function(){
       const avs=ov.querySelectorAll('.rpt-by .rp2-av');
-      /* read the resting place BEFORE morphIn — it parks the element at its from-rect the instant it
-         is called, so measuring after gave the loader's position instead of where they land */
+      /* read the resting place BEFORE morphIn — it parks the element at its from-rect the instant
+         it is called, so measuring after gave the loader's position instead of where they land */
       const land=avs[0]?avs[0].getBoundingClientRect():null;
-      avs.forEach(function(a){ const r=_from[a.dataset.k]; if(r) try{ morphIn(a,r,660); }catch(e){} });
+      if(_from) avs.forEach(function(a){ const r=_from[a.dataset.k]; if(r) try{ morphIn(a,r,660); }catch(e){} });
       const rr=ov.getBoundingClientRect();
       const cx=land?Math.round(land.left+land.width/2-rr.left):120, cy=land?Math.round(land.top+land.height/2-rr.top):60;
       setTimeout(function(){
-        /* the band, blooming out of the two of them */
         bloom.style.left=cx+'px'; bloom.style.top=cy+'px';
         if(G2) G2.fromTo(bloom,{scale:0,opacity:.85},{scale:26,opacity:0,duration:1.1,ease:'power2.out'});
-        if(G2){
-          G2.to(ov.querySelector('.rpt-bynm'),{opacity:1,duration:.5,ease:'power2.out',delay:.1});
-          G2.to(secs,{opacity:1,y:0,duration:.62,ease:'power3.out',stagger:.085,delay:.24});
-          /* the run they were watching IS the run in the report — same object, it just flies here,
-             and the flight is the entrance, so there is no fade to fight over */
-          if(vidEl) setTimeout(function(){
-            vidEl.classList.remove('rpt-hold');
+        if(!G2){ if(nm) nm.style.opacity=1; if(vidEl) vidEl.classList.remove('rpt-hold'); return; }
+        if(nm) G2.to(nm,{opacity:1,duration:.5,ease:'power2.out',delay:.08});
+        G2.to(head,{opacity:1,y:0,duration:.62,ease:'power3.out',stagger:.085,delay:.2});
+        /* the run they were watching IS the run in the report — it flies here, and that flight is
+           its entrance, so the moments below it wait until it has actually landed */
+        const vDelay = _vid ? 420 : 300;
+        setTimeout(function(){
+          if(vidEl){ vidEl.classList.remove('rpt-hold');
             if(_vid) try{ morphIn(vidEl,_vid,720); }catch(e){}
-          }, 420);
-        } else { ov.querySelector('.rpt-bynm').style.opacity=1; if(vidEl) vidEl.classList.remove('rpt-hold'); }
+            else G2.fromTo(vidEl,{opacity:0,y:20},{opacity:1,y:0,duration:.62,ease:'power3.out'});
+          }
+          setTimeout(function(){ G2.to(tail,{opacity:1,y:0,duration:.6,ease:'power3.out',stagger:.08}); }, _vid?520:220);
+        }, vDelay);
         try{ ZSND.play('open'); }catch(e){}
-      }, 700);
+      }, _from?700:120);
     }); });
   }
   const _g=ov.querySelector('#rptGear');
@@ -9556,7 +9575,7 @@ const rightInner=right.querySelector('.right-inner');
 /* one mark per kind of note, so a pin on the bar tells you what it is before you open it */
 const MOM_IC={
   clarity:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><circle cx="12" cy="12" r="3.2"/><path d="M12 1.4v2.8M12 19.8v2.8M1.4 12h2.8M19.8 12h2.8"/></svg>',
-  engagement:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h3.1l2.3-6.9 3.4 13.6 2.5-8.2 1.7 4.1H22"/></svg>',
+  engagement:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13.2 2.4 4.6 13.1a.7.7 0 0 0 .55 1.15h5.2l-.75 7.35 8.6-10.7a.7.7 0 0 0-.55-1.15h-5.2Z"/></svg>',
   qna:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.4 11.6c0 4.4-3.8 8-8.4 8a9 9 0 0 1-3.2-.6L4 21l1.4-3.9a7.8 7.8 0 0 1-1.8-5.5c0-4.4 3.8-8 8.4-8s8.4 3.6 8.4 8Z"/><path d="M9.9 9.4a2.2 2.2 0 1 1 2.9 2.1c-.5.2-.8.6-.8 1.1v.4"/><path d="M12 15.7h.01"/></svg>',
   delivery:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2.2" width="6" height="11.4" rx="3"/><path d="M5.2 11.2a6.8 6.8 0 0 0 13.6 0M12 18v3.8"/></svg>'
 };
@@ -9818,7 +9837,7 @@ function buildStageNav(){
       rptBand=b.dataset.band;
       bj.querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x===b); });
       const rp=document.querySelector('.rpt'); if(rp){ rp.setAttribute('data-band',rptBand);
-        try{ roomReport&&roomReport(); }catch(e){} }
+        try{ if(typeof R!=='undefined'&&R) R.rptReplay=true; roomReport&&roomReport(); }catch(e){} }
     }; });
   }
   const j=document.getElementById('stageJump');
