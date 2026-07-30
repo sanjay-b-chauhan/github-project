@@ -285,6 +285,13 @@ input{font-family:inherit}
 .active-h .help:hover{color:var(--tx)}
 
 .active-h .help svg{width:17px;height:17px}
+   /* the clock runs in PP Supply Mono */
+.timer .track{height:3px;border-radius:99px;background:var(--hover);overflow:hidden}
+
+.timer .track>i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width 1s linear,background .6s var(--ease)}
+.timer.t-yellow .track>i{background:#e8c23a}
+.timer.t-orange .track>i{background:#f0902a}
+.timer.t-red .track>i{background:#e5484d}
 
 
 .req{margin:0 -8px 2px;border-radius:10px;transition:background .22s var(--ease),box-shadow .22s var(--ease)}
@@ -397,6 +404,24 @@ input{font-family:inherit}
 
 .xp-chip.bump{animation:xpbump .8s cubic-bezier(.34,1.56,.64,1)}
 
+/* I'm stuck toggle (default off = dark; on = light, friendlier) */
+/* I'm-stuck slider lives in the composer controls (sliding toggle) */
+.stuck-slider{display:flex;align-items:center;gap:8px;height:30px;padding:0 12px 0 4px;border-radius:99px;transition:background var(--t-q) var(--ease)}
+
+.stuck-slider:hover{background:var(--hover)}
+
+.stuck-slider .track{width:36px;height:20px;border-radius:99px;background:var(--line);position:relative;flex:0 0 auto;transition:background var(--t-m) var(--ease)}
+
+.stuck-slider .track .k{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:99px;background:var(--tx-2);transition:transform var(--t-m) var(--ease),background var(--t-m) var(--ease)}
+
+.stuck-slider .slbl{font-size:12.5px;font-weight:600;color:var(--tx-2)}
+
+.stuck-slider.on .track{background:#f5b73d}
+
+.stuck-slider.on .track .k{transform:translateX(16px);background:#fff}
+
+.stuck-slider.on .slbl{color:var(--tx)}
+
 .pill.stuck .stuck-meter{opacity:1;transform:scale(1);margin-left:0;pointer-events:auto}
 
 .pill.stuck .stuck-meter:hover{transform:scale(1.1)}
@@ -481,6 +506,8 @@ input{font-family:inherit}
 .uturn{align-self:stretch;width:100%;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
 
 .uturn>*{align-self:flex-end;max-width:82%}
+
+.pcard .tag .dot{width:5px;height:5px;border-radius:99px;background:var(--accent)}
 
 .subm .att .m .t{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
@@ -750,6 +777,20 @@ input{font-family:inherit}
 
 .r-tab2 .dot.live{opacity:1;transform:none;animation:dotPulse 1.7s ease infinite}
 
+/* segmented tabs: Feedback | Resources, sliding thumb */
+.r-tabs{position:relative;display:flex;width:212px;background:var(--soft);border:var(--bw) solid var(--line-2);border-radius:99px;padding:3px;flex:0 0 auto}
+
+.r-tabs[data-on="resources"] .r-thumb{transform:translateX(100%)}
+
+.r-tab{position:relative;z-index:1;flex:1;height:29px;border-radius:99px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--tx-2);transition:color var(--t-q) var(--ease)}
+
+.r-tab.on{color:var(--tx)}
+
+/* new-resource dot: pulses, never steals focus */
+.r-tab .dot{width:5px;height:5px;border-radius:99px;background:#4ade80;opacity:0;transform:scale(.4);transition:opacity var(--t-q) var(--ease),transform var(--t-q) var(--ease)}
+
+.r-tab .dot.live{opacity:1;transform:none;animation:dotPulse 1.7s ease infinite}
+
 .pinres.just-in{animation:blurIn .6s var(--ease)}
 
 :root:not([data-theme="dark"]) .pinres .schip{color:#188038;border-color:rgba(24,128,56,.28);background:rgba(24,128,56,.06)}
@@ -772,6 +813,8 @@ input{font-family:inherit}
 :root[data-theme="dark"] .fbunit{background:var(--card);border-color:var(--line-2);box-shadow:0 16px 40px rgba(0,0,0,.36),0 2px 8px rgba(0,0,0,.24)}
 
 :root:not([data-theme="dark"]) .fbperf-track{background:rgba(15,17,20,.07)}
+
+.mm-ava .dot{position:absolute;right:3px;bottom:3px;width:13px;height:13px;border-radius:99px;background:#2ec76a;border:2.5px solid var(--card)}
 
 /* ============================================================
    FINAL EVALUATION PANEL (.fev), final submission only.
@@ -882,6 +925,30 @@ input{font-family:inherit}
 
 .plan-pad:has(.pp-ed:empty) .share-plan{background:var(--bubble);color:var(--tx-3);box-shadow:inset 0 0 0 1px var(--line);pointer-events:none}
 
+/* the assembled PLAN in the thread: a full-width ROUNDED-RECT unit, line-drawn — visibly a different species from the chat bubbles */
+.planline{align-self:stretch;margin:10px 0;padding:4px 18px 12px;border:var(--bw) solid var(--line);border-radius:16px;animation:rise var(--t-m) var(--ease)}
+
+.planline .pl2-h{display:flex;align-items:center;gap:8px;padding:12px 0 9px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx-3)}
+
+.pl2-pin{display:grid;place-items:center;width:15px;height:15px;color:var(--tx-3)}
+
+.pl2-pin svg{width:13px;height:13px}
+
+.pl2-pin.pop{animation:pinPop .5s cubic-bezier(.34,1.5,.5,1)}
+
+.planline .pl2-b{padding:2px 0;font-size:13.5px;line-height:1.6;color:var(--tx)}
+
+.planline .pl2-b ul,.planline .pl2-b ol{margin:2px 0;padding-left:20px}
+
+.planline .pl2-b+.pl2-b{margin-top:6px;padding-top:9px;border-top:var(--bw) solid var(--line-2)}
+
+/* the making-of stays: the trail folds into the chip-stack receipt at the unit's foot — the narrative and the artifact together */
+.planline .pl2-trail{padding:2px 0 0;margin-top:8px}
+
+.planline .pl2-trail:has(.synth.folded){border-top:var(--bw) solid var(--line-2)}
+
+.planline .pl2-trail .synth{margin:0;max-width:none}
+
 .composer.choicemode .mcq-dock{display:block}
 
 .composer.choicemode #ta,.composer.choicemode .att-row,.composer.choicemode .quote-bar,.composer.choicemode .npad{display:none}
@@ -902,7 +969,14 @@ input{font-family:inherit}
 
 .sheet-head .spacer{flex:1}
 
+.fbitem .dot{margin-top:5px}
+
 .fbitem.active{background:var(--accent-soft)}
+
+.fbitem .dot{width:8px;height:8px;border-radius:99px;flex:0 0 auto}
+
+.fbitem .dot.content{background:#5d87ff}
+.fbitem .dot.style{background:#a778ff}
 
 /* same message styling as the main workspace chat: bubbles, no repeated avatar */
 .s-chat .mgr{align-self:flex-start;max-width:90%}
@@ -924,6 +998,10 @@ input{font-family:inherit}
 .chat-peer .pname{transition:color var(--t-q) var(--ease)}
 
 .chat-peer .pmeta:hover .pname{color:var(--accent)}
+
+.mp-hero .mp-ava .dot{position:absolute;right:4px;bottom:4px;width:13px;height:13px;border-radius:99px;background:#2ec76a;border:2.5px solid var(--rail)}
+
+.mp-meter .mm-h .k{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx-3)}
 
 
 /* ============ DOCUMENT VIEWER (in the right panel) ============ */
@@ -972,6 +1050,9 @@ input{font-family:inherit}
 /* ===== CLAW OPTIONS (replaces choice pills) ===== */
 .timepills.claw-host.show{display:flex;flex-wrap:wrap;gap:9px;padding:0 6px}
 
+.rc3-pill.mic{left:16px;bottom:16px}
+.rc4-gauge.mic{right:14px}
+
 .sp-tab.active{color:#1a73e8;border-bottom-color:#1a73e8;background:none}
 
 .sp-row .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -981,6 +1062,8 @@ input{font-family:inherit}
 .zs-art.w .win2::before{content:'';position:absolute;top:0;left:0;right:0;height:7px;border-radius:5px 5px 0 0;background:rgba(255,255,255,.28)}
 
 .mp-rz.w{left:-4px;top:12px;bottom:12px;width:9px;cursor:ew-resize}
+
+.zs-stage .win1.w-deck .k{position:absolute;left:9%;top:26%;width:22%;height:6px;border-radius:99px;background:#c0553f}
 
 .qrec-b.send{background:#f2f1ee;color:#111}
 
@@ -1132,6 +1215,8 @@ input{font-family:inherit}
 
 .composer.stage-done .action-bar{justify-content:center;margin-bottom:30px}
 
+.per-slide .k{left:8%;top:15%;width:24%;height:4px;background:#c0553f}
+
 .per-slide .t{left:8%;top:33%;width:68%;height:8px;background:#2f2c29}
 
 
@@ -1149,6 +1234,22 @@ input{font-family:inherit}
 .fev-head{overflow:hidden;max-height:600px;opacity:1;transition:max-height .6s var(--ease),opacity .45s var(--ease),margin-bottom .6s var(--ease)}
 
 .fev-head.collapsed{max-height:0;opacity:0;margin-bottom:-18px}
+
+.planline.plannotes .pl2-h{color:var(--tx-2)}
+
+/* his read of your run: the same block you just wrote, in his hand. A report — nothing to expand,
+   nothing to ask, no panel. */
+.planline.jayread{background:var(--soft)}
+
+.planline.jayread .pl2-h{color:var(--tx-3)}
+
+.pn-lines{list-style:none;margin:0;padding:2px 0 4px;display:flex;flex-direction:column;gap:8px}
+
+.pn-lines li{position:relative;padding-left:16px;font-size:13.5px;line-height:1.55;color:var(--tx)}
+
+.pn-lines li::before{content:"";position:absolute;left:3px;top:9px;width:5px;height:5px;border-radius:99px;background:var(--tx-4)}
+
+.pn-lines li.scan .ln{background:linear-gradient(100deg,var(--tx) 0%,var(--tx) 38%,#3fb968 50%,var(--tx) 62%,var(--tx) 100%);background-size:230% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:txshine 1.35s cubic-bezier(.4,0,.2,1) infinite;animation-delay:var(--sd)}
 
 .fev .fnote{display:none!important}
 
@@ -1215,6 +1316,8 @@ input{font-family:inherit}
 
 .qas-ph .t{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--tx-3);flex:1}
 
+.qas-doc .ln{height:1px;background:var(--line);margin:14px 0}
+
 .rpt .rp2-bands .zpill{padding:8px 15px;font-size:12.5px;color:var(--tx-2)}
 
 .rpt .rp2-bands .zpill.on{background:color-mix(in srgb,var(--bc) 12%,var(--card));color:var(--tx);
@@ -1252,6 +1355,8 @@ input{font-family:inherit}
 
 @keyframes tbob{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}
 
+@keyframes txshine{0%{background-position:130% 0}100%{background-position:-30% 0}}
+
 @keyframes busyNudge{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 
 @keyframes recfade{from{opacity:0}to{opacity:1}}
@@ -1265,6 +1370,8 @@ input{font-family:inherit}
 @keyframes sbReveal{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:none}}
 
 @keyframes dotPulse{0%{box-shadow:0 0 0 0 rgba(74,222,128,.5)}70%{box-shadow:0 0 0 6px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
+
+@keyframes pinPop{0%{transform:scale(.2) rotate(-30deg);opacity:0}100%{transform:scale(1) rotate(0)}}
 
 @keyframes fevPulse{0%,100%{opacity:.82}50%{opacity:1}}
 
@@ -1294,7 +1401,12 @@ input{font-family:inherit}
   background:conic-gradient(from -90deg,var(--rc) calc(var(--rp)*1%),var(--line) 0);
   -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2px),#000 calc(100% - 2px));
   mask:radial-gradient(farthest-side,transparent calc(100% - 2px),#000 calc(100% - 2px));
-  transition:background .6s var(--ease)}
+  transition:background .6s var(--ease),transform .5s var(--ease)}
+/* the rim answers every move: it swells green when you earn it, dips back when you spend it */
+.pav.up::before{animation:rimUp .9s var(--ease)}
+.pav.dn::before{animation:rimDn .9s var(--ease)}
+@keyframes rimUp{0%{transform:scale(1)}35%{transform:scale(1.12);filter:brightness(1.5)}100%{transform:scale(1)}}
+@keyframes rimDn{0%{transform:scale(1)}35%{transform:scale(.9);filter:saturate(.4)}100%{transform:scale(1)}}
 .pav .hb{position:absolute;right:-3px;bottom:-3px;width:15px;height:15px;border-radius:99px;
   background:var(--rail);display:grid;place-items:center;color:var(--rc)}
 .pav .hb svg{width:9px;height:9px;display:block}
@@ -1327,10 +1439,18 @@ input{font-family:inherit}
 .xtra{display:flex;align-items:flex-start;gap:10px;padding:8px 2px;font-size:12.5px;line-height:1.5;color:var(--tx-2)}
 .xtra .xi{width:19px;height:19px;flex:0 0 19px;border-radius:6px;margin-top:1px;display:grid;place-items:center;
   font-size:12px;font-weight:700;background:color-mix(in srgb,var(--hi) 15%,transparent);color:var(--hi)}
-.r-head.hastabs{min-height:52px;padding:0 18px}
-.r-tab2{height:52px}
+/* the panel head carries our PILL tabs, sized for however many there are */
+.r-head.hastabs{min-height:58px;padding:0 16px;border-bottom:none}
+.r-tabs{width:auto;min-width:210px}
+.r-tabs .r-thumb{width:calc((100% - 6px)/var(--n,2))}
+.r-tab{gap:6px;padding:0 14px;white-space:nowrap}
+/* the panel content needs air under the tabs before the first label */
+.r-body{padding-top:10px}
+.r-body .rsec:first-child{padding-top:14px}
 .chips{display:flex;flex-direction:column;gap:8px;align-self:stretch;margin:2px 0}
 .chips .zpill{white-space:normal;text-align:left;line-height:1.35;justify-content:flex-start}
+/* this scenario is a conversation, not a document: the turns sit closer together */
+.msgs{gap:16px!important;padding-top:20px!important}
 .rsec{padding:0 2px 18px}
 .rsec+.rsec{border-top:var(--bw) solid var(--line);padding-top:18px}
 .rsec-h{display:flex;align-items:baseline;gap:8px;margin-bottom:6px}
@@ -1704,6 +1824,13 @@ function typing(id, then, ms){
 }
 function rmove(id, n){
   rel[id]=clamp(rel[id]+n); renderRail(); syncMorale();
+  /* the ring itself reacts, in the rail and in the header, so you feel it land */
+  document.querySelectorAll('.pers[data-p="'+id+'"] .pav, .chat-peer .pav').forEach(a=>{
+    if(a.closest('.pers') && a.closest('.pers').dataset.p!==id) return;
+    if(!a.closest('.pers') && active!==id) return;
+    a.classList.remove('up','dn'); void a.offsetWidth; a.classList.add(n>0?'up':'dn');
+    setTimeout(()=>a.classList.remove('up','dn'),950);
+  });
   if(!n) return;
   const d=document.createElement('div'); d.className='rmove rev '+(n>0?'up':'dn');
   d.innerHTML=HEART+' '+PEOPLE[id].first+' '+(n>0?'+':'')+n;
@@ -1886,11 +2013,13 @@ let panelTab='ask', hasReport=false, filesDot=false, reportData=null;
 function renderTabs(){
   const tabs=[['ask','The ask',false],['files','Files',filesDot]];
   if(hasReport) tabs.push(['read','Your read',false]);
-  $('rHead').innerHTML='<div class="r-tabs2" id="rTabs">'
-    +tabs.map(([k,t,dot])=>'<button class="r-tab2'+(panelTab===k?' on':'')+'" data-t="'+k+'"><span>'+t+'</span>'
+  const i=Math.max(0,tabs.findIndex(t=>t[0]===panelTab));
+  $('rHead').innerHTML='<div class="r-tabs" id="rTabs" style="--n:'+tabs.length+'">'
+    +'<span class="r-thumb" style="transform:translateX(calc('+i+' * 100%))"></span>'
+    +tabs.map(([k,t,dot])=>'<button class="r-tab'+(panelTab===k?' on':'')+'" data-t="'+k+'">'+t
       +(dot?'<span class="dot live"></span>':'')+'</button>').join('')
     +'</div><span class="spacer"></span>';
-  $('rHead').querySelectorAll('.r-tab2').forEach(b=>b.onclick=()=>selectTab(b.dataset.t));
+  $('rHead').querySelectorAll('.r-tab').forEach(b=>b.onclick=()=>selectTab(b.dataset.t));
 }
 function selectTab(k){ panelTab=k; if(k==='files') filesDot=false; renderRight(); ZSND.play('tap'); }
 function renderRight(justFile){
@@ -2072,20 +2201,16 @@ ta.addEventListener('paste',e=>{ e.preventDefault(); const t=(e.clipboardData||w
 ta.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendNow(); }});
 $('sndBtn').onclick=()=>{ const n=!ZSND.isOn(); ZSND.set(n); if(n)ZSND.play('tap'); };
 /* the bottom bar does what it does everywhere else in the product */
-$('plusBtn').onclick=()=>{ ZSND.play('tap'); nudge('Attach anything you have pulled together. Jay reads it when you send the recommendation.'); };
-$('connectBtn').onclick=()=>{ ZSND.play('tap'); nudge('Connect a tool and its data lands in your files, alongside what the team sends you.'); };
-$('camBtn').onclick=()=>{ ZSND.play('tap'); nudge('Grab a screenshot of what you are looking at and send it to whoever is in this thread.'); };
+$('plusBtn').onclick=()=>{ ZSND.play('tap'); };
+$('connectBtn').onclick=()=>{ ZSND.play('tap'); };
+$('camBtn').onclick=()=>{ ZSND.play('tap'); };
 $('stuckToggle').onclick=()=>{
   stuck=!stuck;
   $('stuckToggle').classList.toggle('on',stuck);
-  ZSND.play(stuck?'open':'close');                      /* the bank has no toggleOn, it was silently doing nothing */
-  nudge(stuck? 'Stuck mode on. Ask anyone anything and they will point you at whoever owns it.'
-             : 'Stuck mode off. You are driving again.'); };
-$('micBtn').onclick=()=>{ ZSND.play('tap'); nudge('Say it out loud instead of typing. Same thread, same person.'); };
+  ZSND.play(stuck?'open':'close'); };   /* a toggle is a toggle. It does not narrate itself into the thread. */
+$('micBtn').onclick=()=>{ ZSND.play('tap'); };
 let stuck=false;
-function nudge(t){ const d=document.createElement('div'); d.className='rmove rev'; d.textContent=t;
-  d.style.cssText='text-transform:none;letter-spacing:0;font-family:var(--f-body);font-size:12.5px;line-height:1.55;max-width:var(--maxw);text-align:center;color:var(--tx-3)';
-  place(d); scrollDown(); }
+
 try{ $('sndBtn').dataset.on=ZSND.isOn()?'1':'0'; }catch(e){}
 (function(){ const w=()=>{ try{ZSND.play('tap')}catch(e){} window.removeEventListener('pointerdown',w,true); };
   window.addEventListener('pointerdown',w,true); })();
