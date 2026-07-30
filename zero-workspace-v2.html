@@ -4279,8 +4279,8 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .qas-btn.ico svg{width:18px;height:18px}
 
 /* the stage: one question at a time, holding the middle */
-.qas-mid{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:0 32px;text-align:center;position:relative;overflow:hidden}
+.qas-mid{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  padding:clamp(90px,25vh,190px) 32px 0;text-align:center;position:relative;overflow:hidden}
 .qas-card{width:100%;max-width:840px;margin-left:auto;margin-right:auto;display:flex;flex-direction:column;align-items:center;
   transition:transform .52s var(--osmo),opacity .38s var(--osmo)}
 /* the question does not travel any more: it lands a word at a time */
@@ -4291,8 +4291,8 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .qas-stack{position:relative;width:100%;height:116px;margin-bottom:4px}
 /* the pose the gather screen ends on, worn from the first frame so the dissolve is invisible — then
    it opens out of it, transform to transform, one spring, nothing repositioned in flight */
-.qas-stack.gathered .qas-face{transform:translate(-50%,-50%) translateX(-32px) scale(.827);opacity:1;filter:saturate(.55)}
-.qas-stack.gathered .qas-face:nth-child(2){transform:translate(-50%,-50%) translateX(32px) scale(.827)}
+.qas-stack.gathered .qas-face{transform:translate(-50%,-50%) translateY(var(--gy,0px)) translateX(-32px) scale(.827);opacity:1;filter:saturate(.55)}
+.qas-stack.gathered .qas-face:nth-child(2){transform:translate(-50%,-50%) translateY(var(--gy,0px)) translateX(32px) scale(.827)}
 .qas-face{position:absolute;left:50%;top:50%;width:104px;height:104px;margin:0;
   border-radius:99px;display:grid;place-items:center;overflow:hidden;
   font-family:var(--f-body);font-size:33px;font-weight:600;color:#fff;
@@ -4396,7 +4396,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
    The column is already flex:1;min-width:0, so it simply narrows and the question reflows into it. */
 .qas.panel .qas-main{transform:none}
 .qas.panel .qas-q{font-size:clamp(19px,1.6vw,23px);max-width:min(520px,88%)}
-.qas.panel .qas-mid{padding:0 28px}
+.qas.panel .qas-mid{padding-left:28px;padding-right:28px}
 @media(max-width:900px){ .qas.panel .qas-panel{flex:0 0 min(392px,72vw);width:min(392px,72vw)} }
 .qas-panel{flex:0 0 0;width:0;overflow:hidden;opacity:0;
   transition:flex-basis .5s var(--osmo), width .5s var(--osmo), opacity .38s var(--osmo), padding .5s var(--osmo);
@@ -7567,7 +7567,8 @@ function qaGather(fromRects){
     /* the next screen comes up UNDERNEATH this one, already wearing this one's pose — same two
        circles, same size, same centres — and this one dissolves off the top of it. There is no gap
        to fall through and nothing to morph, so there is nothing to see. */
-    R.qaOpenFromGather=true;
+    const _gf=el.querySelector('.qgat-f');
+    R.qaOpenFromGather = _gf ? _gf.getBoundingClientRect().top : true;   /* the exact height they are at */
     roomQA();
     el.classList.remove('in');
     setTimeout(function(){ try{el.remove();}catch(e){} }, 460);
@@ -7624,8 +7625,16 @@ function roomQA(){
   /* the faces are not flown here any more — they are already where the last screen left them, and
      they open by their own transform once the dissolve is done */
   const _stk=el.querySelector('#qasStack');
-  const _fromGather=!!R.qaOpenFromGather; R.qaOpenFromGather=false; R.qaFaceFrom=null;
-  if(_stk) setTimeout(function(){ _stk.classList.remove('gathered'); }, _fromGather?520:200);
+  const _gTop=R.qaOpenFromGather; R.qaOpenFromGather=false; R.qaFaceFrom=null;
+  if(_stk){
+    /* hold them at the height the gather left them at, so the dissolve between the two screens has
+       nothing to reveal — then let go, and the drop into place rides the same spring as the opening */
+    if(typeof _gTop==='number'){
+      const f=_stk.querySelector('.qas-face');
+      if(f) _stk.style.setProperty('--gy', Math.round(_gTop - f.getBoundingClientRect().top)+'px');
+    }
+    setTimeout(function(){ _stk.classList.remove('gathered'); }, _gTop?540:200);
+  }
 
   el.querySelector('#qasBack').onclick=function(){ roomConfirmExit(); };
   const _noSkip=function(){
