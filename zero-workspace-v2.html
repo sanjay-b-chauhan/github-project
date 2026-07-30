@@ -7630,8 +7630,15 @@ function roomQA(){
     /* hold them at the height the gather left them at, so the dissolve between the two screens has
        nothing to reveal — then let go, and the drop into place rides the same spring as the opening */
     if(typeof _gTop==='number'){
-      const f=_stk.querySelector('.qas-face');
-      if(f) _stk.style.setProperty('--gy', Math.round(_gTop - f.getBoundingClientRect().top)+'px');
+      const fs=_stk.querySelectorAll('.qas-face'), f=fs[0];
+      if(f){
+        /* pin it BEFORE the first paint. Setting it live let the faces animate down into the held
+           position while the gather was still fading — two sets of faces, one of them moving. */
+        fs.forEach(function(x){ x.style.transition='none'; });
+        _stk.style.setProperty('--gy', Math.round(_gTop - f.getBoundingClientRect().top)+'px');
+        _stk.getBoundingClientRect();
+        fs.forEach(function(x){ x.style.transition=''; });
+      }
     }
     setTimeout(function(){ _stk.classList.remove('gathered'); }, _gTop?540:200);
   }
