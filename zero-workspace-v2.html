@@ -4735,16 +4735,15 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
       <button class="set-sw" id="techSw" role="switch" aria-checked="false"></button></div>
     <h5>Debug · jump around</h5>
     <div class="set-dbg">
-      <button data-dbg="stageux" class="wide">Launch Stage UX</button>
-      <button data-dbg="plan" class="wide">Jump to Planning (notes)</button>
-      <button data-dbg="skipplan" class="wide">Skip planning → build</button>
-      <button data-dbg="pou" class="wide">Jump to POU (voice check)</button>
-      <button data-dbg="present" class="wide">Jump to Final presentation</button>
-      <button data-dbg="ending" class="wide">Jump to the ending (report → Jay → reel)</button>
-      <button data-dbg="next">Next stage ›</button>
-      <button data-dbg="feedback">Trigger feedback</button>
-      <button data-dbg="final" class="wide">Jump to Final proposal</button>
-      <button data-dbg="stagefb" class="wide">Jump to Stage feedback</button>
+      <button data-dbg="stageux" class="wide">Stage UX (kickoff → planning)</button>
+      <button data-dbg="plan" class="wide">Planning (notes)</button>
+      <button data-dbg="skipplan" class="wide">Build (skip planning)</button>
+      <button data-dbg="pou" class="wide">POU (voice check)</button>
+      <button data-dbg="stagefb" class="wide">Stage feedback</button>
+      <button data-dbg="presenting" class="wide">The presentation</button>
+      <button data-dbg="qa" class="wide">Q&amp;A session</button>
+      <button data-dbg="rvw" class="wide">Report loader</button>
+      <button data-dbg="report" class="wide">Presentation report</button>
       <button data-dbg="restart" class="wide">Restart scenario</button>
     </div>
     <h5>Jump to stage</h5>
@@ -9811,15 +9810,38 @@ function dbgJump(what){
   else if(what==='pou'){ softReset(); planPhase='full'; ACTIVE.reqStatus=null; renderRail(); setMode('understand');
     composerEl.classList.remove('hidden','notepad'); timerRunning=false;
     startPOU(STAGES[stageIdx].id, celebrateStage); }   // straight into the back-and-forth voice check
-  else if(what==='next'){ if(stageIdx<STAGES.length-1){ softReset(); advanceStage(true); } else sayJay("Already on the last stage."); }
   else if(what==='feedback'){ if(!STAGE_FEEDBACK[STAGES[stageIdx].id]&&STAGES[stageIdx].id!=='final'){ openFeedback('template'); } else { openFeedback(STAGES[stageIdx].id==='final'?'final':STAGES[stageIdx].id); } addFeedbackPills(); }
-  else if(what==='final'){ softReset(); loadStage(STAGES.findIndex(s=>s.id==='final')); planPhase='full'; renderRail(); openBuild(); }
   else if(what==='stageux'){ softReset(); planPhase='title'; ACTIVE.reqStatus=null; renderRail(); loadStage(0); startPlan(STAGES[0].id, 1); }   // launch the stage UX from the top (kickoff → planning)
   else if(what==='stagefb'){ softReset(); loadStage(0); tmplReviewed=false; planPhase='full'; ACTIVE.reqStatus=null; renderRail(); setMode('build'); composerEl.classList.remove('hidden','notepad'); timerRunning=false;
     setTimeout(()=>{ addAttachment('file','proposal_template.pdf'); send(); }, 400); }   // straight to the reviewed-submission → stage feedback state
-  else if(what==='present'){ softReset(); presRoom('live'); }
-  else if(what==='ending'){ softReset(); loadStage(STAGES.findIndex(function(x){return x.id==='present';})); renderRail(); R.secs=96; jayClose(96); }   // straight into the final presentation room
+  else if(what==='presenting'||what==='qa'||what==='rvw'||what==='report'){ softReset(); dbgRoom(what); }
   else if(what==='restart'){ location.reload(); }
+}
+/* every screen of the presentation, reachable on its own. Each one stands the room up first and
+   then drops you straight onto that screen, with nothing left running from the join. */
+function dbgRoom(where){
+  try{ const old=document.getElementById('room'); if(old) old.remove(); }catch(e){}
+  const i3=STAGES.findIndex(function(x){ return x.id==='present'; });
+  if(i3>=0){ try{ cancelPlanRun(); loadStage(i3); renderRail(); updateStageNav(); }catch(e){} }
+  presRoom('live');
+  setTimeout(function(){
+    if(!R||!R.ov) return;
+    try{ (R.jt||[]).forEach(clearTimeout); }catch(e){}
+    try{ (R.qt||[]).forEach(clearTimeout); }catch(e){}
+    try{ clearTimeout(R.rvT); clearInterval(R.iv); clearInterval(R.slideIv); clearInterval(R.qaIv); }catch(e){}
+    R.secs=252; R.qaDone=false; R.recording=false;
+    try{ micHold(false); }catch(e){}
+    const cap=R.ov.querySelector('#rmCap'); if(cap) cap.classList.remove('show');
+    const pr=R.ov.querySelector('#rmPrompt'); if(pr){ pr.classList.remove('show'); pr.innerHTML=''; }
+    const cta=R.ov.querySelector('#rmShareCTA'); if(cta) cta.classList.remove('show');
+    R.ov.querySelectorAll('.mgrid .mtile').forEach(function(t){ t.classList.remove('waiting'); });
+    if(where==='presenting'){ R.shareKind='display'; R.shareWin='deck'; try{ roomPresent(); }catch(e){} }
+    else { R.ov.innerHTML='';
+      if(where==='qa') roomQA();
+      else if(where==='rvw') roomReviewing();
+      else roomReport(252);
+    }
+  }, 420);
 }
 /* light up the plan on the left: gray → green (hit) / yellow (missed) */
 function markReqs(arr){ ACTIVE.reqStatus=arr; railBody.querySelectorAll('.req').forEach((el,i)=>{ el.classList.remove('hit','miss'); if(arr[i])el.classList.add(arr[i]); }); }
