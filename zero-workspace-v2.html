@@ -4411,6 +4411,20 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .qas-px:hover{background:var(--hover);color:var(--tx)}
 .qas-px svg{width:14px;height:14px}
 .qas-pb{flex:1;min-height:0;overflow-y:auto;padding:14px}
+/* reading a file: the panel becomes the viewer — white page, its own scroll, the pager on top */
+.qas-pin{position:relative}
+.qas-ph .qas-pback{display:none;width:28px;height:28px;flex:0 0 28px;border-radius:8px;place-items:center;
+  color:var(--tx-2);cursor:pointer;transition:background var(--t-q) var(--ease)}
+.qas-ph .qas-pback:hover{background:var(--hover)}
+.qas-ph .qas-pback svg{width:17px;height:17px}
+.qas-pin.reading .qas-ph .qas-pback{display:grid}
+.qas-ph .qas-pacts{display:flex;gap:2px;margin-left:auto}
+.qas-ph .dv-ic{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:var(--tx-2);
+  cursor:pointer;transition:background var(--t-q) var(--ease)}
+.qas-ph .dv-ic:hover{background:var(--hover)}
+.qas-ph .dv-ic svg{width:16px;height:16px}
+.qas-pin.reading .qas-pb{overflow:hidden;padding:0;display:flex;flex-direction:column}
+.qas-pin.reading .dv-scroll{flex:1;min-height:0}
 .qas-pb .qas-file{margin-bottom:4px}
 .qas-doc{background:var(--soft);border:var(--bw) solid var(--line-2);border-radius:14px;padding:16px 16px 18px;margin-top:10px}
 .qas-doc .dh{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--tx-3)}
@@ -7583,7 +7597,7 @@ function roomQA(){
    +'  <div class="qas-tl"><button class="qas-back" id="qasBack" aria-label="Leave">'+PIC.back+'</button></div>'
    +'  <div class="qas-tc">'
    +'    <div class="qas-title">Q&amp;A session</div>'
-   +'    <div class="qas-prog"><span class="qas-brain">'+IC_QMARK+'</span><span class="qas-seg" id="qasSeg">'
+   +'    <div class="qas-prog"><span class="qas-brain">'+POU_BRAIN+'</span><span class="qas-seg" id="qasSeg">'
    +      QA_Q.map(function(){ return '<i></i>'; }).join('')
    +'    </span></div>'
    +'  </div>'
@@ -7615,7 +7629,9 @@ function roomQA(){
    +'  </div>'
    +'</div>'
    +'<aside class="qas-panel"><div class="qas-pin">'
-   +'  <div class="qas-ph"><span class="t">Your submission</span>'
+   +'  <div class="qas-ph"><button class="qas-pback" id="qasPBack" aria-label="Back to files">'+HI.back+'</button>'
+   +'    <span class="t" id="qasPT">Your submission</span>'
+   +'    <span class="qas-pacts" id="qasPActs"></span>'
    +'    <button class="qas-px" id="qasPx" aria-label="Close">'+HI.x+'</button></div>'
    +'  <div class="qas-pb" id="qasPb"></div>'
    +'</div></aside>'
@@ -7663,28 +7679,46 @@ function roomQA(){
       +'<div class="qas-file" data-t="'+escHtml(wg.t)+'">'
         +'<span class="fi">'+(wg.icSvg||HI.drive||QAS_DOC)+'</span>'
         +'<span class="fm"><b>'+escHtml(wg.t)+'</b><span>PDF · what good looks like</span></span></div>'
-      /* the deliverable itself, so you can answer from what you actually wrote */
-      +'<div class="qas-doc">'
-      +'  <div class="dh">Reducing host cancellations · Airbnb</div>'
-      +'  <h4>Real-time calendar sync, plus prep nudges for newer hosts</h4>'
-      +'  <p>Cancellations moved from 8 to 14 percent in six weeks. Calendar conflicts account for 46 percent of them, concentrated in entire-home listings and hosts under eighteen months.</p>'
-      +'  <div class="ln"></div>'
-      +'  <div class="row"><span>Cancellation rate today</span><b>14%</b></div>'
-      +'  <div class="row"><span>Target</span><b>10%</b></div>'
-      +'  <div class="row"><span>Annual saving at target</span><b>$3.0M</b></div>'
-      +'  <div class="row"><span>Cost per cancellation</span><b>$28</b></div>'
-      +'</div>';
+      ;
     pb.querySelectorAll('.qas-file').forEach(function(f){
-      f.onclick=function(){ try{ openDoc(f.dataset.t); }catch(e){} };
+      f.onclick=function(){ showDoc(f.dataset.t); };
     });
+  };
+  /* the file opens as the file. Same page, same type, same pager as the resource viewer in the
+     stage — it just opens in here, because the room sits over the app. */
+  const pin=el.querySelector('.qas-pin');
+  const showDoc=function(name){
+    /* your own submission is generated, so it may not be in the catalogue — it still opens */
+    const x=(typeof RES!=='undefined'?RES:[]).find(function(r){ return r.t===name; }) || {t:name, pages:1};
+    pin.classList.add('reading');
+    el.querySelector('#qasPT').textContent=x.t;
+    el.querySelector('#qasPActs').innerHTML='<button class="dv-ic" title="Download" aria-label="Download">'+DL+'</button>'
+      +'<button class="dv-ic" title="Open" aria-label="Open">'+HI.view+'</button>';
+    pb.innerHTML='<div class="dv-scroll"><div class="dv-page">'
+        +(x.doc || '<h1>'+escHtml(x.t)+'</h1><p>'+(x.body||'')+'</p>')
+      +'</div></div>'
+      +'<div class="doc-foot"><span class="pageno">1 / '+(x.pages||1)+'</span>'
+      +'<div class="zoom"><button type="button">&minus;</button><span>100%</span><button type="button">+</button></div></div>';
+    try{ ZSND.play('open'); }catch(e){}
   };
   const togglePanel=function(on){
     el.classList.toggle('panel', on===undefined ? !el.classList.contains('panel') : on);
-    if(el.classList.contains('panel')) fillPanel();
+    if(el.classList.contains('panel')){
+      el.querySelector('.qas-pin').classList.remove('reading');
+      el.querySelector('#qasPT').textContent='Your submission';
+      el.querySelector('#qasPActs').innerHTML='';
+      fillPanel();
+    }
     try{ ZSND.play(el.classList.contains('panel')?'open':'close'); }catch(e){}
   };
   el.querySelector('#qasSubBtn').onclick=function(){ togglePanel(); };
   el.querySelector('#qasPx').onclick=function(){ togglePanel(false); };
+  el.querySelector('#qasPBack').onclick=function(){
+    pin.classList.remove('reading');
+    el.querySelector('#qasPT').textContent='Your submission';
+    el.querySelector('#qasPActs').innerHTML='';
+    fillPanel(); try{ ZSND.play('close'); }catch(e){}
+  };
 
   qasBind();
   R.qt.push(setTimeout(function(){ qasAsk(0); }, 520));
@@ -7991,15 +8025,18 @@ function roomReport(secs){
    +'</div>'
    +'<div class="rp2-cta">'
    /* under the bar another run is the point; at or above it, carrying on is */
-   + (rptBand==='below'
+   /* exceptional has nothing left to fix, so there is nothing to offer a second run for */
+   + (rptBand==='exceptional'
+      ? '<button class="rp2-btn solid" id="rptDone">Continue '+PIC.arrow+'</button>'
+      : rptBand==='below'
       ? '<button class="rp2-btn ghost reco" id="rptAgain"><span class="rp2-tag">Recommended</span>'+RE+'Redo</button>'
         +'<button class="rp2-btn solid" id="rptDone">Continue '+PIC.arrow+'</button>'
       : '<button class="rp2-btn ghost" id="rptAgain">'+RE+'Redo</button>'
-        +'<button class="rp2-btn solid reco" id="rptDone"><span class="rp2-tag">Recommended</span>Continue '+PIC.arrow+'</button>')
+        +'<button class="rp2-btn solid" id="rptDone">Continue '+PIC.arrow+'</button>')
    +'</div>'
-   +'<div class="rp2-why">'+(rptBand==='below'
+   +(rptBand==='exceptional' ? '' : '<div class="rp2-why">'+(rptBand==='below'
       ? 'Another run is worth it. The notes above are all fixable in one pass.'
-      : 'This clears the bar. Redo only if you want a stronger take on your portfolio.')+'</div>'
+      : 'This clears the bar. Redo only if you want a stronger take on your portfolio.')+'</div>')
    +'</div></div></div>';
 
   const _g=ov.querySelector('#rptGear');
@@ -8015,7 +8052,8 @@ function roomReport(secs){
   let playing=false;
   ov.querySelector('#rp2Play').onclick=function(){ playing=!playing;
     ov.querySelector('#rp2Fill').style.width=(playing?46:32)+'%'; try{ ZSND.play('tap'); }catch(e){} };
-  ov.querySelector('#rptAgain').onclick=function(){ roomExit(); setTimeout(function(){ presRoom('live'); },420); };
+  const _again=ov.querySelector('#rptAgain');   /* exceptional has no second run to wire up */
+  if(_again) _again.onclick=function(){ roomExit(); setTimeout(function(){ presRoom('live'); },420); };
   ov.querySelector('#rptDone').onclick=function(){
     /* the stage OPENED by promising this goes on your portfolio — this is where it lands */
     portfolioAdded('presentation', function(){ roomSendToJay(secs||0); });
@@ -9212,8 +9250,6 @@ document.addEventListener('keydown',e=>{ if(e.code==='Space'&&pouApp.classList.c
 document.addEventListener('keyup',e=>{ if(e.code==='Space'&&pouRecording&&pouSpaceHeld){e.preventDefault();stopPouRec(true);} });
 
 const JBUL=arr=>`<ul class="jbul">${arr.map(b=>`<li>${b}</li>`).join('')}</ul>`;
-/* the Q&A meter's own mark: a question being asked, not the stage's understanding badge */
-const IC_QMARK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.7c0 4.5-3.8 8.2-8.5 8.2a9 9 0 0 1-3.2-.6L4 21l1.4-3.9a7.9 7.9 0 0 1-1.9-5.4c0-4.5 3.8-8.2 8.5-8.2s8.5 3.7 8.5 8.2Z"/><path d="M9.9 9.4a2.2 2.2 0 1 1 2.9 2.1c-.5.2-.8.6-.8 1.1v.5"/><path d="M12 15.9h.01"/></svg>';
 /* ===== LLM brain (Ollama Cloud) with a smart local fallback ===== */
 const LLM={endpoint:'https://ollama.com/api/chat',key:'',model:'gpt-oss:120b'};
 const JAY_SYS_BASE="You are Jay Shah, Director of Marketplace Operations at Airbnb, coaching a Business Analyst through a project to reduce host cancellations. Context: host cancellation rate rose 11%→14% over six months, each cancellation costs ~$28, totalling >$9M/yr; targets are a 10% rate and $3M+ annual savings; the primary driver is calendar-conflict double-bookings, concentrated in Entire-home listings and experienced (24+ month) hosts. The project runs in 7 stages: proposal template, trend analysis, root cause, cost model, proposed solution, final proposal, presentation. Speak like a real person texting a teammate: genuine, concise, encouraging but honest. Plain prose by default; bullet points ONLY for a real step-by-step, never for a normal reply. No em-dashes. Keep it short, 1-3 sentences unless steps are needed.";
