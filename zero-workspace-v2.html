@@ -3314,6 +3314,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 /* the two who watched it, at the head of their own report */
 .rpt-by{display:flex;align-items:center;gap:11px}
 .rpt-bynm{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--tx-3)}
+.rpt .rp2-video.rpt-hold{opacity:0}
 /* the band, blooming out of them */
 .rpt-bloom{position:absolute;left:0;top:0;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:99px;
   pointer-events:none;z-index:5;opacity:0;transform:scale(0);
@@ -8124,7 +8125,11 @@ function roomReport(secs){
     const _vid=R.rptVidFrom; R.rptVidFrom=null;
     const secs=ov.querySelectorAll('.rp2-verdict,.rp2-prose,.rp2-rule,.rp2-mlab,.rp2-row,.rp2-cta');
     const vidEl=ov.querySelector('.rp2-video');
-    if(G2){ G2.set(secs,{opacity:0,y:20}); if(vidEl) G2.set(vidEl,{opacity:0}); }
+    if(G2) G2.set(secs,{opacity:0,y:20});
+    /* hold the player with a CLASS, not an inline style: morphIn snapshots the inline style when it
+       is called and restores it at the end, so an inline opacity:0 came back from the dead and the
+       player finished invisible */
+    if(vidEl) vidEl.classList.add('rpt-hold');
     ov.querySelector('.rpt-bynm').style.opacity=0;
     requestAnimationFrame(function(){ requestAnimationFrame(function(){
       const avs=ov.querySelectorAll('.rpt-by .rp2-av');
@@ -8141,10 +8146,13 @@ function roomReport(secs){
         if(G2){
           G2.to(ov.querySelector('.rpt-bynm'),{opacity:1,duration:.5,ease:'power2.out',delay:.1});
           G2.to(secs,{opacity:1,y:0,duration:.62,ease:'power3.out',stagger:.085,delay:.24});
-          /* the run they were watching IS the run in the report — same object, it just flies here */
-          if(vidEl){ G2.to(vidEl,{opacity:1,duration:.28,delay:.5});
-            setTimeout(function(){ if(_vid) try{ morphIn(vidEl,_vid,720); }catch(e){} }, 500); }
-        } else { ov.querySelector('.rpt-bynm').style.opacity=1; }
+          /* the run they were watching IS the run in the report — same object, it just flies here,
+             and the flight is the entrance, so there is no fade to fight over */
+          if(vidEl) setTimeout(function(){
+            vidEl.classList.remove('rpt-hold');
+            if(_vid) try{ morphIn(vidEl,_vid,720); }catch(e){}
+          }, 420);
+        } else { ov.querySelector('.rpt-bynm').style.opacity=1; if(vidEl) vidEl.classList.remove('rpt-hold'); }
         try{ ZSND.play('open'); }catch(e){}
       }, 700);
     }); });
