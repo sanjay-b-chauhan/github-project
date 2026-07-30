@@ -1939,7 +1939,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 /* ============ DEBUG ============ */
 .dbg-fab{position:fixed;right:16px;bottom:16px;z-index:60;width:42px;height:42px;border-radius:99px;background:var(--card);border:var(--bw) solid var(--line);display:grid;place-items:center;color:var(--tx-2);box-shadow:var(--shadow);transition:transform var(--t-m) var(--ease)}
 .dbg-fab:hover{color:var(--tx);transform:rotate(90deg)}.dbg-fab svg{width:20px;height:20px}
-.dbg{position:fixed;right:16px;bottom:66px;z-index:60;width:280px;max-height:80vh;overflow-y:auto;background:var(--card);border:var(--bw) solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow);display:none;opacity:0;transform:translateY(10px) scale(.97);transition:opacity var(--t-m) var(--ease),transform var(--t-m) var(--ease)}
+.dbg{position:fixed;right:16px;bottom:66px;z-index:900;width:280px;max-height:80vh;overflow-y:auto;background:var(--card);border:var(--bw) solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow);display:none;opacity:0;transform:translateY(10px) scale(.97);transition:opacity var(--t-m) var(--ease),transform var(--t-m) var(--ease)}
 .dbg.open{display:block;opacity:1;transform:none}
 .dbg h5{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--tx-3);margin:14px 0 8px}
 /* collapsible accordions in the design panel (hidden by default) */
@@ -4289,6 +4289,10 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .qas-q .qw{display:inline-block;will-change:transform,opacity,filter}
 /* the panel stacks: whoever is asking steps forward, the rest wait behind */
 .qas-stack{position:relative;width:100%;height:116px;margin-bottom:4px}
+/* the pose the gather screen ends on, worn from the first frame so the dissolve is invisible — then
+   it opens out of it, transform to transform, one spring, nothing repositioned in flight */
+.qas-stack.gathered .qas-face{transform:translate(-50%,-50%) translateX(-32px) scale(.827);opacity:1;filter:saturate(.55)}
+.qas-stack.gathered .qas-face:nth-child(2){transform:translate(-50%,-50%) translateX(32px) scale(.827)}
 .qas-face{position:absolute;left:50%;top:50%;width:104px;height:104px;margin:0;
   border-radius:99px;display:grid;place-items:center;overflow:hidden;
   font-family:var(--f-body);font-size:33px;font-weight:600;color:#fff;
@@ -4303,7 +4307,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
    winning and forcing the absolutely-positioned faces back into normal flow (they stacked 104px
    apart instead of sharing a centreline). Two-class selectors settle it. */
 .qas-stack .qas-face{position:absolute}
-.qgat-faces .qgat-f{position:absolute}
+.qgat-faces .qgat-f{position:relative}
 .zface>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .zface>b{font-weight:600}
 .qas-face:nth-child(2){transform:translate(-50%,-50%) translateX(52px) scale(.62)}   /* the one waiting sits BEHIND, on the same line, and peeks well clear of it */
@@ -4483,10 +4487,22 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .qgat{position:absolute;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:26px;background:var(--bg);opacity:0;transition:opacity .42s var(--osmo)}
 .qgat.in{opacity:1}
-.qgat-faces{position:relative;width:100%;height:120px}
-.qgat-f{position:absolute;left:50%;top:50%;width:104px;height:104px;margin:-52px 0 0 -52px;border-radius:99px;
-  display:grid;place-items:center;font-family:var(--f-body);font-size:33px;font-weight:600;color:#fff;
+/* NO TRANSFORM ON THESE. morphIn flies each face from the tile it was just in by animating
+   top/left/width/height — and a CSS transform underneath was being applied a SECOND time on top of
+   the flown position, so they arrived offset and double-scaled and then snapped straight the moment
+   the morph handed the style back. Flex does the overlap now, and there is nothing left to fight. */
+.qgat-faces{position:relative;display:flex;align-items:center;justify-content:center;width:100%;height:116px}
+.qgat-f{position:relative;left:auto;top:auto;width:86px;height:86px;flex:0 0 86px;margin:0;border-radius:99px;
+  display:grid;place-items:center;font-family:var(--f-body);font-size:27px;font-weight:600;color:#fff;
   box-shadow:0 0 0 4px var(--bg), 0 0 0 6px rgba(255,255,255,.1), 0 18px 44px rgba(0,0,0,.5)}
+.qgat-f:first-child{z-index:2}
+.qgat-f+.qgat-f{margin-left:-22px;z-index:1}
+/* the report fills the screen, so the app's gear is underneath it. It carries its own. */
+.rpt-gear{position:absolute;right:20px;top:18px;z-index:6;width:38px;height:38px;border-radius:12px;
+  display:grid;place-items:center;color:var(--tx-3);background:var(--card);border:var(--bw) solid var(--line);
+  cursor:pointer;transition:color var(--t-q) var(--ease),background var(--t-q) var(--ease),transform var(--t-q) var(--ease)}
+.rpt-gear:hover{color:var(--tx);background:var(--soft);transform:rotate(38deg)}
+.rpt-gear svg{width:19px;height:19px}
 .qgat-lbl{font-size:16px;font-weight:500;color:var(--tx);
   background:linear-gradient(100deg,var(--tx-3) 24%,var(--tx) 42%,var(--tx) 58%,var(--tx-3) 76%);
   background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
@@ -7537,8 +7553,7 @@ function qaGather(fromRects){
   if(!fromRects) PANEL.forEach(function(p){ const t=R.ov.querySelector('#mt-'+p.k); if(t) from[p.k]=_mRect(t); });
   const el=document.createElement('div'); el.className='qgat';
   el.innerHTML='<div class="qgat-faces">'
-    + PANEL.map(function(p,i){ return '<span class="qgat-f zface" data-k="'+p.k+'" style="background:'+p.c+';'
-        +'transform:translateX('+(i===0?-46:46)+'px) scale(.82)">'
+    + PANEL.map(function(p){ return '<span class="qgat-f zface" data-k="'+p.k+'" style="background:'+p.c+'">'
         +'<img src="'+p.img+'" alt="" onerror="this.remove()"><b>'+p.i+'</b></span>'; }).join('')
     +'</div><div class="qgat-lbl">Avery and Jordan are pulling their questions together</div>';
   R.ov.appendChild(el); el.getBoundingClientRect(); el.classList.add('in');
@@ -7549,12 +7564,13 @@ function qaGather(fromRects){
   });
   R.qaGatherFrom=from;
   setTimeout(function(){
-    /* hand the rects on so the Q&A stack opens from exactly where these sit */
-    const carry={};
-    el.querySelectorAll('.qgat-f').forEach(function(f){ carry[f.dataset.k]=_mRect(f); });
-    R.qaFaceFrom=carry;
+    /* the next screen comes up UNDERNEATH this one, already wearing this one's pose — same two
+       circles, same size, same centres — and this one dissolves off the top of it. There is no gap
+       to fall through and nothing to morph, so there is nothing to see. */
+    R.qaOpenFromGather=true;
+    roomQA();
     el.classList.remove('in');
-    setTimeout(function(){ try{el.remove();}catch(e){} roomQA(); },300);
+    setTimeout(function(){ try{el.remove();}catch(e){} }, 460);
   }, 2400);
 }
 function roomQA(){
@@ -7577,7 +7593,7 @@ function roomQA(){
    +'<div class="qas-body">'
    +'<div class="qas-main">'
    +'  <div class="qas-mid">'
-   +'    <div class="qas-stack" id="qasStack">'
+   +'    <div class="qas-stack gathered" id="qasStack">'
    +      PANEL.map(function(p,i){ return '<span class="qas-face zface'+(i===0?' on':'')+'" data-k="'+p.k+'" '
            +'style="background:'+p.c+'"><img src="'+p.img+'" alt="" onerror="this.remove()"><b>'+p.i+'</b></span>'; }).join('')
    +'    </div>'
@@ -7605,13 +7621,11 @@ function roomQA(){
    +'</div>';
   R.ov.appendChild(el); el.getBoundingClientRect(); el.classList.add('in');
   try{ ZSND.play('open'); }catch(e){}
-  /* the faces are the same objects the last screen ended on, so they travel */
-  if(R.qaFaceFrom){
-    el.querySelectorAll('.qas-face').forEach(function(f){
-      const r=R.qaFaceFrom[f.dataset.k]; if(r) try{ morphIn(f,r,560); }catch(e){}
-    });
-    R.qaFaceFrom=null;
-  }
+  /* the faces are not flown here any more — they are already where the last screen left them, and
+     they open by their own transform once the dissolve is done */
+  const _stk=el.querySelector('#qasStack');
+  const _fromGather=!!R.qaOpenFromGather; R.qaOpenFromGather=false; R.qaFaceFrom=null;
+  if(_stk) setTimeout(function(){ _stk.classList.remove('gathered'); }, _fromGather?520:200);
 
   el.querySelector('#qasBack').onclick=function(){ roomConfirmExit(); };
   const _noSkip=function(){
@@ -7932,7 +7946,10 @@ function roomReport(secs){
   const ov=R.ov;
   const CH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
   const RE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6M3.5 9a9 9 0 1 1-.5 5"/></svg>';
-  ov.innerHTML='<div class="rpt" data-band="'+rptBand+'" style="--bc:'+RPT_BANDS[rptBand].colour+'"><div class="rpt-scroll"><div class="rpt-in">'
+  const GEAR='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
+  ov.innerHTML='<div class="rpt" data-band="'+rptBand+'" style="--bc:'+RPT_BANDS[rptBand].colour+'">'
+   +'<button class="rpt-gear" id="rptGear" aria-label="Controls">'+GEAR+'</button>'
+   +'<div class="rpt-scroll"><div class="rpt-in">'
    +'<div class="rp2-lab"><span class="rp2-av">'+PANEL[0].name.charAt(0)+'</span>Coach&rsquo;s feedback</div>'
    +'<h1 class="rp2-verdict">'+RP2.verdict+'</h1>'
    +'<p class="rp2-prose">'+RP2.prose+'</p>'
@@ -7969,6 +7986,8 @@ function roomReport(secs){
       : 'This clears the bar. Redo only if you want a stronger take on your portfolio.')+'</div>'
    +'</div></div></div>';
 
+  const _g=ov.querySelector('#rptGear');
+  if(_g) _g.onclick=function(){ const d=document.getElementById('dbg'); if(d)d.classList.toggle('open'); try{ ZSND.play('tap'); }catch(e){} };
   /* switching a band re-reads the whole card from that band's data */
   ov.querySelectorAll('.rp2-row').forEach(function(r){
     r.querySelector('.rp2-head').onclick=function(){ r.classList.toggle('open'); try{ ZSND.play('tap'); }catch(e){} };
