@@ -8098,8 +8098,10 @@ function roomReport(secs){
     ov.querySelector('.rpt-bynm').style.opacity=0;
     requestAnimationFrame(function(){ requestAnimationFrame(function(){
       const avs=ov.querySelectorAll('.rpt-by .rp2-av');
-      avs.forEach(function(a){ const r=_from[a.dataset.k]; if(r) try{ morphIn(a,r,660); }catch(e){} });
+      /* read the CORNER first: morphIn immediately parks them at the from-rect, so measuring after
+         it gave the loader's position and the bloom opened from mid-screen instead of where they land */
       const land=avs[0]?avs[0].getBoundingClientRect():null;
+      avs.forEach(function(a){ const r=_from[a.dataset.k]; if(r) try{ morphIn(a,r,660); }catch(e){} });
       const cx=land?Math.round(land.left+land.width/2):ov.clientWidth-90, cy=land?Math.round(land.top+land.height/2):40;
       scroll.style.clipPath='circle(0px at '+cx+'px '+cy+'px)';
       setTimeout(function(){
