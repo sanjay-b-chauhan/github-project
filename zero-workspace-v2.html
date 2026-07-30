@@ -4584,11 +4584,11 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .qgat-f:first-child{z-index:2}
 .qgat-f+.qgat-f{margin-left:-22px;z-index:1}
 /* the report fills the screen, so the app's gear is underneath it. It carries its own. */
-.rpt-gear{position:absolute;right:20px;top:18px;z-index:6;width:38px;height:38px;border-radius:12px;
+.rpt-gear{position:absolute;right:16px;bottom:16px;z-index:8;width:42px;height:42px;border-radius:99px;
   display:grid;place-items:center;color:var(--tx-3);background:var(--card);border:var(--bw) solid var(--line);
   cursor:pointer;transition:color var(--t-q) var(--ease),background var(--t-q) var(--ease),transform var(--t-q) var(--ease)}
-.rpt-gear:hover{color:var(--tx);background:var(--soft);transform:rotate(38deg)}
-.rpt-gear svg{width:19px;height:19px}
+.rpt-gear:hover{color:var(--tx);background:var(--soft);transform:rotate(90deg)}
+.rpt-gear svg{width:20px;height:20px}
 .qgat-lbl{font-size:16px;font-weight:500;color:var(--tx);
   background:linear-gradient(100deg,var(--tx-3) 24%,var(--tx) 42%,var(--tx) 58%,var(--tx-3) 76%);
   background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
@@ -9885,6 +9885,10 @@ function dbgRoom(where){
   const i3=STAGES.findIndex(function(x){ return x.id==='present'; });
   if(i3>=0){ try{ cancelPlanRun(); loadStage(i3); renderRail(); updateStageNav(); }catch(e){} }
   presRoom('live');
+  /* the presentation is the room: they join, Avery and Jordan talk you in, and then Share your
+     screen is yours to hit. Jumping past all that into the shared-screen view skipped the part
+     that IS the presentation. */
+  if(where==='presenting') return;
   setTimeout(function(){
     if(!R||!R.ov) return;
     try{ (R.jt||[]).forEach(clearTimeout); }catch(e){}
@@ -9896,12 +9900,10 @@ function dbgRoom(where){
     const pr=R.ov.querySelector('#rmPrompt'); if(pr){ pr.classList.remove('show'); pr.innerHTML=''; }
     const cta=R.ov.querySelector('#rmShareCTA'); if(cta) cta.classList.remove('show');
     R.ov.querySelectorAll('.mgrid .mtile').forEach(function(t){ t.classList.remove('waiting'); });
-    if(where==='presenting'){ R.shareKind='display'; R.shareWin='deck'; try{ roomPresent(); }catch(e){} }
-    else { R.ov.innerHTML='';
-      if(where==='qa') roomQA();
-      else if(where==='rvw') roomReviewing();
-      else roomReport(252);
-    }
+    R.ov.innerHTML='';
+    if(where==='qa') roomQA();
+    else if(where==='rvw') roomReviewing();
+    else roomReport(252);
   }, 420);
 }
 /* light up the plan on the left: gray → green (hit) / yellow (missed) */
