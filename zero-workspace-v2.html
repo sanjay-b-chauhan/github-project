@@ -4413,16 +4413,27 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .qas.panel .qas-q{font-size:clamp(19px,1.6vw,23px);max-width:min(520px,88%)}
 .qas.panel .qas-mid{padding-left:28px;padding-right:28px}
 @media(max-width:900px){ .qas{--qasw:min(392px,72vw)} }
-.qas-panel{flex:0 0 0;width:0;overflow:hidden;opacity:0;
-  transition:flex-basis .5s var(--osmo), width .5s var(--osmo), opacity .38s var(--osmo), padding .5s var(--osmo);
+.qas-panel{width:0;overflow:hidden;opacity:0;
+  transition:width .5s var(--osmo), opacity .38s var(--osmo), padding .5s var(--osmo);
   padding:0}
 .qas{--qasw:min(620px,48vw)}
-.qas.panel .qas-panel{flex:0 0 var(--qasw);width:var(--qasw);opacity:1;padding:0 18px 22px 0}
-.qas.rz .qas-panel{transition:none}
+/* the document runs the full height of the screen, the way the stage's does — it is not a box
+   parked inside the body */
+.qas-panel{position:absolute!important;right:0;top:0;bottom:0;z-index:9;flex:none!important}
+.qas.panel .qas-panel{width:var(--qasw);opacity:1;padding:14px 14px 16px 0}
+/* and the whole left half moves over for it, title and meter with it, so they stay over the
+   question they belong to instead of centring on a screen that is no longer there */
+.qas.panel .qas-body{padding-right:var(--qasw)}
+.qas.panel .qas-tc{transform:translateX(calc(var(--qasw) / -2))}
+.qas-tc{transition:transform .5s var(--osmo)}
+.qas-body{transition:padding-right .5s var(--osmo)}
+.qas.panel .qas-tr{opacity:0;pointer-events:none}   /* the panel carries its own close */
+.qas-tr{transition:opacity .3s var(--ease)}
+.qas.rz .qas-panel,.qas.rz .qas-body,.qas.rz .qas-tc{transition:none}
 .qas.rz{user-select:none}
 /* the left edge is a handle */
 .qas-panel{position:relative}
-.qas-grip{position:absolute;left:0;top:0;bottom:22px;width:14px;z-index:6;cursor:col-resize;
+.qas-grip{position:absolute;left:0;top:0;bottom:16px;width:14px;z-index:10;cursor:col-resize;
   display:none;align-items:center;justify-content:center}
 .qas.panel .qas-grip{display:flex}
 .qas-grip::after{content:'';width:3px;height:46px;border-radius:99px;background:var(--line);
@@ -4430,8 +4441,8 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .qas-grip:hover::after,.qas.rz .qas-grip::after{background:var(--tx-3);height:74px}
 .qas-pin{height:100%;display:flex;flex-direction:column;background:var(--card);
   border:var(--bw) solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 26px 64px rgba(0,0,0,.45)}
-.qas-ph{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:15px 16px;border-bottom:var(--bw) solid var(--line)}
-.qas-ph .t{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--tx-3);flex:1}
+.qas-ph{flex:0 0 auto;height:54px;display:flex;align-items:center;gap:8px;padding:0 12px 0 22px;border-bottom:var(--bw) solid var(--line)}
+.qas-ph .t{font-family:var(--mono);font-size:12px;font-weight:400;letter-spacing:1.4px;text-transform:uppercase;color:var(--tx-2);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .qas-px{width:30px;height:30px;border-radius:99px;border:0;cursor:pointer;background:var(--soft);color:var(--tx-3);
   display:grid;place-items:center;transition:background var(--t-q) var(--ease),color var(--t-q) var(--ease)}
 .qas-px:hover{background:var(--hover);color:var(--tx)}
@@ -4440,11 +4451,12 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 /* the panel has one state: the document */
 .qas-pb{flex:1;min-height:0;overflow:hidden;padding:0;display:flex;flex-direction:column}
 .qas-pb .dv-scroll{flex:1;min-height:0}
-.qas-ph .qas-tabs{display:flex;align-items:center;height:22px;flex:1;min-width:0}
-.qas-ph .qas-pacts{display:flex;gap:2px}
-.qas-ph .dv-ic{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:var(--tx-2);
-  cursor:pointer;transition:background var(--t-q) var(--ease)}
-.qas-ph .dv-ic:hover{background:var(--hover)}
+/* the same 30px actions the stage's document header uses, not a bigger set of our own */
+.qas-ph .dv-actions{display:flex;gap:4px}
+.qas-ph .dv-ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:var(--tx-2);
+  background:none;border:none;cursor:pointer;transition:background var(--t-q) var(--ease),color var(--t-q) var(--ease)}
+.qas-ph .dv-ic:hover{background:var(--hover);color:var(--tx)}
+.qas-ph .dv-ic svg{width:18px;height:18px}
 .qas-pb .qas-file{margin-bottom:4px}
 .qas-doc{background:var(--soft);border:var(--bw) solid var(--line-2);border-radius:14px;padding:16px 16px 18px;margin-top:10px}
 .qas-doc .dh{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--tx-3)}
@@ -7674,8 +7686,8 @@ function roomQA(){
    +'  </div>'
    +'</div>'
    +'<aside class="qas-panel"><span class="qas-grip" id="qasGrip"></span><div class="qas-pin">'
-   +'  <div class="qas-ph"><span class="qas-tabs" id="qasTabs"></span>'
-   +'    <span class="qas-pacts" id="qasPActs"></span>'
+   +'  <div class="qas-ph"><span class="t" id="qasPT"></span>'
+   +'    <span class="dv-actions" id="qasPActs"></span>'
    +'    <button class="qas-px" id="qasPx" aria-label="Close">'+HI.x+'</button></div>'
    +'  <div class="qas-pb" id="qasPb"></div>'
    +'</div></aside>'
@@ -7709,27 +7721,17 @@ function roomQA(){
     el.classList.remove('in'); setTimeout(function(){ try{el.remove();}catch(e){} roomReviewing(); },320);
   };
   /* what you handed in slides in on the right, and the question steps aside for it */
-  const pb=el.querySelector('#qasPb'), qTabs=el.querySelector('#qasTabs');
-  /* the panel opens ON the document. Two of them matter here — what you handed in and what it was
-     judged against — so they are two tabs in the header, not a list you have to get past. */
-  const qasDocs=function(){
+  const pb=el.querySelector('#qasPb');
+  /* ONE file: what you handed in. This is the same viewer the stage uses — same header, same page,
+     same pager — because it is the same thing you are looking at. */
+  const fillPanel=function(){
     const mine=(typeof RES!=='undefined'?RES:[]).filter(function(r){ return r.kind==='mine' && /\.pdf$/i.test(r.t||''); });
     const one=mine[mine.length-1] || {t:'final_proposal_v1.pdf'};
-    const wg=(typeof RES_CATALOG!=='undefined'&&RES_CATALOG.wgll)?RES_CATALOG.wgll:{t:'WGLL Uber Proposal.pdf'};
-    return [{k:'mine', lbl:'Your submission', doc:MY_PROPOSAL_DOC, pages:1},
-            {k:'wgll', lbl:'WGLL Uber', doc:wg.doc||('<h1>'+escHtml(wg.t)+'</h1>'), pages:wg.pages||10}];
-  };
-  let qasDoc='mine';
-  const fillPanel=function(){
-    const ds=qasDocs(), d=ds.filter(function(x){ return x.k===qasDoc; })[0] || ds[0];
-    qTabs.innerHTML=ds.map(function(x){
-      return '<button class="r-tab2'+(x.k===qasDoc?' on':'')+'" type="button" data-d="'+x.k+'">'+escHtml(x.lbl)+'</button>'; }).join('');
-    qTabs.querySelectorAll('[data-d]').forEach(function(b){
-      b.onclick=function(){ if(qasDoc===b.dataset.d) return; qasDoc=b.dataset.d; fillPanel(); try{ ZSND.play('tap'); }catch(e){} }; });
+    el.querySelector('#qasPT').textContent=one.t;
     el.querySelector('#qasPActs').innerHTML='<button class="dv-ic" title="Download" aria-label="Download">'+DL+'</button>'
       +'<button class="dv-ic" title="Open" aria-label="Open">'+HI.view+'</button>';
-    pb.innerHTML='<div class="dv-scroll"><div class="dv-page">'+d.doc+'</div></div>'
-      +'<div class="doc-foot"><span class="pageno">1 / '+d.pages+'</span>'
+    pb.innerHTML='<div class="dv-scroll"><div class="dv-page">'+MY_PROPOSAL_DOC+'</div></div>'
+      +'<div class="doc-foot"><span class="pageno">1 / 1</span>'
       +'<div class="zoom"><button type="button">&minus;</button><span>100%</span><button type="button">+</button></div></div>';
   };
   const togglePanel=function(on){
