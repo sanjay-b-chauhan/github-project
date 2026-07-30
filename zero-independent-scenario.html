@@ -1308,8 +1308,9 @@ input{font-family:inherit}
 .pers .lk svg{width:13px;height:13px}
 
 /* the relationship shifted. Said once, in the thread, the way a stage divider is said */
-.rmove{align-self:center;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:1.3px;
-  text-transform:uppercase;color:var(--tx-3);padding:2px 0}
+.rmove{align-self:center;display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;
+  font-weight:700;letter-spacing:.06em;color:var(--tx-3);padding:3px 11px;border-radius:99px;background:var(--soft)}
+.rmove svg{width:10px;height:10px;display:block}
 .rmove.up{color:var(--ok)} .rmove.dn{color:var(--fix)}
 
 /* the ask: our .req rhythm, with a slot that fills in */
@@ -1326,6 +1327,10 @@ input{font-family:inherit}
 .xtra{display:flex;align-items:flex-start;gap:10px;padding:8px 2px;font-size:12.5px;line-height:1.5;color:var(--tx-2)}
 .xtra .xi{width:19px;height:19px;flex:0 0 19px;border-radius:6px;margin-top:1px;display:grid;place-items:center;
   font-size:12px;font-weight:700;background:color-mix(in srgb,var(--hi) 15%,transparent);color:var(--hi)}
+.r-head.hastabs{min-height:52px;padding:0 18px}
+.r-tab2{height:52px}
+.chips{display:flex;flex-direction:column;gap:8px;align-self:stretch;margin:2px 0}
+.chips .zpill{white-space:normal;text-align:left;line-height:1.35;justify-content:flex-start}
 .rsec{padding:0 2px 18px}
 .rsec+.rsec{border-top:var(--bw) solid var(--line);padding-top:18px}
 .rsec-h{display:flex;align-items:baseline;gap:8px;margin-bottom:6px}
@@ -1408,7 +1413,7 @@ input{font-family:inherit}
     </div>
   </main>
 
-  <div class="gutter gutter-r hidden" id="gutterR"></div>
+  <div class="gutter" data-resize="right" id="gutterR"></div>
 
   <aside class="right open" id="right">
     <div class="right-inner">
@@ -1508,7 +1513,7 @@ experienced multi-platform hosts.`}
 };
 
 const REQS=[
-  {k:'driver', t:'What is actually driving the returns', ack:'the driver',
+  {k:'driver', t:'What is actually driving the cancellations', ack:'the driver',
    kw:['driver','caus','why','reason','root','source','behind','what’s causing','whats causing','what is causing','underlying']},
   {k:'scale',  t:'The scale and the trend', ack:'the scale of it',
    kw:['scale','how big','how many','trend','rate','rising','magnitude','growing','volume','over time','8','14','size of the problem']},
@@ -1534,6 +1539,9 @@ const BONUS=[
    kw:['repeat purchase','retention','nps','satisfaction','loyalty','ltv','churn']}
 ];
 const got={}, bonusGot=[];
+let dry=0;
+const DISTRACT=['Who on the team is at fault','A competitor comparison','A full engineering spec',
+  'Headcount for next quarter','A brand refresh','The legal review'];
 const gotCount=()=>REQS.filter(r=>got[r.k]).length;
 
 const KNOW={
@@ -1698,7 +1706,7 @@ function rmove(id, n){
   rel[id]=clamp(rel[id]+n); renderRail(); syncMorale();
   if(!n) return;
   const d=document.createElement('div'); d.className='rmove rev '+(n>0?'up':'dn');
-  d.textContent=PEOPLE[id].first+(n>0?' warmed up':' cooled off');
+  d.innerHTML=HEART+' '+PEOPLE[id].first+' '+(n>0?'+':'')+n;
   if(active===id){ place(d); scrollDown(); } else threadOf(id).appendChild(d);
 }
 function handFile(id){
@@ -1774,10 +1782,13 @@ function gate(text){
   if(nb.length) parts.push((parts.length?'and ':'')+nb.map(b=>b.ack).join(' and ')+', which is past what I asked but I like it');
   if(gotCount()===REQS.length){ openTeam(parts); return; }
   rmove('jay', nu.length*2 + nb.length*3 || -1);
-  if(gateTurns>=6){ revealRest(); return; }
+  if(nu.length||nb.length) dry=0; else dry++;
   typing('jay',()=>{
-    if(parts.length) say('jay', parts.join(', ')+'. That is '+gotCount()+' of five. What else does it need?');
-    else say('jay','Not quite. Think about what I would need to act on this. What are the pieces? '+gotCount()+' of five so far.');
+    if(parts.length){ say('jay', parts.join(', ')+'. That is '+gotCount()+' of five. What else does it need?'); return; }
+    /* two dead turns and he stops repeating himself. Guessing into a wall is not independence,
+       it is a dead end, so he puts real options on the table and you still choose. */
+    if(dry>=2){ dry=0; say('jay','Let me help. Which of these does it need?'); setTimeout(gateChoices,520); return; }
+    say('jay','Not quite. Think about what I would actually need to act on this. What are the pieces?');
   });
 }
 function openTeam(parts){
@@ -1820,6 +1831,27 @@ function makePad(id,label,ph,cta,onShare){
   pad.querySelectorAll('[data-fmt]').forEach(b=>b.addEventListener('mousedown',e=>{ e.preventDefault(); ed.focus(); document.execCommand(b.dataset.fmt); }));
   pad.querySelector('.share-plan').onclick=()=>{ const v=ed.innerText.trim(); if(v.length<12) return; pad.remove(); onShare(v); };
   return pad;
+}
+/* the guided fallback: real options, still your call which one matters */
+function gateChoices(){
+  const left=REQS.filter(r=>!got[r.k]); if(!left.length) return;
+  const pick=left[0];
+  const opts=[{t:pick.t,k:pick.k},
+    {t:DISTRACT[gateTurns%DISTRACT.length],k:null},
+    {t:DISTRACT[(gateTurns+3)%DISTRACT.length],k:null}];
+  for(let i=opts.length-1;i>0;i--){ const j=(i*7+gateTurns)%(i+1); const t=opts[i]; opts[i]=opts[j]; opts[j]=t; }
+  const row=document.createElement('div'); row.className='chips rev';
+  row.innerHTML=opts.map((o,i)=>'<button class="zpill" data-i="'+i+'">'+o.t+'</button>').join('');
+  place(row); scrollDown();
+  row.querySelectorAll('.zpill').forEach(b=>b.onclick=()=>{
+    const o=opts[+b.dataset.i]; row.remove(); me('jay',o.t); ZSND.play('select');
+    if(o.k){ got[o.k]=true; awardXP(30); renderRight();
+      if(gotCount()===REQS.length){ openTeam(['Good, that is the set']); return; }
+      typing('jay',()=>{ say('jay','Yes, that is one of them. '+gotCount()+' of five. Keep going, or tell me the rest in your own words.'); rmove('jay',2); });
+    } else {
+      typing('jay',()=>{ say('jay','No, that is not something I would act on. Try again.'); rmove('jay',-1); setTimeout(gateChoices,600); });
+    }
+  });
 }
 function revealRest(){
   const miss=REQS.filter(r=>!got[r.k]); miss.forEach(r=>got[r.k]=true);
@@ -2043,8 +2075,11 @@ $('sndBtn').onclick=()=>{ const n=!ZSND.isOn(); ZSND.set(n); if(n)ZSND.play('tap
 $('plusBtn').onclick=()=>{ ZSND.play('tap'); nudge('Attach anything you have pulled together. Jay reads it when you send the recommendation.'); };
 $('connectBtn').onclick=()=>{ ZSND.play('tap'); nudge('Connect a tool and its data lands in your files, alongside what the team sends you.'); };
 $('camBtn').onclick=()=>{ ZSND.play('tap'); nudge('Grab a screenshot of what you are looking at and send it to whoever is in this thread.'); };
-$('stuckToggle').onclick=()=>{ stuck=!stuck; $('stuckToggle').classList.toggle('on',stuck); ZSND.play(stuck?'toggleOn':'toggleOff');
-  nudge(stuck? 'Stuck mode is on. Ask anyone anything and they will point you at who actually owns it.'
+$('stuckToggle').onclick=()=>{
+  stuck=!stuck;
+  $('stuckToggle').classList.toggle('on',stuck);
+  ZSND.play(stuck?'open':'close');                      /* the bank has no toggleOn, it was silently doing nothing */
+  nudge(stuck? 'Stuck mode on. Ask anyone anything and they will point you at whoever owns it.'
              : 'Stuck mode off. You are driving again.'); };
 $('micBtn').onclick=()=>{ ZSND.play('tap'); nudge('Say it out loud instead of typing. Same thread, same person.'); };
 let stuck=false;
@@ -2055,6 +2090,24 @@ try{ $('sndBtn').dataset.on=ZSND.isOn()?'1':'0'; }catch(e){}
 (function(){ const w=()=>{ try{ZSND.play('tap')}catch(e){} window.removeEventListener('pointerdown',w,true); };
   window.addEventListener('pointerdown',w,true); })();
 
+/* both gutters drag, the same maths the workspace uses */
+(function(){
+  const rail=document.getElementById('rail'), right=document.getElementById('right');
+  let target=null,startX=0,startW=0;
+  const CENTER_MIN=380, RAIL_MIN=260, RIGHT_MIN=320, GUT=24;
+  document.querySelectorAll('.gutter').forEach(g=>{
+    g.addEventListener('pointerdown',e=>{ target=g.dataset.resize; startX=e.clientX;
+      startW=(target==='left'?rail:right).getBoundingClientRect().width;
+      g.classList.add('drag'); g.setPointerCapture(e.pointerId); document.body.style.userSelect='none'; });
+    g.addEventListener('pointermove',e=>{ if(!target)return; const dx=e.clientX-startX, W=window.innerWidth;
+      if(target==='left'){ const rw=right.getBoundingClientRect().width;
+        rail.style.flexBasis=Math.min(Math.max(RAIL_MIN,W-CENTER_MIN-rw-GUT),Math.max(RAIL_MIN,startW+dx))+'px'; }
+      else { const lw=rail.getBoundingClientRect().width;
+        right.style.flexBasis=Math.min(Math.max(RIGHT_MIN,W-lw-CENTER_MIN-GUT),Math.max(RIGHT_MIN,startW-dx))+'px'; } });
+    const end=()=>{ target=null; g.classList.remove('drag'); document.body.style.userSelect=''; };
+    g.addEventListener('pointerup',end); g.addEventListener('pointercancel',end);
+  });
+})();
 renderRail(); renderRight(); syncMorale(); switchTo('jay');
 </script>
 </body>
