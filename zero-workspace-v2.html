@@ -4400,11 +4400,22 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .qas.panel .qas-main{transform:none}
 .qas.panel .qas-q{font-size:clamp(19px,1.6vw,23px);max-width:min(520px,88%)}
 .qas.panel .qas-mid{padding-left:28px;padding-right:28px}
-@media(max-width:900px){ .qas.panel .qas-panel{flex:0 0 min(392px,72vw);width:min(392px,72vw)} }
+@media(max-width:900px){ .qas{--qasw:min(392px,72vw)} }
 .qas-panel{flex:0 0 0;width:0;overflow:hidden;opacity:0;
   transition:flex-basis .5s var(--osmo), width .5s var(--osmo), opacity .38s var(--osmo), padding .5s var(--osmo);
   padding:0}
-.qas.panel .qas-panel{flex:0 0 392px;width:392px;opacity:1;padding:0 18px 22px 0}
+.qas{--qasw:min(620px,48vw)}
+.qas.panel .qas-panel{flex:0 0 var(--qasw);width:var(--qasw);opacity:1;padding:0 18px 22px 0}
+.qas.rz .qas-panel{transition:none}
+.qas.rz{user-select:none}
+/* the left edge is a handle */
+.qas-panel{position:relative}
+.qas-grip{position:absolute;left:0;top:0;bottom:22px;width:14px;z-index:6;cursor:col-resize;
+  display:none;align-items:center;justify-content:center}
+.qas.panel .qas-grip{display:flex}
+.qas-grip::after{content:'';width:3px;height:46px;border-radius:99px;background:var(--line);
+  transition:background var(--t-q) var(--ease),height var(--t-q) var(--ease)}
+.qas-grip:hover::after,.qas.rz .qas-grip::after{background:var(--tx-3);height:74px}
 .qas-pin{height:100%;display:flex;flex-direction:column;background:var(--card);
   border:var(--bw) solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 26px 64px rgba(0,0,0,.45)}
 .qas-ph{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:15px 16px;border-bottom:var(--bw) solid var(--line)}
@@ -4413,21 +4424,15 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
   display:grid;place-items:center;transition:background var(--t-q) var(--ease),color var(--t-q) var(--ease)}
 .qas-px:hover{background:var(--hover);color:var(--tx)}
 .qas-px svg{width:14px;height:14px}
-.qas-pb{flex:1;min-height:0;overflow-y:auto;padding:14px}
-/* reading a file: the panel becomes the viewer — white page, its own scroll, the pager on top */
 .qas-pin{position:relative}
-.qas-ph .qas-pback{display:none;width:28px;height:28px;flex:0 0 28px;border-radius:8px;place-items:center;
-  color:var(--tx-2);cursor:pointer;transition:background var(--t-q) var(--ease)}
-.qas-ph .qas-pback:hover{background:var(--hover)}
-.qas-ph .qas-pback svg{width:17px;height:17px}
-.qas-pin.reading .qas-ph .qas-pback{display:grid}
-.qas-ph .qas-pacts{display:flex;gap:2px;margin-left:auto}
+/* the panel has one state: the document */
+.qas-pb{flex:1;min-height:0;overflow:hidden;padding:0;display:flex;flex-direction:column}
+.qas-pb .dv-scroll{flex:1;min-height:0}
+.qas-ph .qas-tabs{display:flex;align-items:center;height:22px;flex:1;min-width:0}
+.qas-ph .qas-pacts{display:flex;gap:2px}
 .qas-ph .dv-ic{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:var(--tx-2);
   cursor:pointer;transition:background var(--t-q) var(--ease)}
 .qas-ph .dv-ic:hover{background:var(--hover)}
-.qas-ph .dv-ic svg{width:16px;height:16px}
-.qas-pin.reading .qas-pb{overflow:hidden;padding:0;display:flex;flex-direction:column}
-.qas-pin.reading .dv-scroll{flex:1;min-height:0}
 .qas-pb .qas-file{margin-bottom:4px}
 .qas-doc{background:var(--soft);border:var(--bw) solid var(--line-2);border-radius:14px;padding:16px 16px 18px;margin-top:10px}
 .qas-doc .dh{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--tx-3)}
@@ -7640,9 +7645,8 @@ function roomQA(){
    +'    </div>'
    +'  </div>'
    +'</div>'
-   +'<aside class="qas-panel"><div class="qas-pin">'
-   +'  <div class="qas-ph"><button class="qas-pback" id="qasPBack" aria-label="Back to files">'+HI.back+'</button>'
-   +'    <span class="t" id="qasPT">Your submission</span>'
+   +'<aside class="qas-panel"><span class="qas-grip" id="qasGrip"></span><div class="qas-pin">'
+   +'  <div class="qas-ph"><span class="qas-tabs" id="qasTabs"></span>'
    +'    <span class="qas-pacts" id="qasPActs"></span>'
    +'    <button class="qas-px" id="qasPx" aria-label="Close">'+HI.x+'</button></div>'
    +'  <div class="qas-pb" id="qasPb"></div>'
@@ -7677,60 +7681,54 @@ function roomQA(){
     el.classList.remove('in'); setTimeout(function(){ try{el.remove();}catch(e){} roomReviewing(); },320);
   };
   /* what you handed in slides in on the right, and the question steps aside for it */
-  const pb=el.querySelector('#qasPb');
-  const fillPanel=function(){
-    /* ONE deliverable. This is the thing you just presented, not a filing cabinet of every upload —
-       a list of four files here is complexity with no purpose. */
+  const pb=el.querySelector('#qasPb'), qTabs=el.querySelector('#qasTabs');
+  /* the panel opens ON the document. Two of them matter here — what you handed in and what it was
+     judged against — so they are two tabs in the header, not a list you have to get past. */
+  const qasDocs=function(){
     const mine=(typeof RES!=='undefined'?RES:[]).filter(function(r){ return r.kind==='mine' && /\.pdf$/i.test(r.t||''); });
-    const one=mine[mine.length-1] || {t:'final_proposal_v1.pdf', s:'PDF · what you presented'};
+    const one=mine[mine.length-1] || {t:'final_proposal_v1.pdf'};
     const wg=(typeof RES_CATALOG!=='undefined'&&RES_CATALOG.wgll)?RES_CATALOG.wgll:{t:'WGLL Uber Proposal.pdf'};
-    pb.innerHTML='<div class="qas-file" data-t="'+escHtml(one.t)+'">'
-        +'<span class="fi">'+QAS_DOC+'</span>'
-        +'<span class="fm"><b>'+escHtml(one.t)+'</b><span>PDF · what you presented</span></span></div>'
-      /* the reference it was judged against, so you can answer from both */
-      +'<div class="qas-file" data-t="'+escHtml(wg.t)+'">'
-        +'<span class="fi">'+(wg.icSvg||HI.drive||QAS_DOC)+'</span>'
-        +'<span class="fm"><b>'+escHtml(wg.t)+'</b><span>PDF · what good looks like</span></span></div>'
-      ;
-    pb.querySelectorAll('.qas-file').forEach(function(f){
-      f.onclick=function(){ showDoc(f.dataset.t); };
-    });
+    return [{k:'mine', lbl:'Your submission', doc:MY_PROPOSAL_DOC, pages:1},
+            {k:'wgll', lbl:'WGLL Uber', doc:wg.doc||('<h1>'+escHtml(wg.t)+'</h1>'), pages:wg.pages||10}];
   };
-  /* the file opens as the file. Same page, same type, same pager as the resource viewer in the
-     stage — it just opens in here, because the room sits over the app. */
-  const pin=el.querySelector('.qas-pin');
-  const showDoc=function(name){
-    /* your own submission is generated, so it may not be in the catalogue — it still opens */
-    const x=(typeof RES!=='undefined'?RES:[]).find(function(r){ return r.t===name; }) || {t:name, pages:1};
-    pin.classList.add('reading');
-    el.querySelector('#qasPT').textContent=x.t;
+  let qasDoc='mine';
+  const fillPanel=function(){
+    const ds=qasDocs(), d=ds.filter(function(x){ return x.k===qasDoc; })[0] || ds[0];
+    qTabs.innerHTML=ds.map(function(x){
+      return '<button class="r-tab2'+(x.k===qasDoc?' on':'')+'" type="button" data-d="'+x.k+'">'+escHtml(x.lbl)+'</button>'; }).join('');
+    qTabs.querySelectorAll('[data-d]').forEach(function(b){
+      b.onclick=function(){ if(qasDoc===b.dataset.d) return; qasDoc=b.dataset.d; fillPanel(); try{ ZSND.play('tap'); }catch(e){} }; });
     el.querySelector('#qasPActs').innerHTML='<button class="dv-ic" title="Download" aria-label="Download">'+DL+'</button>'
       +'<button class="dv-ic" title="Open" aria-label="Open">'+HI.view+'</button>';
-    pb.innerHTML='<div class="dv-scroll"><div class="dv-page">'
-        +(x.doc || '<h1>'+escHtml(x.t)+'</h1><p>'+(x.body||'')+'</p>')
-      +'</div></div>'
-      +'<div class="doc-foot"><span class="pageno">1 / '+(x.pages||1)+'</span>'
+    pb.innerHTML='<div class="dv-scroll"><div class="dv-page">'+d.doc+'</div></div>'
+      +'<div class="doc-foot"><span class="pageno">1 / '+d.pages+'</span>'
       +'<div class="zoom"><button type="button">&minus;</button><span>100%</span><button type="button">+</button></div></div>';
-    try{ ZSND.play('open'); }catch(e){}
   };
   const togglePanel=function(on){
     el.classList.toggle('panel', on===undefined ? !el.classList.contains('panel') : on);
-    if(el.classList.contains('panel')){
-      el.querySelector('.qas-pin').classList.remove('reading');
-      el.querySelector('#qasPT').textContent='Your submission';
-      el.querySelector('#qasPActs').innerHTML='';
-      fillPanel();
-    }
+    if(el.classList.contains('panel')) fillPanel();
     try{ ZSND.play(el.classList.contains('panel')?'open':'close'); }catch(e){}
   };
   el.querySelector('#qasSubBtn').onclick=function(){ togglePanel(); };
   el.querySelector('#qasPx').onclick=function(){ togglePanel(false); };
-  el.querySelector('#qasPBack').onclick=function(){
-    pin.classList.remove('reading');
-    el.querySelector('#qasPT').textContent='Your submission';
-    el.querySelector('#qasPActs').innerHTML='';
-    fillPanel(); try{ ZSND.play('close'); }catch(e){}
-  };
+  /* drag the left edge to give the document more room */
+  (function(){
+    const grip=el.querySelector('#qasGrip'); if(!grip) return;
+    const CSSW=function(){ return parseFloat(getComputedStyle(el).getPropertyValue('--qasw'))||620; };
+    grip.addEventListener('pointerdown',function(e){
+      e.preventDefault();
+      const x0=e.clientX, w0=el.querySelector('.qas-panel').getBoundingClientRect().width;
+      el.classList.add('rz'); grip.setPointerCapture(e.pointerId);
+      const mv=function(ev){
+        const w=Math.max(380, Math.min(window.innerWidth*0.78, w0+(x0-ev.clientX)));
+        el.style.setProperty('--qasw', Math.round(w)+'px');
+      };
+      const up=function(){ el.classList.remove('rz');
+        grip.removeEventListener('pointermove',mv); grip.removeEventListener('pointerup',up); grip.removeEventListener('pointercancel',up); };
+      grip.addEventListener('pointermove',mv); grip.addEventListener('pointerup',up); grip.addEventListener('pointercancel',up);
+      void CSSW;
+    });
+  })();
 
   qasBind();
   R.qt.push(setTimeout(function(){ qasAsk(0); }, 520));
@@ -9475,6 +9473,16 @@ function renderResources(justInName){   // body only, so a just-in row can land 
 }
 /* ===== in-panel document viewer (resource preview, ~700px) ===== */
 const rightInner=right.querySelector('.right-inner');
+/* what you handed in, as the document it is */
+const MY_PROPOSAL_DOC=`<div class="pg-head"><span class="brandname">Airbnb</span><span class="eyebrow">FINAL PROPOSAL</span></div>
+  <div class="eyebrow" style="margin:26px 0 8px">RECOMMENDATION</div>
+  <h1>Real-time calendar sync, plus prep nudges for newer hosts</h1>
+  <p>Cancellations moved from <b>8 to 14 percent in six weeks</b>. Calendar conflicts account for 46 percent of them, concentrated in entire-home listings and hosts under eighteen months.</p>
+  <table><thead><tr><th>MEASURE</th><th>TODAY</th><th>TARGET</th></tr></thead><tbody>
+    <tr><td>Cancellation rate</td><td>14%</td><td>10%</td></tr>
+    <tr><td>Cost per cancellation</td><td>$28</td><td>$28</td></tr>
+    <tr><td>Annual saving at target</td><td>&mdash;</td><td>$3.0M</td></tr></tbody></table>
+  <div class="pg-foot"><span>Reducing host cancellations</span><span>1 / 1</span></div>`;
 const DL='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13m0 0l-4-4m4 4l4-4M4 20h16"/></svg>';
 let dvScale=1,dvPageEl=null;
 function setZoom(v){dvScale=Math.min(1.8,Math.max(.6,v));if(dvPageEl)dvPageEl.style.transform=`scale(${dvScale})`;const z=document.getElementById('dvZoom');if(z)z.textContent=Math.round(dvScale*100)+'%';}
