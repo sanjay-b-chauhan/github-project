@@ -3311,8 +3311,8 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
    bigger type, the coach speaks first, and every category carries its own colour */
 .rpt{--c-clarity:#e08b1f;--c-delivery:#25b3a4;--c-engagement:#ef4a8f;--c-qna:#9a6df0}
 .rpt-in{display:block!important;width:100%;max-width:min(720px,92vw);margin:0 auto;padding:clamp(28px,5vh,56px) clamp(18px,4vw,28px) 72px}
-/* the two who watched it sit in the corner of their own report */
-.rpt-by{position:absolute;right:70px;top:21px;z-index:6;display:flex;align-items:center;gap:10px}
+/* the two who watched it, at the head of their own report */
+.rpt-by{display:flex;align-items:center;gap:11px}
 .rpt-bynm{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--tx-3)}
 /* the band, blooming out of them */
 .rpt-bloom{position:absolute;left:0;top:0;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:99px;
@@ -4471,26 +4471,32 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 /* the one step that is happening, and nothing else */
 .rvw2-stage{position:relative;height:56px;width:100%;max-width:660px;margin-top:30px;
   display:flex;align-items:center;justify-content:center}
-/* the same stack the Q&A uses: whoever has the run steps forward, the other waits behind */
-.rvs{position:relative;width:100%;height:132px;margin-top:26px}
-.rvs-f{position:absolute;left:50%;top:50%;width:104px;height:104px;border-radius:99px;overflow:hidden;
-  display:grid;place-items:center;font-family:var(--f-body);font-size:33px;font-weight:600;color:#fff;
-  box-shadow:0 0 0 4px var(--bg), 0 0 0 6px rgba(255,255,255,.1), 0 18px 44px rgba(0,0,0,.5);
-  transform:translate(-50%,-50%) translateX(-52px) scale(.62);opacity:.68;z-index:1;filter:saturate(.55);
-  transition:transform .62s cubic-bezier(.34,1.24,.42,1),opacity .44s var(--osmo),filter .44s var(--osmo)}
-.rvs .rvs-f{position:absolute}
-.rvs-f:nth-child(2){transform:translate(-50%,-50%) translateX(52px) scale(.62)}
-.rvs-f.on,.rvs-f:nth-child(2).on{transform:translate(-50%,-50%) scale(1);opacity:1;z-index:3;filter:none}
-/* the run being read, under whoever has it */
-.rvs-scan{position:absolute;left:-25%;right:-25%;height:30%;top:-34%;pointer-events:none;opacity:0;z-index:2;
-  background:linear-gradient(180deg,transparent,rgba(255,255,255,.3),transparent)}
-.rvs-f.on .rvs-scan{opacity:1;animation:rvsScan 1.6s var(--ease) infinite}
-@keyframes rvsScan{0%{top:-34%}100%{top:108%}}
-/* and they come level, at the size the report will wear them */
-.rvs.settled .rvs-f,.rvs.settled .rvs-f:nth-child(2){opacity:1;filter:none;z-index:2;
-  transform:translate(-50%,-50%) translateX(-17px) scale(.34)}
-.rvs.settled .rvs-f:nth-child(2){transform:translate(-50%,-50%) translateX(17px) scale(.34);z-index:3}
-.rvs.settled .rvs-scan{opacity:0;animation:none}
+/* THE THING THEY ARE LOOKING AT. The run is on screen, scanning through, and the two of them go
+   round it — so the wait is them watching your presentation, which is what is actually happening. */
+.rvv{position:relative;width:100%;height:300px;margin-top:18px;display:flex;align-items:center;justify-content:center}
+.rvv-scr{position:relative;width:320px;height:180px;border-radius:16px;overflow:hidden;z-index:2;
+  background:linear-gradient(150deg,#241f1a,#141110);border:var(--bw) solid var(--line);
+  box-shadow:0 26px 64px rgba(0,0,0,.55)}
+.rvv-lab{position:absolute;left:12px;top:11px;z-index:3;font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.1em;color:rgba(255,255,255,.5)}
+.rvv-play{position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px 0 0 -20px;z-index:3;
+  border-radius:99px;display:grid;place-items:center;background:rgba(255,255,255,.9);color:#111}
+.rvv-play svg{width:15px;height:15px;margin-left:2px}
+.rvv-sweep{position:absolute;left:0;right:0;top:0;height:34%;z-index:2;pointer-events:none;
+  background:linear-gradient(180deg,transparent,rgba(255,255,255,.16),rgba(111,209,137,.22),transparent);
+  animation:rvvSweep 2.4s var(--ease) infinite}
+@keyframes rvvSweep{0%{top:-34%}100%{top:100%}}
+.rvv-bar{position:absolute;left:12px;right:12px;bottom:12px;height:3px;z-index:3;border-radius:99px;background:rgba(255,255,255,.2)}
+.rvv-bar i{display:block;height:100%;width:0;border-radius:99px;background:rgba(255,255,255,.9);
+  transition:width .7s cubic-bezier(.32,.72,0,1)}
+/* and the two of them, going round it */
+.rvv-f{position:absolute;left:50%;top:50%;width:78px;height:78px;border-radius:99px;overflow:hidden;
+  display:grid;place-items:center;font-family:var(--f-body);font-size:25px;font-weight:600;color:#fff;
+  will-change:transform;opacity:.72;filter:saturate(.5);
+  box-shadow:0 0 0 3px var(--bg), 0 0 0 5px rgba(255,255,255,.1), 0 14px 34px rgba(0,0,0,.5);
+  transition:opacity .45s var(--osmo),filter .45s var(--osmo),box-shadow .45s var(--osmo)}
+.rvv .rvv-f{position:absolute}
+.rvv-f.on{opacity:1;filter:none;box-shadow:0 0 0 3px var(--bg), 0 0 0 5px rgba(111,209,137,.6), 0 14px 34px rgba(0,0,0,.5)}
 .rvw2-step{position:absolute;display:flex;flex-direction:column;align-items:center;gap:18px;will-change:transform,opacity}
 .rvw2-ic{width:62px;height:62px;border-radius:99px;display:grid;place-items:center;
   background:var(--soft);border:var(--bw) solid var(--line);color:var(--tx);position:relative}
@@ -7894,18 +7900,35 @@ function roomReviewing(){
   ov.innerHTML='<div class="rvw2">'
    +'  <div class="rvw2-eyebrow">Reviewing</div>'
    +'  <h2 class="rvw2-h">Avery and Jordan are talking it over.</h2>'
-   +'  <div class="rvs" id="rvStack">'
-   +    PANEL.map(function(p,i3){ return '<span class="rvs-f zface'+(i3===0?' on':'')+'" data-k="'+p.k+'" style="background:'+p.c+'">'
-          +'<img src="'+p.img+'" alt="" onerror="this.remove()"><b>'+p.i+'</b><i class="rvs-scan"></i></span>'; }).join('')
+   +'  <div class="rvv" id="rvVid">'
+   +'    <div class="rvv-scr" id="rvScreen">'
+   +'      <span class="rvv-lab">final-presentation.mp4</span>'
+   +'      <span class="rvv-play">'+PIC.play+'</span>'
+   +'      <i class="rvv-sweep"></i>'
+   +'      <span class="rvv-bar"><i id="rvVidBar"></i></span>'
+   +'    </div>'
+   +    PANEL.map(function(p,i3){ return '<span class="rvv-f zface'+(i3===0?' on':'')+'" data-k="'+p.k+'" style="background:'+p.c+'">'
+          +'<img src="'+p.img+'" alt="" onerror="this.remove()"><b>'+p.i+'</b></span>'; }).join('')
    +'  </div>'
    +'  <div class="rvw2-stage" id="rvStage"></div>'
    +'  <div class="rvw2-rail"><i id="rvRail"></i></div>'
    +'</div>';
   const stage=ov.querySelector('#rvStage'), rail=ov.querySelector('#rvRail');
   const G=window.gsap;
-  /* whoever has the run steps forward and it sweeps under them; on the next beat it passes over */
-  const sf=[].slice.call(ov.querySelectorAll('.rvs-f'));
-  const stk=ov.querySelector('#rvStack');
+  /* they go round the recording while it plays. Whoever is coming past the front is the one
+     watching it just then — full colour, ringed — and on the next beat it passes to the other. */
+  const sf=[].slice.call(ov.querySelectorAll('.rvv-f'));
+  const vwrap=ov.querySelector('#rvVid'), vbar=ov.querySelector('#rvVidBar');
+  const orb={a:-Math.PI/2}, RX=232, RY=104;
+  const placeF=function(){
+    sf.forEach(function(f,k){
+      const a=orb.a+(k?Math.PI:0), dep=(Math.sin(a)+1)/2;   /* 1 = coming past the front */
+      f.style.transform='translate(-50%,-50%) translate('+(Math.cos(a)*RX).toFixed(1)+'px,'+(Math.sin(a)*RY).toFixed(1)+'px) scale('+(.74+dep*.34).toFixed(3)+')';
+      f.style.zIndex=dep>.5?4:1;
+    });
+  };
+  placeF();
+  R.rvOrbit = G ? G.to(orb,{a:orb.a+Math.PI*2,duration:11,repeat:-1,ease:'none',onUpdate:placeF}) : null;
   const handOver=function(n){ sf.forEach(function(f,k){ f.classList.toggle('on', k===(n%2)); }); };
   let i2=0;
   /* one line at a time: the last one leaves as the next arrives, so there is
@@ -7925,6 +7948,7 @@ function roomReviewing(){
     if(G) G.fromTo(node,{opacity:0,y:26,filter:'blur(8px)'},{opacity:1,y:0,filter:'blur(0px)',duration:.62,ease:'power3.out'});
     try{ ZSND.play('tap'); }catch(e){}
     rail.style.width=Math.round(((i2+1)/STEPS.length)*100)+'%';
+    if(vbar) vbar.style.width=Math.round(((i2+1)/STEPS.length)*100)+'%';   /* the recording plays through with them */
     i2++;
     R.rvT=setTimeout(show, 1650);
   };
@@ -7933,8 +7957,11 @@ function roomReviewing(){
      faces travel into it, so the wait and the verdict are one shot rather than two screens */
   const finish=function(){
     const last=stage.lastElementChild;
+    if(G && R.rvOrbit){ R.rvOrbit.kill(); R.rvOrbit=null; }
     sf.forEach(function(f){ f.classList.remove('on'); });
-    stk.classList.add('settled');   /* they come level, at the size the report will wear them */
+    /* they come to rest under the recording, level, at the size the report will wear them */
+    if(G) G.to(sf,{ x:function(k){ return k?19:-19; }, y:126, scale:.34, duration:.8, ease:'power3.inOut' });
+    else vwrap.classList.add('settled');
     if(G) G.to(last,{opacity:0,y:-18,filter:'blur(6px)',duration:.4,ease:'power2.in'});
     const node=document.createElement('div'); node.className='rvw2-step';
     node.innerHTML='<span class="rvw2-lbl settled">They have their read</span>';
@@ -7944,8 +7971,9 @@ function roomReviewing(){
     try{ ZSND.play('success'); }catch(e){}
     R.rvT=setTimeout(function(){
       const from={};
-      ov.querySelectorAll('.rvs-f').forEach(function(f){ from[f.dataset.k]=_mRect(f); });
+      ov.querySelectorAll('.rvv-f').forEach(function(f){ from[f.dataset.k]=_mRect(f); });
       R.rptAvFrom=from;
+      const scr=ov.querySelector('#rvScreen'); if(scr) R.rptVidFrom=_mRect(scr);   /* the recording travels too */
       roomReport(R.secs||0);
     }, 1450);
   };
@@ -8042,12 +8070,12 @@ function roomReport(secs){
   const GEAR='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
   ov.innerHTML='<div class="rpt" data-band="'+rptBand+'" style="--bc:'+RPT_BANDS[rptBand].colour+'">'
    +'<button class="rpt-gear" id="rptGear" aria-label="Controls">'+GEAR+'</button>'
+   +'<span class="rpt-bloom" id="rptBloom"></span>'
+   +'<div class="rpt-scroll"><div class="rpt-in">'
    +'<div class="rpt-by" id="rptBy"><span class="rp2-avs">'
    +   PANEL.map(function(p){ return '<span class="rp2-av zface" data-k="'+p.k+'" style="background:'+p.c+'">'
          +'<img src="'+p.img+'" alt="" onerror="this.remove()"><b>'+p.i+'</b></span>'; }).join('')
    +'</span><span class="rpt-bynm">'+PANEL.map(function(p){ return escHtml(p.name); }).join(' &amp; ')+'</span></div>'
-   +'<span class="rpt-bloom" id="rptBloom"></span>'
-   +'<div class="rpt-scroll"><div class="rpt-in">'
    +'<h1 class="rp2-verdict">'+RP2.verdict+'</h1>'
    +'<p class="rp2-prose">'+RP2.prose+'</p>'
    +'<div class="rp2-rule"></div>'
@@ -8092,29 +8120,31 @@ function roomReport(secs){
        dumped on you. Two frames first: a transition set on a node inserted in the same frame has no
        from-state to leave and simply does not run. */
     const _from=R.rptAvFrom; R.rptAvFrom=null;
-    const G2=window.gsap, scroll=ov.querySelector('.rpt-scroll'), bloom=ov.querySelector('#rptBloom');
-    const secs=ov.querySelectorAll('.rp2-verdict,.rp2-prose,.rp2-rule,.rp2-video,.rp2-mlab,.rp2-row,.rp2-cta');
-    if(G2) G2.set(secs,{opacity:0,y:20});
+    const G2=window.gsap, bloom=ov.querySelector('#rptBloom');
+    const _vid=R.rptVidFrom; R.rptVidFrom=null;
+    const secs=ov.querySelectorAll('.rp2-verdict,.rp2-prose,.rp2-rule,.rp2-mlab,.rp2-row,.rp2-cta');
+    const vidEl=ov.querySelector('.rp2-video');
+    if(G2){ G2.set(secs,{opacity:0,y:20}); if(vidEl) G2.set(vidEl,{opacity:0}); }
     ov.querySelector('.rpt-bynm').style.opacity=0;
     requestAnimationFrame(function(){ requestAnimationFrame(function(){
       const avs=ov.querySelectorAll('.rpt-by .rp2-av');
-      /* read the CORNER first: morphIn immediately parks them at the from-rect, so measuring after
-         it gave the loader's position and the bloom opened from mid-screen instead of where they land */
+      /* read the resting place BEFORE morphIn — it parks the element at its from-rect the instant it
+         is called, so measuring after gave the loader's position instead of where they land */
       const land=avs[0]?avs[0].getBoundingClientRect():null;
       avs.forEach(function(a){ const r=_from[a.dataset.k]; if(r) try{ morphIn(a,r,660); }catch(e){} });
-      const cx=land?Math.round(land.left+land.width/2):ov.clientWidth-90, cy=land?Math.round(land.top+land.height/2):40;
-      scroll.style.clipPath='circle(0px at '+cx+'px '+cy+'px)';
+      const rr=ov.getBoundingClientRect();
+      const cx=land?Math.round(land.left+land.width/2-rr.left):120, cy=land?Math.round(land.top+land.height/2-rr.top):60;
       setTimeout(function(){
         /* the band, blooming out of the two of them */
         bloom.style.left=cx+'px'; bloom.style.top=cy+'px';
-        if(G2){ G2.fromTo(bloom,{scale:0,opacity:.85},{scale:26,opacity:0,duration:1.05,ease:'power2.out'}); }
-        scroll.style.transition='clip-path .95s cubic-bezier(.32,.72,0,1)';
-        scroll.style.clipPath='circle(150% at '+cx+'px '+cy+'px)';
+        if(G2) G2.fromTo(bloom,{scale:0,opacity:.85},{scale:26,opacity:0,duration:1.1,ease:'power2.out'});
         if(G2){
           G2.to(ov.querySelector('.rpt-bynm'),{opacity:1,duration:.5,ease:'power2.out',delay:.1});
-          G2.to(secs,{opacity:1,y:0,duration:.62,ease:'power3.out',stagger:.085,delay:.26});
+          G2.to(secs,{opacity:1,y:0,duration:.62,ease:'power3.out',stagger:.085,delay:.24});
+          /* the run they were watching IS the run in the report — same object, it just flies here */
+          if(vidEl){ G2.to(vidEl,{opacity:1,duration:.28,delay:.5});
+            setTimeout(function(){ if(_vid) try{ morphIn(vidEl,_vid,720); }catch(e){} }, 500); }
         } else { ov.querySelector('.rpt-bynm').style.opacity=1; }
-        setTimeout(function(){ try{ scroll.style.clipPath=''; scroll.style.transition=''; }catch(e){} }, 1100);
         try{ ZSND.play('open'); }catch(e){}
       }, 700);
     }); });
