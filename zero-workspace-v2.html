@@ -2134,13 +2134,21 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .pres-cta .pc-go:hover{transform:translateY(-1px)}
 .pres-cta .pc-go svg{width:17px;height:17px}
 .mtile .mt-ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.mtile.hasvid{background:#141317}
+.mtile.hasvid{background:var(--bg)}
 
 /* ================= THE LIVE ROOM ================= */
+/* THE MEETING RUNS ON ITS OWN TWO GREYS. A step under the app, so walking into the room feels
+   like walking somewhere else — and it holds across every surface of the experience: the
+   pre-flight card, the room, the tiles, your own pip, Q&A, the analyze screen. One system, from
+   the moment you check your camera until the moment you leave. */
+.room,.ranalyze,.zshare.pfroom{--bg:#161616; --card:#202020; --panel:#1e1e1e; --soft:#1c1c1c; --rail:#161616}
+:root[data-theme="dark"] .room,
+:root[data-theme="dark"] .ranalyze,
+:root[data-theme="dark"] .zshare.pfroom{--bg:#161616; --card:#202020; --panel:#1e1e1e; --soft:#1c1c1c; --rail:#161616}
 .room{position:fixed;inset:0;z-index:600;background:var(--bg);color:var(--tx);opacity:0;transition:opacity .4s var(--ease);display:flex;font-family:var(--sans)}
 .room.show{opacity:1}
 /* ---- device check ---- */
-.rk{flex:1;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:44px;background:radial-gradient(130% 100% at 50% 0,#151519,#0b0b0d)}
+.rk{flex:1;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:44px;background:var(--bg)}
 .rk-back,.rm-back{width:44px;height:44px;border-radius:99px;display:grid;place-items:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);color:#e7e5e9;cursor:pointer;transition:background var(--t-q) var(--ease)}
 .rk-back{position:absolute;left:24px;top:24px}
 .rk-back:hover,.rm-back:hover{background:rgba(255,255,255,.13)}
@@ -2204,7 +2212,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
   0%{box-shadow:0 0 0 0 rgba(63,185,104,.42)}
   70%{box-shadow:0 0 0 22px rgba(63,185,104,0)}
   100%{box-shadow:0 0 0 0 rgba(63,185,104,0)}}
-.mtile.self{background:linear-gradient(160deg,#2d2833,#161320)}
+.mtile.self{background:var(--card)}
 .mt-body{display:grid;place-items:center;width:100%;height:100%}
 .mt-face{width:64px;height:64px;color:#6f6a74}.mt-face svg{width:64px;height:64px}
 .mtile.self.camoff .mt-face{opacity:.4}
@@ -2254,7 +2262,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .rm-toast{position:absolute;left:50%;top:64px;transform:translateX(-50%) translateY(-8px);background:rgba(20,20,24,.92);border:1px solid rgba(255,255,255,.08);border-radius:99px;padding:9px 18px;font-size:13px;font-weight:500;opacity:0;transition:all .3s var(--ease);pointer-events:none;z-index:6}
 .rm-toast.show{opacity:1;transform:translateX(-50%)}
 /* analysis */
-.ranalyze{position:fixed;inset:0;z-index:640;background:#0b0b0d;display:grid;place-items:center;opacity:0;transition:opacity .4s var(--ease)}
+.ranalyze{position:fixed;inset:0;z-index:640;background:var(--bg);display:grid;place-items:center;opacity:0;transition:opacity .4s var(--ease)}
 .ranalyze.show{opacity:1}
 .ra-in{display:flex;flex-direction:column;align-items:center;gap:26px;text-align:center}
 .ra-orb{position:relative;width:90px;height:90px}
@@ -2414,7 +2422,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .ri-x{position:absolute;right:15px;top:15px;width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:#9a969c;background:rgba(255,255,255,.05);border:0;cursor:pointer}
 .ri-x:hover{background:rgba(255,255,255,.12);color:#fff}.ri-x svg{width:16px;height:16px}
 /* floating self view */
-.rm-selfpip{position:absolute;right:20px;bottom:96px;width:250px;aspect-ratio:16/10;border-radius:16px;overflow:hidden;background:#141317;box-shadow:0 16px 42px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.09);z-index:6;display:grid;place-items:center}
+.rm-selfpip{position:absolute;right:20px;bottom:96px;width:250px;aspect-ratio:16/10;border-radius:16px;overflow:hidden;background:var(--card);box-shadow:0 16px 42px rgba(0,0,0,.5);border:var(--bw) solid var(--line);z-index:6;display:grid;place-items:center}
 .rm-selfpip video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
 .rm-selfpip.camoff video{display:none}
 .rm-self-face{width:46px;height:46px;color:#6f6a74}.rm-self-face svg{width:46px;height:46px}
@@ -2774,19 +2782,27 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 /* the status cluster: three icons carry everything, one line speaks */
 /* ONE control bar, BELOW the video. Nothing sits over your face: the frame stays clean, and the
    toggles, the three checks and the live line all live together underneath it. */
-.pfx .pfstep.on>.rc6-status{position:static;display:flex;flex-direction:column;align-items:center;gap:10px;
-  margin:14px 0 0;padding:14px 16px;border-radius:16px;background:var(--soft);border:var(--bw) solid var(--line);pointer-events:auto}
-.pfx .rc6-status .rc6-row{display:flex;align-items:center;justify-content:center;gap:26px;width:100%}
-.pfx .rc6-status .rc4-toggles{position:static!important;display:flex;gap:10px;transform:none!important;width:auto!important}
+/* the bar reads left to right the way you use it: what the room is telling you about yourself on
+   one side, the two switches you can actually flip on the other, and air in between. */
+.pfx .pfstep.on>.rc6-status{position:static;display:block;
+  margin:14px 0 0;padding:14px 20px;border-radius:16px;background:var(--soft);border:var(--bw) solid var(--line);pointer-events:auto}
+.pfx .rc6-status .rc6-row{display:flex;align-items:center;justify-content:space-between;gap:26px;width:100%}
+.pfx .rc6-status .rc4-toggles{position:static!important;display:flex;gap:10px;transform:none!important;width:auto!important;flex:0 0 auto}
 .pfx .pfstep.on{display:flex;flex-direction:column;align-items:stretch}   /* .on ONLY — as a bare .pfx .pfstep this outranked .pfstep{display:none} and every step rendered at once, so the camera check and the screen picker were on screen together. The stepper is a stepper again. */
-.pfx .rc6-msg{position:static;align-self:center;margin:0;opacity:1;transform:none;
-  display:inline-flex;align-items:center;min-height:32px;padding:7px 15px;border-radius:99px;
-  background:var(--soft);border:var(--bw) solid var(--line);color:var(--tx-2);
-  font-size:13px;font-weight:500;transition:color .4s var(--ease),border-color .4s var(--ease)}
-.pfx .rc6-msg:empty{visibility:hidden}
-.pfx .rc6-msg.ok{color:#6fd189;border-color:rgba(111,209,137,.34)}
-.pfx .rc6-msg.warn{color:#f0b755;border-color:rgba(240,183,85,.34)}
-.pfx .rc6-icons{gap:34px;justify-content:center}
+/* the live read belongs ON the thing it is reading. "Background noise is too high" sits over your
+   own picture, at the bottom, where you are already looking. */
+.pfx .rc6-cam .rc6-msg{position:absolute;left:50%;bottom:14px;z-index:5;margin:0;
+  transform:translateX(-50%) translateY(7px) scale(.98);
+  max-width:calc(100% - 32px);white-space:normal;text-align:center;
+  display:inline-flex;align-items:center;justify-content:center;min-height:0;padding:9px 17px;border-radius:99px;
+  background:rgba(9,9,10,.66);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.11);
+  color:#fff;font-size:13px;font-weight:600;letter-spacing:-.005em;opacity:0;
+  transition:opacity .32s var(--ease),transform .32s var(--ease),color .3s var(--ease),border-color .3s var(--ease)}
+.pfx .rc6-cam .rc6-msg.show{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}
+.pfx .rc6-cam .rc6-msg:empty{visibility:hidden}
+.pfx .rc6-cam .rc6-msg.ok{color:#6fd189;border-color:rgba(111,209,137,.36)}
+.pfx .rc6-cam .rc6-msg.warn{color:#f0b755;border-color:rgba(240,183,85,.36)}
+.pfx .rc6-icons{gap:34px;justify-content:flex-start}
 .rc6-msg{font-size:13.5px;font-weight:600;color:#fff;letter-spacing:-.005em;
   padding:8px 16px;border-radius:99px;background:rgba(12,12,14,.6);backdrop-filter:blur(12px);
   border:1px solid rgba(255,255,255,.08);white-space:nowrap;
@@ -6419,7 +6435,7 @@ function pfPopup(mode){
   const from = selfPip ? _mRect(selfPip) : null;
   if(selfPip) selfPip.style.visibility='hidden';
 
-  const m=document.createElement('div'); m.className='zshare';
+  const m=document.createElement('div'); m.className='zshare pfroom';
   m.innerHTML='<div class="zs-card pfx">'
     +'<div class="pfx-prog"><i id="pfxProg"></i></div>'
     +'<div class="pfx-inner">'
@@ -6433,12 +6449,10 @@ function pfPopup(mode){
     +'    <div class="rc6-sweep"></div>'
     +'    <div class="rc6-guide" id="rcGuide"><span class="gc"></span><span class="ge"></span></div>'
     +'    <div class="rc6-ret" id="rcRet"></div>'
+    +'    <div class="rc6-msg" id="rcMsg"></div>'
     +'  </div>'
     +'  <div class="rc6-status">'
     +'    <div class="rc6-row">'
-    +'      <div class="rc4-toggles"><button class="rc3-tg off" id="tgMic" aria-label="Unmute">'+PIC.micOff+'</button>'
-    +'        <button class="rc3-tg off" id="tgCam" aria-label="Start video">'+PIC.camOff+'</button></div>'
-    +'      <span class="rc6-sep"></span>'
     +'      <div class="rc6-icons">'
     +      CKS.map(function(c){
              const icon = c.k==='frame'?IC_FRAME:(c.k==='light'?PIC.sun:PIC.mic);
@@ -6447,8 +6461,9 @@ function pfPopup(mode){
                +'<span class="pfs-ic">'+icon+'</span><span class="pfs-l">'+c.t+'</span></span>';
            }).join('')
     +'      </div>'
+    +'      <div class="rc4-toggles"><button class="rc3-tg off" id="tgMic" aria-label="Unmute">'+PIC.micOff+'</button>'
+    +'        <button class="rc3-tg off" id="tgCam" aria-label="Start video">'+PIC.camOff+'</button></div>'
     +'    </div>'
-    +'    <div class="rc6-msg" id="rcMsg"></div>'
     +'  </div>'
     +'</div>'
     +'<div class="pfstep pfx-share" id="pfS2">'
@@ -7551,7 +7566,7 @@ function roomQA(){
    +'  <div class="qas-tl"><button class="qas-back" id="qasBack" aria-label="Leave">'+PIC.back+'</button></div>'
    +'  <div class="qas-tc">'
    +'    <div class="qas-title">Q&amp;A session</div>'
-   +'    <div class="qas-prog"><span class="qas-brain">'+HI.brain+'</span><span class="qas-seg" id="qasSeg">'
+   +'    <div class="qas-prog"><span class="qas-brain">'+IC_QMARK+'</span><span class="qas-seg" id="qasSeg">'
    +      QA_Q.map(function(){ return '<i></i>'; }).join('')
    +'    </span></div>'
    +'  </div>'
@@ -9162,6 +9177,8 @@ document.addEventListener('keydown',e=>{ if(e.code==='Space'&&pouApp.classList.c
 document.addEventListener('keyup',e=>{ if(e.code==='Space'&&pouRecording&&pouSpaceHeld){e.preventDefault();stopPouRec(true);} });
 
 const JBUL=arr=>`<ul class="jbul">${arr.map(b=>`<li>${b}</li>`).join('')}</ul>`;
+/* the Q&A meter's own mark: a question being asked, not the stage's understanding badge */
+const IC_QMARK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.7c0 4.5-3.8 8.2-8.5 8.2a9 9 0 0 1-3.2-.6L4 21l1.4-3.9a7.9 7.9 0 0 1-1.9-5.4c0-4.5 3.8-8.2 8.5-8.2s8.5 3.7 8.5 8.2Z"/><path d="M9.9 9.4a2.2 2.2 0 1 1 2.9 2.1c-.5.2-.8.6-.8 1.1v.5"/><path d="M12 15.9h.01"/></svg>';
 /* ===== LLM brain (Ollama Cloud) with a smart local fallback ===== */
 const LLM={endpoint:'https://ollama.com/api/chat',key:'',model:'gpt-oss:120b'};
 const JAY_SYS_BASE="You are Jay Shah, Director of Marketplace Operations at Airbnb, coaching a Business Analyst through a project to reduce host cancellations. Context: host cancellation rate rose 11%→14% over six months, each cancellation costs ~$28, totalling >$9M/yr; targets are a 10% rate and $3M+ annual savings; the primary driver is calendar-conflict double-bookings, concentrated in Entire-home listings and experienced (24+ month) hosts. The project runs in 7 stages: proposal template, trend analysis, root cause, cost model, proposed solution, final proposal, presentation. Speak like a real person texting a teammate: genuine, concise, encouraging but honest. Plain prose by default; bullet points ONLY for a real step-by-step, never for a normal reply. No em-dashes. Keep it short, 1-3 sentences unless steps are needed.";
