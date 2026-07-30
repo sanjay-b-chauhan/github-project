@@ -8093,10 +8093,14 @@ function roomReport(secs){
 
   /* the same two faces that were circling a second ago land here */
   if(R.rptAvFrom){
-    ov.querySelectorAll('.rp2-av').forEach(function(a){
-      const r=R.rptAvFrom[a.dataset.k]; if(r) try{ morphIn(a,r,620); }catch(e){}
-    });
-    R.rptAvFrom=null;
+    /* two frames, so the report has actually been laid out and painted first — a transition set on
+       a node inserted in the same frame has no from-state to leave, and simply does not run */
+    const _from=R.rptAvFrom; R.rptAvFrom=null;
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){
+      ov.querySelectorAll('.rp2-av').forEach(function(a){
+        const r=_from[a.dataset.k]; if(r) try{ morphIn(a,r,620); }catch(e){}
+      });
+    }); });
   }
   const _g=ov.querySelector('#rptGear');
   if(_g) _g.onclick=function(){ const d=document.getElementById('dbg'); if(d)d.classList.toggle('open'); try{ ZSND.play('tap'); }catch(e){} };
