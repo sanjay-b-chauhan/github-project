@@ -3332,7 +3332,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 /* the replay */
 .rpt .rp2-video{position:relative;aspect-ratio:16/9;border-radius:18px;overflow:hidden;background:#0c0a0b;
   display:grid;place-items:center;box-shadow:0 12px 34px rgba(0,0,0,.35)}
-.rpt .rp2-video .bgw{position:absolute;inset:0;background:linear-gradient(135deg,#2a2622,#17140f)}
+.rpt .rp2-video .pv{border-radius:inherit}
 .rpt .rp2-play{position:relative;z-index:2;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.94);
   display:grid;place-items:center;color:#1F1D1E;cursor:pointer;border:0;box-shadow:0 6px 20px rgba(0,0,0,.3);
   transition:transform .22s var(--ease)}
@@ -4488,23 +4488,25 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .rvv{position:relative;width:100%;height:300px;margin-top:18px;display:flex;align-items:center;justify-content:center}
 .rvv-scr{position:relative;width:340px;height:191px;border-radius:16px;overflow:hidden;z-index:2;
   background:#0e0d0c;border:var(--bw) solid var(--line);box-shadow:0 26px 64px rgba(0,0,0,.55)}
-/* your deck, on the screen */
-.rvv-deck{position:absolute;left:14px;right:14px;top:26px;bottom:26px;border-radius:8px;background:#f5f3ee;
-  padding:14px 16px;display:flex;flex-direction:column;gap:7px;overflow:hidden}
-.rvv-deck .dk-eyebrow{display:block;width:38%;height:4px;border-radius:2px;background:#c9c4ba}
-.rvv-deck .dk-h{display:block;width:82%;height:9px;border-radius:3px;background:#1a1815;margin-top:2px}
-.rvv-deck .dk-h.two{width:54%}
-.rvv-deck .dk-cols{margin-top:auto;display:flex;align-items:flex-end;gap:7px;height:46%}
-.rvv-deck .dk-cols i{flex:1;border-radius:2px 2px 0 0;background:#1a1815;opacity:.82}
-.rvv-deck .dk-cols i:nth-child(4){background:#ff6a4d;opacity:1}
+/* THE RUN, one frame, drawn in container-width units so it holds its proportions whether it is
+   340px wide in the loader or 664px wide in the report */
+.pv{position:absolute;inset:0;container-type:inline-size;overflow:hidden;background:#0e0d0c;z-index:1}
+.pv-deck{position:absolute;left:4.1cqw;right:4.1cqw;top:7.6cqw;bottom:7.6cqw;border-radius:2.4cqw;background:#f5f3ee;
+  padding:4.1cqw 4.7cqw;display:flex;flex-direction:column;gap:2.1cqw;overflow:hidden}
+.pv-deck .dk-eyebrow{display:block;width:38%;height:1.2cqw;border-radius:.6cqw;background:#c9c4ba}
+.pv-deck .dk-h{display:block;width:82%;height:2.6cqw;border-radius:.9cqw;background:#1a1815;margin-top:.6cqw}
+.pv-deck .dk-h.two{width:54%}
+.pv-deck .dk-cols{margin-top:auto;display:flex;align-items:flex-end;gap:2.1cqw;height:46%}
+.pv-deck .dk-cols i{flex:1;border-radius:.6cqw .6cqw 0 0;background:#1a1815;opacity:.82}
+.pv-deck .dk-cols i:nth-child(4){background:#ff6a4d;opacity:1}
 /* and you, in the corner, the way you were on the call */
-.rvv-pip{position:absolute;right:10px;bottom:22px;width:66px;height:44px;border-radius:7px;overflow:hidden;z-index:4;
-  background:#1c1a18;border:1px solid rgba(255,255,255,.14);box-shadow:0 6px 18px rgba(0,0,0,.5);
-  display:grid;place-items:center}
-.rvv-pip img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.rvv-pip b{font-size:14px;font-weight:600;color:#fff}
-.rvv-pip em{position:absolute;left:4px;bottom:3px;z-index:2;font-style:normal;font-family:var(--mono);
-  font-size:6.5px;letter-spacing:.08em;text-transform:uppercase;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.9)}
+.pv-pip{position:absolute;right:2.9cqw;bottom:6.5cqw;width:19.4cqw;height:12.9cqw;border-radius:2.1cqw;
+  overflow:hidden;z-index:4;background:#1c1a18;border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 6px 18px rgba(0,0,0,.5);display:grid;place-items:center}
+.pv-pip img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pv-pip b{font-size:4.1cqw;font-weight:600;color:#fff}
+.pv-pip em{position:absolute;left:1.2cqw;bottom:.9cqw;z-index:2;font-style:normal;font-family:var(--mono);
+  font-size:1.9cqw;letter-spacing:.08em;text-transform:uppercase;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.9)}
 .rvv-lab{position:absolute;left:12px;top:9px;z-index:5;display:inline-flex;align-items:center;gap:6px;
   font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:rgba(255,255,255,.55)}
 .rvv-rec{width:5px;height:5px;border-radius:99px;background:#ff5d55;animation:rvvRec 1.6s var(--ease) infinite}
@@ -7919,11 +7921,7 @@ function roomReviewing(){
    +'  <h2 class="rvw2-h">Avery and Jordan are talking it over.</h2>'
    +'  <div class="rvv" id="rvVid">'
    +'    <div class="rvv-scr" id="rvScreen">'
-   +'      <div class="rvv-deck">'
-   +'        <span class="dk-eyebrow"></span><span class="dk-h"></span><span class="dk-h two"></span>'
-   +'        <span class="dk-cols"><i style="height:38%"></i><i style="height:62%"></i><i style="height:47%"></i><i style="height:88%"></i><i style="height:71%"></i></span>'
-   +'      </div>'
-   +'      <span class="rvv-pip">'+(ME.img?'<img src="'+ME.img+'" alt="">':'<b>'+ME.i+'</b>')+'<em>'+escHtml(ME.name)+'</em></span>'
+   +      presFrameHTML()
    +'      <span class="rvv-lab"><i class="rvv-rec"></i>final-presentation.mp4</span>'
    +'      <i class="rvv-sweep"></i>'
    +'      <span class="rvv-bar"><i id="rvVidBar"></i></span>'
@@ -8101,7 +8099,7 @@ function roomReport(secs){
    +'<p class="rp2-prose">'+RP2.prose+'</p>'
    +'<div class="rp2-rule"></div>'
    +'<div class="rp2-video">'
-   +'  <div class="bgw"></div>'
+   +   presFrameHTML()
    +'  <span class="rp2-vlab">final-presentation.mp4 &middot; '+_fmt(secs||252)+'</span>'
    +'  <button class="rp2-play" id="rp2Play" aria-label="Play">'+PIC.play+'</button>'
    +'  <div class="rp2-scrub"><div class="rp2-fill" id="rp2Fill"></div>'
@@ -9572,6 +9570,17 @@ function renderResources(justInName){   // body only, so a just-in row can land 
 /* ===== in-panel document viewer (resource preview, ~700px) ===== */
 const rightInner=right.querySelector('.right-inner');
 /* what you handed in, as the document it is */
+/* THE RUN ITSELF: your deck on the screen, you in the corner. One definition — the loader shows
+   this and so does the report's player, so the thing that flies between them is the same object. */
+function presFrameHTML(){
+  return '<div class="pv">'
+    +'<div class="pv-deck">'
+    +'  <span class="dk-eyebrow"></span><span class="dk-h"></span><span class="dk-h two"></span>'
+    +'  <span class="dk-cols"><i style="height:38%"></i><i style="height:62%"></i><i style="height:47%"></i><i style="height:88%"></i><i style="height:71%"></i></span>'
+    +'</div>'
+    +'<span class="pv-pip">'+(ME.img?'<img src="'+ME.img+'" alt="" onerror="this.remove()">':'')+'<b>'+ME.i+'</b><em>'+escHtml(ME.name)+'</em></span>'
+    +'</div>';
+}
 /* one mark per kind of note, so a pin on the bar tells you what it is before you open it */
 const MOM_IC={
   clarity:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><circle cx="12" cy="12" r="3.2"/><path d="M12 1.4v2.8M12 19.8v2.8M1.4 12h2.8M19.8 12h2.8"/></svg>',
