@@ -305,9 +305,22 @@ svg{display:block}
   transition:transform var(--t-q) var(--ease),opacity var(--t-q) var(--ease)}
 .ko2-next:hover{transform:translateX(3px)}
 .ko2-next svg{width:20px;height:20px}
-.ko2-skip{position:absolute;left:28px;bottom:34px;font-size:12.5px;font-weight:600;color:var(--tx-3);
-  background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:4px}
-.ko2-skip:hover{color:var(--tx)}
+/* Skip lives top-right — the convention the rest of the product uses. Never
+   bottom-left, where it competes with the reading position. */
+.ko2-skip{height:36px;padding:0 16px;border-radius:99px;background:var(--soft);
+  border:var(--bw) solid var(--line);color:var(--tx-2);cursor:pointer;
+  font-family:var(--sans);font-size:12.5px;font-weight:600;letter-spacing:-.01em;
+  transition:background var(--t-q) var(--ease),color var(--t-q) var(--ease)}
+.ko2-skip:hover{background:var(--hover);color:var(--tx)}
+/* prev and next are a pair, so pacing is symmetrical: go back to re-read, or
+   forward when you're done. Neither is hidden away from the other. */
+.ko2-prev{position:absolute;right:88px;bottom:26px;width:52px;height:52px;border-radius:99px;
+  background:var(--soft);border:var(--bw) solid var(--line);color:var(--tx-2);
+  display:grid;place-items:center;cursor:pointer;
+  transition:transform var(--t-q) var(--ease),color var(--t-q) var(--ease),background var(--t-q) var(--ease)}
+.ko2-prev:hover{background:var(--hover);color:var(--tx);transform:translateX(-3px)}
+.ko2-prev:disabled{opacity:.3;pointer-events:none}
+.ko2-prev svg{width:20px;height:20px}
 /* the end CTA replaces the arrow on the last panel */
 .ko2-cta{position:absolute;left:50%;bottom:30px;transform:translateX(-50%);
   display:none;align-items:center;gap:9px;height:46px;padding:0 28px;border-radius:var(--pill);
@@ -1011,13 +1024,15 @@ td.cell-active::after{border-color:var(--accent)}
 <div class="ko2 show" id="ko2">
   <div class="ko2-top">
     <button class="ko2-back" id="ko2Back" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <span style="flex:1"></span>
+    <button class="ko2-skip" id="ko2Skip">Skip</button>
   </div>
   <div class="ko2-stage">
     <div class="ko2-scrub" id="ko2Scrub"></div>
     <div class="ko2-chap" id="ko2Chap"></div>
     <div class="ko2-visual" id="ko2Visual"></div>
     <div class="ko2-text" id="ko2Text"></div>
-    <button class="ko2-skip" id="ko2Skip">Skip</button>
+    <button class="ko2-prev" id="ko2Prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></button>
     <button class="ko2-next" id="ko2Next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
     <button class="ko2-cta" id="ko2Cta">Continue<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
   </div>
@@ -2697,6 +2712,8 @@ function koRender(){
   const chap= document.getElementById('ko2Chap');
   chap.textContent = (koI+1)+' / '+KO_PANELS.length;
   const last = koI === KO_PANELS.length-1;
+  const prev = document.getElementById('ko2Prev');
+  if(prev){ prev.disabled = koI===0; prev.style.display = last ? 'none' : 'grid'; }
   next.style.display = last ? 'none' : 'grid';
   cta.classList.toggle('show', last);
 
@@ -2711,17 +2728,17 @@ function koRender(){
     const rows=[...txt.querySelectorAll('.a-row')];
     rows.forEach((r,i)=>G.fromTo(r,{opacity:0,y:14},{opacity:1,y:0,duration:.44,delay:.16+i*.09,ease:'power3.out',
       onStart:()=>setTimeout(()=>{r.classList.add('lit');try{sfx.tick()}catch(_){}} ,120)}));
-    koScrub(koI, 2600);
-    koTimer=setTimeout(()=>{koTimer=null; if(koI===0) koGo(1);}, 4200);
+    koScrub(koI, 2600);   /* fills at the average reading pace, then waits */
   } else {
     const b=p.beat;
     if(VISUALS[b.v]){ vis.innerHTML=''; VISUALS[b.v](vis);
       G.fromTo(vis,{opacity:0,y:14},{opacity:1,y:0,duration:.5,ease:'power3.out'}); }
     beatSkip=false;
     koScrub(koI, koWordMs(b.t));
-    streamInto(txt, b.t, 80).then(()=>{
-      if(koI < KO_PANELS.length-1) koTimer=setTimeout(()=>{koTimer=null; koGo(koI+1);}, 1600);
-    });
+    /* The scrubber still fills over the average reading time so the pace is
+       visible, but NOTHING advances on its own — people read at different
+       speeds and were being moved on mid-sentence. The arrow advances. */
+    streamInto(txt, b.t, 80);
   }
 }
 function koGo(i){
@@ -2770,6 +2787,8 @@ function koLaunch(){
   const n=document.getElementById('ko2Next'), c=document.getElementById('ko2Cta'),
         s=document.getElementById('ko2Skip'), b=document.getElementById('ko2Back');
   if(n) n.onclick=()=>{try{sfx.tap()}catch(_){}; koGo(koI+1)};
+  const pv=document.getElementById('ko2Prev');
+  if(pv) pv.onclick=()=>{try{sfx.tap()}catch(_){}; koGo(koI-1)};
   if(c) c.onclick=koLaunch;
   if(s) s.onclick=()=>{try{sfx.tap()}catch(_){}; koLaunch()};
   if(b) b.onclick=()=>{try{sfx.tap()}catch(_){}; koGo(koI-1)};
