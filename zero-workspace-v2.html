@@ -1606,6 +1606,8 @@ svg{display:block}
 .composer.notesmode .fmt-bar{display:flex;animation:rise var(--t-q) var(--ease)}
 .fmt-bar button{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;color:var(--tx-3);font-size:13.5px;transition:background var(--t-q) var(--ease),color var(--t-q) var(--ease)}
 .fmt-bar button:hover{background:var(--hover);color:var(--tx)}
+/* the caret's current formatting, shown on the button that owns it */
+.fmt-bar button.on{background:var(--hover);color:var(--tx);box-shadow:inset 0 0 0 1px var(--line)}
 .fmt-bar button svg{width:16px;height:16px}
 .fb-sep{width:1px;height:16px;background:var(--line);margin:0 6px}
 .composer.notesmode #ta{min-height:150px;font-size:14.5px;line-height:1.6}
@@ -1645,10 +1647,17 @@ svg{display:block}
 .pp-ed p:last-child{margin-bottom:0}
 .pp-ed ::selection{background:rgba(255,255,255,.16)}
 /* and the marks survive into the block he reads */
-/* a numbered plan stays numbered when he reads it back */
-.pn-lines.ord{counter-reset:pl}
-.pn-lines.ord li::before{counter-increment:pl;content:counter(pl)".";left:0;top:0;width:auto;height:auto;
-  border-radius:0;background:none;color:var(--tx-3);font-variant-numeric:tabular-nums;font-size:12.5px}
+/* the block renders what the editor rendered — same lists, same marks, same shape */
+.pn-rich{padding:2px 0 4px;font-size:13.5px;line-height:1.55;color:var(--tx)}
+.pn-rich ul,.pn-rich ol{margin:6px 0;padding-left:24px;display:flex;flex-direction:column;gap:5px}
+.pn-rich li{padding-left:4px}
+.pn-rich li::marker{color:var(--tx-3);font-size:.92em}
+.pn-rich ul{list-style:disc}
+.pn-rich ol{list-style:decimal}
+.pn-rich p,.pn-rich div{margin:0 0 6px}
+.pn-rich p:last-child,.pn-rich div:last-child{margin-bottom:0}
+.pn-rich b,.pn-rich strong{font-weight:700;color:var(--tx)}
+.pn-rich i,.pn-rich em{font-style:italic}
 .pn-lines li .ln b,.pn-lines li .ln strong{font-weight:700;color:var(--tx)}
 .pn-lines li .ln i,.pn-lines li .ln em{font-style:italic}
 /* the placeholder is driven by a class, not :empty — a contenteditable stops being :empty the
@@ -6039,10 +6048,47 @@ function makeNotePad(o){
   const emptyCheck=function(){ pad.classList.toggle('is-empty', !ed.innerText.trim()); };
   emptyCheck();
   ['input','keyup','paste','cut','focus','blur'].forEach(function(ev){ ed.addEventListener(ev, emptyCheck); });
-  pad.querySelectorAll('[data-fmt]').forEach(b=>b.addEventListener('mousedown',e=>{ e.preventDefault(); ed.focus(); document.execCommand(b.dataset.fmt); }));
+  const fmtBtns=[].slice.call(pad.querySelectorAll('[data-fmt]'));
+  fmtBtns.forEach(b=>b.addEventListener('mousedown',e=>{ e.preventDefault(); ed.focus(); document.execCommand(b.dataset.fmt); syncFmt(); }));
+  /* THE TOOLBAR REFLECTS THE CARET. B lights up inside bold, the list button lights up inside a
+     list — without it you are formatting blind. */
+  function syncFmt(){
+    fmtBtns.forEach(function(b){
+      let on=false;
+      try{ on=document.queryCommandState(b.dataset.fmt); }catch(e){}
+      b.classList.toggle('on',!!on);
+    });
+  }
+  ['keyup','mouseup','input','focus'].forEach(function(ev){ ed.addEventListener(ev,syncFmt); });
+  document.addEventListener('selectionchange',function(){ if(document.activeElement===ed) syncFmt(); });
+  /* TYPE "1. " OR "- " AND IT BECOMES A LIST, the way every editor you use already behaves. */
+  ed.addEventListener('input',function(){
+    const sel=window.getSelection(); if(!sel.rangeCount) return;
+    const node=sel.anchorNode; if(!node||node.nodeType!==3) return;
+    if(node.parentElement && node.parentElement.closest('li')) return;   /* already in one */
+    const m=/^(\d+[.)]|[-*])\s$/.exec(node.nodeValue||'');
+    if(!m) return;
+    node.nodeValue='';
+    document.execCommand(/^\d/.test(m[1])?'insertOrderedList':'insertUnorderedList');
+    syncFmt();
+  });
+  /* ENTER ON AN EMPTY BULLET LEAVES THE LIST. Browsers mostly do this; where they do not, the
+     caret gets stuck making empty bullets forever. */
+  ed.addEventListener('keydown',function(e){
+    if(e.key!=='Enter') return;
+    const sel=window.getSelection(); if(!sel.rangeCount) return;
+    const li=sel.anchorNode && (sel.anchorNode.nodeType===1?sel.anchorNode:sel.anchorNode.parentElement);
+    const item=li && li.closest && li.closest('li');
+    if(item && !item.textContent.trim()){
+      e.preventDefault();
+      document.execCommand(item.closest('ol')?'insertOrderedList':'insertUnorderedList');   /* toggles out */
+      syncFmt();
+    }
+  });
+  syncFmt();
   pad.querySelector('.share-plan').onclick=()=>{
     const v=ed.innerText.trim(); if(!v) return;
-    const marks=planLinesFromHTML(ed);          /* carry the bold, the italics and the list structure */
+    const marks=planCleanHTML(ed);              /* the whole shape of it, not a list of lines */
     if(o.guard && o.guard()===false) return;     // guard runs BEFORE the pad goes, so a blocked send keeps it
     pad.remove();
     o.onShare(v, marks);                          /* pass them ON — the pad is already gone by now, so
@@ -7044,11 +7090,15 @@ function planToTime(){
 }
 function renderPlanNotes(text, html){
   const el=document.createElement('div'); el.className='planline plannotes'; el.id='planBlock';
-  /* prefer the marked-up version when the pad hands one over; fall back to plain lines */
-  const lines=(html&&html.length)?html:planBullets(text).map(function(t){ return {h:escHtml(t),ord:false}; });
-  const ordered=lines.length && lines.every(function(l){ return l.ord; });
-  el.innerHTML=`<div class="pl2-h"><span class="pl2-pin"></span><span>Your plan</span></div>
-    <ul class="pn-lines${ordered?' ord':''}">${lines.map((b,i)=>`<li style="--sd:${i*170}ms"><span class="ln">${b.h}</span></li>`).join('')}</ul>`;
+  const head='<div class="pl2-h"><span class="pl2-pin"></span><span>Your plan</span></div>';
+  if(html && html.trim()){
+    /* exactly what was typed, structure and all */
+    el.innerHTML=head+'<div class="pn-rich">'+html+'</div>';
+    [].slice.call(el.querySelectorAll('.pn-rich .ln')).forEach(function(n,i){ n.style.setProperty('--sd',(i*170)+'ms'); });
+    return el;
+  }
+  const lines=planBullets(text);
+  el.innerHTML=head+`<ul class="pn-lines">${lines.map((b,i)=>`<li style="--sd:${i*170}ms"><span class="ln">${escHtml(b)}</span></li>`).join('')}</ul>`;
   return el;
 }
 function mediaReactExperience(turnEl, v){
@@ -8882,33 +8932,29 @@ function planBullets(t){
   const parts=String(t).split(/\r?\n+/).map(s=>s.trim()).filter(Boolean);
   return parts.length?parts:[String(t).trim()];
 }
-/* WHAT YOU WROTE IS WHAT HE READS. The pad used to hand over innerText, so every bold, italic and
-   list you made was thrown away between writing it and sending it. This keeps the marks and drops
-   everything else — no styles, no scripts, no pasted markup. */
-const PLAN_OK={B:1,STRONG:1,I:1,EM:1,U:1};
-function planLinesFromHTML(root){
-  const out=[];
-  const inline=function(node){
-    let h='';
-    node.childNodes.forEach(function(n){
-      if(n.nodeType===3){ h+=escHtml(n.nodeValue); return; }
+/* WHAT YOU WROTE IS WHAT HE READS — the whole shape of it.
+   The old version walked the editor and pushed out a flat array of lines, which threw away every
+   heading, every nested list and every mix of bullets and numbers. That is why a heading plus a
+   numbered list came back as two bullets. This keeps the tree and only strips what is unsafe. */
+const PLAN_TAGS={B:1,STRONG:1,I:1,EM:1,U:1,UL:1,OL:1,LI:1,BR:1,P:1,DIV:1};
+function planCleanHTML(root){
+  const out=document.createElement('div');
+  (function copy(src,dst){
+    src.childNodes.forEach(function(n){
+      if(n.nodeType===3){ dst.appendChild(document.createTextNode(n.nodeValue)); return; }
       if(n.nodeType!==1) return;
-      if(n.tagName==='BR'){ h+=' '; return; }
-      const inner=inline(n);
-      h += PLAN_OK[n.tagName] ? '<'+n.tagName.toLowerCase()+'>'+inner+'</'+n.tagName.toLowerCase()+'>' : inner;
+      if(!PLAN_TAGS[n.tagName]){ copy(n,dst); return; }      /* unknown wrapper: keep the contents */
+      const el=document.createElement(n.tagName.toLowerCase());
+      copy(n,el);
+      if(el.innerHTML.trim()||el.tagName==='BR') dst.appendChild(el);
     });
-    return h;
-  };
-  const walk=function(node, ord){
-    node.childNodes.forEach(function(n){
-      if(n.nodeType===3){ const t=n.nodeValue.trim(); if(t) out.push({h:escHtml(t),ord:!!ord}); return; }
-      if(n.nodeType!==1) return;
-      if(n.tagName==='UL'||n.tagName==='OL'){ walk(n, n.tagName==='OL'); return; }
-      const h=inline(n).trim(); if(h) out.push({h:h, ord:!!ord});
-    });
-  };
-  walk(root,false);
-  return out.filter(function(o){ return o && o.h; });
+  })(root,out);
+  /* the read-through animates .ln, so give every leaf block one to hold on to */
+  out.querySelectorAll('li,p,div').forEach(function(b){
+    if(b.querySelector('ul,ol,li,p,div')) return;
+    b.innerHTML='<span class="ln">'+b.innerHTML+'</span>';
+  });
+  return out.innerHTML;
 }
 function planSubmitNotes(text){
   if(!planActive || planSent) return;
