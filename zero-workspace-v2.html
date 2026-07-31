@@ -10059,6 +10059,38 @@ function jumpStage(i){
   updateStageNav();
   const dbg=document.getElementById('dbg'); if(dbg)dbg.classList.remove('open');
 }
+/* ============ FAST-FORWARDING A BEAT =======================================================
+   Every beat in this product is a setTimeout. To finish a scan, a read-through or a resubmit on
+   demand, we keep a register of the ones still pending and run them in due order rather than
+   waiting them out. Only near-term timers are flushed — anything more than eight seconds out is a
+   cleanup or a loop and is left alone. */
+const _BEAT_T=new Map();
+const _rawST=window.setTimeout.bind(window), _rawCT=window.clearTimeout.bind(window);
+window.setTimeout=function(fn,ms){
+  if(typeof fn!=='function') return _rawST.apply(null,arguments);
+  const d=+ms||0;
+  const id=_rawST(function(){ _BEAT_T.delete(id); fn(); }, d);
+  if(d<=8000) _BEAT_T.set(id,{fn:fn,due:Date.now()+d});
+  return id;
+};
+window.clearTimeout=function(id){ _BEAT_T.delete(id); return _rawCT(id); };
+function flushBeats(rounds){
+  rounds=rounds||6;
+  for(let r=0;r<rounds;r++){
+    const due=[..._BEAT_T.entries()].sort(function(a,b){ return a[1].due-b[1].due; });
+    if(!due.length) return r;
+    due.forEach(function(e){
+      _BEAT_T.delete(e[0]); _rawCT(e[0]);
+      try{ e[1].fn(); }catch(x){}                 /* one bad beat must not stop the rest */
+    });
+  }
+  return rounds;
+}
+/* is the flow busy doing something you would otherwise sit and watch? */
+function _busy(){
+  return !!document.querySelector('.typing, .thought, .fitem.checking, .fitem.skel, .fb2-row.skel, '
+    +'.jr-load, .rvw2, .ranalyze, .scan, .pn-lines li.scan');
+}
 /* ============ ONE STEP FORWARD ============================================================
    The forward arrow does not skip a stage. It does the next thing the flow is waiting on — fills
    the plan, shares it, hits the pill that is showing, answers the manager, dismisses the pop-up —
@@ -10071,6 +10103,8 @@ function _q(sel){ const e=document.querySelector(sel); return _vis(e)?e:null; }
 const STEP_REPLY=["Sounds good.","That makes sense, thanks.","Got it, I'm good to go."];
 let _stepReply=0;
 function stepFlow(){
+  /* 0. something is processing: finish it rather than wait it out, and land on the result */
+  if(_busy()){ flushBeats(); return; }
   /* 1. a pop-up is in the way: acknowledge it */
   let el=_q('#pentry #peGo')||_q('#pfdone #pfDoneGo')||_q('.ri-modal #riGo');
   if(el){ el.click(); return; }
@@ -10095,12 +10129,11 @@ function stepFlow(){
       inp.dispatchEvent(new Event('input',{bubbles:true})); return; }
     try{ send(); return; }catch(e){}
   }
-  /* 5. the flow is mid-beat — he is typing, something is scanning, a screen is playing. Wait for
-     it. Falling through to the next stage here is exactly the stage-skipping this replaced. */
-  if(document.querySelector('.typing, .thought, .iconTrail, .jr-load, .fitem.checking, .rvw2, .qas, .ranalyze')
-     || document.querySelector('.room')
-     || document.querySelector('.plan-pad')) return;
-  /* 6. genuinely nothing left on this stage — now the next one */
+  /* 5. a screen of its own is up and driving itself — the room, the Q&A, the report. Push it on. */
+  if(document.querySelector('.room, .qas, .rpt')){ flushBeats(); return; }
+  /* 6. nothing offered and nothing running: push the remaining beats before giving up on the stage */
+  if(flushBeats(2)>0) return;
+  /* 7. genuinely nothing left here — now the next stage */
   if(stageIdx<STAGES.length-1) jumpStage(stageIdx+1);
 }
 function updateStageNav(){
