@@ -1130,13 +1130,13 @@ svg{display:block}
 
 /* ============ RIGHT, floating resources ============ */
 .right{flex:0 1 0;min-width:0;max-width:1200px;display:flex;overflow:hidden;transition:flex-basis var(--t-m) var(--ease),opacity var(--t-m) var(--ease),padding var(--t-m) var(--ease);opacity:0;padding:0}
-.right.open{flex-basis:376px;opacity:1;padding:70px 12px 12px 0}   /* the panel starts where the left card starts (54px header + 16px rail padding) — the gap above is reserved */
-.right.open.docmode{flex-basis:700px;padding-top:14px}   /* the doc viewer is a full overlay, so drop the reserved top gap */
+.right.open{flex-basis:376px;opacity:1;padding:54px 12px 12px 0}   /* ONE content line: 52 topbar + 54 header = 106. The panel edge sits exactly where Your-plan does; the strip above is reserved. */
+.right.open.docmode{flex-basis:700px;padding-top:54px}   /* the doc viewer is a full overlay, so drop the reserved top gap */
 .right-inner{flex:1;min-width:280px;background:var(--rail);border:var(--bw) solid var(--line);border-radius:18px;display:flex;flex-direction:column;overflow:hidden;box-shadow:var(--shadow)}
 /* feedback panel hide/show handle (replaces the close X and the left rail tab) */
 /* hidden from the toggle at the TOP-RIGHT of the feedback; when hidden the toggle STAYS in that exact spot, no container, clean and minimal */
 .fb-handle{display:none}
-.app.fb-hidden .fb-handle{display:grid;place-items:center;position:fixed;top:79px;right:24px;z-index:70;width:30px;height:30px;   /* 52 topbar + 14 panel offset + 13 header inset — the panel offset dropped from 70 to 14, so this followed it */
+.app.fb-hidden .fb-handle{display:grid;place-items:center;position:fixed;top:118px;right:24px;z-index:70;width:30px;height:30px;   /* 106 content line + 12 head inset: the icon holds the exact height it has inside the open panel dropped from 70 to 14, so this followed it */
   background:none;border:none;cursor:pointer;color:var(--tx-2);transition:color var(--t-q) var(--ease)}
 .app.fb-hidden .fb-handle:hover{color:var(--tx)}
 .fb-handle svg{width:19px;height:19px}
@@ -3631,7 +3631,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 
 /* ===== v58: panel to the top, scale + summary back ===== */
 /* the 70px was clearing a header that already has its own space */
-#app .right{padding-top:14px!important}
+#app .right{padding-top:54px!important}   /* the same 106 line — this override and .right.open must always agree */
 .fev-band{display:none}
 .fev-rating{margin-bottom:12px}
 .fev-meter{margin:0 0 9px}
