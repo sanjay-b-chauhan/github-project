@@ -2152,7 +2152,8 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
   background:var(--card);border:var(--bw) solid var(--line);border-radius:20px;padding:13px 14px 13px 8px;box-shadow:0 12px 30px rgba(0,0,0,.26);
   animation:ctaRise .5s var(--ease)}
 @keyframes ctaRise{from{opacity:0;transform:translateY(10px);filter:blur(6px)}to{opacity:1;transform:none;filter:blur(0)}}
-.pres-cta .pc-meet{position:relative;flex:0 0 auto;width:44px;height:44px;border-radius:99px;background:var(--soft);border:var(--bw) solid var(--line);color:var(--tx);display:grid;place-items:center}
+.pres-cta .pc-meet{position:relative;flex:0 0 auto;width:44px;height:44px;border-radius:99px;
+  background:var(--hover);border:0;color:var(--tx);display:grid;place-items:center}
 .pres-cta .pc-meet svg{width:22px;height:22px}
 .pres-cta .pc-live{position:absolute;top:-3px;right:-3px;width:12px;height:12px;border-radius:99px;background:#3fb968;border:2.5px solid var(--card);animation:pulseDot 1.8s infinite}
 /* the recording variant: the glyph carries a red live dot, because that is what is about to happen */
@@ -2161,8 +2162,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 /* nothing but the glyph: no ring, no plate, no floating badge. The red dot is the lens. */
 /* the camcorder gets the plate too. Naked, it left the row with an icon floating in space next to
    an avatar stack that had a hard circular edge — the two bars stopped being the same component. */
-.pres-cta.rec .pc-meet{color:var(--tx);width:44px;height:44px;
-  background:var(--soft);border:var(--bw) solid var(--line)}
+.pres-cta.rec .pc-meet{color:var(--tx);width:44px;height:44px;background:var(--hover);border:0}
 .pres-cta.rec .pc-meet svg{width:22px;height:22px}
 .pres-cta.rec .pc-meet .pc-live{display:none}
 /* the way out: an arrow at the head of the row, quiet enough never to compete with the CTA */
@@ -2193,7 +2193,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
    like walking somewhere else — and it holds across every surface of the experience: the
    pre-flight card, the room, the tiles, your own pip, Q&A, the analyze screen. One system, from
    the moment you check your camera until the moment you leave. */
-.room,.ranalyze,.zshare.pfroom{--bg:#161616; --card:#202020; --panel:#1e1e1e; --soft:#1c1c1c; --rail:#161616}
+.room,.ranalyze,.zshare.pfroom,.rpt{--bg:#161616; --card:#202020; --panel:#1e1e1e; --soft:#1c1c1c; --rail:#161616}
 :root[data-theme="dark"] .room,
 :root[data-theme="dark"] .ranalyze,
 :root[data-theme="dark"] .zshare.pfroom{--bg:#161616; --card:#202020; --panel:#1e1e1e; --soft:#1c1c1c; --rail:#161616}
@@ -3437,11 +3437,12 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
   box-shadow:inset 0 2px 26px -11px rgba(255,255,255,.16),inset 0 0 0 1px rgba(255,255,255,.06)}
 /* moments */
 /* the panel's section header, count and all */
-.rpt .rp2-mlab{display:flex;align-items:baseline;gap:8px;margin:34px 0 2px;font-family:var(--mono);font-size:10px;font-weight:700;
+.rpt .rp2-mlab{display:flex;align-items:baseline;gap:8px;margin:34px 0 14px;font-family:var(--mono);font-size:10px;font-weight:700;
   text-transform:uppercase;letter-spacing:1.4px;color:var(--tx-3);margin:30px 0 10px}
 .rpt .rp2-mlab .cnt{margin-left:auto;font-variant-numeric:tabular-nums;font-weight:400}
-.rpt .rp2-list{display:flex;flex-direction:column;gap:0;margin-top:34px}   /* a list, not a stack of cards */
-.rpt .rp2-video{margin-bottom:8px}
+.rpt .rp2-list{display:flex;flex-direction:column;gap:0}   /* a list, not a stack of cards */
+.rpt .rp2-video{margin-bottom:8px;border-radius:18px;
+  box-shadow:0 0 0 1px rgba(255,255,255,.14), 0 32px 70px rgba(0,0,0,.55), 0 6px 18px rgba(0,0,0,.4)}
 .rpt .rp2-row .rp2-head{padding:17px 16px}
 .rpt .rp2-body{padding:0 16px 18px 16px}
 /* the panel's row: same radius, same quiet fill, and it rises in on its own beat like every other
@@ -8095,7 +8096,8 @@ function qasStagger(card){
 function qasBind(){
   const el=document.getElementById('qas');
   const bar=el.querySelector('#qasBar'), mic=el.querySelector('#qasMic'), x=el.querySelector('#qasX'),
-        send=el.querySelector('#qasSend'), tm=el.querySelector('#qasT'), wave=el.querySelector('#qasWave');
+        send=el.querySelector('#qasSend'), tm=el.querySelector('#qasT'), wave=el.querySelector('#qasWave'),
+        hint=el.querySelector('#qasHint');   /* it was missing, so every start() threw here and stopped */
   let live=false, secs=0, iv=null;
   /* REAL-TIME TRANSCRIPT: what you are saying, as you say it. Two lines showing, scrolling itself
      past that so the newest words are the ones on screen. */
