@@ -12025,58 +12025,65 @@ function scenarioUnlock(){
   })();
   /* THE CRACK, HEARD. Not a UI beep: a knock into a filtered-noise crunch, harder each tap,
      and the shatter is a burst of it with a low drop underneath. */
-  /* ICE. Each tap is bass-first — a deep DUB with brittle splinters riding on top — and the
-     shatter is three descending dubs under a shower of them. All synthesized, no assets. */
-  const crackSnd=function(n){
+  /* ICE, STRUCK. Not sparks: a pitched TUNG — a resonant knock with a falling chirp, the way a
+     frozen lake answers a tap — a click of contact, a little body underneath, and a real reverb
+     tail so it rings in a space. The shatter is tung, tung, tung, falling, then the floor goes. */
+  const iceKit=function(){
+    if(iceKit._k) return iceKit._k;
     try{
-      const AC=window.AudioContext||window.webkitAudioContext; const ac=crackSnd._ac||(crackSnd._ac=new AC());
-      try{ ac.resume&&ac.resume(); }catch(e2){}
-      const t=ac.currentTime+0.005;
-      /* the DUB: a sub thump, deeper and heavier with every hit */
-      const o=ac.createOscillator(), og=ac.createGain();
-      o.type='sine'; o.frequency.setValueAtTime(96-n*8,t); o.frequency.exponentialRampToValueAtTime(44,t+.16);
-      og.gain.setValueAtTime(0.0001,t); og.gain.exponentialRampToValueAtTime(.75,t+.01); og.gain.exponentialRampToValueAtTime(0.0001,t+.24);
-      o.connect(og); og.connect(ac.destination); o.start(t); o.stop(t+.26);
-      /* the ice: a handful of brittle micro-splinters, high and short, scattered after the hit */
-      const splinter=function(at,f,d,g0){
-        const len=Math.max(1,Math.floor(ac.sampleRate*d));
-        const buf=ac.createBuffer(1,len,ac.sampleRate), dd=buf.getChannelData(0);
-        for(let i2=0;i2<len;i2++) dd[i2]=(Math.random()*2-1)*Math.pow(1-i2/len,2);
-        const src=ac.createBufferSource(); src.buffer=buf;
-        const hp=ac.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=f;
-        const g=ac.createGain(); g.gain.setValueAtTime(g0,at); g.gain.exponentialRampToValueAtTime(0.0001,at+d);
-        src.connect(hp); hp.connect(g); g.connect(ac.destination); src.start(at); src.stop(at+d+.01);
-      };
-      for(let k=0;k<3+n;k++) splinter(t+.008+Math.random()*.07, 2600+Math.random()*2600, .02+Math.random()*.03, .16+Math.random()*.1);
-      /* the creak: a low groan under the splinters, quiet */
-      const len=Math.floor(ac.sampleRate*.18);
-      const buf=ac.createBuffer(1,len,ac.sampleRate), d2=buf.getChannelData(0);
-      for(let i3=0;i3<len;i3++) d2[i3]=(Math.random()*2-1)*Math.pow(1-i3/len,1.4);
-      const src=ac.createBufferSource(); src.buffer=buf;
-      const bp=ac.createBiquadFilter(); bp.type='bandpass'; bp.frequency.setValueAtTime(620,t); bp.frequency.exponentialRampToValueAtTime(210,t+.17); bp.Q.value=1.1;
-      const g=ac.createGain(); g.gain.setValueAtTime(.2,t); g.gain.exponentialRampToValueAtTime(0.0001,t+.18);
-      src.connect(bp); bp.connect(g); g.connect(ac.destination); src.start(t); src.stop(t+.2);
-    }catch(e){}
+      const AC=window.AudioContext||window.webkitAudioContext; const ac=new AC();
+      const rate=ac.sampleRate, len=Math.floor(rate*2.2);
+      const buf=ac.createBuffer(2,len,rate);
+      for(let ch=0;ch<2;ch++){ const d=buf.getChannelData(ch);
+        for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6); }
+      const rev=ac.createConvolver(); rev.buffer=buf;
+      const wet=ac.createGain(); wet.gain.value=.4; wet.connect(rev); rev.connect(ac.destination);
+      iceKit._k={ac:ac,wet:wet};
+    }catch(e){ iceKit._k=null; }
+    return iceKit._k;
   };
-  const shatterSnd=function(){
-    try{
-      crackSnd(2);
-      const ac=crackSnd._ac; if(!ac)return;
-      /* dub, dub, dub — three falling sub hits, then the floor gives way */
-      const dub=function(at,f0){
-        const o=ac.createOscillator(), g=ac.createGain();
-        o.type='sine'; o.frequency.setValueAtTime(f0,at); o.frequency.exponentialRampToValueAtTime(40,at+.2);
-        g.gain.setValueAtTime(0.0001,at); g.gain.exponentialRampToValueAtTime(.8,at+.012); g.gain.exponentialRampToValueAtTime(0.0001,at+.3);
-        o.connect(g); g.connect(ac.destination); o.start(at); o.stop(at+.32);
-      };
-      const t=ac.currentTime+0.02;
-      dub(t,110); dub(t+.13,88); dub(t+.27,68);
-      setTimeout(function(){ crackSnd(4); },90);
-      setTimeout(function(){ crackSnd(3); },200);
+  /* one strike: partials of a struck plate, chirping DOWN — the tung */
+  const tung=function(base,at,power){
+    const k=iceKit(); if(!k)return; const ac=k.ac;
+    try{ ac.resume&&ac.resume(); }catch(e){}
+    const t=(at!=null?at:ac.currentTime)+0.004;
+    [[1,.5],[1.53,.2],[2.61,.09]].forEach(function(p){
       const o=ac.createOscillator(), g=ac.createGain();
-      o.type='sine'; o.frequency.setValueAtTime(64,t+.3); o.frequency.exponentialRampToValueAtTime(30,t+1.0);
-      g.gain.setValueAtTime(0.0001,t+.3); g.gain.exponentialRampToValueAtTime(.5,t+.33); g.gain.exponentialRampToValueAtTime(0.0001,t+1.2);
-      o.connect(g); g.connect(ac.destination); o.start(t+.3); o.stop(t+1.25);
+      o.type='sine';
+      o.frequency.setValueAtTime(base*p[0],t);
+      o.frequency.exponentialRampToValueAtTime(base*p[0]*.34,t+.16);   /* the falling chirp */
+      g.gain.setValueAtTime(0.0001,t);
+      g.gain.exponentialRampToValueAtTime(p[1]*(power||1),t+.006);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+.34);
+      o.connect(g); g.connect(ac.destination); g.connect(k.wet);
+      o.start(t); o.stop(t+.4);
+    });
+    /* the contact: one soft, dark click — no hiss */
+    const cl=Math.floor(ac.sampleRate*.012);
+    const cb=ac.createBuffer(1,cl,ac.sampleRate), cd=cb.getChannelData(0);
+    for(let i=0;i<cl;i++) cd[i]=(Math.random()*2-1)*Math.pow(1-i/cl,1.2);
+    const src=ac.createBufferSource(); src.buffer=cb;
+    const lp=ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=2400;
+    const cg=ac.createGain(); cg.gain.setValueAtTime(.32*(power||1),t); cg.gain.exponentialRampToValueAtTime(0.0001,t+.05);
+    src.connect(lp); lp.connect(cg); cg.connect(ac.destination); cg.connect(k.wet);
+    src.start(t); src.stop(t+.06);
+    /* the body: a short warm thump under it, not a drop */
+    const o2=ac.createOscillator(), g2=ac.createGain();
+    o2.type='sine'; o2.frequency.setValueAtTime(95,t); o2.frequency.exponentialRampToValueAtTime(52,t+.12);
+    g2.gain.setValueAtTime(0.0001,t); g2.gain.exponentialRampToValueAtTime(.4*(power||1),t+.01); g2.gain.exponentialRampToValueAtTime(0.0001,t+.2);
+    o2.connect(g2); g2.connect(ac.destination); o2.start(t); o2.stop(t+.22);
+  };
+  const crackSnd=function(n){ tung(560-n*60,null,1); };   /* each tap strikes deeper into the ice */
+  const shatterSnd=function(){
+    const k=iceKit(); if(!k){ return; }
+    const t0=k.ac.currentTime;
+    tung(520,t0,1.15); tung(410,t0+.14,1.1); tung(315,t0+.3,1.2);   /* tung, tung, tung — falling */
+    try{
+      const ac=k.ac;
+      const o=ac.createOscillator(), g=ac.createGain();               /* then the floor goes */
+      o.type='sine'; o.frequency.setValueAtTime(70,t0+.4); o.frequency.exponentialRampToValueAtTime(30,t0+1.15);
+      g.gain.setValueAtTime(0.0001,t0+.4); g.gain.exponentialRampToValueAtTime(.55,t0+.43); g.gain.exponentialRampToValueAtTime(0.0001,t0+1.35);
+      o.connect(g); g.connect(ac.destination); g.connect(k.wet); o.start(t0+.4); o.stop(t0+1.4);
     }catch(e){}
   };
   card.addEventListener('click',function(e){
