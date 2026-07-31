@@ -10095,7 +10095,12 @@ function stepFlow(){
       inp.dispatchEvent(new Event('input',{bubbles:true})); return; }
     try{ send(); return; }catch(e){}
   }
-  /* 5. nothing pending — then, and only then, the next stage */
+  /* 5. the flow is mid-beat — he is typing, something is scanning, a screen is playing. Wait for
+     it. Falling through to the next stage here is exactly the stage-skipping this replaced. */
+  if(document.querySelector('.typing, .thought, .iconTrail, .jr-load, .fitem.checking, .rvw2, .qas, .ranalyze')
+     || document.querySelector('.room')
+     || document.querySelector('.plan-pad')) return;
+  /* 6. genuinely nothing left on this stage — now the next one */
   if(stageIdx<STAGES.length-1) jumpStage(stageIdx+1);
 }
 function updateStageNav(){
