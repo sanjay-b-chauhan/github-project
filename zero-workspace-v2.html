@@ -2152,8 +2152,8 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
   background:var(--card);border:var(--bw) solid var(--line);border-radius:20px;padding:13px 14px 13px 8px;box-shadow:0 12px 30px rgba(0,0,0,.26);
   animation:ctaRise .5s var(--ease)}
 @keyframes ctaRise{from{opacity:0;transform:translateY(10px);filter:blur(6px)}to{opacity:1;transform:none;filter:blur(0)}}
-.pres-cta .pc-meet{position:relative;flex:0 0 auto;width:38px;height:38px;border-radius:99px;background:var(--soft);border:var(--bw) solid var(--line);color:var(--tx);display:grid;place-items:center}
-.pres-cta .pc-meet svg{width:21px;height:21px}
+.pres-cta .pc-meet{position:relative;flex:0 0 auto;width:44px;height:44px;border-radius:99px;background:var(--soft);border:var(--bw) solid var(--line);color:var(--tx);display:grid;place-items:center}
+.pres-cta .pc-meet svg{width:22px;height:22px}
 .pres-cta .pc-live{position:absolute;top:-3px;right:-3px;width:12px;height:12px;border-radius:99px;background:#3fb968;border:2.5px solid var(--card);animation:pulseDot 1.8s infinite}
 /* the recording variant: the glyph carries a red live dot, because that is what is about to happen */
 /* the camcorder is a normal icon on a normal surface. Only the record dot is red — a red ring
@@ -2161,9 +2161,9 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 /* nothing but the glyph: no ring, no plate, no floating badge. The red dot is the lens. */
 /* the camcorder gets the plate too. Naked, it left the row with an icon floating in space next to
    an avatar stack that had a hard circular edge — the two bars stopped being the same component. */
-.pres-cta.rec .pc-meet{color:var(--tx);width:38px;height:38px;
+.pres-cta.rec .pc-meet{color:var(--tx);width:44px;height:44px;
   background:var(--soft);border:var(--bw) solid var(--line)}
-.pres-cta.rec .pc-meet svg{width:20px;height:20px}
+.pres-cta.rec .pc-meet svg{width:22px;height:22px}
 .pres-cta.rec .pc-meet .pc-live{display:none}
 /* the way out: an arrow at the head of the row, quiet enough never to compete with the CTA */
 .pres-cta .pc-back{flex:0 0 auto;width:30px;height:30px;margin-right:-5px;border-radius:99px;
@@ -2393,7 +2393,8 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 /* THE cause of the empty right side: .pe-right is space-between inside a fixed 478px card, so once
    the middle block went, the headline pinned to the top and the CTA to the bottom with a void
    between them. There is nothing to fill it WITH — so stop stretching around nothing. */
-.pfdone-scrim .pentry{height:min(392px,80vh)}
+/* no fixed height. It was cutting the canvas down until the project card was sliced in half by
+   the panel's own overflow — the same popup as the one before it should be the same size as it. */
 .pfdone-scrim .pe-right{justify-content:space-between}   /* the words sit at the top, the CTA at the bottom — same structure as every other popup */
 
 @media (max-width:760px){.pentry{grid-template-columns:1fr;height:auto}.pe-left{display:none}}
@@ -6472,12 +6473,6 @@ function presEntryAnimPres(root){
       +'<span class="per-pip"><i></i></span>'
       +'<span class="per-rec"><i></i>REC</span>';
     (root.querySelector('.pentry')||root).appendChild(rec);   /* above the panel, so it is not clipped by it */
-    /* dead centre of the portfolio it is about to go into, measured rather than guessed — the
-       percentage it used to sit at belonged to a layout this popup no longer has */
-    const _cv=root.querySelector('.pe-canvas'), _pe=root.querySelector('.pentry');
-    if(_cv&&_pe){ const c=_cv.getBoundingClientRect(), p=_pe.getBoundingClientRect();
-      rec.style.left=((c.left+c.width/2)-p.left)+'px';
-      rec.style.top =((c.top +c.height/2)-p.top )+'px'; }
   }
 
   const build=function(){
@@ -6487,13 +6482,25 @@ function presEntryAnimPres(root){
     gsap.set(slot,{height:H});          /* the card stays: it is already part of the portfolio */
     gsap.set(card,{opacity:1});
     gsap.set(outline,{opacity:0});
+    /* IT RESTS ON THE CARD IT IS GOING INTO. Both ends of this move used to be guesses: a left/top
+       set as a percentage of the popup, and a delta measured from the popup's centre — which only
+       lined up while those two happened to agree. Anchor it to the card and the relationship is
+       obvious before the move even starts. */
+    const host=(root.querySelector('.pentry')||root).getBoundingClientRect();
+    gsap.set(rec,{x:0,y:0});
     const cardBox=card.getBoundingClientRect();
-    const canvas=(root.querySelector('.pentry')||root).getBoundingClientRect();
-    const toX=(cardBox.left+cardBox.width/2)-(canvas.left+canvas.width/2);
-    const toY=(cardBox.top+cardBox.height/2)-(canvas.top+canvas.height/2);
+    rec.style.left=((cardBox.left+cardBox.width/2)-host.left)+'px';
+    rec.style.top =((cardBox.top +cardBox.height/2)-host.top )+'px';
+    /* and it lands in the slot, measured as the tween starts, after the slot has opened for it */
+    const intoSlot=function(axis){ return function(){
+      const t=cav.getBoundingClientRect(), r=rec.getBoundingClientRect();
+      const now=gsap.getProperty(rec,axis)||0;
+      return axis==='x' ? now+((t.left+t.width/2)-(r.left+r.width/2))
+                        : now+((t.top +t.height/2)-(r.top +r.height/2));
+    }; };
 
     const tl=gsap.timeline({repeat:-1,repeatDelay:1});
-    tl.set(rec,{opacity:0,scale:1,x:0,y:-46,rotate:-2.5,transformOrigin:'50% 50%'})
+    tl.set(rec,{opacity:0,scale:1,x:0,y:-74,rotate:-2.5,transformOrigin:'50% 50%'})
       .set(cav,{height:0,opacity:0})
       /* the recording arrives and plays */
       .to(rec,{opacity:1,y:0,duration:.6,ease:'power3.out'})
@@ -6502,7 +6509,7 @@ function presEntryAnimPres(root){
       .to(cav,{height:34,opacity:1,duration:.42,ease:'power3.inOut'})
       .to(card,{y:-2,duration:.42,ease:'power3.inOut'},'<')
       /* and it goes in */
-      .to(rec,{x:toX,y:toY+16,scale:.13,rotate:0,duration:.9,ease:'power3.inOut'},'-=.12')
+      .to(rec,{x:intoSlot('x'),y:intoSlot('y'),scale:.13,rotate:0,duration:.9,ease:'power3.inOut'},'-=.12')
       .to(rec,{opacity:0,duration:.26,ease:'power2.in'},'-=.3')
       /* the card closes over it */
       .to(cav,{height:0,opacity:0,duration:.4,ease:'power3.inOut'},'-=.05')
@@ -9210,10 +9217,13 @@ const DO_HANDOFF={
 };
 function startDo(stageId, planned){
   fbStage=null; fbState='below';   // a new stage starts with no review behind it. These are globals; leaving them set carried one stage's verdict into the next.
-  /* …and here is where the presentation act picks up, after the plan is on the board */
-  if(stageId==='present'){ startPresentation(stageIdx+1); return; }
   const s=STAGES.find(x=>x.id===stageId);
+  /* the divider is the global one: every stage crosses from Planning into Building through it.
+     The presentation used to return above this line, so the one stage that opens on a deadline
+     was the one stage with no marker saying the build had started. */
   const div=planDivider(`Stage ${stageIdx+1} · Building`,'dodiv'); anchorTopSlow(div,28,1050);   // Planning → Building, a clean divider
+  /* …and here is where the presentation act picks up, after the plan is on the board */
+  if(stageId==='present'){ setTimeout(()=> startPresentation(stageIdx+1), 600); return; }
   setTimeout(()=> planned ? sayBubbles(DO_HANDOFF[stageId]||DO_HANDOFF._default) : sayJay(s.open), 600);
 }
 
