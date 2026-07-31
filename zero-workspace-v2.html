@@ -5035,6 +5035,41 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
   .sucel .su-bottom::after,.sucel .su-halftone{animation:none}
 }
 
+/* ===== the hand-off: a loader, then the next scenario introduces itself ===== */
+.nsi{position:fixed;inset:0;z-index:972;background:#141414;display:grid;place-items:center;
+  opacity:0;transition:opacity .5s var(--ease)}
+.nsi.show{opacity:1}
+.nsi-in{display:flex;flex-direction:column;align-items:center;text-align:center;width:min(560px,90vw)}
+.nsi-logo{width:64px;height:64px;border-radius:18px;background:#fff;display:grid;place-items:center;color:#EB1700;
+  box-shadow:0 18px 44px rgba(0,0,0,.45)}
+.nsi-logo svg{width:34px;height:34px}
+.nsi-load .nsi-lbl{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:var(--tx-3);margin-top:26px}
+.nsi-bar{width:min(260px,60vw);height:3px;border-radius:99px;background:rgba(255,255,255,.1);margin-top:14px;overflow:hidden}
+.nsi-bar i{display:block;height:100%;width:0;border-radius:99px;background:#fff;transition:width 1.5s cubic-bezier(.3,.6,.2,1)}
+.nsi-intro{display:none;flex-direction:column;align-items:center}
+.nsi.stage2 .nsi-load{display:none}
+.nsi.stage2 .nsi-intro{display:flex}
+.nsi-eyebrow{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:2.2px;text-transform:uppercase;color:var(--tx-3);margin-top:28px}
+.nsi-h{font-size:clamp(28px,4.4vw,38px);font-weight:650;letter-spacing:-.028em;line-height:1.12;color:var(--tx);margin-top:14px;max-width:18ch}
+.nsi-p{font-size:14.5px;line-height:1.62;color:var(--tx-2);margin-top:14px;max-width:44ch}
+.nsi-chips{display:flex;gap:8px;margin-top:20px}
+.nsi-chip{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;
+  color:var(--tx-2);background:var(--soft);border-radius:99px;padding:7px 13px}
+.nsi-go{margin-top:34px;display:inline-flex;align-items:center;gap:9px;padding:15px 30px;border-radius:99px;
+  background:#fff;color:#111;font-size:14.5px;font-weight:700;border:0;cursor:pointer;
+  box-shadow:0 14px 36px rgba(0,0,0,.4);opacity:0;transform:translateY(8px);
+  transition:opacity .4s var(--ease),transform .4s var(--ease)}
+.nsi-go.on{opacity:1;transform:none}
+.nsi-go:hover{transform:translateY(-1px)}
+.nsi-intro>*{opacity:0;transform:translateY(14px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
+.nsi.stage2 .nsi-intro>*{opacity:1;transform:none}
+.nsi.stage2 .nsi-intro>*:nth-child(1){transition-delay:.05s}
+.nsi.stage2 .nsi-intro>*:nth-child(2){transition-delay:.12s}
+.nsi.stage2 .nsi-intro>*:nth-child(3){transition-delay:.19s}
+.nsi.stage2 .nsi-intro>*:nth-child(4){transition-delay:.26s}
+.nsi.stage2 .nsi-intro>*:nth-child(5){transition-delay:.33s}
+.nsi.stage2 .nsi-intro>*:nth-child(6){transition-delay:.4s}
 </style>
 </head>
 <body>
@@ -10591,6 +10626,9 @@ let _stepReply=0;
 function stepFlow(){
   /* the ending screens are part of the flow, so the arrow drives them too. A control that is
      visible but does nothing is worse than one that is hidden. */
+  const _nsi=document.getElementById('nsi');
+  if(_nsi){ const g=_nsi.querySelector('#nsiGo');
+    if(g&&g.classList.contains('on')){ g.click(); } return; }   /* mid-loader, the press waits */
   const _suc=document.getElementById('sucel');
   if(_suc){
     const card=_suc.querySelector('#sulBox');
@@ -12184,11 +12222,41 @@ function scenarioUnlock(){
       window.removeEventListener('resize',onR);
       clearInterval(fitIv); document.removeEventListener('visibilitychange',fit);
       window.__suSkip=null;
-      location.reload();   /* the scenario is over: Continue lands on a fresh start, not the report you already read */
+      nextScenarioIntro();   /* the scenario is over: a loader, then the next one introduces itself */
     },1200);
   };
 }
 function scenarioCelebrate(){ scenarioUnlock(); }   /* the old entry point stays callable */
+/* THE HAND-OFF. A short loader in the product's own register, then the next scenario introduces
+   itself, and the one way out is Restart Scenario — the prototype's honest ending. */
+function nextScenarioIntro(){
+  if(document.getElementById('nsi'))return;
+  const ov=document.createElement('div'); ov.className='nsi'; ov.id='nsi';
+  ov.innerHTML='<div class="nsi-in">'
+   +'<div class="nsi-load">'
+   +'  <div class="nsi-logo">'+DD_LOGO+'</div>'
+   +'  <div class="nsi-lbl">Loading next scenario</div>'
+   +'  <div class="nsi-bar"><i id="nsiBar"></i></div>'
+   +'</div>'
+   +'<div class="nsi-intro">'
+   +'  <div class="nsi-logo">'+DD_LOGO+'</div>'
+   +'  <div class="nsi-eyebrow">Next scenario &middot; DoorDash</div>'
+   +'  <h1 class="nsi-h">Cutting Refund Fraud</h1>'
+   +'  <p class="nsi-p">Ops is losing margin to repeat refund claims. Find the pattern, price it, and take a fix to the table. Same manager pressure, new numbers, higher bar.</p>'
+   +'  <div class="nsi-chips"><span class="nsi-chip">Intermediate</span><span class="nsi-chip">350 XP</span><span class="nsi-chip">7 stages</span></div>'
+   +'  <button class="nsi-go" id="nsiGo">Restart scenario</button>'
+   +'</div>'
+   +'</div>';
+  document.body.appendChild(ov); ov.getBoundingClientRect(); ov.classList.add('show');
+  setTimeout(function(){ const b=document.getElementById('nsiBar'); if(b) b.style.width='100%'; },80);
+  setTimeout(function(){ ov.classList.add('stage2'); try{ ZSND.play('open'); }catch(e){} },1750);
+  setTimeout(function(){ const g=document.getElementById('nsiGo'); if(g) g.classList.add('on'); },2500);
+  ov.querySelector('#nsiGo').onclick=function(){
+    try{ ZSND.play('select'); }catch(e){}
+    ov.classList.remove('show');
+    setTimeout(function(){ location.reload(); },420);
+  };
+}
 
 </script>
 </body>
