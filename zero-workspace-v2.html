@@ -4633,6 +4633,16 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
   box-shadow:0 0 0 4px var(--bg), 0 0 0 6px rgba(255,255,255,.1), 0 18px 44px rgba(0,0,0,.5)}
 .qgat-f:first-child{z-index:2}
 .qgat-f+.qgat-f{margin-left:-22px;z-index:1}
+/* the band switcher: four chips in the corner, one of them lit */
+.rpt-bands{position:absolute;right:20px;top:20px;z-index:7;display:flex;gap:2px;padding:3px;
+  border-radius:99px;background:var(--soft);border:var(--bw) solid var(--line)}
+.rpt-bands .rb-chip{border:0;background:none;cursor:pointer;padding:6px 12px;border-radius:99px;
+  font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--tx-3);white-space:nowrap;
+  transition:background .2s var(--ease),color .2s var(--ease),box-shadow .2s var(--ease)}
+.rpt-bands .rb-chip:hover{color:var(--tx-2)}
+.rpt-bands .rb-chip.on{background:var(--card);color:var(--tx);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--bc) 45%,transparent)}
 /* the report fills the screen, so the app's gear is underneath it. It carries its own. */
 .rpt-gear{position:absolute;right:16px;bottom:16px;z-index:8;width:42px;height:42px;border-radius:99px;
   display:grid;place-items:center;color:var(--tx-3);background:var(--card);border:var(--bw) solid var(--line);
@@ -8154,6 +8164,11 @@ function roomReport(secs){
   const GEAR='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
   ov.innerHTML='<div class="rpt" data-band="'+rptBand+'" style="--bc:'+RPT_BANDS[rptBand].colour+'">'
    +'<button class="rpt-gear" id="rptGear" aria-label="Controls">'+GEAR+'</button>'
+   /* the band, switchable right here — four chips beat opening the controls to change one thing */
+   +'<div class="rpt-bands" id="rptBands">'
+   +   Object.keys(RPT_BANDS).map(function(k){
+         return '<button type="button" class="rb-chip'+(k===rptBand?' on':'')+'" data-band="'+k+'">'+RPT_BANDS[k].label+'</button>'; }).join('')
+   +'</div>'
    +'<span class="rpt-bloom" id="rptBloom"></span>'
    +'<div class="rpt-scroll"><div class="rpt-in">'
    +'<div class="rpt-by" id="rptBy"><span class="rp2-avs">'
@@ -8241,6 +8256,18 @@ function roomReport(secs){
       }, _from?700:120);
     }); });
   }
+  ov.querySelectorAll('#rptBands .rb-chip').forEach(function(b){
+    b.onclick=function(){
+      if(b.dataset.band===rptBand) return;
+      rptBand=b.dataset.band;
+      try{ if(typeof R!=='undefined'&&R) R.rptReplay=true; }catch(e){}   /* same bloom as the arrival */
+      try{ ZSND.play('tap'); }catch(e){}
+      roomReport(secs);
+      /* the gear's list is the same setting, so keep it honest */
+      try{ document.querySelectorAll('#bandJump button[data-band]').forEach(function(x){
+        x.classList.toggle('on', x.dataset.band===rptBand); }); }catch(e){}
+    };
+  });
   const _g=ov.querySelector('#rptGear');
   if(_g) _g.onclick=function(){ const d=document.getElementById('dbg'); if(d)d.classList.toggle('open'); try{ ZSND.play('tap'); }catch(e){} };
   /* switching a band re-reads the whole card from that band's data */
