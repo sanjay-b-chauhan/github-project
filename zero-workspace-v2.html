@@ -12025,35 +12025,58 @@ function scenarioUnlock(){
   })();
   /* THE CRACK, HEARD. Not a UI beep: a knock into a filtered-noise crunch, harder each tap,
      and the shatter is a burst of it with a low drop underneath. */
-  /* RESTORED: the first crack build (v373), the one that felt right — a knock into a
-     filtered-noise crunch, harder each tap, and the shatter as a burst of it over a low drop. */
-  /* THE CRACK, HEARD. Not a UI beep: a knock into a filtered-noise crunch, harder each tap,
-     and the shatter is a burst of it with a low drop underneath. */
+  /* ICE. Each tap is bass-first — a deep DUB with brittle splinters riding on top — and the
+     shatter is three descending dubs under a shower of them. All synthesized, no assets. */
   const crackSnd=function(n){
     try{
       const AC=window.AudioContext||window.webkitAudioContext; const ac=crackSnd._ac||(crackSnd._ac=new AC());
       try{ ac.resume&&ac.resume(); }catch(e2){}
       const t=ac.currentTime+0.005;
-      const o=ac.createOscillator(), og=ac.createGain();          /* the knock */
-      o.type='sine'; o.frequency.setValueAtTime(210-n*22,t); o.frequency.exponentialRampToValueAtTime(70,t+.09);
-      og.gain.setValueAtTime(0.0001,t); og.gain.exponentialRampToValueAtTime(.5,t+.008); og.gain.exponentialRampToValueAtTime(0.0001,t+.14);
-      o.connect(og); og.connect(ac.destination); o.start(t); o.stop(t+.16);
-      const len=Math.floor(ac.sampleRate*.16);                    /* the crunch */
-      const buf=ac.createBuffer(1,len,ac.sampleRate), d=buf.getChannelData(0);
-      for(let i2=0;i2<len;i2++){ const k=i2/len; d[i2]=(Math.random()*2-1)*Math.pow(1-k,1.6)*(Math.random()<.14?1:.32); }
+      /* the DUB: a sub thump, deeper and heavier with every hit */
+      const o=ac.createOscillator(), og=ac.createGain();
+      o.type='sine'; o.frequency.setValueAtTime(96-n*8,t); o.frequency.exponentialRampToValueAtTime(44,t+.16);
+      og.gain.setValueAtTime(0.0001,t); og.gain.exponentialRampToValueAtTime(.75,t+.01); og.gain.exponentialRampToValueAtTime(0.0001,t+.24);
+      o.connect(og); og.connect(ac.destination); o.start(t); o.stop(t+.26);
+      /* the ice: a handful of brittle micro-splinters, high and short, scattered after the hit */
+      const splinter=function(at,f,d,g0){
+        const len=Math.max(1,Math.floor(ac.sampleRate*d));
+        const buf=ac.createBuffer(1,len,ac.sampleRate), dd=buf.getChannelData(0);
+        for(let i2=0;i2<len;i2++) dd[i2]=(Math.random()*2-1)*Math.pow(1-i2/len,2);
+        const src=ac.createBufferSource(); src.buffer=buf;
+        const hp=ac.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=f;
+        const g=ac.createGain(); g.gain.setValueAtTime(g0,at); g.gain.exponentialRampToValueAtTime(0.0001,at+d);
+        src.connect(hp); hp.connect(g); g.connect(ac.destination); src.start(at); src.stop(at+d+.01);
+      };
+      for(let k=0;k<3+n;k++) splinter(t+.008+Math.random()*.07, 2600+Math.random()*2600, .02+Math.random()*.03, .16+Math.random()*.1);
+      /* the creak: a low groan under the splinters, quiet */
+      const len=Math.floor(ac.sampleRate*.18);
+      const buf=ac.createBuffer(1,len,ac.sampleRate), d2=buf.getChannelData(0);
+      for(let i3=0;i3<len;i3++) d2[i3]=(Math.random()*2-1)*Math.pow(1-i3/len,1.4);
       const src=ac.createBufferSource(); src.buffer=buf;
-      const bp=ac.createBiquadFilter(); bp.type='bandpass'; bp.frequency.setValueAtTime(1500+n*420,t); bp.frequency.exponentialRampToValueAtTime(500,t+.15); bp.Q.value=.8;
-      const g=ac.createGain(); g.gain.setValueAtTime(.55+n*.12,t); g.gain.exponentialRampToValueAtTime(0.0001,t+.17);
-      src.connect(bp); bp.connect(g); g.connect(ac.destination); src.start(t); src.stop(t+.18);
+      const bp=ac.createBiquadFilter(); bp.type='bandpass'; bp.frequency.setValueAtTime(620,t); bp.frequency.exponentialRampToValueAtTime(210,t+.17); bp.Q.value=1.1;
+      const g=ac.createGain(); g.gain.setValueAtTime(.2,t); g.gain.exponentialRampToValueAtTime(0.0001,t+.18);
+      src.connect(bp); bp.connect(g); g.connect(ac.destination); src.start(t); src.stop(t+.2);
     }catch(e){}
   };
   const shatterSnd=function(){
-    try{ crackSnd(3); setTimeout(function(){ crackSnd(2); },50); setTimeout(function(){ crackSnd(4); },110);
-      const ac=crackSnd._ac; if(!ac)return; const t=ac.currentTime+0.01;
+    try{
+      crackSnd(2);
+      const ac=crackSnd._ac; if(!ac)return;
+      /* dub, dub, dub — three falling sub hits, then the floor gives way */
+      const dub=function(at,f0){
+        const o=ac.createOscillator(), g=ac.createGain();
+        o.type='sine'; o.frequency.setValueAtTime(f0,at); o.frequency.exponentialRampToValueAtTime(40,at+.2);
+        g.gain.setValueAtTime(0.0001,at); g.gain.exponentialRampToValueAtTime(.8,at+.012); g.gain.exponentialRampToValueAtTime(0.0001,at+.3);
+        o.connect(g); g.connect(ac.destination); o.start(at); o.stop(at+.32);
+      };
+      const t=ac.currentTime+0.02;
+      dub(t,110); dub(t+.13,88); dub(t+.27,68);
+      setTimeout(function(){ crackSnd(4); },90);
+      setTimeout(function(){ crackSnd(3); },200);
       const o=ac.createOscillator(), g=ac.createGain();
-      o.type='sine'; o.frequency.setValueAtTime(120,t); o.frequency.exponentialRampToValueAtTime(42,t+.5);
-      g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(.6,t+.012); g.gain.exponentialRampToValueAtTime(0.0001,t+.7);
-      o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+.75);
+      o.type='sine'; o.frequency.setValueAtTime(64,t+.3); o.frequency.exponentialRampToValueAtTime(30,t+1.0);
+      g.gain.setValueAtTime(0.0001,t+.3); g.gain.exponentialRampToValueAtTime(.5,t+.33); g.gain.exponentialRampToValueAtTime(0.0001,t+1.2);
+      o.connect(g); g.connect(ac.destination); o.start(t+.3); o.stop(t+1.25);
     }catch(e){}
   };
   card.addEventListener('click',function(e){
