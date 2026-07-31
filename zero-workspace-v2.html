@@ -4641,41 +4641,50 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
   background:#0e0d0c;border:var(--bw) solid var(--line);box-shadow:0 26px 64px rgba(0,0,0,.55)}
 /* THE RUN, one frame, drawn in container-width units so it holds its proportions whether it is
    340px wide in the loader or 664px wide in the report */
-/* THE DESKTOP BEHIND THE SHARE. Flat near-black read as a hole around the slide; a shared screen
-   sits on a wallpaper. This is a macOS-grade grey: a soft diagonal grade with two blurred washes
-   of light drifting through it — enough depth to read as a desktop, quiet enough to stay behind. */
+/* THE DESKTOP BEHIND THE SHARE. A macOS one: the soft colour-wave wallpaper, a menu bar along
+   the top — so the shared slide reads as a WINDOW on someone's actual machine. */
 .pv{position:absolute;inset:0;container-type:inline-size;overflow:hidden;z-index:1;
   background:
-    radial-gradient(120% 90% at 14% 8%,rgba(255,255,255,.10),transparent 52%),
-    radial-gradient(110% 80% at 88% 96%,rgba(160,170,185,.14),transparent 56%),
-    radial-gradient(70% 55% at 70% 22%,rgba(120,128,140,.10),transparent 60%),
-    linear-gradient(158deg,#4a4d53 0%,#35383e 44%,#26282d 100%)}
-/* THE DESKTOP. A shared screen is a window sitting on a background, not a page bleeding to the
-   edges — the rim only looked wrong before because it was a bare gap. This is the gap doing a job. */
-.pv-win{position:absolute;inset:3.4cqw 3.4cqw 3.4cqw;border-radius:1.8cqw;background:#f5f3ee;overflow:hidden;
+    radial-gradient(90% 72% at 82% 88%,rgba(64,120,140,.5),transparent 62%),
+    radial-gradient(80% 66% at 12% 82%,rgba(96,74,138,.44),transparent 60%),
+    radial-gradient(70% 56% at 70% 6%,rgba(52,84,150,.4),transparent 62%),
+    linear-gradient(158deg,#232b3e 0%,#1c2233 48%,#171c2b 100%)}
+.pv::before{content:'';position:absolute;left:0;right:0;top:0;height:2.6cqw;z-index:1;
+  background:rgba(20,24,36,.75);backdrop-filter:blur(6px);
+  box-shadow:inset 0 -0.1cqw 0 rgba(255,255,255,.06)}
+.pv-win{position:absolute;inset:6.8cqw 8.6cqw 11.6cqw;border-radius:1.4cqw;background:#f5f3ee;overflow:hidden;
   box-shadow:0 1.4cqw 3cqw rgba(0,0,0,.45)}
-.pv-track{position:absolute;inset:0;transition:transform .42s cubic-bezier(.32,.72,0,1);will-change:transform}
-.pv-slide{position:absolute;left:0;right:0;height:100%;padding:5.2cqw 5.6cqw;
+/* the window wears its own mac chrome: title bar with traffic lights, slides below it */
+.pv-win::before{content:'';position:absolute;left:0;right:0;top:0;height:2.6cqw;z-index:2;
+  background:linear-gradient(180deg,#e9e5dc,#e2ded4);
+  box-shadow:inset 0 -0.08cqw 0 rgba(13,13,13,.08)}
+.pv-win::after{content:'';position:absolute;left:1.2cqw;top:.95cqw;width:4.6cqw;height:.75cqw;z-index:3;
+  background:
+    radial-gradient(circle at .38cqw 50%,#ff5f57 .34cqw,transparent .4cqw),
+    radial-gradient(circle at 2.3cqw 50%,#febc2e .34cqw,transparent .4cqw),
+    radial-gradient(circle at 4.22cqw 50%,#28c840 .34cqw,transparent .4cqw)}
+.pv-track{position:absolute;inset:2.6cqw 0 0;transition:transform .42s cubic-bezier(.32,.72,0,1);will-change:transform}
+.pv-slide{position:absolute;left:0;right:0;height:100%;padding:3.8cqw 4.4cqw;
   display:flex;flex-direction:column;gap:1.4cqw;color:#1a1815}
 .pv-slide:nth-child(1){top:0}.pv-slide:nth-child(2){top:100%}.pv-slide:nth-child(3){top:200%}
 .pv-slide:nth-child(4){top:300%}.pv-slide:nth-child(5){top:400%}
 /* slide type, in the deck's own voice */
-.pv-slide .sl-e{font-family:var(--mono);font-size:1.5cqw;font-weight:700;letter-spacing:.14em;color:#9a958c}
-.pv-slide .sl-h{font-size:3.4cqw;font-weight:700;line-height:1.18;letter-spacing:-.02em;margin-top:.4cqw}
-.pv-slide.sl-stat .sl-h{font-size:8cqw;letter-spacing:-.035em}
-.pv-slide .sl-sub{font-size:1.9cqw;color:#5a554f;margin-top:.6cqw}
+.pv-slide .sl-e{font-family:var(--mono);font-size:1.15cqw;font-weight:700;letter-spacing:.14em;color:#9a958c}
+.pv-slide .sl-h{font-size:2.6cqw;font-weight:700;line-height:1.18;letter-spacing:-.02em;margin-top:.4cqw}
+.pv-slide.sl-stat .sl-h{font-size:6cqw;letter-spacing:-.035em}
+.pv-slide .sl-sub{font-size:1.5cqw;color:#5a554f;margin-top:.6cqw}
 .pv-slide .sl-b{list-style:none;margin:1.6cqw 0 0;padding:0;display:flex;flex-direction:column;gap:1cqw}
-.pv-slide .sl-b li{position:relative;padding-left:2.4cqw;font-size:2cqw;line-height:1.4;color:#3d3933}
+.pv-slide .sl-b li{position:relative;padding-left:2cqw;font-size:1.55cqw;line-height:1.4;color:#3d3933}
 .pv-slide .sl-b li::before{content:'';position:absolute;left:0;top:.5em;width:.9cqw;height:.9cqw;
   border-radius:99px;background:#c9c4ba}
 .pv-slide .sl-cols{margin-top:auto;display:flex;align-items:flex-end;gap:2cqw;height:52%}
 .pv-slide .sl-cols i{position:relative;flex:1;border-radius:.6cqw .6cqw 0 0;background:#3d3933;opacity:.85;
   transition:height .42s cubic-bezier(.32,.72,0,1)}
 .pv-slide .sl-cols i.hi{background:#ff6a4d;opacity:1}
-.pv-slide .sl-cols i em{position:absolute;left:0;right:0;bottom:-2.6cqw;text-align:center;font-style:normal;
-  font-family:var(--mono);font-size:1.3cqw;color:#9a958c}
+.pv-slide .sl-cols i em{position:absolute;left:0;right:0;bottom:-2.2cqw;text-align:center;font-style:normal;
+  font-family:var(--mono);font-size:1.05cqw;color:#9a958c}
 /* and you, in the corner, the way you were on the call */
-.pv-pip{position:absolute;right:5.4cqw;bottom:5.4cqw;width:12.4cqw;height:8.2cqw;border-radius:1.4cqw;
+.pv-pip{position:absolute;right:2.6cqw;bottom:2.4cqw;width:11cqw;height:7.3cqw;border-radius:1.2cqw;
   overflow:hidden;z-index:4;background:#1c1a18;border:1px solid rgba(255,255,255,.14);
   box-shadow:0 6px 18px rgba(0,0,0,.5);display:grid;place-items:center}
 .pv-pip img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
@@ -4784,17 +4793,28 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 /* ===== v362: THE SCENARIO ENDING. Three acts: a warm review, a shell you break, and the
    celebration — the last one ported 1:1 from the shipped ScenarioUnlocked screen. ===== */
 
-/* ---- ACT 1: THE REVIEW, ON WARM PAPER. The product's ending is light: the work is done, the
-   lights come up. Local token overrides so everything inside inherits the right ink. ---- */
+/* ---- ACT 1: THE REVIEW. Narrative on the left, the record on the right — the pattern every
+   good completion screen converges on (Duolingo's split, Uxcel's hairline stats, Unity's XP
+   receipt) — on ZERO's warm paper, with a slow green aurora breathing behind it. ---- */
 .scw{position:fixed;inset:0;z-index:900;overflow-y:auto;display:flex;justify-content:center;
   --bg:#f7f4ef;--card:#ffffff;--soft:#efece3;--hover:#e9e5da;
   --tx:#1a1815;--tx-2:#5a554f;--tx-3:#9a958c;--tx-4:#c4bfb4;
-  --line:rgba(13,13,13,.09);--line-2:rgba(13,13,13,.055);--gold:#c9971c;
+  --line:rgba(13,13,13,.09);--line-2:rgba(13,13,13,.055);--gold:#c9971c;--grn:#2f9c45;
   background:var(--bg);color:var(--tx);opacity:0;transition:opacity .5s var(--ease)}
 .scw.show{opacity:1}
-/* the room exhales: soft coral rings widen out once behind the content, then they are gone */
+/* the aurora: three green washes drifting slowly under everything. Ambient, never loud. */
+.scw-aur{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+.scw-aur i{position:absolute;width:58vmax;height:58vmax;border-radius:99em;filter:blur(90px);
+  background:radial-gradient(circle,rgba(140,220,150,.34),rgba(180,250,167,.12) 55%,transparent 72%);
+  animation:scwAur 21s ease-in-out infinite alternate}
+.scw-aur i:nth-child(1){left:-16vmax;top:-20vmax}
+.scw-aur i:nth-child(2){right:-20vmax;top:22vh;animation-duration:26s;animation-delay:-8s;
+  background:radial-gradient(circle,rgba(216,255,208,.4),rgba(180,250,167,.1) 55%,transparent 72%)}
+.scw-aur i:nth-child(3){left:8vw;bottom:-30vmax;animation-duration:31s;animation-delay:-15s;opacity:.8}
+@keyframes scwAur{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(9vmax,6vmax,0) scale(1.18)}}
+/* the coral rings still exhale once on arrival */
 .scw-rips{position:fixed;inset:0;pointer-events:none;overflow:hidden}
-.scw-rip{position:absolute;left:50%;top:38%;width:46vmin;height:46vmin;border-radius:99em;
+.scw-rip{position:absolute;left:50%;top:100%;width:52vmin;height:52vmin;border-radius:99em;
   transform:translate(-50%,-50%) scale(.25);opacity:0;
   border:2px solid rgba(255,106,77,.5);filter:blur(6px)}
 .scw.show .scw-rip{animation:scwRip 2.1s cubic-bezier(.2,.6,.2,1) forwards}
@@ -4803,30 +4823,49 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 @keyframes scwRip{0%{transform:translate(-50%,-50%) scale(.25);opacity:0}
   18%{opacity:.85}100%{transform:translate(-50%,-50%) scale(2.6);opacity:0}}
 .scw-fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}
-.scw-in{position:relative;z-index:2;width:min(720px,92vw);padding:84px 0 96px;display:flex;flex-direction:column}
+/* the two columns, and the rail under them */
+.scw-in{position:relative;z-index:2;width:min(1080px,94vw);padding:88px 0 64px;
+  display:grid;grid-template-columns:1.02fr .98fr;gap:26px 64px;align-items:start}
+.scw-l{display:flex;flex-direction:column;min-width:0}
+.scw-r{min-width:0}
 .scw-eyebrow{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tx-3)}
-.scw-h{font-size:clamp(34px,5vw,46px);font-weight:650;line-height:1.08;letter-spacing:-.032em;margin:16px 0 0;color:var(--tx)}
-.scw-p{font-size:16px;line-height:1.62;color:var(--tx-2);margin:18px 0 0;max-width:54ch}
-.scw-rule{height:1px;background:var(--line-2);margin:36px 0}
-.scw-stats{display:flex;gap:14px;flex-wrap:wrap}
-.scw-stat{flex:1 1 150px;background:var(--card);border-radius:18px;padding:20px 20px 17px;
-  box-shadow:0 1px 2px rgba(26,24,21,.05),0 12px 32px -14px rgba(26,24,21,.14)}
-.scw-stat b{display:flex;align-items:center;gap:8px;font-size:28px;font-weight:650;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--tx)}
-.scw-stat.xp b{color:var(--gold)}
-.scw-stat .st-star{width:20px;height:20px;flex:none;color:var(--gold);filter:drop-shadow(0 2px 6px rgba(201,151,28,.45))}
-/* direct children only — the XP number is a span INSIDE the b, and it must keep the b's size */
-.scw-stat > span{display:block;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--tx-3);margin-top:8px}
+.scw-h{font-size:clamp(34px,4.6vw,46px);font-weight:650;line-height:1.08;letter-spacing:-.032em;margin:16px 0 0;color:var(--tx)}
+.scw-p{font-size:15.5px;line-height:1.66;color:var(--tx-2);margin:18px 0 0;max-width:46ch}
 .scw-say{display:flex;gap:14px;align-items:flex-start;background:var(--card);border-radius:18px;padding:19px 21px;
-  box-shadow:0 1px 2px rgba(26,24,21,.05),0 12px 32px -14px rgba(26,24,21,.14)}
+  margin-top:34px;box-shadow:0 1px 2px rgba(26,24,21,.05),0 12px 32px -14px rgba(26,24,21,.14)}
 .scw-say img{width:36px;height:36px;border-radius:99px;object-fit:cover;flex:none}
 .scw-say .t{font-size:14.5px;line-height:1.6;color:var(--tx)}
 .scw-say .n{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--tx-3);margin-bottom:7px}
-.scw-lbl{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--tx-3);margin:0 0 14px}
-.scw-chips{display:flex;flex-wrap:wrap;gap:9px}
-.scw-chip{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:11px;background:var(--card);
-  font-size:12.5px;color:var(--tx-2);box-shadow:inset 0 0 0 1px var(--line)}
-.scw-chip i{width:5px;height:5px;border-radius:99px;background:var(--gold);flex:none;opacity:.8}
-.scw-foot{display:flex;align-items:center;gap:12px;margin-top:40px}
+/* THE RECORD. One card that reads like a receipt of the scenario: the XP hero, the facts, the
+   skills as a matrix with level dots, the tools. */
+.scw-card{background:var(--card);border-radius:22px;padding:26px 26px 22px;
+  box-shadow:0 1px 2px rgba(26,24,21,.05),0 22px 54px -20px rgba(26,24,21,.2)}
+.scw-hero{display:flex;align-items:baseline;gap:12px}
+.scw-stat.xp b{display:flex;align-items:center;gap:10px;font-size:44px;font-weight:650;letter-spacing:-.028em;
+  font-variant-numeric:tabular-nums;color:var(--gold);line-height:1}
+.scw-stat .st-star{width:26px;height:26px;flex:none;color:var(--gold);filter:drop-shadow(0 2px 8px rgba(201,151,28,.5))}
+.scw-hero .lbl{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--tx-3)}
+.scw-facts{display:flex;margin-top:20px;border-top:1px solid var(--line-2);padding-top:16px}
+.scw-fact{flex:1;min-width:0}
+.scw-fact+.scw-fact{border-left:1px solid var(--line-2);padding-left:18px}
+.scw-fact b{display:block;font-size:19px;font-weight:650;letter-spacing:-.015em;color:var(--tx)}
+.scw-fact span{display:block;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:var(--tx-3);margin-top:6px}
+.scw-lbl{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx-3);
+  margin:22px 0 12px;padding-top:18px;border-top:1px solid var(--line-2)}
+/* the matrix: each skill with its level in dots — a record, not a tag cloud */
+.scw-mx{display:grid;grid-template-columns:1fr 1fr;gap:9px 18px}
+.scw-mrow{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:var(--soft);border-radius:12px;padding:10px 13px}
+.scw-mrow .nm{font-size:12.5px;color:var(--tx-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scw-mrow .lv{display:inline-flex;gap:3.5px;flex:none}
+.scw-mrow .lv i{width:5.5px;height:5.5px;border-radius:99px;background:var(--tx-4);opacity:.5}
+.scw-mrow .lv i.on{background:var(--gold);opacity:1}
+.scw-chips{display:flex;flex-wrap:wrap;gap:8px}
+.scw-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border-radius:11px;background:var(--soft);
+  font-size:12.5px;color:var(--tx-2)}
+.scw-chip i{width:5px;height:5px;border-radius:99px;background:var(--grn);flex:none;opacity:.75}
+/* the rail: sharing on the left, the one way forward on the right */
+.scw-footrow{grid-column:1/-1;display:flex;align-items:center;gap:12px;margin-top:26px}
 .scw-share{display:inline-flex;align-items:center;gap:8px;padding:13px 17px;border-radius:99px;background:none;
   border:1px solid var(--line);color:var(--tx-2);font-size:13.5px;cursor:pointer;
   transition:background var(--t-q) var(--ease),color var(--t-q) var(--ease),border-color var(--t-q) var(--ease)}
@@ -4842,6 +4881,10 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
   font-size:13px;box-shadow:0 18px 44px rgba(26,24,21,.35);opacity:0;
   transition:opacity .3s var(--ease),transform .3s var(--ease)}
 .scw-toast.on{opacity:1;transform:translateX(-50%)}
+@media (max-width:960px){
+  .scw-in{grid-template-columns:1fr;gap:30px;padding-top:64px}
+  .scw-p{max-width:none}
+}
 
 /* ---- ACT 2 LIVES INSIDE ACT 3 NOW. The shell sits over the celebration's own card, in the
    celebration's own world — the break and the reveal are one scene, so nothing hands off. ---- */
@@ -4872,7 +4915,8 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
    fixed 1920x1080 canvas and scaled to FILL. Choreography: world up, bottom flow, orbs pulse out,
    45-degree sweeps, the title lands with impact (punch + white flash + green highlight clipped to
    the letters + afterglow) BEFORE the card, the card rises, Continue. Blur + glow are load-bearing. ---- */
-.sucel{position:fixed;inset:0;z-index:970;overflow:hidden;background:#0a140d;
+.sucel{position:fixed;inset:0;z-index:970;overflow:hidden;
+  background:linear-gradient(180deg,#0e2015 0%,#153122 46%,#1b3f2a 100%);
   display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .45s var(--ease)}
 .sucel.show{opacity:1}
 .sucel .su-root{position:absolute;left:0;top:0;transform-origin:top left;
@@ -4884,7 +4928,11 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
     repeating-linear-gradient(90deg,transparent 0 118px,rgba(180,250,167,.05) 118px 120px),
     repeating-linear-gradient(45deg,transparent 0 336px,rgba(180,250,167,.035) 336px 338px),
     radial-gradient(60% 46% at 50% 58%,rgba(180,250,167,.09),transparent 70%),#0a140d}
-.sucel .su-map-dim{position:absolute;inset:0;z-index:0;background:rgba(0,0,0,.45)}
+.sucel .su-map-dim{position:absolute;inset:0;z-index:0;background:rgba(0,0,0,.26)}
+/* the real world, glowing green under everything. Loaded live; the drawn grid stays beneath it. */
+.sucel .su-map img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;
+  filter:invert(.88) sepia(1) saturate(2.1) hue-rotate(72deg) brightness(1.02);
+  mix-blend-mode:screen;opacity:.42}
 .sucel .su-glow{position:absolute;left:50%;bottom:-18%;width:175%;height:104%;transform:translateX(-50%);z-index:1;pointer-events:none;
   background:radial-gradient(ellipse 74% 56% at 50% 64%,rgba(216,255,208,.7) 0%,rgba(180,250,167,.57) 26%,rgba(180,250,167,.27) 52%,rgba(180,250,167,0) 80%);
   filter:blur(56px);mix-blend-mode:screen}
@@ -8740,16 +8788,14 @@ function roomReport(secs){
   if(_again) _again.onclick=function(){ roomExit(); setTimeout(function(){ presRoom('live'); },420); };
   ov.querySelector('#rptDone').onclick=function(){
     /* the stage OPENED by promising this goes on your portfolio — this is where it lands */
-    /* the ending: it goes on the portfolio, the scenario is summed up once, and the next one is
-       something you break open. It does not hand you back to the stage list any more. */
-    portfolioAdded('presentation', function(){
-      try{ (R.qt||[]).forEach(clearTimeout); }catch(e){}
-      try{ document.removeEventListener('keydown',R.qaKD); document.removeEventListener('keyup',R.qaKU); }catch(e){}
-      try{ roomStopCam(); }catch(e){}
-      const _rp=document.getElementById('rrep');
-      if(_rp){ _rp.classList.remove('show'); setTimeout(function(){ try{_rp.remove();}catch(e){} },340); }
-      setTimeout(scenarioWrapUp, 420);
-    });
+    /* the order of the ending: the hooray first, then the portfolio confirmation, then the break.
+       The review opens straight off the report; the popup waits its turn inside the review's Continue. */
+    try{ (R.qt||[]).forEach(clearTimeout); }catch(e){}
+    try{ document.removeEventListener('keydown',R.qaKD); document.removeEventListener('keyup',R.qaKU); }catch(e){}
+    try{ roomStopCam(); }catch(e){}
+    const _rp=document.getElementById('rrep');
+    if(_rp){ _rp.classList.remove('show'); setTimeout(function(){ try{_rp.remove();}catch(e){} },340); }
+    setTimeout(scenarioWrapUp, 380);
   };
 }
 function roomSendToJay(secs){
@@ -11706,9 +11752,9 @@ const SCW_TOOLS=['Airbnb data','Spreadsheets','Docs','Slides'];
 const SCW_BANDS={
   below:{k:'Below expectations',h:'You got there, the long way round.',
     p:'You found the calendar-sync cause and you costed it, which is the hard half. What held it back was order: the recommendation arrived after the evidence instead of leading it, and the room had to wait for the point.'},
-  meets:{k:'Meets expectations',h:'Solid work on a messy problem.',
+  meets:{k:'Meets expectations',h:'Hooray, that is the scenario done properly.',
     p:'You took a six-week spike in cancellations, found the calendar conflicts underneath it, put a number on them, and proposed one fix rather than five. That is the shape of the job.'},
-  exceeds:{k:'Exceeds expectations',h:'This is the standard.',
+  exceeds:{k:'Exceeds expectations',h:'Hooray, genuinely great work.',
     p:'You took a six-week spike in cancellations, traced it to calendar conflicts, costed it at $3.0M a year, and argued for one fix instead of hedging across five. The proposal led with the recommendation and the room followed it.'},
   exceptional:{k:'Exceptional',h:'You would have shipped this.',
     p:'You found the cause, priced it, chose one fix, and defended it under pressure without losing the thread. Nothing in this needed a second pass before it went up the chain.'}
@@ -11719,33 +11765,38 @@ const SCW_SAY={
   exceeds:"Genuinely strong. You led with the recommendation and every section earned the next one.",
   exceptional:"I would have taken this into the exec review as it is. That does not happen often."
 };
+/* the skills, as a record with levels — not a tag cloud */
+const SCW_MX=[['Root cause analysis',3],['Cost modelling',2],['Written proposals',3],['Executive presenting',2],['Handling pushback',2]];
 function scenarioWrapUp(){
   const band=(typeof rptBand!=='undefined'&&SCW_BANDS[rptBand])?rptBand:'meets';
   const B=SCW_BANDS[band];
   const xp=Math.max(240,(typeof totalXP!=='undefined'?totalXP:0)||0);
   const ov=document.createElement('div'); ov.className='scw'; ov.id='scw';
-  ov.innerHTML='<div class="scw-rips"><span class="scw-rip"></span><span class="scw-rip"></span><span class="scw-rip"></span></div>'
+  ov.innerHTML='<div class="scw-aur"><i></i><i></i><i></i></div>'
+   +'<div class="scw-rips"><span class="scw-rip"></span><span class="scw-rip"></span><span class="scw-rip"></span></div>'
    +'<canvas class="scw-fx" id="scwFx"></canvas>'
    +'<div class="scw-in">'
-   +'<div class="scw-eyebrow">Scenario complete</div>'
-   +'<h1 class="scw-h">'+B.h+'</h1>'
-   +'<p class="scw-p">'+B.p+'</p>'
-   +'<div class="scw-rule"></div>'
-   +'<div class="scw-stats">'
-   +'  <div class="scw-stat xp"><b>'+SCW_STAR+'<span id="scwXp">0</span></b><span>XP earned</span></div>'
-   +'  <div class="scw-stat"><b>'+STAGES.length+'</b><span>Stages cleared</span></div>'
-   +'  <div class="scw-stat"><b style="font-size:21px">'+B.k+'</b><span>Overall</span></div>'
+   +'<div class="scw-l">'
+   +'  <div class="scw-eyebrow">Scenario complete</div>'
+   +'  <h1 class="scw-h">'+B.h+'</h1>'
+   +'  <p class="scw-p">'+B.p+'</p>'
+   +'  <div class="scw-say"><img src="'+JAY_IMG+'" alt="" onerror="this.remove()">'
+   +'    <div><div class="n">Jay Shah</div><div class="t">'+SCW_SAY[band]+'</div></div></div>'
    +'</div>'
-   +'<div class="scw-rule"></div>'
-   +'<div class="scw-say"><img src="'+JAY_IMG+'" alt="" onerror="this.remove()">'
-   +'  <div><div class="n">Jay Shah</div><div class="t">'+SCW_SAY[band]+'</div></div></div>'
-   +'<div class="scw-rule"></div>'
-   +'<div class="scw-lbl">Skills you used</div>'
-   +'<div class="scw-chips">'+SCW_SKILLS.map(function(s){ return '<span class="scw-chip"><i></i>'+s+'</span>'; }).join('')+'</div>'
-   +'<div style="height:28px"></div>'
-   +'<div class="scw-lbl">Tools</div>'
-   +'<div class="scw-chips">'+SCW_TOOLS.map(function(t){ return '<span class="scw-chip"><i></i>'+t+'</span>'; }).join('')+'</div>'
-   +'<div class="scw-foot">'
+   +'<div class="scw-r"><div class="scw-card">'
+   +'  <div class="scw-hero"><div class="scw-stat xp"><b>'+SCW_STAR+'<span id="scwXp">0</span></b></div><span class="lbl">XP earned</span></div>'
+   +'  <div class="scw-facts">'
+   +'    <div class="scw-fact"><b>'+STAGES.length+'</b><span>Stages cleared</span></div>'
+   +'    <div class="scw-fact"><b>'+B.k+'</b><span>Overall</span></div>'
+   +'  </div>'
+   +'  <div class="scw-lbl">Skills you used</div>'
+   +'  <div class="scw-mx">'+SCW_MX.map(function(m){
+        return '<div class="scw-mrow"><span class="nm">'+m[0]+'</span><span class="lv">'
+          +[1,2,3].map(function(i){ return '<i'+(i<=m[1]?' class="on"':'')+'></i>'; }).join('')+'</span></div>'; }).join('')+'</div>'
+   +'  <div class="scw-lbl">Tools</div>'
+   +'  <div class="scw-chips">'+SCW_TOOLS.map(function(t){ return '<span class="scw-chip"><i></i>'+t+'</span>'; }).join('')+'</div>'
+   +'</div></div>'
+   +'<div class="scw-footrow">'
    +'  <button class="scw-share" data-w="LinkedIn">'+SCW_IN+'Share</button>'
    +'  <button class="scw-share" data-w="X">'+SCW_X+'Post</button>'
    +'  <button class="scw-go" id="scwGo">Continue '+PIC.arrow+'</button>'
@@ -11753,39 +11804,40 @@ function scenarioWrapUp(){
    +'</div>';
   document.body.appendChild(ov); ov.getBoundingClientRect(); ov.classList.add('show');
   try{ scwAudio.chime(); }catch(e){}
-  /* entrance: everything rises in order. GSAP when it is there; either way a plain timer makes
-     the final state true, so a starved ticker can never hold the screen hostage. */
-  const rows=ov.querySelectorAll('.scw-in > *');
+  /* quick: one view, everything readable at once. The stagger is seasoning, not a wait. */
+  const rows=ov.querySelectorAll('.scw-l > *, .scw-card > *, .scw-footrow');
   if(window.gsap){
-    gsap.fromTo(rows,{opacity:0,y:24},{opacity:1,y:0,duration:.7,ease:'power3.out',stagger:.06,delay:.2});
+    gsap.fromTo(rows,{opacity:0,y:18},{opacity:1,y:0,duration:.5,ease:'power3.out',stagger:.045,delay:.1});
   }
-  setTimeout(function(){ rows.forEach(function(r){ r.style.opacity=''; r.style.transform=''; }); },2400);
-  /* the XP counts itself up on a plain interval, ticking as it goes, and lands with a thump
-     and one gold volley — the moment of the screen */
+  setTimeout(function(){ rows.forEach(function(r){ r.style.opacity=''; r.style.transform=''; }); },1600);
+  /* the XP counts up fast, ticks as it goes, lands with a thump and one gold volley */
   const xpEl=ov.querySelector('#scwXp');
-  let shown=0; const T0=Date.now(), DUR=1300;
+  let shown=0; const T0=Date.now(), DUR=950;
   const iv=setInterval(function(){
-    const k=Math.min(1,(Date.now()-T0-500)/DUR);
+    const k=Math.min(1,(Date.now()-T0-260)/DUR);
     if(k<=0)return;
     const e=1-Math.pow(1-k,3);
     const v=Math.round(xp*e);
     if(v!==shown){ shown=v; xpEl.textContent='+'+v; if(v<xp&&v%23<3){ try{ scwAudio.tick(); }catch(err){} } }
     if(k>=1){ clearInterval(iv);
       try{ scwAudio.thump(); }catch(err){}
-      try{ const fx=ov.querySelector('#scwFx');
-        suConfetti(fx,{count:52,gravity:.055,blend:'source-over',colors:['#FFD84D','#FFE06B','#FFC64D','#FFEFA0','#FFF3C8','#ff8a6b']}); }catch(err){}
+      try{ suConfetti(ov.querySelector('#scwFx'),{count:52,gravity:.055,blend:'source-over',
+        colors:['#FFD84D','#FFE06B','#FFC64D','#FFEFA0','#FFF3C8','#ff8a6b']}); }catch(err){}
       if(window.gsap){ const st=ov.querySelector('.scw-stat.xp');
-        gsap.fromTo(st,{scale:1},{scale:1.045,duration:.16,ease:'power2.out',yoyo:true,repeat:1}); }
+        gsap.fromTo(st,{scale:1},{scale:1.05,duration:.16,ease:'power2.out',yoyo:true,repeat:1,transformOrigin:'left center'}); }
     }
   },40);
   ov.querySelectorAll('.scw-share').forEach(function(b){
     b.onclick=function(){ scwToast('Shared to '+b.dataset.w); try{ ZSND.play('select'); }catch(e){} };
   });
+  /* the order he asked for: the hooray first, THEN the portfolio confirmation, THEN the break */
   ov.querySelector('#scwGo').onclick=function(){
     try{ ZSND.play('select'); }catch(e){}
     clearInterval(iv);
     ov.classList.remove('show');
-    setTimeout(function(){ ov.remove(); scenarioUnlock(); },420);
+    setTimeout(function(){ ov.remove();
+      portfolioAdded('presentation', function(){ scenarioUnlock(); });
+    },380);
   };
 }
 function scwToast(msg){
@@ -11809,7 +11861,7 @@ function scenarioUnlock(){
   }
   const ov=document.createElement('div'); ov.className='sucel'; ov.id='sucel';
   ov.innerHTML='<div class="su-root" id="suRoot">'
-   +'<div class="su-map"></div><div class="su-map-dim"></div>'
+   +'<div class="su-map"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/BlankMap-World.svg?width=1920" alt="" onerror="this.remove()"></div><div class="su-map-dim"></div>'
    +'<div class="su-glow"></div><div class="su-bottom"></div><div class="su-halftone"></div>'
    +'<div class="su-rings"><i class="su-orb"></i><i class="su-orb"></i><i class="su-orb"></i></div>'
    +'<div class="su-sweeps"><i class="su-sweep"></i><i class="su-sweep" style="transform:translate(-50%,-50%) rotate(45deg) scale(0)"></i></div>'
