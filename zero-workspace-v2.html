@@ -2340,33 +2340,35 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 /* ===== PRESENTATION ENTRY POPUP ===== */
 .pentry-scrim{position:fixed;inset:0;z-index:520;display:grid;place-items:center;padding:24px;background:transparent;backdrop-filter:blur(16px) saturate(1.05);-webkit-backdrop-filter:blur(16px) saturate(1.05);opacity:0;transition:opacity .3s var(--ease)}
 .pentry-scrim.show{opacity:1}
-.pentry{width:min(520px,94vw);height:auto;max-height:88vh;display:grid;grid-template-columns:1fr;grid-template-rows:auto auto;background:var(--card);border:var(--bw) solid var(--line);border-radius:36px;overflow:hidden;box-shadow:0 44px 130px rgba(0,0,0,.55);transform:scale(.97) translateY(8px);transition:transform .34s var(--ease)}
+.pentry{width:min(440px,92vw);height:auto;max-height:88vh;display:grid;grid-template-columns:1fr;grid-template-rows:auto auto;background:var(--card);border:var(--bw) solid var(--line);border-radius:36px;overflow:hidden;box-shadow:0 44px 130px rgba(0,0,0,.55);transform:scale(.97) translateY(8px);transition:transform .34s var(--ease)}
 .pentry-scrim.show .pentry{transform:none}
+/* the recording that flies into the portfolio scales with the smaller canvas */
+.pe-rec{width:200px;margin:-62px 0 0 -100px}
 /* the visual on top, sized to itself — the side-by-side left a column of dead space beside the
    words, and a stack has none to leave */
-.pe-left{padding:16px 16px 0;background:var(--card);min-height:0;overflow:hidden}
+.pe-left{padding:12px 12px 0;background:var(--card);min-height:0;overflow:hidden}
 /* the portfolio sits INSIDE the visual with room around it. Filling the canvas edge to edge made
    it read as the panel itself rather than as a thing being shown to you. */
-.pe-canvas{position:relative;height:310px;border-radius:20px;background:#f5f3ee;overflow:hidden;padding:30px 34px 0;--tx:#1a1815;--tx-2:#5a554f;--tx-3:#9a958c;--line:rgba(13,13,13,.09)}
+.pe-canvas{position:relative;height:236px;border-radius:16px;background:#f5f3ee;overflow:hidden;padding:22px 24px 0;--tx:#1a1815;--tx-2:#5a554f;--tx-3:#9a958c;--line:rgba(13,13,13,.09)}
 .pe-canvas::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34px;background:linear-gradient(transparent,#f5f3ee);pointer-events:none;z-index:4;border-radius:0 0 20px 20px}
-.pfolio{width:100%;max-width:404px;margin:0 auto}   /* wide enough to breathe, with a real margin around it */
+.pfolio{width:100%;max-width:330px;margin:0 auto}   /* wide enough to breathe, with a real margin around it */
 .pfolio-head{display:flex;flex-direction:row;align-items:center;gap:13px;text-align:left}
-.pf-av{width:52px;height:52px;border-radius:99px;object-fit:cover;border:1px solid rgba(13,13,13,.08);box-shadow:0 6px 18px rgba(0,0,0,.12)}
+.pf-av{width:40px;height:40px;border-radius:99px;object-fit:cover;border:1px solid rgba(13,13,13,.08);box-shadow:0 6px 18px rgba(0,0,0,.12)}
 .pf-meta{text-align:left;min-width:0}
-.pf-meta b{display:block;font-size:18px;font-weight:700;color:var(--tx);letter-spacing:-.02em}
-.pf-meta span{display:inline-flex;align-items:center;justify-content:flex-start;gap:5px;font-size:12px;color:var(--tx-2);margin-top:3px;white-space:nowrap}
+.pf-meta b{display:block;font-size:14.5px;font-weight:700;color:var(--tx);letter-spacing:-.015em}
+.pf-meta span{display:inline-flex;align-items:center;justify-content:flex-start;gap:5px;font-size:11px;color:var(--tx-2);margin-top:3px;white-space:nowrap}
 .pf-meta span svg{width:12px;height:12px;opacity:.8}
 .pf-label{text-align:left;font-size:11px;color:var(--tx-3);font-weight:500;letter-spacing:.2px;margin:18px 0 11px}
 .pfolio-scroll{display:flex;flex-direction:column;gap:13px}
-.pcard{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid rgba(13,13,13,.05);border-radius:15px;padding:15px 17px;box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.pcard{display:flex;align-items:center;gap:11px;background:#fff;border:1px solid rgba(13,13,13,.05);border-radius:13px;padding:11px 13px;box-shadow:0 8px 24px rgba(0,0,0,.08)}
 .pentry .pcard{max-width:none}
-.pcard-logo{width:42px;height:42px;border-radius:12px;background:#efece6;display:grid;place-items:center;flex:0 0 auto}
+.pcard-logo{width:34px;height:34px;border-radius:10px;background:#efece6;display:grid;place-items:center;flex:0 0 auto}
 .pcard-logo svg{width:22px;height:22px}
 .pcard-logo.coral{background:#fbe7e9;color:#FF385C}
 .pcard-logo.green{background:#e8f2eb}
 .pcard-logo.ghost{background:transparent;border:1.5px dashed var(--line)}
 .pcard-info{flex:1;min-width:0}
-.pcard-title{font-size:14.5px;font-weight:700;color:#1a1815;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pcard-title{font-size:13px;font-weight:700;color:#1a1815;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pcard-title.muted{color:var(--tx-2)}
 .pcard-sub{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:#a49f97;margin-top:4px}
 /* the grade says itself once, here, on the work it belongs to */
@@ -2381,16 +2383,16 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .pcard-slot .pcard.added{position:relative;width:100%;opacity:1;border-color:transparent;box-shadow:0 18px 40px rgba(0,0,0,.18),0 0 0 2px rgba(63,185,104,.72),0 0 30px rgba(63,185,104,.24)}
 /* right: dark */
 /* content then CTA, hugging each other — nothing pushed to the far end of an empty column */
-.pe-right{padding:22px 26px 26px;display:flex;flex-direction:column;gap:22px;background:var(--card);min-height:0}
+.pe-right{padding:16px 20px 20px;display:flex;flex-direction:column;gap:14px;background:var(--card);min-height:0}
 /* the rhythm: label, a beat, the sentence, a bigger beat, the explanation */
 .pe-top{display:flex;flex-direction:column;gap:0}
-.pe-h{font-size:25px;font-weight:600;line-height:1.2;margin:0;letter-spacing:-.022em;color:var(--tx);max-width:24ch}
+.pe-h{font-size:17.5px;font-weight:650;line-height:1.3;margin:0;letter-spacing:-.015em;color:var(--tx);max-width:30ch}   /* the stage ramp: nothing in a pop-up outweighs the rail card titles */
 /* ONE body style for the slot, whichever pop-up is using it */
-.pe-s,.pe-body{font-size:14.5px;line-height:1.62;color:var(--tx-2);margin:14px 0 0;max-width:46ch}
+.pe-s,.pe-body{font-size:13.5px;line-height:1.6;color:var(--tx-2);margin:10px 0 0;max-width:46ch}
 /* and the button hugs its words on the right, the way it does everywhere else */
 /* the CTA fills the column: in a modal there is one thing to do, so it takes the width */
 .pe-bottom{display:flex;flex-direction:column;align-items:stretch;gap:14px}
-.pe-cta{display:flex;align-items:center;justify-content:center;gap:8px;padding:16px 26px;border-radius:99px;width:100%;background:var(--accent);color:var(--bg);font-size:14.5px;font-weight:600;border:0;cursor:pointer;box-shadow:0 12px 30px rgba(0,0,0,.28);transition:transform var(--t-q) var(--ease)}
+.pe-cta{display:flex;align-items:center;justify-content:center;gap:8px;padding:13px 22px;border-radius:99px;width:100%;background:var(--accent);color:var(--bg);font-size:13.5px;font-weight:600;border:0;cursor:pointer;box-shadow:0 12px 30px rgba(0,0,0,.28);transition:transform var(--t-q) var(--ease)}
 .pe-cta:hover{transform:translateY(-2px)}.pe-cta svg{width:17px;height:17px}
 .pfdone-scrim .pfolio-scroll > .pcard:not(.empty){opacity:1}
 /* THE cause of the empty right side: .pe-right is space-between inside a fixed 478px card, so once
@@ -3570,14 +3572,14 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .addpop-scrim{position:fixed;inset:0;z-index:1400;display:grid;place-items:center;padding:26px;
   background:rgba(0,0,0,.6);backdrop-filter:blur(10px);opacity:0;transition:opacity .3s var(--ease)}
 .addpop-scrim.show{opacity:1}
-.addpop{width:min(440px,94%);background:var(--card);border:1px solid var(--line);border-radius:26px;padding:30px 28px 26px;
+.addpop{width:min(400px,92%);background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px 22px 20px;
   text-align:center;box-shadow:0 44px 110px rgba(0,0,0,.6);
   transform:scale(.94) translateY(10px);transition:transform .42s cubic-bezier(.34,1.3,.5,1)}
 .addpop-scrim.show .addpop{transform:none}
 .addpop-tick{width:52px;height:52px;margin:0 auto 16px;border-radius:99px;display:grid;place-items:center;
   background:rgba(73,186,97,.14);color:#49BA61}
 .addpop-tick svg{width:25px;height:25px}
-.addpop-h{font-family:var(--serif);font-weight:500;font-size:25px;letter-spacing:-.012em;color:var(--tx);margin-bottom:18px}
+.addpop-h{font-family:var(--serif);font-weight:600;font-size:17.5px;letter-spacing:-.012em;color:var(--tx);margin-bottom:14px}
 .addpop-card{text-align:left;margin-bottom:16px;border-radius:16px;
   box-shadow:0 0 0 2px rgba(73,186,97,.4),0 0 26px rgba(73,186,97,.22)}
 .addpop-cta{width:100%;min-height:46px;border:0;border-radius:99px;cursor:pointer;
@@ -4933,11 +4935,10 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
     repeating-linear-gradient(90deg,transparent 0 118px,rgba(180,250,167,.05) 118px 120px),
     repeating-linear-gradient(45deg,transparent 0 336px,rgba(180,250,167,.035) 336px 338px),
     radial-gradient(60% 46% at 50% 58%,rgba(180,250,167,.09),transparent 70%),#0a140d}
-.sucel .su-map-dim{position:absolute;inset:0;z-index:0;background:rgba(0,0,0,.26)}
-/* the real world, glowing green under everything. Loaded live; the drawn grid stays beneath it. */
-.sucel .su-map img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;
-  filter:invert(.88) sepia(1) saturate(2.1) hue-rotate(72deg) brightness(1.02);
-  mix-blend-mode:screen;opacity:.42}
+.sucel .su-map-dim{position:absolute;inset:0;z-index:0;background:rgba(0,0,0,.52)}   /* the city is daylight; the celebration is night */
+/* THE ZERO WORLD — the shipped city itself, dimmed to night under the green bloom. The drawn
+   grid stays beneath as the offline fallback. */
+.sucel .su-map img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 34%}
 .sucel .su-glow{position:absolute;left:50%;bottom:-18%;width:175%;height:104%;transform:translateX(-50%);z-index:1;pointer-events:none;
   background:radial-gradient(ellipse 74% 56% at 50% 64%,rgba(216,255,208,.7) 0%,rgba(180,250,167,.57) 26%,rgba(180,250,167,.27) 52%,rgba(180,250,167,0) 80%);
   filter:blur(56px);mix-blend-mode:screen}
@@ -5215,6 +5216,8 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
       <button data-dbg="qa" class="wide">Q&amp;A session</button>
       <button data-dbg="rvw" class="wide">Report loader</button>
       <button data-dbg="report" class="wide">Presentation report</button>
+      <button data-dbg="perf" class="wide">Scenario performance</button>
+      <button data-dbg="unlock" class="wide">Scenario unlock</button>
       <button data-dbg="restart" class="wide">Restart scenario</button>
     </div>
     <h5>Jump to stage</h5>
@@ -10731,6 +10734,8 @@ function dbgJump(what){
   const openBuild=(id)=>{ softReset(); planPhase='full'; ACTIVE.reqStatus=null; renderRail(); setMode('build');
     composerEl.classList.remove('hidden','notepad'); timerRunning=false;
     sayJay(`Debug jump. You're on <b>${ACTIVE.title}</b>, build mode. Upload when ready.`); };
+  if(what==='perf'){ softReset(); scenarioWrapUp(); return; }
+  if(what==='unlock'){ softReset(); scenarioUnlock(); return; }
   if(what==='skipplan'){ openBuild(); }
   else if(what==='plan'){ softReset(); planPhase='title'; ACTIVE.reqStatus=null; renderRail();
     startPlan(STAGES[stageIdx].id, stageIdx+1); }   // straight into the note-taking plan flow
@@ -11910,7 +11915,7 @@ function scenarioUnlock(){
   }
   const ov=document.createElement('div'); ov.className='sucel'; ov.id='sucel';
   ov.innerHTML='<div class="su-root" id="suRoot">'
-   +'<div class="su-map"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/BlankMap-World.svg?width=1920" alt="" onerror="this.remove()"></div><div class="su-map-dim"></div>'
+   +'<div class="su-map"><img src="zero-world.jpg" alt="" onerror="this.remove()"></div><div class="su-map-dim"></div>'
    +'<div class="su-glow"></div><div class="su-bottom"></div><div class="su-halftone"></div>'
    +'<div class="su-rings"><i class="su-orb"></i><i class="su-orb"></i><i class="su-orb"></i></div>'
    +'<div class="su-sweeps"><i class="su-sweep"></i><i class="su-sweep" style="transform:translate(-50%,-50%) rotate(45deg) scale(0)"></i></div>'
@@ -11955,6 +11960,12 @@ function scenarioUnlock(){
   L('.su-glow').style.opacity=.16; L('.su-bottom').style.opacity=.16;
   const eye=L('#suEye'), hint=L('#suHint'), card=L('#sulBox'), slot=L('.su-card-slot');
   slot.style.opacity=1;
+  /* the card rides in from the bottom of the world — the gamified arrival, not a hard mount */
+  if(window.gsap){
+    gsap.fromTo(slot,{y:560,opacity:0,scale:.92,rotateX:16},
+      {y:0,opacity:1,scale:1,rotateX:0,duration:.95,ease:'power3.out',delay:.15});
+  }
+  setTimeout(function(){ slot.style.transform=''; slot.style.opacity=1; },1500);
   setTimeout(function(){ eye.style.transition='opacity .6s ease'; eye.style.opacity=1; },350);
   /* the break */
   const crack=L('#suCrack'), leak=L('#suLeak'), shellEl=L('#suShell'), glowEl=L('.su-glow');
