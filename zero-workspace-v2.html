@@ -1979,9 +1979,9 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .user .uq:hover{color:var(--tx-2);border-color:var(--accent)}
 
 /* ============ DEBUG ============ */
-.dbg-fab{position:fixed;right:16px;bottom:16px;z-index:60;width:42px;height:42px;border-radius:99px;background:var(--card);border:var(--bw) solid var(--line);display:grid;place-items:center;color:var(--tx-2);box-shadow:var(--shadow);transition:transform var(--t-m) var(--ease)}
+.dbg-fab{position:fixed;right:16px;bottom:16px;z-index:980;width:42px;height:42px;border-radius:99px;background:var(--card);border:var(--bw) solid var(--line);display:grid;place-items:center;color:var(--tx-2);box-shadow:var(--shadow);transition:transform var(--t-m) var(--ease)}
 .dbg-fab:hover{color:var(--tx);transform:rotate(90deg)}.dbg-fab svg{width:20px;height:20px}
-.dbg{position:fixed;right:16px;bottom:66px;z-index:900;width:280px;max-height:80vh;overflow-y:auto;background:var(--card);border:var(--bw) solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow);display:none;opacity:0;transform:translateY(10px) scale(.97);transition:opacity var(--t-m) var(--ease),transform var(--t-m) var(--ease)}
+.dbg{position:fixed;right:16px;bottom:66px;z-index:981;width:280px;max-height:80vh;overflow-y:auto;background:var(--card);border:var(--bw) solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow);display:none;opacity:0;transform:translateY(10px) scale(.97);transition:opacity var(--t-m) var(--ease),transform var(--t-m) var(--ease)}
 .dbg.open{display:block;opacity:1;transform:none}
 .dbg h5{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--tx-3);margin:14px 0 8px}
 /* collapsible accordions in the design panel (hidden by default) */
@@ -2115,7 +2115,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 /* stage jump + arrow nav */
 .set-dbg button.on{background:var(--accent);color:var(--on-accent);border-color:transparent}
 /* every dev control lives in the same corner: the stepper sits directly above the gear */
-.stage-nav{position:fixed;right:16px;bottom:66px;z-index:60;display:flex;align-items:center;gap:3px;background:var(--card);border:var(--bw) solid var(--line);border-radius:99px;padding:3px;box-shadow:var(--shadow)}
+.stage-nav{position:fixed;right:16px;bottom:66px;z-index:980;display:flex;align-items:center;gap:3px;background:var(--card);border:var(--bw) solid var(--line);border-radius:99px;padding:3px;box-shadow:var(--shadow)}
 .stage-nav .sn-btn{width:26px;height:26px;border-radius:99px;display:grid;place-items:center;color:var(--tx-2);cursor:pointer;transition:background var(--t-q) var(--ease),color var(--t-q) var(--ease)}
 .stage-nav .sn-btn svg{width:15px;height:15px}
 .stage-nav .sn-btn:hover{background:var(--hover);color:var(--tx)}
@@ -10416,6 +10416,19 @@ const _stepSubmitted={};   /* one hand-in per stage; the arrow must not resubmit
 const STEP_REPLY=["Sounds good.","That makes sense, thanks.","Got it, I'm good to go."];
 let _stepReply=0;
 function stepFlow(){
+  /* the ending screens are part of the flow, so the arrow drives them too. A control that is
+     visible but does nothing is worse than one that is hidden. */
+  const _sul=document.getElementById('sul');
+  if(_sul){
+    const g=_sul.querySelector('#sulGo');
+    if(g&&g.classList.contains('on')){ g.click(); return; }
+    const bx=_sul.querySelector('#sulBox'), r=bx&&bx.getBoundingClientRect();
+    if(bx&&r) bx.dispatchEvent(new MouseEvent('click',{clientX:r.left+r.width*(.3+Math.random()*.4),
+      clientY:r.top+r.height*(.3+Math.random()*.4),bubbles:true}));
+    return;
+  }
+  const _scw=document.getElementById('scw');
+  if(_scw){ const g=_scw.querySelector('#scwGo'); if(g){ g.click(); return; } }
   /* 0. something is processing: finish it rather than wait it out, and land on the result */
   if(_busy()){ flushBeats(); return; }
   /* 1. a pop-up is in the way: acknowledge it */
