@@ -11986,7 +11986,6 @@ function scenarioUnlock(){
   };
   const shatter=function(list){
     list.forEach(function(pc,k){
-      shardPop(k);                                           /* one voice per block, in sequence */
       const b=pc.getBoundingClientRect();
       const s=document.createElement('i'); s.className='sul-shard';
       s.style.cssText='left:'+b.left+'px;top:'+b.top+'px;width:'+b.width+'px;height:'+b.height+'px';
@@ -12026,28 +12025,37 @@ function scenarioUnlock(){
   })();
   /* THE CRACK, HEARD. Not a UI beep: a knock into a filtered-noise crunch, harder each tap,
      and the shatter is a burst of it with a low drop underneath. */
-  /* THE FIRST SOUND WAS RIGHT. The tap is the product's own tap. What was missing was that the
-     BLOCKS were silent: now every shard has its own voice — a small pop as it breaks, a lower one
-     as it falls — staggered as they fly, so four blocks breaking is four sounds cascading. */
-  const shardPop=function(idx){
+  /* RESTORED: the first crack build (v373), the one that felt right — a knock into a
+     filtered-noise crunch, harder each tap, and the shatter as a burst of it over a low drop. */
+  /* THE CRACK, HEARD. Not a UI beep: a knock into a filtered-noise crunch, harder each tap,
+     and the shatter is a burst of it with a low drop underneath. */
+  const crackSnd=function(n){
     try{
-      const AC=window.AudioContext||window.webkitAudioContext; const ac=shardPop._ac||(shardPop._ac=new AC());
+      const AC=window.AudioContext||window.webkitAudioContext; const ac=crackSnd._ac||(crackSnd._ac=new AC());
       try{ ac.resume&&ac.resume(); }catch(e2){}
-      const t=ac.currentTime+0.01+idx*0.05;                 /* each block takes its turn */
-      const blip=function(at,f,d,g0){
-        const o=ac.createOscillator(), g=ac.createGain(), lp=ac.createBiquadFilter();
-        o.type='triangle'; o.frequency.value=f;
-        lp.type='lowpass'; lp.frequency.value=2400;
-        g.gain.setValueAtTime(0.0001,at); g.gain.exponentialRampToValueAtTime(g0,at+.006); g.gain.exponentialRampToValueAtTime(0.0001,at+d);
-        o.connect(lp); lp.connect(g); g.connect(ac.destination); o.start(at); o.stop(at+d+.02);
-      };
-      const f0=560+Math.random()*160-idx*22;
-      blip(t, f0, .06, .3);                                  /* the break */
-      blip(t+.07, f0*.55, .09, .22);                         /* and the fall, a third down */
+      const t=ac.currentTime+0.005;
+      const o=ac.createOscillator(), og=ac.createGain();          /* the knock */
+      o.type='sine'; o.frequency.setValueAtTime(210-n*22,t); o.frequency.exponentialRampToValueAtTime(70,t+.09);
+      og.gain.setValueAtTime(0.0001,t); og.gain.exponentialRampToValueAtTime(.5,t+.008); og.gain.exponentialRampToValueAtTime(0.0001,t+.14);
+      o.connect(og); og.connect(ac.destination); o.start(t); o.stop(t+.16);
+      const len=Math.floor(ac.sampleRate*.16);                    /* the crunch */
+      const buf=ac.createBuffer(1,len,ac.sampleRate), d=buf.getChannelData(0);
+      for(let i2=0;i2<len;i2++){ const k=i2/len; d[i2]=(Math.random()*2-1)*Math.pow(1-k,1.6)*(Math.random()<.14?1:.32); }
+      const src=ac.createBufferSource(); src.buffer=buf;
+      const bp=ac.createBiquadFilter(); bp.type='bandpass'; bp.frequency.setValueAtTime(1500+n*420,t); bp.frequency.exponentialRampToValueAtTime(500,t+.15); bp.Q.value=.8;
+      const g=ac.createGain(); g.gain.setValueAtTime(.55+n*.12,t); g.gain.exponentialRampToValueAtTime(0.0001,t+.17);
+      src.connect(bp); bp.connect(g); g.connect(ac.destination); src.start(t); src.stop(t+.18);
     }catch(e){}
   };
-  const crackSnd=function(n){ try{ ZSND.play('tap'); }catch(e){} };   /* the very first sound, kept */
-  const shatterSnd=function(){};                                      /* the blocks speak for themselves */
+  const shatterSnd=function(){
+    try{ crackSnd(3); setTimeout(function(){ crackSnd(2); },50); setTimeout(function(){ crackSnd(4); },110);
+      const ac=crackSnd._ac; if(!ac)return; const t=ac.currentTime+0.01;
+      const o=ac.createOscillator(), g=ac.createGain();
+      o.type='sine'; o.frequency.setValueAtTime(120,t); o.frequency.exponentialRampToValueAtTime(42,t+.5);
+      g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(.6,t+.012); g.gain.exponentialRampToValueAtTime(0.0001,t+.7);
+      o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+.75);
+    }catch(e){}
+  };
   card.addEventListener('click',function(e){
     if(broken) return;
     const b=card.getBoundingClientRect();
