@@ -6310,7 +6310,11 @@ function presEntryAnim(root){
 /* THE TIMELINE. He said his piece in the kickoff voice note, you planned against it, and only now
    does he hand over what to watch. Three separate moments, in that order, never one burst:
      1. voice note (in startPlan, with the coaching in it)   2. your plan   3. these resources */
-function presJayIntro(){ setTimeout(presResources, 240); }
+/* ONE SCALE FOR EVERY PAUSE BETWEEN BEATS. 220, 240, 260, 650 were four numbers that all meant
+   "a short moment" and none of them agreed. tick = one beat, step = a beat you notice, read = long
+   enough to take a line in, hold = long enough to take a card in. */
+const BEAT={ tick:250, step:500, read:750, hold:1300 };
+function presJayIntro(){ setTimeout(presResources, BEAT.tick); }
 function presVoicenote(){
   presTyping(()=>{
     addMsg({type:'mgr',text:"Okay, a couple of things I want you carrying into that room. Have a listen, then note whatever lands for you."},false);
@@ -6834,13 +6838,13 @@ function planRequirements(){
         /* the presentation stage has no build to scope and nothing left to confirm: the requirements
            ARE the brief, so it walks straight into the room — and there is nothing to read in the
            gap, so the gap is short */
-        setTimeout(planStraightToRoom, 260);
+        setTimeout(planStraightToRoom, BEAT.tick);
       } else {
         sayJay("If you want to dig into any of these, hover it and hit Ask. When you're ready, just tell me you're good, or ask away.", null, ()=>{
           setTimeout(planAwaitConfirm, 350);   // WAIT on the learner — no time question until they type that they're good
         });
       }
-    }, planStage==='present' ? 650 : 1300);   /* no Ask line to read here, so no beat to hold for it */
+    }, planStage==='present' ? BEAT.step : BEAT.hold);   /* no Ask line to read here, so a step instead of a hold */
   });
 }
 function mountReqCard(reqs, missed){
@@ -6873,7 +6877,7 @@ function planStraightToRoom(){
   timerRunning=false;   // a live presentation is not a timed build, so no clock on the board
   planPhase='full'; try{ setMode('build'); }catch(e){}
   timerJustSet=true; renderRail(); timerJustSet=false;
-  setTimeout(function(){ startDo(id, true); }, 220);
+  setTimeout(function(){ startDo(id, true); }, BEAT.tick);
 }
 function planAwaitConfirm(){
   planSubPhase='confirm';
