@@ -3323,7 +3323,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 
 /* ===== v80: the report card, built to the product team's spec =====
    bigger type, the coach speaks first, and every category carries its own colour */
-.rpt{--c-clarity:#e08b1f;--c-delivery:#25b3a4;--c-engagement:#ef4a8f;--c-qna:#9a6df0}
+.rpt{--c-clarity:#5d87ff;--c-engagement:#a778ff;--c-qna:#4fb8a0;--c-delivery:#d79a4a}   /* the feedback panel's blue and purple, plus two in the same register */
 .rpt-in{display:block!important;width:100%;max-width:min(720px,92vw);margin:0 auto;padding:clamp(28px,5vh,56px) clamp(18px,4vw,28px) 72px}
 /* the two who watched it, at the head of their own report */
 .rpt-by{display:flex;align-items:center;gap:11px}
@@ -3361,23 +3361,34 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
   display:grid;place-items:center;z-index:3;cursor:pointer;
   border:1.5px solid var(--c);background:#131313;color:var(--c);
   transition:transform .22s var(--ease),box-shadow .22s var(--ease)}
-.rpt .rp2-mk svg{width:11px;height:11px}
+.rpt .rp2-mk svg{width:11px;height:11px;stroke-width:1.8}
 .rpt .rp2-mk:hover,.rpt .rp2-mk.on{transform:scale(1.2);box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 24%,transparent)}
 /* moments */
-.rpt .rp2-mlab{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.16em;
-  color:var(--tx-3);margin:30px 0 13px}
+/* the panel's section header, count and all */
+.rpt .rp2-mlab{display:flex;align-items:baseline;gap:8px;font-family:var(--mono);font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:1.4px;color:var(--tx-3);margin:30px 0 10px}
+.rpt .rp2-mlab .cnt{margin-left:auto;font-variant-numeric:tabular-nums;font-weight:400}
 .rpt .rp2-list{display:flex;flex-direction:column;gap:9px}
+/* the panel's row: same radius, same quiet fill, and it rises in on its own beat like every other
+   list of findings in the product */
 .rpt .rp2-row{border-radius:14px;background:var(--soft);overflow:hidden;border:1px solid var(--line-2);
-  transition:background .18s var(--ease)}
+  opacity:0;transform:translateY(7px);animation:fbrow .5s var(--ease) forwards;
+  animation-delay:calc(.08s + var(--i,0)*.07s);
+  transition:background .18s var(--ease),box-shadow .22s var(--ease)}
 .rpt .rp2-row:hover{background:var(--hover)}
-.rpt .rp2-head{display:flex;align-items:center;gap:14px;padding:14px 17px;cursor:pointer}
-.rpt .rp2-cat{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:4px 10px;
-  border-radius:999px;flex:none;white-space:nowrap}
-.rpt .rp2-desc{font-size:15px;line-height:1.45;color:var(--tx);flex:1}
+.rpt .rp2-head{display:flex;align-items:flex-start;gap:13px;padding:15px 16px;cursor:pointer}
+/* the panel's tag, exactly: 9px, 6px radius, no icon, a colour on a wash of itself */
+.rpt .rp2-cat{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:3px 8px;
+  border-radius:6px;flex:none;white-space:nowrap;align-self:flex-start;margin-top:2px}
+.rpt .rp2-desc{font-size:14px;line-height:1.5;color:var(--tx);flex:1}
 .rpt .rp2-chev{width:16px;height:16px;flex:none;color:var(--tx-3);transition:transform .22s var(--ease)}
 .rpt .rp2-chev svg{width:16px;height:16px}
 .rpt .rp2-row.open .rp2-chev{transform:rotate(180deg)}
-.rpt .rp2-body{display:none;padding:0 17px 15px 17px;font-size:14.5px;line-height:1.6;color:var(--tx-2)}
+/* the panel's Why block: a mono label over the text, not a bare paragraph */
+.rpt .rp2-body{display:none;padding:0 16px 15px 16px}
+.rpt .rp2-body .wa-lbl{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:1.4px;
+  text-transform:uppercase;color:var(--tx-2);margin:0 0 5px}
+.rpt .rp2-body .wa-t{font-size:13.5px;line-height:1.6;color:var(--tx-2)}
 .rpt .rp2-row.open .rp2-body{display:block}
 @media(max-width:560px){ .rp2-body{padding-left:17px} .rp2-desc{font-size:14px} }
 /* the two ways out */
@@ -4249,8 +4260,9 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .rpt .rp2-verdict{font-size:38px;margin:14px 0 0}
 .rpt .rp2-prose{font-size:15.5px;line-height:1.62;margin:16px 0 0;max-width:none}
 .rpt .rp2-row.on{background:var(--hover);box-shadow:inset 0 0 0 1.5px var(--c)}
-.rpt .rp2-cat{display:inline-flex;align-items:center;gap:6px}
-.rpt .rp2-cat svg{width:12px;height:12px;stroke-width:1.6}
+/* no icon on the tag. The word is right there, and the panel's tags never carried one — the
+   icons stay on the timeline, where there is no room for a word. */
+.rpt .rp2-cat{display:inline-block}
 /* two ways out, and the recommended one is obvious */
 .rpt .rp2-cta{margin-top:26px;justify-content:flex-end;gap:10px}
 /* sized to its words, not stretched across the page — but it is still the white CTA */
@@ -8128,15 +8140,15 @@ function roomReport(secs){
           +(MOM_IC[m.key]||'')+'</button>'; }).join('')
    +'  </div>'
    +'</div>'
-   +'<div class="rp2-mlab">Moments to review</div>'
+   +'<div class="rp2-mlab"><span>Moments to review</span><span class="cnt">'+RP2.moments.length+'</span></div>'
    +'<div class="rp2-list">'
-   +  RP2.moments.map(function(m,i2){ return '<div class="rp2-row" data-i="'+i2+'">'
+   +  RP2.moments.map(function(m,i2){ return '<div class="rp2-row" data-i="'+i2+'" style="--i:'+i2+'">'
        +'<div class="rp2-head">'
-       +'  <span class="rp2-cat" style="background:color-mix(in srgb,var(--c-'+m.key+') 15%,transparent);color:var(--c-'+m.key+')">'+(MOM_IC[m.key]||'')+m.cat+'</span>'
+       +'  <span class="rp2-cat" style="background:color-mix(in srgb,var(--c-'+m.key+') 14%,transparent);color:var(--c-'+m.key+')">'+m.cat+'</span>'
        +'  <span class="rp2-desc">'+m.d+'</span>'
        +'  <span class="rp2-chev">'+CH+'</span>'
        +'</div>'
-       +'<div class="rp2-body">'+m.e+'</div></div>'; }).join('')
+       +'<div class="rp2-body"><div class="wa-lbl">What happened</div><div class="wa-t">'+m.e+'</div></div></div>'; }).join('')
    +'</div>'
    +'<div class="rp2-cta">'
    /* under the bar another run is the point; at or above it, carrying on is */
