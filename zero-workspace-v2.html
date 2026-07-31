@@ -2119,6 +2119,15 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .pres-cta.rec .pc-meet{color:var(--tx);border:0;background:none;width:34px;height:34px}
 .pres-cta.rec .pc-meet svg{width:26px;height:26px}
 .pres-cta.rec .pc-meet .pc-live{display:none}
+/* the way out, above the bar and on its left edge, quiet enough to never compete with the CTA */
+.pres-esc{max-width:var(--maxw);margin:0 auto 10px;display:flex}
+.pres-esc .psc-back{display:inline-flex;align-items:center;gap:7px;padding:7px 14px 7px 11px;border-radius:99px;
+  background:var(--soft);border:var(--bw) solid var(--line);color:var(--tx-2);
+  font-family:var(--f-body);font-size:12.5px;font-weight:600;cursor:pointer;
+  transition:background var(--t-q) var(--ease),color var(--t-q) var(--ease)}
+.pres-esc .psc-back:hover{background:var(--hover);color:var(--tx)}
+.pres-esc .psc-back svg{width:14px;height:14px}
+.composer:not(.pres-cta-mode) .pres-esc{display:none}
 .pres-cta .pc-cancel{flex:0 0 auto;width:36px;height:36px;margin-left:-2px;border-radius:99px;
   background:var(--soft);border:var(--bw) solid var(--line);color:var(--tx-3);display:grid;place-items:center;cursor:pointer;
   transition:background var(--t-q) var(--ease),color var(--t-q) var(--ease),border-color var(--t-q) var(--ease)}
@@ -8517,12 +8526,10 @@ function presPracticeAsk(){
       cta.innerHTML='<div class="pc-meet rec">'+IC_REC+'<span class="pc-live"></span></div>'
         +'<div class="pc-m"><div class="pc-t">Send me a two minute run</div>'
         +'<div class="pc-s">Two minutes, out loud, like the real thing</div></div>'
-        +'<button class="pc-cancel" id="prcX" aria-label="Not now" data-tip="Not now">'+HI.x+'</button>'
         +'<button class="pc-go" id="prcGo">Start recording '+PIC.arrow+'</button>';
       composerEl.classList.add('pres-cta-mode');
+      presEscPill();   /* changed your mind: the pill above takes you back to both choices */
       cta.querySelector('#prcGo').onclick=function(){ try{ZSND.play('select');}catch(e){} presClearCTA(); pfPopup('record'); };
-      /* changed your mind: the bar goes, the chat comes back, and both choices are on the table again */
-      cta.querySelector('#prcX').onclick=function(){ try{ZSND.play('close');}catch(e){} presClearCTA(); presPills(); };
     }, 620);
   }, 950);
 }
@@ -8615,14 +8622,26 @@ function presComposerCTA(){
   composerEl.classList.remove('hidden','notesmode','notepad','plan-ready');
   let cta=composerEl.querySelector('.pres-cta');
   if(!cta){ cta=document.createElement('div'); cta.className='pres-cta'; composerEl.appendChild(cta); }
-  cta.innerHTML='<div class="pc-meet">'+PIC.cam+'</div>'
-    +'<div class="pc-avs">'+PANEL.map(p=>faceHTML(p,'pc-av')).join('')+'</div>'
+  cta.innerHTML='<div class="pc-avs">'+PANEL.map(p=>faceHTML(p,'pc-av')).join('')+'</div>'
     +'<div class="pc-m"><div class="pc-t">Your team is in the room</div><div class="pc-s">'+PANEL[0].name.split(' ')[0]+' and '+PANEL[1].name.split(' ')[0]+' are waiting for you</div></div>'
     +'<button class="pc-go">Start presenting '+PIC.arrow+'</button>';
   composerEl.classList.add('pres-cta-mode');
+  presEscPill();
   cta.querySelector('.pc-go').onclick=()=>{ presRoom('live'); };
 }
-function presClearCTA(){ composerEl.classList.remove('pres-cta-mode'); const c=composerEl.querySelector('.pres-cta'); if(c)c.remove(); }
+function presClearCTA(){ composerEl.classList.remove('pres-cta-mode');
+  const c=composerEl.querySelector('.pres-cta'); if(c)c.remove();
+  const e=composerEl.querySelector('.pres-esc'); if(e)e.remove(); }
+/* the way out of any hand-off bar: a pill sitting above it, not a cross buried inside it */
+function presEscPill(){
+  let e=composerEl.querySelector('.pres-esc');
+  if(!e){ e=document.createElement('div'); e.className='pres-esc'; composerEl.insertBefore(e, composerEl.firstChild); }
+  e.innerHTML='<button type="button" class="psc-back">'+PIC.back+'Go back</button>';
+  e.querySelector('.psc-back').onclick=function(){
+    try{ ZSND.play('close'); }catch(x){}
+    presClearCTA(); presPills();   /* straight back to the two choices: ready, or practice first */
+  };
+}
 
 /* the learner sends their written plan */
 /* split the learner's free text into note bullets */
