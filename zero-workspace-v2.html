@@ -2341,14 +2341,14 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .pe-left{padding:16px 16px 0;background:var(--card);min-height:0;overflow:hidden}
 /* the portfolio sits INSIDE the visual with room around it. Filling the canvas edge to edge made
    it read as the panel itself rather than as a thing being shown to you. */
-.pe-canvas{position:relative;height:296px;border-radius:20px;background:#f5f3ee;overflow:hidden;padding:28px 30px 0;--tx:#1a1815;--tx-2:#5a554f;--tx-3:#9a958c;--line:rgba(13,13,13,.09)}
+.pe-canvas{position:relative;height:310px;border-radius:20px;background:#f5f3ee;overflow:hidden;padding:30px 34px 0;--tx:#1a1815;--tx-2:#5a554f;--tx-3:#9a958c;--line:rgba(13,13,13,.09)}
 .pe-canvas::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34px;background:linear-gradient(transparent,#f5f3ee);pointer-events:none;z-index:4;border-radius:0 0 20px 20px}
-.pfolio{width:100%;max-width:280px;margin:0 auto}   /* narrow enough that the space around it reads as deliberate */
+.pfolio{width:100%;max-width:404px;margin:0 auto}   /* wide enough to breathe, with a real margin around it */
 .pfolio-head{display:flex;flex-direction:row;align-items:center;gap:13px;text-align:left}
 .pf-av{width:52px;height:52px;border-radius:99px;object-fit:cover;border:1px solid rgba(13,13,13,.08);box-shadow:0 6px 18px rgba(0,0,0,.12)}
 .pf-meta{text-align:left;min-width:0}
 .pf-meta b{display:block;font-size:18px;font-weight:700;color:var(--tx);letter-spacing:-.02em}
-.pf-meta span{display:inline-flex;align-items:center;justify-content:flex-start;gap:5px;font-size:12px;color:var(--tx-2);margin-top:3px}
+.pf-meta span{display:inline-flex;align-items:center;justify-content:flex-start;gap:5px;font-size:12px;color:var(--tx-2);margin-top:3px;white-space:nowrap}
 .pf-meta span svg{width:12px;height:12px;opacity:.8}
 .pf-label{text-align:left;font-size:11px;color:var(--tx-3);font-weight:500;letter-spacing:.2px;margin:18px 0 11px}
 .pfolio-scroll{display:flex;flex-direction:column;gap:13px}
@@ -7910,7 +7910,6 @@ function roomQA(){
     '<div class="qas-top">'
    +'  <div class="qas-tl"><button class="qas-back" id="qasBack" aria-label="Leave">'+PIC.back+'</button></div>'
    +'  <div class="qas-tc">'
-   +'    <div class="qas-title">Q&amp;A session</div>'
    +'    <div class="qas-prog"><span class="qas-brain">'+POU_BRAIN+'</span><span class="qas-seg" id="qasSeg">'
    +      QA_Q.map(function(){ return '<i></i>'; }).join('')
    +'    </span></div>'
@@ -7939,6 +7938,7 @@ function roomQA(){
    +'      </div>'
    +'      <button class="pou-continue" id="qasGo"></button>'
    +'      <div class="pou-hint" id="qasHint">Avery is asking</div>'
+   +'      <div class="qas-tx" id="qasTx" aria-live="polite"></div>'
    +'    </div>'
    +'  </div>'
    +'</div>'
@@ -8070,16 +8070,33 @@ function qasBind(){
   const bar=el.querySelector('#qasBar'), mic=el.querySelector('#qasMic'), x=el.querySelector('#qasX'),
         send=el.querySelector('#qasSend'), tm=el.querySelector('#qasT'), wave=el.querySelector('#qasWave');
   let live=false, secs=0, iv=null;
+  /* REAL-TIME TRANSCRIPT: what you are saying, as you say it. Two lines showing, scrolling itself
+     past that so the newest words are the ones on screen. */
+  const tx=el.querySelector('#qasTx');
+  const TX_SAY=("So the way I would think about it is, if we only shipped half of this next quarter, "
+    +"I would keep the calendar sync, because that is where the conflicts are actually coming from. "
+    +"It is the piece that moves the number. The prep nudges matter, but they are a second order fix, "
+    +"and I would rather land one thing properly than half land two. For the hosts we dropped, "
+    +"I would be straight with them about the order and give them a date.").split(' ');
+  let txIv=null, txN=0;
+  function txStart(){ if(!tx) return;
+    txN=0; tx.textContent=''; tx.classList.add('on'); clearInterval(txIv);
+    txIv=setInterval(function(){
+      if(txN>=TX_SAY.length){ clearInterval(txIv); return; }
+      tx.textContent += (txN?' ':'')+TX_SAY[txN++]; tx.scrollTop=tx.scrollHeight;
+    },150); }
+  function txStop(){ clearInterval(txIv); if(!tx) return; tx.classList.remove('on'); tx.textContent=''; }
   const start=function(){
     if(live||R.qaBusy||R.qaDone||bar.classList.contains('waiting'))return;
     live=true; secs=0; tm.textContent='0:00';
     /* the mic dissolves into cancel · wave · time · send, in place */
     wave.innerHTML=Array.from({length:26},function(_,i2){ return '<i style="height:'+(7+(i2%6)*3)+'px;animation-delay:'+((i2%8)*70)+'ms"></i>'; }).join('');
     bar.classList.add('rec'); try{ ZSND.play('tap'); }catch(e){}
+    txStart();
     iv=setInterval(function(){ secs++; tm.textContent=Math.floor(secs/60)+':'+String(secs%60).padStart(2,'0'); },1000);
   };
   const stop=function(keep){
-    if(!live)return; live=false; clearInterval(iv); bar.classList.remove('rec');
+    if(!live)return; live=false; clearInterval(iv); bar.classList.remove('rec'); txStop();
     if(!keep){ try{ ZSND.play('toggleOff'); }catch(e){} return; }
     const took=Math.max(4,secs);
     try{ ZSND.play('select'); }catch(e){}
