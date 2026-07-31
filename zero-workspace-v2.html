@@ -1625,7 +1625,27 @@ svg{display:block}
 .plan-pad .fmt-bar{display:flex;padding:10px 14px 0}
 .plan-pad .fmt-lbl{display:block}
 /* it opens compact and GROWS as you write, rather than reserving a wall of empty space up front */
-.plan-pad .pp-ed{min-height:min(21vh,190px);max-height:46vh;overflow-y:auto;padding:10px 17px 6px;font-size:14.5px;line-height:1.6;outline:none;color:var(--tx);white-space:pre-wrap;word-break:break-word;cursor:text}
+.plan-pad /* THE EDITOR. Room to write in, and every mark the toolbar can make has to land properly — a rich
+   text field that renders its own output badly is worse than a plain one. white-space:pre-wrap was
+   also fighting the list markers, so it goes. */
+.pp-ed{min-height:min(21vh,190px);max-height:46vh;overflow-y:auto;padding:14px 20px 16px;
+  font-size:14.5px;line-height:1.62;outline:none;color:var(--tx);word-break:break-word;cursor:text}
+/* lists: the marker sits in the gutter, and wrapped text lines up with itself */
+.pp-ed ul,.pp-ed ol{margin:6px 0;padding-left:24px;display:flex;flex-direction:column;gap:5px}
+.pp-ed li{padding-left:4px;line-height:1.62}
+.pp-ed li::marker{color:var(--tx-3);font-size:.92em}
+.pp-ed ul{list-style:disc}
+.pp-ed ol{list-style:decimal}
+.pp-ed li>ul,.pp-ed li>ol{margin:5px 0 0}
+/* the marks, at weights that read on this background */
+.pp-ed b,.pp-ed strong{font-weight:700;color:var(--tx)}
+.pp-ed i,.pp-ed em{font-style:italic}
+.pp-ed p{margin:0 0 6px}
+.pp-ed p:last-child{margin-bottom:0}
+.pp-ed ::selection{background:rgba(255,255,255,.16)}
+/* and the marks survive into the block he reads */
+.pn-lines li .ln b,.pn-lines li .ln strong{font-weight:700;color:var(--tx)}
+.pn-lines li .ln i,.pn-lines li .ln em{font-style:italic}
 .plan-pad .pp-ed:empty:before{content:attr(data-ph);color:var(--tx-3);pointer-events:none}
 .plan-pad .pp-foot{display:flex;justify-content:flex-end;padding:0 14px 12px}
 .plan-pad .share-plan{display:inline-flex}
