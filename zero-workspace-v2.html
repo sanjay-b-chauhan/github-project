@@ -1647,10 +1647,14 @@ svg{display:block}
 /* and the marks survive into the block he reads */
 .pn-lines li .ln b,.pn-lines li .ln strong{font-weight:700;color:var(--tx)}
 .pn-lines li .ln i,.pn-lines li .ln em{font-style:italic}
-.plan-pad .pp-ed:empty:before{content:attr(data-ph);color:var(--tx-3);pointer-events:none}
+/* the placeholder is driven by a class, not :empty — a contenteditable stops being :empty the
+     moment the browser drops a <br> into it, and then the prompt and the disabled CTA both vanish */
+.plan-pad.is-empty .pp-ed::before{content:attr(data-ph);color:var(--tx-3);pointer-events:none;
+  position:absolute;pointer-events:none}
+.plan-pad .pp-ed{position:relative}
 .plan-pad .pp-foot{display:flex;justify-content:flex-end;padding:0 16px 14px}
 .plan-pad .share-plan{display:inline-flex}
-.plan-pad:has(.pp-ed:empty) .share-plan{background:var(--bubble);color:var(--tx-3);box-shadow:inset 0 0 0 1px var(--line);pointer-events:none}
+.plan-pad.is-empty .share-plan{background:var(--bubble);color:var(--tx-3);box-shadow:inset 0 0 0 1px var(--line);pointer-events:none}
 /* Jay ANALYZES a shared note: the green shim runs through the TEXT itself (the team's text-shine), not the container */
 .shine-tx{background:linear-gradient(100deg,var(--tx) 0%,var(--tx) 40%,#3fb968 50%,var(--tx) 60%,var(--tx) 100%);background-size:230% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:txshine 1.5s cubic-bezier(.4,0,.2,1) infinite}
 /* ===== THE ASSEMBLY: on approval the plan comes TO THE FRONT (popup), thread blurred behind,
@@ -6027,6 +6031,10 @@ function makeNotePad(o){
     <div class="pp-foot"><button class="share-plan">${escHtml(o.cta||'Share my plan')}</button></div>`;
   place(pad);
   const ed=pad.querySelector('.pp-ed');
+  /* one source of truth for "nothing written yet": the prompt and the CTA both read it */
+  const emptyCheck=function(){ pad.classList.toggle('is-empty', !ed.innerText.trim()); };
+  emptyCheck();
+  ['input','keyup','paste','cut','focus','blur'].forEach(function(ev){ ed.addEventListener(ev, emptyCheck); });
   pad.querySelectorAll('[data-fmt]').forEach(b=>b.addEventListener('mousedown',e=>{ e.preventDefault(); ed.focus(); document.execCommand(b.dataset.fmt); }));
   pad.querySelector('.share-plan').onclick=()=>{
     const v=ed.innerText.trim(); if(!v) return;
