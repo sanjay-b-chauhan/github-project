@@ -6049,7 +6049,9 @@ function makeNotePad(o){
   emptyCheck();
   ['input','keyup','paste','cut','focus','blur'].forEach(function(ev){ ed.addEventListener(ev, emptyCheck); });
   const fmtBtns=[].slice.call(pad.querySelectorAll('[data-fmt]'));
-  fmtBtns.forEach(b=>b.addEventListener('mousedown',e=>{ e.preventDefault(); ed.focus(); document.execCommand(b.dataset.fmt); syncFmt(); }));
+  fmtBtns.forEach(b=>b.addEventListener('mousedown',e=>{ e.preventDefault();
+    try{ ed.focus({preventScroll:true}); }catch(x){ ed.focus(); }
+    document.execCommand(b.dataset.fmt); syncFmt(); }));
   /* THE TOOLBAR REFLECTS THE CARET. B lights up inside bold, the list button lights up inside a
      list — without it you are formatting blind. */
   function syncFmt(){
@@ -6094,7 +6096,15 @@ function makeNotePad(o){
     o.onShare(v, marks);                          /* pass them ON — the pad is already gone by now, so
                                                      looking it up afterwards found nothing every time */
   };
-  requestAnimationFrame(()=>{ msgSpacer.style.height='0px'; slowScrollTo(thread.scrollHeight,600); ed.focus(); });   // whatever was said sits right above the pad
+  /* THE JITTER. focus() on a contenteditable scrolls it into view, and it was firing in the same
+     frame as slowScrollTo — two things dragging the thread at once, so it hunted up and down for the
+     length of the animation. The scroll runs alone now, and the caret arrives after it has landed,
+     without moving anything. */
+  requestAnimationFrame(()=>{
+    msgSpacer.style.height='0px';
+    slowScrollTo(thread.scrollHeight,600);
+    setTimeout(()=>{ try{ ed.focus({preventScroll:true}); }catch(e){ ed.focus(); } }, 620);
+  });   // whatever was said sits right above the pad
   return pad;
 }
 function openPlanComposer(){   // plan mode = a NOTE-TAKING surface that lives IN THE THREAD, right under the kickoff note
