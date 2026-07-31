@@ -12025,11 +12025,12 @@ function scenarioUnlock(){
   })();
   /* THE CRACK, HEARD. Not a UI beep: a knock into a filtered-noise crunch, harder each tap,
      and the shatter is a burst of it with a low drop underneath. */
-  /* ICE, STRUCK. Not sparks: a pitched TUNG — a resonant knock with a falling chirp, the way a
-     frozen lake answers a tap — a click of contact, a little body underneath, and a real reverb
-     tail so it rings in a space. The shatter is tung, tung, tung, falling, then the floor goes. */
+  /* ICE, FOR REAL THIS TIME. Synthesis kept reading as electricity, so the crack is now an
+     actual recording of lake ice cracking (Wikimedia Commons, "Sound of cracking ice.ogg",
+     Amada44, CC BY-SA 3.0), pitched per tap, layered on the shatter, with a bass dub under it
+     and a convolution tail so it rings cold. */
   const iceKit=function(){
-    if(iceKit._k) return iceKit._k;
+    if(iceKit._k!==undefined) return iceKit._k;
     try{
       const AC=window.AudioContext||window.webkitAudioContext; const ac=new AC();
       const rate=ac.sampleRate, len=Math.floor(rate*2.2);
@@ -12037,55 +12038,62 @@ function scenarioUnlock(){
       for(let ch=0;ch<2;ch++){ const d=buf.getChannelData(ch);
         for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6); }
       const rev=ac.createConvolver(); rev.buffer=buf;
-      const wet=ac.createGain(); wet.gain.value=.4; wet.connect(rev); rev.connect(ac.destination);
+      const wet=ac.createGain(); wet.gain.value=.34; wet.connect(rev); rev.connect(ac.destination);
       iceKit._k={ac:ac,wet:wet};
     }catch(e){ iceKit._k=null; }
     return iceKit._k;
   };
-  /* one strike: partials of a struck plate, chirping DOWN — the tung */
-  const tung=function(base,at,power){
-    const k=iceKit(); if(!k)return; const ac=k.ac;
-    try{ ac.resume&&ac.resume(); }catch(e){}
-    const t=(at!=null?at:ac.currentTime)+0.004;
-    [[1,.5],[1.53,.2],[2.61,.09]].forEach(function(p){
-      const o=ac.createOscillator(), g=ac.createGain();
-      o.type='sine';
-      o.frequency.setValueAtTime(base*p[0],t);
-      o.frequency.exponentialRampToValueAtTime(base*p[0]*.34,t+.16);   /* the falling chirp */
-      g.gain.setValueAtTime(0.0001,t);
-      g.gain.exponentialRampToValueAtTime(p[1]*(power||1),t+.006);
-      g.gain.exponentialRampToValueAtTime(0.0001,t+.34);
-      o.connect(g); g.connect(ac.destination); g.connect(k.wet);
-      o.start(t); o.stop(t+.4);
-    });
-    /* the contact: one soft, dark click — no hiss */
-    const cl=Math.floor(ac.sampleRate*.012);
-    const cb=ac.createBuffer(1,cl,ac.sampleRate), cd=cb.getChannelData(0);
-    for(let i=0;i<cl;i++) cd[i]=(Math.random()*2-1)*Math.pow(1-i/cl,1.2);
-    const src=ac.createBufferSource(); src.buffer=cb;
-    const lp=ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=2400;
-    const cg=ac.createGain(); cg.gain.setValueAtTime(.32*(power||1),t); cg.gain.exponentialRampToValueAtTime(0.0001,t+.05);
-    src.connect(lp); lp.connect(cg); cg.connect(ac.destination); cg.connect(k.wet);
-    src.start(t); src.stop(t+.06);
-    /* the body: a short warm thump under it, not a drop */
-    const o2=ac.createOscillator(), g2=ac.createGain();
-    o2.type='sine'; o2.frequency.setValueAtTime(95,t); o2.frequency.exponentialRampToValueAtTime(52,t+.12);
-    g2.gain.setValueAtTime(0.0001,t); g2.gain.exponentialRampToValueAtTime(.4*(power||1),t+.01); g2.gain.exponentialRampToValueAtTime(0.0001,t+.2);
-    o2.connect(g2); g2.connect(ac.destination); o2.start(t); o2.stop(t+.22);
+  const iceLoad=function(){
+    if(iceLoad._p) return iceLoad._p;
+    const k=iceKit();
+    iceLoad._p=(k?fetch('ice-crack.ogg').then(function(r){ return r.arrayBuffer(); })
+      .then(function(ab){ return new Promise(function(res,rej){ k.ac.decodeAudioData(ab,res,rej); }); })
+      :Promise.reject()).catch(function(){ return null; });
+    return iceLoad._p;
   };
-  const crackSnd=function(n){ tung(560-n*60,null,1); };   /* each tap strikes deeper into the ice */
-  const shatterSnd=function(){
-    const k=iceKit(); if(!k){ return; }
-    const t0=k.ac.currentTime;
-    tung(520,t0,1.15); tung(410,t0+.14,1.1); tung(315,t0+.3,1.2);   /* tung, tung, tung — falling */
+  const playIce=function(rate,power,delay){
+    const k=iceKit();
+    iceLoad().then(function(buf){
+      if(k&&buf){
+        try{ k.ac.resume&&k.ac.resume(); }catch(e){}
+        const t=k.ac.currentTime+0.005+(delay||0);
+        const src=k.ac.createBufferSource(); src.buffer=buf; src.playbackRate.value=rate;
+        const g=k.ac.createGain();
+        g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(power,t+.012);
+        g.gain.setValueAtTime(power,t+.5); g.gain.exponentialRampToValueAtTime(0.0001,t+1.15/rate);
+        src.connect(g); g.connect(k.ac.destination); g.connect(k.wet);
+        src.start(t); src.stop(t+1.3/rate);
+        return;
+      }
+      try{ const a=new Audio('ice-crack.ogg'); a.playbackRate=rate; a.volume=Math.min(1,power); 
+        setTimeout(function(){ a.play().catch(function(){}); },(delay||0)*1000); }catch(e){}
+    });
+  };
+  const subDub=function(f0,power,delay){
+    const k=iceKit(); if(!k)return;
     try{
-      const ac=k.ac;
-      const o=ac.createOscillator(), g=ac.createGain();               /* then the floor goes */
-      o.type='sine'; o.frequency.setValueAtTime(70,t0+.4); o.frequency.exponentialRampToValueAtTime(30,t0+1.15);
-      g.gain.setValueAtTime(0.0001,t0+.4); g.gain.exponentialRampToValueAtTime(.55,t0+.43); g.gain.exponentialRampToValueAtTime(0.0001,t0+1.35);
-      o.connect(g); g.connect(ac.destination); g.connect(k.wet); o.start(t0+.4); o.stop(t0+1.4);
+      const ac=k.ac, t=ac.currentTime+0.005+(delay||0);
+      const o=ac.createOscillator(), g=ac.createGain();
+      o.type='sine'; o.frequency.setValueAtTime(f0,t); o.frequency.exponentialRampToValueAtTime(42,t+.2);
+      g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(power,t+.012); g.gain.exponentialRampToValueAtTime(0.0001,t+.3);
+      o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+.32);
     }catch(e){}
   };
+  const crackSnd=function(n){
+    playIce(1.14-0.1*n, .85+.1*n);      /* the real crack, digging deeper each tap */
+    subDub(96-8*n, .5);                  /* the dub under it */
+  };
+  const shatterSnd=function(){
+    playIce(.8,1.2); playIce(1.0,.8,.12);          /* the recording, deep + doubled */
+    subDub(110,.7); subDub(88,.7,.13); subDub(68,.75,.27);   /* dub, dub, dub */
+    const k=iceKit();
+    if(k){ try{ const ac=k.ac,t=ac.currentTime+.42;
+      const o=ac.createOscillator(), g=ac.createGain();
+      o.type='sine'; o.frequency.setValueAtTime(64,t); o.frequency.exponentialRampToValueAtTime(30,t+.75);
+      g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(.5,t+.03); g.gain.exponentialRampToValueAtTime(0.0001,t+.95);
+      o.connect(g); g.connect(ac.destination); g.connect(k.wet); o.start(t); o.stop(t+1); }catch(e){} }
+  };
+  iceLoad();   /* decoded before the first tap, so the first crack is instant */
   card.addEventListener('click',function(e){
     if(broken) return;
     const b=card.getBoundingClientRect();
