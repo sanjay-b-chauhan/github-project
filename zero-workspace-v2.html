@@ -3304,7 +3304,12 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .pfx-foot.s2 .pfx-back{display:grid}
 .pfx-back:hover{background:var(--hover)}
 .pfx-back svg{width:18px;height:18px}
-.pfx .zs-go{margin-left:auto;min-height:48px;padding:0 28px}
+/* dev only, so it stays out of the way: quiet text, no chrome, nothing that reads as a choice */
+.pfx-skip{margin-left:auto;border:0;background:none;cursor:pointer;padding:8px 4px;
+  font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--tx-4);transition:color var(--t-q) var(--ease)}
+.pfx-skip:hover{color:var(--tx-2)}
+.pfx .zs-go{margin-left:12px;min-height:48px;padding:0 28px}
 .pfx-foot{width:100%;max-width:620px;margin:0 auto}
 .zshare .zs-card.pfx{transform:none!important}
 
@@ -3978,7 +3983,8 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
   background-size:230% 100%;animation:txshine .9s cubic-bezier(.4,0,.2,1) infinite}
 /* and when it lands, the words come up where the bar was */
 .planline.jayread .pn-lines li.jr-done .ln{animation:blurIn .46s var(--osmo) both}
-.planline.jayread .pn-lines li.jr-done::before{background:#3fb968;animation:jrDot .5s var(--ease) both}
+/* the bullet is a bullet. Green on it made every line read as a pass, and these are notes. */
+.planline.jayread .pn-lines li.jr-done::before{background:var(--tx-4);animation:jrDot .5s var(--ease) both}
 @keyframes jrDot{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.25)}100%{transform:scale(1);opacity:1}}
 .pn-lines{list-style:none;margin:0;padding:2px 0 4px;display:flex;flex-direction:column;gap:8px}
 .pn-lines li{position:relative;padding-left:16px;font-size:13.5px;line-height:1.55;color:var(--tx)}
@@ -6661,6 +6667,7 @@ function pfPopup(mode){
     +'</div>'
     +'</div>'
     +'<div class="pfx-foot" id="pfxFoot"><button class="pfx-back" id="pfxBack" aria-label="Back">'+PIC.back+'</button>'
+    +'  <button class="pfx-skip" id="pfxSkip" type="button">Skip</button>'
     +'  <button class="zs-go" id="rcJoin" disabled><span>'+PF_CTA[mode][1]+'</span>'+PIC.arrow+'</button></div>'
     +'</div></div>';
   host.appendChild(m); m.getBoundingClientRect(); m.classList.add('show');
@@ -6756,6 +6763,11 @@ function pfPopup(mode){
     else { clearInterval(R.ckIv); R.ckIv=setInterval(ckTick,110); }
   };
   m.querySelector('#pfxBack').onclick=function(){ goStep(1); };
+  /* dev only: straight through both steps without waiting on the checks */
+  m.querySelector('#pfxSkip').onclick=function(){
+    if(step===1) goStep(2);
+    go.disabled=false; go.onclick();
+  };
 
   const restore=function(){ if(selfPip) selfPip.style.visibility=''; try{ roomSyncSelf(); }catch(e){} };
   const close=function(){ clearInterval(R.ckIv); R.ckIv=0;
