@@ -3279,7 +3279,11 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
    sitting inside the card rather than the roof of it. Radius stays concentric: 14 inside 10 is 24
    outside. */
 .pfx #pfS1.on{background:var(--soft);border:var(--bw) solid var(--line);border-radius:24px;padding:10px}
+/* the video fills the card's content box exactly, so the 10px of padding is the only inset there
+   is. Left to itself the aspect-ratio let flexbox shrink it a few px and it stopped lining up with
+   the controls underneath. */
 .pfx .rc6-cam{max-width:none;width:100%;border-radius:14px}
+.pfx #pfS1.on>.rc6-cam{align-self:stretch;width:100%;max-width:100%;height:auto;flex:0 0 auto}
 /* a leftover from when the bar floated over the video; it does not float any more */
 .pfx .rc6-icons{gap:14px}   /* the later of the two rules; both had to move or the first one loses */
 .pfx .rc6-cam .rc4-toggles{left:16px!important;bottom:16px!important}
