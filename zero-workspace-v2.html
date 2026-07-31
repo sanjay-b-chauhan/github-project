@@ -1695,7 +1695,10 @@ svg{display:block}
 .pd-hint{margin-left:auto;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--tx-3)}
 /* the assembled PLAN in the thread: a full-width ROUNDED-RECT unit, line-drawn — visibly a different species from the chat bubbles */
 .planline{align-self:stretch;margin:10px 0;padding:4px 18px 12px;border:var(--bw) solid var(--line);border-radius:16px;animation:rise var(--t-m) var(--ease)}
+/* the label starts where the text below it starts; the pin hangs on the far right, the way a
+   pinned chat wears it */
 .planline .pl2-h{display:flex;align-items:center;gap:8px;padding:12px 0 9px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx-3)}
+.planline .pl2-h .pl2-pin{order:2;margin-left:auto}
 .pl2-pin{display:grid;place-items:center;width:15px;height:15px;color:var(--tx-3)}
 .pl2-pin svg{width:13px;height:13px}
 .pl2-pin.pop{animation:pinPop .5s cubic-bezier(.34,1.5,.5,1)}
@@ -10605,7 +10608,9 @@ function stepFlow(){
   if(el){ el.click(); return; }
   /* 2. a pad is open: write something in it, then send it */
   const pad=document.querySelector('.plan-pad'); 
-  if(pad && _vis(pad)){
+  /* the pad only owns the press while the plan is still being written — once it is sent, the
+     conversation (confirm, time) owns the flow even if the pad is still on screen */
+  if(pad && _vis(pad) && !(typeof planLocked!=='undefined'&&planLocked) && !(typeof planSubPhase!=='undefined'&&(planSubPhase==='confirm'||planSubPhase==='time'))){
     const ed=pad.querySelector('.pp-ed'), go=pad.querySelector('.share-plan');
     if(ed && !ed.innerText.trim()){
       ed.innerHTML='Lead with the recommendation, then the evidence behind it.<br>Bring the cost number and land it.<br>Leave room at the end for their questions.';
@@ -10614,6 +10619,11 @@ function stepFlow(){
     if(go){ go.click(); return; }
   }
   /* 3. something is offered: take it */
+  /* the confirm window is a BEAT, not a gap: the arrow says you're good the way you would,
+     so the time question, the clock and the build all still happen in order */
+  if(typeof planActive!=='undefined'&&planActive&&planSubPhase==='confirm'){
+    input.value="I'm good to go"; send(); return;
+  }
   el=_q('.timepills .zpill.go')||_q('.timepills .zpill')||_q('.pres-cta .pc-go')
     ||_q('#pouContinue')||_q('.fev-walk')||_q('#rmShareCTA.show')||_q('.rm-go');
   if(el){ el.click(); return; }
