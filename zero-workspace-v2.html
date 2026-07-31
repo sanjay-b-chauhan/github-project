@@ -4684,12 +4684,14 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .pv-slide .sl-cols i em{position:absolute;left:0;right:0;bottom:-2.2cqw;text-align:center;font-style:normal;
   font-family:var(--mono);font-size:1.05cqw;color:#9a958c}
 /* and you, in the corner, the way you were on the call */
-.pv-pip{position:absolute;right:2.6cqw;bottom:2.4cqw;width:11cqw;height:7.3cqw;border-radius:1.2cqw;
+/* the self view straddles the slide window's bottom corner — an object ON the window, not a
+   sticker on the desktop. No name plate: the face is the label. */
+.pv-pip{position:absolute;right:5.4cqw;bottom:7.2cqw;width:14cqw;height:9.4cqw;border-radius:1.5cqw;z-index:3;
   overflow:hidden;z-index:4;background:#1c1a18;border:1px solid rgba(255,255,255,.14);
   box-shadow:0 6px 18px rgba(0,0,0,.5);display:grid;place-items:center}
 .pv-pip img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .pv-pip b{font-size:3.4cqw;font-weight:600;color:#fff}
-.pv-pip em{position:absolute;left:1.2cqw;bottom:.9cqw;z-index:2;font-style:normal;font-family:var(--mono);
+.pv-pip em{display:none;position:absolute;left:1.2cqw;bottom:.9cqw;z-index:2;font-style:normal;font-family:var(--mono);
   font-size:1.5cqw;letter-spacing:.08em;text-transform:uppercase;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.9)}
 .rvv-lab{position:absolute;left:12px;top:9px;z-index:5;display:inline-flex;align-items:center;gap:6px;
   font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:rgba(255,255,255,.55)}
@@ -10623,7 +10625,19 @@ function stepFlow(){
     try{ send(); return; }catch(e){}
   }
   /* 5. a screen of its own is up and driving itself — the room, the Q&A, the report. Push it on. */
-  if(document.querySelector('.room, .qas, .rpt')){ flushBeats(); return; }
+  /* the full-screen acts are steps too, not dead air */
+  const _rpt=document.querySelector('.rpt');
+  if(_rpt){ const d=_rpt.querySelector('#rptDone'); if(d){ d.click(); return; } flushBeats(); return; }
+  const _qas=document.querySelector('.qas');
+  if(_qas){
+    const bar=_qas.querySelector('#qasBar');
+    if(bar&&bar.classList.contains('done')){ const g=_qas.querySelector('#qasGo'); if(g){ g.click(); return; } }
+    if(bar&&bar.classList.contains('waiting')){ flushBeats(); return; }   /* the next question is on its way */
+    const mic=_qas.querySelector('#qasMic');
+    if(mic){ mic.click(); return; }   /* first press starts the answer, second press sends it */
+    flushBeats(); return;
+  }
+  if(document.querySelector('.room')){ flushBeats(); return; }   /* the room's own CTA is picked up above */
   /* 6. nothing offered and nothing running: push the remaining beats before giving up on the stage */
   if(flushBeats(2)>0) return;
   /* 7. he is waiting on the WORK. Hand it in — that is the step that produces the review, and
