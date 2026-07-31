@@ -1039,6 +1039,81 @@ td.cell-active::after{border-color:var(--accent)}
 .sh td.refC{box-shadow:inset 0 0 0 2px var(--hi);background:var(--hi-soft)}
 
 
+
+/* contrast pairs for the two semantic colours, so text on a green or
+   amber fill stays legible in both themes */
+:root{--on-ok:#ffffff;--on-hi:#1b1200}
+
+/* ══════════════════════════════════════════════════════════════════════
+   HEAD-OF-DESIGN REVIEW PASS
+   Each rule below answers one numbered note from the review thread.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* [4][15] GREEN MEANS VERIFIED, NEVER "PLACED".
+   Dropping a card into a slot turned its badge green immediately, so the
+   flow read as "you're getting it right" and then contradicted itself at
+   the end. Placement is now neutral; green arrives only after checking,
+   and being wrong has its own colour instead of staying green. */
+.oslot.filled{border-style:solid;border-color:var(--line-2);background:var(--soft);box-shadow:none}
+.oslot.filled .o-n{border-color:var(--line-2)!important;color:var(--tx-2)!important;background:none!important}
+.oslot.locked{border-color:var(--ok)!important;background:var(--ok-soft)!important}
+.oslot.locked .o-n{background:var(--ok)!important;color:var(--on-ok)!important;border-color:var(--ok)!important}
+.oslot.wrong{border-color:var(--hi)!important;background:var(--hi-soft)!important}
+.oslot.wrong .o-n{background:var(--hi)!important;color:var(--on-hi)!important;border-color:var(--hi)!important}
+/* drag-hover is a target, not a verdict */
+.cb-slot.over{border-color:var(--accent)!important;background:var(--hover)!important;color:var(--tx)!important}
+.cb-arr-live{color:var(--tx-2)!important}
+
+/* [8] the formula card: italic appears nowhere else in the product, and
+   the card sat at half width — neither a chat bubble nor a full element. */
+.fx-l{font-style:normal}
+.subhint,.fwdnote{font-style:normal}
+.datacard,.fxwrap,.fx-card{width:100%!important;max-width:100%!important}
+
+/* [9][11] no container around the choices, and no left-cornered CTAs.
+   The options ARE the component; wrapping them in a second frame made
+   every question read as a different product. */
+.mechEl:has(.opt),.mechEl:has(.ynbtn){background:none;border:none;padding:0}
+.opts,.ynrow,.cardrow{display:flex;flex-direction:column;gap:9px;width:100%}
+.ynrow{flex-direction:row}
+.ynrow .ynbtn,.opts .opt{flex:1 1 0;width:100%}
+
+/* [12] the progress bar drifted whenever the manager line wrapped to two
+   lines. Its baseline is now independent of the text beside it. */
+.chat-peer{min-height:54px}
+.chat-peer .pmeta{min-width:0;overflow:hidden}
+.chat-peer .pmeta *{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wu-prog{align-self:center;margin-left:auto}
+
+/* [6] PP Supply was appearing at random, and in small caps, which this
+   product does not otherwise do. Mono is now reserved for what is
+   genuinely numeric — cells, formulas, counters — and never uppercased. */
+.d-tag{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:0;
+  text-transform:none;color:var(--tx-3);margin-bottom:10px}
+.o-d,.resp .r-xp,.complete-badge{font-family:var(--sans)!important;text-transform:none!important;
+  letter-spacing:0!important;font-size:12px!important}
+
+/* [10] Netflix-style auto-advance: the button fills, and when the fill
+   completes the flow moves on by itself. Continue stops being friction
+   without taking away the ability to move early. */
+.wu-cta.autogo{position:relative;overflow:hidden;isolation:isolate}
+.wu-cta.autogo>i.fill{position:absolute;inset:0;transform-origin:left center;transform:scaleX(0);
+  background:rgba(127,127,127,.32);z-index:-1}
+.wu-cta.autogo.run>i.fill{transform:scaleX(1);transition:transform var(--autogo,6s) linear}
+
+
+/* [2] ONE skip pattern. The kickoff already puts Skip in the top-right as a
+   pill; the story player put the same control bottom-centre, so "skip" moved
+   depending on which screen you were on. The foot bar becomes a top-right
+   bar and the link becomes the same pill, so there is one skip affordance in
+   one place across the whole run. */
+.story .wu-foot{top:0;bottom:auto;justify-content:flex-end;padding:22px 26px 0}
+.story #stSkipAll{pointer-events:auto;margin:0!important;height:36px;padding:0 16px;
+  border-radius:99px;background:var(--soft);border:var(--bw) solid var(--line);
+  color:var(--tx-2);font-family:var(--sans);font-size:12.5px;font-weight:600;
+  text-decoration:none;display:inline-flex;align-items:center;cursor:pointer}
+.story #stSkipAll:hover{background:var(--hover);color:var(--tx);text-decoration:none}
+
 /* kickoff + story wear the workspace surface, and the shell is dark by default */
 .story,.kickoff{background:var(--bg)}
 .story .st-holder,.kickoff .ko-holder{inset:0!important;border:none;border-radius:0;background:var(--bg)}
@@ -1053,7 +1128,6 @@ td.cell-active::after{border-color:var(--accent)}
     <span class="spacer"></span>
     <span class="xp-chip" id="xpChip"><span class="xi"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l2.2 7.8L22 12l-7.8 2.2L12 22l-2.2-7.8L2 12l7.8-2.2z"/></svg></span><b id="xpNum">0</b><span class="xl">XP</span></span>
     <span class="perf" id="perfChip" data-lvl="3"><span class="pf-meter"><i></i><i></i><i></i><i></i></span><span class="pf-label" id="perfLabel">Exceeds expectations</span></span>
-    <button class="hic tipdn" id="sndBtn" data-tip="Sound" aria-label="Toggle sound"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 010 7"/><path d="M19 5a9 9 0 010 14"/></svg></button>
   </header>
 
   <div class="work">
@@ -1591,9 +1665,9 @@ function setContinue(state){
   const b=document.createElement('button');
   b.className='wu-cta wu-continue';
   b.innerHTML='Continue <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
-  b.onclick=()=>{ try{sfx.tap()}catch(e){} nextSegment(); };
   bar.appendChild(b);
   G.fromTo(b,{opacity:0,y:10},{opacity:1,y:0,duration:.36,ease:'power3.out'});
+  autoGo(b, 5200, ()=>{ try{sfx.tap()}catch(e){} nextSegment(); });
 }
 function setAlt(label,fn){
   if(!curSeg)return;
@@ -1625,6 +1699,26 @@ function scrollToCurrent(instant){
   });
 }
 let curSeg=null;
+function autoGo(btn,ms,fn){
+  if(!btn) return;
+  ms = ms || 6000;
+  btn.classList.add('autogo');
+  if(!btn.querySelector('i.fill')) btn.insertAdjacentHTML('afterbegin','<i class="fill"></i>');
+  btn.style.setProperty('--autogo', ms+'ms');
+  var done=false, t=null;
+  function go(){ if(done) return; done=true; clearTimeout(t); fn(); }
+  function cancel(){ if(done) return; done=true; clearTimeout(t);
+    btn.classList.remove('run','autogo'); var f=btn.querySelector('i.fill'); if(f) f.remove(); }
+  requestAnimationFrame(function(){ btn.classList.add('run'); });
+  t=setTimeout(go, ms);
+  btn.addEventListener('click', go, {once:true});
+  ['keydown','pointerdown'].forEach(function(ev){
+    document.addEventListener(ev, function h(e){
+      if(btn.contains(e.target)) return;
+      cancel(); document.removeEventListener(ev,h,true);
+    }, true);
+  });
+}
 async function mountStep(){
   S.answered=false;S.trans=false;
   userScrolled=false;   /* a new stage re-takes the view */
@@ -2316,6 +2410,14 @@ MECHS.order=(st,z)=>{
       }
     });
     bank.forEach(b=>b.classList.toggle('used',seq.includes(b.dataset.t)));
+    /* [4] Placement alone says nothing. Once the board is full, each slot
+       reports whether IT is right, so the feedback is positional and
+       fixable instead of one contradiction delivered at the end. */
+    const full = seq.every(Boolean);
+    slots.forEach((slot,i)=>{
+      slot.classList.remove('locked','wrong');
+      if(full && seq[i]) slot.classList.add(seq[i]===st.slides[i].t?'locked':'wrong');
+    });
   };
   const check=()=>{
     if(filled()!==N||S.answered)return;
@@ -2744,7 +2846,10 @@ function paintStageFocus(){
   },{passive:true});
   /* a deliberate scroll gesture hands control to the user */
   ['wheel','touchmove','keydown'].forEach(ev=>
-    h.addEventListener(ev,()=>{ userScrolled=true; },{passive:true}));
+    h.addEventListener(ev,()=>{
+      const nearBottom = h.scrollHeight - h.scrollTop - h.clientHeight < 120;
+      userScrolled = !nearBottom;
+    },{passive:true}));
 })();
 
 /* ══════════════ KICKOFF PLAYER ══════════════
