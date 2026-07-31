@@ -10624,12 +10624,36 @@ function stepFlow(){
   if(typeof planActive!=='undefined'&&planActive&&planSubPhase==='confirm'){
     input.value="I'm good to go"; send(); return;
   }
-  el=_q('.timepills .zpill.go')||_q('.timepills .zpill')||_q('.pres-cta .pc-go')
+  if(typeof planActive!=='undefined'&&planActive&&planSubPhase==='time'){
+    const tp=_q('.timepills .tpill');            /* the pills are .tpill — .zpill was a phantom */
+    if(tp){ tp.click(); return; }
+    input.value='20 min'; send(); return;        /* offered or typed, the estimate comes from YOUR side */
+  }
+  /* the drop-zone is open: the press drops the file in */
+  if(composerEl && composerEl.classList.contains('dropmode')){
+    const dz=document.getElementById('dropZone'); if(dz){ dz.click(); return; }
+  }
+  /* below the bar, good-to-go is a wall — the product's own rule. The step IS the resubmission. */
+  if(typeof fbActive!=='undefined'&&fbActive&&typeof fbState!=='undefined'&&fbState==='below'){
+    const rs=_q('#pillResub'); if(rs){ rs.click(); return; }
+  }
+  el=_q('#actionBar .zpill.go')||_q('#actionBar .fbpill.good')||_q('#actionBar .zpill')
+    ||_q('.timepills .tpill')||_q('.pres-cta .pc-go')
     ||_q('#pouContinue')||_q('.fev-walk')||_q('#rmShareCTA.show')||_q('.rm-go');
   if(el){ el.click(); return; }
-  /* 4. he is waiting on a reply: give him one */
-  const inp=document.getElementById('input');
-  if(inp && _vis(inp) && !document.querySelector('.composer').classList.contains('hidden')){
+  /* 3b. a proof-of-understanding is open: answer it — one press records, the next sends */
+  if(typeof pouApp!=='undefined' && pouApp.classList.contains('poumode')
+     && typeof pouMicBar!=='undefined' && !pouMicBar.classList.contains('done')){
+    if(typeof pouRecording!=='undefined' && pouRecording){ try{ stopPouRec(true); }catch(e){} }
+    else { try{ startPouRec(); }catch(e){} }
+    return;
+  }
+  /* 4. he is ACTUALLY waiting on a reply (a choice block, a screenshot): give him one.
+     This used to fire in plain build mode too, and ate every press before the hand-in. */
+  const inp=(typeof input!=='undefined')?input:null;   /* the input's id is 'ta'; #input never existed */
+  const _awaited=(typeof activeMcq!=='undefined'&&activeMcq&&!activeMcq.resolved)
+              ||(typeof awaitShot!=='undefined'&&awaitShot);
+  if(_awaited && inp && _vis(inp) && composerEl && !composerEl.classList.contains('hidden')){
     if(!inp.value.trim()){ inp.value=STEP_REPLY[_stepReply++%STEP_REPLY.length];
       inp.dispatchEvent(new Event('input',{bubbles:true})); return; }
     try{ send(); return; }catch(e){}
@@ -10652,6 +10676,7 @@ function stepFlow(){
   if(flushBeats(2)>0) return;
   /* 7. he is waiting on the WORK. Hand it in — that is the step that produces the review, and
      skipping it was why the run never reached a feedback panel. */
+  if(typeof planActive!=='undefined'&&planActive){ flushBeats(); return; }   /* planning is never skippable */
   if(!_stepSubmitted[stageIdx] && typeof addAttachment==='function' && typeof send==='function'
      && composerEl && !composerEl.classList.contains('hidden')){
     _stepSubmitted[stageIdx]=true;
