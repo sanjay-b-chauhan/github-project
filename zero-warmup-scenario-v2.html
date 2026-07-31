@@ -1128,6 +1128,70 @@ td.cell-active::after{border-color:var(--accent)}
 .ko2-cta{left:auto;right:26px;bottom:26px;transform:none}
 .ko2-cta:hover{transform:translateY(-2px)}
 
+
+/* The visual slot reserves 190px plus a 36px margin on every panel, but the
+   arc panel sets it empty — so ~226px of dead space sat above the content and
+   pushed it below the card's optical centre despite justify-content:center.
+   Collapsing it when empty lets the content actually centre. */
+.ko2-visual:empty{min-height:0;margin-bottom:0}
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   AUDIT FIX PASS — defects found by auditing the review pass itself.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* [4][15] THE WIDGET SYSTEM REINTRODUCED THE BUG IT WAS MEANT TO REMOVE.
+   `.obit.used` was folded into the shared "correct" rule, but `used` is
+   toggled on PLACEMENT alone — no correctness test. So dropping a card
+   still turned its bank chip green, which is the reviewer's complaint
+   word for word, caused by the fix rather than surviving it.
+   A spent chip is spent, not correct. */
+.obit.used{border-color:var(--line)!important;background:var(--soft)!important;
+  color:var(--tx-3)!important;opacity:.45}
+
+/* [14] refB and refC moved onto tokens; refA was missed and still drew a raw
+   #0E7A46 ring — and green on a neutral cell reference reads as "correct". */
+.sh td.refA{box-shadow:inset 0 0 0 2px var(--tx-2);background:var(--hover)}
+
+/* [8] italic still shipped in the clip captions — two rules, neither reset.
+   Needs 0,2,0 to beat `.vid-screen .vid-cap`. */
+.vid-cap,.vid-screen .vid-cap{font-style:normal}
+
+/* [8] the width fix named `.fxwrap` / `.fx-card`, which do not exist in the
+   markup. The real formula card is `.how-card`, still capped at 500px in a
+   600px column with an asymmetric radius found nowhere else. */
+.how-card{max-width:none;border-left:none;border:var(--bw) solid var(--line);
+  border-radius:12px;padding:14px 16px;background:var(--soft)}
+
+/* [11] the yes/no pair was capped at 430px inside a 600px column, so it sat
+   cornered left with 170px of dead space — the exact complaint. */
+.opts.row2{max-width:none}
+.answer-row,.order-bank{max-width:none}
+
+/* [3] chainbuild's chips rendered smaller than every other chip: a two-class
+   !important rule in the ported CSS outranked the one-class system rule. */
+.order-bank .cb-chip,.cb-bank .cb-chip{padding:12px 16px!important;font-size:13.5px!important}
+
+/* [3][15] chainbuild flashed coral for a wrong pick while everything else
+   uses amber. One wrong colour. */
+.cb-chip.cb-wrong{border-color:var(--hi)!important;color:var(--hi)!important}
+
+/* [3] four different hover motions for one role (slide right, lift 2px,
+   lift 1px, none). One motion. */
+.opt:hover,.obit:hover,.cb-chip:hover,.tbtn:hover{transform:translateY(-1px)}
+
+/* [9] chainbuild and order still sat in the wrapper frame, and the sim
+   toolbar was a tinted strip wrapping three choices. */
+.mechEl:has(.cb-chip),.mechEl:has(.obit){background:none;border:none;padding:0}
+.toolbar{background:none!important;border-top:none!important;border-bottom:none!important;
+  padding:12px 0!important}
+
+/* [6] mono small caps that the first pass missed. These are words, not
+   numbers, so they take the sans face in sentence case. */
+.fin-stat .l,.doc-meta,.doc-k,.rc-arr,.vid-screen .rc-arr,.cb-arr,.wbstamp{
+  font-family:var(--sans)!important;text-transform:none!important;letter-spacing:0!important}
+.doc-k{font-size:12px!important;font-weight:700!important}
+
 /* kickoff + story wear the workspace surface, and the shell is dark by default */
 .story,.kickoff{background:var(--bg)}
 .story .st-holder,.kickoff .ko-holder{inset:0!important;border:none;border-radius:0;background:var(--bg)}
@@ -1714,6 +1778,10 @@ function scrollToCurrent(instant){
          out of view, and the opening line is never scrolled past — the
          bottom-follow branch used to cut it off on the taller stages. */
       t=Math.max(0,curSeg.offsetTop-28);
+      const segBottom = curSeg.offsetTop + curSeg.offsetHeight;
+      if(segBottom > t + h.clientHeight){
+        t = Math.max(t, segBottom - h.clientHeight + 40);
+      }
     }
     h.scrollTo({top:t,behavior:instant?'auto':'smooth'});
   });
@@ -1727,7 +1795,7 @@ function autoGo(btn,ms,fn){
   btn.style.setProperty('--autogo', ms+'ms');
   var done=false, t=null;
   function go(){ if(done) return; done=true; clearTimeout(t); fn(); }
-  function cancel(){ if(done) return; done=true; clearTimeout(t);
+  function cancel(){ if(done) return; clearTimeout(t);
     btn.classList.remove('run','autogo'); var f=btn.querySelector('i.fill'); if(f) f.remove(); }
   requestAnimationFrame(function(){ btn.classList.add('run'); });
   t=setTimeout(go, ms);
@@ -1973,7 +2041,7 @@ function playRcaVideo(z,onContinue){
   const applyCues=()=>{while(ci<cues.length&&cues[ci].t<=elapsed){const c=cues[ci];if(c.cap!==undefined)setCap(c.cap);if(c.s!==undefined)show(els[c.s]);ci++;}};
   const setPP=p=>{icPl.style.display=p?'none':'';icPa.style.display=p?'':'none';screen.classList.toggle('playing',p);};
   function finish(){fin=true;playing=false;if(iv)clearInterval(iv);els.forEach(show);ci=cues.length;elapsed=DUR;bar.style.width='100%';timeEl.textContent='0:06 / 0:06';setPP(false);screen.classList.add('ended');setCap('That is the whole method. Now we run it for real.');}
-  function play(){if(playing||fin)return;playing=true;screen.classList.add('started');setPP(true);sfx.tick();iv=setInterval(()=>{elapsed+=50;bar.style.width=Math.min(100,elapsed/DUR*100)+'%';timeEl.textContent=fmt(elapsed)+' / 0:08';applyCues();if(elapsed>=DUR)finish();},50);}
+  function play(){if(playing||fin)return;playing=true;screen.classList.add('started');setPP(true);sfx.tick();iv=setInterval(()=>{elapsed+=50;bar.style.width=Math.min(100,elapsed/DUR*100)+'%';timeEl.textContent=fmt(elapsed)+' / 0:06';applyCues();if(elapsed>=DUR)finish();},50);}
   function pause(){playing=false;if(iv)clearInterval(iv);setPP(false);}
   const toggle=()=>{if(fin)return;playing?pause():play();};
   screen.addEventListener('click',toggle);
@@ -2865,7 +2933,7 @@ function paintStageFocus(){
     requestAnimationFrame(()=>{ tick=false; paintStageFocus(); });
   },{passive:true});
   /* a deliberate scroll gesture hands control to the user */
-  ['wheel','touchmove','keydown'].forEach(ev=>
+  ['wheel','touchmove'].forEach(ev=>
     h.addEventListener(ev,()=>{
       const nearBottom = h.scrollHeight - h.scrollTop - h.clientHeight < 120;
       userScrolled = !nearBottom;
@@ -2918,7 +2986,7 @@ function koRender(){
 
   if(p.arc){
     vis.innerHTML='';
-    txt.innerHTML = '<div style="font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--tx-2);margin-bottom:14px">Your warm-up</div>'
+    txt.innerHTML = '<div style="font-size:12px;font-weight:600;color:var(--tx-3);margin-bottom:14px">Your warm-up</div>'
       + '<div style="font-size:clamp(24px,3vw,31px);font-weight:700;letter-spacing:-.02em;line-height:1.2;margin-bottom:10px">Here\'s the whole arc, start to finish.</div>'
       + '<div style="font-size:14.5px;line-height:1.6;color:var(--tx-2);margin-bottom:26px">Five moves take you from a vague worry to a funded pitch. You\'ll run each one with '+CONFIG.managerName.split(' ')[0]+'.</div>'
       + '<div class="ko2-arc">'
