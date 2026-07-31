@@ -3338,9 +3338,9 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 /* NO CATEGORY COLOUR. Four hues for four kinds of note was a second colour system sitting on top
    of the product's, and it was the loudest thing on the screen. The kind is a word now. */
 .rpt-in{display:block!important;width:100%;max-width:min(720px,92vw);margin:0 auto;padding:clamp(28px,5vh,56px) clamp(18px,4vw,28px) 72px}
-/* the two who watched it, at the head of their own report */
-.rpt-by{display:flex;align-items:center;gap:11px}
-.rpt-bynm{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--tx-3)}
+/* the two who watched it, at the end of the line they wrote. No name plate — the faces say it. */
+.rpt-by{display:inline-flex;align-items:center;vertical-align:middle;margin-left:14px;
+  transform:translateY(-.12em)}
 .rpt .rp2-video.rpt-hold{opacity:0}
 /* the band, blooming out of them */
 .rpt-bloom{position:absolute;left:0;top:0;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:99px;
@@ -4570,14 +4570,20 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 /* THE RUN, one frame, drawn in container-width units so it holds its proportions whether it is
    340px wide in the loader or 664px wide in the report */
 .pv{position:absolute;inset:0;container-type:inline-size;overflow:hidden;background:#0e0d0c;z-index:1}
-.pv-deck{position:absolute;left:4.1cqw;right:4.1cqw;top:6.4cqw;bottom:9.4cqw;border-radius:2.4cqw;background:#f5f3ee;
-  padding:4.1cqw 4.7cqw;display:flex;flex-direction:column;gap:2.1cqw;overflow:hidden}
-.pv-deck .dk-eyebrow{display:block;width:38%;height:1.2cqw;border-radius:.6cqw;background:#c9c4ba}
-.pv-deck .dk-h{display:block;width:82%;height:2.6cqw;border-radius:.9cqw;background:#1a1815;margin-top:.6cqw}
-.pv-deck .dk-h.two{width:54%}
+/* the deck FILLS the frame. It used to float inside a dark rim, and that rim was the outline that
+   never sat right — a real screen share has no border around it. */
+.pv-deck{position:absolute;inset:0;border-radius:0;background:#f5f3ee;overflow:hidden}
+.pv-track{position:absolute;inset:0;transition:transform .42s cubic-bezier(.32,.72,0,1);will-change:transform}
+.pv-slide{position:absolute;left:0;right:0;height:100%;padding:7cqw 7.4cqw;
+  display:flex;flex-direction:column;gap:2.1cqw}
+.pv-slide:nth-child(1){top:0}.pv-slide:nth-child(2){top:100%}.pv-slide:nth-child(3){top:200%}
+.pv-slide:nth-child(4){top:300%}.pv-slide:nth-child(5){top:400%}
+.pv-deck .dk-eyebrow{display:block;height:1.2cqw;border-radius:.6cqw;background:#c9c4ba}
+.pv-deck .dk-h{display:block;height:2.6cqw;border-radius:.9cqw;background:#1a1815;margin-top:.6cqw}
 .pv-deck .dk-cols{margin-top:auto;display:flex;align-items:flex-end;gap:2.1cqw;height:46%}
-.pv-deck .dk-cols i{flex:1;border-radius:.6cqw .6cqw 0 0;background:#1a1815;opacity:.82}
-.pv-deck .dk-cols i:nth-child(4){background:#ff6a4d;opacity:1}
+.pv-deck .dk-cols i{flex:1;border-radius:.6cqw .6cqw 0 0;background:#1a1815;opacity:.82;
+  transition:height .42s cubic-bezier(.32,.72,0,1)}
+.pv-deck .dk-cols i.hi{background:#ff6a4d;opacity:1}
 /* and you, in the corner, the way you were on the call */
 .pv-pip{position:absolute;right:2.4cqw;bottom:2.4cqw;width:14.4cqw;height:9.5cqw;border-radius:1.6cqw;
   overflow:hidden;z-index:4;background:#1c1a18;border:1px solid rgba(255,255,255,.14);
@@ -8208,23 +8214,21 @@ function roomReport(secs){
    +'</div>'
    +'<span class="rpt-bloom" id="rptBloom"></span>'
    +'<div class="rpt-scroll"><div class="rpt-in">'
-   +'<div class="rpt-by" id="rptBy"><span class="rp2-avs">'
-   +   PANEL.map(function(p){ return '<span class="rp2-av zface" data-k="'+p.k+'" style="background:'+p.c+'">'
-         +'<img src="'+p.img+'" alt="" onerror="this.remove()"><b>'+p.i+'</b></span>'; }).join('')
-   +'</span><span class="rpt-bynm">'+PANEL.map(function(p){ return escHtml(p.name); }).join(' &amp; ')+'</span></div>'
-   +'<h1 class="rp2-verdict">'+RP2.verdict+'</h1>'
+   +'<h1 class="rp2-verdict">'+RP2.verdict
+   +   '<span class="rpt-by" id="rptBy">'
+   +     PANEL.map(function(p){ return '<span class="rp2-av zface" data-k="'+p.k+'" style="background:'+p.c+'">'
+           +'<img src="'+p.img+'" alt="" onerror="this.remove()"><b>'+p.i+'</b></span>'; }).join('')
+   +   '</span></h1>'
    +'<p class="rp2-prose">'+RP2.prose+'</p>'
    +'<div class="rp2-rule"></div>'
    +'<div class="rp2-video">'
    +   presFrameHTML()
-   +'  <span class="rp2-vlab">final-presentation.mp4 &middot; '+_fmt(secs||252)+'</span>'
    +'  <button class="rp2-play" id="rp2Play" aria-label="Play">'+PIC.play+'</button>'
    +'  <div class="rp2-scrub"><div class="rp2-fill" id="rp2Fill"></div>'
    +    RP2.moments.map(function(m,i3){ return '<button class="rp2-mk" type="button" data-i="'+i3+'" '
           +'style="left:'+m.pos+'%" data-lbl="'+m.cat+' &middot; '+m.t+'" aria-label="'+m.cat+' feedback at '+m.t+'"></button>'; }).join('')
    +'  </div>'
    +'</div>'
-   +'<div class="rp2-mlab"><span>Moments to review</span><span class="cnt">'+RP2.moments.length+'</span></div>'
    +'<div class="rp2-list">'
    +  RP2.moments.map(function(m,i2){ return '<div class="rp2-row" data-i="'+i2+'" style="--i:'+i2+'">'
        +'<div class="rp2-head">'
@@ -8312,7 +8316,7 @@ function roomReport(secs){
   });
   /* a marker on the scrub bar is a jump, so tapping a moment moves the playhead to it */
   ov.querySelectorAll('.rp2-row').forEach(function(r,i2){
-    r.addEventListener('click',function(){ const f=ov.querySelector('#rp2Fill'); if(f)f.style.width=RP2.moments[i2].pos+'%'; });
+    r.addEventListener('click',function(){ seek(RP2.moments[i2].pos); });
   });
   /* and a pin takes you to its note, the way a marker does in Loom */
   /* the dot and the row are one finding shown twice, so hovering either lights both */
@@ -8326,8 +8330,8 @@ function roomReport(secs){
     }
     mk.onclick=function(e){
       e.stopPropagation();
-      const i3=+mk.dataset.i, f=ov.querySelector('#rp2Fill');
-      if(f) f.style.width=RP2.moments[i3].pos+'%';
+      const i3=+mk.dataset.i;
+      seek(RP2.moments[i3].pos);
       ov.querySelectorAll('.rp2-mk').forEach(function(x){ x.classList.toggle('on', x===mk); });
       const row=ov.querySelector('.rp2-row[data-i="'+i3+'"]');
       if(row){ ov.querySelectorAll('.rp2-row').forEach(function(r){ r.classList.remove('open'); });
@@ -8335,9 +8339,32 @@ function roomReport(secs){
       try{ ZSND.play('tap'); }catch(e2){}
     };
   });
+  /* SCRUBBING MOVES THE DECK. Drag the bar and the slide track slides with it, so the playhead is
+     driving a recording rather than sliding along under a still. */
+  const _fill=ov.querySelector('#rp2Fill'), _scrub=ov.querySelector('.rp2-scrub'),
+        _track=ov.querySelector('.pv-track'), _slides=_track?+_track.dataset.n:1;
+  const seek=function(pct){
+    pct=Math.max(0,Math.min(100,pct));
+    if(_fill) _fill.style.width=pct+'%';
+    if(_track){
+      const i=Math.min(_slides-1, Math.floor(pct/100*_slides));
+      _track.style.transform='translateY('+(-i*100)+'%)';
+    }
+  };
+  seek(32);
+  if(_scrub){
+    const at=function(e){ const r=_scrub.getBoundingClientRect(); return (e.clientX-r.left)/r.width*100; };
+    let drag=false;
+    _scrub.addEventListener('pointerdown',function(e){
+      if(e.target.classList.contains('rp2-mk')) return;   /* a pin is a jump, not a scrub */
+      drag=true; _scrub.setPointerCapture(e.pointerId); _fill.style.transition='none'; seek(at(e)); });
+    _scrub.addEventListener('pointermove',function(e){ if(drag) seek(at(e)); });
+    const stop=function(){ drag=false; if(_fill) _fill.style.transition=''; };
+    _scrub.addEventListener('pointerup',stop); _scrub.addEventListener('pointercancel',stop);
+  }
   let playing=false;
   ov.querySelector('#rp2Play').onclick=function(){ playing=!playing;
-    ov.querySelector('#rp2Fill').style.width=(playing?46:32)+'%'; try{ ZSND.play('tap'); }catch(e){} };
+    seek(playing?46:32); try{ ZSND.play('tap'); }catch(e){} };
   const _again=ov.querySelector('#rptAgain');   /* exceptional has no second run to wire up */
   if(_again) _again.onclick=function(){ roomExit(); setTimeout(function(){ presRoom('live'); },420); };
   ov.querySelector('#rptDone').onclick=function(){
@@ -9741,11 +9768,26 @@ const rightInner=right.querySelector('.right-inner');
 /* THE RUN ITSELF: your deck on the screen, you in the corner. One definition — the loader shows
    this and so does the report's player, so the thing that flies between them is the same object. */
 function presFrameHTML(){
+  /* five slides on one track. Scrubbing slides the track, so moving the playhead moves the deck —
+     the frame behaves like a recording rather than a still with a bar under it. */
+  const S=[
+    {e:38,h:[82,54],c:null},
+    {e:52,h:[74,0],c:[26,44,33,58,41]},
+    {e:44,h:[88,61],c:[38,62,47,88,71]},
+    {e:60,h:[70,48],c:[52,71,60,94,83]},
+    {e:34,h:[86,58],c:[44,58,52,76,64]}
+  ];
+  const slide=function(d){
+    return '<div class="pv-slide">'
+      +'<span class="dk-eyebrow" style="width:'+d.e+'%"></span>'
+      +'<span class="dk-h" style="width:'+d.h[0]+'%"></span>'
+      +(d.h[1]?'<span class="dk-h two" style="width:'+d.h[1]+'%"></span>':'')
+      +(d.c?'<span class="dk-cols">'+d.c.map(function(v,i){
+          return '<i style="height:'+v+'%"'+(i===3?' class="hi"':'')+'></i>'; }).join('')+'</span>':'')
+      +'</div>';
+  };
   return '<div class="pv">'
-    +'<div class="pv-deck">'
-    +'  <span class="dk-eyebrow"></span><span class="dk-h"></span><span class="dk-h two"></span>'
-    +'  <span class="dk-cols"><i style="height:38%"></i><i style="height:62%"></i><i style="height:47%"></i><i style="height:88%"></i><i style="height:71%"></i></span>'
-    +'</div>'
+    +'<div class="pv-deck"><div class="pv-track" data-n="'+S.length+'">'+S.map(slide).join('')+'</div></div>'
     +'<span class="pv-pip">'+(ME.img?'<img src="'+ME.img+'" alt="" onerror="this.remove()">':'')+'<b>'+ME.i+'</b><em>'+escHtml(ME.name)+'</em></span>'
     +'</div>';
 }
