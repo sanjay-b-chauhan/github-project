@@ -1645,6 +1645,10 @@ svg{display:block}
 .pp-ed p:last-child{margin-bottom:0}
 .pp-ed ::selection{background:rgba(255,255,255,.16)}
 /* and the marks survive into the block he reads */
+/* a numbered plan stays numbered when he reads it back */
+.pn-lines.ord{counter-reset:pl}
+.pn-lines.ord li::before{counter-increment:pl;content:counter(pl)".";left:0;top:0;width:auto;height:auto;
+  border-radius:0;background:none;color:var(--tx-3);font-variant-numeric:tabular-nums;font-size:12.5px}
 .pn-lines li .ln b,.pn-lines li .ln strong{font-weight:700;color:var(--tx)}
 .pn-lines li .ln i,.pn-lines li .ln em{font-style:italic}
 /* the placeholder is driven by a class, not :empty — a contenteditable stops being :empty the
@@ -6038,10 +6042,11 @@ function makeNotePad(o){
   pad.querySelectorAll('[data-fmt]').forEach(b=>b.addEventListener('mousedown',e=>{ e.preventDefault(); ed.focus(); document.execCommand(b.dataset.fmt); }));
   pad.querySelector('.share-plan').onclick=()=>{
     const v=ed.innerText.trim(); if(!v) return;
-    pad._html=planLinesFromHTML(ed);          /* carry the bold, the italics and the list structure */
+    const marks=planLinesFromHTML(ed);          /* carry the bold, the italics and the list structure */
     if(o.guard && o.guard()===false) return;     // guard runs BEFORE the pad goes, so a blocked send keeps it
     pad.remove();
-    o.onShare(v);
+    o.onShare(v, marks);                          /* pass them ON — the pad is already gone by now, so
+                                                     looking it up afterwards found nothing every time */
   };
   requestAnimationFrame(()=>{ msgSpacer.style.height='0px'; slowScrollTo(thread.scrollHeight,600); ed.focus(); });   // whatever was said sits right above the pad
   return pad;
@@ -6051,10 +6056,9 @@ function openPlanComposer(){   // plan mode = a NOTE-TAKING surface that lives I
   planSubPhase='notes';
   makeNotePad({ id:'planPad', label:'Your plan', ph:'Write your plan…', cta:'Share my plan',
     guard:()=>!planLocked,
-    onShare:function(v){
+    onShare:function(v, marks){
       planLocked=true;                             // one slam — same locked flow as before
-      const _pd=document.getElementById('planPad');
-      const block=renderPlanNotes(v,_pd&&_pd._html);   // the pad's notes become the "Your plan" block, marks and all
+      const block=renderPlanNotes(v, marks);       // the pad's notes become the "Your plan" block, marks and all
       place(block); ZSND.play('select');
       planConverse(v, block);                      // scan → requirements → confirm → time
     }});
@@ -7041,9 +7045,10 @@ function planToTime(){
 function renderPlanNotes(text, html){
   const el=document.createElement('div'); el.className='planline plannotes'; el.id='planBlock';
   /* prefer the marked-up version when the pad hands one over; fall back to plain lines */
-  const lines=(html&&html.length)?html:planBullets(text).map(escHtml);
+  const lines=(html&&html.length)?html:planBullets(text).map(function(t){ return {h:escHtml(t),ord:false}; });
+  const ordered=lines.length && lines.every(function(l){ return l.ord; });
   el.innerHTML=`<div class="pl2-h"><span class="pl2-pin"></span><span>Your plan</span></div>
-    <ul class="pn-lines">${lines.map((b,i)=>`<li style="--sd:${i*170}ms"><span class="ln">${b}</span></li>`).join('')}</ul>`;
+    <ul class="pn-lines${ordered?' ord':''}">${lines.map((b,i)=>`<li style="--sd:${i*170}ms"><span class="ln">${b.h}</span></li>`).join('')}</ul>`;
   return el;
 }
 function mediaReactExperience(turnEl, v){
@@ -8894,16 +8899,16 @@ function planLinesFromHTML(root){
     });
     return h;
   };
-  const walk=function(node){
+  const walk=function(node, ord){
     node.childNodes.forEach(function(n){
-      if(n.nodeType===3){ const t=n.nodeValue.trim(); if(t) out.push(escHtml(t)); return; }
+      if(n.nodeType===3){ const t=n.nodeValue.trim(); if(t) out.push({h:escHtml(t),ord:!!ord}); return; }
       if(n.nodeType!==1) return;
-      if(n.tagName==='UL'||n.tagName==='OL'){ walk(n); return; }
-      const h=inline(n).trim(); if(h) out.push(h);
+      if(n.tagName==='UL'||n.tagName==='OL'){ walk(n, n.tagName==='OL'); return; }
+      const h=inline(n).trim(); if(h) out.push({h:h, ord:!!ord});
     });
   };
-  walk(root);
-  return out.filter(Boolean);
+  walk(root,false);
+  return out.filter(function(o){ return o && o.h; });
 }
 function planSubmitNotes(text){
   if(!planActive || planSent) return;
