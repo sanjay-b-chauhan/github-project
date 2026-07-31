@@ -3384,9 +3384,10 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
    list of findings in the product */
 /* no outline. The fill is enough to separate one row from the next, and a border around every
    one of them was the harshest thing on the screen. */
+/* the row does NOT animate itself in. It carried the panel's mount animation, and a CSS animation
+   outranks an inline style — so the rows lit up 80ms after mount and beat the video they belong
+   under, whatever the reveal timeline said. The reveal owns their entrance now. */
 .rpt .rp2-row{border-radius:14px;background:var(--soft);overflow:hidden;border:0;
-  opacity:0;transform:translateY(7px);animation:fbrow .5s var(--ease) forwards;
-  animation-delay:calc(.08s + var(--i,0)*.07s);
   transition:background .18s var(--ease),box-shadow .22s var(--ease)}
 .rpt .rp2-row:hover{background:var(--hover)}
 .rpt .rp2-head{display:flex;align-items:flex-start;gap:13px;padding:15px 16px;cursor:pointer}
