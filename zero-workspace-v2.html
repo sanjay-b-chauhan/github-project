@@ -2334,10 +2334,12 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 /* ===== PRESENTATION ENTRY POPUP ===== */
 .pentry-scrim{position:fixed;inset:0;z-index:520;display:grid;place-items:center;padding:24px;background:transparent;backdrop-filter:blur(16px) saturate(1.05);-webkit-backdrop-filter:blur(16px) saturate(1.05);opacity:0;transition:opacity .3s var(--ease)}
 .pentry-scrim.show{opacity:1}
-.pentry{width:min(820px,94vw);height:min(430px,84vh);display:grid;grid-template-columns:1.1fr .9fr;grid-template-rows:minmax(0,1fr);background:var(--card);border:var(--bw) solid var(--line);border-radius:36px;overflow:hidden;box-shadow:0 44px 130px rgba(0,0,0,.55);transform:scale(.97) translateY(8px);transition:transform .34s var(--ease)}
+.pentry{width:min(520px,94vw);height:auto;max-height:88vh;display:grid;grid-template-columns:1fr;grid-template-rows:auto auto;background:var(--card);border:var(--bw) solid var(--line);border-radius:36px;overflow:hidden;box-shadow:0 44px 130px rgba(0,0,0,.55);transform:scale(.97) translateY(8px);transition:transform .34s var(--ease)}
 .pentry-scrim.show .pentry{transform:none}
-.pe-left{padding:16px;background:var(--card);min-height:0;overflow:hidden}
-.pe-canvas{position:relative;height:100%;border-radius:20px;background:#f5f3ee;overflow:hidden;padding:30px 28px 0;--tx:#1a1815;--tx-2:#5a554f;--tx-3:#9a958c;--line:rgba(13,13,13,.09)}
+/* the visual on top, sized to itself — the side-by-side left a column of dead space beside the
+   words, and a stack has none to leave */
+.pe-left{padding:16px 16px 0;background:var(--card);min-height:0;overflow:hidden}
+.pe-canvas{position:relative;height:248px;border-radius:20px;background:#f5f3ee;overflow:hidden;padding:26px 26px 0;--tx:#1a1815;--tx-2:#5a554f;--tx-3:#9a958c;--line:rgba(13,13,13,.09)}
 .pe-canvas::after{content:"";position:absolute;left:0;right:0;bottom:0;height:56px;background:linear-gradient(transparent,#f5f3ee);pointer-events:none;z-index:4;border-radius:0 0 20px 20px}
 .pfolio{width:100%}
 .pfolio-head{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
@@ -2370,12 +2372,13 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .pcard-outline{position:absolute;inset:0;border-radius:15px;padding:2.5px;background:conic-gradient(from var(--pang),rgba(63,185,104,0) 0deg,#39c47a 55deg,rgba(63,185,104,.12) 130deg,rgba(63,185,104,0) 200deg,#39c47a 315deg,rgba(63,185,104,0) 360deg);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;animation:pspin 2.2s linear infinite}
 .pcard-slot .pcard.added{position:relative;width:100%;opacity:1;border-color:transparent;box-shadow:0 18px 40px rgba(0,0,0,.18),0 0 0 2px rgba(63,185,104,.72),0 0 30px rgba(63,185,104,.24)}
 /* right: dark */
-.pe-right{padding:30px;display:flex;flex-direction:column;justify-content:space-between;background:var(--card);min-height:0}
+/* content then CTA, hugging each other — nothing pushed to the far end of an empty column */
+.pe-right{padding:22px 26px 26px;display:flex;flex-direction:column;gap:22px;background:var(--card);min-height:0}
 /* the rhythm: label, a beat, the sentence, a bigger beat, the explanation */
 .pe-top{display:flex;flex-direction:column;gap:0}
-.pe-h{font-size:26px;font-weight:600;line-height:1.2;margin:0;letter-spacing:-.022em;color:var(--tx);max-width:19ch}
+.pe-h{font-size:25px;font-weight:600;line-height:1.2;margin:0;letter-spacing:-.022em;color:var(--tx);max-width:24ch}
 /* ONE body style for the slot, whichever pop-up is using it */
-.pe-s,.pe-body{font-size:14.5px;line-height:1.62;color:var(--tx-2);margin:16px 0 0;max-width:40ch}
+.pe-s,.pe-body{font-size:14.5px;line-height:1.62;color:var(--tx-2);margin:14px 0 0;max-width:46ch}
 /* and the button hugs its words on the right, the way it does everywhere else */
 /* the CTA fills the column: in a modal there is one thing to do, so it takes the width */
 .pe-bottom{display:flex;flex-direction:column;align-items:stretch;gap:14px}
@@ -3612,7 +3615,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
   min-height:48px;padding:0 18px;border:0;border-radius:14px;cursor:pointer;
   background:var(--tx);color:var(--bg);font-family:var(--f-body);font-size:14.5px;font-weight:600;
   transition:opacity .2s var(--ease)}
-.fev-walk:hover{opacity:.9}
+
 .fev-walk svg{width:17px;height:17px}
 
 
@@ -3653,8 +3656,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 /* the walkthrough stays reachable however long the feedback runs */
 .r-body{--fade-b:0px}
 .fev{padding-bottom:0!important}
-.fev .fev-walk{position:sticky;bottom:0;z-index:4;margin:22px 2px 0;
-  background:var(--tx);box-shadow:0 -18px 24px -10px var(--bg)}
+.fev .fev-walk{position:sticky;bottom:0;z-index:4;margin:22px 2px 0;box-shadow:none}
 .fev .fev-walk::before{content:'';position:absolute;left:-14px;right:-14px;bottom:-18px;top:auto;height:18px;
   background:var(--bg);z-index:-1}
 
@@ -3669,12 +3671,13 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 
 
 /* ===== v63: the walkthrough is the panel's footer ===== */
-.fev-foot{flex:0 0 auto;padding:14px 20px 16px;border-top:var(--bw) solid var(--line);background:var(--rail)}
-.fev-foot .fev-walk{display:flex;align-items:center;gap:10px;width:100%;
-  min-height:48px;padding:5px 7px 5px 5px;border:0;border-radius:99px;cursor:pointer;margin:0;
-  background:var(--tx);color:var(--bg);
-  transition:opacity .2s var(--ease),transform .2s var(--ease)}
-.fev-foot .fev-walk:hover{opacity:.94;transform:translateY(-1px)}
+.fev-foot{flex:0 0 auto;padding:10px 16px 14px;border-top:0;background:var(--rail)}
+.fev-foot /* text and a play icon. It was a filled pill shouting louder than the feedback above it. */
+.fev-walk{display:flex;align-items:center;gap:10px;width:100%;
+  min-height:46px;padding:0 14px;border:0;border-radius:16px;cursor:pointer;margin:0;
+  background:none;color:var(--tx);
+  transition:background .2s var(--ease)}
+.fev-foot .fev-walk:hover{background:rgba(255,255,255,.045)}   /* barely there, on purpose */
 .fev-foot .fw-av{width:34px;height:34px;flex:0 0 34px;border-radius:99px;object-fit:cover;background:var(--line)}
 .fev-foot .fw-t{flex:1;min-width:0;text-align:left;
   font-family:var(--f-body);font-size:14px;font-weight:600;letter-spacing:-.006em;color:var(--bg)}
@@ -10522,7 +10525,6 @@ function evalMountWalk(){
   let f=panel.querySelector('#fevFoot');
   if(!f){ f=document.createElement('div'); f.className='fev-foot'; f.id='fevFoot';
     f.innerHTML='<button class="fev-walk" id="fevWalk">'
-      +'<img class="fw-av" src="'+JAY_IMG+'" alt="" onerror="this.style.display=\'none\'">'
       +'<span class="fw-t">Walk me through it</span>'
       +'<span class="fw-play">'+HI.play+'</span></button>';
     if(fevScanning) f.classList.add('hold');   // born collapsed, so it never flashes before the verdict
