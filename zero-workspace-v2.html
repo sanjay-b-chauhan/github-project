@@ -3437,7 +3437,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
   box-shadow:inset 0 2px 26px -11px rgba(255,255,255,.16),inset 0 0 0 1px rgba(255,255,255,.06)}
 /* moments */
 /* the panel's section header, count and all */
-.rpt .rp2-mlab{display:flex;align-items:baseline;gap:8px;font-family:var(--mono);font-size:10px;font-weight:700;
+.rpt .rp2-mlab{display:flex;align-items:baseline;gap:8px;margin:34px 0 2px;font-family:var(--mono);font-size:10px;font-weight:700;
   text-transform:uppercase;letter-spacing:1.4px;color:var(--tx-3);margin:30px 0 10px}
 .rpt .rp2-mlab .cnt{margin-left:auto;font-variant-numeric:tabular-nums;font-weight:400}
 .rpt .rp2-list{display:flex;flex-direction:column;gap:0;margin-top:34px}   /* a list, not a stack of cards */
@@ -4364,7 +4364,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
    colour, no icon. */
 .rpt .rp2-cat{display:inline-block;font-family:var(--mono);font-size:8.5px;font-weight:700;
   letter-spacing:.9px;text-transform:uppercase;padding:3px 8px;border-radius:6px;
-  flex:none;white-space:nowrap;align-self:flex-start;margin-top:2px;
+  flex:none;white-space:nowrap;align-self:center;margin-left:18px;
   color:var(--tx-3);background:var(--soft);box-shadow:inset 0 0 0 1px var(--line)}
 /* high sits up in a solid chip, medium keeps its ring, low is flat — the same three steps the
    panel uses, with the colour taken out of them */
@@ -4631,7 +4631,11 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
   display:flex;align-items:center;justify-content:center}
 /* THE THING THEY ARE LOOKING AT. The run is on screen, scanning through, and the two of them go
    round it — so the wait is them watching your presentation, which is what is actually happening. */
-.rvv{position:relative;width:100%;height:300px;margin-top:18px;display:flex;align-items:center;justify-content:center}
+.rvv{position:relative;width:100%;height:300px;margin-top:18px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:22px}
+/* the two watching it, above the thing they are watching */
+.rvv-team{display:flex;align-items:center}
+.rvv-team .rvv-f+.rvv-f{margin-left:-14px}
 .rvv-scr{position:relative;width:340px;height:191px;border-radius:16px;overflow:hidden;z-index:2;
   background:#0e0d0c;border:var(--bw) solid var(--line);box-shadow:0 26px 64px rgba(0,0,0,.55)}
 /* THE RUN, one frame, drawn in container-width units so it holds its proportions whether it is
@@ -4681,12 +4685,12 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .rvv-bar i{display:block;height:100%;width:0;border-radius:99px;background:rgba(255,255,255,.9);
   transition:width .7s cubic-bezier(.32,.72,0,1)}
 /* and the two of them, going round it */
-.rvv-f{position:absolute;left:50%;top:50%;width:78px;height:78px;border-radius:99px;overflow:hidden;
+.rvv-f{position:relative;width:52px;height:52px;border-radius:99px;overflow:hidden;flex:none;
   display:grid;place-items:center;font-family:var(--f-body);font-size:25px;font-weight:600;color:#fff;
   will-change:transform;opacity:.72;filter:saturate(.5);
   box-shadow:0 0 0 3px var(--bg), 0 0 0 5px rgba(255,255,255,.1), 0 14px 34px rgba(0,0,0,.5);
   transition:opacity .45s var(--osmo),filter .45s var(--osmo),box-shadow .45s var(--osmo)}
-.rvv .rvv-f{position:absolute}
+.rvv-f{font-size:17px}
 .rvv-f.on{opacity:1;filter:none;box-shadow:0 0 0 3px var(--bg), 0 0 0 5px rgba(111,209,137,.6), 0 14px 34px rgba(0,0,0,.5)}
 .rvw2-step{position:absolute;display:flex;flex-direction:column;align-items:center;gap:18px;will-change:transform,opacity}
 .rvw2-ic{width:62px;height:62px;border-radius:99px;display:grid;place-items:center;
@@ -8200,14 +8204,16 @@ function roomReviewing(){
    +'  <div class="rvw2-eyebrow">Reviewing</div>'
    +'  <h2 class="rvw2-h">Avery and Jordan are talking it over.</h2>'
    +'  <div class="rvv" id="rvVid">'
+   +'    <span class="rvv-team">'
+   +      PANEL.map(function(p,i3){ return '<span class="rvv-f zface'+(i3===0?' on':'')+'" data-k="'+p.k+'" style="background:'+p.c+'">'
+            +'<img src="'+p.img+'" alt="" onerror="this.remove()"><b>'+p.i+'</b></span>'; }).join('')
+   +'    </span>'
    +'    <div class="rvv-scr" id="rvScreen">'
    +      presFrameHTML()
    +'      <span class="rvv-lab"><i class="rvv-rec"></i>final-presentation.mp4</span>'
    +'      <i class="rvv-sweep"></i>'
    +'      <span class="rvv-bar"><i id="rvVidBar"></i></span>'
    +'    </div>'
-   +    PANEL.map(function(p,i3){ return '<span class="rvv-f zface'+(i3===0?' on':'')+'" data-k="'+p.k+'" style="background:'+p.c+'">'
-          +'<img src="'+p.img+'" alt="" onerror="this.remove()"><b>'+p.i+'</b></span>'; }).join('')
    +'  </div>'
    +'  <div class="rvw2-stage" id="rvStage"></div>'
    +'  <div class="rvw2-rail"><i id="rvRail"></i></div>'
@@ -8218,16 +8224,10 @@ function roomReviewing(){
      watching it just then — full colour, ringed — and on the next beat it passes to the other. */
   const sf=[].slice.call(ov.querySelectorAll('.rvv-f'));
   const vwrap=ov.querySelector('#rvVid'), vbar=ov.querySelector('#rvVidBar');
-  const orb={a:-Math.PI/2}, RX=232, RY=104;
-  const placeF=function(){
-    sf.forEach(function(f,k){
-      const a=orb.a+(k?Math.PI:0), dep=(Math.sin(a)+1)/2;   /* 1 = coming past the front */
-      f.style.transform='translate(-50%,-50%) translate('+(Math.cos(a)*RX).toFixed(1)+'px,'+(Math.sin(a)*RY).toFixed(1)+'px) scale('+(.74+dep*.34).toFixed(3)+')';
-      f.style.zIndex=dep>.5?4:1;
-    });
-  };
-  placeF();
-  R.rvOrbit = G ? G.to(orb,{a:orb.a+Math.PI*2,duration:11,repeat:-1,ease:'none',onUpdate:placeF}) : null;
+  /* they used to circle the recording. Two heads on a permanent lap around a video is motion for
+     its own sake, and it read as decoration the moment the report stopped needing them to fly out
+     of it. They sit above it now, and the only thing that moves is which of them is watching. */
+  R.rvOrbit=null;
   const handOver=function(n){ sf.forEach(function(f,k){ f.classList.toggle('on', k===(n%2)); }); };
   let i2=0;
   /* one line at a time: the last one leaves as the next arrives, so there is
@@ -8381,11 +8381,7 @@ function roomReport(secs){
    +'</div>'
    +'<span class="rpt-bloom" id="rptBloom"></span>'
    +'<div class="rpt-scroll"><div class="rpt-in">'
-   +'<h1 class="rp2-verdict">'+RP2.verdict
-   +   '<span class="rpt-by" id="rptBy">'
-   +     PANEL.map(function(p){ return '<span class="rp2-av zface" data-k="'+p.k+'" style="background:'+p.c+'">'
-           +'<img src="'+p.img+'" alt="" onerror="this.remove()"><b>'+p.i+'</b></span>'; }).join('')
-   +   '</span></h1>'
+   +'<h1 class="rp2-verdict">'+RP2.verdict+'</h1>'
    +'<p class="rp2-prose">'+RP2.prose+'</p>'
    +'<div class="rp2-rule"></div>'
    +'<div class="rp2-video">'
@@ -8396,11 +8392,12 @@ function roomReport(secs){
           +'style="left:'+m.pos+'%" data-lbl="'+m.cat+' &middot; '+m.t+'" aria-label="'+m.cat+' feedback at '+m.t+'"></button>'; }).join('')
    +'  </div>'
    +'</div>'
+   +'<div class="rp2-mlab"><span>Moments to review</span><span class="cnt">'+RP2.moments.length+'</span></div>'
    +'<div class="rp2-list">'
    +  RP2.moments.map(function(m,i2){ return '<div class="rp2-row" data-i="'+i2+'" style="--i:'+i2+'">'
        +'<div class="rp2-head">'
-       +'  <span class="rp2-cat" data-imp="'+(m.imp||'med')+'">'+m.cat+'</span>'
        +'  <span class="rp2-desc">'+m.d+'</span>'
+       +'  <span class="rp2-cat" data-imp="'+(m.imp||'med')+'">'+m.cat+'</span>'
        +'  <span class="rp2-chev">'+CH+'</span>'
        +'</div>'
        +'<div class="rp2-body"><div class="wa-lbl">What happened</div><div class="wa-t">'+m.e+'</div></div></div>'; }).join('')
