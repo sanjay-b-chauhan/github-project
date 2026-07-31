@@ -2285,7 +2285,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 /* ===== PRESENTATION ENTRY POPUP ===== */
 .pentry-scrim{position:fixed;inset:0;z-index:520;display:grid;place-items:center;padding:24px;background:transparent;backdrop-filter:blur(16px) saturate(1.05);-webkit-backdrop-filter:blur(16px) saturate(1.05);opacity:0;transition:opacity .3s var(--ease)}
 .pentry-scrim.show{opacity:1}
-.pentry{width:min(820px,94vw);height:min(478px,84vh);display:grid;grid-template-columns:1.1fr .9fr;grid-template-rows:minmax(0,1fr);background:var(--card);border:var(--bw) solid var(--line);border-radius:24px;overflow:hidden;box-shadow:0 44px 130px rgba(0,0,0,.55);transform:scale(.97) translateY(8px);transition:transform .34s var(--ease)}
+.pentry{width:min(820px,94vw);height:min(430px,84vh);display:grid;grid-template-columns:1.1fr .9fr;grid-template-rows:minmax(0,1fr);background:var(--card);border:var(--bw) solid var(--line);border-radius:24px;overflow:hidden;box-shadow:0 44px 130px rgba(0,0,0,.55);transform:scale(.97) translateY(8px);transition:transform .34s var(--ease)}
 .pentry-scrim.show .pentry{transform:none}
 .pe-left{padding:16px;background:var(--card);min-height:0;overflow:hidden}
 .pe-canvas{position:relative;height:100%;border-radius:20px;background:#f5f3ee;overflow:hidden;padding:30px 28px 0;--tx:#1a1815;--tx-2:#5a554f;--tx-3:#9a958c;--line:rgba(13,13,13,.09)}
@@ -2322,14 +2322,16 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .pcard-slot .pcard.added{position:relative;width:100%;opacity:1;border-color:transparent;box-shadow:0 18px 40px rgba(0,0,0,.18),0 0 0 2px rgba(63,185,104,.72),0 0 30px rgba(63,185,104,.24)}
 /* right: dark */
 .pe-right{padding:30px;display:flex;flex-direction:column;justify-content:space-between;background:var(--card);min-height:0}
-.pe-top{display:flex;flex-direction:column;gap:10px}
-.pe-h{font-family:var(--serif);font-size:28px;font-weight:500;line-height:1.08;margin:0;letter-spacing:-.01em;color:var(--tx)}
-.pe-eyebrow{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--tx-3)}
-/* the heading says it landed; this says what "it" is and where it goes */
-.pe-s{font-size:15px;line-height:1.55;color:var(--tx-2);margin:14px 0 0;max-width:52ch}
-.pe-body{font-size:13.5px;line-height:1.62;color:var(--tx-2);margin:14px 0 0}
-.pe-bottom{display:flex;flex-direction:column;gap:14px}
-.pe-cta{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px;border-radius:13px;background:var(--accent);color:var(--bg);font-size:14.5px;font-weight:600;border:0;cursor:pointer;box-shadow:0 12px 30px rgba(0,0,0,.28);transition:transform var(--t-q) var(--ease)}
+/* the rhythm: label, a beat, the sentence, a bigger beat, the explanation */
+.pe-top{display:flex;flex-direction:column;gap:0}
+.pe-eyebrow{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;
+  color:var(--tx-3);margin:0 0 12px}
+.pe-h{font-size:26px;font-weight:600;line-height:1.2;margin:0;letter-spacing:-.022em;color:var(--tx);max-width:19ch}
+/* ONE body style for the slot, whichever pop-up is using it */
+.pe-s,.pe-body{font-size:14.5px;line-height:1.62;color:var(--tx-2);margin:16px 0 0;max-width:40ch}
+/* and the button hugs its words on the right, the way it does everywhere else */
+.pe-bottom{display:flex;flex-direction:column;align-items:flex-end;gap:14px}
+.pe-cta{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 26px;border-radius:99px;background:var(--accent);color:var(--bg);font-size:14.5px;font-weight:600;border:0;cursor:pointer;box-shadow:0 12px 30px rgba(0,0,0,.28);transition:transform var(--t-q) var(--ease)}
 .pe-cta:hover{transform:translateY(-2px)}.pe-cta svg{width:17px;height:17px}
 .pfdone-scrim .pfolio-scroll > .pcard:not(.empty){opacity:1}
 /* THE cause of the empty right side: .pe-right is space-between inside a fixed 478px card, so once
@@ -6168,9 +6170,9 @@ function evalEntryPopup(onDone){
    +'  <div class="pfolio-scroll" id="pfolioScroll">'+cards+'</div>'
    +'</div></div></div>'
    +'<div class="pe-right">'
-   +'  <div class="pe-top"><div class="pe-eyebrow">A quick heads-up from your coach</div>'
+   +'  <div class="pe-top"><div class="pe-eyebrow">A quick heads-up</div>'
    +'    <h2 class="pe-h">This final deliverable goes on your portfolio.</h2>'
-   +'    <p class="pe-body">Graded against the whole project, and added to your ZERO portfolio, the one recruiters read. Treat it like the real thing.</p></div>'
+   +'    <p class="pe-body">Graded against the whole project and added to your ZERO portfolio, the one recruiters read. Treat it like the real thing.</p></div>'
    +'  <div class="pe-bottom">'
    +'    <button class="pe-cta" id="peGo">I understand, let\u2019s go '+PIC.arrow+'</button>'
    +'  </div>'
@@ -6195,7 +6197,7 @@ function presEntryPopup(onDone){
    +'  <div class="pfolio-scroll" id="pfolioScroll">'+cards+'</div>'
    +'</div></div></div>'
    +'<div class="pe-right">'
-   +'  <div class="pe-top"><div class="pe-eyebrow">A quick heads-up from your coach</div>'
+   +'  <div class="pe-top"><div class="pe-eyebrow">A quick heads-up</div>'
    +'    <h2 class="pe-h">This presentation goes on your portfolio.</h2>'
    +'    <p class="pe-body">The recording and your evaluation go to your ZERO portfolio, the one recruiters read. Treat it like the real thing.</p></div>'
    +'  <div class="pe-bottom">'
