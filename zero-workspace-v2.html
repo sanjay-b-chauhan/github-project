@@ -2798,10 +2798,10 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
    toggles, the three checks and the live line all live together underneath it. */
 /* the bar reads left to right the way you use it: what the room is telling you about yourself on
    one side, the two switches you can actually flip on the other, and air in between. */
-/* and the controls are the bottom of it: no gap, no seam, more room inside */
+/* the controls sit inside the same card, directly under the video. No fill of their own, no rule
+   across the top — a line there would read as a divider between two things, and this is one thing. */
 .pfx .pfstep.on>.rc6-status{position:static;display:block;
-  margin:0;padding:18px 22px;border-radius:0 0 18px 18px;background:var(--soft);
-  border:var(--bw) solid var(--line);border-top:0;pointer-events:auto}
+  margin:0;padding:16px 12px 6px;border-radius:0;background:none;border:0;pointer-events:auto}
 .pfx .rc6-status .rc6-row{display:flex;align-items:center;justify-content:space-between;gap:26px;width:100%}
 .pfx .rc6-status .rc4-toggles{position:static!important;display:flex;gap:14px;transform:none!important;width:auto!important;flex:0 0 auto}
 .pfx .pfstep.on{display:flex;flex-direction:column;align-items:stretch}   /* .on ONLY — as a bare .pfx .pfstep this outranked .pfstep{display:none} and every step rendered at once, so the camera check and the screen picker were on screen together. The stepper is a stepper again. */
@@ -3275,8 +3275,11 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .pfstep.on{display:block;animation:pfStepIn .38s var(--ease)}
 @keyframes pfStepIn{from{opacity:0}to{opacity:1}}
 /* step one: your camera, big enough to actually judge */
-/* the video is the top of one block, so it only rounds where the block does */
-.pfx .rc6-cam{max-width:none;width:100%;border-radius:18px 18px 0 0}
+/* ONE CONTAINER with the video INSET in it. 10px of padding all round, so the video is a thing
+   sitting inside the card rather than the roof of it. Radius stays concentric: 14 inside 10 is 24
+   outside. */
+.pfx #pfS1.on{background:var(--soft);border:var(--bw) solid var(--line);border-radius:24px;padding:10px}
+.pfx .rc6-cam{max-width:none;width:100%;border-radius:14px}
 /* a leftover from when the bar floated over the video; it does not float any more */
 .pfx .rc6-icons{gap:14px}   /* the later of the two rules; both had to move or the first one loses */
 .pfx .rc6-cam .rc4-toggles{left:16px!important;bottom:16px!important}
