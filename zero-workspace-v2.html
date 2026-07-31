@@ -11985,7 +11985,8 @@ function scenarioUnlock(){
       gsap.to(p,{strokeDashoffset:0,duration:.28,ease:'power2.out'}); }
   };
   const shatter=function(list){
-    list.forEach(function(pc){
+    list.forEach(function(pc,k){
+      shardPop(k);                                           /* one voice per block, in sequence */
       const b=pc.getBoundingClientRect();
       const s=document.createElement('i'); s.className='sul-shard';
       s.style.cssText='left:'+b.left+'px;top:'+b.top+'px;width:'+b.width+'px;height:'+b.height+'px';
@@ -12025,75 +12026,28 @@ function scenarioUnlock(){
   })();
   /* THE CRACK, HEARD. Not a UI beep: a knock into a filtered-noise crunch, harder each tap,
      and the shatter is a burst of it with a low drop underneath. */
-  /* ICE, FOR REAL THIS TIME. Synthesis kept reading as electricity, so the crack is now an
-     actual recording of lake ice cracking (Wikimedia Commons, "Sound of cracking ice.ogg",
-     Amada44, CC BY-SA 3.0), pitched per tap, layered on the shatter, with a bass dub under it
-     and a convolution tail so it rings cold. */
-  const iceKit=function(){
-    if(iceKit._k!==undefined) return iceKit._k;
+  /* THE FIRST SOUND WAS RIGHT. The tap is the product's own tap. What was missing was that the
+     BLOCKS were silent: now every shard has its own voice — a small pop as it breaks, a lower one
+     as it falls — staggered as they fly, so four blocks breaking is four sounds cascading. */
+  const shardPop=function(idx){
     try{
-      const AC=window.AudioContext||window.webkitAudioContext; const ac=new AC();
-      const rate=ac.sampleRate, len=Math.floor(rate*2.2);
-      const buf=ac.createBuffer(2,len,rate);
-      for(let ch=0;ch<2;ch++){ const d=buf.getChannelData(ch);
-        for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6); }
-      const rev=ac.createConvolver(); rev.buffer=buf;
-      const wet=ac.createGain(); wet.gain.value=.34; wet.connect(rev); rev.connect(ac.destination);
-      iceKit._k={ac:ac,wet:wet};
-    }catch(e){ iceKit._k=null; }
-    return iceKit._k;
-  };
-  const iceLoad=function(){
-    if(iceLoad._p) return iceLoad._p;
-    const k=iceKit();
-    iceLoad._p=(k?fetch('ice-crack.ogg').then(function(r){ return r.arrayBuffer(); })
-      .then(function(ab){ return new Promise(function(res,rej){ k.ac.decodeAudioData(ab,res,rej); }); })
-      :Promise.reject()).catch(function(){ return null; });
-    return iceLoad._p;
-  };
-  const playIce=function(rate,power,delay){
-    const k=iceKit();
-    iceLoad().then(function(buf){
-      if(k&&buf){
-        try{ k.ac.resume&&k.ac.resume(); }catch(e){}
-        const t=k.ac.currentTime+0.005+(delay||0);
-        const src=k.ac.createBufferSource(); src.buffer=buf; src.playbackRate.value=rate;
-        const g=k.ac.createGain();
-        g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(power,t+.012);
-        g.gain.setValueAtTime(power,t+.5); g.gain.exponentialRampToValueAtTime(0.0001,t+1.15/rate);
-        src.connect(g); g.connect(k.ac.destination); g.connect(k.wet);
-        src.start(t); src.stop(t+1.3/rate);
-        return;
-      }
-      try{ const a=new Audio('ice-crack.ogg'); a.playbackRate=rate; a.volume=Math.min(1,power); 
-        setTimeout(function(){ a.play().catch(function(){}); },(delay||0)*1000); }catch(e){}
-    });
-  };
-  const subDub=function(f0,power,delay){
-    const k=iceKit(); if(!k)return;
-    try{
-      const ac=k.ac, t=ac.currentTime+0.005+(delay||0);
-      const o=ac.createOscillator(), g=ac.createGain();
-      o.type='sine'; o.frequency.setValueAtTime(f0,t); o.frequency.exponentialRampToValueAtTime(42,t+.2);
-      g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(power,t+.012); g.gain.exponentialRampToValueAtTime(0.0001,t+.3);
-      o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+.32);
+      const AC=window.AudioContext||window.webkitAudioContext; const ac=shardPop._ac||(shardPop._ac=new AC());
+      try{ ac.resume&&ac.resume(); }catch(e2){}
+      const t=ac.currentTime+0.01+idx*0.05;                 /* each block takes its turn */
+      const blip=function(at,f,d,g0){
+        const o=ac.createOscillator(), g=ac.createGain(), lp=ac.createBiquadFilter();
+        o.type='triangle'; o.frequency.value=f;
+        lp.type='lowpass'; lp.frequency.value=2400;
+        g.gain.setValueAtTime(0.0001,at); g.gain.exponentialRampToValueAtTime(g0,at+.006); g.gain.exponentialRampToValueAtTime(0.0001,at+d);
+        o.connect(lp); lp.connect(g); g.connect(ac.destination); o.start(at); o.stop(at+d+.02);
+      };
+      const f0=560+Math.random()*160-idx*22;
+      blip(t, f0, .06, .3);                                  /* the break */
+      blip(t+.07, f0*.55, .09, .22);                         /* and the fall, a third down */
     }catch(e){}
   };
-  const crackSnd=function(n){
-    playIce(1.14-0.1*n, .85+.1*n);      /* the real crack, digging deeper each tap */
-    subDub(96-8*n, .5);                  /* the dub under it */
-  };
-  const shatterSnd=function(){
-    playIce(.8,1.2); playIce(1.0,.8,.12);          /* the recording, deep + doubled */
-    subDub(110,.7); subDub(88,.7,.13); subDub(68,.75,.27);   /* dub, dub, dub */
-    const k=iceKit();
-    if(k){ try{ const ac=k.ac,t=ac.currentTime+.42;
-      const o=ac.createOscillator(), g=ac.createGain();
-      o.type='sine'; o.frequency.setValueAtTime(64,t); o.frequency.exponentialRampToValueAtTime(30,t+.75);
-      g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(.5,t+.03); g.gain.exponentialRampToValueAtTime(0.0001,t+.95);
-      o.connect(g); g.connect(ac.destination); g.connect(k.wet); o.start(t); o.stop(t+1); }catch(e){} }
-  };
-  iceLoad();   /* decoded before the first tap, so the first crack is instant */
+  const crackSnd=function(n){ try{ ZSND.play('tap'); }catch(e){} };   /* the very first sound, kept */
+  const shatterSnd=function(){};                                      /* the blocks speak for themselves */
   card.addEventListener('click',function(e){
     if(broken) return;
     const b=card.getBoundingClientRect();
