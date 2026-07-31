@@ -1616,13 +1616,14 @@ svg{display:block}
 .composer.notesmode .share-plan{display:inline-flex}
 /* planning is a NOTEPAD VIEW, not a chat: the pad fills the room, the chat controls step out, Share is the one CTA */
 .composer.notesmode .plus,.composer.notesmode .cam,.composer.notesmode .stuck-slider{display:none}
-.fmt-lbl{display:none;margin-left:auto;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx-3);padding-right:6px}
+/* no label in the corner. The pad is the only thing on screen; it does not need naming. */
+.fmt-lbl{display:none!important}
 .composer.notesmode .fmt-lbl{display:block}
 .composer.notesmode:has(#ta:empty) .share-plan{background:var(--bubble);color:var(--tx-3);box-shadow:inset 0 0 0 1px var(--line);pointer-events:none}   /* muted until there's a plan to share — still visibly a BUTTON (raised pill + hairline), not floating text */
 /* ===== the notepad lives IN THE THREAD: a card right under the kickoff voice note, at chat width —
    "listen to the note, write your plan here" — part of the conversation, not the bottom input ===== */
 .plan-pad{align-self:stretch;display:flex;flex-direction:column;margin:6px 0;border:var(--bw) solid var(--line);border-radius:16px;background:var(--card);animation:rise var(--t-m) var(--ease)}
-.plan-pad .fmt-bar{display:flex;padding:10px 14px 0}
+.plan-pad .fmt-bar{display:flex;padding:12px 16px 2px}
 .plan-pad .fmt-lbl{display:block}
 /* it opens compact and GROWS as you write, rather than reserving a wall of empty space up front */
 .plan-pad /* THE EDITOR. Room to write in, and every mark the toolbar can make has to land properly — a rich
@@ -1647,7 +1648,7 @@ svg{display:block}
 .pn-lines li .ln b,.pn-lines li .ln strong{font-weight:700;color:var(--tx)}
 .pn-lines li .ln i,.pn-lines li .ln em{font-style:italic}
 .plan-pad .pp-ed:empty:before{content:attr(data-ph);color:var(--tx-3);pointer-events:none}
-.plan-pad .pp-foot{display:flex;justify-content:flex-end;padding:0 14px 12px}
+.plan-pad .pp-foot{display:flex;justify-content:flex-end;padding:0 16px 14px}
 .plan-pad .share-plan{display:inline-flex}
 .plan-pad:has(.pp-ed:empty) .share-plan{background:var(--bubble);color:var(--tx-3);box-shadow:inset 0 0 0 1px var(--line);pointer-events:none}
 /* Jay ANALYZES a shared note: the green shim runs through the TEXT itself (the team's text-shine), not the container */
@@ -6029,6 +6030,7 @@ function makeNotePad(o){
   pad.querySelectorAll('[data-fmt]').forEach(b=>b.addEventListener('mousedown',e=>{ e.preventDefault(); ed.focus(); document.execCommand(b.dataset.fmt); }));
   pad.querySelector('.share-plan').onclick=()=>{
     const v=ed.innerText.trim(); if(!v) return;
+    pad._html=planLinesFromHTML(ed);          /* carry the bold, the italics and the list structure */
     if(o.guard && o.guard()===false) return;     // guard runs BEFORE the pad goes, so a blocked send keeps it
     pad.remove();
     o.onShare(v);
@@ -6043,7 +6045,8 @@ function openPlanComposer(){   // plan mode = a NOTE-TAKING surface that lives I
     guard:()=>!planLocked,
     onShare:function(v){
       planLocked=true;                             // one slam — same locked flow as before
-      const block=renderPlanNotes(v);              // the pad's notes become the "Your plan" block, in place
+      const _pd=document.getElementById('planPad');
+      const block=renderPlanNotes(v,_pd&&_pd._html);   // the pad's notes become the "Your plan" block, marks and all
       place(block); ZSND.play('select');
       planConverse(v, block);                      // scan → requirements → confirm → time
     }});
@@ -7027,11 +7030,12 @@ function planToTime(){
   const t=addTyping(false);
   setTimeout(()=>{ t.remove(); addMsg({type:'mgr',text:"Great. How long do you reckon this'll take?"},false); anchorLastMgr(); setTimeout(planAskTime,450); }, 700);
 }
-function renderPlanNotes(text){
+function renderPlanNotes(text, html){
   const el=document.createElement('div'); el.className='planline plannotes'; el.id='planBlock';
-  const lines=planBullets(text);
+  /* prefer the marked-up version when the pad hands one over; fall back to plain lines */
+  const lines=(html&&html.length)?html:planBullets(text).map(escHtml);
   el.innerHTML=`<div class="pl2-h"><span class="pl2-pin"></span><span>Your plan</span></div>
-    <ul class="pn-lines">${lines.map((b,i)=>`<li style="--sd:${i*170}ms"><span class="ln">${escHtml(b)}</span></li>`).join('')}</ul>`;
+    <ul class="pn-lines">${lines.map((b,i)=>`<li style="--sd:${i*170}ms"><span class="ln">${b}</span></li>`).join('')}</ul>`;
   return el;
 }
 function mediaReactExperience(turnEl, v){
@@ -8864,6 +8868,34 @@ function planBullets(t){
   // the learner's notes stay THEIRS, verbatim. One row per line they typed, nothing re-split, no markers stripped.
   const parts=String(t).split(/\r?\n+/).map(s=>s.trim()).filter(Boolean);
   return parts.length?parts:[String(t).trim()];
+}
+/* WHAT YOU WROTE IS WHAT HE READS. The pad used to hand over innerText, so every bold, italic and
+   list you made was thrown away between writing it and sending it. This keeps the marks and drops
+   everything else — no styles, no scripts, no pasted markup. */
+const PLAN_OK={B:1,STRONG:1,I:1,EM:1,U:1};
+function planLinesFromHTML(root){
+  const out=[];
+  const inline=function(node){
+    let h='';
+    node.childNodes.forEach(function(n){
+      if(n.nodeType===3){ h+=escHtml(n.nodeValue); return; }
+      if(n.nodeType!==1) return;
+      if(n.tagName==='BR'){ h+=' '; return; }
+      const inner=inline(n);
+      h += PLAN_OK[n.tagName] ? '<'+n.tagName.toLowerCase()+'>'+inner+'</'+n.tagName.toLowerCase()+'>' : inner;
+    });
+    return h;
+  };
+  const walk=function(node){
+    node.childNodes.forEach(function(n){
+      if(n.nodeType===3){ const t=n.nodeValue.trim(); if(t) out.push(escHtml(t)); return; }
+      if(n.nodeType!==1) return;
+      if(n.tagName==='UL'||n.tagName==='OL'){ walk(n); return; }
+      const h=inline(n).trim(); if(h) out.push(h);
+    });
+  };
+  walk(root);
+  return out.filter(Boolean);
 }
 function planSubmitNotes(text){
   if(!planActive || planSent) return;
