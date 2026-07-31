@@ -3947,7 +3947,22 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .planline.jayread{background:var(--soft)}
 .planline.jayread .pl2-h{color:var(--tx-3)}
 /* each point arrives on its own beat, out of a blur, the way it would be written */
-.planline.jayread .pn-lines li.jr-in{animation:blurIn .52s var(--osmo) both}
+/* A LINE THAT IS STILL LOADING. The bar sits exactly where the sentence will, so the box is its
+   finished height from the first frame and nothing below it ever moves. */
+.planline.jayread .pn-lines li.jr-load{position:relative}
+.planline.jayread .pn-lines li.jr-load .ln{opacity:0}
+.planline.jayread .pn-lines li .jr-bar{display:none}
+.planline.jayread .pn-lines li.jr-load .jr-bar{display:block;position:absolute;left:16px;right:0;top:.42em;
+  height:.72em;border-radius:99px;background:var(--hover);overflow:hidden}
+.planline.jayread .pn-lines li.jr-load::before{background:var(--line)}
+/* the one being read has the green running through it, the same shine the plan read-through uses */
+.planline.jayread .pn-lines li.jr-run .jr-bar::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(100deg,transparent 0%,transparent 32%,rgba(63,185,104,.55) 50%,transparent 68%,transparent 100%);
+  background-size:230% 100%;animation:txshine .9s cubic-bezier(.4,0,.2,1) infinite}
+/* and when it lands, the words come up where the bar was */
+.planline.jayread .pn-lines li.jr-done .ln{animation:blurIn .46s var(--osmo) both}
+.planline.jayread .pn-lines li.jr-done::before{background:#3fb968;animation:jrDot .5s var(--ease) both}
+@keyframes jrDot{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.25)}100%{transform:scale(1);opacity:1}}
 .pn-lines{list-style:none;margin:0;padding:2px 0 4px;display:flex;flex-direction:column;gap:8px}
 .pn-lines li{position:relative;padding-left:16px;font-size:13.5px;line-height:1.55;color:var(--tx)}
 .pn-lines li::before{content:"";position:absolute;left:3px;top:9px;width:5px;height:5px;border-radius:99px;background:var(--tx-4)}
@@ -8605,9 +8620,21 @@ function presPracticeReport(){
       /* one point at a time. Four lines appearing together reads as a paste; watching them get
          written reads as someone thinking about your run. */
       const list=el.querySelector('#jrList');
+      /* every line is here from the first frame, as a bar the width of the sentence it is holding
+         a place for — so the container is its final height immediately and nothing below it moves */
+      PRACTICE_NOTES.forEach(function(t,n){
+        const li=document.createElement('li'); li.className='jr-load';
+        li.style.setProperty('--sd',(n*90)+'ms');
+        li.innerHTML='<span class="ln">'+escHtml(t)+'</span><i class="jr-bar"></i>';
+        list.appendChild(li);
+      });
+      try{ const th=document.querySelector('.thread'); if(th)th.scrollTop=th.scrollHeight; }catch(e){}
+      /* then they resolve, one after another: the shine runs across the bar and the words arrive
+         behind it */
+      const lis=[].slice.call(list.children);
       let i=0;
       (function step(){
-        if(i>=PRACTICE_NOTES.length){
+        if(i>=lis.length){
           setTimeout(function(){
             presTyping(function(){
               addMsg({type:'mgr',text:"That is the whole list, and none of it is structural. It is all delivery. Another run, or shall we do the real one?"},false);
@@ -8616,13 +8643,14 @@ function presPracticeReport(){
           }, 950);
           return;
         }
-        const li=document.createElement('li'); li.className='jr-in';
-        li.innerHTML='<span class="ln">'+escHtml(PRACTICE_NOTES[i])+'</span>';
-        list.appendChild(li);
-        try{ ZSND.play('tap'); }catch(e){}                     // the same soft tick the read-through uses
-        try{ const th=document.querySelector('.thread'); if(th)th.scrollTop=th.scrollHeight; }catch(e){}
+        const li=lis[i];
+        li.classList.add('jr-run');                            // the shine sweeps this one
+        setTimeout(function(){
+          li.classList.remove('jr-load','jr-run'); li.classList.add('jr-done');
+          try{ ZSND.play('tap'); }catch(e){}                   // the same soft tick the read-through uses
+        }, 520);
         i++;
-        setTimeout(step, 1150);
+        setTimeout(step, 700);
       })();
     }, 750);
   }, 900);
