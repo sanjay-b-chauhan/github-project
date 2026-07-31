@@ -24,7 +24,7 @@
   --mono:'Supply Mono','Supply','SFMono-Regular',ui-monospace,'SF Mono','Roboto Mono','Courier New',monospace;
   --serif:'Google Sans Flex','Google Sans',-apple-system,system-ui,sans-serif;   /* was STK Bureau Serif; every var(--serif) in the file follows this one line */
   --sans:'Google Sans Flex','Google Sans',-apple-system,system-ui,sans-serif;
-  --r-xl:40px; --r-lg:32px; --r:24px; --r-sm:16px;   /* 16 is for small elements only; a big surface takes 32 or 40 */ --pill:999px; --r-comp:26px; --fs:14px; --maxw:600px; --bw:1px;
+  --r-xxl:64px; --r-xl:52px; --r-lg:44px; --r:40px; --r-min:32px; --r-sm:32px;   /* 40 is the DEFAULT. 32 is the floor. Big surfaces go 44, 52, 64. */ --pill:999px; --r-comp:26px; --fs:14px; --maxw:600px; --bw:1px;
   --ease:cubic-bezier(.625,.05,0,1); --t-q:.24s; --t-m:.48s; --t-s:.6s;   /* Osmo / apple-butter easing, common throughout */
   --fix:#ff6a4d; --ok:#3fb968; --hi:#e0a020; --meets:#e7b90a;   /* final-evaluation accents: Fix / cleared / High importance / Meets */
 }
@@ -132,13 +132,13 @@ svg{display:block}
 .pd-menubar .pd-apple{display:grid}.pd-menubar .pd-apple svg{width:15px;height:15px}
 .pd-menubar b{font-weight:700}
 .pd-menubar .pd-right{margin-left:auto;display:flex;gap:15px;font-variant-numeric:tabular-nums;opacity:.92}
-.pd-dock{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:11px;padding:8px 12px;border-radius:22px;background:rgba(255,255,255,.2);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.28);box-shadow:0 14px 40px rgba(0,0,0,.3)}
+.pd-dock{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:11px;padding:8px 12px;border-radius:var(--r-min);background:rgba(255,255,255,.2);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.28);box-shadow:0 14px 40px rgba(0,0,0,.3)}
 .pd-dock .pd-app{width:46px;height:46px;border-radius:13px;box-shadow:0 5px 12px rgba(0,0,0,.28);transition:transform var(--t-q) var(--ease)}
 .pd-dock .pd-app:hover{transform:translateY(-6px) scale(1.08)}
 /* ===== PiP = a MICRO chat window: ~70% of the old footprint, type stepped down to the industry
    legibility floor (Discord's chat scale bottoms at 12px; Slack's compact mode tightens rhythm, not glyphs).
    Everything here is scoped to .app.pip so the full screen keeps its own scale. ===== */
-.app.pip .center{position:fixed;right:16px;bottom:16px;width:264px;min-width:0;height:min(408px,74vh);z-index:75;border:var(--bw) solid var(--line-2);border-radius:15px;box-shadow:0 32px 88px rgba(0,0,0,.6);background:var(--bg);overflow:hidden}   /* GSAP pipFlip drives the morph, no CSS pop */
+.app.pip .center{position:fixed;right:16px;bottom:16px;width:264px;min-width:0;height:min(408px,74vh);z-index:75;border:var(--bw) solid var(--line-2);border-radius:var(--r-min);box-shadow:0 32px 88px rgba(0,0,0,.6);background:var(--bg);overflow:hidden}   /* GSAP pipFlip drives the morph, no CSS pop */
 /* type: body 12.5 / meta 11 / mono 9 — legible at arm's length, invisible when you're working next to it */
 .app.pip .msgs .mgr .mbubble,.app.pip .user{font-size:12.5px;line-height:1.5;padding:8px 12px;border-radius:5px 14px 14px 14px}
 .app.pip .user{border-radius:15px 15px 5px 15px}
@@ -226,7 +226,7 @@ svg{display:block}
 .active.morphing{animation:cardGlow 1.15s var(--ease)}
 @keyframes cardGlow{0%{box-shadow:0 0 0 0 rgba(74,222,128,0)}34%{box-shadow:0 0 36px -4px rgba(74,222,128,.5)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
 /* active stage, one outline-only container */
-.active{position:relative;border:var(--bw) solid var(--line);border-radius:16px;padding:16px 16px 8px;margin-bottom:20px}
+.active{position:relative;border:var(--bw) solid var(--line);border-radius:var(--r-min);padding:16px 16px 8px;margin-bottom:20px}
 .active-h{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px}
 .active-h .t{flex:1;font-size:19px;font-weight:700;line-height:1.24;letter-spacing:-.02em}
 .active-h .help{width:28px;height:28px;border-radius:99px;display:grid;place-items:center;color:var(--tx-3);flex:0 0 auto;transition:color var(--t-q) var(--ease)}
@@ -349,7 +349,7 @@ svg{display:block}
 .active.just-active>.req:nth-of-type(2){animation-delay:.56s}
 @keyframes innerReveal{from{opacity:0;filter:blur(10px);transform:translateY(11px)}to{opacity:1;filter:blur(0);transform:none}}
 /* rail XP celebration overlay (sits over the active card) */
-.rail-xp{position:absolute;inset:0;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;text-align:center;padding:16px;opacity:0;transform:scale(.94);transition:opacity .42s var(--ease),transform .6s cubic-bezier(.34,1.56,.64,1);z-index:6;
+.rail-xp{position:absolute;inset:0;border-radius:var(--r-min);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;text-align:center;padding:16px;opacity:0;transform:scale(.94);transition:opacity .42s var(--ease),transform .6s cubic-bezier(.34,1.56,.64,1);z-index:6;
   background:linear-gradient(160deg,rgba(163,230,53,.22),rgba(34,197,94,.2) 55%,rgba(20,184,166,.16)),var(--rail);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .rail-xp.show{opacity:1;transform:none}
 .rail-xp .rx-wrap{position:relative;width:58px;height:58px}
@@ -576,7 +576,7 @@ svg{display:block}
 .typing i{width:7px;height:7px;border-radius:99px;background:var(--tx-3);animation:tbob 1.2s infinite}
 .typing i:nth-child(2){animation-delay:.16s}.typing i:nth-child(3){animation-delay:.32s}
 @keyframes tbob{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}
-.user{align-self:flex-end;width:fit-content;max-width:82%;background:var(--bubble);padding:10px 15px;border-radius:20px 20px 6px 20px;font-size:14px;line-height:1.5;overflow-wrap:break-word;word-break:normal;white-space:pre-wrap}
+.user{align-self:flex-end;width:fit-content;max-width:82%;background:var(--bubble);padding:10px 15px;border-radius:var(--r-min) 20px 6px 20px;font-size:14px;line-height:1.5;overflow-wrap:break-word;word-break:normal;white-space:pre-wrap}
 /* full-width row: gives bubbles a real width to size against, then right-aligns them */
 .uturn{align-self:stretch;width:100%;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
 .uturn>*{align-self:flex-end;max-width:82%}
@@ -598,7 +598,7 @@ svg{display:block}
 /* attachments grouped in one row */
 .media-group{align-self:flex-end;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:9px;max-width:82%}
 .media-group .mitem{width:96px}
-.media-group .thumb{aspect-ratio:1;border-radius:16px;overflow:hidden;position:relative;border:var(--bw) solid var(--line);box-shadow:var(--shadow-sm);display:grid;place-items:center}
+.media-group .thumb{aspect-ratio:1;border-radius:var(--r-min);overflow:hidden;position:relative;border:var(--bw) solid var(--line);box-shadow:var(--shadow-sm);display:grid;place-items:center}
 .media-group .thumb.camera{background:linear-gradient(135deg,#c7d2e8,#9fb0d0)}
 .media-group .thumb.image{background:linear-gradient(135deg,#f3c9d6,#d79bb4)}
 .media-group .thumb.video{background:linear-gradient(135deg,#2a2a2e,#454550)}
@@ -617,7 +617,7 @@ svg{display:block}
 .fbcard .m .s{font-size:12px;color:var(--tx-2);margin-top:1px}
 .fbcard .go{color:var(--tx-3)}.fbcard .go svg{width:20px;height:20px}
 /* XP / stage-complete celebration card */
-.xpcard{align-self:center;max-width:340px;width:100%;text-align:center;padding:22px 20px 20px;border-radius:18px;background:linear-gradient(160deg,rgba(255,56,92,.14),rgba(167,120,255,.14));border:var(--bw) solid var(--line);box-shadow:var(--shadow);animation:xppop .5s var(--ease)}
+.xpcard{align-self:center;max-width:340px;width:100%;text-align:center;padding:22px 20px 20px;border-radius:var(--r-min);background:linear-gradient(160deg,rgba(255,56,92,.14),rgba(167,120,255,.14));border:var(--bw) solid var(--line);box-shadow:var(--shadow);animation:xppop .5s var(--ease)}
 @keyframes xppop{0%{opacity:0;transform:scale(.9)}60%{transform:scale(1.02)}100%{opacity:1;transform:scale(1)}}
 .xpcard .xpburst{width:52px;height:52px;margin:0 auto 12px;border-radius:99px;background:linear-gradient(135deg,#FF385C,#a778ff);display:grid;place-items:center;color:#fff;animation:xpspin 1s var(--ease)}
 @keyframes xpspin{from{transform:rotate(-40deg) scale(.7)}to{transform:none}}
@@ -830,8 +830,8 @@ svg{display:block}
 /* ===== first-run coach-mark tour ===== */
 .tour{position:fixed;inset:0;z-index:400}
 .tour[hidden]{display:none}
-.tour-spot{position:absolute;border-radius:16px;box-shadow:0 0 0 9999px rgba(8,8,10,.60);transition:left .5s var(--ease),top .5s var(--ease),width .5s var(--ease),height .5s var(--ease);pointer-events:none}
-.tour-tip{position:absolute;width:296px;max-width:calc(100vw - 32px);background:var(--card);color:var(--tx);border:var(--bw) solid var(--line);border-radius:18px;box-shadow:0 24px 64px rgba(0,0,0,.42);padding:17px 18px 13px;transition:left .5s var(--ease),top .5s var(--ease);z-index:401}
+.tour-spot{position:absolute;border-radius:var(--r-min);box-shadow:0 0 0 9999px rgba(8,8,10,.60);transition:left .5s var(--ease),top .5s var(--ease),width .5s var(--ease),height .5s var(--ease);pointer-events:none}
+.tour-tip{position:absolute;width:296px;max-width:calc(100vw - 32px);background:var(--card);color:var(--tx);border:var(--bw) solid var(--line);border-radius:var(--r-min);box-shadow:0 24px 64px rgba(0,0,0,.42);padding:17px 18px 13px;transition:left .5s var(--ease),top .5s var(--ease);z-index:401}
 .tour-tip .tt-body{font-size:14px;line-height:1.52;color:var(--tx)}
 .tour-tip .tt-foot{display:flex;align-items:center;justify-content:space-between;margin-top:15px}
 .tour-tip .tt-dots{display:flex;gap:5px}
@@ -2298,10 +2298,10 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 /* ===== PRESENTATION ENTRY POPUP ===== */
 .pentry-scrim{position:fixed;inset:0;z-index:520;display:grid;place-items:center;padding:24px;background:transparent;backdrop-filter:blur(16px) saturate(1.05);-webkit-backdrop-filter:blur(16px) saturate(1.05);opacity:0;transition:opacity .3s var(--ease)}
 .pentry-scrim.show{opacity:1}
-.pentry{width:min(820px,94vw);height:min(430px,84vh);display:grid;grid-template-columns:1.1fr .9fr;grid-template-rows:minmax(0,1fr);background:var(--card);border:var(--bw) solid var(--line);border-radius:var(--r-xl);overflow:hidden;box-shadow:0 44px 130px rgba(0,0,0,.55);transform:scale(.97) translateY(8px);transition:transform .34s var(--ease)}
+.pentry{width:min(820px,94vw);height:min(430px,84vh);display:grid;grid-template-columns:1.1fr .9fr;grid-template-rows:minmax(0,1fr);background:var(--card);border:var(--bw) solid var(--line);border-radius:var(--r-xxl);overflow:hidden;box-shadow:0 44px 130px rgba(0,0,0,.55);transform:scale(.97) translateY(8px);transition:transform .34s var(--ease)}
 .pentry-scrim.show .pentry{transform:none}
-.pe-left{padding:8px;background:var(--card);min-height:0;overflow:hidden}
-.pe-canvas{position:relative;height:100%;border-radius:var(--r-lg);background:#f5f3ee;overflow:hidden;padding:30px 28px 0;--tx:#1a1815;--tx-2:#5a554f;--tx-3:#9a958c;--line:rgba(13,13,13,.09)}
+.pe-left{padding:24px;background:var(--card);min-height:0;overflow:hidden}
+.pe-canvas{position:relative;height:100%;border-radius:var(--r);background:#f5f3ee;overflow:hidden;padding:30px 28px 0;--tx:#1a1815;--tx-2:#5a554f;--tx-3:#9a958c;--line:rgba(13,13,13,.09)}
 .pe-canvas::after{content:"";position:absolute;left:0;right:0;bottom:0;height:56px;background:linear-gradient(transparent,#f5f3ee);pointer-events:none;z-index:4;border-radius:0 0 20px 20px}
 .pfolio{width:100%}
 .pfolio-head{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
@@ -4604,27 +4604,11 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
   background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
   animation:rvwShim 2.1s linear infinite}
 
-/* ===== SQUIRCLE CORNERS =====================================================================
-   Every rounded CONTAINER gets a superellipse instead of a circular arc, so the straight edge
-   eases into the curve instead of meeting it at a tangent. corner-shape is additive: anything
-   that does not understand it keeps the circular corner it already had, so nothing can break.
-   Pills and circles are left alone — at a 99px radius there is no arc left to reshape. */
-.pentry,.pe-canvas,
-.zs-card,.pfx,
-.qas-pin,.qas-file,
-.reqcard,
-.mtile,.rm-selfpip,
-.rvv-scr,.pv-deck,.pv-pip,
-.dbg,.set-pop,
-.dv-page,.doc-foot,
-.pcard,.ri-card,.rex-card,
-.pres-rescard,.plan-pad,.planline,
-.rpt .rp2-video,.rpt .rp2-row,
-.fbcard,
-.set-fab,.rpt-gear,
-.qas-doc,.rvw2-ic{
-  corner-shape:superellipse(3);   /* squircle is superellipse(2); 3 flattens the sides further and tightens the turn */
-}
+/* ===== SQUIRCLE CORNERS ======================================================================
+   Everything. corner-shape only does anything where a radius already exists, so one rule covers
+   the product and there is no list to forget something off. Anything that does not understand
+   corner-shape keeps the circular corner it already had. */
+*,*::before,*::after{ corner-shape:superellipse(3); }
 </style>
 </head>
 <body>
