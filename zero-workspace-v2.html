@@ -4986,11 +4986,14 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .sucel .su-deck{position:relative;z-index:4;display:flex;align-items:center;justify-content:center;gap:48px;transform-style:preserve-3d}
 .sucel .su-card-slot{transform-style:preserve-3d;will-change:transform,opacity}
 .sucel .su-map,.sucel .su-map-dim,.sucel .su-bottom,.sucel .su-glow,.sucel .su-title-stage,.sucel .su-continue{opacity:0}
-.sucel .su-card{--gx:50%;--gy:40%;position:relative;width:360px;height:450px;border-radius:22px;padding:8px;background:#fff;
+.sucel .su-card{--rx:0deg;--ry:0deg;--gx:50%;--gy:40%;--lift:0;
+  position:relative;width:360px;height:450px;border-radius:22px;padding:8px;background:#fff;
   box-shadow:0 54px 120px rgba(0,0,0,.28),0 24px 60px rgba(20,60,30,.22),0 6px 20px rgba(0,0,0,.12);
-  transform-style:preserve-3d;will-change:transform}
+  transform:perspective(1000px) translateY(calc(var(--lift)*-10px)) rotateX(var(--rx)) rotateY(var(--ry)) scale(calc(1 + var(--lift)*0.02));
+  transform-style:preserve-3d;transition:transform .32s cubic-bezier(.22,1,.36,1),box-shadow .32s ease;will-change:transform}
 .sucel .su-card-inner{position:relative;width:100%;height:100%;border-radius:14px;overflow:hidden;background:linear-gradient(180deg,#ffffff 0%,#f5faee 100%)}
-.sucel .su-card-med{position:absolute;inset:0;border-radius:inherit;overflow:hidden;background:radial-gradient(circle at 50% 38%,#ffffff,#f4f9ec 66%,#e9f3de)}
+.sucel .su-card-med{position:absolute;inset:0;border-radius:inherit;overflow:hidden;background:radial-gradient(circle at 50% 38%,#ffffff,#f4f9ec 66%,#e9f3de);
+  transition:transform .2s ease-out;will-change:transform}
 .sucel .su-card-med-logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44%;height:44%;color:#EB1700}
 .sucel .su-card-med-logo svg{width:100%;height:100%}
 .sucel .su-card-glass{position:absolute;inset:0;z-index:1;pointer-events:none;border-radius:inherit;
@@ -4999,7 +5002,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .sucel .su-card-topfade{position:absolute;top:0;left:0;right:0;height:52%;z-index:1;pointer-events:none;
   background:linear-gradient(180deg,rgba(255,255,255,.98) 6%,rgba(255,255,255,.8) 34%,rgba(255,255,255,.4) 62%,rgba(255,255,255,0))}
 .sucel .su-card-holo{position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(105deg,rgba(255,120,200,0) 10%,rgba(120,255,214,.42) 30%,rgba(255,255,255,.6) 45%,rgba(180,220,255,.42) 60%,rgba(255,224,107,0) 85%);
+  background:linear-gradient(var(--holo-angle,105deg),rgba(255,120,200,0) 10%,rgba(120,255,214,.42) 30%,rgba(255,255,255,.6) 45%,rgba(180,220,255,.42) 60%,rgba(255,224,107,0) 85%);
   mix-blend-mode:screen;opacity:.4}
 .sucel .su-card-glare{position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(closest-side circle at var(--gx) var(--gy),rgba(255,255,255,.4),rgba(255,255,255,0) 60%);opacity:.7}
@@ -11996,16 +11999,69 @@ function scenarioUnlock(){
       setTimeout(function(){ try{ s.remove(); }catch(e){} },1600);
     });
   };
+  /* THE GYROSCOPE. The shipped pointer math, verbatim: tilt from the pointer, glare following it,
+     the art counter-parallaxing, the sheen angle steering. Alive while shelled AND after. */
+  (function(){
+    const med=card.querySelector('.su-card-med'), holo=card.querySelector('.su-card-holo');
+    const TILT=10;
+    card.addEventListener('pointermove',function(e){
+      const r=card.getBoundingClientRect();
+      const nx=(e.clientX-r.left)/r.width-.5, ny=(e.clientY-r.top)/r.height-.5;
+      card.style.setProperty('--ry',(nx*TILT)+'deg');
+      card.style.setProperty('--rx',(-ny*TILT)+'deg');
+      card.style.setProperty('--gx',((nx+.5)*100)+'%');
+      card.style.setProperty('--gy',((ny+.5)*100)+'%');
+      card.style.setProperty('--lift','1');
+      if(med) med.style.transform='translate('+(-nx*14)+'px,'+(-ny*14)+'px) scale(1.06)';
+      if(holo){ holo.style.setProperty('--holo-angle',(105+nx*70)+'deg'); holo.style.opacity=String(.4+Math.abs(nx)*.7); }
+    });
+    card.addEventListener('pointerleave',function(){
+      card.style.setProperty('--ry','0deg'); card.style.setProperty('--rx','0deg');
+      card.style.setProperty('--gx','50%'); card.style.setProperty('--gy','40%');
+      card.style.setProperty('--lift','0');
+      if(med) med.style.transform='';
+      if(holo){ holo.style.setProperty('--holo-angle','105deg'); holo.style.opacity='.4'; }
+    });
+  })();
+  /* THE CRACK, HEARD. Not a UI beep: a knock into a filtered-noise crunch, harder each tap,
+     and the shatter is a burst of it with a low drop underneath. */
+  const crackSnd=function(n){
+    try{
+      const AC=window.AudioContext||window.webkitAudioContext; const ac=crackSnd._ac||(crackSnd._ac=new AC());
+      try{ ac.resume&&ac.resume(); }catch(e2){}
+      const t=ac.currentTime+0.005;
+      const o=ac.createOscillator(), og=ac.createGain();          /* the knock */
+      o.type='sine'; o.frequency.setValueAtTime(210-n*22,t); o.frequency.exponentialRampToValueAtTime(70,t+.09);
+      og.gain.setValueAtTime(0.0001,t); og.gain.exponentialRampToValueAtTime(.5,t+.008); og.gain.exponentialRampToValueAtTime(0.0001,t+.14);
+      o.connect(og); og.connect(ac.destination); o.start(t); o.stop(t+.16);
+      const len=Math.floor(ac.sampleRate*.16);                    /* the crunch */
+      const buf=ac.createBuffer(1,len,ac.sampleRate), d=buf.getChannelData(0);
+      for(let i2=0;i2<len;i2++){ const k=i2/len; d[i2]=(Math.random()*2-1)*Math.pow(1-k,1.6)*(Math.random()<.14?1:.32); }
+      const src=ac.createBufferSource(); src.buffer=buf;
+      const bp=ac.createBiquadFilter(); bp.type='bandpass'; bp.frequency.setValueAtTime(1500+n*420,t); bp.frequency.exponentialRampToValueAtTime(500,t+.15); bp.Q.value=.8;
+      const g=ac.createGain(); g.gain.setValueAtTime(.55+n*.12,t); g.gain.exponentialRampToValueAtTime(0.0001,t+.17);
+      src.connect(bp); bp.connect(g); g.connect(ac.destination); src.start(t); src.stop(t+.18);
+    }catch(e){}
+  };
+  const shatterSnd=function(){
+    try{ crackSnd(3); setTimeout(function(){ crackSnd(2); },50); setTimeout(function(){ crackSnd(4); },110);
+      const ac=crackSnd._ac; if(!ac)return; const t=ac.currentTime+0.01;
+      const o=ac.createOscillator(), g=ac.createGain();
+      o.type='sine'; o.frequency.setValueAtTime(120,t); o.frequency.exponentialRampToValueAtTime(42,t+.5);
+      g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(.6,t+.012); g.gain.exponentialRampToValueAtTime(0.0001,t+.7);
+      o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+.75);
+    }catch(e){}
+  };
   card.addEventListener('click',function(e){
     if(broken) return;
     const b=card.getBoundingClientRect();
     const px=((e.clientX-b.left)/b.width)*100, py=((e.clientY-b.top)/b.height)*126;
     taps++;
-    try{ ZSND.play('tap'); }catch(err){}
+    crackSnd(taps);
     leak.style.setProperty('--gx',px+'%'); leak.style.setProperty('--gy',((py/126)*100)+'%');
     if(window.gsap){
       gsap.fromTo(leak,{opacity:0},{opacity:.5+taps*.16,duration:.2,ease:'power2.out',yoyo:true,repeat:1});
-      gsap.fromTo(card,{scale:1},{scale:.985,duration:.09,ease:'power2.out',yoyo:true,repeat:1});
+      gsap.fromTo(slot,{scale:1},{scale:.985,duration:.09,ease:'power2.out',yoyo:true,repeat:1});
       /* the world answers: the glow under everything breathes up with each hit */
       gsap.fromTo(glowEl,{opacity:.16+taps*.06},{opacity:.3+taps*.1,duration:.3,ease:'power2.out',yoyo:true,repeat:1});
       const orb=ov.querySelectorAll('.su-orb')[taps%3];
@@ -12013,7 +12069,7 @@ function scenarioUnlock(){
     }
     drawCrack(px,py); drawCrack(px,py);
     const left=pcs.filter(function(p){ return p.style.visibility!=='hidden'; });
-    if(taps>=3||left.length<=6){ shatter(left); breakOpen(); return; }
+    if(taps>=3||left.length<=6){ shatterSnd(); shatter(left); breakOpen(); return; }
     const cx=(px/100)*C2, cy=(py/126)*R2;
     left.sort(function(a,b2){
       const da=Math.hypot(+a.dataset.c+.5-cx,+a.dataset.r+.5-cy),
@@ -12055,8 +12111,8 @@ function scenarioUnlock(){
         .to('.sucel .su-title-glow',{opacity:.42,duration:.5},2.45);
       tl.fromTo('.sucel .su-halftone',{'--su-ht-on':0},{'--su-ht-on':1,duration:1.0,ease:'power2.out'},1.4);
       /* the card was always here: it takes the hit and settles, it does not re-enter */
-      tl.fromTo(card,{scale:.97},{scale:1.045,duration:.3,ease:'back.out(2.2)'},TITLE_IMPACT-0.25);
-      tl.to(card,{scale:1,duration:.5,ease:'power2.out'},TITLE_IMPACT+0.1);
+      tl.fromTo(slot,{scale:.97},{scale:1.045,duration:.3,ease:'back.out(2.2)'},TITLE_IMPACT-0.25);
+      tl.to(slot,{scale:1,duration:.5,ease:'power2.out'},TITLE_IMPACT+0.1);
       tl.fromTo('.sucel .su-continue',{y:22,opacity:0},{y:0,opacity:1,duration:.5},2.4);
     }
     setTimeout(function(){ ov.dataset.ready='1'; },2900);
@@ -12101,6 +12157,7 @@ function scenarioUnlock(){
       window.removeEventListener('resize',onR);
       clearInterval(fitIv); document.removeEventListener('visibilitychange',fit);
       window.__suSkip=null;
+      location.reload();   /* the scenario is over: Continue lands on a fresh start, not the report you already read */
     },1200);
   };
 }
