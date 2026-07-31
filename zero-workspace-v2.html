@@ -4802,7 +4802,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .scw.show .scw-rip:nth-child(3){animation-delay:.46s;border-color:rgba(255,106,77,.3)}
 @keyframes scwRip{0%{transform:translate(-50%,-50%) scale(.25);opacity:0}
   18%{opacity:.85}100%{transform:translate(-50%,-50%) scale(2.6);opacity:0}}
-.scw-fx{position:fixed;inset:0;pointer-events:none;z-index:3}
+.scw-fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}
 .scw-in{position:relative;z-index:2;width:min(720px,92vw);padding:84px 0 96px;display:flex;flex-direction:column}
 .scw-eyebrow{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tx-3)}
 .scw-h{font-size:clamp(34px,5vw,46px);font-weight:650;line-height:1.08;letter-spacing:-.032em;margin:16px 0 0;color:var(--tx)}
@@ -4843,38 +4843,30 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
   transition:opacity .3s var(--ease),transform .3s var(--ease)}
 .scw-toast.on{opacity:1;transform:translateX(-50%)}
 
-/* ---- ACT 2: THE SHELL, ON THE SAME PAPER. A dark object on a light stage, so the break reads. ---- */
-.sul{position:fixed;inset:0;z-index:940;background:#f2efe8;display:grid;place-items:center;
-  opacity:0;transition:opacity .5s var(--ease)}
-.sul.show{opacity:1}
-.sul-in{display:flex;flex-direction:column;align-items:center;gap:26px;text-align:center}
-.sul-eyebrow{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#9a958c;opacity:0}
-.sul-hint{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#9a958c;min-height:14px;transition:opacity .3s var(--ease)}
-.sul-box{position:relative;width:min(420px,86vw);aspect-ratio:4/3;border-radius:26px;overflow:hidden;cursor:pointer;
-  user-select:none;-webkit-user-select:none;box-shadow:0 34px 80px -12px rgba(26,24,21,.38)}
-.sul-under{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;
-  padding:26px 26px 24px;text-align:left;background:linear-gradient(160deg,#1f3d2c,#16281f 62%,#141a17);color:#eaf6ee}
-.sul-under .k{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:rgba(255,255,255,.5)}
-.sul-under .t{font-size:24px;font-weight:600;letter-spacing:-.02em;line-height:1.2;margin-top:8px}
-.sul-under .s{font-size:13.5px;color:rgba(255,255,255,.62);margin-top:8px;line-height:1.5}
-.sul-shell{position:absolute;inset:0;pointer-events:none}
-.sul-pc{position:absolute;background:linear-gradient(150deg,#3a3a3d,#2a2a2d 58%,#232326);
+/* ---- ACT 2 LIVES INSIDE ACT 3 NOW. The shell sits over the celebration's own card, in the
+   celebration's own world — the break and the reveal are one scene, so nothing hands off. ---- */
+.sucel .su-eyebrow{position:relative;z-index:6;font-family:var(--mono);font-size:13px;font-weight:700;
+  letter-spacing:2.6px;text-transform:uppercase;color:rgba(234,255,240,.55);margin-bottom:30px;opacity:0}
+.sucel .su-hint{position:relative;z-index:6;font-family:var(--mono);font-size:13px;font-weight:700;
+  letter-spacing:2.2px;text-transform:uppercase;color:rgba(234,255,240,.5);margin-top:34px;min-height:17px;
+  transition:opacity .3s var(--ease)}
+.sucel .su-card.locked{cursor:pointer}
+.sucel .su-shell{position:absolute;inset:8px;border-radius:14px;overflow:hidden;z-index:3;pointer-events:none}
+.sucel .su-shell i{position:absolute;background:linear-gradient(150deg,#3a3a3d,#2a2a2d 58%,#232326);
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);will-change:transform,opacity}
-.sul-crack{position:absolute;inset:0;pointer-events:none;z-index:3}
-.sul-crack path{stroke:rgba(255,255,255,.55);stroke-width:1.4;fill:none;filter:drop-shadow(0 0 4px rgba(120,230,170,.55))}
-.sul-glow{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;
-  background:radial-gradient(circle at var(--gx,50%) var(--gy,50%),rgba(122,236,169,.55),transparent 58%)}
-.sul-lock{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:4;width:46px;height:46px;
+.sucel .su-crackv{position:absolute;inset:8px;z-index:5;pointer-events:none;border-radius:14px}
+.sucel .su-crackv path{stroke:rgba(255,255,255,.55);stroke-width:1.2;fill:none;
+  filter:drop-shadow(0 0 4px rgba(120,230,170,.55))}
+.sucel .su-leak{position:absolute;inset:8px;border-radius:14px;z-index:4;pointer-events:none;opacity:0;
+  background:radial-gradient(circle at var(--gx,50%) var(--gy,50%),rgba(122,236,169,.6),transparent 58%);
+  mix-blend-mode:screen}
+.sucel .su-lock2{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:6;width:46px;height:46px;
   border-radius:99px;background:rgba(0,0,0,.42);display:grid;place-items:center;color:rgba(255,255,255,.8);
   backdrop-filter:blur(4px);transition:opacity .3s var(--ease),transform .3s var(--ease)}
-.sul-lock svg{width:20px;height:20px}
-.sul-box.open .sul-lock{opacity:0;transform:translate(-50%,-50%) scale(.6)}
-.sul-shard{position:fixed;z-index:945;pointer-events:none;border-radius:3px;background:linear-gradient(150deg,#3a3a3d,#232326)}
-.sul-go{display:none}
-/* the white flash that carries you from the break into the celebration */
-.sul-flash{position:fixed;inset:0;z-index:965;background:#fff;opacity:0;pointer-events:none;transition:opacity .18s ease-out}
-.sul-flash.on{opacity:1}
-.sul-flash.off{opacity:0;transition:opacity .55s ease-in}
+.sucel .su-lock2 svg{width:20px;height:20px}
+.sucel .su-card.open .su-lock2{opacity:0;transform:translate(-50%,-50%) scale(.6)}
+.sul-shard{position:fixed;z-index:975;pointer-events:none;border-radius:3px;
+  background:linear-gradient(150deg,#3a3a3d,#232326)}
 
 /* ---- ACT 3: SCENARIO UNLOCKED — ported from the shipped celebration (Zero V6). Designed at a
    fixed 1920x1080 canvas and scaled to FILL. Choreography: world up, bottom flow, orbs pulse out,
@@ -4920,7 +4912,9 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .sucel .su-sweep{position:absolute;left:50%;top:50%;width:64%;height:26%;transform:translate(-50%,-50%) rotate(-45deg) scale(0);transform-origin:center;
   background:linear-gradient(90deg,rgba(180,250,167,0) 0%,rgba(180,250,167,.55) 38%,rgba(255,255,255,.95) 50%,rgba(180,250,167,.55) 62%,rgba(180,250,167,0) 100%);
   filter:blur(26px);mix-blend-mode:screen;opacity:0;will-change:transform,opacity}
-.sucel .su-confetti{position:absolute;inset:0;z-index:5;pointer-events:none}
+/* width/height are EXPLICIT: a canvas is a replaced element, so inset alone does not stretch it —
+   it lays out at its own bitmap size, and a ResizeObserver then feeds that back as growth */
+.sucel .su-confetti{position:absolute;inset:0;width:100%;height:100%;z-index:5;pointer-events:none}
 .sucel .su-title-stage{position:relative;z-index:4;width:740px;aspect-ratio:823/156;margin-bottom:96px;will-change:opacity,transform}
 .sucel .su-title,.sucel .su-title-glow,.sucel .su-title-flash{position:absolute;inset:0;
   -webkit-mask:url("data:image/svg+xml,%3Csvg%20width%3D%22823%22%20height%3D%22156%22%20viewBox%3D%220%200%20823%20156%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%20%3Cg%20fill%3D%22%23fff%22%3E%20%3Cpath%20d%3D%22M235.3%200C248.516%200%20259.133%206.71666%20259.133%2013.8666C259.133%2015.8166%20258.266%2017.7666%20256.316%2017.7666C254.8%2017.7666%20253.933%2015.6%20252.85%2013.2166C248.3%203.89999%20240.5%202.6%20234.216%202.6C220.566%202.6%20206.483%209.74998%20192.4%2024.05C178.316%2038.3499%20161.416%2057.8499%20142.133%2082.5498C102.916%20132.166%2066.7332%20156%2035.5333%20156C13.8666%20156%200%20145.6%200%20123.933C0%20116.35%202.38333%20106.6%206.93332%2094.8998C11.4833%2083.1998%2021.2333%2070.1999%2035.9666%2055.8999C60.2332%2033.1499%2086.6665%2022.3166%20104.866%2022.3166C121.333%2022.3166%20128.266%2031.1999%20128.266%2042.6833C128.266%2060.2332%20114.833%2083.4165%2092.2998%20104.433C74.7499%20120.25%2054.3832%20132.6%2035.3166%20131.95C29.0333%20131.733%2023.8333%20129.566%2022.75%20125.233C22.1%20123.716%2022.1%20122.2%2022.9666%20121.983C24.05%20121.766%2024.4833%20124.15%2025.35%20125.233C26.8666%20127.616%2029.8999%20129.35%2034.8833%20129.35C44.4166%20129.35%2053.7332%20126.1%2062.8332%20119.383C72.1499%20112.666%2080.5999%20105.733%2088.3998%2098.5831C97.9331%2089.9165%20106.383%2080.5998%20113.966%2070.6332C121.55%2060.4499%20125.233%2050.9166%20125.233%2041.8166C125.233%2031.6333%20118.3%2025.3499%20107.033%2025.3499C90.7832%2025.1333%2066.7332%2037.9166%2041.3833%2062.1832C16.25%2086.2332%203.46666%20107.9%203.46666%20126.1C3.46666%20143.433%2015.3833%20152.966%2033.5833%20152.966C49.1832%20152.966%2064.9999%20146.25%2081.0332%20132.816C97.0665%20119.383%20113.966%20101.183%20131.516%2078.4332C153.833%2049.6166%20172.9%2029.4666%20188.716%2017.7666C204.75%205.84999%20220.35%200%20235.3%200Z%22%2F%3E%20%3Cpath%20d%3D%22M155.814%20143.099C142.114%20143.099%20133.244%20132.455%20133.244%20117.671C133.244%20101.902%20143.395%2090.4688%20157.489%2090.4688C164.191%2090.4688%20170.992%2093.0313%20174.54%2096.8751V108.209H169.218C168.134%20100.62%20163.009%2096.1852%20156.208%2096.1852C147.239%2096.1852%20141.523%20103.577%20141.523%20114.911C141.523%20128.611%20149.9%20134.919%20158.672%20134.919C165.177%20134.919%20170.992%20131.469%20174.934%20125.654L176.807%20126.935C173.653%20135.707%20167.247%20143.099%20155.814%20143.099Z%22%2F%3E%20%3Cpath%20d%3D%22M199.553%20143.099C186.149%20143.099%20177.476%20132.455%20177.476%20117.474C177.476%20101.803%20187.233%2090.4688%20200.243%2090.4688C213.056%2090.4688%20219.462%20100.423%20220.25%20114.123H185.755V115.207C185.755%20128.611%20193.738%20134.919%20202.51%20134.919C209.015%20134.919%20214.731%20131.371%20218.575%20125.654L220.448%20126.935C217.294%20135.806%20210.986%20143.099%20199.553%20143.099ZM186.346%20109.096H210.986C209.902%20101.015%20205.565%2096.1852%20199.356%2096.1852C192.555%2096.1852%20187.923%20101.113%20186.346%20109.096Z%22%2F%3E%20%3Cpath%20d%3D%22M220.264%20137.678C224.404%20137.284%20227.361%20136.791%20227.361%20132.159V99.8318L220.757%2097.8606V95.101L234.063%2091.6515H235.639V101.212C240.075%2094.8053%20247.269%2090.4688%20254.366%2090.4688C262.842%2090.4688%20268.755%2096.9736%20268.755%20106.041V132.159C268.755%20136.791%20271.712%20137.284%20275.851%20137.678V141.916H253.38V137.678C257.52%20137.284%20260.476%20136.791%20260.476%20132.159V108.899C260.476%20102.591%20256.83%2098.6491%20250.719%2098.6491C245.692%2098.6491%20239.68%20101.803%20235.639%20106.632V132.159C235.639%20136.791%20238.596%20137.284%20242.736%20137.678V141.916H220.264V137.678Z%22%2F%3E%20%3Cpath%20d%3D%22M289.95%20143.099C281.967%20143.099%20276.053%20137.974%20276.053%20130.089C276.053%20123.289%20280.587%20118.755%20291.133%20115.601L306.804%20110.87V106.534C306.804%20100.226%20302.861%2096.1852%20296.652%2096.1852C290.738%2096.1852%20286.5%2099.9304%20286.205%20105.844V108.012H277.532V106.435C277.532%2097.1707%20286.402%2090.4688%20297.046%2090.4688C307.592%2090.4688%20315.082%2096.7765%20315.082%20105.647V130.976C315.082%20134.82%20316.364%20136.496%20319.123%20136.496C320.503%20136.496%20321.686%20136.101%20323.066%20135.214L324.347%20137.678C322.277%20141.226%20319.419%20143.099%20315.674%20143.099C310.155%20143.099%20307.296%20139.157%20306.902%20134.229C301.678%20140.044%20296.061%20143.099%20289.95%20143.099ZM293.991%20135.412C298.525%20135.412%20303.453%20133.44%20306.804%20130.385V115.108L294.976%20118.854C289.26%20120.628%20285.515%20123.683%20285.515%20128.315C285.515%20132.849%20288.472%20135.412%20293.991%20135.412Z%22%2F%3E%20%3Cpath%20d%3D%22M324.128%20137.678C328.268%20137.284%20331.225%20136.791%20331.225%20132.159V99.8318L324.621%2097.8606V95.101L337.927%2091.6515H339.503V103.774C342.46%2095.4952%20347.881%2090.4688%20354.386%2090.4688H357.934V100.128H353.696C344.826%20100.128%20339.503%20105.548%20339.503%20115.01V132.159C339.503%20136.791%20342.46%20137.284%20346.6%20137.678V141.916H324.128V137.678Z%22%2F%3E%20%3Cpath%20d%3D%22M358.832%20137.678C362.971%20137.284%20365.928%20136.791%20365.928%20132.159V99.8318L359.325%2097.8606V95.101L372.63%2091.6515H374.207V132.159C374.207%20136.791%20377.164%20137.284%20381.303%20137.678V141.916H358.832V137.678ZM365.041%2083.274V72.5311H374.995V83.274H365.041Z%22%2F%3E%20%3Cpath%20d%3D%22M402.83%20143.099C389.327%20143.099%20379.964%20132.652%20379.964%20117.77C379.964%20101.704%20390.214%2090.4688%20404.604%2090.4688C418.106%2090.4688%20427.568%20100.916%20427.568%20115.798C427.568%20131.863%20417.318%20143.099%20402.83%20143.099ZM404.604%20137.383C412.981%20137.383%20418.106%20129.892%20418.106%20117.77C418.106%20104.563%20412.193%2096.1852%20402.928%2096.1852C394.551%2096.1852%20389.426%20103.774%20389.426%20115.798C389.426%20129.005%20395.339%20137.383%20404.604%20137.383Z%22%2F%3E%20%3Cpath%20d%3D%22M478.809%20143.099C463.532%20143.099%20453.085%20133.44%20453.085%20118.755V83.6682C453.085%2079.0359%20449.832%2078.5431%20445.101%2078.1489V73.9109H469.544V78.1489C464.813%2078.5431%20461.561%2079.0359%20461.561%2083.6682V117.868C461.561%20129.202%20468.558%20135.806%20480.188%20135.806C491.917%20135.806%20498.619%20129.005%20498.619%20117.277V83.6682C498.619%2079.0359%20495.465%2078.5431%20490.931%2078.1489V73.9109H512.417V78.1489C507.883%2078.5431%20504.729%2079.0359%20504.729%2083.6682V116.981C504.729%20132.652%20494.578%20143.099%20478.809%20143.099Z%22%2F%3E%20%3Cpath%20d%3D%22M508.618%20137.678C512.757%20137.284%20515.714%20136.791%20515.714%20132.159V99.8318L509.111%2097.8606V95.101L522.416%2091.6515H523.993V101.212C528.428%2094.8053%20535.623%2090.4688%20542.719%2090.4688C551.195%2090.4688%20557.109%2096.9736%20557.109%20106.041V132.159C557.109%20136.791%20560.065%20137.284%20564.205%20137.678V141.916H541.734V137.678C545.873%20137.284%20548.83%20136.791%20548.83%20132.159V108.899C548.83%20102.591%20545.183%2098.6491%20539.073%2098.6491C534.046%2098.6491%20528.034%20101.803%20523.993%20106.632V132.159C523.993%20136.791%20526.95%20137.284%20531.089%20137.678V141.916H508.618V137.678Z%22%2F%3E%20%3Cpath%20d%3D%22M564.379%20137.678C568.617%20137.284%20571.574%20136.791%20571.574%20132.159V74.6994L564.872%2072.7282V69.9685L578.276%2066.519H579.853V132.159C579.853%20136.791%20582.711%20137.284%20586.949%20137.678V141.916H564.379V137.678Z%22%2F%3E%20%3Cpath%20d%3D%22M608.494%20143.099C594.991%20143.099%20585.628%20132.652%20585.628%20117.77C585.628%20101.704%20595.878%2090.4688%20610.268%2090.4688C623.771%2090.4688%20633.232%20100.916%20633.232%20115.798C633.232%20131.863%20622.982%20143.099%20608.494%20143.099ZM610.268%20137.383C618.646%20137.383%20623.771%20129.892%20623.771%20117.77C623.771%20104.563%20617.857%2096.1852%20608.593%2096.1852C600.215%2096.1852%20595.09%20103.774%20595.09%20115.798C595.09%20129.005%20601.004%20137.383%20610.268%20137.383Z%22%2F%3E%20%3Cpath%20d%3D%22M657.82%20143.099C644.121%20143.099%20635.25%20132.455%20635.25%20117.671C635.25%20101.902%20645.402%2090.4688%20659.496%2090.4688C666.198%2090.4688%20672.998%2093.0313%20676.547%2096.8751V108.209H671.224C670.14%20100.62%20665.015%2096.1852%20658.215%2096.1852C649.246%2096.1852%20643.529%20103.577%20643.529%20114.911C643.529%20128.611%20651.907%20134.919%20660.679%20134.919C667.183%20134.919%20672.998%20131.469%20676.941%20125.654L678.813%20126.935C675.659%20135.707%20669.253%20143.099%20657.82%20143.099Z%22%2F%3E%20%3Cpath%20d%3D%22M677.248%20137.678C682.57%20137.186%20684.443%20136.101%20684.443%20132.159V74.6994L677.741%2072.7282V69.9685L691.145%2066.519H692.722V117.474L709.28%20100.226C712.138%2097.4664%20711.054%2095.8895%20706.52%2095.8895V91.6515H727.119V95.8895C723.571%2095.988%20721.205%2097.1707%20717.953%20100.226L706.224%20112.152L727.119%20138.368V141.916H718.938L700.804%20117.77L692.722%20126.048V132.159C692.722%20136.101%20694.496%20137.186%20699.818%20137.678V141.916H677.248V137.678Z%22%2F%3E%20%3Cpath%20d%3D%22M747.139%20143.099C733.735%20143.099%20725.062%20132.455%20725.062%20117.474C725.062%20101.803%20734.819%2090.4688%20747.829%2090.4688C760.642%2090.4688%20767.048%20100.423%20767.836%20114.123H733.341V115.207C733.341%20128.611%20741.324%20134.919%20750.096%20134.919C756.601%20134.919%20762.317%20131.371%20766.161%20125.654L768.034%20126.935C764.88%20135.806%20758.572%20143.099%20747.139%20143.099ZM733.932%20109.096H758.572C757.488%20101.015%20753.151%2096.1852%20746.942%2096.1852C740.141%2096.1852%20735.509%20101.113%20733.932%20109.096Z%22%2F%3E%20%3Cpath%20d%3D%22M789.787%20143.099C777.862%20143.099%20769.583%20132.258%20769.583%20117.671C769.583%20101.803%20779.439%2090.4688%20793.04%2090.4688C797.771%2090.4688%20802.009%2091.8486%20805.458%2094.3125V74.6994L798.855%2072.7282V69.9685L812.16%2066.519H813.737V131.173C813.737%20136.2%20816.99%20137.186%20822.115%20137.678V140.832L807.232%20143.099H805.458V135.116C801.417%20139.847%20796.194%20143.099%20789.787%20143.099ZM778.157%20115.108C778.157%20127.231%20783.775%20135.116%20793.434%20135.116C797.869%20135.116%20802.304%20133.637%20805.458%20131.075V110.378C805.458%20101.409%20799.545%2095.6924%20792.054%2095.6924C783.381%2095.6924%20778.157%20103.38%20778.157%20115.108Z%22%2F%3E%20%3C%2Fg%3E%20%3C%2Fsvg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg%20width%3D%22823%22%20height%3D%22156%22%20viewBox%3D%220%200%20823%20156%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%20%3Cg%20fill%3D%22%23fff%22%3E%20%3Cpath%20d%3D%22M235.3%200C248.516%200%20259.133%206.71666%20259.133%2013.8666C259.133%2015.8166%20258.266%2017.7666%20256.316%2017.7666C254.8%2017.7666%20253.933%2015.6%20252.85%2013.2166C248.3%203.89999%20240.5%202.6%20234.216%202.6C220.566%202.6%20206.483%209.74998%20192.4%2024.05C178.316%2038.3499%20161.416%2057.8499%20142.133%2082.5498C102.916%20132.166%2066.7332%20156%2035.5333%20156C13.8666%20156%200%20145.6%200%20123.933C0%20116.35%202.38333%20106.6%206.93332%2094.8998C11.4833%2083.1998%2021.2333%2070.1999%2035.9666%2055.8999C60.2332%2033.1499%2086.6665%2022.3166%20104.866%2022.3166C121.333%2022.3166%20128.266%2031.1999%20128.266%2042.6833C128.266%2060.2332%20114.833%2083.4165%2092.2998%20104.433C74.7499%20120.25%2054.3832%20132.6%2035.3166%20131.95C29.0333%20131.733%2023.8333%20129.566%2022.75%20125.233C22.1%20123.716%2022.1%20122.2%2022.9666%20121.983C24.05%20121.766%2024.4833%20124.15%2025.35%20125.233C26.8666%20127.616%2029.8999%20129.35%2034.8833%20129.35C44.4166%20129.35%2053.7332%20126.1%2062.8332%20119.383C72.1499%20112.666%2080.5999%20105.733%2088.3998%2098.5831C97.9331%2089.9165%20106.383%2080.5998%20113.966%2070.6332C121.55%2060.4499%20125.233%2050.9166%20125.233%2041.8166C125.233%2031.6333%20118.3%2025.3499%20107.033%2025.3499C90.7832%2025.1333%2066.7332%2037.9166%2041.3833%2062.1832C16.25%2086.2332%203.46666%20107.9%203.46666%20126.1C3.46666%20143.433%2015.3833%20152.966%2033.5833%20152.966C49.1832%20152.966%2064.9999%20146.25%2081.0332%20132.816C97.0665%20119.383%20113.966%20101.183%20131.516%2078.4332C153.833%2049.6166%20172.9%2029.4666%20188.716%2017.7666C204.75%205.84999%20220.35%200%20235.3%200Z%22%2F%3E%20%3Cpath%20d%3D%22M155.814%20143.099C142.114%20143.099%20133.244%20132.455%20133.244%20117.671C133.244%20101.902%20143.395%2090.4688%20157.489%2090.4688C164.191%2090.4688%20170.992%2093.0313%20174.54%2096.8751V108.209H169.218C168.134%20100.62%20163.009%2096.1852%20156.208%2096.1852C147.239%2096.1852%20141.523%20103.577%20141.523%20114.911C141.523%20128.611%20149.9%20134.919%20158.672%20134.919C165.177%20134.919%20170.992%20131.469%20174.934%20125.654L176.807%20126.935C173.653%20135.707%20167.247%20143.099%20155.814%20143.099Z%22%2F%3E%20%3Cpath%20d%3D%22M199.553%20143.099C186.149%20143.099%20177.476%20132.455%20177.476%20117.474C177.476%20101.803%20187.233%2090.4688%20200.243%2090.4688C213.056%2090.4688%20219.462%20100.423%20220.25%20114.123H185.755V115.207C185.755%20128.611%20193.738%20134.919%20202.51%20134.919C209.015%20134.919%20214.731%20131.371%20218.575%20125.654L220.448%20126.935C217.294%20135.806%20210.986%20143.099%20199.553%20143.099ZM186.346%20109.096H210.986C209.902%20101.015%20205.565%2096.1852%20199.356%2096.1852C192.555%2096.1852%20187.923%20101.113%20186.346%20109.096Z%22%2F%3E%20%3Cpath%20d%3D%22M220.264%20137.678C224.404%20137.284%20227.361%20136.791%20227.361%20132.159V99.8318L220.757%2097.8606V95.101L234.063%2091.6515H235.639V101.212C240.075%2094.8053%20247.269%2090.4688%20254.366%2090.4688C262.842%2090.4688%20268.755%2096.9736%20268.755%20106.041V132.159C268.755%20136.791%20271.712%20137.284%20275.851%20137.678V141.916H253.38V137.678C257.52%20137.284%20260.476%20136.791%20260.476%20132.159V108.899C260.476%20102.591%20256.83%2098.6491%20250.719%2098.6491C245.692%2098.6491%20239.68%20101.803%20235.639%20106.632V132.159C235.639%20136.791%20238.596%20137.284%20242.736%20137.678V141.916H220.264V137.678Z%22%2F%3E%20%3Cpath%20d%3D%22M289.95%20143.099C281.967%20143.099%20276.053%20137.974%20276.053%20130.089C276.053%20123.289%20280.587%20118.755%20291.133%20115.601L306.804%20110.87V106.534C306.804%20100.226%20302.861%2096.1852%20296.652%2096.1852C290.738%2096.1852%20286.5%2099.9304%20286.205%20105.844V108.012H277.532V106.435C277.532%2097.1707%20286.402%2090.4688%20297.046%2090.4688C307.592%2090.4688%20315.082%2096.7765%20315.082%20105.647V130.976C315.082%20134.82%20316.364%20136.496%20319.123%20136.496C320.503%20136.496%20321.686%20136.101%20323.066%20135.214L324.347%20137.678C322.277%20141.226%20319.419%20143.099%20315.674%20143.099C310.155%20143.099%20307.296%20139.157%20306.902%20134.229C301.678%20140.044%20296.061%20143.099%20289.95%20143.099ZM293.991%20135.412C298.525%20135.412%20303.453%20133.44%20306.804%20130.385V115.108L294.976%20118.854C289.26%20120.628%20285.515%20123.683%20285.515%20128.315C285.515%20132.849%20288.472%20135.412%20293.991%20135.412Z%22%2F%3E%20%3Cpath%20d%3D%22M324.128%20137.678C328.268%20137.284%20331.225%20136.791%20331.225%20132.159V99.8318L324.621%2097.8606V95.101L337.927%2091.6515H339.503V103.774C342.46%2095.4952%20347.881%2090.4688%20354.386%2090.4688H357.934V100.128H353.696C344.826%20100.128%20339.503%20105.548%20339.503%20115.01V132.159C339.503%20136.791%20342.46%20137.284%20346.6%20137.678V141.916H324.128V137.678Z%22%2F%3E%20%3Cpath%20d%3D%22M358.832%20137.678C362.971%20137.284%20365.928%20136.791%20365.928%20132.159V99.8318L359.325%2097.8606V95.101L372.63%2091.6515H374.207V132.159C374.207%20136.791%20377.164%20137.284%20381.303%20137.678V141.916H358.832V137.678ZM365.041%2083.274V72.5311H374.995V83.274H365.041Z%22%2F%3E%20%3Cpath%20d%3D%22M402.83%20143.099C389.327%20143.099%20379.964%20132.652%20379.964%20117.77C379.964%20101.704%20390.214%2090.4688%20404.604%2090.4688C418.106%2090.4688%20427.568%20100.916%20427.568%20115.798C427.568%20131.863%20417.318%20143.099%20402.83%20143.099ZM404.604%20137.383C412.981%20137.383%20418.106%20129.892%20418.106%20117.77C418.106%20104.563%20412.193%2096.1852%20402.928%2096.1852C394.551%2096.1852%20389.426%20103.774%20389.426%20115.798C389.426%20129.005%20395.339%20137.383%20404.604%20137.383Z%22%2F%3E%20%3Cpath%20d%3D%22M478.809%20143.099C463.532%20143.099%20453.085%20133.44%20453.085%20118.755V83.6682C453.085%2079.0359%20449.832%2078.5431%20445.101%2078.1489V73.9109H469.544V78.1489C464.813%2078.5431%20461.561%2079.0359%20461.561%2083.6682V117.868C461.561%20129.202%20468.558%20135.806%20480.188%20135.806C491.917%20135.806%20498.619%20129.005%20498.619%20117.277V83.6682C498.619%2079.0359%20495.465%2078.5431%20490.931%2078.1489V73.9109H512.417V78.1489C507.883%2078.5431%20504.729%2079.0359%20504.729%2083.6682V116.981C504.729%20132.652%20494.578%20143.099%20478.809%20143.099Z%22%2F%3E%20%3Cpath%20d%3D%22M508.618%20137.678C512.757%20137.284%20515.714%20136.791%20515.714%20132.159V99.8318L509.111%2097.8606V95.101L522.416%2091.6515H523.993V101.212C528.428%2094.8053%20535.623%2090.4688%20542.719%2090.4688C551.195%2090.4688%20557.109%2096.9736%20557.109%20106.041V132.159C557.109%20136.791%20560.065%20137.284%20564.205%20137.678V141.916H541.734V137.678C545.873%20137.284%20548.83%20136.791%20548.83%20132.159V108.899C548.83%20102.591%20545.183%2098.6491%20539.073%2098.6491C534.046%2098.6491%20528.034%20101.803%20523.993%20106.632V132.159C523.993%20136.791%20526.95%20137.284%20531.089%20137.678V141.916H508.618V137.678Z%22%2F%3E%20%3Cpath%20d%3D%22M564.379%20137.678C568.617%20137.284%20571.574%20136.791%20571.574%20132.159V74.6994L564.872%2072.7282V69.9685L578.276%2066.519H579.853V132.159C579.853%20136.791%20582.711%20137.284%20586.949%20137.678V141.916H564.379V137.678Z%22%2F%3E%20%3Cpath%20d%3D%22M608.494%20143.099C594.991%20143.099%20585.628%20132.652%20585.628%20117.77C585.628%20101.704%20595.878%2090.4688%20610.268%2090.4688C623.771%2090.4688%20633.232%20100.916%20633.232%20115.798C633.232%20131.863%20622.982%20143.099%20608.494%20143.099ZM610.268%20137.383C618.646%20137.383%20623.771%20129.892%20623.771%20117.77C623.771%20104.563%20617.857%2096.1852%20608.593%2096.1852C600.215%2096.1852%20595.09%20103.774%20595.09%20115.798C595.09%20129.005%20601.004%20137.383%20610.268%20137.383Z%22%2F%3E%20%3Cpath%20d%3D%22M657.82%20143.099C644.121%20143.099%20635.25%20132.455%20635.25%20117.671C635.25%20101.902%20645.402%2090.4688%20659.496%2090.4688C666.198%2090.4688%20672.998%2093.0313%20676.547%2096.8751V108.209H671.224C670.14%20100.62%20665.015%2096.1852%20658.215%2096.1852C649.246%2096.1852%20643.529%20103.577%20643.529%20114.911C643.529%20128.611%20651.907%20134.919%20660.679%20134.919C667.183%20134.919%20672.998%20131.469%20676.941%20125.654L678.813%20126.935C675.659%20135.707%20669.253%20143.099%20657.82%20143.099Z%22%2F%3E%20%3Cpath%20d%3D%22M677.248%20137.678C682.57%20137.186%20684.443%20136.101%20684.443%20132.159V74.6994L677.741%2072.7282V69.9685L691.145%2066.519H692.722V117.474L709.28%20100.226C712.138%2097.4664%20711.054%2095.8895%20706.52%2095.8895V91.6515H727.119V95.8895C723.571%2095.988%20721.205%2097.1707%20717.953%20100.226L706.224%20112.152L727.119%20138.368V141.916H718.938L700.804%20117.77L692.722%20126.048V132.159C692.722%20136.101%20694.496%20137.186%20699.818%20137.678V141.916H677.248V137.678Z%22%2F%3E%20%3Cpath%20d%3D%22M747.139%20143.099C733.735%20143.099%20725.062%20132.455%20725.062%20117.474C725.062%20101.803%20734.819%2090.4688%20747.829%2090.4688C760.642%2090.4688%20767.048%20100.423%20767.836%20114.123H733.341V115.207C733.341%20128.611%20741.324%20134.919%20750.096%20134.919C756.601%20134.919%20762.317%20131.371%20766.161%20125.654L768.034%20126.935C764.88%20135.806%20758.572%20143.099%20747.139%20143.099ZM733.932%20109.096H758.572C757.488%20101.015%20753.151%2096.1852%20746.942%2096.1852C740.141%2096.1852%20735.509%20101.113%20733.932%20109.096Z%22%2F%3E%20%3Cpath%20d%3D%22M789.787%20143.099C777.862%20143.099%20769.583%20132.258%20769.583%20117.671C769.583%20101.803%20779.439%2090.4688%20793.04%2090.4688C797.771%2090.4688%20802.009%2091.8486%20805.458%2094.3125V74.6994L798.855%2072.7282V69.9685L812.16%2066.519H813.737V131.173C813.737%20136.2%20816.99%20137.186%20822.115%20137.678V140.832L807.232%20143.099H805.458V135.116C801.417%20139.847%20796.194%20143.099%20789.787%20143.099ZM778.157%20115.108C778.157%20127.231%20783.775%20135.116%20793.434%20135.116C797.869%20135.116%20802.304%20133.637%20805.458%20131.075V110.378C805.458%20101.409%20799.545%2095.6924%20792.054%2095.6924C783.381%2095.6924%20778.157%20103.38%20778.157%20115.108Z%22%2F%3E%20%3C%2Fg%3E%20%3C%2Fsvg%3E") center/contain no-repeat}
@@ -4937,7 +4931,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .sucel .su-title-flash{background:#fff;filter:blur(6px);opacity:0;mix-blend-mode:screen;will-change:opacity}
 .sucel .su-deck{position:relative;z-index:4;display:flex;align-items:center;justify-content:center;gap:48px;transform-style:preserve-3d}
 .sucel .su-card-slot{transform-style:preserve-3d;will-change:transform,opacity}
-.sucel .su-map,.sucel .su-map-dim,.sucel .su-bottom,.sucel .su-glow,.sucel .su-title-stage,.sucel .su-card-slot,.sucel .su-continue{opacity:0}
+.sucel .su-map,.sucel .su-map-dim,.sucel .su-bottom,.sucel .su-glow,.sucel .su-title-stage,.sucel .su-continue{opacity:0}
 .sucel .su-card{--gx:50%;--gy:40%;position:relative;width:360px;height:450px;border-radius:22px;padding:8px;background:#fff;
   box-shadow:0 54px 120px rgba(0,0,0,.28),0 24px 60px rgba(20,60,30,.22),0 6px 20px rgba(0,0,0,.12);
   transform-style:preserve-3d;will-change:transform}
@@ -10542,17 +10536,16 @@ function stepFlow(){
      visible but does nothing is worse than one that is hidden. */
   const _suc=document.getElementById('sucel');
   if(_suc){
+    const card=_suc.querySelector('#sulBox');
+    if(card&&card.classList.contains('locked')){   /* still shelled: the arrow cracks it */
+      const r=card.getBoundingClientRect();
+      card.dispatchEvent(new MouseEvent('click',{clientX:r.left+r.width*(.3+Math.random()*.4),
+        clientY:r.top+r.height*(.3+Math.random()*.4),bubbles:true}));
+      return;
+    }
     const c=_suc.querySelector('#suCta');
     if(_suc.dataset.ready==='1'&&c){ c.click(); }
     else if(window.__suSkip){ window.__suSkip(); }   /* mid-entrance: skip to the settled state */
-    return;
-  }
-  const _sul=document.getElementById('sul');
-  if(_sul){
-    const bx=_sul.querySelector('#sulBox'), r=bx&&bx.getBoundingClientRect();
-    if(bx&&bx.classList.contains('open')) return;    /* shattered: the hand-off to the celebration is in flight */
-    if(bx&&r) bx.dispatchEvent(new MouseEvent('click',{clientX:r.left+r.width*(.3+Math.random()*.4),
-      clientY:r.top+r.height*(.3+Math.random()*.4),bubbles:true}));
     return;
   }
   const _scw=document.getElementById('scw');
@@ -11648,14 +11641,18 @@ const SU_COLORS=['#FFD84D','#FFE06B','#FFC64D','#FFEFA0','#FFF3C8','#FFFFFF','#B
 function suConfetti(canvas,opt){
   opt=opt||{};
   const count=opt.count||90, gravity=opt.gravity||0.05, size=opt.size||1, spin=opt.spin||1, drift=opt.drift||0.6;
-  const colors=opt.colors||SU_COLORS;
+  const colors=opt.colors||SU_COLORS, blend=opt.blend||'lighter';
   const ctx=canvas.getContext('2d'); if(!ctx) return {stop:function(){}};
   let W=0,H=0;
   const dpr=Math.min(window.devicePixelRatio||1,2);
-  const resize=function(){ W=canvas.offsetWidth||1920; H=canvas.offsetHeight||1080;
+  const resize=function(){
+    W=Math.min(8192,canvas.offsetWidth||canvas.clientWidth||document.documentElement.clientWidth||1920);
+    H=Math.min(8192,canvas.offsetHeight||canvas.clientHeight||document.documentElement.clientHeight||1080);
     canvas.width=Math.max(1,Math.floor(W*dpr)); canvas.height=Math.max(1,Math.floor(H*dpr));
-    ctx.setTransform(dpr,0,0,dpr,0,0); };
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,W,H); };   /* present the surface NOW — an uninitialized canvas can capture as opaque white */
   resize();
+  let ro=null; try{ ro=new ResizeObserver(resize); ro.observe(canvas); }catch(e){}
   const rand=function(a,b){ return a+Math.random()*(b-a); };
   const pieces=[];
   const push=function(x,y,vx,vy,longLife){
@@ -11668,7 +11665,7 @@ function suConfetti(canvas,opt){
   const fire=function(ox,oy,n,angle,spread,power){
     for(let i=0;i<n;i++){ const a=((angle+rand(-spread,spread))*Math.PI)/180, v=power*rand(0.55,1);
       push(ox,oy,Math.cos(a)*v,-Math.sin(a)*v,false); } };
-  const volley=function(){ const base=Math.max(10,count);
+  const volley=function(){ resize(); const base=Math.max(10,count);   /* measured at fire time, never stale */
     fire(W/2,H*0.42,Math.round(base*0.7),90,62,Math.min(W,H)*0.022);
     fire(0,H,Math.round(base*0.5),68,22,Math.max(W,H)*0.017);
     fire(W,H,Math.round(base*0.5),112,22,Math.max(W,H)*0.017); };
@@ -11681,7 +11678,7 @@ function suConfetti(canvas,opt){
   const tick=function(){
     if(stopped)return;
     ctx.clearRect(0,0,W,H);
-    ctx.globalCompositeOperation='lighter';
+    ctx.globalCompositeOperation=blend;
     for(let i=pieces.length-1;i>=0;i--){ const p=pieces[i];
       p.vx*=DRAG; p.vy=p.vy*DRAG+gravity;
       p.x+=p.vx+Math.cos(p.wobble)*drift; p.y+=p.vy;
@@ -11695,8 +11692,8 @@ function suConfetti(canvas,opt){
       ctx.restore(); }
     if(doneSpawning&&pieces.length===0){ raf=0; return; }
     raf=requestAnimationFrame(tick); };
-  raf=requestAnimationFrame(tick);
-  return {stop:function(){ stopped=true; cancelAnimationFrame(raf); clearTimeout(t1); clearTimeout(t2); }};
+  tick();   /* first frame drawn synchronously — never waiting on a rAF that may be frozen */
+  return {stop:function(){ stopped=true; cancelAnimationFrame(raf); clearTimeout(t1); clearTimeout(t2); try{ ro&&ro.disconnect(); }catch(e){} }};
 }
 const SCW_STAR='<svg class="st-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.6l2.8 5.9 6.4.8-4.7 4.4 1.2 6.3L12 17l-5.7 3 1.2-6.3-4.7-4.4 6.4-.8z"/></svg>';
 const SCW_IN='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.76-1.95 4.02 0 4.76 2.5 4.76 5.76V21h-4v-5.6c0-1.34-.03-3.06-1.9-3.06-1.9 0-2.2 1.45-2.2 2.96V21H9z"/></svg>';
@@ -11776,7 +11773,7 @@ function scenarioWrapUp(){
     if(k>=1){ clearInterval(iv);
       try{ scwAudio.thump(); }catch(err){}
       try{ const fx=ov.querySelector('#scwFx');
-        suConfetti(fx,{count:52,gravity:.055,colors:['#FFD84D','#FFE06B','#FFC64D','#FFEFA0','#FFF3C8','#FFFFFF','#ff8a6b']}); }catch(err){}
+        suConfetti(fx,{count:52,gravity:.055,blend:'source-over',colors:['#FFD84D','#FFE06B','#FFC64D','#FFEFA0','#FFF3C8','#ff8a6b']}); }catch(err){}
       if(window.gsap){ const st=ov.querySelector('.scw-stat.xp');
         gsap.fromTo(st,{scale:1},{scale:1.045,duration:.16,ease:'power2.out',yoyo:true,repeat:1}); }
     }
@@ -11796,113 +11793,20 @@ function scwToast(msg){
   document.body.appendChild(t); t.getBoundingClientRect(); t.classList.add('on');
   setTimeout(function(){ t.classList.remove('on'); setTimeout(function(){ try{t.remove();}catch(e){} },320); },1700);
 }
-/* ---- ACT 2: THE UNLOCK YOU BREAK OPEN. Each tap cracks from where you hit; the nearest pieces
-   are thrown off and fall; the third tap shatters the rest — then a white flash hands the moment
-   to the celebration. ---- */
-const SUL_NEXT={k:'Next scenario',t:'Cutting Refund Fraud at DoorDash',
-  s:'Ops is losing margin to repeat refund claims. Find the pattern, price it, and take a fix to the table.'};
+/* ---- ACTS 2+3, ONE SCENE. The shell no longer lives on its own screen: it sits over the
+   celebration's own card, inside the celebration's own world. While it is locked the world idles
+   dim behind it; every crack leaks the world's green through the card; and the shatter IS the
+   entrance — glow blooms, title punches in with the boom, and the card you were breaking is the
+   card you unlocked. Nothing hands off, because nothing changes place. ---- */
 function scenarioUnlock(){
-  const ov=document.createElement('div'); ov.className='sul'; ov.id='sul';
+  if(document.getElementById('sucel'))return;
+  const BASE_W=1920, BASE_H=1080;
   const R2=4, C2=4;
-  let pieces='';
+  let shell='';
   for(let r=0;r<R2;r++) for(let c=0;c<C2;c++){
-    pieces+='<i class="sul-pc" data-r="'+r+'" data-c="'+c+'" style="left:'+(c*100/C2)+'%;top:'+(r*100/R2)+'%;'
+    shell+='<i data-r="'+r+'" data-c="'+c+'" style="left:'+(c*100/C2)+'%;top:'+(r*100/R2)+'%;'
       +'width:'+(100/C2)+'%;height:'+(100/R2)+'%"></i>';
   }
-  ov.innerHTML='<div class="sul-in">'
-   +'<div class="sul-eyebrow" id="sulEye">You cleared the scenario</div>'
-   +'<div class="sul-box" id="sulBox">'
-   +'  <div class="sul-under"><div class="k">'+SUL_NEXT.k+'</div><div class="t">'+SUL_NEXT.t+'</div>'
-   +'    <div class="s">'+SUL_NEXT.s+'</div></div>'
-   +'  <span class="sul-glow" id="sulGlow"></span>'
-   +'  <span class="sul-shell" id="sulShell">'+pieces+'</span>'
-   +'  <svg class="sul-crack" id="sulCrack" viewBox="0 0 100 75" preserveAspectRatio="none"></svg>'
-   +'  <span class="sul-lock">'+SUL_LOCK+'</span>'
-   +'</div>'
-   +'<div class="sul-hint" id="sulHint">Tap to break it open</div>'
-   +'<button class="sul-go" id="sulGo">Continue</button>'
-   +'</div>';
-  document.body.appendChild(ov); ov.getBoundingClientRect(); ov.classList.add('show');
-  const box=ov.querySelector('#sulBox'), shell=ov.querySelector('#sulShell'),
-        crack=ov.querySelector('#sulCrack'), glow=ov.querySelector('#sulGlow'),
-        hint=ov.querySelector('#sulHint'), eye=ov.querySelector('#sulEye');
-  if(window.gsap) gsap.to(eye,{opacity:1,duration:.5,ease:'power2.out',delay:.3});
-  setTimeout(function(){ eye.style.opacity=1; },900);
-  const HINTS=['Tap to break it open','Again','Keep going'];
-  let taps=0, done=false;
-  const pcs=[].slice.call(shell.querySelectorAll('.sul-pc'));
-  const drawCrack=function(px,py){
-    let d='M'+px+' '+py;
-    let a=Math.random()*Math.PI*2;
-    for(let i=0;i<5;i++){ a+=(Math.random()-.5)*1.5; const L=7+Math.random()*11;
-      d+=' l'+(Math.cos(a)*L).toFixed(1)+' '+(Math.sin(a)*L).toFixed(1); }
-    const p=document.createElementNS('http://www.w3.org/2000/svg','path');
-    p.setAttribute('d',d); crack.appendChild(p);
-    if(window.gsap){ const len=140; gsap.set(p,{strokeDasharray:len,strokeDashoffset:len});
-      gsap.to(p,{strokeDashoffset:0,duration:.28,ease:'power2.out'}); }
-  };
-  const shatter=function(list){
-    list.forEach(function(pc){
-      const b=pc.getBoundingClientRect();
-      const s=document.createElement('i'); s.className='sul-shard';
-      s.style.cssText='left:'+b.left+'px;top:'+b.top+'px;width:'+b.width+'px;height:'+b.height+'px';
-      document.body.appendChild(s);
-      pc.style.visibility='hidden';
-      if(window.gsap){
-        gsap.to(s,{x:(Math.random()-.5)*420,y:280+Math.random()*260,rotate:(Math.random()-.5)*220,
-          opacity:0,duration:.9+Math.random()*.4,ease:'power2.in',
-          onComplete:function(){ try{ s.remove(); }catch(e){} }});
-      }
-      setTimeout(function(){ try{ s.remove(); }catch(e){} },1600);
-    });
-  };
-  /* the break resolves into the celebration: a white flash swallows the stage, and the shipped
-     ScenarioUnlocked screen is what the light fades from */
-  const finish=function(){
-    done=true; box.classList.add('open'); box.style.cursor='default';
-    hint.style.opacity=0; crack.innerHTML='';
-    if(window.gsap) gsap.fromTo(box,{scale:1},{scale:1.03,duration:.22,ease:'power2.out',yoyo:true,repeat:1});
-    setTimeout(function(){
-      const fl=document.createElement('div'); fl.className='sul-flash'; document.body.appendChild(fl);
-      fl.getBoundingClientRect(); fl.classList.add('on');
-      setTimeout(function(){
-        try{ ov.remove(); }catch(e){}
-        scenarioCelebrate();
-        fl.classList.remove('on'); fl.classList.add('off');
-        setTimeout(function(){ try{ fl.remove(); }catch(e){} },700);
-      },200);
-    },520);
-  };
-  box.addEventListener('click',function(e){
-    if(done) return;
-    const b=box.getBoundingClientRect();
-    const px=((e.clientX-b.left)/b.width)*100, py=((e.clientY-b.top)/b.height)*75;
-    taps++;
-    try{ ZSND.play('tap'); }catch(err){}
-    glow.style.setProperty('--gx',px+'%'); glow.style.setProperty('--gy',((py/75)*100)+'%');
-    if(window.gsap){
-      gsap.fromTo(glow,{opacity:0},{opacity:.55+taps*.15,duration:.18,ease:'power2.out',yoyo:true,repeat:1});
-      gsap.fromTo(box,{scale:1},{scale:.985,duration:.09,ease:'power2.out',yoyo:true,repeat:1});
-    }
-    drawCrack(px,py); drawCrack(px,py);
-    const left=pcs.filter(function(p){ return p.style.visibility!=='hidden'; });
-    if(taps>=3||left.length<=6){ shatter(left); finish(); return; }
-    const cx=(px/100)*C2, cy=(py/75)*R2;
-    left.sort(function(a,b2){
-      const da=Math.hypot(+a.dataset.c+.5-cx,+a.dataset.r+.5-cy),
-            db=Math.hypot(+b2.dataset.c+.5-cx,+b2.dataset.r+.5-cy);
-      return da-db;
-    });
-    shatter(left.slice(0,taps===1?4:5));
-    hint.textContent=HINTS[Math.min(taps,HINTS.length-1)];
-  });
-}
-/* ---- ACT 3: the celebration itself, 1:1 from the shipped screen. 1920x1080 canvas scaled to
-   FILL; orbs, sweeps, the masked title with its punch, one card rising, the white CTA. The
-   fanfare starts on the first painted frame, held back so the boom lands ON the title punch. ---- */
-function scenarioCelebrate(){
-  if(document.getElementById('sucel'))return;
-  const BASE_W=1920, BASE_H=1080, TITLE_IMPACT_S=0.95;
   const ov=document.createElement('div'); ov.className='sucel'; ov.id='sucel';
   ov.innerHTML='<div class="su-root" id="suRoot">'
    +'<div class="su-map"></div><div class="su-map-dim"></div>'
@@ -11910,8 +11814,9 @@ function scenarioCelebrate(){
    +'<div class="su-rings"><i class="su-orb"></i><i class="su-orb"></i><i class="su-orb"></i></div>'
    +'<div class="su-sweeps"><i class="su-sweep"></i><i class="su-sweep" style="transform:translate(-50%,-50%) rotate(45deg) scale(0)"></i></div>'
    +'<canvas class="su-confetti" id="suFx"></canvas>'
+   +'<div class="su-eyebrow" id="suEye">You cleared the scenario</div>'
    +'<div class="su-title-stage"><div class="su-title-glow"></div><div class="su-title" id="suTitle"></div><div class="su-title-flash"></div></div>'
-   +'<div class="su-deck"><div class="su-card-slot"><div class="su-card">'
+   +'<div class="su-deck"><div class="su-card-slot"><div class="su-card locked" id="sulBox">'
    +'  <div class="su-card-inner">'
    +'    <div class="su-card-med"><span class="su-card-med-logo">'+DD_LOGO+'</span></div>'
    +'    <div class="su-card-glass"></div><div class="su-card-topfade"></div>'
@@ -11922,12 +11827,16 @@ function scenarioCelebrate(){
    +'    <div class="su-card-foot"><span class="su-pill level">Intermediate</span>'
    +'      <span class="su-pill xp">'+SCW_STAR.replace('class="st-star" ','')+'350 XP</span></div>'
    +'  </div>'
+   +'  <span class="su-leak" id="suLeak"></span>'
+   +'  <span class="su-shell" id="suShell">'+shell+'</span>'
+   +'  <svg class="su-crackv" id="suCrack" viewBox="0 0 100 126" preserveAspectRatio="none"></svg>'
+   +'  <span class="su-lock2" id="suLock">'+SUL_LOCK+'</span>'
    +'</div></div></div>'
+   +'<div class="su-hint" id="suHint">Tap to break it open</div>'
    +'<div class="su-continue"><button class="su-cta" id="suCta">Continue</button></div>'
    +'</div>';
   document.body.appendChild(ov); ov.getBoundingClientRect(); ov.classList.add('show');
   const root=ov.querySelector('#suRoot');
-  /* proportional scale that FILLS the container — the canvas grows to cover, content stays centred */
   const fit=function(){
     const cw=ov.clientWidth||BASE_W, ch=ov.clientHeight||BASE_H;
     const sc=Math.min(cw/BASE_W,ch/BASE_H)||1;
@@ -11936,62 +11845,131 @@ function scenarioCelebrate(){
   };
   fit();
   const onR=function(){ fit(); }; window.addEventListener('resize',onR);
-  /* a mount mid-layout (or in a hidden tab) can measure 0x0 and fall back — keep re-measuring
-     briefly, and again whenever the tab becomes visible, so the scale is right by first sight */
   let fitTries=0; const fitIv=setInterval(function(){ fit(); if(++fitTries>20) clearInterval(fitIv); },120);
   document.addEventListener('visibilitychange',fit);
-  /* fanfare: after the first PAINTED frame, held back so the boom lands on the title punch */
-  let fan=null;
-  const leadMs=Math.max(0,(TITLE_IMPACT_S-FANFARE_HIT_S)*1000);
-  requestAnimationFrame(function(){ requestAnimationFrame(function(){
-    setTimeout(function(){ try{ fan=suFanfare(); }catch(e){} },leadMs);
-  }); });
-  /* confetti rides the impact, not the mount */
-  let conf=null;
-  setTimeout(function(){ try{ conf=suConfetti(ov.querySelector('#suFx'),{count:110,gravity:.05}); }catch(e){} },880);
-  /* the entrance, timing-for-timing from the shipped timeline */
-  const slot=ov.querySelector('.su-card-slot');
-  if(window.gsap){
-    const tl=gsap.timeline({defaults:{ease:'power3.out'}});
-    tl.fromTo('.sucel .su-map',{opacity:0,scale:1.18},{opacity:1,scale:1.08,duration:1.0},0);
-    tl.fromTo('.sucel .su-map-dim',{opacity:0},{opacity:1,duration:0.8},0.1);
-    tl.fromTo('.sucel .su-bottom',{opacity:0,yPercent:26},{opacity:1,yPercent:0,duration:0.9},0.2);
-    tl.fromTo('.sucel .su-glow',{opacity:0,scale:0.7},{opacity:1,scale:1,duration:1.0},0.25);
-    tl.fromTo('.sucel .su-orb',{scale:0,opacity:0},{scale:2.6,opacity:0.7,duration:1.3,ease:'power2.out',stagger:0.28},0.7);
-    tl.to('.sucel .su-orb',{opacity:0,duration:0.7,ease:'power1.in',stagger:0.28},1.5);
-    tl.fromTo('.sucel .su-sweep',{scale:0.04,opacity:0},{scale:2.9,opacity:0.92,duration:0.68,ease:'back.out(1.5)',stagger:0.16},0.55);
-    tl.to('.sucel .su-sweep',{opacity:0,duration:0.5,ease:'power1.in',stagger:0.16},0.95);
-    tl.fromTo('.sucel .su-title-stage',{opacity:0,scale:1.12,y:18},{opacity:1,scale:1,y:0,duration:1.5,ease:'power2.out'},0.5);
-    tl.fromTo('#suTitle',{'--reveal':0,'--sheenx':150},{'--reveal':1,'--sheenx':-50,duration:1.9,ease:'power1.inOut'},0.55);
-    tl.fromTo('.sucel .su-title-flash',{opacity:0},{opacity:0.85,duration:0.22,ease:'power2.out'},0.95)
-      .to('.sucel .su-title-flash',{opacity:0,duration:0.65,ease:'power2.in'},1.25);
-    tl.fromTo('.sucel .su-title-glow',{opacity:0},{opacity:0.9,duration:0.4},1.0)
-      .to('.sucel .su-title-glow',{opacity:0.28,duration:0.36},1.7)
-      .to('.sucel .su-title-glow',{opacity:0.85,duration:0.36},2.15)
-      .to('.sucel .su-title-glow',{opacity:0.42,duration:0.5},2.6);
-    tl.fromTo('.sucel .su-halftone',{'--su-ht-on':0},{'--su-ht-on':1,duration:1.0,ease:'power2.out'},1.7);
-    gsap.set(slot,{y:220,opacity:0,scale:0.9,rotateX:18});
-    tl.to(slot,{y:0,opacity:1,rotateX:0,scale:0.96,duration:0.82,ease:'power3.out'},1.75);
-    tl.to(slot,{scale:1,duration:0.92,ease:'back.out(1.35)'},2.35);
-    tl.fromTo('.sucel .su-continue',{y:22,opacity:0},{y:0,opacity:1,duration:0.5},2.95);
+  /* THE WORLD AT REST. It is already here — dim, patient, clearly the same place the celebration
+     will happen — so the break belongs to the scene instead of preceding it. */
+  const L=function(c){ return ov.querySelector(c); };
+  L('.su-map').style.opacity=.9; L('.su-map-dim').style.opacity=1;
+  L('.su-glow').style.opacity=.16; L('.su-bottom').style.opacity=.16;
+  const eye=L('#suEye'), hint=L('#suHint'), card=L('#sulBox'), slot=L('.su-card-slot');
+  slot.style.opacity=1;
+  setTimeout(function(){ eye.style.transition='opacity .6s ease'; eye.style.opacity=1; },350);
+  /* the break */
+  const crack=L('#suCrack'), leak=L('#suLeak'), shellEl=L('#suShell'), glowEl=L('.su-glow');
+  const HINTS=['Tap to break it open','Again','Keep going'];
+  let taps=0, broken=false;
+  const pcs=[].slice.call(shellEl.querySelectorAll('i'));
+  const drawCrack=function(px,py){
+    let d='M'+px+' '+py, a=Math.random()*Math.PI*2;
+    for(let i=0;i<5;i++){ a+=(Math.random()-.5)*1.5; const len=8+Math.random()*13;
+      d+=' l'+(Math.cos(a)*len).toFixed(1)+' '+(Math.sin(a)*len).toFixed(1); }
+    const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+    p.setAttribute('d',d); crack.appendChild(p);
+    if(window.gsap){ const l2=160; gsap.set(p,{strokeDasharray:l2,strokeDashoffset:l2});
+      gsap.to(p,{strokeDashoffset:0,duration:.28,ease:'power2.out'}); }
+  };
+  const shatter=function(list){
+    list.forEach(function(pc){
+      const b=pc.getBoundingClientRect();
+      const s=document.createElement('i'); s.className='sul-shard';
+      s.style.cssText='left:'+b.left+'px;top:'+b.top+'px;width:'+b.width+'px;height:'+b.height+'px';
+      document.body.appendChild(s);
+      pc.style.visibility='hidden';
+      if(window.gsap){
+        gsap.to(s,{x:(Math.random()-.5)*460,y:300+Math.random()*280,rotate:(Math.random()-.5)*240,
+          opacity:0,duration:.9+Math.random()*.4,ease:'power2.in',
+          onComplete:function(){ try{ s.remove(); }catch(e){} }});
+      }
+      setTimeout(function(){ try{ s.remove(); }catch(e){} },1600);
+    });
+  };
+  card.addEventListener('click',function(e){
+    if(broken) return;
+    const b=card.getBoundingClientRect();
+    const px=((e.clientX-b.left)/b.width)*100, py=((e.clientY-b.top)/b.height)*126;
+    taps++;
+    try{ ZSND.play('tap'); }catch(err){}
+    leak.style.setProperty('--gx',px+'%'); leak.style.setProperty('--gy',((py/126)*100)+'%');
+    if(window.gsap){
+      gsap.fromTo(leak,{opacity:0},{opacity:.5+taps*.16,duration:.2,ease:'power2.out',yoyo:true,repeat:1});
+      gsap.fromTo(card,{scale:1},{scale:.985,duration:.09,ease:'power2.out',yoyo:true,repeat:1});
+      /* the world answers: the glow under everything breathes up with each hit */
+      gsap.fromTo(glowEl,{opacity:.16+taps*.06},{opacity:.3+taps*.1,duration:.3,ease:'power2.out',yoyo:true,repeat:1});
+      const orb=ov.querySelectorAll('.su-orb')[taps%3];
+      if(orb) gsap.fromTo(orb,{scale:.4,opacity:.4},{scale:1.6,opacity:0,duration:.7,ease:'power2.out'});
+    }
+    drawCrack(px,py); drawCrack(px,py);
+    const left=pcs.filter(function(p){ return p.style.visibility!=='hidden'; });
+    if(taps>=3||left.length<=6){ shatter(left); breakOpen(); return; }
+    const cx=(px/100)*C2, cy=(py/126)*R2;
+    left.sort(function(a,b2){
+      const da=Math.hypot(+a.dataset.c+.5-cx,+a.dataset.r+.5-cy),
+            db=Math.hypot(+b2.dataset.c+.5-cx,+b2.dataset.r+.5-cy);
+      return da-db;
+    });
+    shatter(left.slice(0,taps===1?4:5));
+    hint.textContent=HINTS[Math.min(taps,HINTS.length-1)];
+  });
+  /* THE SHATTER IS THE ENTRANCE. Same element, same place — the world blooms around the card you
+     just opened, the title punches in on the boom, and nothing on screen swaps or jumps. */
+  let fan=null, conf=null;
+  const TITLE_IMPACT=0.8;   /* seconds after the shatter */
+  function breakOpen(){
+    if(broken)return; broken=true;
+    card.classList.remove('locked'); card.classList.add('open'); card.style.cursor='default';
+    hint.style.opacity=0; eye.style.opacity=0; crack.innerHTML='';
+    const lock=L('#suLock'); if(lock) setTimeout(function(){ try{ lock.remove(); }catch(e){} },400);
+    setTimeout(function(){ try{ shellEl.remove(); }catch(e){} },250);
+    /* the score starts now, held back so the boom lands on the title punch */
+    setTimeout(function(){ try{ fan=suFanfare(); }catch(e){} },Math.max(0,(TITLE_IMPACT-FANFARE_HIT_S)*1000));
+    setTimeout(function(){ try{ conf=suConfetti(L('#suFx'),{count:110,gravity:.05}); }catch(e){} },700);
+    if(window.gsap){
+      const tl=gsap.timeline({defaults:{ease:'power3.out'}});
+      tl.to('.sucel .su-map',{opacity:1,scale:1.08,duration:1.0},0);
+      tl.to('.sucel .su-glow',{opacity:1,scale:1,duration:.9},0);
+      tl.to('.sucel .su-bottom',{opacity:1,yPercent:0,duration:.8},0.05);
+      tl.fromTo('.sucel .su-orb',{scale:0,opacity:0},{scale:2.6,opacity:.7,duration:1.3,ease:'power2.out',stagger:.24},0.1);
+      tl.to('.sucel .su-orb',{opacity:0,duration:.7,ease:'power1.in',stagger:.24},0.9);
+      tl.fromTo('.sucel .su-sweep',{scale:.04,opacity:0},{scale:2.9,opacity:.92,duration:.68,ease:'back.out(1.5)',stagger:.16},0.15);
+      tl.to('.sucel .su-sweep',{opacity:0,duration:.5,ease:'power1.in',stagger:.16},0.55);
+      tl.fromTo('.sucel .su-title-stage',{opacity:0,scale:1.12,y:18},{opacity:1,scale:1,y:0,duration:1.5,ease:'power2.out'},0.35);
+      tl.fromTo('#suTitle',{'--reveal':0,'--sheenx':150},{'--reveal':1,'--sheenx':-50,duration:1.9,ease:'power1.inOut'},0.4);
+      tl.fromTo('.sucel .su-title-flash',{opacity:0},{opacity:.85,duration:.22,ease:'power2.out'},TITLE_IMPACT)
+        .to('.sucel .su-title-flash',{opacity:0,duration:.65,ease:'power2.in'},TITLE_IMPACT+0.3);
+      tl.fromTo('.sucel .su-title-glow',{opacity:0},{opacity:.9,duration:.4},TITLE_IMPACT+0.05)
+        .to('.sucel .su-title-glow',{opacity:.28,duration:.36},1.55)
+        .to('.sucel .su-title-glow',{opacity:.85,duration:.36},2.0)
+        .to('.sucel .su-title-glow',{opacity:.42,duration:.5},2.45);
+      tl.fromTo('.sucel .su-halftone',{'--su-ht-on':0},{'--su-ht-on':1,duration:1.0,ease:'power2.out'},1.4);
+      /* the card was always here: it takes the hit and settles, it does not re-enter */
+      tl.fromTo(card,{scale:.97},{scale:1.045,duration:.3,ease:'back.out(2.2)'},TITLE_IMPACT-0.25);
+      tl.to(card,{scale:1,duration:.5,ease:'power2.out'},TITLE_IMPACT+0.1);
+      tl.fromTo('.sucel .su-continue',{y:22,opacity:0},{y:0,opacity:1,duration:.5},2.4);
+    }
+    setTimeout(function(){ ov.dataset.ready='1'; },2900);
+    safety=setTimeout(forceFinal,4600);
   }
-  /* never stuck: whatever the ticker is doing, the final state arrives on a wall clock */
+  /* never stuck, whatever the ticker is doing */
+  let safety=0;
   const forceFinal=function(){
     if(!ov.isConnected)return;
-    ['.su-map','.su-map-dim','.su-bottom','.su-glow','.su-title-stage','.su-continue'].forEach(function(c){
+    try{ shellEl.remove(); }catch(e){}
+    try{ const lk=L('#suLock'); lk&&lk.remove(); }catch(e){}
+    ['.su-map','.su-glow','.su-bottom','.su-title-stage','.su-continue'].forEach(function(c){
       const el=ov.querySelector(c); if(el){ el.style.opacity=1; el.style.transform=''; } });
-    const t=ov.querySelector('#suTitle'); if(t){ t.style.setProperty('--reveal',1); t.style.setProperty('--sheenx',-50); }
-    const g=ov.querySelector('.su-title-glow'); if(g) g.style.opacity=.42;
-    const h=ov.querySelector('.su-halftone'); if(h) h.style.setProperty('--su-ht-on',1);
-    if(slot){ slot.style.opacity=1; slot.style.transform=''; }
+    const t=L('#suTitle'); if(t){ t.style.setProperty('--reveal',1); t.style.setProperty('--sheenx',-50); }
+    const g=L('.su-title-glow'); if(g) g.style.opacity=.42;
+    const h=L('.su-halftone'); if(h) h.style.setProperty('--su-ht-on',1);
+    slot.style.opacity=1; card.style.transform='';
+    hint.style.opacity=0; eye.style.opacity=0;
+    card.classList.remove('locked'); card.classList.add('open');
     ov.dataset.ready='1';
   };
-  const safety=setTimeout(forceFinal,5200);
-  setTimeout(function(){ ov.dataset.ready='1'; },3500);
-  window.__suSkip=function(){ clearTimeout(safety); try{ if(window.gsap) gsap.killTweensOf('.sucel *'); }catch(e){} forceFinal(); };
-  /* the way out — their exit, minus the map dive: the celebration clears, the card slips away,
-     and the workspace is what remains. Plain-timer removal regardless of the ticker. */
-  ov.querySelector('#suCta').onclick=function(){
+  window.__suSkip=function(){ clearTimeout(safety); broken=true;
+    try{ if(window.gsap) gsap.killTweensOf('.sucel *'); }catch(e){} forceFinal(); };
+  /* the way out — the celebration clears, the card slips away, the workspace is what remains */
+  L('#suCta').onclick=function(){
     if(ov.dataset.leaving)return; ov.dataset.leaving='1';
     try{ ZSND.play('select'); }catch(e){}
     try{ fan&&fan.stop(); }catch(e){}
@@ -11999,11 +11977,11 @@ function scenarioCelebrate(){
     clearTimeout(safety);
     if(window.gsap){
       const tl=gsap.timeline({defaults:{ease:'power2.inOut'}});
-      tl.to('.sucel .su-title-stage',{y:-30,opacity:0,scale:0.96,duration:0.4,ease:'power2.in'},0);
-      tl.to('.sucel .su-continue',{y:24,opacity:0,duration:0.35,ease:'power2.in'},0);
-      tl.to(['.sucel .su-glow','.sucel .su-bottom','.sucel .su-halftone'],{opacity:0,duration:0.5,ease:'power2.out'},0);
-      tl.to(slot,{scale:1.05,duration:0.18,ease:'back.out(2)'},0);
-      tl.to(slot,{scale:0.05,opacity:0,duration:0.9,ease:'power2.in'},0.25);
+      tl.to('.sucel .su-title-stage',{y:-30,opacity:0,scale:.96,duration:.4,ease:'power2.in'},0);
+      tl.to('.sucel .su-continue',{y:24,opacity:0,duration:.35,ease:'power2.in'},0);
+      tl.to(['.sucel .su-glow','.sucel .su-bottom','.sucel .su-halftone'],{opacity:0,duration:.5,ease:'power2.out'},0);
+      tl.to(slot,{scale:1.05,duration:.18,ease:'back.out(2)'},0);
+      tl.to(slot,{scale:.05,opacity:0,duration:.9,ease:'power2.in'},0.25);
     }
     ov.classList.remove('show');
     setTimeout(function(){
@@ -12014,6 +11992,7 @@ function scenarioCelebrate(){
     },1200);
   };
 }
+function scenarioCelebrate(){ scenarioUnlock(); }   /* the old entry point stays callable */
 
 </script>
 </body>
