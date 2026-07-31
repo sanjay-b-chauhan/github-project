@@ -9645,7 +9645,7 @@ function voicePrep(onDone){
 function askPouQuestion(){
   pouBusy=true; pouMicBar.classList.add('waiting');   // your mic grays out, its copy disappears — no second "Jay is working" signal
   const drop=()=>{ addVNote('mgr',6+Math.floor(Math.random()*5),pouQ[pouIdx]);
-    pouBusy=false; pouMicBar.classList.remove('waiting'); pouHint.innerHTML="TAP THE MIC OR HOLD <b>SPACE</b> TO TALK"; };   // note landed → mic wakes, copy returns
+    pouBusy=false; pouMicBar.classList.remove('waiting'); pouHint.innerHTML="HOLD <b>SPACE</b> TO TALK"; };   // note landed → mic wakes, copy returns
   // the read-through is JAY'S beat (where his dots would be), and only for the first reply or two — the rest keep the faster dots
   if(pouIdx===1) voicePrep(drop);
   else if(pouIdx===2) voicePrep(drop,'quick');
@@ -9700,7 +9700,7 @@ function startPOU(stageId,onDone){
   const tp=document.getElementById('pouTopPill'); tp.classList.remove('gone','cashed','celebrate','full');   // a fresh POU gets a fresh bar
   tp.innerHTML=`<span class="pm" id="pouMeter">${Array.from({length:POU_CHECKS},()=>'<i></i>').join('')}</span>${POU_BRAIN}`;
   pouComposer.classList.add('micmode');   // composer morphs to the voice module
-  pouMicBar.classList.remove('done','rec'); pouRec.innerHTML=HI.mic; pouHint.innerHTML="TAP THE MIC OR HOLD <b>SPACE</b> TO TALK";
+  pouMicBar.classList.remove('done','rec'); pouRec.innerHTML=HI.mic; pouHint.innerHTML="HOLD <b>SPACE</b> TO TALK";
   // staggered, apple-butter entrance, each beat is offset so the learner follows what's happening
   setTimeout(()=> pouApp.classList.add('poumode'), 120);        // pill glides in top-right with a GREEN glow (draws the eye)
   setTimeout(()=> anchorTopSlow(div,26,1150), 340);             // the whole chat glides UP and off-screen; POU pins to the top
@@ -9719,13 +9719,13 @@ function startPouRec(){ if(pouRecording||pouBusy||pouIdx>=pouQ.length||!pouApp.c
   return true;
 }
 function stopPouRec(sendIt){ if(!pouRecording)return; pouRecording=false; pouSpaceHeld=false; clearInterval(pouRecT); pouMicBar.classList.remove('rec');
-  if(!sendIt){ pouHint.innerHTML="TAP THE MIC OR HOLD <b>SPACE</b> TO TALK"; return; }   // cancelled, no answer sent
+  if(!sendIt){ pouHint.innerHTML="HOLD <b>SPACE</b> TO TALK"; return; }   // cancelled, no answer sent
   ZSND.play('select');   // spoken answer sent
   const secs=Math.max(3,pouRecSecs+2);
   addVNote('me',secs,"Your spoken answer. (Transcript is simulated in this prototype.)");
   fillCheck(); pouIdx++;
   if(pouIdx>=pouQ.length){ pouWrapUp(); }
-  else { pouHint.innerHTML="TAP THE MIC OR HOLD <b>SPACE</b> TO TALK"; setTimeout(askPouQuestion,700); }
+  else { pouHint.innerHTML="HOLD <b>SPACE</b> TO TALK"; setTimeout(askPouQuestion,700); }
 }
 const POU_XP=250;   // understanding XP, its own award — the stage-completion pool is a SEPARATE reward (celebrateStage)
 function pouWrapUp(){
