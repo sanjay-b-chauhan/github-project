@@ -2076,7 +2076,8 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 
 /* stage jump + arrow nav */
 .set-dbg button.on{background:var(--accent);color:var(--on-accent);border-color:transparent}
-.stage-nav{position:fixed;left:16px;bottom:16px;z-index:60;display:flex;align-items:center;gap:3px;background:var(--card);border:var(--bw) solid var(--line);border-radius:99px;padding:3px;box-shadow:var(--shadow)}
+/* every dev control lives in the same corner: the stepper sits directly above the gear */
+.stage-nav{position:fixed;right:16px;bottom:66px;z-index:60;display:flex;align-items:center;gap:3px;background:var(--card);border:var(--bw) solid var(--line);border-radius:99px;padding:3px;box-shadow:var(--shadow)}
 .stage-nav .sn-btn{width:26px;height:26px;border-radius:99px;display:grid;place-items:center;color:var(--tx-2);cursor:pointer;transition:background var(--t-q) var(--ease),color var(--t-q) var(--ease)}
 .stage-nav .sn-btn svg{width:15px;height:15px}
 .stage-nav .sn-btn:hover{background:var(--hover);color:var(--tx)}
@@ -3334,9 +3335,8 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 
 /* ===== v80: the report card, built to the product team's spec =====
    bigger type, the coach speaks first, and every category carries its own colour */
-/* Q&A's green is the one that works, so it sets the register. Clarity takes the product's amber
-   and engagement the brand coral — both already in the palette, neither of them a stock blue. */
-.rpt{--c-clarity:#e0a020;--c-engagement:#ff6a4d;--c-qna:#4fb8a0;--c-delivery:#8b8fa8}
+/* NO CATEGORY COLOUR. Four hues for four kinds of note was a second colour system sitting on top
+   of the product's, and it was the loudest thing on the screen. The kind is a word now. */
 .rpt-in{display:block!important;width:100%;max-width:min(720px,92vw);margin:0 auto;padding:clamp(28px,5vh,56px) clamp(18px,4vw,28px) 72px}
 /* the two who watched it, at the head of their own report */
 .rpt-by{display:flex;align-items:center;gap:11px}
@@ -3369,35 +3369,51 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .rpt .rp2-scrub{position:absolute;bottom:15px;left:16px;right:16px;z-index:2;height:5px;border-radius:999px;background:rgba(255,255,255,.22)}
 .rpt .rp2-fill{position:absolute;left:0;top:0;height:100%;width:32%;border-radius:999px;background:rgba(255,255,255,.85);
   transition:width .4s var(--ease)}
-/* on the bar, a dot is the whole idea: it says something is here and where. The glyph belonged in
-   the row, next to the word, not inside a ring on a 5px scrub bar. */
+/* the pointer is a dot, and it is neutral: the bar says WHERE, the row says WHAT. Hovering it
+   names itself, and lights the row it belongs to. */
 .rpt .rp2-mk{position:absolute;top:50%;margin:-5px 0 0 -5px;width:10px;height:10px;padding:0;border-radius:99px;
-  z-index:3;cursor:pointer;border:0;background:var(--c);
-  box-shadow:0 0 0 2.5px var(--card);
-  transition:transform .2s var(--ease),box-shadow .2s var(--ease)}
+  z-index:3;cursor:pointer;border:0;background:rgba(255,255,255,.62);
+  box-shadow:0 0 0 2.5px rgba(0,0,0,.45);
+  transition:transform .2s var(--ease),box-shadow .2s var(--ease),background .2s var(--ease)}
 .rpt .rp2-mk svg{display:none}
-.rpt .rp2-mk:hover,.rpt .rp2-mk.on{transform:scale(1.35);
-  box-shadow:0 0 0 2.5px var(--card),0 0 0 5px color-mix(in srgb,var(--c) 30%,transparent)}
+.rpt .rp2-mk:hover,.rpt .rp2-mk.on{transform:scale(1.35);background:#fff;
+  box-shadow:0 0 0 2.5px rgba(0,0,0,.45),0 0 0 5px rgba(255,255,255,.18)}
+/* what it is, said on the bar rather than shouted in the row */
+.rpt .rp2-mk::after{content:attr(data-lbl);position:absolute;left:50%;bottom:20px;transform:translateX(-50%) translateY(4px);
+  white-space:nowrap;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--tx);background:var(--card);border:var(--bw) solid var(--line);border-radius:7px;padding:5px 9px;
+  opacity:0;pointer-events:none;transition:opacity .18s var(--ease),transform .18s var(--ease);
+  box-shadow:0 10px 26px rgba(0,0,0,.45)}
+.rpt .rp2-mk:hover::after{opacity:1;transform:translateX(-50%) translateY(0)}
+/* and the row it belongs to lifts with it */
+.rpt .rp2-row.lit{background:var(--soft);
+  box-shadow:inset 0 2px 26px -11px rgba(255,255,255,.16),inset 0 0 0 1px rgba(255,255,255,.06)}
 /* moments */
 /* the panel's section header, count and all */
 .rpt .rp2-mlab{display:flex;align-items:baseline;gap:8px;font-family:var(--mono);font-size:10px;font-weight:700;
   text-transform:uppercase;letter-spacing:1.4px;color:var(--tx-3);margin:30px 0 10px}
 .rpt .rp2-mlab .cnt{margin-left:auto;font-variant-numeric:tabular-nums;font-weight:400}
-.rpt .rp2-list{display:flex;flex-direction:column;gap:9px}
+.rpt .rp2-list{display:flex;flex-direction:column;gap:0}   /* a list, not a stack of cards */
 /* the panel's row: same radius, same quiet fill, and it rises in on its own beat like every other
    list of findings in the product */
 /* no outline. The fill is enough to separate one row from the next, and a border around every
    one of them was the harshest thing on the screen. */
-/* the row does NOT animate itself in. It carried the panel's mount animation, and a CSS animation
-   outranks an inline style — so the rows lit up 80ms after mount and beat the video they belong
-   under, whatever the reveal timeline said. The reveal owns their entrance now. */
-.rpt .rp2-row{border-radius:14px;background:var(--soft);overflow:hidden;border:0;
-  transition:background .18s var(--ease),box-shadow .22s var(--ease)}
+/* THE PANEL'S ROW. Not a card — a row on a hairline, with the panel's inner glow on hover and the
+   hairline dropping out under the cursor. Identical treatment to .fb2-row, because it is the same
+   thing: a finding you can open.
+   It does not animate itself in either: a CSS animation outranks an inline style, so it used to
+   beat the video it belongs under. The reveal owns the entrance. */
+.rpt .rp2-row{position:relative;border-radius:14px;background:none;overflow:hidden;border:0;
+  margin:0 -11px;
+  transition:background .2s var(--ease),box-shadow .22s var(--ease)}
+.rpt .rp2-row+.rp2-row::before{content:"";position:absolute;left:11px;right:11px;top:0;height:var(--bw);
+  background:var(--line-2);transition:opacity .2s var(--ease)}
+.rpt .rp2-row:hover{background:var(--soft);
+  box-shadow:inset 0 2px 26px -11px rgba(255,255,255,.16),inset 0 0 0 1px rgba(255,255,255,.06)}
+.rpt .rp2-row:hover::before,.rpt .rp2-row:hover+.rp2-row::before{opacity:0}
 .rpt .rp2-row:hover{background:var(--hover)}
 .rpt .rp2-head{display:flex;align-items:flex-start;gap:13px;padding:15px 16px;cursor:pointer}
-/* the panel's tag, exactly: 9px, 6px radius, no icon, a colour on a wash of itself */
-.rpt .rp2-cat{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:3px 8px;
-  border-radius:6px;flex:none;white-space:nowrap;align-self:flex-start;margin-top:2px}
+
 .rpt .rp2-desc{font-size:14px;line-height:1.5;color:var(--tx);flex:1}
 .rpt .rp2-chev{width:16px;height:16px;flex:none;color:var(--tx-3);transition:transform .22s var(--ease)}
 .rpt .rp2-chev svg{width:16px;height:16px}
@@ -4294,9 +4310,18 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .rpt .rp2-verdict{font-size:38px;margin:14px 0 0}
 .rpt .rp2-prose{font-size:15.5px;line-height:1.62;margin:16px 0 0;max-width:none}
 .rpt .rp2-row.on{background:var(--hover);box-shadow:inset 0 0 0 1.5px var(--c)}
-/* the mark belongs here, beside the word — the bar only needs a dot */
-.rpt .rp2-cat{display:inline-flex;align-items:center;gap:5px}
-.rpt .rp2-cat svg{width:11px;height:11px;stroke-width:1.9;flex:none}
+/* THE PANEL'S CHIP, exactly: same mono, same size, same 6px radius. The SHAPE carries the
+   priority the way .fchip[data-imp] already does in the panel; the WORD carries the kind. No
+   colour, no icon. */
+.rpt .rp2-cat{display:inline-block;font-family:var(--mono);font-size:8.5px;font-weight:700;
+  letter-spacing:.9px;text-transform:uppercase;padding:3px 8px;border-radius:6px;
+  flex:none;white-space:nowrap;align-self:flex-start;margin-top:2px;
+  color:var(--tx-3);background:var(--soft);box-shadow:inset 0 0 0 1px var(--line)}
+/* high sits up in a solid chip, medium keeps its ring, low is flat — the same three steps the
+   panel uses, with the colour taken out of them */
+.rpt .rp2-cat[data-imp="high"]{color:var(--tx);background:var(--hover);box-shadow:inset 0 0 0 1px var(--tx-4)}
+.rpt .rp2-cat[data-imp="med"]{color:var(--tx-2);background:var(--soft);box-shadow:inset 0 0 0 1px var(--line)}
+.rpt .rp2-cat[data-imp="low"]{color:var(--tx-3);background:none;box-shadow:inset 0 0 0 1px var(--line-2)}
 /* two ways out, and the recommended one is obvious */
 .rpt .rp2-cta{margin-top:26px;justify-content:flex-end;gap:10px}
 /* sized to its words, not stretched across the page — but it is still the white CTA */
@@ -8097,11 +8122,11 @@ const RPT_BANDS={
          +'recommendation arrived too late for the room to hold onto, and your energy dipped with it. Lead with '
          +'it, and bring the numbers the panel asked for.',
     moments:[
-      {t:'0:41',pos:16,cat:'Clarity',key:'clarity',d:'Your recommendation only surfaced after a long lead-in.',
+      {t:'0:41',pos:16,cat:'Clarity',key:'clarity',imp:'high',d:'Your recommendation only surfaced after a long lead-in.',
        e:'You spent the opening minute on the cancellation background before saying what you were actually proposing, so the panel had to wait to grasp your point of view.'},
-      {t:'1:38',pos:39,cat:'Engagement',key:'engagement',d:'Your energy dropped as you moved into the detail.',
+      {t:'1:38',pos:39,cat:'Engagement',key:'engagement',imp:'med',d:'Your energy dropped as you moved into the detail.',
        e:'Your pace flattened and your eyes drifted down to your notes through the calendar-sync section, and you could see the room’s attention go with it.'},
-      {t:'3:18',pos:79,cat:'Q&amp;A',key:'qna',d:'You stayed general when the panel asked for a number.',
+      {t:'3:18',pos:79,cat:'Q&amp;A',key:'qna',imp:'high',d:'You stayed general when the panel asked for a number.',
        e:'Asked what the fix was worth, you described the approach again rather than giving the three million figure, which read as though you did not have it ready.'}
     ]},
   meets:{
@@ -8112,11 +8137,11 @@ const RPT_BANDS={
          +'the three million landed as one bullet among many rather than the line they take away, and the middle section '
          +'ran at one level. Give your best number some silence around it and vary your pace, and this moves up a band.',
     moments:[
-      {t:'1:12',pos:28,cat:'Clarity',key:'clarity',d:'The cost figure went by in the same breath as the rest.',
+      {t:'1:12',pos:28,cat:'Clarity',key:'clarity',imp:'med',d:'The cost figure went by in the same breath as the rest.',
        e:'Three million is the line people repeat after you leave. Said in passing it reads as one data point instead of the reason to act.'},
-      {t:'2:24',pos:56,cat:'Engagement',key:'engagement',d:'The middle ran at a single level.',
+      {t:'2:24',pos:56,cat:'Engagement',key:'engagement',imp:'med',d:'The middle ran at a single level.',
        e:'The analysis is the strongest part of your work, and it was delivered at the same pace as the setup. Two lifts in there would carry the room.'},
-      {t:'3:41',pos:84,cat:'Q&amp;A',key:'qna',d:'You answered the roadmap question a beat late.',
+      {t:'3:41',pos:84,cat:'Q&amp;A',key:'qna',imp:'low',d:'You answered the roadmap question a beat late.',
        e:'You got to the right answer on what you would ship first, but only after restating the options. Lead with the pick, then the reasoning.'}
     ]},
   exceeds:{
@@ -8127,9 +8152,9 @@ const RPT_BANDS={
          +'gave Jordan a number he can take into the roadmap conversation. The one thing left is the close: you ran out '
          +'of runway and the ask arrived quickly. Reserve the last thirty seconds for it.',
     moments:[
-      {t:'0:18',pos:8,cat:'Clarity',key:'clarity',d:'You led with the recommendation.',
+      {t:'0:18',pos:8,cat:'Clarity',key:'clarity',imp:'low',d:'You led with the recommendation.',
        e:'The room knew your position before the evidence started, so everything after it read as support rather than as a search.'},
-      {t:'4:26',pos:88,cat:'Q&amp;A',key:'qna',d:'The close was rushed against the clock.',
+      {t:'4:26',pos:88,cat:'Q&amp;A',key:'qna',imp:'low',d:'The close was rushed against the clock.',
        e:'The ask came out in the last few seconds. Budget the final half minute for it so it lands with the same weight as the finding.'}
     ]},
   exceptional:{
@@ -8140,7 +8165,7 @@ const RPT_BANDS={
          +'Avery had nothing left to press on and Jordan left with something he can act on. This is the version to keep '
          +'on your portfolio.',
     moments:[
-      {t:'0:16',pos:7,cat:'Clarity',key:'clarity',d:'The headline was in the first two sentences.',
+      {t:'0:16',pos:7,cat:'Clarity',key:'clarity',imp:'low',d:'The headline was in the first two sentences.',
        e:'Cancellations at 14 percent and a real-time calendar sync as the fix, before any background. That is what makes a room lean in.'}
     ]}
 };
@@ -8196,15 +8221,14 @@ function roomReport(secs){
    +'  <button class="rp2-play" id="rp2Play" aria-label="Play">'+PIC.play+'</button>'
    +'  <div class="rp2-scrub"><div class="rp2-fill" id="rp2Fill"></div>'
    +    RP2.moments.map(function(m,i3){ return '<button class="rp2-mk" type="button" data-i="'+i3+'" '
-          +'style="left:'+m.pos+'%;--c:var(--c-'+m.key+')" aria-label="'+m.cat+' at '+m.t+'">'
-          +(MOM_IC[m.key]||'')+'</button>'; }).join('')
+          +'style="left:'+m.pos+'%" data-lbl="'+m.cat+' &middot; '+m.t+'" aria-label="'+m.cat+' feedback at '+m.t+'"></button>'; }).join('')
    +'  </div>'
    +'</div>'
    +'<div class="rp2-mlab"><span>Moments to review</span><span class="cnt">'+RP2.moments.length+'</span></div>'
    +'<div class="rp2-list">'
    +  RP2.moments.map(function(m,i2){ return '<div class="rp2-row" data-i="'+i2+'" style="--i:'+i2+'">'
        +'<div class="rp2-head">'
-       +'  <span class="rp2-cat" style="background:color-mix(in srgb,var(--c-'+m.key+') 14%,transparent);color:var(--c-'+m.key+')">'+(MOM_IC[m.key]||'')+'<span>'+m.cat+'</span></span>'
+       +'  <span class="rp2-cat" data-imp="'+(m.imp||'med')+'">'+m.cat+'</span>'
        +'  <span class="rp2-desc">'+m.d+'</span>'
        +'  <span class="rp2-chev">'+CH+'</span>'
        +'</div>'
@@ -8291,7 +8315,15 @@ function roomReport(secs){
     r.addEventListener('click',function(){ const f=ov.querySelector('#rp2Fill'); if(f)f.style.width=RP2.moments[i2].pos+'%'; });
   });
   /* and a pin takes you to its note, the way a marker does in Loom */
+  /* the dot and the row are one finding shown twice, so hovering either lights both */
   ov.querySelectorAll('.rp2-mk').forEach(function(mk){
+    const row=ov.querySelector('.rp2-row[data-i="'+mk.dataset.i+'"]');
+    if(row){
+      mk.addEventListener('mouseenter',function(){ row.classList.add('lit'); });
+      mk.addEventListener('mouseleave',function(){ row.classList.remove('lit'); });
+      row.addEventListener('mouseenter',function(){ mk.classList.add('on'); });
+      row.addEventListener('mouseleave',function(){ if(!mk.dataset.stuck) mk.classList.remove('on'); });
+    }
     mk.onclick=function(e){
       e.stopPropagation();
       const i3=+mk.dataset.i, f=ov.querySelector('#rp2Fill');
