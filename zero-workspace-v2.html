@@ -6310,7 +6310,7 @@ function presEntryAnim(root){
 /* THE TIMELINE. He said his piece in the kickoff voice note, you planned against it, and only now
    does he hand over what to watch. Three separate moments, in that order, never one burst:
      1. voice note (in startPlan, with the coaching in it)   2. your plan   3. these resources */
-function presJayIntro(){ setTimeout(presResources, 620); }
+function presJayIntro(){ setTimeout(presResources, 240); }
 function presVoicenote(){
   presTyping(()=>{
     addMsg({type:'mgr',text:"Okay, a couple of things I want you carrying into that room. Have a listen, then note whatever lands for you."},false);
@@ -6832,14 +6832,15 @@ function planRequirements(){
     setTimeout(()=>{
       if(planStage==='present'){
         /* the presentation stage has no build to scope and nothing left to confirm: the requirements
-           ARE the brief, so it walks straight into the room. */
-        setTimeout(planStraightToRoom, 900);   // straight through — the resource hand-off is the next thing he says
+           ARE the brief, so it walks straight into the room — and there is nothing to read in the
+           gap, so the gap is short */
+        setTimeout(planStraightToRoom, 260);
       } else {
         sayJay("If you want to dig into any of these, hover it and hit Ask. When you're ready, just tell me you're good, or ask away.", null, ()=>{
           setTimeout(planAwaitConfirm, 350);   // WAIT on the learner — no time question until they type that they're good
         });
       }
-    }, 1300);
+    }, planStage==='present' ? 650 : 1300);   /* no Ask line to read here, so no beat to hold for it */
   });
 }
 function mountReqCard(reqs, missed){
@@ -6872,7 +6873,7 @@ function planStraightToRoom(){
   timerRunning=false;   // a live presentation is not a timed build, so no clock on the board
   planPhase='full'; try{ setMode('build'); }catch(e){}
   timerJustSet=true; renderRail(); timerJustSet=false;
-  setTimeout(function(){ startDo(id, true); }, 500);
+  setTimeout(function(){ startDo(id, true); }, 220);
 }
 function planAwaitConfirm(){
   planSubPhase='confirm';
