@@ -8023,7 +8023,12 @@ function roomReviewing(){
     if(G && R.rvOrbit){ R.rvOrbit.kill(); R.rvOrbit=null; }
     sf.forEach(function(f){ f.classList.remove('on'); });
     /* they come to rest under the recording, level, at the size the report will wear them */
-    if(G) G.to(sf,{ x:function(k){ return k?19:-19; }, y:126, scale:.34, duration:.8, ease:'power3.inOut' });
+    /* placeF writes translate(-50%,-50%) into the transform, and GSAP reads that as part of x/y —
+       so tweening x threw the centring away and they slid off to the right by half their own width.
+       Pinning the percentages keeps them on the centreline, and level with each other. */
+    if(G) G.to(sf,{ xPercent:-50, yPercent:-50,
+                    x:function(k){ return k?19:-19; }, y:126, scale:.34,
+                    duration:.8, ease:'power3.inOut' });
     else vwrap.classList.add('settled');
     if(G) G.to(last,{opacity:0,y:-18,duration:.4,ease:'power2.in'});
     const node=document.createElement('div'); node.className='rvw2-step';
