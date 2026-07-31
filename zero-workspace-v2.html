@@ -2149,21 +2149,24 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 /* bottom-bar morph: the input converts into the "Start presenting" CTA, same footprint */
 .composer.pres-cta-mode .composer-in,.composer.pres-cta-mode .foot,.composer.pres-cta-mode .action-bar,.composer.pres-cta-mode .timepills,.composer.pres-cta-mode .pou-micbar{display:none!important}
 .pres-cta{position:relative;display:flex;align-items:center;gap:15px;max-width:var(--maxw);margin:0 auto;overflow:visible;will-change:transform,opacity,filter;   /* the glow that needed clipping is gone, and hidden was cutting the tooltip off */
-  background:var(--card);border:var(--bw) solid var(--line);border-radius:20px;padding:13px 14px 13px 16px;box-shadow:0 12px 30px rgba(0,0,0,.26);
+  background:var(--card);border:var(--bw) solid var(--line);border-radius:20px;padding:13px 14px 13px 8px;box-shadow:0 12px 30px rgba(0,0,0,.26);
   animation:ctaRise .5s var(--ease)}
 @keyframes ctaRise{from{opacity:0;transform:translateY(10px);filter:blur(6px)}to{opacity:1;transform:none;filter:blur(0)}}
-.pres-cta .pc-meet{position:relative;flex:0 0 auto;width:42px;height:42px;border-radius:99px;background:var(--soft);border:var(--bw) solid var(--line);color:var(--tx);display:grid;place-items:center}
+.pres-cta .pc-meet{position:relative;flex:0 0 auto;width:38px;height:38px;border-radius:99px;background:var(--soft);border:var(--bw) solid var(--line);color:var(--tx);display:grid;place-items:center}
 .pres-cta .pc-meet svg{width:21px;height:21px}
 .pres-cta .pc-live{position:absolute;top:-3px;right:-3px;width:12px;height:12px;border-radius:99px;background:#3fb968;border:2.5px solid var(--card);animation:pulseDot 1.8s infinite}
 /* the recording variant: the glyph carries a red live dot, because that is what is about to happen */
 /* the camcorder is a normal icon on a normal surface. Only the record dot is red — a red ring
    round the whole thing made the bar read as an alert. */
 /* nothing but the glyph: no ring, no plate, no floating badge. The red dot is the lens. */
-.pres-cta.rec .pc-meet{color:var(--tx);border:0;background:none;width:34px;height:34px}
-.pres-cta.rec .pc-meet svg{width:26px;height:26px}
+/* the camcorder gets the plate too. Naked, it left the row with an icon floating in space next to
+   an avatar stack that had a hard circular edge — the two bars stopped being the same component. */
+.pres-cta.rec .pc-meet{color:var(--tx);width:38px;height:38px;
+  background:var(--soft);border:var(--bw) solid var(--line)}
+.pres-cta.rec .pc-meet svg{width:20px;height:20px}
 .pres-cta.rec .pc-meet .pc-live{display:none}
 /* the way out: an arrow at the head of the row, quiet enough never to compete with the CTA */
-.pres-cta .pc-back{flex:0 0 auto;width:34px;height:34px;margin-right:-4px;border-radius:99px;
+.pres-cta .pc-back{flex:0 0 auto;width:30px;height:30px;margin-right:-5px;border-radius:99px;
   display:grid;place-items:center;border:0;background:none;color:var(--tx-3);cursor:pointer;
   transition:background var(--t-q) var(--ease),color var(--t-q) var(--ease)}
 .pres-cta .pc-back:hover{background:var(--hover);color:var(--tx)}
@@ -3994,7 +3997,6 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 
 /* the popup hosts the flying recording, so the portfolio panel keeps its own clipping */
 .pentry{position:relative}
-.pe-rec{left:26%;top:44%}
 /* the project list is clipped to the panel, cards never bleed past its rounded edge */
 .pe-canvas{overflow:hidden}
 .pfolio-scroll{padding-bottom:6px}
@@ -4434,6 +4436,16 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .qas-q .qw{display:inline-block;will-change:transform,opacity,filter}
 /* WHAT YOU ARE SAYING, AS YOU SAY IT. Two lines showing, and it scrolls itself past that so the
    newest words are the ones on screen. It clears the moment the answer goes. */
+/* the same transcript on the POU recorder. The bar is a centred column with the field absolutely
+   placed in the middle of it, so this anchors off that centre rather than flowing under the hint —
+   the words go above the field they are going into. */
+.pou-tx{position:absolute;left:50%;bottom:calc(50% + 38px);transform:translateX(-50%) translateY(6px);
+  width:min(560px,84%);max-height:3.2em;overflow:hidden;pointer-events:none;
+  font-size:14.5px;line-height:1.6;color:var(--tx-2);text-align:center;
+  opacity:0;transition:opacity .3s var(--ease),transform .3s var(--ease);
+  -webkit-mask-image:linear-gradient(transparent,#000 42%);mask-image:linear-gradient(transparent,#000 42%)}
+.pou-tx.on{opacity:1;transform:translateX(-50%)}
+.pou-micbar.done .pou-tx{display:none}
 .qas-tx{max-width:min(560px,84%);margin:0 auto 16px;max-height:3.2em;overflow:hidden;
   font-size:14.5px;line-height:1.6;color:var(--tx-2);text-align:center;
   opacity:0;transform:translateY(4px);transition:opacity .3s var(--ease),transform .3s var(--ease);
@@ -4813,6 +4825,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
           <button class="pc-send" id="pouSendBtn" aria-label="Send answer"></button>
         </div>
         <button class="pou-continue" id="pouContinue"></button>
+        <div class="pou-tx" id="pouTx" aria-live="polite"></div>
         <div class="pou-hint" id="pouHint">HOLD <b>SPACE</b> TO TALK</div>
       </div>
       <!-- action pills (Resubmit · I'm good with it) sit above the input -->
@@ -6459,6 +6472,12 @@ function presEntryAnimPres(root){
       +'<span class="per-pip"><i></i></span>'
       +'<span class="per-rec"><i></i>REC</span>';
     (root.querySelector('.pentry')||root).appendChild(rec);   /* above the panel, so it is not clipped by it */
+    /* dead centre of the portfolio it is about to go into, measured rather than guessed — the
+       percentage it used to sit at belonged to a layout this popup no longer has */
+    const _cv=root.querySelector('.pe-canvas'), _pe=root.querySelector('.pentry');
+    if(_cv&&_pe){ const c=_cv.getBoundingClientRect(), p=_pe.getBoundingClientRect();
+      rec.style.left=((c.left+c.width/2)-p.left)+'px';
+      rec.style.top =((c.top +c.height/2)-p.top )+'px'; }
   }
 
   const build=function(){
@@ -9580,6 +9599,26 @@ const STAGE_POU={
 };
 const pouApp=document.getElementById('app'), pouComposer=document.querySelector('.composer');
 const pouRec=document.getElementById('pouRec'), pouMicBar=document.getElementById('pouMicBar'), pouHint=document.getElementById('pouHint');
+/* WHAT YOU ARE SAYING, AS YOU SAY IT. One engine, handed whichever transcript element is on screen,
+   so the POU recorder and the Q&A recorder behave identically instead of one of them having it. */
+const TX_WORDS=("So the way I would think about it is, if we only shipped half of this next quarter, "
+ +"I would keep the calendar sync, because that is where the conflicts are actually coming from. "
+ +"It is the piece that moves the number. The prep nudges matter, but they are a second order fix, "
+ +"and I would rather land one thing properly than half land two.").split(' ');
+function txEngine(el){
+  let iv=null, n=0;
+  return {
+    start:function(){ if(!el)return; n=0; el.textContent=''; el.classList.add('on');
+      clearInterval(iv);
+      iv=setInterval(function(){
+        if(n>=TX_WORDS.length){ clearInterval(iv); return; }
+        el.textContent += (n?' ':'') + TX_WORDS[n++];
+        el.scrollTop=el.scrollHeight;            /* stay on the newest line */
+      },150); },
+    stop:function(){ clearInterval(iv); if(!el)return; el.classList.remove('on'); el.textContent=''; }
+  };
+}
+const pouTx=txEngine(document.getElementById('pouTx'));
 const pouCtl=document.getElementById('pouCtl'), pouContinueBtn=document.getElementById('pouContinue');
 pouRec.innerHTML=HI.mic;
 document.getElementById('pouX').innerHTML=HI.x;
@@ -9717,11 +9756,12 @@ let pouRecording=false, pouRecT=null, pouRecSecs=0, pouSpaceHeld=false;
 function startPouRec(){ if(pouRecording||pouBusy||pouIdx>=pouQ.length||!pouApp.classList.contains('poumode'))return false; pouRecording=true; pouRecSecs=0; ZSND.play('tap');   // mic engaged
   document.getElementById('pouWaveLive').innerHTML=Array.from({length:30},(_,i)=>`<i style="height:${7+(i%6)*3}px;animation-delay:${(i%8)*70}ms"></i>`).join('');
   document.getElementById('pouTime').textContent='0:00';
-  pouMicBar.classList.add('rec'); pouHint.innerHTML="RECORDING, SEND WHEN READY";
+  pouMicBar.classList.add('rec'); pouHint.innerHTML="Recording&hellip;"; pouTx.start();
   pouRecT=setInterval(()=>{pouRecSecs++;document.getElementById('pouTime').textContent=`${Math.floor(pouRecSecs/60)}:${String(pouRecSecs%60).padStart(2,'0')}`;},1000);
   return true;
 }
 function stopPouRec(sendIt){ if(!pouRecording)return; pouRecording=false; pouSpaceHeld=false; clearInterval(pouRecT); pouMicBar.classList.remove('rec');
+  pouTx.stop(); if(!sendIt) pouHint.innerHTML="HOLD <b>SPACE</b> TO TALK";   /* cancelled: the invitation comes back */
   if(!sendIt){ pouHint.innerHTML="HOLD <b>SPACE</b> TO TALK"; return; }   // cancelled, no answer sent
   ZSND.play('select');   // spoken answer sent
   const secs=Math.max(3,pouRecSecs+2);
