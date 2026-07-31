@@ -3347,10 +3347,10 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
   pointer-events:none;z-index:5;opacity:0;transform:scale(0);
   background:radial-gradient(circle,color-mix(in srgb,var(--bc) 62%,transparent) 0%,transparent 68%)}
 .rpt .rp2-avs{display:flex;align-items:center;flex:0 0 auto}
-.rpt .rp2-av{position:relative;overflow:hidden;width:28px;height:28px;flex:0 0 28px;border-radius:99px;background:#7c6f9c;color:#fff;
-  display:grid;place-items:center;font-weight:600;font-size:11.5px;font-family:var(--f-body);
+.rpt .rp2-av{position:relative;overflow:hidden;width:22px;height:22px;flex:0 0 22px;border-radius:99px;background:#7c6f9c;color:#fff;
+  display:grid;place-items:center;font-weight:600;font-size:9.5px;font-family:var(--f-body);
   box-shadow:0 0 0 2px var(--bg)}
-.rpt .rp2-avs .rp2-av+.rp2-av{margin-left:-9px}
+.rpt .rp2-av+.rp2-av{margin-left:-7px}
 .rpt .rp2-verdict{font-family:var(--serif);font-size:46px;font-weight:500;letter-spacing:-.03em;
   line-height:1.06;margin:16px 0 0;color:var(--tx)}
 .rpt .rp2-prose{font-size:17px;line-height:1.66;color:var(--tx-2);margin:20px 0 0;max-width:64ch}
@@ -3393,7 +3393,10 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 .rpt .rp2-mlab{display:flex;align-items:baseline;gap:8px;font-family:var(--mono);font-size:10px;font-weight:700;
   text-transform:uppercase;letter-spacing:1.4px;color:var(--tx-3);margin:30px 0 10px}
 .rpt .rp2-mlab .cnt{margin-left:auto;font-variant-numeric:tabular-nums;font-weight:400}
-.rpt .rp2-list{display:flex;flex-direction:column;gap:0}   /* a list, not a stack of cards */
+.rpt .rp2-list{display:flex;flex-direction:column;gap:0;margin-top:34px}   /* a list, not a stack of cards */
+.rpt .rp2-video{margin-bottom:8px}
+.rpt .rp2-row .rp2-head{padding:17px 16px}
+.rpt .rp2-body{padding:0 16px 18px 16px}
 /* the panel's row: same radius, same quiet fill, and it rises in on its own beat like every other
    list of findings in the product */
 /* no outline. The fill is enough to separate one row from the next, and a border around every
@@ -4570,22 +4573,32 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 /* THE RUN, one frame, drawn in container-width units so it holds its proportions whether it is
    340px wide in the loader or 664px wide in the report */
 .pv{position:absolute;inset:0;container-type:inline-size;overflow:hidden;background:#0e0d0c;z-index:1}
-/* the deck FILLS the frame. It used to float inside a dark rim, and that rim was the outline that
-   never sat right — a real screen share has no border around it. */
-.pv-deck{position:absolute;inset:0;border-radius:0;background:#f5f3ee;overflow:hidden}
+/* THE DESKTOP. A shared screen is a window sitting on a background, not a page bleeding to the
+   edges — the rim only looked wrong before because it was a bare gap. This is the gap doing a job. */
+.pv-win{position:absolute;inset:3.4cqw 3.4cqw 3.4cqw;border-radius:1.8cqw;background:#f5f3ee;overflow:hidden;
+  box-shadow:0 1.4cqw 3cqw rgba(0,0,0,.45)}
 .pv-track{position:absolute;inset:0;transition:transform .42s cubic-bezier(.32,.72,0,1);will-change:transform}
-.pv-slide{position:absolute;left:0;right:0;height:100%;padding:7cqw 7.4cqw;
-  display:flex;flex-direction:column;gap:2.1cqw}
+.pv-slide{position:absolute;left:0;right:0;height:100%;padding:5.2cqw 5.6cqw;
+  display:flex;flex-direction:column;gap:1.4cqw;color:#1a1815}
 .pv-slide:nth-child(1){top:0}.pv-slide:nth-child(2){top:100%}.pv-slide:nth-child(3){top:200%}
 .pv-slide:nth-child(4){top:300%}.pv-slide:nth-child(5){top:400%}
-.pv-deck .dk-eyebrow{display:block;height:1.2cqw;border-radius:.6cqw;background:#c9c4ba}
-.pv-deck .dk-h{display:block;height:2.6cqw;border-radius:.9cqw;background:#1a1815;margin-top:.6cqw}
-.pv-deck .dk-cols{margin-top:auto;display:flex;align-items:flex-end;gap:2.1cqw;height:46%}
-.pv-deck .dk-cols i{flex:1;border-radius:.6cqw .6cqw 0 0;background:#1a1815;opacity:.82;
+/* slide type, in the deck's own voice */
+.pv-slide .sl-e{font-family:var(--mono);font-size:1.5cqw;font-weight:700;letter-spacing:.14em;color:#9a958c}
+.pv-slide .sl-h{font-size:3.4cqw;font-weight:700;line-height:1.18;letter-spacing:-.02em;margin-top:.4cqw}
+.pv-slide.sl-stat .sl-h{font-size:8cqw;letter-spacing:-.035em}
+.pv-slide .sl-sub{font-size:1.9cqw;color:#5a554f;margin-top:.6cqw}
+.pv-slide .sl-b{list-style:none;margin:1.6cqw 0 0;padding:0;display:flex;flex-direction:column;gap:1cqw}
+.pv-slide .sl-b li{position:relative;padding-left:2.4cqw;font-size:2cqw;line-height:1.4;color:#3d3933}
+.pv-slide .sl-b li::before{content:'';position:absolute;left:0;top:.5em;width:.9cqw;height:.9cqw;
+  border-radius:99px;background:#c9c4ba}
+.pv-slide .sl-cols{margin-top:auto;display:flex;align-items:flex-end;gap:2cqw;height:52%}
+.pv-slide .sl-cols i{position:relative;flex:1;border-radius:.6cqw .6cqw 0 0;background:#3d3933;opacity:.85;
   transition:height .42s cubic-bezier(.32,.72,0,1)}
-.pv-deck .dk-cols i.hi{background:#ff6a4d;opacity:1}
+.pv-slide .sl-cols i.hi{background:#ff6a4d;opacity:1}
+.pv-slide .sl-cols i em{position:absolute;left:0;right:0;bottom:-2.6cqw;text-align:center;font-style:normal;
+  font-family:var(--mono);font-size:1.3cqw;color:#9a958c}
 /* and you, in the corner, the way you were on the call */
-.pv-pip{position:absolute;right:2.4cqw;bottom:2.4cqw;width:14.4cqw;height:9.5cqw;border-radius:1.6cqw;
+.pv-pip{position:absolute;right:5.4cqw;bottom:5.4cqw;width:12.4cqw;height:8.2cqw;border-radius:1.4cqw;
   overflow:hidden;z-index:4;background:#1c1a18;border:1px solid rgba(255,255,255,.14);
   box-shadow:0 6px 18px rgba(0,0,0,.5);display:grid;place-items:center}
 .pv-pip img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
@@ -9768,26 +9781,30 @@ const rightInner=right.querySelector('.right-inner');
 /* THE RUN ITSELF: your deck on the screen, you in the corner. One definition — the loader shows
    this and so does the report's player, so the thing that flies between them is the same object. */
 function presFrameHTML(){
-  /* five slides on one track. Scrubbing slides the track, so moving the playhead moves the deck —
-     the frame behaves like a recording rather than a still with a bar under it. */
+  /* the deck you actually presented, five slides on one track. Scrubbing slides the track. */
   const S=[
-    {e:38,h:[82,54],c:null},
-    {e:52,h:[74,0],c:[26,44,33,58,41]},
-    {e:44,h:[88,61],c:[38,62,47,88,71]},
-    {e:60,h:[70,48],c:[52,71,60,94,83]},
-    {e:34,h:[86,58],c:[44,58,52,76,64]}
+    {k:'title', e:'REDUCING HOST CANCELLATIONS', h:'Real-time calendar sync', sub:'Sanjay Chauhan &middot; Marketplace Ops'},
+    {k:'text',  e:'THE PROBLEM', h:'Cancellations went 8% to 14% in six weeks',
+     b:['Calendar conflicts are 46% of them','Entire-home listings, hosts under 18 months']},
+    {k:'chart', e:'WHERE IT IS COMING FROM', h:'Conflicts by month',
+     c:[26,44,33,58,41], hi:3, lab:['Oct','Nov','Dec','Jan','Feb']},
+    {k:'text',  e:'THE RECOMMENDATION', h:'Sync external calendars in real time',
+     b:['Removes the conflict at source','Prep nudges cover the tenure gap']},
+    {k:'stat',  e:'WHAT IT IS WORTH', h:'$3.0M', sub:'a year, at a 10% cancellation rate'}
   ];
   const slide=function(d){
-    return '<div class="pv-slide">'
-      +'<span class="dk-eyebrow" style="width:'+d.e+'%"></span>'
-      +'<span class="dk-h" style="width:'+d.h[0]+'%"></span>'
-      +(d.h[1]?'<span class="dk-h two" style="width:'+d.h[1]+'%"></span>':'')
-      +(d.c?'<span class="dk-cols">'+d.c.map(function(v,i){
-          return '<i style="height:'+v+'%"'+(i===3?' class="hi"':'')+'></i>'; }).join('')+'</span>':'')
-      +'</div>';
+    let body='';
+    if(d.k==='chart'){
+      body='<span class="sl-cols">'+d.c.map(function(v,i){
+        return '<i style="height:'+v+'%"'+(i===d.hi?' class="hi"':'')+'><em>'+d.lab[i]+'</em></i>'; }).join('')+'</span>';
+    } else if(d.b){
+      body='<ul class="sl-b">'+d.b.map(function(t){ return '<li>'+t+'</li>'; }).join('')+'</ul>';
+    } else if(d.sub){ body='<span class="sl-sub">'+d.sub+'</span>'; }
+    return '<div class="pv-slide sl-'+d.k+'">'
+      +'<span class="sl-e">'+d.e+'</span><span class="sl-h">'+d.h+'</span>'+body+'</div>';
   };
   return '<div class="pv">'
-    +'<div class="pv-deck"><div class="pv-track" data-n="'+S.length+'">'+S.map(slide).join('')+'</div></div>'
+    +'<div class="pv-win"><div class="pv-track" data-n="'+S.length+'">'+S.map(slide).join('')+'</div></div>'
     +'<span class="pv-pip">'+(ME.img?'<img src="'+ME.img+'" alt="" onerror="this.remove()">':'')+'<b>'+ME.i+'</b><em>'+escHtml(ME.name)+'</em></span>'
     +'</div>';
 }
@@ -10042,9 +10059,49 @@ function jumpStage(i){
   updateStageNav();
   const dbg=document.getElementById('dbg'); if(dbg)dbg.classList.remove('open');
 }
+/* ============ ONE STEP FORWARD ============================================================
+   The forward arrow does not skip a stage. It does the next thing the flow is waiting on — fills
+   the plan, shares it, hits the pill that is showing, answers the manager, dismisses the pop-up —
+   so holding it walks the whole scenario the way a person would. Only when nothing is pending does
+   it move to the next stage.
+   It reads the screen rather than following a script, so it cannot fall out of sync with the flow. */
+function _vis(el){ if(!el) return false; const r=el.getBoundingClientRect();
+  return r.width>0 && r.height>0 && getComputedStyle(el).visibility!=='hidden'; }
+function _q(sel){ const e=document.querySelector(sel); return _vis(e)?e:null; }
+const STEP_REPLY=["Sounds good.","That makes sense, thanks.","Got it, I'm good to go."];
+let _stepReply=0;
+function stepFlow(){
+  /* 1. a pop-up is in the way: acknowledge it */
+  let el=_q('#pentry #peGo')||_q('#pfdone #pfDoneGo')||_q('.ri-modal #riGo');
+  if(el){ el.click(); return; }
+  /* 2. a pad is open: write something in it, then send it */
+  const pad=document.querySelector('.plan-pad'); 
+  if(pad && _vis(pad)){
+    const ed=pad.querySelector('.pp-ed'), go=pad.querySelector('.share-plan');
+    if(ed && !ed.innerText.trim()){
+      ed.innerHTML='Lead with the recommendation, then the evidence behind it.<br>Bring the cost number and land it.<br>Leave room at the end for their questions.';
+      ed.dispatchEvent(new Event('input',{bubbles:true})); return;   /* writing is its own step */
+    }
+    if(go){ go.click(); return; }
+  }
+  /* 3. something is offered: take it */
+  el=_q('.timepills .zpill.go')||_q('.timepills .zpill')||_q('.pres-cta .pc-go')
+    ||_q('#pouContinue')||_q('.fev-walk')||_q('#rmShareCTA.show')||_q('.rm-go');
+  if(el){ el.click(); return; }
+  /* 4. he is waiting on a reply: give him one */
+  const inp=document.getElementById('input');
+  if(inp && _vis(inp) && !document.querySelector('.composer').classList.contains('hidden')){
+    if(!inp.value.trim()){ inp.value=STEP_REPLY[_stepReply++%STEP_REPLY.length];
+      inp.dispatchEvent(new Event('input',{bubbles:true})); return; }
+    try{ send(); return; }catch(e){}
+  }
+  /* 5. nothing pending — then, and only then, the next stage */
+  if(stageIdx<STAGES.length-1) jumpStage(stageIdx+1);
+}
 function updateStageNav(){
   const nav=document.getElementById('stageNav');
-  if(nav){ const p=nav.querySelector('.sn-prev'), n=nav.querySelector('.sn-next'); if(p)p.disabled=stageIdx<=0; if(n)n.disabled=stageIdx>=STAGES.length-1; }
+  /* forward is never disabled: there is always a next step, even on the last stage */
+  if(nav){ const p=nav.querySelector('.sn-prev'); if(p)p.disabled=stageIdx<=0; }
   document.querySelectorAll('#stageJump button[data-stage]').forEach(b=>b.classList.toggle('on',+b.dataset.stage===stageIdx));
 }
 function buildStageNav(){
@@ -10067,7 +10124,7 @@ function buildStageNav(){
     nav.innerHTML='<button class="sn-btn sn-prev" aria-label="Previous stage">'+_navSVG('M15 18l-6-6 6-6')+'</button><button class="sn-btn sn-next" aria-label="Next stage">'+_navSVG('M9 18l6-6-6-6')+'</button>';
     document.body.appendChild(nav);
     nav.querySelector('.sn-prev').onclick=()=>jumpStage(stageIdx-1);
-    nav.querySelector('.sn-next').onclick=()=>jumpStage(stageIdx+1);
+    nav.querySelector('.sn-next').onclick=()=>stepFlow();
   }
   updateStageNav();
 }
