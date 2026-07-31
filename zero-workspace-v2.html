@@ -10041,6 +10041,7 @@ function setTechScenario(on){
 function _navSVG(d){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="'+d+'"/></svg>';}
 function jumpStage(i){
   i=Math.max(0,Math.min(STAGES.length-1,i));
+  try{ delete _stepSubmitted[i]; }catch(e){}
   cancelPlanRun();   // kill anything the stage you are leaving still had in flight
   try{ planActive=false; planStage=null; planSubPhase=null; stuckMode=false; awaitShot=false; afterShot=null; }catch(e){}
   try{ exitNotesMode(); input.placeholder='Message Jay…'; }catch(e){}
@@ -10100,6 +10101,7 @@ function _busy(){
 function _vis(el){ if(!el) return false; const r=el.getBoundingClientRect();
   return r.width>0 && r.height>0 && getComputedStyle(el).visibility!=='hidden'; }
 function _q(sel){ const e=document.querySelector(sel); return _vis(e)?e:null; }
+const _stepSubmitted={};   /* one hand-in per stage; the arrow must not resubmit forever */
 const STEP_REPLY=["Sounds good.","That makes sense, thanks.","Got it, I'm good to go."];
 let _stepReply=0;
 function stepFlow(){
@@ -10133,7 +10135,17 @@ function stepFlow(){
   if(document.querySelector('.room, .qas, .rpt')){ flushBeats(); return; }
   /* 6. nothing offered and nothing running: push the remaining beats before giving up on the stage */
   if(flushBeats(2)>0) return;
-  /* 7. genuinely nothing left here — now the next stage */
+  /* 7. he is waiting on the WORK. Hand it in — that is the step that produces the review, and
+     skipping it was why the run never reached a feedback panel. */
+  if(!_stepSubmitted[stageIdx] && typeof addAttachment==='function' && typeof send==='function'
+     && composerEl && !composerEl.classList.contains('hidden')){
+    _stepSubmitted[stageIdx]=true;
+    try{
+      const nm=(STAGES[stageIdx].id==='final'?'final_proposal_v1.pdf':(STAGES[stageIdx].id||'work')+'_v1.pdf');
+      addAttachment('file',nm); send(); return;
+    }catch(e){}
+  }
+  /* 8. genuinely nothing left here — now the next stage */
   if(stageIdx<STAGES.length-1) jumpStage(stageIdx+1);
 }
 function updateStageNav(){
