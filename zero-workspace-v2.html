@@ -4813,7 +4813,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
           <button class="pc-send" id="pouSendBtn" aria-label="Send answer"></button>
         </div>
         <button class="pou-continue" id="pouContinue"></button>
-        <div class="pou-hint" id="pouHint">TAP THE MIC OR HOLD <b>SPACE</b> TO TALK</div>
+        <div class="pou-hint" id="pouHint">HOLD <b>SPACE</b> TO TALK</div>
       </div>
       <!-- action pills (Resubmit · I'm good with it) sit above the input -->
       <div class="action-bar" id="actionBar"></div>
@@ -8046,7 +8046,7 @@ function qasAsk(i){
   const hint=el.querySelector('#qasHint'), bar=el.querySelector('#qasBar');
   bar.classList.add('waiting'); hint.textContent=who.name.split(' ')[0]+' is asking';
   R.qt.push(setTimeout(function(){
-    bar.classList.remove('waiting'); hint.innerHTML='Tap the mic or hold <b>space</b> to talk';
+    bar.classList.remove('waiting'); hint.innerHTML='Hold <b>space</b> to talk';
     R.qaBusy=false;
     try{ ZSND.play('toggleOn'); }catch(e){}     /* the floor is yours */
   }, 900+Math.min(3600,q.t.length*32)));
@@ -8092,11 +8092,13 @@ function qasBind(){
     /* the mic dissolves into cancel · wave · time · send, in place */
     wave.innerHTML=Array.from({length:26},function(_,i2){ return '<i style="height:'+(7+(i2%6)*3)+'px;animation-delay:'+((i2%8)*70)+'ms"></i>'; }).join('');
     bar.classList.add('rec'); try{ ZSND.play('tap'); }catch(e){}
+    hint.innerHTML='Recording&hellip;';           /* the line reports the state it is in */
     txStart();
     iv=setInterval(function(){ secs++; tm.textContent=Math.floor(secs/60)+':'+String(secs%60).padStart(2,'0'); },1000);
   };
   const stop=function(keep){
     if(!live)return; live=false; clearInterval(iv); bar.classList.remove('rec'); txStop();
+    if(!keep) hint.innerHTML='Hold <b>space</b> to talk';   /* discarded: back to the invitation */
     if(!keep){ try{ ZSND.play('toggleOff'); }catch(e){} return; }
     const took=Math.max(4,secs);
     try{ ZSND.play('select'); }catch(e){}
