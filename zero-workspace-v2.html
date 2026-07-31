@@ -2105,7 +2105,7 @@ mark.qhl.pulse{animation:qhlpulse 1.3s var(--ease)}
 
 /* bottom-bar morph: the input converts into the "Start presenting" CTA, same footprint */
 .composer.pres-cta-mode .composer-in,.composer.pres-cta-mode .foot,.composer.pres-cta-mode .action-bar,.composer.pres-cta-mode .timepills,.composer.pres-cta-mode .pou-micbar{display:none!important}
-.pres-cta{position:relative;display:flex;align-items:center;gap:15px;max-width:var(--maxw);margin:0 auto;overflow:visible;   /* the glow that needed clipping is gone, and hidden was cutting the tooltip off */
+.pres-cta{position:relative;display:flex;align-items:center;gap:15px;max-width:var(--maxw);margin:0 auto;overflow:visible;will-change:transform,opacity,filter;   /* the glow that needed clipping is gone, and hidden was cutting the tooltip off */
   background:var(--card);border:var(--bw) solid var(--line);border-radius:20px;padding:13px 14px 13px 16px;box-shadow:0 12px 30px rgba(0,0,0,.26);
   animation:ctaRise .5s var(--ease)}
 @keyframes ctaRise{from{opacity:0;transform:translateY(10px);filter:blur(6px)}to{opacity:1;transform:none;filter:blur(0)}}
@@ -8533,7 +8533,7 @@ function presPracticeAsk(){
         +'<div class="pc-s">Two minutes, out loud, like the real thing</div></div>'
         +'<button class="pc-go" id="prcGo">Start recording '+PIC.arrow+'</button>';
       composerEl.classList.add('pres-cta-mode');
-      presEscPill();   /* changed your mind: the pill above takes you back to both choices */
+      presEscPill(); presCTAEnter();   /* changed your mind: the pill above takes you back to both choices */
       cta.querySelector('#prcGo').onclick=function(){ try{ZSND.play('select');}catch(e){} presClearCTA(); pfPopup('record'); };
     }, 620);
   }, 950);
@@ -8631,12 +8631,27 @@ function presComposerCTA(){
     +'<div class="pc-m"><div class="pc-t">Your team is in the room</div><div class="pc-s">'+PANEL[0].name.split(' ')[0]+' and '+PANEL[1].name.split(' ')[0]+' are waiting for you</div></div>'
     +'<button class="pc-go">Start presenting '+PIC.arrow+'</button>';
   composerEl.classList.add('pres-cta-mode');
-  presEscPill();
+  presEscPill(); presCTAEnter();
   cta.querySelector('.pc-go').onclick=()=>{ presRoom('live'); };
 }
 function presClearCTA(){ composerEl.classList.remove('pres-cta-mode');
   const c=composerEl.querySelector('.pres-cta'); if(c)c.remove();
   const e=composerEl.querySelector('.pres-esc'); if(e)e.remove(); }
+/* the chat bar and the hand-off bar sit in the same place and are the same width, so the swap is
+   a morph: what is leaving softens and drops away, what arrives rises into its footprint and comes
+   sharp. The way out rides in on the same beat, half a step behind, so it is there the moment the
+   bar is. */
+function presCTAEnter(){
+  const G=window.gsap;
+  const cta=composerEl.querySelector('.pres-cta'), esc=composerEl.querySelector('.pres-esc');
+  if(!G){ if(cta)cta.style.opacity=1; if(esc)esc.style.opacity=1; return; }
+  if(cta) G.fromTo(cta,{opacity:0,y:14,scale:.972,filter:'blur(5px)'},
+                       {opacity:1,y:0,scale:1,filter:'blur(0px)',duration:.5,ease:'power3.out',
+                        clearProps:'filter,transform'});
+  if(esc) G.fromTo(esc,{opacity:0,y:10,filter:'blur(4px)'},
+                       {opacity:1,y:0,filter:'blur(0px)',duration:.44,ease:'power3.out',delay:.07,
+                        clearProps:'filter,transform'});
+}
 /* the way out of any hand-off bar: a pill sitting above it, not a cross buried inside it */
 function presEscPill(){
   let e=composerEl.querySelector('.pres-esc');
