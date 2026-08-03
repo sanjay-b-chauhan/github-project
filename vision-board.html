@@ -223,6 +223,11 @@ body{font-family:Nunito,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;b
 .kill:hover{background:var(--thread)}
 .p-name .kill{top:2px;right:-6px}
 body.exporting .kill{display:none}
+/* the picture is always landscape: if the live board is portrait we lay the
+   mat out in a wide frame just for the shot, then put everything back */
+body.shooting .shell{visibility:hidden}
+body.shooting .board{visibility:visible;position:fixed !important;left:0;top:0;
+  width:1600px !important;height:900px !important;padding:22px !important;z-index:9999}
 
 @media (max-width:1080px){
   .shell{grid-template-columns:1fr;grid-template-rows:auto 1fr}
@@ -1198,7 +1203,7 @@ $('#dice').addEventListener('click', ()=>{
   nameInput.value = S.name; nameTick(true);
   renderRows();
   plane.querySelectorAll('.piece:not(.p-prop)').forEach(e=>e.remove());
-  tSig='';
+  ropeSig='';
   sync($('#dice')); save();
   if(G) G.fromTo('#dieIcon',{rotation:0},{rotation:360,duration:.7,ease:'back.out(2)',transformOrigin:'50% 50%'});
 });
@@ -1208,7 +1213,7 @@ $('#wipe').addEventListener('click', ()=>{
   nameInput.value=''; nameTick(false);
   renderRows();
   const els = [...plane.querySelectorAll('.piece:not(.p-prop)')];
-  const finish = ()=>{ els.forEach(e=>e.remove()); tSig=''; sync(); };
+  const finish = ()=>{ els.forEach(e=>e.remove()); ropeSig=''; sync(); };
   if(!G){ finish(); return save(); }
   G.to(els,{y:'+=60',opacity:0,scale:.85,duration:.42,ease:'power2.in',stagger:{each:.05,from:'end'},onComplete:finish});
   save();
@@ -1260,6 +1265,14 @@ $('#tSave').addEventListener('click', async e=>{
   if(btn.dataset.busy) return;
   btn.dataset.busy='1'; setSaveIcon(btn,'busy');
   const wasChrome = S.chrome;
+  let reshaped = false, savedPOS = null;
+  const unshape = ()=>{
+    if(!reshaped) return;
+    reshaped = false;
+    document.body.classList.remove('shooting');
+    if(savedPOS) POS = savedPOS;
+    setTimeout(()=>{ drawMat(); layout(manifest()); }, 60);
+  };
   try{
     if(!window.html2canvas) await new Promise((res,rej)=>{
       const sc = document.createElement('script');
@@ -1272,6 +1285,19 @@ $('#tSave').addEventListener('click', async e=>{
     await new Promise(r=>setTimeout(r,240));
 
     const board = $('#board'), mat = $('.mat');
+    // a portrait board would export as a tall mat floating in dark bands —
+    // relay it into a wide frame first so the mat itself is landscape
+    const live = mat.getBoundingClientRect();
+    reshaped = (live.width / live.height) < 1.45;
+    if(reshaped){
+      savedPOS = POS; POS = {};
+      document.body.classList.add('shooting');
+      await new Promise(r=>setTimeout(r,80));
+      drawMat();
+      layout(manifest());
+      await new Promise(r=>setTimeout(r,950));
+      stepRopes(30);
+    }
     const br = board.getBoundingClientRect(), mr = mat.getBoundingClientRect();
     const s = Math.min(2, Math.max(1.5, window.devicePixelRatio||1));
     const shot = await html2canvas(board, {
@@ -1305,7 +1331,10 @@ $('#tSave').addEventListener('click', async e=>{
     a.download = (S.name.trim() ? S.name.trim().toLowerCase().replace(/\s+/g,'-') : 'vision') + '-board.png';
     a.href = out.toDataURL('image/png');
     a.click();
+    Snd.shutter();
+    unshape();
   }catch(err){
+    unshape();
     setSaveIcon(btn,'fail'); btn.dataset.tip="Couldn't save";
     setTimeout(()=>{ setSaveIcon(btn,'idle'); btn.dataset.tip='Download'; }, 1800);
     document.body.classList.remove('exporting');
