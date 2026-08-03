@@ -377,23 +377,8 @@ const Snd = (()=>{
     o.connect(g); g.connect(master);
     o.start(t0); o.stop(t0+dur+0.02);
   }
-  function noise({dur=.12, gain=.3, delay=0, hp=800, lp=6000}){
-    if(!on) return;
-    const c = wake(); if(!c) return;
-    const t0 = c.currentTime + delay;
-    const n = Math.floor(c.sampleRate*dur);
-    const buf = c.createBuffer(1, n, c.sampleRate);
-    const d = buf.getChannelData(0);
-    for(let i=0;i<n;i++) d[i] = (Math.random()*2-1) * (1 - i/n);
-    const src = c.createBufferSource(); src.buffer = buf;
-    const bp = c.createBiquadFilter(); bp.type='bandpass';
-    bp.frequency.value = (hp+lp)/2; bp.Q.value = 0.8;
-    const g = c.createGain();
-    g.gain.setValueAtTime(gain, t0);
-    g.gain.exponentialRampToValueAtTime(0.0001, t0+dur);
-    src.connect(bp); bp.connect(g); g.connect(master);
-    src.start(t0); src.stop(t0+dur+0.02);
-  }
+  /* no noise generator on purpose — every burst of it read as a thud.
+     the whole set is pitched tones now. */
   return {
     get on(){ return on; },
     toggle(){ on = !on; if(on){ wake(); tone({freq:660,to:990,dur:.12,type:'triangle',gain:.4}); } return on; },
@@ -415,10 +400,10 @@ const Snd = (()=>{
     remove(){ tone({freq:760,to:430,dur:.09,type:'triangle',gain:.22}); },
     /* the dice: a little tumble, then the board lands */
     roll(){
-      for(let i=0;i<5;i++) noise({dur:.05,gain:.16,delay:i*0.055,hp:1400,lp:7000});
+      [0,1,2,3,4].forEach(i=> tone({freq:520+i*130, dur:.05, type:'triangle', gain:.17, delay:i*0.055}));
       tone({freq:330,to:660,dur:.2,type:'triangle',gain:.34,delay:.3});
     },
-    shutter(){ noise({dur:.05,gain:.34,hp:1800,lp:9000}); noise({dur:.08,gain:.22,delay:.07,hp:900,lp:5000}); },
+    shutter(){ tone({freq:1500,to:1900,dur:.04,type:'sine',gain:.22}); tone({freq:1150,to:820,dur:.07,type:'sine',gain:.16,delay:.07}); },
     sweep(){ tone({freq:240,to:880,dur:.3,type:'sine',gain:.24}); }
   };
 })();
