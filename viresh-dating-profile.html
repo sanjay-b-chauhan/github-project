@@ -424,7 +424,10 @@ function reveal(){
   });
 }
 setTimeout(reveal,60);
-setTimeout(()=>{ document.querySelectorAll('[data-r]').forEach(el=>{ if(!el.dataset.seen) gsap.set(el,{opacity:1,y:0}); }); },2600);
+/* mark them seen as well as visible, or a later scroll re-animates from
+   opacity 0 and a throttled tab strands the card blank */
+setTimeout(()=>{ document.querySelectorAll('[data-r]').forEach(el=>{
+  if(!el.dataset.seen){ el.dataset.seen='1'; gsap.set(el,{opacity:1,y:0}); } }); },3200);
 
 /* ---------------- photo lightbox ---------------- */
 let lbI=0;
