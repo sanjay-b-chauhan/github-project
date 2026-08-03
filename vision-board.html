@@ -147,6 +147,8 @@ form{margin-top:20px;display:flex;flex-direction:column;gap:14px}
 .eye svg{width:19px;height:19px}
 .eye:hover{transform:translateY(-2px);background:rgba(255,255,255,.34);box-shadow:var(--sh-ui)}
 .eye.off{background:#fff;color:var(--ink);box-shadow:var(--sh-rest)}
+.eye.spin svg{animation:eyespin .8s linear infinite}
+@keyframes eyespin{to{transform:rotate(360deg)}}
 .tpill{padding:8px 14px;border-radius:99px;border:3px solid #fff;background:rgba(255,255,255,.16);color:#fff;
   font-family:Fredoka,sans-serif;font-weight:500;font-size:12.5px;cursor:pointer;white-space:nowrap;backdrop-filter:blur(6px);
   transition:transform .22s var(--ease),background .22s,color .22s,box-shadow .22s var(--ease)}
@@ -377,8 +379,11 @@ body.mat-light .p-name.blank{color:rgba(22,40,29,.5)}
           <div class="tpill on" id="tShadow">Hard shadow</div>
           <div class="tpill" id="tSpread">Tidy</div>
           <div class="tpill" id="tTidy">Re-lay</div>
-          <div class="tpill" id="tSave">Download</div>
         </div>
+        <button class="eye" id="tSave" title="Download as an image" aria-label="Download as an image">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3.5v11"/><path d="m7.5 10.5 4.5 4.5 4.5-4.5"/><path d="M4.5 19.5h15"/></svg>
+        </button>
         <button class="eye" id="tHide" title="Hide the controls" aria-label="Hide the controls">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M2 12s3.8-7 10-7 10 7 10 7-3.8 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -1105,11 +1110,22 @@ $('#tSpread').addEventListener('click', e=>{
   layout(manifest()); save();
 });
 
-/* take the board away as a picture */
+/* take the board away as a picture — icon only, state shown by the icon itself */
+const SAVE_ICONS = {
+  idle:`<path d="M12 3.5v11"/><path d="m7.5 10.5 4.5 4.5 4.5-4.5"/><path d="M4.5 19.5h15"/>`,
+  busy:`<path d="M12 4a8 8 0 1 1-8 8" opacity=".9"/>`,
+  done:`<path d="M4.5 12.5 10 18 19.5 6.5"/>`,
+  fail:`<path d="M6 6l12 12M18 6 6 18"/>`
+};
+const setSaveIcon = (btn, k)=>{
+  const svg = btn.querySelector('svg');
+  if(svg) svg.innerHTML = SAVE_ICONS[k];
+  btn.classList.toggle('spin', k === 'busy');
+};
 $('#tSave').addEventListener('click', async e=>{
-  const btn = e.currentTarget, label = btn.textContent;
+  const btn = e.currentTarget;
   if(btn.dataset.busy) return;
-  btn.dataset.busy = '1'; btn.textContent = 'Saving…';
+  btn.dataset.busy = '1'; setSaveIcon(btn, 'busy');
   const wasChrome = S.chrome;
   try{
     if(!window.html2canvas) await new Promise((res,rej)=>{
@@ -1133,8 +1149,9 @@ $('#tSave').addEventListener('click', async e=>{
     a.href = canvas.toDataURL('image/png');
     a.click();
   }catch(err){
-    btn.textContent = "Couldn't save";
-    setTimeout(()=>{ btn.textContent = label; }, 1800);
+    setSaveIcon(btn, 'fail');
+    btn.title = "Couldn't save that one";
+    setTimeout(()=>{ setSaveIcon(btn,'idle'); btn.title='Download as an image'; }, 1800);
     document.body.classList.remove('exporting');
     if(wasChrome) $('#pillrow').classList.remove('hidden');
     delete btn.dataset.busy;
@@ -1142,7 +1159,8 @@ $('#tSave').addEventListener('click', async e=>{
   }
   document.body.classList.remove('exporting');
   if(wasChrome) $('#pillrow').classList.remove('hidden');
-  btn.textContent = 'Saved'; setTimeout(()=>{ btn.textContent = label; }, 1500);
+  setSaveIcon(btn, 'done');
+  setTimeout(()=>setSaveIcon(btn,'idle'), 1500);
   delete btn.dataset.busy;
 });
 
