@@ -527,11 +527,13 @@ function section(title, countId){
 }
 function landIn(node){
   $('pBody').appendChild(node);
-  gsap.fromTo(node,{opacity:0,y:16},{opacity:1,y:0,duration:.6,ease:EIO});
-  setTimeout(()=>gsap.set(node,{opacity:1,y:0}), 900);
+  /* must be a timeline forced to progress(1): a bare fromTo would be held at
+     opacity 0 by a throttled ticker and the piece would never appear */
+  safeTL(gsap.timeline().fromTo(node,{opacity:0,y:16},{opacity:1,y:0,duration:.6,ease:EIO}), 900);
   const s=$('scroll');
-  gsap.to(s,{ scrollTop:Math.max(0, s.scrollHeight-s.clientHeight), duration:.7, ease:EIO });
-  setTimeout(()=>{ s.scrollTop = Math.max(0, s.scrollHeight-s.clientHeight); }, 900);
+  const bottom=()=>Math.max(0, s.scrollHeight-s.clientHeight);
+  safeTL(gsap.timeline().to(s,{ scrollTop:bottom(), duration:.7, ease:EIO }), 900);
+  setTimeout(()=>{ s.scrollTop = bottom(); }, 950);
 }
 function addProject(i){
   const d=primary();
@@ -637,7 +639,8 @@ function render(i){
     send.onclick=fire;
     b.appendChild(inp); box.appendChild(b); box.appendChild(send);
     link.onclick=()=>{ box.classList.add('open'); link.style.display='none';
-      gsap.fromTo(box,{opacity:0,y:8},{opacity:1,y:0,duration:.4}); setTimeout(()=>inp.focus(),120); };
+      safeTL(gsap.timeline().fromTo(box,{opacity:0,y:8},{opacity:1,y:0,duration:.4}), 800);
+      setTimeout(()=>inp.focus(),120); };
     own.appendChild(link); own.appendChild(box); t.appendChild(own);
   }
 
@@ -674,8 +677,9 @@ async function calibrate(){
   $('col').innerHTML=''; $('col').appendChild(t);
 
   words(q, `Reading you, ${A.name||'friend'}.`);
-  gsap.fromTo(q.querySelectorAll('.w'),{opacity:0,y:14},{opacity:1,y:0,duration:.5,stagger:.04});
-  gsap.fromTo(dial,{opacity:0,scale:.86},{opacity:1,scale:1,duration:.6});
+  safeTL(gsap.timeline()
+    .fromTo(q.querySelectorAll('.w'),{opacity:0,y:14},{opacity:1,y:0,duration:.5,stagger:.04},0)
+    .fromTo(dial,{opacity:0,scale:.86},{opacity:1,scale:1,duration:.6},0), 1500);
 
   const C=2*Math.PI*46;
   const ring=$('ring');
@@ -691,7 +695,7 @@ async function calibrate(){
   for(const [text, pct] of beats){
     const l=mk('div','calline','<span class="d"></span><span>'+text+'</span>');
     lines.appendChild(l);
-    gsap.fromTo(l,{opacity:0,y:8},{opacity:1,y:0,duration:.35});
+    safeTL(gsap.timeline().fromTo(l,{opacity:0,y:8},{opacity:1,y:0,duration:.35}), 700);
     if(lines.children.length>2) lines.firstChild.remove();
     const tl=gsap.timeline();
     tl.to(ring,{ strokeDashoffset:C*(1-pct/100), duration:.85, ease:EIO },0)
