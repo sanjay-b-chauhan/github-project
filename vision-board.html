@@ -196,7 +196,7 @@ form{margin-top:20px;display:flex;flex-direction:column;gap:14px}
 
 .p-co{background:#fff;padding:13px 17px 14px;display:flex;align-items:center;gap:12px}
 .p-co .logo{width:38px;height:38px;flex:none;border-radius:12px;display:grid;place-items:center;background:#f4f2ec;overflow:hidden}
-.p-co .logo img{width:24px;height:24px;object-fit:contain;display:block}
+.p-co .logo svg{width:24px;height:24px;display:block}
 .p-co .logo.mono{color:#fff;font-family:Fredoka,sans-serif;font-weight:600;font-size:16px}
 .p-co .co-n{font-family:Fredoka,sans-serif;font-weight:600;font-size:18px;line-height:1.1;color:var(--ink);white-space:nowrap;max-width:170px;overflow:hidden;text-overflow:ellipsis}
 
@@ -594,6 +594,23 @@ const ART = {
   propPin:`<svg width="34" height="38" viewBox="0 0 34 38" fill="none"><ellipse cx="17" cy="35" rx="3.4" ry="2" fill="rgba(0,0,0,.3)"/><path d="M17 20v16" stroke="#8e1810" stroke-width="2.6" stroke-linecap="round"/><circle cx="17" cy="12" r="11" fill="#e0473a"/><circle cx="17" cy="12" r="11" stroke="#fff" stroke-width="2.6"/><circle cx="13" cy="8" r="3.4" fill="#ff9d92"/></svg>`
 };
 const slugify = s => s.toLowerCase().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'');
+/* Brand marks are injected as inline <svg>, not <img>. html2canvas will not
+   draw an SVG image at all, but it does serialise inline SVG — so this is what
+   makes the logos survive the download as well as look sharp on screen. */
+const markCache = new Map();
+function brandMark(slug){
+  if(!slug) return Promise.resolve(null);
+  if(markCache.has(slug)) return markCache.get(slug);
+  const p = fetch('https://cdn.simpleicons.org/'+slug)
+    .then(r => r.ok ? r.text() : null)
+    .then(t => {
+      if(!t || !/^\s*<svg[\s>]/i.test(t) || /<script/i.test(t)) return null;
+      return t.replace('<svg ', '<svg width="24" height="24" ');
+    })
+    .catch(()=>null);
+  markCache.set(slug, p);
+  return p;
+}
 const MONO = ['#ff9e7d','#8ecdff','#c9b8ff','#c9f24f','#ffd84d','#8fe3c0'];
 const photoCache = new Map();
 function cityPhoto(city){
@@ -649,11 +666,16 @@ function markup(it){
     case 'vision': return {cls:'p-vision',html:SHEEN+KILL+'<span class="q">“</span>'+highlight(S.vision)};
     case 'co':{
       const s = slugify(it.data), col = MONO[(s.charCodeAt(0)||0)%MONO.length];
-      return {cls:'p-co', html:SHEEN+KILL+`<div class="logo"><img alt="" crossorigin="anonymous" src="https://cdn.simpleicons.org/${s}"/></div><div class="co-n">${esc(it.data)}</div>`,
+      return {cls:'p-co', html:SHEEN+KILL+`<div class="logo"></div><div class="co-n">${esc(it.data)}</div>`,
         after: el=>{
-          const box = el.querySelector('.logo'), img = box.querySelector('img');
-          img.addEventListener('error',()=>{ box.classList.add('mono'); box.style.background=col; box.textContent=initials(it.data); });
-          img.addEventListener('load',()=>{ if(G) G.from(img,{scale:.4,opacity:0,duration:.55,ease:'back.out(3)'}); });
+          const box = el.querySelector('.logo');
+          brandMark(s).then(svg=>{
+            if(!box.isConnected) return;
+            if(!svg){ box.classList.add('mono'); box.style.background=col; box.textContent=initials(it.data); return; }
+            box.innerHTML = svg;
+            const mark = box.firstElementChild;
+            if(G && mark) G.fromTo(mark,{scale:.4,opacity:0},{scale:1,opacity:1,duration:.55,ease:'back.out(3)'});
+          });
         }};
     }
     case 'loc': return {cls:'p-loc', html:SHEEN+KILL+
@@ -1130,8 +1152,6 @@ $('#tSave').addEventListener('click', async e=>{
   if(btn.dataset.busy) return;
   btn.dataset.busy = '1'; setSaveIcon(btn, 'busy');
   const wasChrome = S.chrome;
-  const restore = [];
-  const putBack = ()=> restore.splice(0).forEach(([img,url])=>{ img.onload=null; img.onerror=null; img.src=url; });
   try{
     if(!window.html2canvas) await new Promise((res,rej)=>{
       const s = document.createElement('script');
@@ -1145,32 +1165,6 @@ $('#tSave').addEventListener('click', async e=>{
     await new Promise(r=>setTimeout(r,240));
 
     const board = $('#board'), mat = $('.mat');
-    // html2canvas will not draw an SVG <img> at all — inlining it is not enough.
-    // Rasterise each brand mark to a PNG ourselves, swap it in for the capture,
-    // then put the original back.
-    await Promise.all([...board.querySelectorAll('.p-co .logo img')].map(async img=>{
-      const url = img.getAttribute('src');
-      if(!url || url.startsWith('data:image/png')) return;
-      try{
-        const res = await fetch(url);
-        if(!res.ok) return;
-        let svg = await res.text();
-        if(!/<svg[^>]*\swidth=/.test(svg)) svg = svg.replace('<svg ', '<svg width="128" height="128" ');
-        const svgUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-        const bitmap = await new Promise((ok,no)=>{
-          const im = new Image();
-          im.onload = ()=>ok(im); im.onerror = no;
-          im.src = svgUrl;
-        });
-        const c = document.createElement('canvas');
-        c.width = c.height = 128;
-        c.getContext('2d').drawImage(bitmap, 0, 0, 128, 128);
-        const png = c.toDataURL('image/png');
-        if(png.length < 200) return;
-        restore.push([img, url]);
-        await new Promise(done=>{ img.onload = done; img.onerror = done; img.src = png; });
-      }catch(e){}
-    }));
     const br = board.getBoundingClientRect(), mr = mat.getBoundingClientRect();
     const s = Math.min(2, Math.max(1.5, window.devicePixelRatio||1));
     // shoot the whole board, then cut the mat out of it — cropping inside
@@ -1219,9 +1213,9 @@ $('#tSave').addEventListener('click', async e=>{
     a.download = (S.name.trim() ? S.name.trim().toLowerCase().replace(/\s+/g,'-') : 'vision') + '-board.png';
     a.href = out.toDataURL('image/png');
     a.click();
-    putBack();
+
   }catch(err){
-    try{ putBack(); }catch(_){}
+
     setSaveIcon(btn, 'fail');
     btn.title = "Couldn't save that one";
     setTimeout(()=>{ setSaveIcon(btn,'idle'); btn.title='Download as an image'; }, 1800);
