@@ -61,9 +61,17 @@ body{font-family:Nunito,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;b
 .nameask .tick{position:absolute;right:14px;bottom:15px;width:20px;height:20px;border-radius:50%;background:var(--ink);display:grid;place-items:center;opacity:0;transform:scale(.4)}
 .nameask .tick svg{width:11px;height:11px}
 
-.listhead{display:flex;align-items:center;justify-content:space-between;margin:22px 2px 10px}
-.listhead .lh{font-family:Fredoka,sans-serif;font-weight:600;font-size:14px;color:var(--ink)}
-.listhead .lh i{font-style:normal;color:var(--ink-3);font-weight:500;margin-left:5px}
+.sechead{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:24px 2px 11px}
+.sechead.more{margin-top:26px;padding-top:20px;border-top:2px dashed var(--line)}
+.sechead .lh{font-family:Fredoka,sans-serif;font-weight:600;font-size:15px;color:var(--ink)}
+.sechead .lh i{font-style:normal;color:var(--ink-3);font-weight:500;margin-left:5px}
+.sechead .sub{font-size:11.5px;font-weight:600;color:var(--ink-3);margin-top:2px}
+/* a basic row wears its type as a fixed chip — no picker, nothing to decide */
+.row .fixed{flex:none;display:inline-flex;align-items:center;gap:6px;width:112px;padding:8px 10px;border-radius:10px;
+  background:rgba(22,40,29,.06);font-family:Fredoka,sans-serif;font-weight:600;font-size:12.5px;color:var(--ink)}
+.row .more-btn{flex:none;width:28px;height:28px;border-radius:9px;border:0;background:rgba(22,40,29,.06);color:var(--ink-2);
+  font-family:Nunito,sans-serif;font-weight:800;font-size:16px;line-height:1;cursor:pointer;display:grid;place-items:center;transition:.18s}
+.row .more-btn:hover{background:var(--sun);color:var(--ink)}
 .addbtn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:99px;border:2.5px solid #fff;
   background:var(--sun);color:var(--ink);font-family:Fredoka,sans-serif;font-weight:600;font-size:13px;cursor:pointer;
   box-shadow:var(--sh-ui);transition:transform .2s var(--ease),box-shadow .2s var(--ease)}
@@ -131,8 +139,18 @@ body{font-family:Nunito,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;b
 .stage{position:absolute;inset:22px;z-index:5;overflow:hidden;border-radius:14px}
 .plane{position:absolute;inset:0}
 #threads{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;overflow:visible}
-#threads #tline{fill:none;stroke:var(--thread);stroke-width:2.8;stroke-linecap:round;filter:drop-shadow(2px 3px 0 rgba(5,20,11,.28))}
-#threads .knot{fill:var(--thread);stroke:#fff;stroke-width:2.6;filter:drop-shadow(2px 3px 0 rgba(5,20,11,.26))}
+#threads .rope{fill:none;stroke:var(--thread);stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round;
+  filter:drop-shadow(2px 3px 0 rgba(5,20,11,.28));transition:opacity .3s var(--ease),stroke-width .3s var(--ease)}
+#threads .rope.cold{opacity:.14}
+#threads .rope.hot{stroke-width:4;opacity:1}
+#threads .spark{fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;opacity:0;
+  stroke-dasharray:18 260;pointer-events:none}
+#threads .spark.on{opacity:.95;animation:travel 1.15s linear infinite}
+@keyframes travel{from{stroke-dashoffset:278}to{stroke-dashoffset:0}}
+#threads .knot{fill:var(--thread);stroke:#fff;stroke-width:2.6;filter:drop-shadow(2px 3px 0 rgba(5,20,11,.26));transition:opacity .3s var(--ease)}
+#threads .knot.cold{opacity:.16}
+.piece.faded{opacity:.34;filter:saturate(.5)}
+.piece{transition:box-shadow .28s var(--ease),opacity .3s var(--ease),filter .3s var(--ease)}
 
 /* ══════════ pieces ══════════ */
 .piece{position:absolute;z-index:5;cursor:grab;user-select:none;will-change:transform;
@@ -246,8 +264,11 @@ body.exporting .kill{display:none}
         <span class="tick" id="nameTick"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>
       </div>
 
-      <div class="listhead">
-        <div class="lh">Everything else <i id="rowCount"></i></div>
+      <div class="sechead"><div class="lh">The basics</div><div class="sub">the five things worth filling in</div></div>
+      <div class="rows" id="basicRows"></div>
+
+      <div class="sechead more">
+        <div><div class="lh">Anything else <i id="rowCount"></i></div><div class="sub">optional — add as many as you like</div></div>
         <button class="addbtn" id="addRow" type="button">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
           Add
@@ -289,6 +310,10 @@ body.exporting .kill{display:none}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 3.5v11"/><path d="m7.5 10.5 4.5 4.5 4.5-4.5"/><path d="M4.5 19.5h15"/></svg>
         </button>
+        <button class="ibtn on" id="tSound" data-tip="Sound" aria-label="Sound">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z"/><path d="M16 9.2a4 4 0 0 1 0 5.6" class="w1"/><path d="M18.6 6.6a7.6 7.6 0 0 1 0 10.8" class="w2"/></svg>
+        </button>
         <button class="ibtn" id="tHide" data-tip="Hide" aria-label="Hide the controls">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M2 12s3.8-7 10-7 10 7 10 7-3.8 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -311,7 +336,85 @@ const pick = a => a[Math.floor(Math.random()*a.length)];
 const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const plane = $('#plane'), threadSvg = $('#threads');
-const KEY = 'vision-board-v16';
+const KEY = 'vision-board-v17';
+
+/* ═══════════════════════════════════════════════════════════
+   SOUND — every note is synthesised, so there is nothing to load.
+   The context only wakes on the first real gesture, which is also
+   the only time a browser will let it make a noise.
+   ═══════════════════════════════════════════════════════════ */
+const Snd = (()=>{
+  let ctx = null, master = null, on = true, lastHover = 0;
+  function wake(){
+    if(ctx) { if(ctx.state === 'suspended') ctx.resume(); return ctx; }
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if(!AC) return null;
+    ctx = new AC();
+    master = ctx.createGain();
+    master.gain.value = 0.28;
+    master.connect(ctx.destination);
+    return ctx;
+  }
+  ['pointerdown','keydown'].forEach(ev=> window.addEventListener(ev, ()=>wake(), {once:false, passive:true}));
+
+  function tone({freq=440, to=null, dur=.14, type='sine', gain=.5, delay=0, curve='exp'}){
+    if(!on) return;
+    const c = wake(); if(!c) return;
+    const t0 = c.currentTime + delay;
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = type;
+    o.frequency.setValueAtTime(freq, t0);
+    if(to) o.frequency.exponentialRampToValueAtTime(Math.max(40,to), t0+dur);
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(gain, t0+0.008);
+    if(curve==='exp') g.gain.exponentialRampToValueAtTime(0.0001, t0+dur);
+    else g.gain.linearRampToValueAtTime(0.0001, t0+dur);
+    o.connect(g); g.connect(master);
+    o.start(t0); o.stop(t0+dur+0.02);
+  }
+  function noise({dur=.12, gain=.3, delay=0, hp=800, lp=6000}){
+    if(!on) return;
+    const c = wake(); if(!c) return;
+    const t0 = c.currentTime + delay;
+    const n = Math.floor(c.sampleRate*dur);
+    const buf = c.createBuffer(1, n, c.sampleRate);
+    const d = buf.getChannelData(0);
+    for(let i=0;i<n;i++) d[i] = (Math.random()*2-1) * (1 - i/n);
+    const src = c.createBufferSource(); src.buffer = buf;
+    const bp = c.createBiquadFilter(); bp.type='bandpass';
+    bp.frequency.value = (hp+lp)/2; bp.Q.value = 0.8;
+    const g = c.createGain();
+    g.gain.setValueAtTime(gain, t0);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0+dur);
+    src.connect(bp); bp.connect(g); g.connect(master);
+    src.start(t0); src.stop(t0+dur+0.02);
+  }
+  return {
+    get on(){ return on; },
+    toggle(){ on = !on; if(on){ wake(); tone({freq:660,to:990,dur:.12,type:'triangle',gain:.4}); } return on; },
+    set(v){ on = !!v; },
+    /* a soft paper thock as a piece meets the mat */
+    land(){ tone({freq:210,to:96,dur:.14,type:'sine',gain:.5}); noise({dur:.1,gain:.16,hp:900,lp:4200}); },
+    grab(){ tone({freq:520,to:700,dur:.07,type:'sine',gain:.22}); },
+    drop(){ tone({freq:170,to:80,dur:.16,type:'sine',gain:.45}); noise({dur:.09,gain:.13,hp:600,lp:3000}); },
+    hover(){
+      const now = performance.now();
+      if(now - lastHover < 90) return;
+      lastHover = now;
+      tone({freq:1180,dur:.045,type:'sine',gain:.075});
+    },
+    click(){ tone({freq:880,to:1240,dur:.06,type:'triangle',gain:.3}); },
+    add(){ tone({freq:600,to:900,dur:.09,type:'triangle',gain:.32}); tone({freq:900,to:1350,dur:.09,type:'sine',gain:.2,delay:.06}); },
+    remove(){ tone({freq:420,to:150,dur:.13,type:'sawtooth',gain:.2}); noise({dur:.13,gain:.12,hp:400,lp:2600}); },
+    /* the dice: a little tumble, then the board lands */
+    roll(){
+      for(let i=0;i<5;i++) noise({dur:.05,gain:.16,delay:i*0.055,hp:1400,lp:7000});
+      tone({freq:330,to:660,dur:.2,type:'triangle',gain:.34,delay:.3});
+    },
+    shutter(){ noise({dur:.05,gain:.34,hp:1800,lp:9000}); noise({dur:.08,gain:.22,delay:.07,hp:900,lp:5000}); },
+    sweep(){ tone({freq:240,to:880,dur:.3,type:'sine',gain:.24}); }
+  };
+})();
 
 /* ═══════════ one typed list drives everything ═══════════ */
 const TYPES = {
@@ -330,7 +433,7 @@ const TAG_TONES = ['#c9f24f','#8ecdff','#c9b8ff','#ff9e7d','#8fe3c0','#ffb3d1'];
 
 let S = {
   name:'', entries:[],
-  thread:true, props:false, chrome:true, spread:'tidy',
+  thread:true, props:false, chrome:true, spread:'tidy', sound:true,
   mat:{theme:'classic', step:28, major:5, grid:'square', opacity:.17, angles:true, angleStep:15, radii:true, ticks:true, numbers:true, corner:'bl'}
 };
 let POS = {}, zTop = 10, uid = 1;
@@ -700,6 +803,7 @@ function springIn(el, it, fromEl){
   tl.to(el,{opacity:1,duration:.16,ease:'none'},0)
     .to(el,{x:bx,y:by,scale:1,rotation:rot,duration:1.05,ease:'elastic.out(1, 0.55)',overwrite:'auto',onUpdate:drawThread,
             onComplete:()=>{ if(it.type!=='name') idle(el,rot); }},0);
+  if(it.type!=='prop') G.delayedCall(.34, ()=>Snd.land());
   setTimeout(()=>{ if(tl.progress()<1) tl.progress(1); }, 3000);
 }
 function idle(el, rot){
@@ -715,12 +819,17 @@ function wire(el, it){
   el.dataset.wired = '1'; rebind();
   let live=false,sx=0,sy=0,ox=0,oy=0,vx=0,vy=0,lx=0,ly=0,lt=0;
   el.addEventListener('pointerenter', ()=>{
+    if(SPOKE_TYPES.includes(it.type)) setFocusType(it.type);
+    Snd.hover();
     if(!G) return;
     const sh = el.querySelector('.sheen i');
     if(sh) G.fromTo(sh,{x:'-190%'},{x:'470%',duration:.95,ease:'power2.inOut'});
     if(!live) G.to(el,{scale:1.045,duration:.6,ease:'elastic.out(1,.75)',overwrite:'auto'});
   });
-  el.addEventListener('pointerleave', ()=>{ if(G && !live) G.to(el,{scale:1,duration:.7,ease:'elastic.out(1,.6)',overwrite:'auto'}); });
+  el.addEventListener('pointerleave', ()=>{
+    if(!live) setFocusType(null);
+    if(G && !live) G.to(el,{scale:1,duration:.7,ease:'elastic.out(1,.6)',overwrite:'auto'});
+  });
   el.addEventListener('pointerdown', e=>{
     if(e.target.closest('.kill')) return;
     live = true;
@@ -731,6 +840,7 @@ function wire(el, it){
     ox = G ? (+G.getProperty(el,'x')||0) : 0;
     oy = G ? (+G.getProperty(el,'y')||0) : 0;
     lx=e.clientX; ly=e.clientY; lt=performance.now(); vx=vy=0;
+    Snd.grab();
     if(G) G.to(el,{scale:1.07,duration:.28,ease:'power3.out',overwrite:'auto'});
   });
   el.addEventListener('pointermove', e=>{
@@ -748,6 +858,7 @@ function wire(el, it){
   const release = ()=>{
     if(!live) return;
     live=false; el.classList.remove('dragging');
+    Snd.drop();
     const rot = +el.dataset.rot||0;
     if(G){
       const bx = parseFloat(el.style.left)||0, by = parseFloat(el.style.top)||0;
@@ -772,72 +883,166 @@ function eraseFromBoard(it){
   sync(); save();
 }
 
-/* ═══════════ thread ═══════════ */
-let tPath=null, tKnots=[], tSig='';
+/* ═══════════════════════════════════════════════════════════
+   THE ROPES — real string, not a drawn curve.
+   Each strand is a little verlet chain pinned at the name and at
+   the piece. It hangs under gravity and swings when you drag
+   something. Hovering a piece lights up every rope of that kind
+   and sends a traveller running along it.
+   ═══════════════════════════════════════════════════════════ */
 function centreOf(el){
   return { x:(parseFloat(el.style.left)||0)+(G?(+G.getProperty(el,'x')||0):0)+el.offsetWidth/2,
            y:(parseFloat(el.style.top) ||0)+(G?(+G.getProperty(el,'y')||0):0)+el.offsetHeight/2 };
 }
-function ensureThread(n){
-  if(!tPath){ tPath = document.createElementNS('http://www.w3.org/2000/svg','path'); tPath.id='tline'; threadSvg.appendChild(tPath); }
-  while(tKnots.length<n){
-    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
-    c.setAttribute('class','knot'); c.setAttribute('r','5');
-    threadSvg.appendChild(c); tKnots.push(c);
-  }
-  tKnots.forEach((c,i)=> c.style.display = i<n ? '' : 'none');
-}
 const SPOKE_TYPES = ['role','company','place','tag','note','field','line'];
+const SEGMENTS = 14;
+let ropes = [], ropeSig = '', focusType = null;
+
+function ropeLayer(){ return threadSvg; }
+function makeRope(el){
+  const svgns = 'http://www.w3.org/2000/svg';
+  const line = document.createElementNS(svgns,'path'); line.setAttribute('class','rope');
+  const spark = document.createElementNS(svgns,'path'); spark.setAttribute('class','spark');
+  const knot = document.createElementNS(svgns,'circle'); knot.setAttribute('class','knot'); knot.setAttribute('r','5');
+  ropeLayer().appendChild(line); ropeLayer().appendChild(spark); ropeLayer().appendChild(knot);
+  const a = centreOf(el);
+  const pts = [];
+  for(let i=0;i<=SEGMENTS;i++) pts.push({x:a.x, y:a.y, px:a.x, py:a.y});
+  return {el, type:el.dataset.type, line, spark, knot, pts, born:false};
+}
+function clearRopes(){
+  ropes.forEach(r=>{ r.line.remove(); r.spark.remove(); r.knot.remove(); });
+  ropes = [];
+}
+/* called whenever the set of pieces may have changed */
 function drawThread(){
   const hub = pieceEl('name');
   const spokes = [];
   SPOKE_TYPES.forEach(t=> plane.querySelectorAll(`.piece[data-type="${t}"]`).forEach(e=>spokes.push(e)));
   if(!S.thread || !hub || !S.name.trim() || !spokes.length){
-    if(tPath) tPath.setAttribute('d','');
-    tKnots.forEach(c=>c.style.display='none');
-    tSig=''; return;
+    if(ropes.length) clearRopes();
+    ropeSig = ''; return;
   }
-  const h = centreOf(hub);
-  ensureThread(spokes.length);
-  let d = '';
-  spokes.forEach((el,i)=>{
-    const p = centreOf(el);
-    const mx=(h.x+p.x)/2, my=(h.y+p.y)/2;
-    const nx=-(p.y-h.y), ny=(p.x-h.x), len=Math.hypot(nx,ny)||1, bow=16;
-    d += `M${h.x.toFixed(1)} ${h.y.toFixed(1)} Q${(mx+nx/len*bow).toFixed(1)} ${(my+ny/len*bow).toFixed(1)} ${p.x.toFixed(1)} ${p.y.toFixed(1)} `;
-    tKnots[i].setAttribute('cx',p.x.toFixed(1)); tKnots[i].setAttribute('cy',p.y.toFixed(1));
-  });
-  tPath.setAttribute('d', d.trim());
   const sig = spokes.map(e=>e.dataset.id).join('>');
-  if(sig !== tSig){
-    tSig = sig;
-    if(G && !REDUCED){
-      const L = tPath.getTotalLength()||600;
-      G.killTweensOf(tPath);
-      G.fromTo(tPath,{strokeDasharray:L,strokeDashoffset:L},
-        {strokeDashoffset:0,duration:.9,ease:'power2.inOut',onComplete:()=>{tPath.style.strokeDasharray='none';}});
-      G.from(tKnots.slice(0,spokes.length),{scale:0,transformOrigin:'50% 50%',duration:.5,stagger:.05,ease:'back.out(3)'});
-    }
+  if(sig !== ropeSig){
+    ropeSig = sig;
+    clearRopes();
+    spokes.forEach(el=> ropes.push(makeRope(el)));
+    stepRopes(28);                      // settle the new ropes before they are seen
+    ropes.forEach((r,i)=>{
+      if(!G || REDUCED) return;
+      const L = r.line.getTotalLength()||300;
+      G.fromTo(r.line,{strokeDasharray:L,strokeDashoffset:L},
+        {strokeDashoffset:0,duration:.75,delay:i*.05,ease:'power2.inOut',
+         onComplete:()=>{ r.line.style.strokeDasharray='none'; }});
+      G.from(r.knot,{scale:0,transformOrigin:'50% 50%',duration:.5,delay:i*.05,ease:'back.out(3)'});
+    });
   }
+}
+/* one physics tick — runs off the GSAP ticker */
+function stepRopes(iterations){
+  if(!ropes.length) return;
+  const hub = pieceEl('name');
+  if(!hub){ clearRopes(); ropeSig=''; return; }
+  const h = centreOf(hub);
+  const passes = iterations || 1;
+  for(let pass=0; pass<passes; pass++){
+    ropes.forEach(r=>{
+      if(!r.el.isConnected) return;
+      const p = centreOf(r.el);
+      const pts = r.pts, last = pts.length-1;
+      // integrate the middle links
+      for(let i=1;i<last;i++){
+        const pt = pts[i];
+        const vx = (pt.x-pt.px)*0.94, vy = (pt.y-pt.py)*0.94;
+        pt.px = pt.x; pt.py = pt.y;
+        pt.x += vx; pt.y += vy + 0.9;                       // gravity
+      }
+      // pin both ends, then relax the chain toward its rest length
+      const rest = (Math.hypot(p.x-h.x, p.y-h.y) * 1.07) / last;
+      for(let k=0;k<5;k++){
+        pts[0].x = h.x; pts[0].y = h.y;
+        pts[last].x = p.x; pts[last].y = p.y;
+        for(let i=0;i<last;i++){
+          const a = pts[i], b = pts[i+1];
+          const dx = b.x-a.x, dy = b.y-a.y;
+          const d = Math.hypot(dx,dy) || 1;
+          const diff = (d-rest)/d*0.5;
+          const ox = dx*diff, oy = dy*diff;
+          if(i !== 0){ a.x += ox; a.y += oy; }
+          if(i+1 !== last){ b.x -= ox; b.y -= oy; }
+        }
+      }
+    });
+  }
+  // paint
+  ropes.forEach(r=>{
+    const pts = r.pts;
+    let d = `M${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
+    for(let i=1;i<pts.length-1;i++){
+      const a = pts[i], b = pts[i+1];
+      d += ` Q${a.x.toFixed(1)} ${a.y.toFixed(1)} ${((a.x+b.x)/2).toFixed(1)} ${((a.y+b.y)/2).toFixed(1)}`;
+    }
+    const e = pts[pts.length-1];
+    d += ` L${e.x.toFixed(1)} ${e.y.toFixed(1)}`;
+    r.line.setAttribute('d', d);
+    r.knot.setAttribute('cx', e.x.toFixed(1)); r.knot.setAttribute('cy', e.y.toFixed(1));
+    const hot = focusType && r.type === focusType;
+    const cold = focusType && r.type !== focusType;
+    r.line.classList.toggle('hot', !!hot);
+    r.line.classList.toggle('cold', !!cold);
+    r.knot.classList.toggle('cold', !!cold);
+    if(hot){ r.spark.setAttribute('d', d); r.spark.classList.add('on'); }
+    else if(r.spark.classList.contains('on')){ r.spark.classList.remove('on'); r.spark.setAttribute('d',''); }
+  });
+}
+function setFocusType(t){
+  if(focusType === t) return;
+  focusType = t;
+  plane.querySelectorAll('.piece').forEach(el=>{
+    const dim = t && SPOKE_TYPES.includes(el.dataset.type) && el.dataset.type !== t;
+    el.classList.toggle('faded', !!dim);
+  });
 }
 
 /* ═══════════════════════════════════════════════════════════
    THE PANEL — one row per thing, each row is
    [type ▾] [what it says] [×]
    ═══════════════════════════════════════════════════════════ */
-const rowsBox = $('#rows');
+const rowsBox = $('#rows'), basicBox = $('#basicRows');
 const rowTimers = {};
+const BASIC_TYPES = ['role','company','place','tag','note'];
 
+/* the five basics always exist, in order, so the panel tells you
+   exactly what there is to fill in and nothing more */
+function ensureBasics(){
+  BASIC_TYPES.forEach(t=>{
+    if(!S.entries.some(e=>e.basic && e.type===t)){
+      const en = newEntry(t); en.basic = true;
+      S.entries.push(en);
+    }
+  });
+}
+function basicEntries(){
+  const out = [];
+  BASIC_TYPES.forEach(t=> S.entries.filter(e=>e.basic && e.type===t).forEach(e=>out.push(e)));
+  return out;
+}
 function renderRows(){
+  ensureBasics();
+  basicBox.innerHTML = '';
+  basicEntries().forEach(en => basicBox.appendChild(buildRow(en)));
+
+  const more = S.entries.filter(e=>!e.basic);
   rowsBox.innerHTML = '';
-  if(!S.entries.length){
+  if(!more.length){
     const e = document.createElement('div');
     e.className = 'emptyrow';
-    e.textContent = 'Nothing yet. Hit Add and pick what it is — a company, a place, a tag, a note, anything.';
+    e.textContent = 'Optional. Hit Add for a field, a line, a sticker — or more of anything above.';
     rowsBox.appendChild(e);
   }
-  S.entries.forEach(en => rowsBox.appendChild(buildRow(en)));
-  $('#rowCount').textContent = S.entries.length ? '· ' + S.entries.length : '';
+  more.forEach(en => rowsBox.appendChild(buildRow(en)));
+  $('#rowCount').textContent = more.length ? '· ' + more.length : '';
 }
 
 function buildRow(en){
@@ -847,26 +1052,34 @@ function buildRow(en){
   row.dataset.id = en.id;
   row.style.setProperty('--rowc', T.accent);
 
-  const sel = document.createElement('div');
-  sel.className = 'sel';
-  const select = document.createElement('select');
-  select.setAttribute('aria-label','Type');
-  TYPE_ORDER.forEach(k=>{
-    const o = document.createElement('option');
-    o.value = k; o.textContent = TYPES[k].icon + '  ' + TYPES[k].label;
-    if(k===en.type) o.selected = true;
-    select.appendChild(o);
-  });
-  select.addEventListener('change', ()=>{
-    en.type = select.value;
-    if(en.type==='sticker' && !STICKERS.includes(en.value)) en.value = '★';
-    if(en.type!=='sticker' && STICKERS.includes(en.value)) en.value = '';
-    renderRows(); sync(); save();
-    const fresh = rowsBox.querySelector(`.row[data-id="${en.id}"] input, .row[data-id="${en.id}"] button`);
-    if(fresh && fresh.focus) fresh.focus();
-  });
-  sel.appendChild(select);
-  row.appendChild(sel);
+  if(en.basic){
+    const chip = document.createElement('span');
+    chip.className = 'fixed';
+    chip.textContent = T.icon + '  ' + T.label;
+    row.appendChild(chip);
+  } else {
+    const sel = document.createElement('div');
+    sel.className = 'sel';
+    const select = document.createElement('select');
+    select.setAttribute('aria-label','Type');
+    TYPE_ORDER.forEach(k=>{
+      const o = document.createElement('option');
+      o.value = k; o.textContent = TYPES[k].icon + '  ' + TYPES[k].label;
+      if(k===en.type) o.selected = true;
+      select.appendChild(o);
+    });
+    select.addEventListener('change', ()=>{
+      Snd.click();
+      en.type = select.value;
+      if(en.type==='sticker' && !STICKERS.includes(en.value)) en.value = '★';
+      if(en.type!=='sticker' && STICKERS.includes(en.value)) en.value = '';
+      renderRows(); sync(); save();
+      const fresh = rowsBox.querySelector(`.row[data-id="${en.id}"] input, .row[data-id="${en.id}"] button`);
+      if(fresh && fresh.focus) fresh.focus();
+    });
+    sel.appendChild(select);
+    row.appendChild(sel);
+  }
 
   if(en.type === 'sticker'){
     const g = document.createElement('div');
@@ -890,14 +1103,42 @@ function buildRow(en){
     const inp = document.createElement('input');
     inp.value = en.value||''; inp.placeholder = T.ph; inp.maxLength = en.type==='line' ? 90 : en.type==='note' ? 90 : 30;
     inp.addEventListener('input', ()=>{ en.value = inp.value; queueSync(en.id); });
-    inp.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); addRow(en.type); } });
+    inp.addEventListener('keydown', e=>{
+      if(e.key!=='Enter') return;
+      e.preventDefault();
+      const plus = row.querySelector('.more-btn');
+      if(en.basic && plus) plus.click();          // Enter on a basic adds another of the same kind
+      else addRow(en.type);
+    });
     row.appendChild(inp);
   }
 
+  // a basic row can spawn another of its own kind — a second company, a third tag
+  if(en.basic){
+    const plus = document.createElement('button');
+    plus.className='more-btn'; plus.type='button'; plus.textContent='+';
+    plus.title = 'Add another ' + T.label.toLowerCase();
+    plus.addEventListener('click', ()=>{
+      const twin = newEntry(en.type); twin.basic = true;
+      const at = S.entries.lastIndexOf(S.entries.filter(e=>e.basic && e.type===en.type).slice(-1)[0]);
+      S.entries.splice(at+1, 0, twin);
+      Snd.add();
+      renderRows(); sync(); save();
+      const row2 = basicBox.querySelector(`.row[data-id="${twin.id}"]`);
+      const f = row2 && row2.querySelector('input'); if(f) f.focus();
+      if(G && row2) G.from(row2,{y:-8,opacity:0,duration:.45,ease:'back.out(2)'});
+    });
+    row.appendChild(plus);
+  }
+
   const x = document.createElement('button');
-  x.className='rx'; x.type='button'; x.textContent='×'; x.title='Remove';
+  x.className='rx'; x.type='button'; x.textContent='×';
+  const onlyOfKind = en.basic && S.entries.filter(e=>e.basic && e.type===en.type).length === 1;
+  x.title = onlyOfKind ? 'Clear' : 'Remove';
   x.addEventListener('click', ()=>{
-    S.entries = S.entries.filter(e=>e.id!==en.id);
+    Snd.remove();
+    if(onlyOfKind){ en.value=''; en.label=''; }     // the five basics stay put, they just empty
+    else { S.entries = S.entries.filter(e=>e.id!==en.id); }
     delete POS['e'+en.id];
     renderRows(); sync(); save();
   });
@@ -910,9 +1151,10 @@ function queueSync(id){
   rowTimers[id] = setTimeout(()=>{ sync(); save(); }, 300);
 }
 function addRow(type){
-  const en = newEntry(type || 'company');
+  const en = newEntry(type || 'field');
   if(en.type==='sticker') en.value = '★';
   S.entries.push(en);
+  Snd.add();
   renderRows(); sync(); save();
   const row = rowsBox.querySelector(`.row[data-id="${en.id}"]`);
   const f = row && row.querySelector('input');
@@ -939,6 +1181,7 @@ nameInput.addEventListener('input', ()=>{
 /* ═══════════ dice ═══════════ */
 const shuffle = a => { const c=[...a]; for(let i=c.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [c[i],c[j]]=[c[j],c[i]]; } return c; };
 $('#dice').addEventListener('click', ()=>{
+  Snd.roll();
   S.name = pick(POOL.names);
   const E = [];
   E.push(newEntry('role', pick(POOL.roles)));
@@ -949,6 +1192,7 @@ $('#dice').addEventListener('click', ()=>{
   shuffle(POOL.notes).slice(0, Math.floor(rnd(1,3))).forEach(n=>E.push(newEntry('note', n)));
   shuffle(POOL.fields).slice(0, Math.floor(rnd(1,3))).forEach(f=>E.push(newEntry('field', f[1], f[0])));
   shuffle(STICKERS).slice(0, Math.floor(rnd(1,3))).forEach(g=>E.push(newEntry('sticker', g)));
+  E.forEach(en=>{ if(BASIC_TYPES.includes(en.type)) en.basic = true; });   // the five live up top
   S.entries = E;
   POS = {};
   nameInput.value = S.name; nameTick(true);
@@ -959,6 +1203,7 @@ $('#dice').addEventListener('click', ()=>{
   if(G) G.fromTo('#dieIcon',{rotation:0},{rotation:360,duration:.7,ease:'back.out(2)',transformOrigin:'50% 50%'});
 });
 $('#wipe').addEventListener('click', ()=>{
+  Snd.remove();
   S.name=''; S.entries=[]; POS={};
   nameInput.value=''; nameTick(false);
   renderRows();
@@ -970,15 +1215,24 @@ $('#wipe').addEventListener('click', ()=>{
 });
 
 /* ═══════════ board controls ═══════════ */
+$('#tSound').addEventListener('click', e=>{
+  S.sound = Snd.toggle();
+  e.currentTarget.classList.toggle('on', S.sound);
+  e.currentTarget.dataset.tip = S.sound ? 'Sound' : 'Muted';
+  e.currentTarget.querySelectorAll('.w1,.w2').forEach(w=> w.style.opacity = S.sound ? 1 : 0);
+  save();
+});
 $('#tMat').addEventListener('click', e=>{
+  Snd.sweep();
   S.mat = randomMat(); drawMat(); save();
   const t = MAT_THEMES.find(x=>x.id===S.mat.theme);
   e.currentTarget.dataset.tip = t ? t.name+' mat' : 'New mat';
   if(G) G.fromTo('#matSvg',{opacity:.25},{opacity:1,duration:.55,ease:'power2.out'});
 });
-$('#tThread').addEventListener('click', e=>{ S.thread=!S.thread; e.currentTarget.classList.toggle('on',S.thread); drawThread(); save(); });
-$('#tProps').addEventListener('click',  e=>{ S.props=!S.props;  e.currentTarget.classList.toggle('on',S.props);  sync(); save(); });
+$('#tThread').addEventListener('click', e=>{ Snd.click(); S.thread=!S.thread; e.currentTarget.classList.toggle('on',S.thread); drawThread(); save(); });
+$('#tProps').addEventListener('click',  e=>{ Snd.click(); S.props=!S.props;  e.currentTarget.classList.toggle('on',S.props);  sync(); save(); });
 $('#tHide').addEventListener('click', e=>{
+  Snd.click();
   S.chrome = !S.chrome;
   $('#pillrow').classList.toggle('hidden', !S.chrome);
   e.currentTarget.classList.toggle('off', !S.chrome);
@@ -986,6 +1240,7 @@ $('#tHide').addEventListener('click', e=>{
   save();
 });
 $('#tSpread').addEventListener('click', e=>{
+  Snd.sweep();
   S.spread = S.spread==='tidy' ? 'loose' : 'tidy';
   e.currentTarget.dataset.tip = S.spread==='tidy' ? 'Tidy' : 'Spread out';
   e.currentTarget.classList.toggle('on', S.spread==='loose');
@@ -1093,6 +1348,10 @@ function boot(){
   $('#tHide').classList.toggle('off', !S.chrome);
   const mt = MAT_THEMES.find(x=>x.id===S.mat.theme);
   if(mt) $('#tMat').dataset.tip = mt.name+' mat';
+  Snd.set(S.sound !== false);
+  $('#tSound').classList.toggle('on', S.sound !== false);
+  $('#tSound').dataset.tip = S.sound !== false ? 'Sound' : 'Muted';
+  $('#tSound').querySelectorAll('.w1,.w2').forEach(w=> w.style.opacity = S.sound !== false ? 1 : 0);
 
   nameInput.value = S.name || '';
   nameTick(!!S.name);
@@ -1100,6 +1359,7 @@ function boot(){
   if(!S.name.trim()) setTimeout(()=>nameInput.focus(), 700);
 
   if(G){
+    G.ticker.add(()=>stepRopes(1));        // the ropes live on the ticker
     G.from('.dock-scroll > *',{x:-24,opacity:0,duration:.75,stagger:.05,ease:'power3.out',clearProps:'all'});
     G.from('.tw',{y:-22,opacity:0,duration:.8,ease:'back.out(2.2)',clearProps:'all'});
     G.from('.ibtn',{y:-14,opacity:0,duration:.6,stagger:.06,delay:.15,ease:'back.out(2)',clearProps:'all'});
