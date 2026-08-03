@@ -406,18 +406,24 @@ function words(el, text){
 }
 
 /* ---- the morph: an answer physically flies into the portfolio ---- */
+/* The morph is decoration. The value landing is not — it is guaranteed by a
+   timer, so a throttled tab or an interrupted tween can never strand a field. */
 function flyInto(source, target, then){
-  if (!source || !target || !target.getBoundingClientRect().width) { then && then(); return; }
+  let fired = false;
+  const land = () => { if (fired) return; fired = true; then && then(); };
+  if (!source || !target || !target.getBoundingClientRect().width) { land(); return; }
   const s = source.getBoundingClientRect(), t = target.getBoundingClientRect();
   const g = source.cloneNode(true);
   g.classList.add('ghost');
   document.body.appendChild(g);
+  const kill = () => { if (g.isConnected) g.remove(); };
   gsap.set(g, { position:'fixed', left:s.left, top:s.top, width:s.width, height:s.height, margin:0, zIndex:9999, pointerEvents:'none' });
   const scale = Math.max(.34, Math.min(1, (t.height + 16) / s.height));
-  gsap.timeline({ onComplete:()=>{ g.remove(); then && then(); } })
+  gsap.timeline({ onComplete:()=>{ kill(); land(); } })
     .to(g, { left:t.left + t.width/2 - s.width/2, top:t.top + t.height/2 - s.height/2, scale, duration:.78, ease:EIO })
     .to(g, { opacity:0, duration:.26 }, '-=.3');
   gsap.fromTo(target, { scale:1 }, { scale:1.045, duration:.3, delay:.62, yoyo:true, repeat:1, ease:'power2.out' });
+  setTimeout(()=>{ kill(); land(); }, 1300);
 }
 function landed(el){
   gsap.fromTo(el, { backgroundColor:'rgba(13,13,13,.06)' }, { backgroundColor:'rgba(13,13,13,0)', duration:1.1, ease:'power2.out', clearProps:'backgroundColor' });
@@ -481,16 +487,18 @@ function paintPortfolio(d, animate){
 }
 function setCap(text, live){
   const c = $('cap');
-  gsap.to(c, { opacity:0, y:-6, duration:.25, onComplete:()=>{
-    c.innerHTML = (live?'<span class="live"></span>':'') + text;
-    gsap.to(c, { opacity:1, y:0, duration:.4 });
-  }});
+  const put = () => { c.innerHTML = (live?'<span class="live"></span>':'') + text; gsap.to(c, { opacity:1, y:0, duration:.4 }); };
+  let done = false;
+  const once = () => { if (done) return; done = true; put(); };
+  gsap.to(c, { opacity:0, y:-6, duration:.25, onComplete:once });
+  setTimeout(once, 420);
 }
 function swapText(el, text){
-  gsap.to(el, { opacity:0, y:-7, duration:.22, onComplete:()=>{
-    el.textContent = text; el.style.color='';
-    gsap.to(el, { opacity:1, y:0, duration:.42 });
-  }});
+  const put = () => { el.textContent = text; el.style.color=''; gsap.to(el, { opacity:1, y:0, duration:.42 }); };
+  let done = false;
+  const once = () => { if (done) return; done = true; put(); };
+  gsap.to(el, { opacity:0, y:-7, duration:.22, onComplete:once });
+  setTimeout(once, 380);
 }
 
 /* the preview begins as a finished portfolio, then becomes yours */
@@ -679,6 +687,7 @@ async function roleStep(line){
 async function finish(){
   const t = $('turn');
   if (t) gsap.to(t,{opacity:0,y:-18,duration:.32,ease:'power2.in',onComplete:()=>t.remove()});
+  if (picked && $('pRole').textContent !== picked){ $('pRole').textContent = picked; $('pRole').style.color=''; }
   setCap('Your portfolio, about four months from now', true);
   gsap.fromTo('.paper',{scale:1},{scale:1.012,duration:.5,yoyo:true,repeat:1,ease:'power2.inOut'});
   gsap.to($('scroll'),{scrollTop:0,duration:.9,ease:EIO});
