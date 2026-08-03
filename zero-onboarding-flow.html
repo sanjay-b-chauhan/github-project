@@ -51,7 +51,7 @@ svg{ display:block; }
 .wrap{ display:flex; gap:16px; padding:16px; height:100dvh; }
 .mid{ flex:1; min-width:0; display:flex; align-items:center; justify-content:center; padding:84px 24px 24px; }
 .col{ width:100%; max-width:640px; }
-.right{ width:0; min-width:0; opacity:0; overflow:hidden; }
+.right{ width:0; min-width:0; opacity:0; overflow:hidden; padding-top:64px; }
 
 /* ---------------- draw to start ---------------- */
 .draw{ position:fixed; inset:0; z-index:90; background:var(--page); display:flex; align-items:center; justify-content:center; }
@@ -943,6 +943,7 @@ function primary(){ if(P.fields.length&&DISC[P.fields[0]]) return DISC[P.fields[
 const LEVELMAP={'Student':'Developing','Recent graduate':'Developing','Working, switching':'Proficient','Self-taught':'Developing'};
 
 async function calibrate(ackHTML){
+  busy=false; /* the conversation set this on the last submit; without the reset every button after it is dead */
   setPhase(1);
   setCap('Reading everything back',true);
   const t=$('turn');
