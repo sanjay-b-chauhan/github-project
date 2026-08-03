@@ -396,7 +396,12 @@ gsap.defaults({ ease:E });
    registers a timer that forces the finished state no matter what. */
 function safeIn(targets, ms){
   setTimeout(()=>{
-    try { gsap.set(targets, { opacity:1, y:0, x:0, scale:1, clearProps:'transform' }); } catch(e){}
+    try {
+      /* kill first: a throttled ticker keeps re-asserting the tween and would
+         paint straight over a plain gsap.set, leaving text half-faded */
+      gsap.killTweensOf(targets);
+      gsap.set(targets, { opacity:1, y:0, x:0, scale:1, clearProps:'transform' });
+    } catch(e){}
   }, ms || 1900);
 }
 document.addEventListener('visibilitychange', ()=>{
@@ -742,7 +747,13 @@ async function finish(){
     .fromTo('.paper',{ y:26 },{ y:0, duration:1.0, ease:EIO }, .95);
   meter();
   /* landing fallback: never leave the panel stranded */
-  setTimeout(()=>{ gsap.set('.right',{ width:'57.5%', opacity:1, x:0, scale:1 }); gsap.set('.left',{ width:'42.5%' }); }, 2600);
+  setTimeout(()=>{
+    gsap.killTweensOf(['.right','.left','.paper','#logoPill','#steps']);
+    gsap.set('.right',{ width:'57.5%', opacity:1, x:0, scale:1 });
+    gsap.set('.left',{ width:'42.5%' });
+    gsap.set('.paper',{ y:0, opacity:1 });
+    gsap.set(['#logoPill','#steps'],{ opacity:1, y:0 });
+  }, 2600);
 })();
 </script>
 </body>
