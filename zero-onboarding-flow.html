@@ -677,6 +677,9 @@ async function calibrate(){
 /* ============================ reveal ============================ */
 async function reveal(){
   paintPortfolio();
+  /* the questions are done, so the step meter has nothing left to say */
+  gsap.to('#steps',{ opacity:0, duration:.4, pointerEvents:'none' });
+  setTimeout(()=>{ $('steps').style.opacity=0; $('steps').style.pointerEvents='none'; }, 700);
   const t=$('turn');
   if(t) gsap.to(t,{opacity:0,y:-14,duration:.34,ease:'power2.in',onComplete:()=>t.remove()});
   await wait(380);
