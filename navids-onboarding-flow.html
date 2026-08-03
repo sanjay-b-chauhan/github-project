@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Navid's Onboarding Flow</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.3.1",
+    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+    "lucide-react": "https://esm.sh/lucide-react@0.469.0?deps=react@18.3.1"
+  }
+}
+</script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<style>html, body, #root { height: 100%; margin: 0; }</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-type="module" data-presets="react">
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { createRoot } from "react-dom/client";
+import {
+  Sparkles, Briefcase, Building2, Globe2, MapPin, Layers, CheckCircle2,
+  Pencil, Rocket, GraduationCap, Wrench, Clock, FolderOpen, FileText,
+  Users, Award, Download, Mail, ArrowRight, ChevronRight, Zap, Eye,
+  MessageCircle, LayoutDashboard, Star, Lock
+} from "lucide-react";
+
+/* ---------------------------------- THEME --------------------------------- */
+const T = {
+  bg: "#FBFBFD",
+  surface: "#FFFFFF",
+  ink: "#1D1D1F",
+  sub: "#6E6E73",
+  faint: "#AEAEB2",
+  line: "#E8E8ED",
+  accent: "#0A6CFF",
+  accentSoft: "#EEF4FF",
+  gold: "#9A6B00",
+  goldBg: "#FBF3DF",
+  green: "#1F8A4C",
+  greenBg: "#E9F7EE",
+};
+const FONT = `-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif`;
+
+/* ------------------------------- CAREER DATA ------------------------------ */
+const CAREERS = {
+  Business: {
+    roles: ["Business Analyst", "Operations Associate", "Strategy Analyst"],
+    projectTypes: ["Market entry analysis", "Ops efficiency audit", "Pricing strategy", "Business case build"],
+    plan: [
+      { name: "Market Entry Study", scenarios: ["Size a new market", "Interview synthesis", "Competitor teardown", "Go / no-go memo"], tools: ["Sheets", "Notion", "Miro"], weeks: 4 },
+      { name: "Ops Efficiency Audit", scenarios: ["Map a broken process", "Cost the waste", "Redesign the workflow", "Pitch the fix"], tools: ["Sheets", "Lucidchart"], weeks: 4 },
+      { name: "Pricing Strategy Sprint", scenarios: ["Willingness-to-pay survey", "Tier design", "Revenue model", "Board-style readout"], tools: ["Sheets", "Slides"], weeks: 5 },
+    ],
+    companies: ["Stripe", "McKinsey", "Ramp", "Deloitte"],
+    jobs: [
+      { title: "Business Analyst", co: "Ramp", pay: "$75–95k", loc: "NYC · Hybrid" },
+      { title: "Strategy Associate", co: "Deloitte", pay: "$80–100k", loc: "Remote" },
+    ],
+    deliverables: ["Go/no-go memo", "Process redesign doc", "Pricing model", "Exec readout deck"],
+  },
+  Marketing: {
+    roles: ["Growth Marketer", "Content Strategist", "Performance Marketer"],
+    projectTypes: ["Launch campaign", "SEO content engine", "Paid ads sprint", "Brand repositioning"],
+    plan: [
+      { name: "Product Launch Campaign", scenarios: ["Positioning workshop", "Channel plan", "Launch assets", "Post-launch report"], tools: ["Figma", "HubSpot", "Sheets"], weeks: 4 },
+      { name: "SEO Content Engine", scenarios: ["Keyword research", "Content calendar", "Write & optimize 3 pieces", "Traffic analysis"], tools: ["Ahrefs", "Notion", "GA4"], weeks: 5 },
+      { name: "Paid Acquisition Sprint", scenarios: ["Audience research", "Creative testing", "Budget allocation", "ROAS report"], tools: ["Meta Ads", "Sheets"], weeks: 4 },
+    ],
+    companies: ["Notion", "Duolingo", "Liquid Death", "HubSpot"],
+    jobs: [
+      { title: "Growth Marketer", co: "Notion", pay: "$70–90k", loc: "SF · Hybrid" },
+      { title: "Content Strategist", co: "HubSpot", pay: "$65–85k", loc: "Remote" },
+    ],
+    deliverables: ["Launch playbook", "Content calendar", "Live campaign report", "ROAS analysis"],
+  },
+  Sales: {
+    roles: ["SDR / BDR", "Account Executive", "Sales Ops Analyst"],
+    projectTypes: ["Outbound sequence build", "Discovery call mastery", "Pipeline analysis", "Deal desk simulation"],
+    plan: [
+      { name: "Outbound Machine", scenarios: ["ICP definition", "Cold email sequences", "Objection handling reps", "Meeting-booked report"], tools: ["Apollo", "Outreach", "Sheets"], weeks: 4 },
+      { name: "Discovery to Close", scenarios: ["Mock discovery calls", "Demo storytelling", "Negotiation sim", "Deal review"], tools: ["Gong", "Slides"], weeks: 5 },
+      { name: "Pipeline Analytics", scenarios: ["CRM hygiene audit", "Forecast model", "Win/loss analysis"], tools: ["Salesforce", "Sheets"], weeks: 3 },
+    ],
+    companies: ["Salesforce", "Datadog", "Rippling", "Snowflake"],
+    jobs: [
+      { title: "SDR", co: "Rippling", pay: "$65–85k OTE", loc: "SF · On-site" },
+      { title: "Sales Ops Analyst", co: "Datadog", pay: "$75–95k", loc: "Remote" },
+    ],
+    deliverables: ["Outbound playbook", "Recorded mock calls", "Forecast model", "Win/loss report"],
+  },
+  "Product Management": {
+    roles: ["Associate PM", "Product Analyst", "Growth PM"],
+    projectTypes: ["Feature discovery", "Product spec & roadmap", "Growth experiment", "Product analytics deep-dive"],
+    plan: [
+      { name: "Discovery to Spec", scenarios: ["User interviews", "Problem framing", "PRD writing", "Prioritization exercise"], tools: ["Notion", "Figma", "Linear"], weeks: 4 },
+      { name: "Growth Experiment Loop", scenarios: ["Funnel analysis", "Hypothesis design", "A/B test plan", "Results memo"], tools: ["Amplitude", "Sheets"], weeks: 4 },
+      { name: "Roadmap & Stakeholders", scenarios: ["Roadmap construction", "Tradeoff negotiation sim", "Exec review"], tools: ["Linear", "Slides"], weeks: 4 },
+    ],
+    companies: ["Figma", "Linear", "Airbnb", "Spotify"],
+    jobs: [
+      { title: "Associate PM", co: "Figma", pay: "$95–120k", loc: "SF · Hybrid" },
+      { title: "Product Analyst", co: "Spotify", pay: "$80–105k", loc: "Remote" },
+    ],
+    deliverables: ["PRD", "A/B test readout", "Roadmap doc", "Stakeholder deck"],
+  },
+  Development: {
+    roles: ["Frontend Developer", "Full-stack Developer", "Backend Developer"],
+    projectTypes: ["SaaS dashboard build", "API & backend service", "Mobile-first web app", "Open-source contribution"],
+    plan: [
+      { name: "Production SaaS Dashboard", scenarios: ["Component architecture", "Auth & data layer", "Perf optimization", "Code review sim"], tools: ["React", "TypeScript", "Git"], weeks: 5 },
+      { name: "REST API Service", scenarios: ["Schema design", "Endpoint build-out", "Testing & CI", "Incident response drill"], tools: ["Node", "Postgres", "Docker"], weeks: 5 },
+      { name: "Ship to Real Users", scenarios: ["Deploy pipeline", "Monitoring setup", "Bug triage week"], tools: ["Vercel", "Sentry"], weeks: 3 },
+    ],
+    companies: ["Vercel", "Shopify", "Stripe", "Supabase"],
+    jobs: [
+      { title: "Frontend Developer", co: "Shopify", pay: "$90–120k", loc: "Remote" },
+      { title: "Full-stack Developer", co: "Supabase", pay: "$100–130k", loc: "Remote" },
+    ],
+    deliverables: ["Live deployed app", "Public GitHub repo", "API docs", "Incident postmortem"],
+  },
+  Data: {
+    roles: ["Data Analyst", "Analytics Engineer", "Junior Data Scientist"],
+    projectTypes: ["Business dashboard", "SQL deep-dive", "Predictive model", "Experiment analysis"],
+    plan: [
+      { name: "Revenue Analytics Dashboard", scenarios: ["Messy data cleanup", "SQL modeling", "Dashboard build", "Insights memo"], tools: ["SQL", "dbt", "Tableau"], weeks: 4 },
+      { name: "Churn Prediction Model", scenarios: ["Feature engineering", "Model training", "Evaluation & bias check", "Stakeholder readout"], tools: ["Python", "pandas", "scikit-learn"], weeks: 5 },
+      { name: "A/B Test Analysis", scenarios: ["Experiment design review", "Statistical analysis", "Decision memo"], tools: ["Python", "Sheets"], weeks: 3 },
+    ],
+    companies: ["Airbnb", "Netflix", "Instacart", "DoorDash"],
+    jobs: [
+      { title: "Data Analyst", co: "Instacart", pay: "$85–110k", loc: "Remote" },
+      { title: "Analytics Engineer", co: "Netflix", pay: "$110–140k", loc: "LA · Hybrid" },
+    ],
+    deliverables: ["Live dashboard", "Model notebook", "Insights memos", "Experiment readout"],
+  },
+  Design: {
+    roles: ["Product Designer", "UX Designer", "Brand Designer"],
+    projectTypes: ["End-to-end app design", "Design system build", "UX research study", "Brand identity"],
+    plan: [
+      { name: "End-to-End Product Design", scenarios: ["User research", "Flows & wireframes", "Hi-fi UI", "Usability testing"], tools: ["Figma", "Maze", "Notion"], weeks: 5 },
+      { name: "Design System Foundations", scenarios: ["Audit an existing UI", "Token & component library", "Documentation"], tools: ["Figma", "Storybook"], weeks: 4 },
+      { name: "Case Study Craft", scenarios: ["Narrative structure", "Portfolio page build", "Design critique sim"], tools: ["Figma", "Framer"], weeks: 3 },
+    ],
+    companies: ["Figma", "Airbnb", "Linear", "Vercel"],
+    jobs: [
+      { title: "Product Designer", co: "Linear", pay: "$95–125k", loc: "Remote" },
+      { title: "UX Designer", co: "Airbnb", pay: "$100–130k", loc: "SF · Hybrid" },
+    ],
+    deliverables: ["3 shipped case studies", "Component library", "Research report", "Portfolio site"],
+  },
+};
+const CAREER_LIST = Object.keys(CAREERS);
+
+const CAREER_SYNONYMS = {
+  Business: ["business", "consult", "finance", "operations", "ops", "strategy", "mba", "entrepreneur"],
+  Marketing: ["marketing", "growth", "seo", "content", "brand", "social media", "ads", "copywrit"],
+  Sales: ["sales", "sdr", "bdr", "account exec", "biz dev", "selling"],
+  "Product Management": ["product manag", "pm", "product owner"],
+  Development: ["develop", "software", "coding", "code", "engineer", "programming", "web dev", "frontend", "backend", "full stack", "fullstack"],
+  Data: ["data", "analyst", "analytics", "machine learning", "ml", "ai", "data scien", "sql"],
+  Design: ["design", "ux", "ui", "graphic", "product design", "figma"],
+};
+
+const INDUSTRIES = ["Tech & AI", "Health", "Finance", "Climate", "E-commerce", "Media", "Open to anything"];
+const COMPANY_TYPES = ["High-growth startup", "Scale-up", "Big tech / enterprise", "Agency / consultancy", "Not sure yet"];
+const LOCATIONS = ["Fully remote", "Hybrid", "On-site", "Flexible"];
+const PARTNERS = ["Stripe", "Figma", "Datadog", "Notion", "Shopify", "Ramp"];
+
+/* --------------------------- FREE-TEXT INTERPRETER ------------------------ */
+async function interpretFreeText({ question, options, userText, profileSummary }) {
+  const prompt = `You are the onboarding guide for "Zero", a learn-by-doing career platform. Tone: warm, concise, Apple-like plain language. Max 2 short sentences in "reply".
+
+Context about the user so far: ${profileSummary || "none yet"}.
+You just asked: "${question}"
+The tappable options were: ${options.map((o) => `"${o}"`).join(", ")}
+The user typed instead: "${userText}"
+
+Task: If their message clearly maps to one option, set "option" to that EXACT option string and write a brief friendly acknowledgment in "reply". If it does not map, set "option" to null and write a brief reply that answers/acknowledges them and nudges them back to picking one of the options.
+
+Respond ONLY with minified JSON, no markdown fences: {"reply":"...","option":"..." or null}`;
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-6",
+      max_tokens: 1000,
+      messages: [{ role: "user", content: prompt }],
+    }),
+  });
+  const data = await res.json();
+  const text = (data.content || []).filter((b) => b.type === "text").map((b) => b.text).join("\n");
+  const clean = text.replace(/```json|```/g, "").trim();
+  const parsed = JSON.parse(clean);
+  if (parsed.option && !options.includes(parsed.option)) parsed.option = null;
+  return parsed;
+}
+
+function localMatch(userText, options) {
+  const t = userText.toLowerCase();
+  return options.find((o) => t.includes(o.toLowerCase()) || o.toLowerCase().includes(t)) || null;
+}
+
+function matchCareer(text) {
+  const t = text.toLowerCase();
+  for (const [career, syns] of Object.entries(CAREER_SYNONYMS)) {
+    if (syns.some((s) => t.includes(s))) return career;
+  }
+  return null;
+}
+
+function adjacentCareers(text) {
+  const t = text.toLowerCase();
+  if (/(law|legal|paralegal)/.test(t)) return ["Business", "Product Management", "Sales"];
+  if (/(nurse|doctor|medic|health)/.test(t)) return ["Data", "Business", "Product Management"];
+  if (/(teach|educat|professor)/.test(t)) return ["Design", "Marketing", "Product Management"];
+  if (/(journal|writ|author)/.test(t)) return ["Marketing", "Design", "Product Management"];
+  if (/(architec|construct|civil)/.test(t)) return ["Design", "Development", "Business"];
+  return ["Product Management", "Business", "Data"];
+}
+
+const fmt = (n) => n.toLocaleString("en-US");
+
+/* ------------------------------ SMALL PIECES ------------------------------ */
+function CreditsTicker({ credits }) {
+  const [shown, setShown] = useState(credits);
+  const raf = useRef(null);
+  useEffect(() => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) { setShown(credits); return; }
+    const start = shown, diff = credits - start, t0 = performance.now(), dur = 700;
+    if (diff === 0) return;
+    const tick = (t) => {
+      const p = Math.min(1, (t - t0) / dur);
+      setShown(Math.round(start + diff * (1 - Math.pow(1 - p, 3))));
+      if (p < 1) raf.current = requestAnimationFrame(tick);
+    };
+    raf.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf.current);
+  }, [credits]); // eslint-disable-line
+  return (
+    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full" style={{ background: T.goldBg, color: T.gold }}>
+      <Zap size={13} strokeWidth={2.5} />
+      <span className="text-xs font-semibold tabular-nums">{fmt(shown)}</span>
+      <span className="text-xs font-medium hidden sm:inline">credits</span>
+    </div>
+  );
+}
+
+function Chip({ label, onClick, selected, disabled, primary }) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className="text-sm font-medium rounded-full px-4 py-2 transition-all focus:outline-none"
+      style={{
+        background: primary ? T.accent : selected ? T.accent : T.surface,
+        color: primary || selected ? "#fff" : T.ink,
+        border: `1px solid ${primary || selected ? T.accent : T.line}`,
+        boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+        opacity: disabled ? 0.5 : 1,
+        cursor: disabled ? "default" : "pointer",
+      }}
+      onFocus={(e) => (e.target.style.boxShadow = `0 0 0 3px ${T.accentSoft}`)}
+      onBlur={(e) => (e.target.style.boxShadow = "0 1px 2px rgba(0,0,0,0.04)")}
+    >
+      {label}
+    </button>
+  );
+}
+
+function Bubble({ from, children }) {
+  const bot = from === "bot";
+  return (
+    <div className={`flex ${bot ? "justify-start" : "justify-end"} fade-up`}>
+      <div
+        className="max-w-[85%] px-4 py-2.5 text-[15px] leading-relaxed"
+        style={{
+          background: bot ? T.surface : T.accent,
+          color: bot ? T.ink : "#fff",
+          border: bot ? `1px solid ${T.line}` : "none",
+          borderRadius: bot ? "4px 18px 18px 18px" : "18px 4px 18px 18px",
+          boxShadow: "0 1px 2px rgba(0,0,0,0.03)",
+          whiteSpace: "pre-wrap",
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function CreditToast({ amount, label }) {
+  return (
+    <div className="flex justify-center fade-up">
+      <div className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full"
+        style={{ background: T.goldBg, color: T.gold }}>
+        <Zap size={12} strokeWidth={2.5} /> +{fmt(amount)} credits · {label}
+      </div>
+    </div>
+  );
+}
+
+function DownloadCard() {
+  return (
+    <div className="flex justify-start fade-up">
+      <div className="rounded-2xl p-4 w-full max-w-[85%]" style={{ background: T.surface, border: `1px solid ${T.line}` }}>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: T.ink }}>
+            <span className="text-white font-bold text-lg" style={{ letterSpacing: "-0.03em" }}>Z</span>
+          </div>
+          <div>
+            <div className="text-sm font-semibold" style={{ color: T.ink }}>Zero for Desktop</div>
+            <div className="text-xs" style={{ color: T.sub }}>macOS · Windows · 84 MB</div>
+          </div>
+        </div>
+        <button className="mt-3 w-full rounded-xl py-2.5 text-sm font-semibold text-white flex items-center justify-center gap-2"
+          style={{ background: T.accent }}>
+          <Download size={15} /> Download — zero.app/download
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function Typing() {
+  return (
+    <div className="flex justify-start fade-up">
+      <div className="px-4 py-3 rounded-2xl flex gap-1" style={{ background: T.surface, border: `1px solid ${T.line}` }}>
+        {[0, 1, 2].map((i) => (
+          <span key={i} className="dot w-1.5 h-1.5 rounded-full inline-block" style={{ background: T.faint, animationDelay: `${i * 0.15}s` }} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* --------------------------------- CANVAS --------------------------------- */
+const PHASE_STEPS = ["Align", "Vision", "Plan", "Outcome", "Launch"];
+
+function ProgressRail({ phaseIndex }) {
+  return (
+    <div className="flex items-center gap-2 mb-6">
+      {PHASE_STEPS.map((s, i) => (
+        <div key={s} className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
+            <div className="w-1.5 h-1.5 rounded-full" style={{ background: i <= phaseIndex ? T.accent : T.line }} />
+            <span className="text-[11px] font-medium tracking-wide uppercase" style={{ color: i <= phaseIndex ? T.ink : T.faint }}>{s}</span>
+          </div>
+          {i < PHASE_STEPS.length - 1 && <div className="w-4 h-px" style={{ background: T.line }} />}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function Tile({ icon: Icon, label, value, pending }) {
+  return (
+    <div className={`rounded-2xl p-4 ${value ? "fade-up" : ""}`} style={{ background: T.surface, border: `1px solid ${T.line}` }}>
+      <div className="flex items-center gap-1.5 mb-1.5">
+        <Icon size={13} style={{ color: value ? T.accent : T.faint }} />
+        <span className="text-[11px] font-medium uppercase tracking-wide" style={{ color: T.faint }}>{label}</span>
+      </div>
+      {value ? (
+        <div className="text-sm font-semibold leading-snug" style={{ color: T.ink }}>{value}</div>
+      ) : (
+        <div className="h-4 w-2/3 rounded" style={{ background: pending ? T.accentSoft : "#F2F2F5" }} />
+      )}
+    </div>
+  );
+}
+
+function BrandCanvas() {
+  return (
+    <div className="flex flex-col items-start justify-center h-full max-w-sm mx-auto">
+      <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-6" style={{ background: T.ink }}>
+        <span className="text-white font-bold text-2xl" style={{ letterSpacing: "-0.04em" }}>Z</span>
+      </div>
+      <h1 className="text-3xl font-bold leading-tight mb-3" style={{ color: T.ink, letterSpacing: "-0.03em" }}>
+        Your next career,<br />built by doing.
+      </h1>
+      <p className="text-[15px] leading-relaxed mb-8" style={{ color: T.sub }}>
+        Answer a few questions in the chat. As you do, this panel becomes your personal plan — vision, roadmap, portfolio, job offers.
+      </p>
+      <div className="space-y-2.5 w-full">
+        {[["Real-world scenarios", GraduationCap], ["A portfolio recruiters actually see", FolderOpen], ["Credits that make it free to start", Zap]].map(([t, I]) => (
+          <div key={t} className="flex items-center gap-3 text-sm" style={{ color: T.ink }}>
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: T.accentSoft }}>
+              <I size={14} style={{ color: T.accent }} />
+            </div>
+            {t}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function VisionCanvas({ profile, career }) {
+  const c = career ? CAREERS[career] : null;
+  return (
+    <div className="max-w-md mx-auto w-full">
+      <div className="text-[11px] font-medium uppercase tracking-wide mb-1" style={{ color: T.faint }}>Vision board</div>
+      <h2 className="text-xl font-bold mb-4" style={{ color: T.ink, letterSpacing: "-0.02em" }}>
+        {profile.name ? `${profile.name}'s ideal future` : "Your ideal future"}
+      </h2>
+      <div className="grid grid-cols-2 gap-3">
+        <Tile icon={Briefcase} label="Role" value={profile.role} pending={!!career && !profile.role} />
+        <Tile icon={Building2} label="Company type" value={profile.company} pending={!!profile.role && !profile.company} />
+        <Tile icon={Globe2} label="Industry" value={profile.industry} pending={!!profile.company && !profile.industry} />
+        <Tile icon={MapPin} label="Location" value={profile.location} pending={!!profile.industry && !profile.location} />
+      </div>
+      <div className="mt-3">
+        <Tile icon={Layers} label="Projects you'll build" value={profile.projects?.length ? profile.projects.join(" · ") : null} pending={!!profile.location && !profile.projects?.length} />
+      </div>
+      {c && (
+        <div className="mt-5 fade-up">
+          <div className="text-[11px] font-medium uppercase tracking-wide mb-2" style={{ color: T.faint }}>Companies hiring this profile</div>
+          <div className="flex flex-wrap gap-2">
+            {c.companies.map((co) => (
+              <span key={co} className="text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: T.surface, border: `1px solid ${T.line}`, color: T.ink }}>{co}</span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PlanCanvas({ career, months }) {
+  const c = CAREERS[career];
+  if (!c) return null;
+  return (
+    <div className="max-w-md mx-auto w-full">
+      <div className="text-[11px] font-medium uppercase tracking-wide mb-1" style={{ color: T.faint }}>Learning plan</div>
+      <div className="flex items-end justify-between mb-4">
+        <h2 className="text-xl font-bold" style={{ color: T.ink, letterSpacing: "-0.02em" }}>Your roadmap</h2>
+        <div className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: T.greenBg, color: T.green }}>
+          <Clock size={12} /> {months}
+        </div>
+      </div>
+      <div className="relative">
+        <div className="absolute left-[15px] top-3 bottom-3 w-px" style={{ background: T.line }} />
+        <div className="space-y-3">
+          {c.plan.map((p, i) => (
+            <div key={p.name} className="relative pl-10 fade-up" style={{ animationDelay: `${i * 0.12}s` }}>
+              <div className="absolute left-1.5 top-4 w-[19px] h-[19px] rounded-full flex items-center justify-center text-[10px] font-bold text-white" style={{ background: T.accent }}>{i + 1}</div>
+              <div className="rounded-2xl p-4" style={{ background: T.surface, border: `1px solid ${T.line}` }}>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="text-sm font-semibold" style={{ color: T.ink }}>{p.name}</div>
+                  <span className="text-[11px] font-medium whitespace-nowrap" style={{ color: T.faint }}>{p.weeks} wks</span>
+                </div>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {p.scenarios.map((s) => (
+                    <span key={s} className="text-[11px] px-2 py-1 rounded-md" style={{ background: T.accentSoft, color: T.accent, fontWeight: 500 }}>{s}</span>
+                  ))}
+                </div>
+                <div className="mt-2 flex items-center gap-1.5 text-[11px]" style={{ color: T.sub }}>
+                  <Wrench size={11} /> {p.tools.join(" · ")}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PortfolioCanvas({ profile, career }) {
+  const c = CAREERS[career];
+  if (!c) return null;
+  return (
+    <div className="max-w-md mx-auto w-full">
+      <div className="text-[11px] font-medium uppercase tracking-wide mb-1" style={{ color: T.faint }}>End state · month 4</div>
+      <h2 className="text-xl font-bold mb-4" style={{ color: T.ink, letterSpacing: "-0.02em" }}>What you'll walk away with</h2>
+      <div className="rounded-2xl overflow-hidden fade-up" style={{ background: T.surface, border: `1px solid ${T.line}` }}>
+        <div className="flex items-center gap-1.5 px-3 py-2" style={{ background: "#F5F5F7", borderBottom: `1px solid ${T.line}` }}>
+          {["#FF5F57", "#FEBC2E", "#28C840"].map((c2) => <span key={c2} className="w-2 h-2 rounded-full" style={{ background: c2 }} />)}
+          <span className="ml-2 text-[10px]" style={{ color: T.faint }}>zero.app/{(profile.name || "you").toLowerCase()}</span>
+        </div>
+        <div className="p-4">
+          <div className="text-sm font-bold" style={{ color: T.ink }}>{profile.name || "You"} — {profile.role || c.roles[0]}</div>
+          <div className="text-[11px] mb-3" style={{ color: T.sub }}>{c.plan.length} shipped projects · verified by Zero</div>
+          <div className="space-y-2">
+            {c.plan.map((p) => (
+              <div key={p.name} className="flex items-center justify-between rounded-xl px-3 py-2.5" style={{ background: T.bg, border: `1px solid ${T.line}` }}>
+                <div className="flex items-center gap-2">
+                  <FolderOpen size={14} style={{ color: T.accent }} />
+                  <span className="text-xs font-semibold" style={{ color: T.ink }}>{p.name}</span>
+                </div>
+                <CheckCircle2 size={14} style={{ color: T.green }} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="mt-4 fade-up" style={{ animationDelay: "0.1s" }}>
+        <div className="text-[11px] font-medium uppercase tracking-wide mb-2" style={{ color: T.faint }}>Deliverables inside</div>
+        <div className="flex flex-wrap gap-1.5">
+          {c.deliverables.map((d) => (
+            <span key={d} className="text-[11px] font-medium px-2.5 py-1.5 rounded-lg flex items-center gap-1" style={{ background: T.surface, border: `1px solid ${T.line}`, color: T.ink }}>
+              <FileText size={11} style={{ color: T.faint }} /> {d}
+            </span>
+          ))}
+        </div>
+      </div>
+      <div className="mt-4 fade-up" style={{ animationDelay: "0.2s" }}>
+        <div className="text-[11px] font-medium uppercase tracking-wide mb-2" style={{ color: T.faint }}>Real roles this portfolio unlocks</div>
+        <div className="space-y-2">
+          {c.jobs.map((j) => (
+            <div key={j.title + j.co} className="flex items-center justify-between rounded-xl px-3.5 py-3" style={{ background: T.surface, border: `1px solid ${T.line}` }}>
+              <div>
+                <div className="text-xs font-semibold" style={{ color: T.ink }}>{j.title} · {j.co}</div>
+                <div className="text-[11px]" style={{ color: T.sub }}>{j.loc}</div>
+              </div>
+              <span className="text-xs font-semibold" style={{ color: T.green }}>{j.pay}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HowCanvas() {
+  const steps = [
+    ["Scenario", "A real task, briefed like a job", GraduationCap],
+    ["Deliverable", "Work product you actually ship", FileText],
+    ["Project", "Deliverables stack into projects", FolderOpen],
+    ["Portfolio", "Projects become proof", LayoutDashboard],
+    ["Recruiters", "Partners browse verified portfolios", Users],
+  ];
+  return (
+    <div className="max-w-md mx-auto w-full">
+      <div className="text-[11px] font-medium uppercase tracking-wide mb-1" style={{ color: T.faint }}>How Zero works</div>
+      <h2 className="text-xl font-bold mb-4" style={{ color: T.ink, letterSpacing: "-0.02em" }}>Doing is the curriculum</h2>
+      <div className="space-y-2">
+        {steps.map(([t, d, I], i) => (
+          <div key={t} className="fade-up" style={{ animationDelay: `${i * 0.1}s` }}>
+            <div className="flex items-center gap-3 rounded-2xl px-4 py-3" style={{ background: T.surface, border: `1px solid ${T.line}` }}>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: T.accentSoft }}>
+                <I size={15} style={{ color: T.accent }} />
+              </div>
+              <div>
+                <div className="text-sm font-semibold" style={{ color: T.ink }}>{t}</div>
+                <div className="text-[11px]" style={{ color: T.sub }}>{d}</div>
+              </div>
+            </div>
+            {i < steps.length - 1 && (
+              <div className="flex justify-center py-0.5"><ChevronRight size={13} className="rotate-90" style={{ color: T.faint }} /></div>
+            )}
+          </div>
+        ))}
+      </div>
+      <div className="mt-5 fade-up" style={{ animationDelay: "0.5s" }}>
+        <div className="text-[11px] font-medium uppercase tracking-wide mb-2" style={{ color: T.faint }}>Recruiting partners</div>
+        <div className="flex flex-wrap gap-2">
+          {PARTNERS.map((p) => (
+            <span key={p} className="text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: T.surface, border: `1px solid ${T.line}`, color: T.ink }}>{p}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LaunchCanvas({ profile, credits, done }) {
+  return (
+    <div className="max-w-sm mx-auto w-full flex flex-col justify-center h-full">
+      <div className="rounded-3xl p-6 text-center fade-up" style={{ background: T.surface, border: `1px solid ${T.line}` }}>
+        <div className="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center mb-4" style={{ background: T.goldBg }}>
+          <Zap size={26} style={{ color: T.gold }} />
+        </div>
+        <div className="text-3xl font-bold tabular-nums" style={{ color: T.ink, letterSpacing: "-0.03em" }}>{fmt(credits)}</div>
+        <div className="text-sm font-medium mb-1" style={{ color: T.gold }}>credits earned</div>
+        <p className="text-xs leading-relaxed" style={{ color: T.sub }}>
+          Credits unlock free usage and carry straight into the desktop app{profile.email ? ` for ${profile.email}` : ""}.
+        </p>
+        <div className="mt-5 space-y-2 text-left">
+          {[["Account", profile.email ? "Created" : "Pending"], ["Desktop link", profile.email ? "Sent to your inbox" : "—"], ["Credits", done ? "Applied in app" : "Ready to apply"]].map(([k, v]) => (
+            <div key={k} className="flex items-center justify-between text-xs px-3 py-2.5 rounded-xl" style={{ background: T.bg, border: `1px solid ${T.line}` }}>
+              <span style={{ color: T.sub }}>{k}</span>
+              <span className="font-semibold flex items-center gap-1" style={{ color: T.ink }}>
+                {(k === "Account" && profile.email) || (k === "Credits" && done) ? <CheckCircle2 size={12} style={{ color: T.green }} /> : null}{v}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+      {done && (
+        <div className="mt-4 rounded-2xl p-4 flex items-center gap-3 fade-up" style={{ background: T.ink }}>
+          <Rocket size={18} className="text-white shrink-0" />
+          <div className="text-xs text-white leading-relaxed">Your first scenario is waiting in the desktop app. Open it and start building.</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ----------------------------------- APP ---------------------------------- */
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+function ZeroOnboarding() {
+  const [messages, setMessages] = useState([]);
+  const [chips, setChipsState] = useState(null); // {options, multi}
+  const [typing, setTyping] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [credits, setCreditsState] = useState(0);
+  const [profile, setProfileState] = useState({ projects: [] });
+  const [step, setStepState] = useState("boot");
+  const [months, setMonths] = useState("3–4 months");
+  const [selectedProjects, setSelectedProjects] = useState([]);
+  const [input, setInput] = useState("");
+  const [mobileTab, setMobileTab] = useState("chat");
+  const [previewDirty, setPreviewDirty] = useState(false);
+  const [narrow, setNarrow] = useState(false);
+  const [done, setDone] = useState(false);
+
+  const stepRef = useRef(step);
+  const profileRef = useRef(profile);
+  const creditsRef = useRef(0);
+  const questionRef = useRef("");
+  const reviseRef = useRef(false);
+  const pendingCareerRef = useRef("");
+  const scrollRef = useRef(null);
+  const startedRef = useRef(false);
+
+  const setStep = (v) => { stepRef.current = v; setStepState(v); };
+  const setProfile = (patch) => {
+    profileRef.current = { ...profileRef.current, ...patch };
+    setProfileState(profileRef.current);
+  };
+  const setCredits = (v) => { creditsRef.current = v; setCreditsState(v); };
+
+  useEffect(() => {
+    const check = () => setNarrow(window.innerWidth < 900);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+  }, [messages, typing, chips]);
+
+  const push = (m) => setMessages((prev) => [...prev, m]);
+  const markPreview = () => { if (window.innerWidth < 900) setPreviewDirty(true); };
+
+  const bot = async (lines, opts = {}) => {
+    setBusy(true);
+    setChipsState(null);
+    for (const line of lines) {
+      setTyping(true);
+      await sleep(Math.min(1400, 420 + line.length * 9));
+      setTyping(false);
+      push({ type: "bot", text: line });
+      await sleep(180);
+    }
+    if (opts.credit) {
+      await sleep(250);
+      setCredits(creditsRef.current + opts.credit.amount);
+      push({ type: "credit", amount: opts.credit.amount, label: opts.credit.label });
+      await sleep(300);
+    }
+    if (opts.download) { push({ type: "download" }); await sleep(200); }
+    if (opts.chips) setChipsState(opts.chips);
+    setBusy(false);
+  };
+
+  const ask = (question, chipsOpts) => {
+    questionRef.current = question;
+    return bot([question], { chips: chipsOpts, ...(chipsOpts?.credit ? {} : {}) });
+  };
+
+  /* ------------------------------ STEP MACHINE ----------------------------- */
+  const startFlow = useCallback(async () => {
+    setStep("intro");
+    await bot([
+      "Hey, welcome to Zero 👋 I'm your guide.",
+      "In the next few minutes we'll design your career plan together — and you'll earn credits along the way that make Zero free to start.",
+    ]);
+    questionRef.current = "What should I call you?";
+    await bot(["First things first — what should I call you?"]);
+  }, []);
+
+  useEffect(() => {
+    if (!startedRef.current) { startedRef.current = true; startFlow(); }
+  }, [startFlow]);
+
+  const askCareer = () => {
+    setStep("career");
+    ask("Which career are you working toward?", { options: [...CAREER_LIST, "Something else"] });
+  };
+
+  const askRole = (career) => {
+    setStep("role");
+    markPreview();
+    ask(`Within ${career}, which role sounds most like you?`, { options: [...CAREERS[career].roles, "Not sure yet"] });
+  };
+
+  const askCompany = () => {
+    setStep("company");
+    ask("What kind of company do you see yourself at?", { options: COMPANY_TYPES });
+  };
+
+  const askIndustry = () => {
+    setStep("industry");
+    ask("Any industry pulling you in?", { options: INDUSTRIES });
+  };
+
+  const askLocation = () => {
+    setStep("location");
+    ask("How do you want to work?", { options: LOCATIONS });
+  };
+
+  const askProjects = () => {
+    setStep("projects");
+    setSelectedProjects([]);
+    const career = profileRef.current.career;
+    ask("Last one for the vision board — pick 1–2 project types that genuinely excite you.", {
+      options: CAREERS[career].projectTypes, multi: true,
+    });
+  };
+
+  const showVisionReview = async () => {
+    setStep("vision_review");
+    markPreview();
+    const p = profileRef.current;
+    await bot([
+      `Here's your vision board, ${p.name}: a ${p.role} at a ${p.company.toLowerCase()}, ${p.industry === "Open to anything" ? "industry open" : "in " + p.industry.toLowerCase()}, working ${p.location.toLowerCase()} — building things like ${p.projects.join(" and ").toLowerCase()}.`,
+      narrow ? "Tap Preview above to see it laid out. Does it feel right?" : "Take a look at the board on the right. Does it feel right?",
+    ], { chips: { options: ["✅ That's my future", "✏️ Change something"] } });
+    questionRef.current = "Does your vision board feel right?";
+  };
+
+  const showPlan = async () => {
+    setStep("plan");
+    markPreview();
+    const c = CAREERS[profileRef.current.career];
+    const totalScenarios = c.plan.reduce((a, p) => a + p.scenarios.length, 0);
+    await bot([
+      "Now the fun part. I've turned that vision into a learning plan.",
+      `${c.plan.length} portfolio projects, ${totalScenarios} real-world scenarios, using tools like ${c.plan[0].tools.join(", ")}.`,
+      `At ~5 hrs/week you'd finish in about ${months}. Want to lock it in?`,
+    ], { chips: { options: ["✅ Approve plan", "Adjust the pace"] } });
+    questionRef.current = "Do you approve this learning plan?";
+  };
+
+  const showEndState = async () => {
+    setStep("endstate");
+    markPreview();
+    const c = CAREERS[profileRef.current.career];
+    await bot([
+      `Before we talk about how — here's where this ends. ${narrow ? "Check the Preview tab: " : ""}your finished portfolio, the deliverables inside it, and real roles it unlocks — like ${c.jobs[0].title} at ${c.jobs[0].co} (${c.jobs[0].pay}).`,
+      "That's the destination. Everything in Zero exists to get you there.",
+    ], { chips: { options: ["Show me how Zero works"] } });
+    questionRef.current = "Ready to see how Zero works?";
+  };
+
+  const showHow = async () => {
+    setStep("how");
+    markPreview();
+    await bot([
+      "Zero flips the classroom: you don't study first and apply later. You learn by doing the job.",
+      "Every scenario is a real task with real context. Scenarios produce deliverables → deliverables build projects → projects build your portfolio.",
+      `And your portfolio isn't homework — recruiting partners like ${PARTNERS.slice(0, 3).join(", ")} browse verified Zero portfolios to hire.`,
+    ], { chips: { options: ["Claim my 10,000 credits"] } });
+    questionRef.current = "Ready to claim your credits?";
+  };
+
+  const showCredits = async () => {
+    setStep("credits");
+    markPreview();
+    await bot(["One last thing before your account…"], {
+      credit: { amount: 10000 - creditsRef.current, label: "onboarding complete" },
+    });
+    await bot([
+      "🎉 You've earned 10,000 Credits.",
+      "Credits unlock free usage — and they carry straight into the desktop app, so your first weeks cost nothing.",
+    ], { chips: { options: ["Create my account"] } });
+    questionRef.current = "Ready to create your account?";
+  };
+
+  const askAccount = async () => {
+    setStep("account");
+    await bot([
+      "Let's attach those credits to you. What's your email? I'll send your desktop download link there too.",
+    ], { chips: { options: ["Sign in with Google"] } });
+    questionRef.current = "What's your email? (or sign in with Google)";
+  };
+
+  const finishAccount = async (email, viaGoogle) => {
+    setProfile({ email });
+    markPreview();
+    await bot([
+      viaGoogle ? `Signed in with Google as ${email} ✓` : `Done — account created for ${email} ✓`,
+      "Your download link is in your inbox, and here it is right now:",
+    ], { download: true });
+    setStep("downloaded");
+    await bot(["Your 10,000 credits are already applied to this account."], {
+      chips: { options: ["I've downloaded it →"] },
+    });
+    questionRef.current = "Have you downloaded the desktop app?";
+  };
+
+  const showDone = async () => {
+    setStep("done");
+    setDone(true);
+    markPreview();
+    const p = profileRef.current;
+    await bot([
+      `That's it, ${p.name}. Open Zero on your desktop — your credits are live and your first ${p.career} scenario is waiting.`,
+      "See you on the other side 🚀",
+    ], { chips: { options: ["Restart demo"] } });
+    questionRef.current = "Demo complete.";
+  };
+
+  /* ------------------------------ CHOICE ROUTER ---------------------------- */
+  const handleChoice = async (option, { silent } = {}) => {
+    if (!silent) push({ type: "user", text: option });
+    setChipsState(null);
+    const s = stepRef.current;
+
+    if (s === "career") {
+      if (option === "Something else") {
+        setStep("career_other");
+        questionRef.current = "What career are you aiming for?";
+        await bot(["Tell me — what career are you aiming for? Type it below."]);
+        return;
+      }
+      await alignCareer(option);
+      return;
+    }
+    if (s === "career_adjacent") {
+      if (option.startsWith("No thanks")) {
+        await bot([
+          "Understood — you're on the list, and we'll email you the day it launches 👋",
+          "If curiosity ever wins, one of these paths is a tap away.",
+        ], { chips: { options: adjacentCareers(pendingCareerRef.current) } });
+        return;
+      }
+      await bot([`Great pivot. A lot of ${pendingCareerRef.current} skills transfer beautifully into ${option}.`]);
+      await alignCareer(option, true);
+      return;
+    }
+    if (s === "role") {
+      const career = profileRef.current.career;
+      const role = option === "Not sure yet" ? `${CAREERS[career].roles[0]} (exploring)` : option;
+      if (option === "Not sure yet") await bot([`Totally fine — most people start exploring as a ${CAREERS[career].roles[0]}. We'll refine as you build.`]);
+      setProfile({ role });
+      markPreview();
+      if (reviseRef.current) { reviseRef.current = false; return showVisionReview(); }
+      askCompany();
+      return;
+    }
+    if (s === "company") {
+      setProfile({ company: option === "Not sure yet" ? "Open to any" : option });
+      markPreview();
+      if (reviseRef.current) { reviseRef.current = false; return showVisionReview(); }
+      askIndustry();
+      return;
+    }
+    if (s === "industry") {
+      setProfile({ industry: option });
+      markPreview();
+      if (reviseRef.current) { reviseRef.current = false; return showVisionReview(); }
+      askLocation();
+      return;
+    }
+    if (s === "location") {
+      setProfile({ location: option });
+      markPreview();
+      if (reviseRef.current) { reviseRef.current = false; return showVisionReview(); }
+      askProjects();
+      return;
+    }
+    if (s === "vision_review") {
+      if (option.startsWith("✅")) {
+        await bot(["Locked in ✨"], { credit: { amount: 2500, label: "vision board confirmed" } });
+        return showPlan();
+      }
+      setStep("vision_revise");
+      questionRef.current = "What would you like to change?";
+      await bot(["No problem — what should we change?"], {
+        chips: { options: ["Role", "Company type", "Industry", "Location", "Projects"] },
+      });
+      return;
+    }
+    if (s === "vision_revise") {
+      reviseRef.current = true;
+      const career = profileRef.current.career;
+      if (option === "Role") return askRole(career);
+      if (option === "Company type") return askCompany();
+      if (option === "Industry") return askIndustry();
+      if (option === "Location") return askLocation();
+      reviseRef.current = false; // projects flow returns to review on its own
+      return askProjects();
+    }
+    if (s === "plan") {
+      if (option.startsWith("✅")) {
+        await bot(["Plan approved 🎯"], { credit: { amount: 2500, label: "learning plan approved" } });
+        return showEndState();
+      }
+      setStep("plan_pace");
+      questionRef.current = "How much time can you give it each week?";
+      await bot(["Sure — how much time can you realistically give it each week?"], {
+        chips: { options: ["~10 hrs/wk · finish in 2–3 months", "~5 hrs/wk · finish in 3–4 months", "~3 hrs/wk · finish in 5–6 months"] },
+      });
+      return;
+    }
+    if (s === "plan_pace") {
+      const m = option.includes("2–3") ? "2–3 months" : option.includes("5–6") ? "5–6 months" : "3–4 months";
+      setMonths(m);
+      markPreview();
+      await bot([`Updated — same roadmap, paced to finish in about ${m}.`], { chips: { options: ["✅ Approve plan"] } });
+      setStep("plan");
+      questionRef.current = "Do you approve this learning plan?";
+      return;
+    }
+    if (s === "endstate") return showHow();
+    if (s === "how") return showCredits();
+    if (s === "credits") return askAccount();
+    if (s === "account" && option === "Sign in with Google") {
+      return finishAccount(`${(profileRef.current.name || "you").toLowerCase().replace(/\s+/g, ".")}@gmail.com`, true);
+    }
+    if (s === "downloaded") return showDone();
+    if (s === "done" && option === "Restart demo") {
+      setMessages([]); setCredits(0); profileRef.current = { projects: [] };
+      setProfileState({ projects: [] }); setMonths("3–4 months"); setDone(false);
+      setSelectedProjects([]); reviseRef.current = false; setPreviewDirty(false); setMobileTab("chat");
+      setStep("intro");
+      await sleep(300);
+      startFlow();
+    }
+  };
+
+  const alignCareer = async (career, skipIntro) => {
+    setProfile({ career, role: null, projects: profileRef.current.projects?.length && profileRef.current.career !== career ? [] : profileRef.current.projects });
+    if (!skipIntro) await bot([`${career} — great choice. Let's design your future around it.`], { credit: { amount: 1500, label: "career aligned" } });
+    else await bot([`${career} it is.`], { credit: { amount: 1500, label: "career aligned" } });
+    askRole(career);
+  };
+
+  const handleUnsupportedCareer = async (careerText) => {
+    pendingCareerRef.current = careerText;
+    setStep("career_email");
+    questionRef.current = "What's your email so we can notify you?";
+    await bot([
+      `Honest answer: we don't support ${careerText} yet — it's on our roadmap.`,
+      "Drop your email and you'll be first to know the moment it launches.",
+    ]);
+  };
+
+  const suggestAdjacent = async (careerText) => {
+    const suggestions = adjacentCareers(careerText);
+    setStep("career_adjacent");
+    questionRef.current = "Want to explore an adjacent path in the meantime?";
+    await bot([
+      "In the meantime — people aiming for that path often thrive in these adjacent careers. Want to explore one?",
+    ], { chips: { options: [...suggestions, "No thanks, just notify me"] } });
+  };
+
+  /* ------------------------------- FREE TEXT ------------------------------- */
+  const isEmail = (t) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(t.trim());
+
+  const handleSend = async () => {
+    const text = input.trim();
+    if (!text || busy) return;
+    setInput("");
+    const s = stepRef.current;
+    push({ type: "user", text });
+
+    if (s === "intro") {
+      const name = text.replace(/^(i'?m|my name is|call me|it'?s)\s+/i, "").split(/\s+/)[0];
+      const cap = name.charAt(0).toUpperCase() + name.slice(1);
+      setProfile({ name: cap });
+      await bot([`Great to meet you, ${cap}.`], { credit: { amount: 500, label: "welcome bonus" } });
+      return askCareer();
+    }
+    if (s === "career_other") {
+      const matched = matchCareer(text);
+      if (matched) {
+        await bot([`Good news — that lands squarely in our ${matched} path.`]);
+        return alignCareer(matched, true);
+      }
+      return handleUnsupportedCareer(text);
+    }
+    if (s === "career_email") {
+      if (!isEmail(text)) { await bot(["That doesn't look like an email — mind checking it? (e.g. you@example.com)"]); return; }
+      setProfile({ notifyEmail: text });
+      await bot([`Saved ✓ We'll email ${text} the day it launches.`]);
+      return suggestAdjacent(pendingCareerRef.current);
+    }
+    if (s === "career_adjacent" && /no|just notify/i.test(text)) {
+      await bot(["Understood. You're on the list — talk soon 👋", "…but since you're here, want a peek at how Zero works anyway?"], { chips: { options: [...adjacentCareers(pendingCareerRef.current)] } });
+      return;
+    }
+    if (s === "account") {
+      if (isEmail(text)) return finishAccount(text, false);
+      await bot(["Hmm, that doesn't look like an email. Try again — or use Google below."], { chips: { options: ["Sign in with Google"] } });
+      return;
+    }
+
+    // Chip-backed steps → interpret with Claude
+    const activeChips = chips;
+    if (activeChips?.options?.length) {
+      setBusy(true); setTyping(true); setChipsState(null);
+      let result = null;
+      try {
+        result = await interpretFreeText({
+          question: questionRef.current,
+          options: activeChips.options,
+          userText: text,
+          profileSummary: JSON.stringify(profileRef.current),
+        });
+      } catch {
+        const m = localMatch(text, activeChips.options);
+        result = m ? { reply: `Got it — ${m}.`, option: m } : { reply: "I want to get this right — mind tapping one of the options below?", option: null };
+      }
+      setTyping(false); setBusy(false);
+      if (result.reply) push({ type: "bot", text: result.reply });
+      await sleep(250);
+      if (result.option) {
+        if (activeChips.multi) {
+          setSelectedProjects([result.option]);
+          setChipsState(activeChips);
+        } else {
+          return handleChoice(result.option, { silent: true });
+        }
+      } else {
+        setChipsState(activeChips);
+      }
+      return;
+    }
+    await bot(["One sec — pick an option above and we'll keep moving."]);
+  };
+
+  const confirmProjects = async () => {
+    if (!selectedProjects.length) return;
+    push({ type: "user", text: selectedProjects.join(" + ") });
+    setChipsState(null);
+    setProfile({ projects: selectedProjects });
+    markPreview();
+    showVisionReview();
+  };
+
+  const toggleProject = (opt) => {
+    setSelectedProjects((prev) =>
+      prev.includes(opt) ? prev.filter((o) => o !== opt) : prev.length >= 2 ? [prev[1], opt] : [...prev, opt]
+    );
+  };
+
+  /* --------------------------------- RENDER -------------------------------- */
+  const s = step;
+  const phase =
+    ["boot", "intro", "career", "career_other", "career_email", "career_adjacent"].includes(s) ? "brand"
+    : ["role", "company", "industry", "location", "projects", "vision_review", "vision_revise"].includes(s) ? "vision"
+    : ["plan", "plan_pace"].includes(s) ? "plan"
+    : s === "endstate" ? "portfolio"
+    : s === "how" ? "how"
+    : "launch";
+  const phaseIndex = { brand: 0, vision: 1, plan: 2, portfolio: 3, how: 3, launch: 4 }[phase];
+
+  const canvas = (
+    <div className="h-full overflow-y-auto px-6 py-8" style={{ background: T.bg }}>
+      <ProgressRail phaseIndex={phaseIndex} />
+      {phase === "brand" && <BrandCanvas />}
+      {phase === "vision" && <VisionCanvas profile={profile} career={profile.career} />}
+      {phase === "plan" && <PlanCanvas career={profile.career} months={months} />}
+      {phase === "portfolio" && <PortfolioCanvas profile={profile} career={profile.career} />}
+      {phase === "how" && <HowCanvas />}
+      {phase === "launch" && <LaunchCanvas profile={profile} credits={credits} done={done} />}
+    </div>
+  );
+
+  const chatPanel = (
+    <div className="h-full flex flex-col" style={{ background: "#F5F5F7" }}>
+      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-5 space-y-3">
+        {messages.map((m, i) =>
+          m.type === "credit" ? <CreditToast key={i} amount={m.amount} label={m.label} />
+          : m.type === "download" ? <DownloadCard key={i} />
+          : <Bubble key={i} from={m.type}>{m.text}</Bubble>
+        )}
+        {typing && <Typing />}
+        {chips?.options && (
+          <div className="flex flex-wrap gap-2 pt-1 fade-up">
+            {chips.options.map((o) => (
+              <Chip
+                key={o}
+                label={o}
+                selected={chips.multi && selectedProjects.includes(o)}
+                onClick={() => (chips.multi ? toggleProject(o) : handleChoice(o))}
+                disabled={busy}
+              />
+            ))}
+            {chips.multi && selectedProjects.length > 0 && (
+              <Chip label={`Continue with ${selectedProjects.length} →`} primary onClick={confirmProjects} />
+            )}
+          </div>
+        )}
+      </div>
+      <div className="px-4 pb-4 pt-2" style={{ background: "#F5F5F7" }}>
+        <div className="flex items-center gap-2 rounded-full px-4 py-1.5" style={{ background: T.surface, border: `1px solid ${T.line}`, boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            placeholder={
+              step === "intro" ? "Type your name…"
+              : step === "career_other" ? "e.g. lawyer, nursing, architecture…"
+              : ["career_email", "account"].includes(step) ? "you@example.com"
+              : "Tap a chip — or just type…"
+            }
+            className="flex-1 bg-transparent text-[15px] py-2 focus:outline-none"
+            style={{ color: T.ink }}
+            aria-label="Message Zero"
+          />
+          <button
+            onClick={handleSend}
+            disabled={!input.trim() || busy}
+            aria-label="Send"
+            className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-opacity focus:outline-none"
+            style={{ background: T.accent, opacity: !input.trim() || busy ? 0.35 : 1 }}
+          >
+            <ArrowRight size={15} className="text-white" />
+          </button>
+        </div>
+        <div className="text-center text-[10px] mt-2" style={{ color: T.faint }}>
+          Free text is interpreted live by AI · chips keep the fast lane
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="h-screen flex flex-col" style={{ fontFamily: FONT, background: T.bg }}>
+      <style>{`
+        .fade-up { animation: fadeUp 0.35s ease both; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+        .dot { animation: blink 1s infinite ease-in-out; }
+        @keyframes blink { 0%, 80%, 100% { opacity: 0.3 } 40% { opacity: 1 } }
+        @media (prefers-reduced-motion: reduce) { .fade-up, .dot { animation: none !important; } }
+        input::placeholder { color: ${T.faint}; }
+        *::-webkit-scrollbar { width: 0; height: 0; }
+      `}</style>
+
+      {/* Header */}
+      <header className="flex items-center justify-between px-4 py-3 shrink-0" style={{ background: "rgba(251,251,253,0.9)", borderBottom: `1px solid ${T.line}`, backdropFilter: "blur(12px)" }}>
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: T.ink }}>
+            <span className="text-white font-bold text-sm" style={{ letterSpacing: "-0.03em" }}>Z</span>
+          </div>
+          <span className="font-semibold text-sm" style={{ color: T.ink, letterSpacing: "-0.01em" }}>Zero</span>
+          <span className="text-xs hidden sm:inline" style={{ color: T.faint }}>· onboarding</span>
+        </div>
+        <div className="flex items-center gap-2">
+          {narrow && (
+            <div className="flex rounded-full p-0.5" style={{ background: "#EDEDF0" }}>
+              {[["chat", MessageCircle, "Chat"], ["preview", Eye, "Preview"]].map(([id, I, label]) => (
+                <button
+                  key={id}
+                  onClick={() => { setMobileTab(id); if (id === "preview") setPreviewDirty(false); }}
+                  className="relative flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full transition-all focus:outline-none"
+                  style={{ background: mobileTab === id ? T.surface : "transparent", color: mobileTab === id ? T.ink : T.sub, boxShadow: mobileTab === id ? "0 1px 3px rgba(0,0,0,0.08)" : "none" }}
+                >
+                  <I size={13} /> {label}
+                  {id === "preview" && previewDirty && mobileTab !== "preview" && (
+                    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full" style={{ background: T.accent }} />
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+          <CreditsTicker credits={credits} />
+        </div>
+      </header>
+
+      {/* Body */}
+      <div className="flex-1 min-h-0 flex">
+        {narrow ? (
+          mobileTab === "chat" ? <div className="flex-1 min-w-0">{chatPanel}</div> : <div className="flex-1 min-w-0">{canvas}</div>
+        ) : (
+          <>
+            <div className="w-[420px] shrink-0 border-r" style={{ borderColor: T.line }}>{chatPanel}</div>
+            <div className="flex-1 min-w-0">{canvas}</div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+createRoot(document.getElementById("root")).render(<ZeroOnboarding />);
+</script>
+</body>
+</html>
