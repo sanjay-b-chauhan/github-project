@@ -30,10 +30,10 @@ input{ font:inherit; letter-spacing:inherit; color:var(--tx); background:none; b
 input::placeholder{ color:var(--tx-4); }
 button:focus-visible{ outline:2px solid var(--ink); outline-offset:3px; }
 input:focus,input:focus-visible{ outline:none; }
-.row .box:focus-within,.ownbox .b:focus-within{ box-shadow:0 0 0 1.5px var(--ink); }
+.row .box:focus-within{ box-shadow:0 0 0 1.5px var(--ink); }
 svg{ display:block; }
 
-/* ---------------- chrome (persists to the end) ---------------- */
+/* ---------------- chrome ---------------- */
 .top{ position:fixed; inset:0 0 auto 0; height:84px; z-index:50; display:flex; align-items:center;
   justify-content:space-between; padding:0 22px; pointer-events:none; }
 .top > *{ pointer-events:auto; }
@@ -50,45 +50,63 @@ svg{ display:block; }
 /* ---------------- layout ---------------- */
 .wrap{ display:flex; gap:16px; padding:16px; height:100dvh; }
 .mid{ flex:1; min-width:0; display:flex; align-items:center; justify-content:center; padding:84px 24px 24px; }
-.col{ width:100%; max-width:660px; }
+.col{ width:100%; max-width:640px; }
 .right{ width:0; min-width:0; opacity:0; overflow:hidden; }
 
-/* ---------------- question ---------------- */
-.q{ font-family:var(--serif); font-weight:400; font-size:clamp(26px,2.15vw,40px); line-height:1.15;
+/* ---------------- draw to start ---------------- */
+.draw{ position:fixed; inset:0; z-index:90; background:var(--page); display:flex; align-items:center; justify-content:center; }
+.draw canvas{ position:absolute; inset:0; cursor:crosshair; touch-action:none; }
+.dcenter{ text-align:center; pointer-events:none; position:relative; }
+.dghost{ width:190px; margin:0 auto 34px; color:var(--tx); opacity:.06; }
+.dghost svg{ width:100%; height:auto; }
+.dh{ font-family:var(--serif); font-size:clamp(28px,2.3vw,42px); letter-spacing:-.03em; line-height:1.15; }
+.ds{ margin-top:13px; font-size:14px; color:var(--tx-3); }
+.dhint{ margin-top:30px; font-size:12.5px; color:var(--tx-4); opacity:0; }
+
+/* ---------------- conversation ---------------- */
+.said{ min-height:24px; margin-bottom:18px; font-size:15px; color:var(--tx-2); text-align:center; text-wrap:balance; position:relative; }
+.said .hl{ color:var(--tx); font-weight:600; }
+.react{ position:absolute; top:-8px; right:8%; font-size:19px; opacity:0; }
+.q{ font-family:var(--serif); font-weight:400; font-size:clamp(25px,2.05vw,38px); line-height:1.16;
   letter-spacing:-.03em; text-align:center; text-wrap:balance; }
 .q .w{ display:inline-block; }
 .qs{ margin-top:12px; font-size:14px; color:var(--tx-3); text-align:center; text-wrap:balance; }
+.opts{ margin-top:42px; }
 
-/* generous space between the title and the answers */
-.opts{ margin-top:46px; }
+/* voice composer */
+.voice{ display:flex; flex-direction:column; align-items:center; gap:18px; }
+.interim{ min-height:22px; max-width:480px; font-size:14.5px; color:var(--tx-2); text-align:center; }
+.micwrap{ position:relative; width:84px; height:84px; }
+.ring{ position:absolute; inset:0; border-radius:var(--pill); border:1.5px solid var(--tx-4); opacity:0; }
+.mic{ position:absolute; inset:0; border-radius:var(--pill); background:var(--ink); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  transition:transform .22s cubic-bezier(.2,.8,.3,1); }
+.mic svg{ width:26px; height:26px; }
+.mic:hover{ transform:scale(1.05); }
+.mic.live{ background:var(--ink); }
+.mic.live::after{ content:''; position:absolute; inset:6px; border-radius:var(--pill); border:1.5px solid rgba(255,255,255,.35); }
+.vhint{ font-size:12.5px; color:var(--tx-4); }
+.vrow{ display:flex; align-items:center; gap:26px; }
+.mini{ width:48px; height:48px; border-radius:var(--pill); background:var(--field); color:var(--tx-2);
+  display:flex; align-items:center; justify-content:center; }
+.mini svg{ width:17px; height:17px; }
+.mini:hover{ color:var(--tx); }
 
+/* type composer */
 .row{ display:flex; gap:10px; justify-content:center; }
-.row .box{ width:340px; height:58px; background:var(--field); border-radius:var(--pill); display:flex; align-items:center; padding:0 26px; }
-.row .box input{ width:100%; font-size:17px; text-align:center; }
+.row .box{ width:420px; height:58px; background:var(--field); border-radius:var(--pill); display:flex; align-items:center; padding:0 26px; }
+.row .box input{ width:100%; font-size:16px; }
 .row .go{ width:58px; height:58px; flex-shrink:0; border-radius:var(--pill); background:var(--ink); color:var(--on-ink);
   display:flex; align-items:center; justify-content:center; opacity:.25; }
 .row .go svg{ width:17px; height:17px; }
 
-/* tinted picture cards */
-.cards{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
-.card{ position:relative; height:150px; border-radius:var(--r-lg); overflow:hidden;
-  background:linear-gradient(155deg,var(--a),var(--b));
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;
-  transition:transform .22s cubic-bezier(.2,.8,.3,1), box-shadow .22s ease; }
-.card::before{ content:''; position:absolute; top:22px; width:74px; height:74px; border-radius:var(--pill); border:1px solid rgba(255,255,255,.75); }
-.card .orb{ position:relative; width:48px; height:48px; border-radius:var(--pill); background:rgba(255,255,255,.92);
-  display:flex; align-items:center; justify-content:center; color:#43434b; margin-top:3px; }
-.card .orb svg{ width:21px; height:21px; }
-.card .cl{ position:relative; font-size:14.5px; font-weight:500; color:#35353c; }
-.card:hover{ transform:translateY(-4px); box-shadow:0 12px 28px rgba(0,0,0,.1); }
-.card .tick{ position:absolute; top:11px; right:11px; width:23px; height:23px; border-radius:var(--pill);
-  background:var(--ink); color:#fff; display:flex; align-items:center; justify-content:center;
-  opacity:0; transform:scale(.5); transition:opacity .2s ease, transform .26s cubic-bezier(.2,1.4,.4,1); }
-.card .tick svg{ width:12px; height:12px; }
-.card.on{ box-shadow:0 0 0 2px var(--ink), 0 12px 28px rgba(0,0,0,.11); }
-.card.on .tick{ opacity:1; transform:scale(1); }
+.chips{ margin-top:20px; display:flex; flex-wrap:wrap; gap:9px; justify-content:center; }
+.chip2{ height:42px; padding:0 18px; border-radius:var(--pill); background:var(--card); border:1px solid var(--line);
+  font-size:13.5px; color:var(--tx-2); display:flex; align-items:center;
+  transition:transform .2s cubic-bezier(.2,.8,.3,1), box-shadow .2s ease, color .2s ease; }
+.chip2:hover{ transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.07); color:var(--tx); }
 
-/* full-width rows with a description */
+/* choice rows */
 .rows{ display:flex; flex-direction:column; gap:10px; }
 .orow{ display:flex; align-items:center; gap:18px; text-align:left; background:var(--card);
   border:1px solid var(--line); border-radius:var(--r-lg); padding:18px 22px;
@@ -104,27 +122,6 @@ svg{ display:block; }
 .orow.on .od{ color:rgba(255,255,255,.6); }
 .orow.on .oi{ background:rgba(255,255,255,.14); color:#fff; }
 
-/* compact pills */
-.pils{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
-.pil{ height:50px; padding:0 22px 0 16px; border-radius:var(--pill); background:var(--card); border:1px solid var(--line);
-  display:flex; align-items:center; gap:11px; font-size:15px;
-  transition:transform .22s cubic-bezier(.2,.8,.3,1), background .2s ease, border-color .2s ease, box-shadow .2s ease; }
-.pil .pi{ width:26px; height:26px; border-radius:var(--pill); background:var(--wash); display:flex; align-items:center; justify-content:center; color:var(--tx-2); }
-.pil .pi svg{ width:14px; height:14px; }
-.pil:hover{ transform:translateY(-2px); box-shadow:0 7px 18px rgba(0,0,0,.07); }
-.pil.on{ background:var(--t); border-color:transparent; box-shadow:0 0 0 1.5px rgba(13,13,13,.9); }
-.pil.on .pi{ background:rgba(255,255,255,.85); color:var(--tx); }
-
-.own{ margin-top:22px; text-align:center; }
-.own .link{ font-size:13.5px; color:var(--tx-3); border-bottom:1px solid var(--line); padding-bottom:2px; }
-.own .link:hover{ color:var(--tx-2); }
-.ownbox{ display:none; margin-top:14px; justify-content:center; gap:10px; }
-.ownbox.open{ display:flex; }
-.ownbox .b{ width:340px; height:50px; background:var(--field); border-radius:var(--pill); display:flex; align-items:center; padding:0 22px; }
-.ownbox .b input{ width:100%; font-size:15px; }
-.ownbox .s{ width:50px; height:50px; border-radius:var(--pill); background:var(--ink); color:#fff; display:flex; align-items:center; justify-content:center; }
-.ownbox .s svg{ width:15px; height:15px; }
-
 .next{ margin-top:28px; display:flex; justify-content:center; gap:10px; opacity:0; pointer-events:none; }
 .next.show{ pointer-events:auto; }
 .btn{ height:52px; padding:0 30px; border-radius:var(--pill); background:var(--ink); color:var(--on-ink);
@@ -132,26 +129,37 @@ svg{ display:block; }
   transition:transform .22s cubic-bezier(.2,.8,.3,1); }
 .btn:hover{ transform:translateY(-2px); }
 .btn.quiet{ background:var(--field); color:var(--tx); font-weight:400; }
-
 .acct{ margin-top:30px; display:flex; flex-direction:column; align-items:center; gap:12px; }
 .acct .note{ font-size:12.5px; color:var(--tx-4); }
 
-/* ---------------- panel ---------------- */
+/* ---------------- right panel ---------------- */
 .shell{ height:100%; background:var(--shell); border-radius:var(--r-xl); display:flex; flex-direction:column;
   align-items:center; padding:22px 0 0; overflow:hidden; }
 .cap{ font-size:12px; color:var(--tx-3); margin-bottom:14px; flex-shrink:0; display:flex; align-items:center; gap:7px; height:15px; }
 .cap .live{ width:5px; height:5px; border-radius:var(--pill); background:var(--ok); }
+.cap .live.pulse{ animation:capPulse 1.6s ease-in-out infinite; }
+@keyframes capPulse{ 0%,100%{opacity:1} 50%{opacity:.3} }
 .paper{ width:min(660px,90%); flex:1; min-height:0; background:var(--card); border-radius:var(--r-lg);
   position:relative; box-shadow:0 1px 3px rgba(0,0,0,.04); overflow:hidden; }
 .paper::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:64px;
   background:linear-gradient(to bottom,rgba(255,255,255,0),#fff); pointer-events:none; z-index:2; }
 .scroll{ height:100%; overflow:hidden; padding:30px 30px 50px; }
 
-/* the print-in dot field */
+/* live profile slots */
+.slots{ display:flex; flex-direction:column; }
+.slot{ display:flex; align-items:center; gap:13px; padding:12px 2px; position:relative; }
+.slot + .slot::before{ content:''; position:absolute; top:0; left:0; right:0; height:1px; background:var(--line-2); }
+.slot .si{ width:30px; height:30px; flex-shrink:0; border-radius:var(--r-sm); background:var(--wash);
+  display:flex; align-items:center; justify-content:center; color:var(--tx-3); }
+.slot .si svg{ width:14px; height:14px; }
+.slot .sk{ flex:1; font-size:13px; color:var(--tx-3); }
+.slot .sv{ font-size:13.5px; font-weight:600; text-align:right; max-width:58%; color:var(--tx-4); font-weight:400; }
+.slot.f .sv{ color:var(--tx); font-weight:600; }
+.slot.f .si{ background:var(--ink); color:#fff; }
+
 .dots{ position:absolute; inset:34px 34px 44px; z-index:3; pointer-events:none; }
 .dots span{ position:absolute; width:3px; height:3px; margin:-1.5px 0 0 -1.5px; border-radius:var(--pill); background:var(--tx-4); }
 
-/* the artifact block, straight from the kit */
 .artifact{ background:var(--card); box-shadow:0 1px 3px rgba(0,0,0,.05); border:1px solid var(--line);
   border-left:3px solid rgba(74,222,128,.8); border-radius:var(--r-md); padding:17px 19px; }
 .artifact .ah{ display:flex; align-items:center; gap:9px; margin-bottom:12px; font-size:12.5px; color:var(--tx-3); }
@@ -159,7 +167,7 @@ svg{ display:block; }
 .artifact ul{ list-style:none; }
 .artifact li{ padding:10px 0; font-size:14px; position:relative; display:flex; justify-content:space-between; gap:16px; }
 .artifact li + li::before{ content:''; position:absolute; top:0; left:0; right:0; height:1px; background:var(--line-2); }
-.artifact li .k{ color:var(--tx-3); }
+.artifact li .k{ color:var(--tx-3); flex-shrink:0; }
 .artifact li .v{ font-weight:600; text-align:right; }
 
 .ph{ display:flex; align-items:flex-start; gap:15px; }
@@ -178,7 +186,6 @@ svg{ display:block; }
 .psec{ margin-top:24px; margin-bottom:11px; font-size:13px; color:var(--tx-3); display:flex; align-items:center; justify-content:space-between; }
 .psec .cnt{ font-size:12px; color:var(--tx-4); }
 
-/* role cards */
 .rcard{ display:flex; align-items:center; gap:16px; padding:16px 18px; border-radius:var(--r-md); background:var(--wash); }
 .rcard + .rcard{ margin-top:10px; }
 .rcard .rk{ width:44px; height:44px; flex-shrink:0; border-radius:var(--r-sm); background:var(--card);
@@ -251,7 +258,7 @@ svg{ display:block; }
 .rew{ text-align:center; padding:16px 0 4px; }
 .rewn{ font-size:46px; font-weight:600; letter-spacing:-.045em; font-variant-numeric:tabular-nums; line-height:1; }
 .rewl{ margin-top:9px; font-size:13px; color:var(--gold); font-weight:600; }
-.rewsub{ margin-top:12px; font-size:12.5px; color:var(--tx-2); line-height:1.6; max-width:360px; margin-left:auto; margin-right:auto; }
+.rewsub{ margin-top:12px; font-size:12.5px; color:var(--tx-2); line-height:1.6; max-width:380px; margin-left:auto; margin-right:auto; }
 .rewgrid{ margin-top:22px; display:flex; flex-direction:column; gap:9px; }
 .rewrow{ display:flex; align-items:center; justify-content:space-between; padding:13px 16px; border-radius:var(--r-md); background:var(--wash); font-size:13px; }
 .rewrow .k{ color:var(--tx-2); }
@@ -285,7 +292,7 @@ svg{ display:block; }
   </div>
   <div class="tr">
     <button class="snd" id="sndBtn" aria-label="Toggle sound"></button>
-    <div class="steps" id="steps"><span class="sl" id="stepLbl">Getting to know you</span></div>
+    <div class="steps" id="steps"><span class="sl" id="stepLbl">Align</span></div>
   </div>
 </div>
 
@@ -293,9 +300,19 @@ svg{ display:block; }
   <div class="mid"><div class="col" id="col"></div></div>
   <div class="right" id="right">
     <div class="shell">
-      <div class="cap" id="cap"><span class="live"></span>Your vision board</div>
+      <div class="cap" id="cap"><span class="live pulse"></span>Zero is listening</div>
       <div class="paper" id="paper"><div class="scroll" id="scroll"></div></div>
     </div>
+  </div>
+</div>
+
+<div class="draw" id="drawScreen">
+  <canvas id="drawCanvas"></canvas>
+  <div class="dcenter">
+    <div class="dghost" id="dGhost"></div>
+    <div class="dh">Draw a zero to begin.</div>
+    <div class="ds">Anywhere on the screen. Any size.</div>
+    <div class="dhint" id="dHint">Or double-tap anywhere.</div>
   </div>
 </div>
 
@@ -316,18 +333,22 @@ const ZSVG = '<svg viewBox="0 0 333 96" fill="none" xmlns="http://www.w3.org/200
 const I={
   arrow:'<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" d="m9 18l6-6l-6-6"/></svg>',
   check:'<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.2" d="M20 6L9 17l-5-5"/></svg>',
+  micro:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3"/></g></svg>',
+  kbd:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M10 8h.01M12 12h.01M14 8h.01M16 12h.01M18 8h.01M6 8h.01M7 16h10M8 12h.01"/><rect width="20" height="16" x="2" y="4" rx="2"/></g></svg>',
+  stop:'<svg viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor"/></svg>',
   play:'<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg>',
   doc:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5M10 9H8m8 4H8m8 4H8"/></g></svg>',
+  user:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></g></svg>',
   pen:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M15.707 21.293a1 1 0 0 1-1.414 0l-1.586-1.586a1 1 0 0 1 0-1.414l5.586-5.586a1 1 0 0 1 1.414 0l1.586 1.586a1 1 0 0 1 0 1.414z"/><path d="m18 13l-1.375-6.874a1 1 0 0 0-.746-.776L3.235 2.028a1 1 0 0 0-1.207 1.207L5.35 15.879a1 1 0 0 0 .776.746L13 18M2.3 2.3l7.286 7.286"/><circle cx="11" cy="11" r="2"/></g></svg>',
   box:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7l8.7 5l8.7-5M12 22V12"/></g></svg>',
   bars:'<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 21v-6m7 6V3m7 18V9"/></svg>',
-  type:'<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2M9 20h6"/></svg>',
-  shake:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m11 17l2 2a1 1 0 1 0 3-3"/><path d="m14 14l2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3l1 11h-2M3 3L2 14l6.5 6.5a1 1 0 1 0 3-3M3 4h8"/></g></svg>',
-  route:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></g></svg>',
-  rocket:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.4 22.4 0 0 1-4 2"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0m1 7v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></g></svg>',
+  pin:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></g></svg>',
   bld:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M10 12h4m-4-4h4m0 13v-3a2 2 0 0 0-4 0v3"/><path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"/><path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/></g></svg>',
-  home:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></g></svg>',
-  laptop:'<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 5a2 2 0 0 1 2 2v8.526a2 2 0 0 0 .212.897l1.068 2.127a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45l1.068-2.127A2 2 0 0 0 4 15.526V7a2 2 0 0 1 2-2zm2.054 10.987H3.946"/></svg>',
+  globe:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20a14.5 14.5 0 0 0 0-20M2 12h20"/></g></svg>',
+  puzzle:'<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 7a2 2 0 1 0-4 0v1H7a2 2 0 0 0-2 2v3h1a2 2 0 1 1 0 4H5v3a2 2 0 0 0 2 2h3v-1a2 2 0 1 1 4 0v1h3a2 2 0 0 0 2-2v-3h1a2 2 0 1 0 0-4h-1v-3a2 2 0 0 0-2-2h-3z"/></svg>',
+  clock:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></g></svg>',
+  flag:'<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 22V4c0-.6.4-1 1-1h9.5a1 1 0 0 1 .8 1.6L13 8l2.3 3.4a1 1 0 0 1-.8 1.6H5"/></svg>',
+  route:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></g></svg>',
   spark:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/></g></svg>',
   target:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></g></svg>',
   folder:'<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>',
@@ -335,13 +356,7 @@ const I={
   dl:'<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5l5-5M12 15V3"/></svg>',
   vol:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/></g></svg>',
   mute:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="m17 9l4 6m0-6l-4 6"/></g></svg>',
-  globe:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20a14.5 14.5 0 0 0 0-20M2 12h20"/></g></svg>',
-  heart:'<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2c-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>',
-  coin:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v12m3-9H10.5a2.5 2.5 0 0 0 0 5h3a2.5 2.5 0 0 1 0 5H9"/></g></svg>',
-  leaf:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8c0 5.5-4.78 10-10 10"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></g></svg>',
-  cart:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></g></svg>',
-  cam:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m16 13l5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></g></svg>',
-  compass:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m16.24 7.76l-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"/><circle cx="12" cy="12" r="10"/></g></svg>',
+  link:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></g></svg>',
 };
 const TINT=['#EEF1F5','#EDF3EE','#F4F0EA'];
 
@@ -350,8 +365,7 @@ function sfx(n){ try{ if(sndOn&&window.CUE) window.CUE.play(n); }catch(e){} }
 
 /* ============================ content ============================ */
 const DISC={
-  data:{ label:'Working with data', icon:'bars', a:'#EAF1FB', b:'#D6E5F7', role:'Data Analyst',
-    cos:['Spotify','Shopify','Airbnb','Datadog'],
+  data:{ label:'Working with data', role:'Data Analyst', cos:['Spotify','Shopify','Airbnb','Datadog'],
     bio:'I work best on a framed problem with data in hand. I build the model, isolate one driver, size the opportunity, and open the write-up with the recommendation.',
     projects:[
       {co:'Notion',short:'Signup Funnel Diagnosis',title:'Signup funnel diagnosis and conversion recovery plan for Notion',weeks:5,
@@ -371,9 +385,7 @@ const DISC={
     todo:[['Measurement system design','Design a KPI architecture. Definitions, owners, review cadence.'],
           ['Open-ended strategy case','Structure an ambiguous question with no dataset handed to you.']],
     roles:[['Data Analyst','$75k – $100k','Most openings'],['Analytics Engineer','$110k – $140k','Fewer, pays more'],['Business Analyst','$75k – $95k','Widest range']] },
-
-  design:{ label:'Designing things', icon:'pen', a:'#FBEFE9', b:'#F7DCCD', role:'Product Designer',
-    cos:['Linear','Airbnb','Vercel','Figma'],
+  design:{ label:'Design', role:'Product Designer', cos:['Linear','Airbnb','Vercel','Figma'],
     bio:'I would rather watch one person use the thing than read ten opinions about it. I design in the open, ship the flow end to end, and write down why each call was made.',
     projects:[
       {co:'Linear',short:'Issue Triage Flow',title:'Issue triage redesign for Linear',weeks:5,
@@ -393,9 +405,7 @@ const DISC={
     todo:[['Design critique','Defend a screen to a room that disagrees with you.'],
           ['Accessibility pass','Take a shipped flow to WCAG AA without redesigning it.']],
     roles:[['Product Designer','$95k – $125k','Most openings'],['UX Designer','$90k – $120k','Research-heavy'],['Design Engineer','$110k – $140k','Rarer, pays more']] },
-
-  product:{ label:'Building products', icon:'box', a:'#EFEDFB', b:'#DFDBF7', role:'Product Manager',
-    cos:['Slack','Intercom','Atlassian','Linear'],
+  product:{ label:'Product', role:'Product Manager', cos:['Slack','Intercom','Atlassian','Linear'],
     bio:'I like a problem while it is still fuzzy. I frame it, size it, cut it to what ships this quarter, and keep the trade-offs written down where everyone can see them.',
     projects:[
       {co:'Slack',short:'Activation Loop',title:'First-week activation experiment for Slack',weeks:5,
@@ -415,9 +425,7 @@ const DISC={
     todo:[['Pricing change','Re-price a tier against usage data and live with the churn math.'],
           ['Incident call','Run the call when the launch breaks in production.']],
     roles:[['Product Manager','$100k – $130k','Most openings'],['Product Analyst','$85k – $110k','Best way in'],['Growth PM','$105k – $135k','Experiment-heavy']] },
-
-  content:{ label:'Writing and stories', icon:'type', a:'#FBEEF3', b:'#F7DAE5', role:'Content Strategist',
-    cos:['HubSpot','Notion','Spotify','Intercom'],
+  content:{ label:'Writing', role:'Content Strategist', cos:['HubSpot','Notion','Spotify','Intercom'],
     bio:'I learn the product properly before I write a word about it. Then I write the version people actually finish reading, and cut the rest.',
     projects:[
       {co:'HubSpot',short:'Search Engine',title:'Search content engine for HubSpot',weeks:5,
@@ -437,9 +445,7 @@ const DISC={
     todo:[['Crisis note','Write the message that goes out when something went wrong.'],
           ['Technical explainer','Explain a hard system to people who do not build it.']],
     roles:[['Content Strategist','$70k – $95k','Most openings'],['Content Designer','$85k – $110k','Product teams'],['Brand Marketer','$70k – $90k','Broader remit']] },
-
-  sales:{ label:'Selling and people', icon:'shake', a:'#EDF6EC', b:'#DBEDD9', role:'Account Executive',
-    cos:['Datadog','Stripe','HubSpot','Slack'],
+  sales:{ label:'Sales', role:'Account Executive', cos:['Datadog','Stripe','HubSpot','Slack'],
     bio:'I would rather have the honest conversation in week one. I qualify hard, learn the account properly, and walk away early when it is not a fit.',
     projects:[
       {co:'Datadog',short:'Outbound Motion',title:'Outbound motion and sequence build for Datadog',weeks:5,
@@ -459,9 +465,7 @@ const DISC={
     todo:[['Renewal at risk','Save an account that already told you it is leaving.'],
           ['Multi-threading','Reach the economic buyer without burning your champion.']],
     roles:[['Account Executive','$70k + $130k OTE','Most openings'],['Sales Development Rep','$55k + $85k OTE','Best way in'],['Customer Success Manager','$70k – $95k','Less cold calling']] },
-
-  ops:{ label:'Plans and operations', icon:'route', a:'#FBF6E8', b:'#F5EBCE', role:'Operations Analyst',
-    cos:['Shopify','Airbnb','Intercom','Atlassian'],
+  ops:{ label:'Operations', role:'Operations Analyst', cos:['Shopify','Airbnb','Intercom','Atlassian'],
     bio:'I like the messy middle. I map how the work really flows, find where it jams, and change the process instead of complaining about it.',
     projects:[
       {co:'Shopify',short:'Process Teardown',title:'Fulfilment process teardown and redesign at Shopify',weeks:5,
@@ -483,237 +487,400 @@ const DISC={
     roles:[['Operations Analyst','$70k – $90k','Most openings'],['Business Analyst','$75k – $95k','Widest range'],['Program Manager','$90k – $115k','More scope']] },
 };
 
-const MATCH={
-  design:['design','ux','ui','figma','visual','brand','graphic'],
-  product:['product','pm','build','ship','roadmap','feature','founder'],
-  data:['data','analy','sql','number','stat','python','report','dashboard','research'],
-  content:['writ','content','copy','story','word','journal','edit','market'],
-  sales:['sale','sell','client','account','custom','people','pitch','biz dev'],
-  ops:['ops','operat','process','project','program','coordinat','logistic','admin','plan'],
+/* ============================ extraction ============================ */
+const KW={
+  fields:{ design:['design','ux','ui','figma','visual','brand','graphic'],
+    product:['product manag','product person',' pm ','pm.','pm,','roadmap','build products','building products','founder'],
+    data:['data','analy','sql','number','stat','python','dashboard','research'],
+    content:['writ','content','copy','stories','storytell','journal','edit','marketing'],
+    sales:['sales','sell','client','account exec','custom','pitch','biz dev'],
+    ops:['operation','process','project manag','program','coordinat','logistic','admin'] },
+  company:{ 'Startup':['startup','early stage','scrappy','small team'],
+    'Scale-up':['scale-up','scaleup','growth stage','series b','series c'],
+    'Big tech':['big tech','faang','enterprise','large company','big company','corporate','established'],
+    'Agency':['agency','consultanc','studio'] },
+  industry:{ 'Tech and AI':['tech','ai','software','saas','machine learning'],
+    'Health':['health','medical','fitness','wellness'],
+    'Finance':['finance','fintech','bank','invest','crypto'],
+    'Climate':['climate','energy','sustain','green'],
+    'E-commerce':['commerce','retail','shopping','marketplace'],
+    'Media':['media','entertainment','music','gaming','film','creator'] },
+  level:{ 'Student':['student','college','university','studying','undergrad','final year','graduating'],
+    'Recent graduate':['graduate','graduated','just finished','fresher'],
+    'Working, switching':['switch','career change','want out','pivot','transition','currently work','working in','my job'],
+    'Self-taught':['self-taught','self taught','bootcamp','on my own'] },
 };
-function matchDisc(t){ t=t.toLowerCase(); for(const[k,l]of Object.entries(MATCH)) if(l.some(w=>t.includes(w))) return k; return null; }
+const CITIES=['Dubai','London','New York','NYC','San Francisco','Berlin','Toronto','Bangalore','Bengaluru','Mumbai','Delhi','Singapore','Amsterdam','Paris','Sydney','Tokyo','Austin','Seattle','Lisbon','Barcelona','Remote'];
+const ROLEWORDS={ 'Product Designer':['product design'],'UX Designer':['ux design','ux research'],'Designer':['designer','design role'],
+  'Product Manager':['product manager','pm role',' apm'],'Data Analyst':['data analyst','analyst'],'Data Scientist':['data scientist'],
+  'Engineer':['engineer','developer'],'Marketer':['marketer','marketing role'],'Writer':['writer','content role'],'Account Executive':['account executive','sales role'] };
 
-/* ---- stage 1: understand the user, fully ---- */
-const STEPS=[
-  { k:'name', lbl:'Getting to know you', q:'First, what should we call you?', type:'text', ph:'your name' },
-  { k:'pull', lbl:'Your field', q:'What kind of work pulls you in?', sub:'Pick one or two.', type:'cards', max:2,
-    opts:Object.keys(DISC).map(id=>({id,label:DISC[id].label,icon:DISC[id].icon,a:DISC[id].a,b:DISC[id].b})),
-    own:'None of these sound like me' },
-  { k:'industry', lbl:'Your industry', q:'Any industry pulling you in?', sub:'The work changes shape depending on where it happens.', type:'pills',
-    opts:[{id:'Tech and AI',icon:'spark',t:'#EFEDFB'},{id:'Health',icon:'heart',t:'#FBEEF3'},{id:'Finance',icon:'coin',t:'#EAF1FB'},
-          {id:'Climate',icon:'leaf',t:'#EDF6EC'},{id:'E-commerce',icon:'cart',t:'#FBF6E8'},{id:'Media',icon:'cam',t:'#FBEFE9'},
-          {id:'Open to anything',icon:'globe',t:'#F7F7F5'}],
-    own:'A different industry' },
-  { k:'company', lbl:'Company', q:'What kind of company fits you?', type:'rows',
-    opts:[{id:'A high-growth startup',icon:'rocket',t:'#FBEFE9',d:'Small team, wide remit, everything moves fast and nothing is documented.'},
-          {id:'A scale-up',icon:'spark',t:'#EFEDFB',d:'Growth with some rails under it. Real process, still room to shape it.'},
-          {id:'Big tech or enterprise',icon:'bld',t:'#EAF1FB',d:'Scale, budget and specialists. You go deep on one thing.'},
-          {id:'An agency or consultancy',icon:'compass',t:'#FBF6E8',d:'Many clients, many problems. You learn breadth quickly.'},
-          {id:'Not sure yet',icon:'target',t:'#F7F7F5',d:'Fair. We will keep the plan portable across all of them.'}],
-    own:'Something else' },
-  { k:'mode', lbl:'Location', q:'How do you want to work?', type:'pills',
-    opts:[{id:'Fully remote',icon:'home',t:'#EAF1FB'},{id:'Hybrid',icon:'laptop',t:'#EFEDFB'},
-          {id:'On-site',icon:'bld',t:'#FBEFE9'},{id:'Flexible',icon:'target',t:'#F7F7F5'}],
-    own:'It depends' },
-  { k:'focus', lbl:'Your focus', q:'What matters most right now?', type:'rows',
-    opts:[{id:'Learning fast',icon:'spark',t:'#EFEDFB',d:'Range over depth. You want reps and feedback more than a title.'},
-          {id:'Earning well',icon:'coin',t:'#EDF6EC',d:'Money is the point and you would rather say so than pretend.'},
-          {id:'Work I can point to',icon:'target',t:'#FBEFE9',d:'Proof over promises. You want something to show, not a certificate.'},
-          {id:'A clear way in',icon:'route',t:'#EAF1FB',d:'You are not short on effort, you are short on a door.'}],
-    own:'Something else' },
-];
+function grab(text,map){ const t=' '+text.toLowerCase()+' ';
+  for(const [val,words] of Object.entries(map)) if(words.some(w=>t.includes(w))) return val; return null; }
+function grabFields(text){ const t=text.toLowerCase(); const out=[];
+  for(const [k,words] of Object.entries(KW.fields)) if(words.some(w=>t.includes(w))) out.push(k);
+  return out.slice(0,2); }
+function grabCity(text){ const t=text.toLowerCase();
+  for(const c of CITIES) if(t.includes(c.toLowerCase())) return c==='NYC'?'New York':(c==='Bengaluru'?'Bangalore':c); return null; }
+function grabName(text){
+  const m=text.match(/(?:i'?m|i am|my name is|call me|this is)\s+([A-Za-z]{2,15})/i);
+  if(!m) return null;
+  const bad=['looking','trying','currently','from','based','working','studying','interested','going','still','just','really','not','more','about','done','ready','excited','good','fine','open'];
+  const n=m[1].toLowerCase();
+  if(bad.includes(n)) return null;
+  return m[1].charAt(0).toUpperCase()+m[1].slice(1).toLowerCase();
+}
+function grabTimeline(text){ const t=text.toLowerCase();
+  const m=t.match(/(\d+)\s*(month|week|year)/); if(m) return m[1]+' '+m[2]+(+m[1]>1?'s':'');
+  if(t.includes('asap')||t.includes('as soon')) return 'As soon as possible';
+  if(t.includes('this year')) return 'This year';
+  if(t.includes('intern')) return 'Internship first';
+  if(t.includes('no rush')||t.includes('no timeline')) return 'No rush';
+  return null; }
+function quoteOf(text){ let q=text.trim().replace(/\s+/g,' ');
+  if(q.length>64) q=q.slice(0,61).replace(/\s\S*$/,'')+'…';
+  return q.charAt(0).toUpperCase()+q.slice(1); }
 
-const LEVEL={'Learning fast':'Developing','Earning well':'Proficient','Work I can point to':'Proficient','A clear way in':'Developing'};
-const CO_SHORT={'A high-growth startup':'Startup','A scale-up':'Scale-up','Big tech or enterprise':'Enterprise','An agency or consultancy':'Agency','Not sure yet':'Any size'};
-
-/* ============================ engine ============================ */
-const A={}; let step=0, sel=[], locked=false, picked=null;
+/* ============================ engine state ============================ */
+const P={ name:null, fields:[], role:null, location:null, company:null, industry:null, problems:null, timeline:null, level:null, hard:null };
+let mode='talk', turnIdx=-1, picked=null, busy=false;
 const $=id=>document.getElementById(id);
 const mk=(t,c,h)=>{const n=document.createElement(t); if(c)n.className=c; if(h!=null)n.innerHTML=h; return n;};
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 const EIO='power3.inOut';
 const fmt=n=>n.toLocaleString('en-US');
 gsap.defaults({ease:'power3.out'});
-
 function safeTL(tl,ms){ const t=setTimeout(()=>{try{tl.progress(1);tl.kill();}catch(e){}},ms||2000);
   tl.eventCallback('onComplete',()=>clearTimeout(t)); return tl; }
 
-/* the step pill lives the whole flow */
-(function(){ const s=$('steps'); for(let i=0;i<STEPS.length+5;i++) s.appendChild(mk('i')); })();
-function meter(label){
-  if(label) $('stepLbl').textContent=label;
-  [...$('steps').querySelectorAll('i')].forEach((d,i)=>{
-    gsap.to(d,{width:i===step?20:4, backgroundColor:i<step?'#9a9aa0':(i===step?'#111113':'#c4c4ca'), duration:.5, ease:EIO}); });
-}
-function words(el,text){ el.innerHTML=''; const p=text.split(' ');
-  p.forEach((w,i)=>{ el.appendChild(mk('span','w',w)); if(i<p.length-1) el.appendChild(document.createTextNode(' ')); });
-  return [...el.querySelectorAll('.w')]; }
+const PHASES=['Align','Vision','Plan','Outcome','Launch'];
+let phase=0;
+(function(){ const s=$('steps'); for(let i=0;i<PHASES.length;i++) s.appendChild(mk('i')); })();
+function setPhase(i){ phase=i; $('stepLbl').textContent=PHASES[i];
+  [...$('steps').querySelectorAll('i')].forEach((d,k)=>{
+    gsap.to(d,{width:k===i?20:4, backgroundColor:k<i?'#9a9aa0':(k===i?'#111113':'#c4c4ca'), duration:.5, ease:EIO}); }); }
 
 (function(){ const b=$('sndBtn'); b.innerHTML=I.vol;
   b.onclick=()=>{ sndOn=!sndOn; b.innerHTML=sndOn?I.vol:I.mute; b.classList.toggle('off',!sndOn);
     try{window.CUE&&window.CUE.setEnabled(sndOn);}catch(e){} if(sndOn) sfx('toggle'); }; })();
 
-function flyInto(source,target,then){
-  let fired=false; const land=()=>{if(fired)return; fired=true; then&&then();};
-  if(!source||!target||!target.getBoundingClientRect().width){land();return;}
-  const s=source.getBoundingClientRect(),t=target.getBoundingClientRect();
-  const g=source.cloneNode(true); g.classList.add('ghost'); document.body.appendChild(g);
-  const kill=()=>{if(g.isConnected)g.remove();};
-  gsap.set(g,{position:'fixed',left:s.left,top:s.top,width:s.width,height:s.height,margin:0,zIndex:9999,pointerEvents:'none'});
-  gsap.timeline({onComplete:()=>{kill();land();}})
-    .to(g,{left:t.left+t.width/2-s.width/2,top:t.top+t.height/2-s.height/2,
-           scale:Math.max(.3,Math.min(1,(t.height+14)/s.height)),duration:.72,ease:EIO})
-    .to(g,{opacity:0,duration:.24},'-=.28');
-  setTimeout(()=>{kill();land();},1250);
-}
-function swapText(el,text){ const put=()=>{el.textContent=text; el.style.color=''; gsap.to(el,{opacity:1,y:0,duration:.4});};
-  let d=false; const once=()=>{if(d)return;d=true;put();}; gsap.to(el,{opacity:0,y:-6,duration:.2,onComplete:once}); setTimeout(once,360); }
-function setCap(text){ const c=$('cap');
-  const put=()=>{c.innerHTML='<span class="live"></span>'+text; gsap.to(c,{opacity:1,y:0,duration:.4});};
-  let d=false; const once=()=>{if(d)return;d=true;put();}; gsap.to(c,{opacity:0,y:-5,duration:.22,onComplete:once}); setTimeout(once,380); }
+function words(el,text){ el.innerHTML=''; const p=text.split(' ');
+  p.forEach((w,i)=>{ el.appendChild(mk('span','w',w)); if(i<p.length-1) el.appendChild(document.createTextNode(' ')); });
+  return [...el.querySelectorAll('.w')]; }
+function setCap(text,listening){ const c=$('cap');
+  const put=()=>{ c.innerHTML='<span class="live'+(listening?' pulse':'')+'"></span>'+text; gsap.to(c,{opacity:1,y:0,duration:.4}); };
+  let d=false; const once=()=>{if(d)return;d=true;put();};
+  gsap.to(c,{opacity:0,y:-5,duration:.22,onComplete:once}); setTimeout(once,380); }
 
-/* ============================ questions ============================ */
-function render(i){
-  step=i; locked=false; sel=[];
-  const s=STEPS[i]; meter(s.lbl);
+/* ============================ draw to start ============================ */
+(function(){
+  $('dGhost').innerHTML=ZSVG;
+  const cv=$('drawCanvas'), ctx=cv.getContext('2d');
+  let pts=[], down=false, len=0;
+  function size(){ cv.width=innerWidth*devicePixelRatio; cv.height=innerHeight*devicePixelRatio;
+    ctx.scale(devicePixelRatio,devicePixelRatio); ctx.lineCap='round'; ctx.lineJoin='round'; }
+  size(); addEventListener('resize',size);
+  function paint(){
+    ctx.clearRect(0,0,innerWidth,innerHeight);
+    if(pts.length<2) return;
+    ctx.strokeStyle='#111113'; ctx.lineWidth=5;
+    ctx.beginPath(); ctx.moveTo(pts[0].x,pts[0].y);
+    for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x,pts[i].y);
+    ctx.stroke();
+  }
+  cv.addEventListener('pointerdown',e=>{ down=true; pts=[{x:e.clientX,y:e.clientY}]; len=0; });
+  cv.addEventListener('pointermove',e=>{ if(!down) return;
+    const p={x:e.clientX,y:e.clientY}, q=pts[pts.length-1];
+    len+=Math.hypot(p.x-q.x,p.y-q.y); pts.push(p); paint(); });
+  const finish=()=>{ if(!down) return; down=false;
+    if(len>220) accept(); else { sfx('tick');
+      gsap.to(cv,{opacity:0,duration:.4,onComplete:()=>{pts=[];paint();gsap.set(cv,{opacity:1});}}); } };
+  cv.addEventListener('pointerup',finish); cv.addEventListener('pointercancel',finish);
+  cv.addEventListener('dblclick',()=>accept());
+  addEventListener('keydown',e=>{ if(e.key==='Enter'&&$('drawScreen').style.display!=='none') accept(); });
+  setTimeout(()=>gsap.to('#dHint',{opacity:1,duration:.6}),5200);
+  let accepted=false;
+  window.__acceptDraw=accept;
+  function accept(){
+    if(accepted) return; accepted=true;
+    sfx('bloom');
+    safeTL(gsap.timeline()
+      .to(cv,{opacity:0,duration:.5},0)
+      .to('#dGhost',{opacity:.9,scale:1.04,duration:.7,ease:EIO},0)
+      .to('.dh, .ds, #dHint',{opacity:0,y:-10,duration:.4},0)
+      .to('#dGhost',{opacity:0,scale:.92,duration:.5},'+=.35')
+      .to('#drawScreen',{opacity:0,duration:.5},'-=.2'),3200);
+    setTimeout(()=>{ $('drawScreen').style.display='none'; intro(); },2200);
+  }
+})();
+
+/* ============================ conversation UI ============================ */
+function ask(o){
+  /* o: {said, saidHTML, q, sub, react} then composer per mode */
+  const t=mk('div','turn'); t.id='turn';
+  const sd=mk('div','said'); if(o.saidHTML) sd.innerHTML=o.saidHTML; else if(o.said) sd.textContent=o.said;
+  t.appendChild(sd);
+  const q=mk('div','q'); t.appendChild(q);
+  if(o.sub) t.appendChild(mk('div','qs',o.sub));
+  const box=mk('div','opts'); t.appendChild(box);
+  buildComposer(box);
+  if(o.chips&&o.chips.length){
+    const ch=mk('div','chips');
+    o.chips.forEach(c=>{ const b=mk('button','chip2',c);
+      b.onclick=()=>{ if(busy) return; sfx('tick'); submit(c); };
+      ch.appendChild(b); });
+    box.appendChild(ch);
+  }
+  $('col').innerHTML=''; $('col').appendChild(t);
+  const ws=words(q,o.q); const qs=t.querySelector('.qs');
+  const tl=gsap.timeline();
+  if(o.said||o.saidHTML) tl.fromTo(sd,{opacity:0,y:10},{opacity:1,y:0,duration:.5},0);
+  tl.fromTo(ws,{opacity:0,y:20},{opacity:1,y:0,duration:.64,stagger:.032},(o.said||o.saidHTML)?.15:0);
+  if(qs) tl.fromTo(qs,{opacity:0,y:9},{opacity:1,y:0,duration:.42},'-=.32');
+  tl.fromTo(box,{opacity:0,y:14},{opacity:1,y:0,duration:.5},'-=.3');
+  safeTL(tl);
+  if(o.react){ const r=mk('span','react',o.react); sd.appendChild(r);
+    setTimeout(()=>{ sfx('sparkle');
+      safeTL(gsap.timeline().fromTo(r,{opacity:0,scale:.4,rotate:-14},{opacity:1,scale:1,rotate:0,duration:.5,ease:'back.out(2)'}),900); },700); }
+  sfx('whisper');
+}
+
+let rec=null, listening=false;
+function stopRec(){ try{ if(rec) rec.stop(); }catch(e){} listening=false; }
+function buildComposer(box){
+  busy=false;
+  if(mode==='talk'){
+    const v=mk('div','voice');
+    const interim=mk('div','interim'); interim.id='interim';
+    const row=mk('div','vrow');
+    const kb=mk('button','mini',I.kbd); kb.setAttribute('aria-label','Type instead');
+    const wrapM=mk('div','micwrap');
+    const ring1=mk('span','ring'), ring2=mk('span','ring');
+    const mic=mk('button','mic',I.micro); mic.setAttribute('aria-label','Talk to Zero');
+    wrapM.appendChild(ring1); wrapM.appendChild(ring2); wrapM.appendChild(mic);
+    const spacer=mk('div','mini'); spacer.style.visibility='hidden';
+    row.appendChild(kb); row.appendChild(wrapM); row.appendChild(spacer);
+    const hint=mk('div','vhint','Tap and talk. Zero is listening.');
+    v.appendChild(interim); v.appendChild(row); v.appendChild(hint);
+    box.appendChild(v);
+    let pulse=null;
+    const startPulse=()=>{ pulse=gsap.timeline({repeat:-1});
+      pulse.fromTo([ring1,ring2],{opacity:.5,scale:1},{opacity:0,scale:1.65,duration:1.4,stagger:.45,ease:'power1.out'}); };
+    const stopPulse=()=>{ if(pulse){pulse.kill();pulse=null;} gsap.set([ring1,ring2],{opacity:0,scale:1}); };
+    mic.onclick=()=>{
+      if(busy) return;
+      if(listening){ stopRec(); stopPulse(); mic.innerHTML=I.micro; mic.classList.remove('live'); hint.textContent='Tap and talk. Zero is listening.'; sfx('release'); return; }
+      const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+      if(!SR){ mode='type'; sfx('error');
+        const t=$('turn'); const b=t.querySelector('.opts');
+        b.innerHTML=''; buildComposer(b);
+        const note=mk('div','vhint','No microphone here, so we will type.'); note.style.textAlign='center'; note.style.marginTop='12px';
+        b.appendChild(note); return; }
+      try{
+        rec=new SR(); rec.lang='en-US'; rec.interimResults=true; rec.continuous=false;
+        let final='';
+        rec.onresult=e=>{ let it='';
+          for(let i=e.resultIndex;i<e.results.length;i++){
+            if(e.results[i].isFinal) final+=e.results[i][0].transcript; else it+=e.results[i][0].transcript; }
+          interim.textContent=final||it; };
+        rec.onerror=()=>{ stopPulse(); listening=false; mic.innerHTML=I.micro; mic.classList.remove('live');
+          hint.textContent='Could not hear that. Tap to try again, or type instead.'; };
+        rec.onend=()=>{ stopPulse(); listening=false; mic.innerHTML=I.micro; mic.classList.remove('live');
+          if(final.trim()){ sfx('release'); submit(final.trim()); }
+          else hint.textContent='Tap and talk. Zero is listening.'; };
+        rec.start(); listening=true; mic.innerHTML=I.stop; mic.classList.add('live');
+        hint.textContent='Listening. Tap again when you are done.';
+        startPulse(); sfx('press');
+      }catch(e){ listening=false; }
+    };
+    kb.onclick=()=>{ stopRec(); mode='type'; sfx('tick');
+      const t=$('turn'); const b=t.querySelector('.opts');
+      const chips=b.querySelector('.chips');
+      b.innerHTML=''; buildComposer(b); if(chips) b.appendChild(chips); };
+  } else {
+    const r=mk('div','row');
+    const f=mk('div','box'); const inp=document.createElement('input');
+    inp.placeholder='Say it any way you like'; inp.setAttribute('aria-label','Your answer');
+    const go=mk('button','go',I.arrow); go.setAttribute('aria-label','Send');
+    const fire=()=>{ const v=inp.value.trim(); if(!v||busy) return; sfx('droplet'); submit(v); };
+    inp.oninput=()=>gsap.to(go,{opacity:inp.value.trim()?1:.25,duration:.2});
+    inp.onkeydown=e=>{ if(e.key==='Enter') fire(); };
+    go.onclick=fire;
+    f.appendChild(inp); r.appendChild(f);
+    const mic=mk('button','mini',I.micro); mic.setAttribute('aria-label','Talk instead');
+    mic.style.width='58px'; mic.style.height='58px';
+    mic.onclick=()=>{ mode='talk'; sfx('tick');
+      const t=$('turn'); const b=t.querySelector('.opts');
+      const chips=b.querySelector('.chips');
+      b.innerHTML=''; buildComposer(b); if(chips) b.appendChild(chips); };
+    r.appendChild(mic); r.appendChild(go);
+    box.appendChild(r);
+    setTimeout(()=>inp.focus(),450);
+  }
+}
+
+/* ============================ live profile panel ============================ */
+const SLOTS=[
+  ['name','Name','user'],['fields','Field','pen'],['role','Dream role','target'],
+  ['company','Company type','bld'],['location','Location','pin'],['industry','Industry','globe'],
+  ['problems','Problems to solve','puzzle'],['level','Starting point','flag'],
+  ['timeline','Timeline','clock'],['hard','Non-negotiable','spark'],
+];
+function buildProfilePanel(){
+  const s=$('scroll'); s.innerHTML='';
+  const h=mk('div','ph');
+  h.innerHTML='<div class="pav" id="pAv">?</div><div class="pid"><div class="pname" id="pName">Getting to know you</div>'+
+    '<div class="pmeta"><span class="m">Everything you say lands here</span></div></div>';
+  s.appendChild(h);
+  const wrap=mk('div','slots'); wrap.style.marginTop='16px';
+  SLOTS.forEach(([k,label,ic])=>{
+    const r=mk('div','slot'); r.id='slot-'+k;
+    r.appendChild(mk('span','si',I[ic]));
+    r.appendChild(mk('span','sk',label));
+    const v=mk('span','sv','·  ·  ·'); r.appendChild(v);
+    wrap.appendChild(r);
+  });
+  s.appendChild(wrap);
+}
+function slotVal(k){
+  if(k==='fields') return P.fields.length?P.fields.map(f=>DISC[f]?DISC[f].label:f).join(' + '):null;
+  return P[k];
+}
+function fillSlot(k){
+  const v=slotVal(k); const r=$('slot-'+k); if(!r||v==null) return;
+  const sv=r.querySelector('.sv');
+  const had=r.classList.contains('f');
+  r.classList.add('f'); sv.textContent=v;
+  safeTL(gsap.timeline()
+    .fromTo(r,{backgroundColor:'rgba(13,13,13,.05)'},{backgroundColor:'rgba(13,13,13,0)',duration:1,ease:'power2.out'},0)
+    .fromTo(sv,{y:had?0:8,opacity:had?.4:0},{y:0,opacity:1,duration:.45},0),1200);
+  if(!had) sfx('droplet');
+  if(k==='name'&&P.name){ $('pAv').textContent=P.name.charAt(0).toUpperCase(); $('pName').textContent=P.name; }
+}
+
+/* ============================ turns ============================ */
+const TURNS=[
+  { k:'about', q:'Tell me about yourself.', sub:'Who you are, what you are into, how you got here. Talk to me like a person, not a form.',
+    chips:["I'm a design student in my final year","I work in sales and I want out","Honestly, I'm still figuring it out"],
+    probe:{ slot:'fields', q:'And the work itself. What kind pulls you in?', sub:'Design, data, building products, selling, writing, running operations. Any words you like.' } },
+  { k:'dream', q:'Now the dream. Role, company, anywhere on earth.', sub:'Say it out loud. That is what this is for.',
+    chips:['Product designer at a startup in Dubai','PM at big tech, fully remote','A data role in London'],
+    react:'🔥',
+    probe:{ slot:'location', q:'And where in the world do you want to be?', sub:'A city, a country, or just remote.' } },
+  { k:'industry', q:'Which industry, and what problems do you want to solve?', sub:'The work changes shape depending on where it happens.',
+    chips:['AI products people actually use','Health, something that matters','Climate. The hard stuff'] },
+  { k:'start', q:'Where are you starting from, and how fast do you want this?', sub:'Studying, working, switching. Months or years. Honest answers make better plans.',
+    chips:['Final year student, 6 months','Working now, switching this year','No timeline, doing it right'] },
+  { k:'hard', q:'Last one. What is non-negotiable for you?', sub:'The thing you will not trade. Zero plans around it, not against it.',
+    react:'❤️',
+    chips:['Remote, always','It has to pay well','A team I actually learn from'] },
+];
+
+function extract(text){
+  const found=[];
+  const n=grabName(text); if(n&&!P.name){ P.name=n; found.push('name'); }
+  const f=grabFields(text); if(f.length){ P.fields=[...new Set([...P.fields,...f])].slice(0,2); found.push('fields'); }
+  const r=grab(text,ROLEWORDS); if(r&&!P.role){ P.role=r; found.push('role'); }
+  const c=grabCity(text); if(c){ P.location=c; found.push('location'); }
+  const co=grab(text,KW.company); if(co){ P.company=co; found.push('company'); }
+  const ind=grab(text,KW.industry); if(ind){ P.industry=ind; found.push('industry'); }
+  const lv=grab(text,KW.level); if(lv&&!P.level){ P.level=lv; found.push('level'); }
+  const tl=grabTimeline(text); if(tl){ P.timeline=tl; found.push('timeline'); }
+  return found;
+}
+function ackFor(found,text,turn){
+  const bits=[];
+  if(found.includes('name')) bits.push('Good to meet you, <span class="hl">'+P.name+'</span>.');
+  if(found.includes('location')) bits.push('<span class="hl">'+P.location+'</span>. Noted. That changes which teams we look at.');
+  else if(found.includes('role')) bits.push('<span class="hl">'+P.role+'</span>. That is buildable.');
+  else if(found.includes('fields')) bits.push('<span class="hl">'+P.fields.map(f=>DISC[f].label).join(' and ')+'</span>. Heard.');
+  else if(found.includes('industry')) bits.push('<span class="hl">'+P.industry+'</span>. Good choice of battlefield.');
+  else if(found.includes('timeline')) bits.push('<span class="hl">'+P.timeline+'</span>. Workable.');
+  else if(found.includes('company')) bits.push('<span class="hl">'+P.company+'</span>. Fits what you said before.');
+  if(!bits.length){
+    if(turn&&turn.k==='hard') bits.push('Written down. That one shapes everything.');
+    else bits.push('Got it. That is going on the board.');
+  }
+  return bits.slice(0,2).join(' ');
+}
+
+let probed=false;
+async function submit(text){
+  if(busy) return; busy=true;
+  stopRec();
+  const turn=TURNS[turnIdx];
+  const found=extract(text);
+  /* free-text slots that keep the user's own words */
+  if(turn){
+    if(turn.k==='industry'&&!found.includes('industry')&&!P.problems){ P.problems=quoteOf(text); fillSlot('problems'); }
+    if(turn.k==='industry'&&found.includes('industry')&&text.length>24&&!P.problems){ P.problems=quoteOf(text); fillSlot('problems'); }
+    if(turn.k==='hard'){ P.hard=quoteOf(text); fillSlot('hard'); }
+  }
+  found.forEach(fillSlot);
+  await wait(650);
+
+  /* one gentle follow-up if the key slot for this turn is still empty */
+  if(turn&&turn.probe&&!probed&&!slotVal(turn.probe.slot)){
+    probed=true; busy=false;
+    ask({ said: ackFor(found,text,turn), saidHTML: ackFor(found,text,turn), q: turn.probe.q, sub: turn.probe.sub, chips: turn.chips });
+    return;
+  }
+  probed=false;
+  nextTurn(ackFor(found,text,turn), turn?turn.react&&Math.random()<.9?turn.react:null:null);
+}
+function nextTurn(ackHTML,react){
+  turnIdx++;
+  if(turnIdx<TURNS.length){
+    const t=TURNS[turnIdx];
+    ask({ saidHTML:ackHTML, q:t.q, sub:t.sub, chips:t.chips, react:react });
+  } else {
+    calibrate(ackHTML);
+  }
+}
+
+/* ============================ intro ============================ */
+async function intro(){
+  setPhase(0);
+  buildProfilePanel();
+  gsap.set('.right',{width:'34%',opacity:0});
+  safeTL(gsap.timeline({delay:.15})
+    .to(['#logoPill','.tr'],{opacity:1,y:0,duration:.55,stagger:.07},0),1400);
+
+  line('This is the start of Zero.');
+  await wait(1700);
+  line('Five minutes. I ask, you talk.','While you do, I build your vision board, your plan, and the portfolio that gets you hired.');
+  await wait(2500);
+  safeTL(gsap.timeline()
+    .fromTo('.right',{opacity:0,x:60},{opacity:1,x:0,duration:.9,ease:EIO}),2200);
+  sfx('bloom');
+  await wait(900);
+
+  /* talk or type */
   const t=mk('div','turn'); t.id='turn';
   const q=mk('div','q'); t.appendChild(q);
-  if(s.sub) t.appendChild(mk('div','qs',s.sub));
-  const box=mk('div','opts'); t.appendChild(box);
-  let ctrl, holder=null;
-
-  if(s.type==='text'){
-    ctrl=mk('div','row');
-    const f=mk('div','box'); const inp=document.createElement('input');
-    inp.placeholder=s.ph; inp.maxLength=22; inp.setAttribute('aria-label',s.q);
-    const go=mk('button','go',I.arrow); go.setAttribute('aria-label','Continue');
-    const fire=()=>{const v=inp.value.trim(); if(!v||locked)return; locked=true; sfx('droplet');
-      const n=v.split(/\s+/)[0]; commit(s,n.charAt(0).toUpperCase()+n.slice(1).toLowerCase(),null,f);};
-    inp.oninput=()=>gsap.to(go,{opacity:inp.value.trim()?1:.25,duration:.2});
-    inp.onkeydown=e=>{if(e.key==='Enter')fire();};
-    go.onclick=fire; f.appendChild(inp); ctrl.appendChild(f); ctrl.appendChild(go);
-    box.appendChild(ctrl); setTimeout(()=>inp.focus(),650);
-  }
-  else if(s.type==='cards'){
-    ctrl=mk('div','cards');
-    s.opts.forEach(o=>{
-      const b=mk('button','card'); b.dataset.id=o.id;
-      b.style.setProperty('--a',o.a); b.style.setProperty('--b',o.b);
-      b.appendChild(mk('span','orb',I[o.icon])); b.appendChild(mk('span','cl',o.label)); b.appendChild(mk('span','tick',I.check));
-      b.onclick=()=>{ if(locked)return;
-        const add=!sel.includes(o.id);
-        if(!add) sel=sel.filter(x=>x!==o.id);
-        else { if(sel.length>=s.max){const dr=sel.shift(); [...ctrl.children].find(c=>c.dataset.id===dr)?.classList.remove('on');} sel.push(o.id); }
-        b.classList.toggle('on',sel.includes(o.id));
-        gsap.fromTo(b,{scale:1},{scale:.96,duration:.11,yoyo:true,repeat:1});
-        gsap.to(holder,{opacity:sel.length?1:0,y:sel.length?0:6,duration:.26});
-        holder.classList.toggle('show',sel.length>0); sfx(add?'toggle':'tick'); };
-      ctrl.appendChild(b);
-    });
-    box.appendChild(ctrl);
-    holder=mk('div','next'); const btn=mk('button','btn','Continue');
-    btn.onclick=()=>{ if(locked||!sel.length)return; locked=true; sfx('droplet');
-      commit(s,sel.map(id=>DISC[id].label).join(' and '),sel.slice(),ctrl.querySelector('.card.on')); };
-    holder.appendChild(btn); box.appendChild(holder);
-  }
-  else if(s.type==='rows'){
-    ctrl=mk('div','rows');
-    s.opts.forEach(o=>{
-      const b=mk('button','orow'); b.style.setProperty('--t',o.t);
-      b.appendChild(mk('span','oi',I[o.icon]));
-      const n=mk('span','on2'); n.appendChild(mk('span','ot',o.id)); n.appendChild(mk('span','od',o.d));
-      b.appendChild(n);
-      b.onclick=()=>{ if(locked)return; locked=true; b.classList.add('on'); sfx('toggle');
-        gsap.fromTo(b,{scale:1},{scale:.985,duration:.11,yoyo:true,repeat:1});
-        setTimeout(()=>commit(s,o.id,null,b),280); };
-      ctrl.appendChild(b);
-    });
-    box.appendChild(ctrl);
-  }
-  else {
-    ctrl=mk('div','pils');
-    s.opts.forEach(o=>{
-      const b=mk('button','pil'); b.style.setProperty('--t',o.t);
-      b.appendChild(mk('span','pi',I[o.icon])); b.appendChild(mk('span','pl',o.id));
-      b.onclick=()=>{ if(locked)return; locked=true; b.classList.add('on'); sfx('toggle');
-        gsap.fromTo(b,{scale:1},{scale:.95,duration:.11,yoyo:true,repeat:1});
-        setTimeout(()=>commit(s,o.id,null,b),280); };
-      ctrl.appendChild(b);
-    });
-    box.appendChild(ctrl);
-  }
-
-  if(s.own){
-    const own=mk('div','own'); const link=mk('button','link',s.own); const ob=mk('div','ownbox');
-    const bb=mk('div','b'); const inp=document.createElement('input');
-    inp.placeholder='Type it in your own words'; inp.setAttribute('aria-label','Your own answer');
-    const send=mk('button','s',I.arrow); send.setAttribute('aria-label','Send');
-    const fire=()=>{const v=inp.value.trim(); if(!v||locked)return; locked=true; sfx('droplet');
-      if(s.k==='pull'){const m=matchDisc(v); commit(s,v,m?[m]:['product'],bb);} else commit(s,v,null,bb);};
-    inp.onkeydown=e=>{if(e.key==='Enter')fire();}; send.onclick=fire;
-    bb.appendChild(inp); ob.appendChild(bb); ob.appendChild(send);
-    link.onclick=()=>{ ob.classList.add('open'); link.style.display='none'; sfx('tick');
-      safeTL(gsap.timeline().fromTo(ob,{opacity:0,y:8},{opacity:1,y:0,duration:.4}),800); setTimeout(()=>inp.focus(),120); };
-    own.appendChild(link); own.appendChild(ob); t.appendChild(own);
-  }
-
+  const sub=mk('div','qs','You can switch any time.'); t.appendChild(sub);
+  const box=mk('div','opts'); const rows=mk('div','rows'); box.appendChild(rows); t.appendChild(box);
+  [['talk','Talk to Zero','Answer out loud. It is faster, and Zero listens better than it types.','micro','#EFEDFB'],
+   ['type','I will type','Keyboard it is. Same conversation, same board.','kbd','#EAF1FB']]
+  .forEach(([m,tt,dd,ic,tint])=>{
+    const b=mk('button','orow'); b.style.setProperty('--t',tint);
+    b.appendChild(mk('span','oi',I[ic]));
+    const n=mk('span','on2'); n.appendChild(mk('span','ot',tt)); n.appendChild(mk('span','od',dd));
+    b.appendChild(n);
+    b.onclick=()=>{ if(busy)return; busy=true; mode=m; b.classList.add('on'); sfx('toggle');
+      setTimeout(()=>{ busy=false; nextTurn(null,null); },340); };
+    rows.appendChild(b);
+  });
   $('col').innerHTML=''; $('col').appendChild(t);
-  const ws=words(q,s.q); const qs=t.querySelector('.qs');
-  const tl=gsap.timeline();
-  tl.fromTo(ws,{opacity:0,y:22},{opacity:1,y:0,duration:.68,stagger:.032},0);
-  if(qs) tl.fromTo(qs,{opacity:0,y:9},{opacity:1,y:0,duration:.42},'-=.34');
-  tl.fromTo(ctrl.children,{opacity:0,y:18},{opacity:1,y:0,duration:.58,stagger:.05},'-=.36');
-  if(holder) tl.set(holder,{opacity:0},0);
-  if(t.querySelector('.own')) tl.fromTo(t.querySelector('.own'),{opacity:0},{opacity:1,duration:.4},'-=.15');
-  safeTL(tl); sfx('whisper');
+  const ws=words(q,'How do you want to do this?');
+  safeTL(gsap.timeline()
+    .fromTo(ws,{opacity:0,y:20},{opacity:1,y:0,duration:.62,stagger:.032})
+    .fromTo(sub,{opacity:0,y:9},{opacity:1,y:0,duration:.4},'-=.32')
+    .fromTo(rows.children,{opacity:0,y:18},{opacity:1,y:0,duration:.55,stagger:.09},'-=.28'));
+  sfx('whisper');
 }
 
-async function commit(s,display,raw,src){
-  A[s.k]=raw??display;
-  const t=$('turn');
-  if(t) gsap.to(t,{opacity:0,y:-18,duration:.3,ease:'power2.in',onComplete:()=>t.remove()});
-  await wait(370);
-  if(step+1<STEPS.length) render(step+1); else visionStage();
-}
-
-/* ============================ panel helpers ============================ */
-function primary(){ return (A.pull&&A.pull.length&&DISC[A.pull[0]])?DISC[A.pull[0]]:DISC.data; }
-function section(t,id){ const s=mk('div','psec'); s.appendChild(mk('span',null,t));
-  if(id){const c=mk('span','cnt'); c.id=id; s.appendChild(c);} return s; }
-function landIn(node,silent){
-  $('pBody').appendChild(node);
-  safeTL(gsap.timeline().fromTo(node,{opacity:0,y:18},{opacity:1,y:0,duration:.6,ease:EIO}),900);
-  const s=$('scroll'); const bot=()=>Math.max(0,s.scrollHeight-s.clientHeight);
-  safeTL(gsap.timeline().to(s,{scrollTop:bot(),duration:.7,ease:EIO}),900);
-  setTimeout(()=>{s.scrollTop=bot();},950);
-  if(!silent) sfx('droplet');
-}
-async function swapPanel(capText,build){
-  const s=$('scroll');
-  safeTL(gsap.timeline().to(s,{opacity:0,y:-10,duration:.32}),500);
-  setCap(capText); await wait(380);
-  s.innerHTML=''; s.scrollTop=0; build(s);
-  gsap.set(s,{opacity:0,y:12});
-  safeTL(gsap.timeline().to(s,{opacity:1,y:0,duration:.55}),900);
-  sfx('page');
-}
-/* dot field that prints in, then dissolves */
-function printDots(ms){
-  const p=$('paper'); const g=mk('div','dots');
-  const cols=30, rows=20;
-  for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){
-    const d=mk('span'); d.style.left=(c/(cols-1))*100+'%'; d.style.top=(r/(rows-1))*100+'%'; g.appendChild(d);
-  }
-  p.appendChild(g);
-  const tl=gsap.timeline({onComplete:()=>{ if(g.isConnected) g.remove(); }});
-  tl.fromTo(g.children,{opacity:0,scale:.2},{opacity:1,scale:1,duration:.5,
-      stagger:{each:.0035,grid:[rows,cols],from:'start'}})
-    .to(g.children,{opacity:0,scale:.2,duration:.45,stagger:{each:.0028,grid:[rows,cols],from:'end'}},'+=.25');
-  safeTL(tl, ms||3200);
-  setTimeout(()=>{ if(g.isConnected) g.remove(); }, (ms||3200)+200);
-}
-
-/* ============================ storytelling ============================ */
+/* ============================ narration helpers ============================ */
 function line(text,sub){
   const t=mk('div','turn'); t.id='turn';
   const q=mk('div','q'); t.appendChild(q);
@@ -736,57 +903,90 @@ function cta(label,fn){
   n.appendChild(b); t.appendChild(n);
   safeTL(gsap.timeline().fromTo(n,{opacity:0,y:12},{opacity:1,y:0,duration:.45}),900);
 }
+function section(t,id){ const s=mk('div','psec'); s.appendChild(mk('span',null,t));
+  if(id){const c=mk('span','cnt'); c.id=id; s.appendChild(c);} return s; }
+function landIn(node,silent){
+  $('pBody').appendChild(node);
+  safeTL(gsap.timeline().fromTo(node,{opacity:0,y:18},{opacity:1,y:0,duration:.6,ease:EIO}),900);
+  const s=$('scroll'); const bot=()=>Math.max(0,s.scrollHeight-s.clientHeight);
+  safeTL(gsap.timeline().to(s,{scrollTop:bot(),duration:.7,ease:EIO}),900);
+  setTimeout(()=>{s.scrollTop=bot();},950);
+  if(!silent) sfx('droplet');
+}
+async function swapPanel(capText,build,listening){
+  const s=$('scroll');
+  safeTL(gsap.timeline().to(s,{opacity:0,y:-10,duration:.32}),500);
+  setCap(capText,listening); await wait(380);
+  s.innerHTML=''; s.scrollTop=0; build(s);
+  gsap.set(s,{opacity:0,y:12});
+  safeTL(gsap.timeline().to(s,{opacity:1,y:0,duration:.55}),900);
+  sfx('page');
+}
+function printDots(ms){
+  const p=$('paper'); const g=mk('div','dots');
+  const cols=30, rows=20;
+  for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){
+    const d=mk('span'); d.style.left=(c/(cols-1))*100+'%'; d.style.top=(r/(rows-1))*100+'%'; g.appendChild(d); }
+  p.appendChild(g);
+  const tl=gsap.timeline({onComplete:()=>{ if(g.isConnected) g.remove(); }});
+  tl.fromTo(g.children,{opacity:0,scale:.2},{opacity:1,scale:1,duration:.5,stagger:{each:.0035,grid:[rows,cols],from:'start'}})
+    .to(g.children,{opacity:0,scale:.2,duration:.45,stagger:{each:.0028,grid:[rows,cols],from:'end'}},'+=.25');
+  safeTL(tl,ms||3200);
+  setTimeout(()=>{ if(g.isConnected) g.remove(); },(ms||3200)+200);
+}
 
-/* ============================ 2 · vision board ============================ */
+/* ============================ calibration + vision ============================ */
+function primary(){ if(P.fields.length&&DISC[P.fields[0]]) return DISC[P.fields[0]];
+  if(P.role){ if(/design/i.test(P.role)) return DISC.design; if(/manager|pm/i.test(P.role)) return DISC.product;
+    if(/data|analyst/i.test(P.role)) return DISC.data; if(/account|sales/i.test(P.role)) return DISC.sales; }
+  return DISC.product; }
+const LEVELMAP={'Student':'Developing','Recent graduate':'Developing','Working, switching':'Proficient','Self-taught':'Developing'};
+
+async function calibrate(ackHTML){
+  setPhase(1);
+  setCap('Reading everything back',true);
+  const t=$('turn');
+  if(t) gsap.to(t,{opacity:0,y:-16,duration:.3,ease:'power2.in',onComplete:()=>t.remove()});
+  await wait(380);
+  line('Enough talking. Watch this.');
+  /* right side becomes the hero */
+  safeTL(gsap.timeline().to('.right',{width:'56%',duration:.9,ease:EIO}),2200);
+  sfx('loading');
+  await wait(1000);
+  printDots(3000);
+  await wait(2700);
+  await swapPanel('Your vision board',buildVision,false);
+  sfx('ready');
+  await wait(1200);
+  rolesStage();
+}
 function buildVision(s){
   const d=primary();
-  const head=mk('div','ph');
-  head.innerHTML='<div class="pav">'+(A.name||'Y').charAt(0).toUpperCase()+'</div><div class="pid"><div class="pname">'+
-    (A.name||'You')+'</div><div class="pmeta"><span class="m">Vision board</span><span class="sep"></span><span class="m">built from your six answers</span></div></div>';
-  s.appendChild(head);
+  const h=mk('div','ph');
+  h.innerHTML='<div class="pav">'+(P.name||'Y').charAt(0).toUpperCase()+'</div><div class="pid"><div class="pname">'+
+    (P.name||'You')+'</div><div class="pmeta"><span class="m">Vision board</span><span class="sep"></span><span class="m">built from your own words</span></div></div>';
+  s.appendChild(h);
   const art=mk('div','artifact'); art.style.marginTop='18px';
-  art.appendChild(mk('div','ah','<span class="d"></span><span>What you told us</span>'));
+  art.appendChild(mk('div','ah','<span class="d"></span><span>What you told me</span>'));
   const ul=document.createElement('ul');
-  [['Field',(A.pull&&A.pull.length?A.pull.map(k=>DISC[k]?DISC[k].label:k).join(' + '):'—')],
-   ['Industry',A.industry||'—'],['Company',A.company||'—'],['Location',A.mode||'—'],['Focus',A.focus||'—']]
-   .forEach(([k,v])=>{ const li=document.createElement('li');
-     li.innerHTML='<span class="k">'+k+'</span><span class="v">'+v+'</span>'; ul.appendChild(li); });
+  [['Field',P.fields.length?P.fields.map(f=>DISC[f].label).join(' + '):(P.role||'Open')],
+   ['Dream role',P.role||d.role],['Company',P.company||'Open'],['Location',P.location||'Open'],
+   ['Industry',P.industry||'Open'],['Problems',P.problems||'—'],['Starting point',P.level||'—'],
+   ['Timeline',P.timeline||'—'],['Non-negotiable',P.hard||'—']]
+  .filter(([k,v])=>v!=='—')
+  .forEach(([k,v])=>{ const li=document.createElement('li');
+    li.innerHTML='<span class="k">'+k+'</span><span class="v">'+v+'</span>'; ul.appendChild(li); });
   art.appendChild(ul); s.appendChild(art);
   const body=mk('div'); body.id='pBody'; body.style.marginTop='6px'; s.appendChild(body);
 }
-async function visionStage(){
-  step=STEPS.length; meter('Reading you');
-  const t=$('turn');
-  if(t) gsap.to(t,{opacity:0,y:-18,duration:.3,ease:'power2.in',onComplete:()=>t.remove()});
-  await wait(380);
 
-  line('Let me put that together.');
-  gsap.set('.right',{width:'50%',opacity:0});
-  safeTL(gsap.timeline()
-    .fromTo('.right',{opacity:0,x:64,scale:.97},{opacity:1,x:0,scale:1,duration:.95,ease:EIO})
-    .fromTo('.paper',{y:24},{y:0,duration:.95,ease:EIO},0),2400);
-  sfx('bloom');
-  await wait(700);
-
-  setCap('Your vision board');
-  $('scroll').innerHTML='';
-  printDots(3000);
-  sfx('loading');
-  await wait(2600);
-  buildVision($('scroll'));
-  gsap.set($('scroll'),{opacity:0,y:10});
-  safeTL(gsap.timeline().to($('scroll'),{opacity:1,y:0,duration:.6}),1000);
-  sfx('ready');
-  await wait(1100);
-  rolesStage();
-}
-
-/* ============================ 3 · roles that fit ============================ */
+/* ============================ roles ============================ */
 function roleRows(){
-  const ks=(A.pull&&A.pull.length&&DISC[A.pull[0]])?A.pull:['data'];
-  if(ks.length===1||!DISC[ks[1]]) return DISC[ks[0]].roles.map(r=>[...r,DISC[ks[0]].label]);
-  const a=DISC[ks[0]].roles,b=DISC[ks[1]].roles;
-  return [[...a[0],DISC[ks[0]].label],[...b[0],DISC[ks[1]].label],[...a[1],DISC[ks[0]].label]];
+  const d=primary();
+  const rows=d.roles.map(r=>[...r]);
+  if(P.role&&!rows.some(r=>r[0].toLowerCase()===P.role.toLowerCase())&&/design|manager|analyst|engineer|writer|marketer|executive/i.test(P.role))
+    rows[0]=[P.role,rows[0][1],'Your words, our data'];
+  return rows;
 }
 function addRoles(){
   const d=primary();
@@ -796,52 +996,122 @@ function addRoles(){
     const c=mk('div','rcard');
     c.appendChild(mk('div','rk',String(i+1)));
     const n=mk('div','rn'); n.appendChild(mk('div','rt',role));
-    n.appendChild(mk('div','rd',note+' · '+(A.industry||'any industry')));
+    n.appendChild(mk('div','rd',note+' · '+(P.industry||'any industry')+(P.location?' · '+P.location:'')));
     c.appendChild(n); c.appendChild(mk('div','rp',pay));
     wrap.appendChild(c);
   });
   landIn(wrap);
-  const f=$('pFit'); if(f) f.textContent=(A.company?CO_SHORT[A.company]||A.company:'any company');
+  const f=$('pFit'); if(f) f.textContent=P.company||'any company';
   landIn(section('Companies hiring this profile'),true);
   const cos=mk('div','cos');
   d.cos.forEach(c=>cos.appendChild(mk('span','co',(LOGO[c]||'')+'<span>'+c+'</span>')));
   landIn(cos);
 }
 async function rolesStage(){
-  step=STEPS.length+1; meter('Roles that fit');
-  await beat(`Here is where you actually land, ${A.name||'friend'}.`,()=>addRoles(),2100,
-    'Real titles, real ranges, from what you told us.');
+  await beat(`This is you, ${P.name||'friend'}. On a board.`,()=>addRoles(),2200,'Your own words, turned into targets. Real titles, real ranges.');
   await wait(400);
-
-  const t=$('turn'); if(t) gsap.to(t,{opacity:0,y:-18,duration:.3,ease:'power2.in',onComplete:()=>t.remove()});
+  const t=$('turn'); if(t) gsap.to(t,{opacity:0,y:-16,duration:.3,ease:'power2.in',onComplete:()=>t.remove()});
   await wait(370);
   const tt=mk('div','turn'); tt.id='turn';
   const q=mk('div','q'); tt.appendChild(q);
-  const sub=mk('div','qs','Pick the one you want to aim at. It sets everything after this.'); tt.appendChild(sub);
+  const sub=mk('div','qs','Pick the one you want to aim at. Everything after this is built around it.'); tt.appendChild(sub);
   const box=mk('div','opts'); const rows=mk('div','rows'); box.appendChild(rows); tt.appendChild(box);
   const done=mk('div','next'); const btn=mk('button','btn','Aim at this one'); done.appendChild(btn); box.appendChild(done);
-  roleRows().forEach(([role,pay,note,why])=>{
+  roleRows().forEach(([role,pay,note])=>{
     const b=mk('button','orow');
     b.appendChild(mk('span','oi',I.target));
     const n=mk('span','on2'); n.appendChild(mk('span','ot',role));
-    n.appendChild(mk('span','od','From '+String(why).toLowerCase()+' · '+note+' · '+pay));
+    n.appendChild(mk('span','od',note+' · '+pay));
     b.appendChild(n);
     b.onclick=()=>{ [...rows.children].forEach(c=>c.classList.remove('on')); b.classList.add('on');
       picked=role; sfx('toggle'); gsap.to(done,{opacity:1,y:0,duration:.3}); done.classList.add('show'); };
     rows.appendChild(b);
   });
-  btn.onclick=()=>{ if(!picked) return; sfx('success'); portfolioStage(); };
+  btn.onclick=()=>{ if(!picked) return; sfx('success'); calibrateStart(); };
   $('col').innerHTML=''; $('col').appendChild(tt);
   const ws=words(q,'Which one are you aiming at?');
   safeTL(gsap.timeline()
-    .fromTo(ws,{opacity:0,y:22},{opacity:1,y:0,duration:.66,stagger:.032})
-    .fromTo(sub,{opacity:0,y:9},{opacity:1,y:0,duration:.4},'-=.34')
-    .fromTo(rows.children,{opacity:0,y:18},{opacity:1,y:0,duration:.55,stagger:.08},'-=.3')
+    .fromTo(ws,{opacity:0,y:20},{opacity:1,y:0,duration:.62,stagger:.032})
+    .fromTo(sub,{opacity:0,y:9},{opacity:1,y:0,duration:.4},'-=.32')
+    .fromTo(rows.children,{opacity:0,y:18},{opacity:1,y:0,duration:.52,stagger:.08},'-=.28')
     .set(done,{opacity:0},0));
   sfx('whisper');
 }
 
-/* ============================ 4 · the portfolio ============================ */
+/* ============================ starting point calibration ============================ */
+async function calibrateStart(){
+  const t=$('turn'); if(t) gsap.to(t,{opacity:0,y:-16,duration:.3,ease:'power2.in',onComplete:()=>t.remove()});
+  await wait(370);
+  const tt=mk('div','turn'); tt.id='turn';
+  const q=mk('div','q'); tt.appendChild(q);
+  const sub=mk('div','qs','Zero calibrates your plan to where you actually are, not where a syllabus assumes you are.'); tt.appendChild(sub);
+  const box=mk('div','opts'); const rows=mk('div','rows'); box.appendChild(rows); tt.appendChild(box);
+  [['LinkedIn','Connect LinkedIn','Zero reads your experience and skips what you already know.','link','#EAF1FB'],
+   ['Resume','Drop a resume','Same idea, from the document you already have.','doc','#EFEDFB'],
+   ['Skip','Skip for now','Fair. Your first scenario calibrates you instead.','arrow','#F7F7F5']]
+  .forEach(([id,tt2,dd,ic,tint])=>{
+    const b=mk('button','orow'); b.style.setProperty('--t',tint);
+    b.appendChild(mk('span','oi',I[ic]));
+    const n=mk('span','on2'); n.appendChild(mk('span','ot',tt2)); n.appendChild(mk('span','od',dd));
+    b.appendChild(n);
+    b.onclick=async()=>{ if(busy)return; busy=true; b.classList.add('on'); sfx('toggle');
+      if(id!=='Skip'){ await wait(500); line('Reading it back.','One second.'); await wait(1600);
+        if(!P.level){ P.level='Calibrated from '+(id==='LinkedIn'?'LinkedIn':'resume'); } sfx('success'); }
+      busy=false; planStage(); };
+    rows.appendChild(b);
+  });
+  $('col').innerHTML=''; $('col').appendChild(tt);
+  const ws=words(q,'Want the plan calibrated to your experience?');
+  safeTL(gsap.timeline()
+    .fromTo(ws,{opacity:0,y:20},{opacity:1,y:0,duration:.62,stagger:.032})
+    .fromTo(sub,{opacity:0,y:9},{opacity:1,y:0,duration:.4},'-=.32')
+    .fromTo(rows.children,{opacity:0,y:18},{opacity:1,y:0,duration:.52,stagger:.09},'-=.28'));
+  sfx('whisper');
+}
+
+/* ============================ plan ============================ */
+function buildPlan(s){
+  const d=primary();
+  const total=d.projects.reduce((a,p)=>a+p.weeks,0);
+  const scen=d.projects.reduce((a,p)=>a+p.steps.length,0);
+  const h=mk('div','ph');
+  h.innerHTML='<div class="pav" style="background:var(--wash);color:var(--tx-2)">'+I.route+'</div>'+
+    '<div class="pid"><div class="pname">Your roadmap</div><div class="pmeta"><span class="m">'+total+' weeks</span>'+
+    '<span class="sep"></span><span class="m">'+d.projects.length+' projects</span><span class="sep"></span><span class="m">'+scen+' scenarios</span>'+
+    (P.timeline?'<span class="sep"></span><span class="m">paced for '+P.timeline.toLowerCase()+'</span>':'')+'</div></div>';
+  const av=h.querySelector('.pav svg'); if(av){av.style.width='24px'; av.style.height='24px';}
+  s.appendChild(h);
+  s.appendChild(mk('p','pbio','Every scenario is a real brief with a deadline and a reviewer. You hand in work, someone reads it properly, and it goes into the portfolio.'));
+  const body=mk('div'); body.style.marginTop='18px';
+  d.projects.forEach((p,i)=>{
+    const blk=mk('div','blk'); const hh=mk('div','blkh');
+    hh.appendChild(mk('div','blkn',String(i+1))); hh.appendChild(mk('div','blkt',p.short)); hh.appendChild(mk('div','blkw',p.weeks+' weeks'));
+    blk.appendChild(hh);
+    p.steps.forEach(st=>{ const r=mk('div','stp'); r.appendChild(mk('span','sq')); r.appendChild(mk('span',null,st)); blk.appendChild(r); });
+    const f=mk('div','blkf');
+    p.chips.filter(c=>c[0]==='doc').forEach(([ic,l])=>f.appendChild(mk('span','chip',I.doc+'<span>'+l+'</span>')));
+    f.appendChild(mk('span','chip',(LOGO[p.co]||'')+'<span>'+p.co+' brief</span>'));
+    blk.appendChild(f); body.appendChild(blk);
+  });
+  s.appendChild(body);
+}
+async function planStage(){
+  setPhase(2);
+  const t=$('turn'); if(t) gsap.to(t,{opacity:0,y:-16,duration:.3,ease:'power2.in',onComplete:()=>t.remove()});
+  await wait(380);
+  const d=primary();
+  const total=d.projects.reduce((a,p)=>a+p.weeks,0);
+  const scen=d.projects.reduce((a,p)=>a+p.steps.length,0);
+  line('Here is the path to '+(picked||d.role)+'.');
+  await wait(1400);
+  await swapPanel('Your roadmap',buildPlan,false);
+  await wait(600);
+  line(`${total} weeks. ${scen} real scenarios.`,'Not lectures. Briefs with a deadline and a reviewer, the same way the job works.');
+  await wait(2200);
+  cta('And what do I walk away with?',outcomeStage);
+}
+
+/* ============================ outcome · portfolio ============================ */
 function projectRow(p,i){
   const row=mk('div','prow');
   const th=mk('div','pthumb'); th.style.setProperty('--tint',TINT[i%3]);
@@ -861,10 +1131,10 @@ function skillCol(t,rows){ const col=mk('div','skcol'); col.appendChild(mk('div'
 function buildPortfolioShell(s){
   const d=primary();
   const h=mk('div','ph');
-  h.innerHTML='<div class="pav">'+(A.name||'Y').charAt(0).toUpperCase()+'</div><div class="pid"><div class="pname">'+
-    (A.name||'You')+'</div><div class="pmeta"><span class="m">'+I.box+'<span>'+(picked||d.role)+'</span></span>'+
-    '<span class="sep"></span><span class="m">'+I.home+'<span>'+(CO_SHORT[A.company]||'Any size')+' · '+(A.mode||'Flexible')+'</span></span></div></div>'+
-    '<div class="pbadge"><span>'+(LEVEL[A.focus]||'Proficient')+'</span>'+I.spark+'</div>';
+  h.innerHTML='<div class="pav">'+(P.name||'Y').charAt(0).toUpperCase()+'</div><div class="pid"><div class="pname">'+
+    (P.name||'You')+'</div><div class="pmeta"><span class="m">'+I.box+'<span>'+(picked||d.role)+'</span></span>'+
+    '<span class="sep"></span><span class="m">'+I.pin+'<span>'+(P.location||'Anywhere')+'</span></span></div></div>'+
+    '<div class="pbadge"><span>'+(LEVELMAP[P.level]||'Proficient')+'</span>'+I.spark+'</div>';
   s.appendChild(h);
   s.appendChild(mk('p','pbio',d.bio));
   const body=mk('div'); body.id='pBody'; s.appendChild(body);
@@ -882,79 +1152,37 @@ function addTodo(){ const d=primary(); landIn(section('Still ahead'),true);
     w.appendChild(mk('div','tt',t)); w.appendChild(mk('div','td',dd));
     n.appendChild(w); n.appendChild(mk('span','tg','Yet to do')); box.appendChild(n); });
   landIn(box); }
-
-async function portfolioStage(){
-  step=STEPS.length+2; meter('The portfolio');
-  const t=$('turn'); if(t) gsap.to(t,{opacity:0,y:-18,duration:.3,ease:'power2.in',onComplete:()=>t.remove()});
+async function outcomeStage(){
+  setPhase(3);
+  const t=$('turn'); if(t) gsap.to(t,{opacity:0,y:-16,duration:.3,ease:'power2.in',onComplete:()=>t.remove()});
   await wait(380);
-  line('To get that role, you need this.');
+  line('Four months of that, and this is yours.');
   await wait(1300);
-  await swapPanel('The portfolio '+(picked||primary().role)+' hiring asks for', buildPortfolioShell);
+  await swapPanel('Your portfolio, at the end of the plan',buildPortfolioShell,false);
   await wait(500);
-  await beat('Three projects, built on real briefs.',()=>addProject(0),1700);
+  await beat('You would start here.',()=>addProject(0),1700);
   await beat('Then this one.',()=>addProject(1),1650);
   await beat('And this is the one they ask about in interviews.',()=>addProject(2),1800);
   await beat('They build these skills, and Zero verifies them.',()=>addSkills(),1750);
   await beat('This is what is still ahead. That gap is the point.',()=>addTodo(),1700);
-  line('That is the portfolio.','Not a certificate. Work someone can read.');
-  await wait(1400);
-  cta('So how do I build it?',curriculumStage);
+  line('I cannot hand you the job. I can get you the portfolio that wins it.','Work someone can read. Not a certificate.');
+  await wait(1600);
+  cta('Who runs all this?',zeroStage);
 }
 
-/* ============================ 5 · curriculum ============================ */
-function buildPlan(s){
-  const d=primary();
-  const total=d.projects.reduce((a,p)=>a+p.weeks,0);
-  const scen=d.projects.reduce((a,p)=>a+p.steps.length,0);
-  const h=mk('div','ph');
-  h.innerHTML='<div class="pav" style="background:var(--wash);color:var(--tx-2)">'+I.route+'</div>'+
-    '<div class="pid"><div class="pname">Your curriculum</div><div class="pmeta"><span class="m">'+total+' weeks</span>'+
-    '<span class="sep"></span><span class="m">'+d.projects.length+' projects</span><span class="sep"></span><span class="m">'+scen+' scenarios</span></div></div>';
-  const av=h.querySelector('.pav svg'); if(av){av.style.width='24px'; av.style.height='24px';}
-  s.appendChild(h);
-  s.appendChild(mk('p','pbio','Every scenario is a real brief with a deadline and a reviewer. You hand in work, someone reads it properly, and it goes into the portfolio.'));
-  const body=mk('div'); body.style.marginTop='18px';
-  d.projects.forEach((p,i)=>{
-    const blk=mk('div','blk'); const hh=mk('div','blkh');
-    hh.appendChild(mk('div','blkn',String(i+1))); hh.appendChild(mk('div','blkt',p.short)); hh.appendChild(mk('div','blkw',p.weeks+' weeks'));
-    blk.appendChild(hh);
-    p.steps.forEach(st=>{ const r=mk('div','stp'); r.appendChild(mk('span','sq')); r.appendChild(mk('span',null,st)); blk.appendChild(r); });
-    const f=mk('div','blkf');
-    p.chips.filter(c=>c[0]==='doc').forEach(([ic,l])=>f.appendChild(mk('span','chip',I.doc+'<span>'+l+'</span>')));
-    f.appendChild(mk('span','chip',(LOGO[p.co]||'')+'<span>'+p.co+' brief</span>'));
-    blk.appendChild(f); body.appendChild(blk);
-  });
-  s.appendChild(body);
-}
-async function curriculumStage(){
-  step=STEPS.length+3; meter('The curriculum');
-  const t=$('turn'); if(t) gsap.to(t,{opacity:0,y:-18,duration:.3,ease:'power2.in',onComplete:()=>t.remove()});
-  await wait(380);
-  const d=primary();
-  const total=d.projects.reduce((a,p)=>a+p.weeks,0);
-  const scen=d.projects.reduce((a,p)=>a+p.steps.length,0);
-  line('Piece by piece, like this.');
-  await wait(1400);
-  await swapPanel('The path to it',buildPlan);
-  await wait(600);
-  line(`${total} weeks. ${scen} real scenarios.`,'Not lectures. Briefs with a deadline and a reviewer, the same way the job works.');
-  await wait(2200);
-  cta('And who runs this?',zeroStage);
-}
-
-/* ============================ 6 · how Zero works ============================ */
+/* ============================ launch · zero, credits, app ============================ */
 function buildLoop(s){
   const rows=[['Scenario','A real brief with a deadline and a reviewer','folder'],
     ['Deliverable','The work you actually hand in','doc'],
-    ['Project','Deliverables stack into a case study','box'],
-    ['Portfolio','Case studies become proof','target'],
-    ['Hired','Partners browse verified portfolios','users']];
+    ['Manager feedback','A manager reads it and tells you the truth','users'],
+    ['Portfolio','Reviewed work becomes proof','target'],
+    ['Hired','Partners browse verified portfolios','spark']];
   const head=mk('div'); head.style.cssText='display:flex;align-items:center;gap:14px;margin-bottom:6px';
   const z=mk('div'); z.style.cssText='width:58px;height:58px;border-radius:12px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;padding:0 12px';
   z.innerHTML=ZSVG; z.querySelector('svg').style.cssText='height:15px;width:auto';
   const zt=mk('div'); zt.innerHTML='<div class="pname">Zero</div><div class="pmeta"><span class="m">The system that runs the loop</span></div>';
   head.appendChild(z); head.appendChild(zt); s.appendChild(head);
-  s.appendChild(mk('p','pbio','You do not study first and apply later. You do the job, and the proof accumulates. Every scenario you finish adds XP, and XP unlocks the next tier, the job portal, and the credits that keep it running.'));
+  s.appendChild(mk('p','pbio','You do not study first and apply later. You do the job, a manager reviews it, and the proof accumulates. Every finished scenario adds XP. XP unlocks harder scenarios, the job portal, and your performance calibration.'));
   const loop=mk('div','loop'); loop.style.marginTop='18px';
   rows.forEach(([t,dd,ic],i)=>{ const r=mk('div','lrow'); r.appendChild(mk('div','li',I[ic]));
     const n=mk('div'); n.appendChild(mk('div','lt',t)); n.appendChild(mk('div','ld',dd)); r.appendChild(n);
@@ -962,24 +1190,22 @@ function buildLoop(s){
   s.appendChild(loop);
 }
 async function zeroStage(){
-  step=STEPS.length+4; meter('How Zero works');
-  const t=$('turn'); if(t) gsap.to(t,{opacity:0,y:-18,duration:.3,ease:'power2.in',onComplete:()=>t.remove()});
+  setPhase(4);
+  const t=$('turn'); if(t) gsap.to(t,{opacity:0,y:-16,duration:.3,ease:'power2.in',onComplete:()=>t.remove()});
   await wait(380);
-  line('That system has a name.');
-  await wait(1400);
-  await swapPanel('How Zero works',buildLoop);
+  line('Fair question.');
+  await wait(1200);
+  await swapPanel('How Zero works',buildLoop,false);
   await wait(650);
-  line('Zero.','Do the work, get it reviewed, keep the proof. That is the whole product.');
-  await wait(2200);
+  line('Zero runs it.','Real briefs, a manager who reviews your work, XP that unlocks the next tier. That is the whole product.');
+  await wait(2300);
   cta('What do I get to start?',rewardStage);
 }
-
-/* ============================ 7 · credits, 8 · the app ============================ */
 function buildReward(s){
   const box=mk('div','rew');
   const n=mk('div','rewn','0'); n.id='rewN'; box.appendChild(n);
   box.appendChild(mk('div','rewl','credits, yours to start'));
-  box.appendChild(mk('div','rewsub','Credits cover your first weeks on Zero. Finishing scenarios earns XP, and XP unlocks the next tier and the job portal.'));
+  box.appendChild(mk('div','rewsub','Credits are what scenarios and reviews cost inside Zero. Ten thousand covers your first weeks in full, so starting costs you nothing. XP earned from finished work unlocks the tiers after that.'));
   s.appendChild(box);
   const d=primary();
   const scen=d.projects.reduce((a,p)=>a+p.steps.length,0);
@@ -995,23 +1221,21 @@ function buildReward(s){
   dl.appendChild(z); dl.appendChild(nn); dl.appendChild(b); s.appendChild(dl);
 }
 async function rewardStage(){
-  step=STEPS.length+5; meter('Your credits');
-  const t=$('turn'); if(t) gsap.to(t,{opacity:0,y:-18,duration:.3,ease:'power2.in',onComplete:()=>t.remove()});
+  const t=$('turn'); if(t) gsap.to(t,{opacity:0,y:-16,duration:.3,ease:'power2.in',onComplete:()=>t.remove()});
   await wait(380);
-  line('You have already earned something.');
-  await wait(1300);
-  await swapPanel('What you start with',buildReward);
+  line('One more thing. You already earned something.');
+  await wait(1400);
+  await swapPanel('What you start with',buildReward,false);
   await wait(420);
   const c={v:0};
   safeTL(gsap.timeline().to(c,{v:10000,duration:1.5,ease:EIO,
     onUpdate:()=>{const e=$('rewN'); if(e) e.textContent=fmt(Math.round(c.v));}}),1900);
   setTimeout(()=>{const e=$('rewN'); if(e) e.textContent=fmt(10000);},1950);
   sfx('sparkle'); await wait(1700); sfx('chime');
-  line('Ten thousand credits. Your first weeks cost nothing.','Put an email on it and the plan is waiting when you open the app.');
-  await wait(1800);
-
+  line('Ten thousand credits, for finishing this conversation.','Credits pay for scenarios and reviews. Put an email on them and the whole plan is waiting in the app.');
+  await wait(1900);
   const t2=$('turn'); const acct=mk('div','acct');
-  const row=mk('div','row'); const bx=mk('div','box'); bx.style.width='340px';
+  const row=mk('div','row'); const bx=mk('div','box'); bx.style.width='360px';
   const inp=document.createElement('input'); inp.placeholder='you@email.com'; inp.type='email'; inp.setAttribute('aria-label','Your email');
   const go=mk('button','go',I.arrow); go.setAttribute('aria-label','Create account');
   const ok=v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
@@ -1027,14 +1251,13 @@ async function rewardStage(){
   setTimeout(()=>inp.focus(),500);
 }
 async function finish(email){
-  meter('Ready');
-  const t=$('turn'); if(t) gsap.to(t,{opacity:0,y:-18,duration:.3,ease:'power2.in',onComplete:()=>t.remove()});
+  const t=$('turn'); if(t) gsap.to(t,{opacity:0,y:-16,duration:.3,ease:'power2.in',onComplete:()=>t.remove()});
   const dl=$('dlCard');
   if(dl){ dl.style.display='flex';
     safeTL(gsap.timeline().fromTo(dl,{opacity:0,y:16},{opacity:1,y:0,duration:.6}),1000);
     const s=$('scroll'); setTimeout(()=>{s.scrollTop=Math.max(0,s.scrollHeight-s.clientHeight);},300); }
-  setCap('Ready when you are'); await wait(520);
-  line(`That is it, ${A.name||'you'}.`,`Your account is on ${email}. Open Zero and your first scenario is already waiting.`);
+  setCap('Ready when you are',false); await wait(520);
+  line(`That is it, ${P.name||'you'}.`,`Your account is on ${email}. Open Zero and your first scenario is already briefed.`);
   await wait(1900);
   const t2=$('turn'); const n=mk('div','next show');
   const again=mk('button','btn quiet','Run it again'); again.onclick=()=>location.reload();
@@ -1044,12 +1267,8 @@ async function finish(email){
 }
 
 /* ============================ boot ============================ */
-(function(){
-  gsap.set(['#logoPill','.tr'],{opacity:0,y:-9});
-  render(0);
-  safeTL(gsap.timeline({delay:.12}).to(['#logoPill','.tr'],{opacity:1,y:0,duration:.55,stagger:.07}),1400);
-  meter();
-})();
+gsap.set(['#logoPill','.tr'],{opacity:0,y:-9});
+setPhase(0);
 </script>
 </body>
 </html>
