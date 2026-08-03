@@ -1145,22 +1145,30 @@ $('#tSave').addEventListener('click', async e=>{
     await new Promise(r=>setTimeout(r,240));
 
     const board = $('#board'), mat = $('.mat');
-    // html2canvas re-fetches images in its own clone, and the brand SVGs come
-    // back blank there. Inline them as data URLs (with explicit dimensions, or
-    // the canvas has nothing to rasterise against) and put the originals back after.
+    // html2canvas will not draw an SVG <img> at all — inlining it is not enough.
+    // Rasterise each brand mark to a PNG ourselves, swap it in for the capture,
+    // then put the original back.
     await Promise.all([...board.querySelectorAll('.p-co .logo img')].map(async img=>{
       const url = img.getAttribute('src');
-      if(!url || url.startsWith('data:')) return;
+      if(!url || url.startsWith('data:image/png')) return;
       try{
         const res = await fetch(url);
         if(!res.ok) return;
         let svg = await res.text();
-        if(!/\swidth=/.test(svg)) svg = svg.replace('<svg ', '<svg width="64" height="64" ');
-        restore.push([img, url]);
-        await new Promise(done=>{
-          img.onload = done; img.onerror = done;
-          img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+        if(!/<svg[^>]*\swidth=/.test(svg)) svg = svg.replace('<svg ', '<svg width="128" height="128" ');
+        const svgUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+        const bitmap = await new Promise((ok,no)=>{
+          const im = new Image();
+          im.onload = ()=>ok(im); im.onerror = no;
+          im.src = svgUrl;
         });
+        const c = document.createElement('canvas');
+        c.width = c.height = 128;
+        c.getContext('2d').drawImage(bitmap, 0, 0, 128, 128);
+        const png = c.toDataURL('image/png');
+        if(png.length < 200) return;
+        restore.push([img, url]);
+        await new Promise(done=>{ img.onload = done; img.onerror = done; img.src = png; });
       }catch(e){}
     }));
     const br = board.getBoundingClientRect(), mr = mat.getBoundingClientRect();
