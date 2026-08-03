@@ -580,8 +580,11 @@ function render(i){
       const b=mk('button','pil'); b.dataset.id=o.id; b.style.setProperty('--t',o.t);
       b.appendChild(mk('span','pi',I[o.icon]));
       b.appendChild(mk('span','pl',o.id));
+      /* advance on a timer, never on a tween callback: a throttled ticker
+         would otherwise leave the flow stuck on a selected pill */
       b.onclick=()=>{ if(locked) return; locked=true; b.classList.add('on');
-        gsap.fromTo(b,{scale:1},{scale:.95,duration:.11,yoyo:true,repeat:1,onComplete:()=>commit(s,o.id,null,b)}); };
+        gsap.fromTo(b,{scale:1},{scale:.95,duration:.11,yoyo:true,repeat:1});
+        setTimeout(()=>commit(s,o.id,null,b), 260); };
       ctrl.appendChild(b);
     });
     t.appendChild(ctrl);
