@@ -399,9 +399,11 @@ const Snd = (()=>{
     toggle(){ on = !on; if(on){ wake(); tone({freq:660,to:990,dur:.12,type:'triangle',gain:.4}); } return on; },
     set(v){ on = !!v; },
     /* a soft paper thock as a piece meets the mat */
-    land(){ tone({freq:210,to:96,dur:.14,type:'sine',gain:.5}); noise({dur:.1,gain:.16,hp:900,lp:4200}); },
-    grab(){ tone({freq:520,to:700,dur:.07,type:'sine',gain:.22}); },
-    drop(){ tone({freq:170,to:80,dur:.16,type:'sine',gain:.45}); noise({dur:.09,gain:.13,hp:600,lp:3000}); },
+    /* the low thuds on settling and on pressing read as dull, so they are gone.
+       release keeps a faint, high tick in the same family as the click. */
+    land(){},
+    grab(){},
+    drop(){ tone({freq:940,to:1160,dur:.05,type:'sine',gain:.14}); },
     hover(){
       const now = performance.now();
       if(now - lastHover < 90) return;
@@ -410,7 +412,7 @@ const Snd = (()=>{
     },
     click(){ tone({freq:880,to:1240,dur:.06,type:'triangle',gain:.3}); },
     add(){ tone({freq:600,to:900,dur:.09,type:'triangle',gain:.32}); tone({freq:900,to:1350,dur:.09,type:'sine',gain:.2,delay:.06}); },
-    remove(){ tone({freq:420,to:150,dur:.13,type:'sawtooth',gain:.2}); noise({dur:.13,gain:.12,hp:400,lp:2600}); },
+    remove(){ tone({freq:760,to:430,dur:.09,type:'triangle',gain:.22}); },
     /* the dice: a little tumble, then the board lands */
     roll(){
       for(let i=0;i<5;i++) noise({dur:.05,gain:.16,delay:i*0.055,hp:1400,lp:7000});
@@ -808,7 +810,6 @@ function springIn(el, it, fromEl){
   tl.to(el,{opacity:1,duration:.16,ease:'none'},0)
     .to(el,{x:bx,y:by,scale:1,rotation:rot,duration:1.05,ease:'elastic.out(1, 0.55)',overwrite:'auto',onUpdate:drawThread,
             onComplete:()=>{ if(it.type!=='name') idle(el,rot); }},0);
-  if(it.type!=='prop') G.delayedCall(.34, ()=>Snd.land());
   setTimeout(()=>{ if(tl.progress()<1) tl.progress(1); }, 3000);
 }
 function idle(el, rot){
@@ -845,7 +846,6 @@ function wire(el, it){
     ox = G ? (+G.getProperty(el,'x')||0) : 0;
     oy = G ? (+G.getProperty(el,'y')||0) : 0;
     lx=e.clientX; ly=e.clientY; lt=performance.now(); vx=vy=0;
-    Snd.grab();
     if(G) G.to(el,{scale:1.07,duration:.28,ease:'power3.out',overwrite:'auto'});
   });
   el.addEventListener('pointermove', e=>{
