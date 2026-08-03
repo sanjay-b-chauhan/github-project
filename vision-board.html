@@ -1130,6 +1130,8 @@ $('#tSave').addEventListener('click', async e=>{
   if(btn.dataset.busy) return;
   btn.dataset.busy = '1'; setSaveIcon(btn, 'busy');
   const wasChrome = S.chrome;
+  const restore = [];
+  const putBack = ()=> restore.splice(0).forEach(([img,url])=>{ img.onload=null; img.onerror=null; img.src=url; });
   try{
     if(!window.html2canvas) await new Promise((res,rej)=>{
       const s = document.createElement('script');
@@ -1143,6 +1145,24 @@ $('#tSave').addEventListener('click', async e=>{
     await new Promise(r=>setTimeout(r,240));
 
     const board = $('#board'), mat = $('.mat');
+    // html2canvas re-fetches images in its own clone, and the brand SVGs come
+    // back blank there. Inline them as data URLs (with explicit dimensions, or
+    // the canvas has nothing to rasterise against) and put the originals back after.
+    await Promise.all([...board.querySelectorAll('.p-co .logo img')].map(async img=>{
+      const url = img.getAttribute('src');
+      if(!url || url.startsWith('data:')) return;
+      try{
+        const res = await fetch(url);
+        if(!res.ok) return;
+        let svg = await res.text();
+        if(!/\swidth=/.test(svg)) svg = svg.replace('<svg ', '<svg width="64" height="64" ');
+        restore.push([img, url]);
+        await new Promise(done=>{
+          img.onload = done; img.onerror = done;
+          img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+        });
+      }catch(e){}
+    }));
     const br = board.getBoundingClientRect(), mr = mat.getBoundingClientRect();
     const s = Math.min(2, Math.max(1.5, window.devicePixelRatio||1));
     // shoot the whole board, then cut the mat out of it — cropping inside
@@ -1191,7 +1211,9 @@ $('#tSave').addEventListener('click', async e=>{
     a.download = (S.name.trim() ? S.name.trim().toLowerCase().replace(/\s+/g,'-') : 'vision') + '-board.png';
     a.href = out.toDataURL('image/png');
     a.click();
+    putBack();
   }catch(err){
+    try{ putBack(); }catch(_){}
     setSaveIcon(btn, 'fail');
     btn.title = "Couldn't save that one";
     setTimeout(()=>{ setSaveIcon(btn,'idle'); btn.title='Download as an image'; }, 1800);
