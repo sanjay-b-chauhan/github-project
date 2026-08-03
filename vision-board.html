@@ -1292,10 +1292,13 @@ $('#tSave').addEventListener('click', async e=>{
     if(reshaped){
       savedPOS = POS; POS = {};
       document.body.classList.add('shooting');
-      await new Promise(r=>setTimeout(r,80));
+      void board.offsetHeight;                       // force the new frame to reflow
+      await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
       drawMat();
-      layout(manifest());
-      await new Promise(r=>setTimeout(r,950));
+      layout(manifest());                            // pack against the real wide plane
+      await new Promise(r=>setTimeout(r,1000));
+      layout(manifest());                            // and settle once more, sizes now final
+      await new Promise(r=>setTimeout(r,700));
       stepRopes(30);
     }
     const br = board.getBoundingClientRect(), mr = mat.getBoundingClientRect();
