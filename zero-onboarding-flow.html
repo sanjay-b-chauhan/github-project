@@ -358,6 +358,11 @@ const DISC = {
 };
 
 const CITY = { 'Remote':'Remote', 'Hybrid':'Hybrid', 'In an office':'On-site', 'Still deciding':'Open to any' };
+const PLACE = { 'A scrappy startup':'Startup', 'A growing scale-up':'Scale-up', 'A big company':'Enterprise', 'Wherever the people are good':'Any size' };
+function whereLine(){
+  const p = PLACE[A.place], m = CITY[A.mode];
+  return p && m ? p + ' · ' + m : (p || m || 'Location, not set');
+}
 const LEVEL = { 'Learning fast':'Developing', 'Earning well':'Proficient', 'Work I can point to':'Proficient', 'A clear way in':'Developing' };
 
 const STEPS = [
@@ -505,7 +510,7 @@ function becomeMine(sourceEl){
     $('pBio').textContent = 'Your write-up lands here once you have work to point at.';
     $('pBio').style.color='var(--tx-4)'; gsap.to('.pbio',{opacity:1,duration:.4});
   }});
-  ['pRole','pLoc'].forEach((id)=>{ $(id).textContent = id==='pRole' ? 'Role, not set' : 'Location, not set'; $(id).style.color='var(--tx-4)'; });
+  ['pRole','pLoc'].forEach((id)=>{ $(id).textContent = id==='pRole' ? 'Role, not set' : 'Where, not set'; $(id).style.color='var(--tx-4)'; });
   $('pBadgeT').textContent='Not started'; $('pCount').textContent='none yet';
 }
 
@@ -591,8 +596,8 @@ async function commit(s, display, raw, sourceEl){
       setTimeout(()=>scrollTo($('pProjects')), 500);
     });
   }
-  else if (s.k==='place'){ const d=primary(); flyInto(sourceEl, $('pProjects').firstChild || $('pProjects'), ()=>{ paintPortfolio(d,true); scrollTo($('pProjects')); }); }
-  else if (s.k==='mode'){ flyInto(sourceEl, $('pLoc'), ()=>{ swapText($('pLoc'), CITY[display]||'Open to any'); landed($('pLoc')); }); }
+  else if (s.k==='place'){ flyInto(sourceEl, $('pLoc'), ()=>{ swapText($('pLoc'), whereLine()); landed($('pLoc')); }); }
+  else if (s.k==='mode'){ flyInto(sourceEl, $('pLoc'), ()=>{ swapText($('pLoc'), whereLine()); landed($('pLoc')); }); }
   else if (s.k==='now'){ flyInto(sourceEl, $('pBadge'), ()=>{ swapText($('pBadgeT'), LEVEL[display]||'Proficient'); landed($('pBadge')); }); }
 
   await wait(760);
