@@ -30,7 +30,11 @@ body{
 button{ font:inherit; letter-spacing:inherit; color:inherit; background:none; border:none; cursor:pointer; }
 input{ font:inherit; letter-spacing:inherit; color:var(--tx); background:none; border:none; outline:none; }
 input::placeholder{ color:var(--tx-4); }
-button:focus-visible,input:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+button:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+/* the field is the pill, not the bare input: ring the container so the
+   focus state follows the rounded shape instead of boxing the text */
+input:focus,input:focus-visible{ outline:none; }
+.row .box:focus-within,.ownbox .b:focus-within{ box-shadow:0 0 0 1.5px var(--ink); }
 svg{ display:block; }
 
 /* ---------------- chrome ---------------- */
