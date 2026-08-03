@@ -72,11 +72,13 @@ body{font-family:Nunito,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;b
 .row .more-btn{flex:none;width:28px;height:28px;border-radius:9px;border:0;background:rgba(22,40,29,.06);color:var(--ink-2);
   font-family:Nunito,sans-serif;font-weight:800;font-size:16px;line-height:1;cursor:pointer;display:grid;place-items:center;transition:.18s}
 .row .more-btn:hover{background:var(--sun);color:var(--ink)}
-.addbtn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:99px;border:2.5px solid #fff;
-  background:var(--sun);color:var(--ink);font-family:Fredoka,sans-serif;font-weight:600;font-size:13px;cursor:pointer;
-  box-shadow:var(--sh-ui);transition:transform .2s var(--ease),box-shadow .2s var(--ease)}
-.addbtn:hover{transform:translateY(-2px);box-shadow:0 10px 18px rgba(5,20,11,.2)}
-.addbtn svg{width:14px;height:14px}
+/* always sits directly under the last field, so there is no scrolling back up */
+.addrow{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:9px;
+  padding:13px 16px;border-radius:14px;border:2px dashed rgba(22,40,29,.26);background:transparent;
+  color:var(--ink-2);font-family:Fredoka,sans-serif;font-weight:600;font-size:13.5px;cursor:pointer;
+  transition:border-color .2s var(--ease),color .2s var(--ease),background .2s var(--ease)}
+.addrow:hover{border-color:var(--ink);color:var(--ink);background:rgba(255,216,77,.24)}
+.addrow svg{width:15px;height:15px}
 
 .rows{display:flex;flex-direction:column;gap:9px}
 .row{display:flex;align-items:center;gap:8px;background:var(--panel);border:2px solid rgba(22,40,29,.12);
@@ -171,8 +173,11 @@ body{font-family:Nunito,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;b
 }
 .p-name:hover,.p-name.dragging{box-shadow:none}
 
-.p-role{background:var(--sun);padding:13px 22px 15px;font-family:Fredoka,sans-serif;font-weight:600;font-size:21px;color:var(--ink);border-radius:99px}
+.p-role{background:var(--sun);padding:12px 22px 13px 17px;font-family:Fredoka,sans-serif;font-weight:600;font-size:21px;
+  color:var(--ink);border-radius:99px;display:flex;align-items:center;gap:11px}
 .p-role .sheen{border-radius:99px}
+.p-role .bag{flex:none;width:32px;height:32px;border-radius:50%;background:rgba(22,40,29,.14);display:grid;place-items:center}
+.p-role .bag svg{width:17px;height:17px;color:var(--ink)}
 .p-tag{padding:10px 18px;border-radius:99px;font-family:Fredoka,sans-serif;font-weight:600;font-size:15px;color:var(--ink);background:var(--tone,var(--lime))}
 .p-tag .sheen{border-radius:99px}
 
@@ -223,11 +228,24 @@ body{font-family:Nunito,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;b
 .kill:hover{background:var(--thread)}
 .p-name .kill{top:2px;right:-6px}
 body.exporting .kill{display:none}
+/* html2canvas throws box-shadow away, so for the shot we paint the shadow as a
+   real offset layer sitting behind each piece. Hard edge, exactly as on screen. */
+body.exporting .piece:not(.p-prop):not(.p-name){box-shadow:none !important}
+body.exporting .piece:not(.p-prop):not(.p-name):before{
+  content:'';position:absolute;left:0;top:0;width:100%;height:100%;
+  border-radius:inherit;background:rgba(5,20,11,.34);
+  transform:translate(5px,7px);z-index:-1}
+body.exporting .p-tag:before,body.exporting .p-role:before{border-radius:99px}
+body.exporting .p-stk:before{border-radius:50%}
+body.exporting .tw{position:relative}
+body.exporting .tw:before{
+  content:'';position:absolute;left:0;top:0;width:100%;height:100%;
+  border-radius:inherit;background:rgba(5,20,11,.34);transform:translate(4px,6px);z-index:-1}
 /* the picture is always landscape: if the live board is portrait we lay the
    mat out in a wide frame just for the shot, then put everything back */
 body.shooting .shell{visibility:hidden}
 body.shooting .board{visibility:visible;position:fixed !important;left:0;top:0;
-  width:1600px !important;height:900px !important;padding:22px !important;z-index:9999}
+  width:1500px !important;height:1200px !important;padding:22px !important;z-index:9999}
 
 @media (max-width:1080px){
   .shell{grid-template-columns:1fr;grid-template-rows:auto 1fr}
@@ -271,15 +289,16 @@ body.shooting .board{visibility:visible;position:fixed !important;left:0;top:0;
 
       <div class="sechead"><div class="lh">The basics</div><div class="sub">the five things worth filling in</div></div>
       <div class="rows" id="basicRows"></div>
+      <datalist id="colist"></datalist>
 
       <div class="sechead more">
         <div><div class="lh">Anything else <i id="rowCount"></i></div><div class="sub">optional — add as many as you like</div></div>
-        <button class="addbtn" id="addRow" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-          Add
-        </button>
       </div>
       <div class="rows" id="rows"></div>
+      <button class="addrow" id="addRow" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        Add another field
+      </button>
     </div>
 
     <div class="dock-foot">
@@ -420,6 +439,15 @@ const TYPES = {
   sticker:{label:'Sticker', icon:'⭐', ph:'',                                   accent:'#c9b8ff'}
 };
 const TYPE_ORDER = ['role','company','place','tag','note','field','line','sticker'];
+/* Every name here was checked against the icon CDN and returns a real mark,
+   so anything picked from the suggestions gets its true logo, never a stand-in.
+   Anything typed by hand still works and falls back to a coloured monogram. */
+const COMPANIES = ['Google','Apple','Meta','Netflix','Nvidia','Tesla','Stripe','Figma','Airbnb','Notion',
+  'Spotify','Vercel','Linear','GitHub','GitLab','Discord','Shopify','Uber','Lyft','DoorDash','Instacart',
+  'Anthropic','Framer','Webflow','Miro','Intercom','Raycast','Pinterest','Snapchat','TikTok','X','Reddit',
+  'Dropbox','Zoom','Atlassian','Jira','Asana','ClickUp','Coinbase','Robinhood','Revolut','Monzo','Klarna',
+  'Razorpay','Paytm','Zomato','Swiggy','Infosys','Wipro','TCS','Accenture','SAP','Cisco','Intel','AMD',
+  'Qualcomm','Samsung','Sony','LG','Xiaomi','OnePlus','Duolingo','Coursera','Udemy','Khan Academy','Medium','Substack'];
 const STICKERS = ['★','♥','⚡','🔥','✓','☺','✿','!'];
 const TAG_TONES = ['#c9f24f','#8ecdff','#c9b8ff','#ff9e7d','#8fe3c0','#ffb3d1'];
 
@@ -636,7 +664,10 @@ function markup(it){
   const v = it.data ? String(it.data.value||'') : '';
   switch(it.type){
     case 'name':    return {cls:'p-name',  html:KILL+esc(S.name.trim())};
-    case 'role':    return {cls:'p-role',  html:SHEEN+KILL+esc(v)};
+    /* a role wears a briefcase so it never reads as just another tag */
+    case 'role':    return {cls:'p-role',  html:SHEEN+KILL+
+      `<span class="bag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2.5" y="7" width="19" height="13.5" rx="3"/><path d="M8.5 7V5.4A2.4 2.4 0 0 1 11 3h2a2.4 2.4 0 0 1 2.5 2.4V7"/><path d="M2.5 12.5h19"/></svg></span><span>${esc(v)}</span>`};
     case 'tag':     return {cls:'p-tag',   html:SHEEN+KILL+esc(v), style:`--tone:${it.tone}`};
     case 'line':    return {cls:'p-vision',html:SHEEN+KILL+'<span class="q">“</span>'+highlight(v)};
     case 'note':    return {cls:'p-note t'+(it.data.tone%4), html:SHEEN+KILL+esc(v)};
@@ -1092,6 +1123,7 @@ function buildRow(en){
     }
     const inp = document.createElement('input');
     inp.value = en.value||''; inp.placeholder = T.ph; inp.maxLength = en.type==='line' ? 90 : en.type==='note' ? 90 : 30;
+    if(en.type==='company') inp.setAttribute('list','colist');
     inp.addEventListener('input', ()=>{ en.value = inp.value; queueSync(en.id); });
     inp.addEventListener('keydown', e=>{
       if(e.key!=='Enter') return;
@@ -1272,8 +1304,9 @@ $('#tSave').addEventListener('click', async e=>{
     const board = $('#board'), mat = $('.mat');
     // a portrait board would export as a tall mat floating in dark bands —
     // relay it into a wide frame first so the mat itself is landscape
-    const live = mat.getBoundingClientRect();
-    reshaped = (live.width / live.height) < 1.45;
+    // always shoot from the same 5:4 frame, so the picture never depends on
+    // how the window happened to be sized
+    reshaped = true;
     if(reshaped){
       savedPOS = POS; POS = {};
       document.body.classList.add('shooting');
@@ -1294,8 +1327,8 @@ $('#tSave').addEventListener('click', async e=>{
     });
     const sx=(mr.left-br.left)*s, sy=(mr.top-br.top)*s, sw=mr.width*s, sh=mr.height*s;
     const pad=Math.round(52*s), foot=Math.round(88*s), radius=Math.round(18*s);
-    let outW = Math.round(sw+pad*2), outH = Math.round(sh+pad+foot);
-    if(outW/outH < 1.6) outW = Math.round(outH*1.6);
+    // the canvas hugs the mat — no stretched-out side bands
+    const outW = Math.round(sw+pad*2), outH = Math.round(sh+pad+foot);
     const out = document.createElement('canvas');
     out.width=outW; out.height=outH;
     const g2 = out.getContext('2d');
@@ -1370,6 +1403,7 @@ function boot(){
   $('#tSound').dataset.tip = S.sound !== false ? 'Sound' : 'Muted';
   $('#tSound').querySelectorAll('.w1,.w2').forEach(w=> w.style.opacity = S.sound !== false ? 1 : 0);
 
+  $('#colist').innerHTML = COMPANIES.map(c=>`<option value="${esc(c)}"></option>`).join('');
   nameInput.value = S.name || '';
   nameTick(!!S.name);
   renderRows(); drawMat(); sync();
