@@ -710,10 +710,10 @@ function buildOrbs() {
   picked = []; $('sgo').classList.remove('show');
   $('shint').textContent = 'Tap the ones that feel like you. Up to two.';
   const area = $('fieldArea');
-  roleList().forEach(([role, score], i) => {
+  roleList().forEach(([role], i) => {
     const p = pos(i);
-    const size = score >= .85 ? 'd1' : score >= .7 ? 'd2' : 'd3';
-    const fit = score >= .85 ? 'Strong match' : score >= .7 ? 'Good match' : 'Worth a look';
+    const size = i < 2 ? 'd1' : i < 4 ? 'd2' : 'd3';
+    const fit = i < 2 ? 'Strong match' : i < 4 ? 'Good match' : 'Worth a look';
     const o = mk('button', `orb ${size} bob ${i % 3 === 1 ? 'b2' : i % 3 === 2 ? 'b3' : ''}`);
     o.style.left = p.x + '%'; o.style.top = p.y + '%';
     o.setAttribute('aria-label', `${role}, ${fit}`);
