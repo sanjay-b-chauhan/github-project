@@ -25,7 +25,7 @@
 html,body{ height:100%; }
 body{
   background:var(--page); color:var(--tx); font-family:var(--f); font-size:13px;
-  letter-spacing:-.01em; overflow:hidden; -webkit-font-smoothing:antialiased;
+  letter-spacing:-.018em; overflow:hidden; -webkit-font-smoothing:antialiased;
 }
 button{ font:inherit; letter-spacing:inherit; color:inherit; background:none; border:none; cursor:pointer; }
 input{ font:inherit; letter-spacing:inherit; color:var(--tx); background:none; border:none; outline:none; }
@@ -58,7 +58,7 @@ svg{ display:block; }
 /* ---------------- question ---------------- */
 .q{
   font-family:var(--serif); font-weight:400; font-size:clamp(21px,1.72vw,31px);
-  line-height:1.2; text-align:center; text-wrap:balance;
+  line-height:1.18; letter-spacing:-.028em; text-align:center; text-wrap:balance;
 }
 .q .w{ display:inline-block; }
 .qs{ margin-top:9px; font-size:12.5px; color:var(--tx-3); text-align:center; }
@@ -174,7 +174,7 @@ svg{ display:block; }
 .ph{ display:flex; align-items:flex-start; gap:13px; }
 .pav{ width:52px; height:52px; flex-shrink:0; border-radius:var(--r); background:var(--ink); color:#fff; display:flex; align-items:center; justify-content:center; font-size:17px; font-weight:600; }
 .pid{ flex:1; min-width:0; padding-top:3px; }
-.pname{ font-size:17px; font-weight:600; line-height:1.2; }
+.pname{ font-size:17px; font-weight:600; line-height:1.2; letter-spacing:-.03em; }
 .pmeta{ display:flex; align-items:center; gap:8px; margin-top:6px; font-size:11.5px; color:var(--tx-2); }
 .pmeta .m{ display:flex; align-items:center; gap:5px; }
 .pmeta .m svg{ width:11px; height:11px; color:var(--tx-3); }
@@ -195,7 +195,7 @@ svg{ display:block; }
 .ptf{ margin-top:auto; font-size:8px; color:var(--tx-3); letter-spacing:.06em; text-transform:uppercase; }
 .ptface{ position:absolute; right:9px; bottom:9px; width:38px; height:38px; border-radius:8px; background:rgba(13,13,13,.08); }
 .pb{ flex:1; min-width:0; padding-top:2px; }
-.pt{ font-size:13px; font-weight:600; line-height:1.3; }
+.pt{ font-size:13px; font-weight:600; line-height:1.3; letter-spacing:-.025em; }
 .pd{ margin-top:6px; font-size:11.5px; line-height:1.5; color:var(--tx-2); }
 .pc{ margin-top:9px; display:flex; flex-wrap:wrap; gap:5px; }
 .chip{ display:inline-flex; align-items:center; gap:5px; height:21px; padding:0 9px; border-radius:var(--r-sm); background:var(--card); font-size:10.5px; color:var(--tx-2); }
@@ -260,12 +260,7 @@ svg{ display:block; }
             </div>
           </div>
           <p class="pbio" id="pBio"></p>
-          <div class="psec">Projects <span class="cnt" id="pCount">3 shipped</span></div>
-          <div id="pProjects"></div>
-          <div class="psec">Skills</div>
-          <div class="skills" id="pSkills"></div>
-          <div class="psec">Still ahead</div>
-          <div id="pTodo"></div>
+          <div id="pBody"></div>
         </div>
       </div>
     </div>
@@ -513,7 +508,9 @@ function skillCol(title, rows){
     r.appendChild(v); col.appendChild(r); });
   return col;
 }
-function paintPortfolio(){
+/* The portfolio is not painted in one go. The header lands first, then each
+   piece is appended as the story names it. */
+function paintHeader(){
   const d=primary();
   $('pName').textContent = A.name||'You';
   $('pAv').textContent = (A.name||'Y').charAt(0).toUpperCase();
@@ -521,13 +518,44 @@ function paintPortfolio(){
   $('pLoc').textContent = whereLine();
   $('pBadgeT').textContent = LEVEL[A.now]||'Proficient';
   $('pBio').textContent = d.bio;
-  const host=$('pProjects'); host.innerHTML=''; d.projects.forEach((p,i)=>host.appendChild(projectRow(p,i)));
-  const sk=$('pSkills'); sk.innerHTML=''; sk.appendChild(skillCol('Hard skills',d.skills)); sk.appendChild(skillCol('Soft skills',d.soft));
-  const td=$('pTodo'); td.innerHTML='';
-  d.todo.forEach(([t,dd])=>{ const n=mk('div','todo'); const w=mk('div','tn');
+  $('pBody').innerHTML='';
+}
+function section(title, countId){
+  const s=mk('div','psec'); s.appendChild(mk('span',null,title));
+  if(countId){ const c=mk('span','cnt'); c.id=countId; s.appendChild(c); }
+  return s;
+}
+function landIn(node){
+  $('pBody').appendChild(node);
+  gsap.fromTo(node,{opacity:0,y:16},{opacity:1,y:0,duration:.6,ease:EIO});
+  setTimeout(()=>gsap.set(node,{opacity:1,y:0}), 900);
+  const s=$('scroll');
+  gsap.to(s,{ scrollTop:Math.max(0, s.scrollHeight-s.clientHeight), duration:.7, ease:EIO });
+  setTimeout(()=>{ s.scrollTop = Math.max(0, s.scrollHeight-s.clientHeight); }, 900);
+}
+function addProject(i){
+  const d=primary();
+  if(i===0) landIn(section('Projects','pCount'));
+  const row=projectRow(d.projects[i], i);
+  landIn(row);
+  const c=$('pCount'); if(c) c.textContent = (i+1)+(i===0?' shipped':' shipped');
+}
+function addSkills(){
+  const d=primary();
+  landIn(section('Skills'));
+  const sk=mk('div','skills');
+  sk.appendChild(skillCol('Hard skills', d.skills.slice(0,3)));
+  sk.appendChild(skillCol('Soft skills', d.soft.slice(0,3)));
+  landIn(sk);
+}
+function addTodo(){
+  const d=primary();
+  landIn(section('Still ahead'));
+  const box=mk('div');
+  d.todo.slice(0,2).forEach(([t,dd])=>{ const n=mk('div','todo'); const w=mk('div','tn');
     w.appendChild(mk('div','tt',t)); w.appendChild(mk('div','td',dd));
-    n.appendChild(w); n.appendChild(mk('span','tg','Yet to do')); td.appendChild(n); });
-  $('pCount').textContent = d.projects.length+' shipped';
+    n.appendChild(w); n.appendChild(mk('span','tg','Yet to do')); box.appendChild(n); });
+  landIn(box);
 }
 
 /* ============================ questions ============================ */
@@ -679,10 +707,28 @@ async function calibrate(){
 }
 
 /* ============================ reveal ============================ */
+/* one narrated line on the left, one piece landing on the right */
+function line(text){
+  const t=mk('div','turn'); t.id='turn';
+  const q=mk('div','q'); t.appendChild(q);
+  const old=$('col').firstChild;
+  if(old) gsap.to(old,{opacity:0,y:-12,duration:.28,ease:'power2.in',onComplete:()=>old.remove()});
+  setTimeout(()=>{ $('col').innerHTML=''; $('col').appendChild(t);
+    const ws=words(q,text);
+    safeTL(gsap.timeline().fromTo(ws,{opacity:0,y:16},{opacity:1,y:0,duration:.55,stagger:.03}), 1700);
+  }, 300);
+}
+async function beat(text, add, hold){
+  line(text);
+  await wait(760);
+  if(add) add();
+  await wait(hold||1250);
+}
+
 async function reveal(){
-  paintPortfolio();
+  paintHeader();
   /* the questions are done, so the step meter has nothing left to say */
-  gsap.to('#steps',{ opacity:0, duration:.4, pointerEvents:'none' });
+  gsap.to('#steps',{ opacity:0, duration:.4 });
   setTimeout(()=>{ $('steps').style.opacity=0; $('steps').style.pointerEvents='none'; }, 700);
   const t=$('turn');
   if(t) gsap.to(t,{opacity:0,y:-14,duration:.34,ease:'power2.in',onComplete:()=>t.remove()});
@@ -692,9 +738,15 @@ async function reveal(){
   safeTL(gsap.timeline()
     .fromTo('.right',{opacity:0,x:60,scale:.97},{opacity:1,x:0,scale:1,duration:.95,ease:EIO})
     .fromTo('.paper',{y:22},{y:0,duration:.95,ease:EIO},0), 2400);
-  safeTL(gsap.timeline().from('#pProjects > *',{opacity:0,y:18,duration:.55,stagger:.09,delay:.5}), 2600);
+  await wait(900);
 
-  await wait(720);
+  const d=primary();
+  await beat(`Four months from now, this is you.`, null, 1500);
+  await beat('You would start here.', ()=>addProject(0), 1700);
+  await beat('Then this one.', ()=>addProject(1), 1700);
+  await beat('And this is the one they ask about in interviews.', ()=>addProject(2), 1800);
+  await beat('Three real briefs. They build these skills, and Zero verifies them.', ()=>addSkills(), 1800);
+  await beat('This is what is still ahead. That gap is the point.', ()=>addTodo(), 1700);
   roleStep();
 }
 
