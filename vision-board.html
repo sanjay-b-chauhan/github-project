@@ -1308,7 +1308,13 @@ $('#tSave').addEventListener('click', async e=>{
       savedPOS = POS; POS = {};
       document.body.classList.add('shooting');
       void board.offsetHeight;                       // force the new frame to reflow
-      await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+      // rAF never fires on a hidden tab, so always give it a timer to fall back on
+      await new Promise(r=>{
+        let done = false;
+        const fin = ()=>{ if(!done){ done = true; r(); } };
+        requestAnimationFrame(()=>requestAnimationFrame(fin));
+        setTimeout(fin, 250);
+      });
       drawMat();
       layout(manifest());                            // pack against the real wide plane
       await new Promise(r=>setTimeout(r,1000));
