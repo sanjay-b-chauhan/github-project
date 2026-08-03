@@ -391,6 +391,19 @@ const E = 'power3.out', EIO = 'power3.inOut';
 
 gsap.defaults({ ease:E });
 
+/* Every entrance animates from opacity:0. If the tab is hidden GSAP never
+   ticks, so without this the screen would simply stay blank. Each reveal
+   registers a timer that forces the finished state no matter what. */
+function safeIn(targets, ms){
+  setTimeout(()=>{
+    try { gsap.set(targets, { opacity:1, y:0, x:0, scale:1, clearProps:'transform' }); } catch(e){}
+  }, ms || 1900);
+}
+document.addEventListener('visibilitychange', ()=>{
+  if (!document.hidden) return;
+  setTimeout(()=>safeIn('.turn, .turn .w, .turn .qs, .turn .opt, .turn .role, .turn .btn, .prow, .skr, .todo', 0), 400);
+});
+
 (function(){ const s=$('steps'); for(let i=0;i<STEPS.length+1;i++) s.appendChild(mk('i')); })();
 function meter(){
   [...$('steps').children].forEach((d,i)=>{
@@ -483,6 +496,7 @@ function paintPortfolio(d, animate){
     gsap.from(host.children, { y:26, opacity:0, duration:.7, stagger:.11, ease:E, clearProps:'all' });
     gsap.from(sk.children, { y:18, opacity:0, duration:.6, stagger:.1, delay:.25, ease:E, clearProps:'all' });
     gsap.from(td.children, { y:14, opacity:0, duration:.55, stagger:.08, delay:.4, ease:E, clearProps:'all' });
+    safeIn([...host.children, ...sk.children, ...td.children]);
   }
 }
 function setCap(text, live){
@@ -587,6 +601,7 @@ function render(i, saidLine){
   tl.fromTo(ws,{opacity:0,y:26},{opacity:1,y:0,duration:.72,stagger:.035},sd?.18:0)
     .fromTo(t.querySelector('.qs')||{}, {opacity:0,y:10},{opacity:1,y:0,duration:.45},'-=.35')
     .fromTo(ctrl.children,{opacity:0,y:20},{opacity:1,y:0,duration:.6,stagger:.05},'-=.36');
+  safeIn([sd, ...ws, t.querySelector('.qs'), ...ctrl.children].filter(Boolean));
 }
 
 async function commit(s, display, raw, sourceEl){
@@ -682,6 +697,7 @@ async function roleStep(line){
     .fromTo(ws,{opacity:0,y:24},{opacity:1,y:0,duration:.7,stagger:.035})
     .fromTo(sub,{opacity:0,y:10},{opacity:1,y:0,duration:.4},'-=.4')
     .fromTo(rows.children,{opacity:0,y:22},{opacity:1,y:0,duration:.6,stagger:.09},'-=.3');
+  safeIn([...ws, sub, ...rows.children]);
 }
 
 async function finish(){
@@ -710,6 +726,7 @@ async function finish(){
     .fromTo(ws,{opacity:0,y:26},{opacity:1,y:0,duration:.75,stagger:.04},'-=.25')
     .fromTo(sub,{opacity:0,y:10},{opacity:1,y:0,duration:.45},'-=.4')
     .fromTo(n,{opacity:0,y:14},{opacity:1,y:0,duration:.5},'-=.25');
+  safeIn([sd, ...ws, sub, n], 2400);
 }
 
 /* ---------------- boot ---------------- */
