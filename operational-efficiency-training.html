@@ -268,8 +268,6 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
 .rec{background:var(--surface);border-radius:13px;box-shadow:var(--shadow-card);padding:13px 20px;font-weight:500;font-size:1.05rem;display:flex;align-items:center;gap:10px;font-family:var(--font-head)}
 .rec .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);flex:0 0 auto}
 .rec.hotrec{box-shadow:0 0 0 2px var(--accent),var(--shadow-card)}
-.s11 .kstate{position:absolute;max-width:32ch}
-.s11 .kstate .statement{font-size:clamp(1.35rem,3vw,1.95rem);max-width:none}
 .kpis{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;align-items:stretch}
 .kpi{display:inline-flex;flex-direction:column;gap:6px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:18px;padding:20px 30px;box-shadow:var(--shadow-card);max-width:400px}
 .kpi .kt{font-size:.85rem;font-weight:500;color:var(--ink-3)}
@@ -294,7 +292,6 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
 
 /* ============ scene 15 — close ============ */
 .s15 .statement{font-size:clamp(2.6rem,6.5vw,4.2rem)}
-.s15 .zwm{height:clamp(26px,4.5vh,40px);color:var(--ink);fill:currentColor}
 
 /* ============ mentor cursor ============ */
 #mcursor{position:absolute;left:0;top:0;width:24px;height:24px;z-index:30;pointer-events:none;opacity:0;transition:transform .7s var(--e),opacity .4s;will-change:transform}
@@ -845,7 +842,6 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
             <div class="rec r2"><span class="dot"></span>Tighter portions</div>
             <div class="rec r3 hotrec"><span class="dot"></span>Cut food waste 30%</div>
           </div>
-          <div class="kstate ks1"><div class="statement">The <span class="hl">one number</span> you're trying to move.</div></div>
         </div>
         <div class="kpis">
           <div class="kpi k1"><span class="kt">The impact</span><span class="kv"><span class="big"><span class="m50">$0</span>M</span> a year<br>back in costs</span></div>
@@ -889,8 +885,6 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
     <section class="scene s15" data-sc="s15">
       <div class="wrap">
         <div class="statement">Your turn.</div>
-        <div class="microdef s15sub">Doing, not just watching.</div>
-        <svg class="zwm" viewBox="0 0 373 136" aria-label="ZERO"><use href="#ic-zero"/></svg>
       </div>
     </section>
 
@@ -1097,7 +1091,6 @@ const INIT={
     gsap.set($('.heading',r),{opacity:0,y:16});
     gsap.set($$('.rec',r),{opacity:0,y:16,scale:.92});
     gsap.set($('.recs',r),{opacity:1,y:0});
-    gsap.set($$('.kstate',r),{opacity:0,y:16});
     gsap.set($$('.kpi',r),{opacity:0,y:20,scale:.94});
     $('.k2',r).style.display='none';
     $('.m50',r).textContent='$0';
@@ -1110,8 +1103,6 @@ const INIT={
   },
   s15(){const r=scEl.s15;
     gsap.set($('.statement',r),{opacity:0,y:22,scale:.96});
-    gsap.set($('.s15sub',r),{opacity:0,y:14});
-    gsap.set($('.zwm',r),{opacity:0,y:12});
   }
 };
 
@@ -1439,14 +1430,14 @@ FN.s11_kpi1=i=>{const r=scEl.s11,tl=T();
   pop(tl,[$('.k1',r)],0,.55);
   counter(tl,$('.m50',r),50,.25,1.0,x=>'$'+Math.round(x));
   return fin(tl,i);};
-FN.s11_kpidef=i=>{const r=scEl.s11,tl=T();
-  tl.to($('.recs',r),{opacity:0,y:-10,duration:.4,ease:'power1.in'},0);
-  tl.fromTo($('.ks1',r),{opacity:0,y:16},{opacity:1,y:0,duration:.55,ease:E2},.35);
-  return fin(tl,i);};
+/* Daniel's KPI card arrives on the right; the $50M card glides over to make room */
 FN.s11_kpi2=i=>{const r=scEl.s11,tl=T();
-  tl.to($('.ks1',r),{opacity:0,y:-12,duration:.3,ease:'power1.in'},0);
-  tl.set($('.k2',r),{display:'inline-flex'},.22);
-  pop(tl,[$('.k2',r)],.25,.55);
+  const k1=$('.k1',r),k2=$('.k2',r);
+  const x0=k1.getBoundingClientRect().left;
+  k2.style.display='inline-flex';
+  const dx=x0-k1.getBoundingClientRect().left;
+  tl.fromTo(k1,{x:dx},{x:0,duration:.65,ease:E2},0);
+  tl.fromTo(k2,{opacity:0,x:42,scale:.94},{opacity:1,x:0,scale:1,duration:.6,ease:E2},.15);
   return fin(tl,i);};
 FN.s11_tie=i=>{const r=scEl.s11,tl=T();
   tl.fromTo($('.k2',r),{scale:1},{scale:1.04,duration:.28,ease:E1},0).to($('.k2',r),{scale:1,duration:.35,ease:E1},.28);
@@ -1472,8 +1463,6 @@ FN.s13_shape=i=>{const r=scEl.s13,tl=T();
 /* ---- s15 ---- */
 FN.s15_turn=i=>{const r=scEl.s15,tl=T();
   tl.fromTo($('.statement',r),{opacity:0,y:22,scale:.96},{opacity:1,y:0,scale:1,duration:.7,ease:E2},0);
-  tl.fromTo($('.s15sub',r),{opacity:0,y:14},{opacity:1,y:0,duration:.5,ease:E2},.5);
-  tl.fromTo($('.zwm',r),{opacity:0,y:12},{opacity:1,y:0,duration:.5,ease:E1},.85);
   return fin(tl,i);};
 
 /* ================================================================
@@ -1565,7 +1554,7 @@ const BEATS=[
  {t:187.75,s:'s11',f:'s11_rec2', cc:"Tighter portions"},
  {t:188.70,s:'s11',f:'s11_rec3', cc:"Cut food waste 30%"},
  {t:190.30,s:'s11',f:'s11_kpi1', cc:"About $50M a year back in costs"},
- {t:193.50,s:'s11',f:'s11_kpidef',cc:"A KPI: the one number you're trying to move"},
+ {t:193.50,s:'s11',f:'noop',    cc:"A KPI: the one number you're trying to move"},
  {t:197.70,s:'s11',f:'noop',    cc:"Which KPI was Daniel moving?"},
  {t:201.40,s:'s11',f:'s11_kpi2', cc:"Food cost as a percent of sales"},
  {t:204.10,s:'s11',f:'s11_tie',  cc:"Tie every recommendation to a real number"},
