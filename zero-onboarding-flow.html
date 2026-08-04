@@ -210,7 +210,7 @@ svg{ display:block; }
 .acct{ margin-top:30px; display:flex; flex-direction:column; align-items:center; gap:12px; }
 .acct .note{ font-size:12.5px; color:var(--tx-4); }
 
-.shell{ height:100%; background:var(--shell); border-radius:26px; display:flex; flex-direction:column;
+.shell{ position:relative; height:100%; background:var(--shell); border-radius:26px; display:flex; flex-direction:column;
   padding:0; overflow:hidden; }
 .cap{ font-size:12px; color:var(--tx-3); margin:0; padding:30px 0 22px 42px; flex-shrink:0; display:flex; align-items:center; gap:7px; }
 .cap .live{ width:5px; height:5px; border-radius:var(--pill); background:var(--ok); }
@@ -230,7 +230,7 @@ svg{ display:block; }
 .skb{ display:inline-block; height:1.02em; border-radius:.32em; background:var(--field);
   vertical-align:-.2em; margin:0 .22em .18em 0; position:relative; overflow:hidden; }
 .skb::after{ content:''; position:absolute; inset:0;
-  background:linear-gradient(100deg,transparent 18%,rgba(63,185,104,.38) 50%,transparent 82%);
+  background:linear-gradient(100deg,transparent 14%,rgba(168,230,207,.5) 36%,rgba(255,255,255,.85) 52%,rgba(200,241,105,.45) 68%,transparent 88%);
   animation:shine 1.05s linear infinite; }
 @keyframes shine{ from{transform:translateX(-110%)} to{transform:translateX(110%)} }
 .vb .g{ color:var(--tx-3); }
@@ -377,6 +377,62 @@ svg{ display:block; }
   font-size:12.5px; font-weight:600; display:flex; align-items:center; gap:7px; }
 .dl .db svg{ width:12px; height:12px; }
 
+/* Most answers are a chip. A square is only earned by something with a face. */
+.chs{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; max-width:680px; margin:0 auto; }
+.ch{ height:54px; padding:0 24px 0 15px; border-radius:var(--pill); background:var(--card);
+  border:1px solid var(--line); display:inline-flex; align-items:center; gap:12px;
+  font-size:15.5px; font-weight:500; letter-spacing:-.022em; position:relative;
+  transition:transform .24s cubic-bezier(.2,.8,.3,1), box-shadow .24s ease, background .26s ease, border-color .26s ease, color .26s ease; }
+.ch .ci{ width:30px; height:30px; flex-shrink:0; border-radius:var(--pill); background:var(--wash);
+  color:var(--tx-2); display:flex; align-items:center; justify-content:center; transition:background .26s ease, color .26s ease; }
+.ch .ci svg{ width:15px; height:15px; }
+.ch .ci.lg{ background:#fff; box-shadow:0 4px 12px rgba(0,0,0,.15); }
+.ch .ci.lg svg{ width:17px; height:17px; }
+.ch:hover{ transform:translateY(-3px); box-shadow:0 12px 26px rgba(0,0,0,.09); }
+.ch.on{ background:var(--ink); color:var(--on-ink); border-color:transparent; }
+.ch.on .ci{ background:rgba(255,255,255,.17); color:var(--on-ink); }
+.ch.on .ci.lg{ background:#fff; }
+.ch.dim{ opacity:.34; }
+.chs.multi .ch.on{ box-shadow:0 10px 24px rgba(0,0,0,.12); }
+
+/* the light: mint, green, lime and yellow, moving behind everything */
+.aur{ position:fixed; inset:0; z-index:86; pointer-events:none; opacity:0; overflow:hidden; }
+.aur b{ position:absolute; left:0; top:0; width:46vmin; height:46vmin; border-radius:50%;
+  filter:blur(62px); display:block; }
+.rip{ position:fixed; inset:0; z-index:87; pointer-events:none; display:none; }
+.rip s{ position:absolute; left:50%; top:50%; width:20px; height:20px; margin:-10px 0 0 -10px;
+  border-radius:50%; border:1.5px solid rgba(74,222,128,.7); display:block; }
+.core{ position:fixed; left:50%; top:50%; width:170px; height:170px; margin:-85px 0 0 -85px;
+  z-index:87; border-radius:50%; pointer-events:none; opacity:0; filter:blur(11px);
+  background:radial-gradient(circle at 50% 50%, rgba(255,255,255,.98) 0%, rgba(200,241,105,.92) 32%, rgba(74,222,128,.55) 58%, rgba(74,222,128,0) 72%); }
+/* a sheen passes over anything that has just become true */
+.sheen{ position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:5; border-radius:inherit; }
+.sheen i{ position:absolute; top:-45%; bottom:-45%; width:46%; left:-60%; display:block;
+  background:linear-gradient(100deg, transparent, rgba(168,230,207,.45) 32%, rgba(255,255,255,.85) 50%, rgba(200,241,105,.4) 68%, transparent);
+  filter:blur(16px); transform:skewX(-14deg); }
+
+/* A long panel is a document, not a wall: one column at a readable measure,
+   and the user can scroll it themselves. */
+.doc{ max-width:620px; margin:0 auto; padding-bottom:16px; }
+.scroll.docs{ overflow-y:auto; overscroll-behavior:contain; }
+/* each piece is lit as it lands, so the eye knows where to look */
+.lit{ animation:lit 1.7s cubic-bezier(.625,.05,0,1) forwards; }
+@keyframes lit{
+  0%{ box-shadow:0 0 0 2.5px rgba(17,17,19,.17), 0 18px 36px rgba(0,0,0,.11); }
+  70%{ box-shadow:0 0 0 1px rgba(17,17,19,.05), 0 6px 16px rgba(0,0,0,.04); }
+  100%{ box-shadow:0 0 0 0 rgba(17,17,19,0), 0 0 0 rgba(0,0,0,0); } }
+body.dark .lit{ animation-name:litd; }
+@keyframes litd{
+  0%{ box-shadow:0 0 0 2.5px rgba(255,255,255,.22), 0 18px 36px rgba(0,0,0,.4); }
+  70%{ box-shadow:0 0 0 1px rgba(255,255,255,.07), 0 6px 16px rgba(0,0,0,.16); }
+  100%{ box-shadow:0 0 0 0 rgba(255,255,255,0), 0 0 0 rgba(0,0,0,0); } }
+/* pieces of the document are outlined objects, not washes */
+.doc .prow, .doc .todo, .doc .blk, .doc .lrow, .doc .rcard, .doc .rewrow, .doc .linr{
+  background:var(--card); border:1px solid var(--line); }
+.doc .pname{ font-size:23px; }
+.doc .psec{ margin-top:30px; margin-bottom:13px; }
+.doc .pbio{ margin-top:18px; }
+
 /* options are squares. Three answers means three squares, side by side. */
 .sq{ display:grid; gap:12px; width:100%; margin:0 auto; }
 /* square whatever the column does: the panel can widen underneath them */
@@ -463,6 +519,8 @@ svg{ display:block; }
   </div>
 </div>
 
+<div class="aur" id="aur"></div>
+<div class="rip" id="rip"></div>
 <div class="dtr" id="dtr"></div>
 <div class="dock" id="dock"><div class="dockin" id="dockIn"></div></div>
 
@@ -530,6 +588,7 @@ const I={
   coin:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v12m3-9H10.5a2.5 2.5 0 0 0 0 5h3a2.5 2.5 0 0 1 0 5H9"/></g></svg>',
   leaf:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8c0 5.5-4.78 10-10 10"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></g></svg>',
   cart:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></g></svg>',
+  plus:'<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2.4" d="M12 5v14M5 12h14"/></svg>',
   cam:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m16 13l5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></g></svg>',
 };
 const TINT=['#EEF1F5','#EDF3EE','#F4F0EA'];
@@ -677,20 +736,27 @@ function dockAction(label,fn){
 }
 const cta=dockAction;
 /* the conversation input: mic by default, keyboard optional, both always swappable */
-function dockInput(onText){
-  if(dockMode==='voice') voiceDock(onText); else typeDock(onText);
+function dockInput(onText,extra){
+  if(dockMode==='voice') voiceDock(onText,extra); else typeDock(onText,extra);
 }
-function voiceDock(onText){
+function dockExtra(wrap,extra){
+  if(!extra) return;
+  const b=mk('button','dbig',extra.label);
+  b.onclick=()=>{ sfx('press'); extra.fn(); };
+  wrap.appendChild(b);
+}
+function voiceDock(onText,extra){
   const wrap=mk('div','dockin');
   const kb=mk('button','dghostbtn',I.kbd); kb.setAttribute('aria-label','Type instead');
   const mic=mk('button','dmic',I.micro); mic.setAttribute('aria-label','Talk to Zero');
-  const sp=mk('div','dghostbtn'); sp.style.visibility='hidden';
-  wrap.appendChild(kb); wrap.appendChild(mic); wrap.appendChild(sp);
+  wrap.appendChild(kb); wrap.appendChild(mic);
+  if(!extra){ const sp=mk('div','dghostbtn'); sp.style.visibility='hidden'; wrap.appendChild(sp); }
+  dockExtra(wrap,extra);
   dockIn(wrap);
-  kb.onclick=()=>{ if(locked)return; sfx('tick'); dockMode='type'; typeDock(onText); };
+  kb.onclick=()=>{ if(locked)return; sfx('tick'); dockMode='type'; typeDock(onText,extra); };
   mic.onclick=()=>{ if(locked)return; startRecording(onText); };
 }
-function typeDock(onText){
+function typeDock(onText,extra){
   const wrap=mk('div','dockin');
   const mic=mk('button','dghostbtn',I.micro); mic.setAttribute('aria-label','Talk instead');
   const f=mk('div','dfield');
@@ -702,9 +768,10 @@ function typeDock(onText){
   send.onclick=fire;
   f.appendChild(inp); f.appendChild(send);
   wrap.appendChild(mic); wrap.appendChild(f);
+  dockExtra(wrap,extra);
   dockIn(wrap);
   setTimeout(()=>inp.focus(),420);
-  mic.onclick=()=>{ if(locked)return; sfx('tick'); dockMode='voice'; voiceDock(onText); };
+  mic.onclick=()=>{ if(locked)return; sfx('tick'); dockMode='voice'; voiceDock(onText,extra); };
 }
 /* your own words, printed above the dock as you say them */
 function showTranscript(final,interim){
@@ -804,6 +871,57 @@ function orows(box,items,onPick){
   });
   box.appendChild(rows); return rows;
 }
+/* Chips carry most answers. Single choice commits on tap; multiple choice
+   collects, and the Continue lands in the dock next to the mic. */
+function matchLabel(v,items){
+  const t=v.toLowerCase();
+  for(const it of items){ const l=String(it[1]).toLowerCase();
+    if(t.includes(l)||l.includes(t)) return it[2]!==undefined?it[2]:it[1]; }
+  return null;
+}
+function choices(box,items,onPick,opts){
+  opts=opts||{};
+  const w=mk('div','chs'+(opts.multi?' multi':''));
+  const picked=[];
+  const commit=v=>{ if(locked)return; locked=true; setTimeout(()=>onPick(v),340); };
+  items.forEach(it=>{
+    const [icon,label,value]=it;
+    const b=mk('button','ch');
+    if(icon){ const ic=mk('span','ci',LOGO[icon]||I[icon]||I.target);
+      if(LOGO[icon]) ic.classList.add('lg'); b.appendChild(ic); }
+    b.appendChild(mk('span',null,label));
+    const val=value!==undefined?value:label;
+    b.onclick=()=>{
+      if(locked) return;
+      sfx('toggle');
+      gsap.fromTo(b,{scale:1},{scale:.96,duration:.12,yoyo:true,repeat:1});
+      if(opts.multi){
+        const i=picked.indexOf(val);
+        if(i>=0){ picked.splice(i,1); b.classList.remove('on'); }
+        else { picked.push(val); b.classList.add('on'); }
+        multiDock();
+        return;
+      }
+      b.classList.add('on');
+      [...w.children].forEach(c2=>{ if(c2!==b) gsap.to(c2,{opacity:.26,scale:.96,duration:.34}); });
+      commit(val);
+    };
+    w.appendChild(b);
+  });
+  box.appendChild(w);
+  safeTL(gsap.timeline().fromTo(w.children,{opacity:0,y:20,filter:'blur(6px)'},
+    {opacity:1,y:0,filter:'blur(0px)',duration:.6,stagger:.055,ease:'power3.out'}),1900);
+  /* you can always just say it instead */
+  const speak=v=>{ if(locked)return; const m=matchLabel(v,items);
+    locked=true; onPick(m||quoteOf(v)); };
+  function multiDock(){
+    if(!picked.length){ locked=false; dockInput(speak); return; }
+    dockInput(speak,{label:'Continue with '+picked.length,fn:()=>{
+      if(locked)return; locked=true; sfx('droplet'); onPick(opts.join?picked.join(', '):picked.slice()); }});
+  }
+  if(opts.multi) multiDock(); else dockInput(speak);
+  return w;
+}
 /* Answers are squares. Three answers means three squares in a row, four means four. */
 function squares(box,items,onPick){
   const n=items.length;
@@ -887,8 +1005,9 @@ function SENTENCES(){
      html:()=>G_('The dream is ')+chip((LOGO[P.dream]||I.spark)+T_(P.dream))
        +(P.openness?G_(', '+P.openness):'')+G_('.') },
    { id:'s3', ready:!!(P.location||P.citynext), key:[P.location,P.citynext].join('|'),
-     html:()=>G_('From ')+(P.location?chip(I.pin+T_(P.location)):'')
-       +(P.citynext&&P.citynext!==P.location?G_(', heading for ')+chip(I.pin+T_(P.citynext)):'')+G_('.') },
+     html:()=>{ const nxt=String(P.citynext||'').split(', ').filter(c2=>c2&&c2!==P.location);
+       return G_('From ')+(P.location?chip(I.pin+T_(P.location)):'')
+         +(nxt.length?G_(', open to ')+chip(I.pin+T_(nxt.join(', '))):'')+G_('.'); } },
    { id:'s4', ready:!!P.industry, key:[P.industry,P.problems].join('|'),
      html:()=>G_('Into ')+chip(I.globe+T_(SHORT[P.industry]||P.industry))
        +(P.problems?G_(', to fix ')+'<span class="vbq">“'+P.problems+'”</span>':'')+G_('.') },
@@ -976,19 +1095,32 @@ function fillSlot(){ renderBoard(); }
 function fillAll(){ renderBoard(); }
 function section(t,id){ const s=mk('div','psec'); s.appendChild(mk('span',null,t));
   if(id){const c=mk('span','cnt'); c.id=id; s.appendChild(c);} return s; }
+/* light the thing that just arrived, on whatever inside it is a real object */
+function litten(node){
+  const kids=[...node.children].filter(c2=>{
+    const bg=getComputedStyle(c2).backgroundColor;
+    return bg && bg!=='rgba(0, 0, 0, 0)' && bg!=='transparent'; });
+  (kids.length?kids:[node]).forEach(t2=>{
+    t2.classList.add('lit'); setTimeout(()=>t2.classList.remove('lit'),1900); });
+}
 function landIn(node,silent){
   $('pBody').appendChild(node);
+  if(!silent) litten(node);
   safeTL(gsap.timeline().fromTo(node,{opacity:0,y:18},{opacity:1,y:0,duration:.6,ease:EIO}),900);
   const s=$('scroll'); const bot=()=>Math.max(0,s.scrollHeight-s.clientHeight);
   safeTL(gsap.timeline().to(s,{scrollTop:bot(),duration:.7,ease:EIO}),900);
   setTimeout(()=>{s.scrollTop=bot();},950);
   if(!silent) sfx('droplet');
 }
-async function swapPanel(capText,build,listening){
+async function swapPanel(capText,build,listening,doc){
   const s=$('scroll');
   safeTL(gsap.timeline().to(s,{opacity:0,y:-10,duration:.32}),500);
   setCap(capText,listening); await wait(380);
-  boardLive=false; s.innerHTML=''; s.scrollTop=0; s.classList.remove('ctr'); build(s);
+  boardLive=false; s.innerHTML=''; s.scrollTop=0; s.classList.remove('ctr');
+  s.classList.toggle('docs',!!doc);
+  let host=s;
+  if(doc){ host=mk('div','doc'); host.id='doc'; s.appendChild(host); }
+  build(host);
   gsap.set(s,{opacity:0,y:12});
   safeTL(gsap.timeline().to(s,{opacity:1,y:0,duration:.55}),900);
   sfx('page');
@@ -1180,22 +1312,21 @@ const ROLE_ICONS={design:['pen','compass','box'],ba:['bars','target','route'],sw
 function roleStage(){
   if(P.role&&!editReturn){
     const {box}=turn({q:'You said '+P.role+'. Still the one?'});
-    squares(box,[['check','Still the one','yes'],['pen','Change it','no']],v=>{
+    choices(box,[['check','Still the one','yes'],['pen','Change it','no']],v=>{
       if(v==='yes'){ renderBoard(); go(companyStage); }
       else { P.role=null; go(roleStage); } });
     return;
   }
   const {box}=turn({q:'What kind of role do you want?'});
   const ic=ROLE_ICONS[PKEY]||['target','target','target'];
-  squares(box,pack().roleCards.map((r,i)=>[ic[i]||'target',r,r]),v=>{
+  choices(box,pack().roleCards.map((r,i)=>[ic[i]||'target',r,r]),v=>{
     P.role=v; renderBoard(); afterCommit(()=>go(companyStage)); });
-  dockInput(v=>{ P.role=quoteOf(v); renderBoard(); afterCommit(()=>go(companyStage)); });
 }
 
 /* ============================ 5 · the company ============================ */
 function companyStage(){
   const {box}=turn({q:'What kind of company do you want to work at?'});
-  squares(box,[
+  choices(box,[
     ['rocket','Small and scrappy','Startup'],
     ['bars','A scale-up','Scale-up'],
     ['bld','Big tech','Big tech'],
@@ -1226,14 +1357,14 @@ function probeStage(){
     : [['bld','I would take the call','open to the big names'],
        ['leaf','Not interested','staying with smaller teams'],
        ['compass','Wherever the work is good','following the work, not the name']];
-  squares(box,opts,v=>{ P.openness=v; renderBoard(); afterCommit(()=>go(locationStage)); });
+  choices(box,opts,v=>{ P.openness=v; renderBoard(); afterCommit(()=>go(locationStage)); });
 }
 
 /* ============================ 8 · where you live ============================ */
 function locationStage(){
   if(P.location&&!editReturn){
     const {box}=turn({q:'You mentioned '+P.location+'. Still home?'});
-    squares(box,[['check','Still home','yes'],['pen','Change it','no']],v=>{
+    choices(box,[['check','Still home','yes'],['pen','Change it','no']],v=>{
       if(v==='yes'){ renderBoard(); go(citiesStage); }
       else { P.location=null; go(locationStage); } });
     return;
@@ -1247,23 +1378,26 @@ function locationStage(){
 function citiesStage(){
   const here=P.location||'here';
   const {box}=turn({q:'What kind of cities would you want to live in?'});
-  const opts=[['pin','Stay in '+here,'__here__'],['pin','Dubai','Dubai'],['pin','London','London'],
-    ['pin','New York','New York'],['pin','San Francisco','San Francisco'],['globe','Remote, anywhere','Remote']];
-  squares(box,opts,v=>{ P.citynext=v==='__here__'?P.location:v; renderBoard();
-    afterCommit(()=>go(industryStage)); });
+  const opts=[['pin','Stay in '+here,here],['pin','Dubai','Dubai'],['pin','Bangalore','Bangalore'],
+    ['pin','Mumbai','Mumbai'],['pin','London','London'],['pin','New York','New York'],
+    ['pin','San Francisco','San Francisco'],['globe','Remote, anywhere','Remote']];
+  choices(box,opts,v=>{
+    const list=Array.isArray(v)?v:[v];
+    P.citynext=list.filter((x,i)=>list.indexOf(x)===i).join(', ');
+    renderBoard(); afterCommit(()=>go(industryStage)); },{multi:true});
 }
 
 /* ============================ 10 · the industry ============================ */
 function industryStage(){
   if(P.industry&&!editReturn){
     const {box}=turn({q:'I heard '+P.industry+'. Still right?'});
-    squares(box,[['check','Still right','yes'],['pen','Change it','no']],v=>{
+    choices(box,[['check','Still right','yes'],['pen','Change it','no']],v=>{
       if(v==='yes'){ renderBoard(); go(problemsStage); }
       else { P.industry=null; go(industryStage); } });
     return;
   }
   const {box}=turn({q:'What industry do you want to work in?'});
-  squares(box,[['spark','Tech and AI','Tech and AI'],['heart','Health','Health'],['coin','Finance','Finance'],
+  choices(box,[['spark','Tech and AI','Tech and AI'],['heart','Health','Health'],['coin','Finance','Finance'],
     ['leaf','Climate','Climate'],['cart','Commerce','Commerce'],['cam','Media','Media']],
     v=>{ P.industry=v; renderBoard(); afterCommit(()=>go(problemsStage)); });
 }
@@ -1279,13 +1413,13 @@ function problemsStage(){
 /* ============================ 12 · timing, 13 · shape ============================ */
 function timelineStage(){
   const {box}=turn({q:'Do you have any timelines?'});
-  squares(box,[['rocket','Now','Now'],['clock','In three months','In three months'],
+  choices(box,[['rocket','Now','Now'],['clock','In three months','In three months'],
     ['flag','This year','This year'],['leaf','No rush','No rush']],
     v=>{ P.timeline=v; afterCommit(()=>go(jobtypeStage)); });
 }
 function jobtypeStage(){
   const {box}=turn({q:'Are you looking for a full time job, or an internship?'});
-  squares(box,[['bld','Full time','Full time'],['box','An internship','An internship'],
+  choices(box,[['bld','Full time','Full time'],['box','An internship','An internship'],
     ['compass','Either, if it is the right one','Either']],
     v=>{ P.jobtype=v; renderBoard(); afterCommit(()=>go(synthStage)); });
 }
@@ -1311,8 +1445,11 @@ async function synthStage(){
   await swapPanel('Your vision board',s2=>{ s2.classList.add('ctr');
     const vb=mk('div','vb'); vb.id='vb';
     vb.innerHTML=boardHTML(); s2.appendChild(vb); boardLive=true;
+    /* out of the blur, one line at a time, and then the light passes over it */
     safeTL(gsap.timeline().fromTo(vb.querySelectorAll('.vbs'),
-      {opacity:0,y:16},{opacity:1,y:0,duration:.55,stagger:.12}),2400); },false);
+      {opacity:0,y:20,filter:'blur(16px)',scale:1.04},
+      {opacity:1,y:0,filter:'blur(0px)',scale:1,duration:.85,stagger:.16,ease:'power3.out'}),3000); },false);
+  setTimeout(()=>sheen(document.querySelector('.shell'),1.45),1300);
   sfx('ready');
   await wait(1400);
   visionStage();
@@ -1323,7 +1460,7 @@ function visionStage(fromEdit){
     vb.innerHTML=boardHTML(); s2.appendChild(vb); boardLive=true; },false); }
   dockHide();
   const {box}=turn({q:'How does this look to you?'});
-  squares(box,[['check','That is me','ok'],['pen','Fix one thing','fix'],['spark','Add more','more']],v=>{
+  choices(box,[['check','That is me','ok'],['pen','Fix one thing','fix'],['plus','Add more','more']],v=>{
     if(v==='ok'){ sfx('success'); clearTurn(); dockHide(); setTimeout(transformStage,520); }
     else if(v==='fix'){ go(editStage); }
     else { go(addMoreStage); } });
@@ -1333,7 +1470,7 @@ function editStage(){
   const map={'Role':roleStage,'Company':companyStage,'Dream':dreamStage,'Where':locationStage,
     'Industry':industryStage,'Timing':timelineStage};
   const ic={'Role':'target','Company':'bld','Dream':'spark','Where':'pin','Industry':'globe','Timing':'clock'};
-  squares(box,Object.keys(map).map(k=>[ic[k],k,k]),v=>{
+  choices(box,Object.keys(map).map(k=>[ic[k],k,k]),v=>{
     if(v==='Role') P.role=null;
     if(v==='Where'){ P.location=null; P.citynext=null; }
     if(v==='Industry') P.industry=null;
@@ -1348,59 +1485,103 @@ function addMoreStage(){
 }
 
 /* ============================ 16 · the transformation ============================ */
-/* The board comes apart. Every chip it wrote snaps to the middle, the stack turns
-   over once, and it opens back out as the companies that hire this profile. */
-function zook(onLand,onDone){
-  const layer=mk('div','zook'); document.body.appendChild(layer);
+/* a sheen passes over whatever has just become true */
+function sheen(el,dur){
+  if(!el) return;
+  const s2=mk('div','sheen'), i2=mk('i'); s2.appendChild(i2); el.appendChild(s2);
+  const kill=()=>{ if(s2.isConnected) s2.remove(); };
+  safeTL(gsap.timeline({onComplete:kill}).fromTo(i2,{left:'-60%'},
+    {left:'125%',duration:dur||1.2,ease:'power2.inOut'}),(dur||1.2)*1000+700);
+  setTimeout(kill,(dur||1.2)*1000+900);
+}
+/* The approval is the trigger. The board goes soft, the light gathers to the
+   middle of the screen, a ripple opens out of it, and what comes back is the
+   set of companies that hire this exact person. */
+function revealSequence(onLand,onDone){
   const cx=innerWidth/2, cy=innerHeight/2;
-  const src=[...document.querySelectorAll('#vb .vbc, #vb .vbl')];
+  const S=Math.min(innerWidth,innerHeight)*0.46;
+  const CLR=['#A8E6CF','#4ADE80','#C8F169','#F5DE6B'];
+  const aur=$('aur'); aur.innerHTML='';
+  const blobs=CLR.map(c2=>{ const b=mk('b');
+    b.style.background='radial-gradient(circle at 50% 50%, '+c2+' 0%, '+c2+'00 70%)';
+    aur.appendChild(b); return b; });
+  const vb=$('vb');
+  const R0=vb?vb.getBoundingClientRect():{left:cx-220,top:cy-170,width:440,height:340};
+  const bx=R0.left+R0.width/2, by=R0.top+R0.height/2;
+  blobs.forEach((b,i)=>{ const a2=(i/blobs.length)*Math.PI*2-Math.PI/4;
+    gsap.set(b,{x:bx-S/2+Math.cos(a2)*R0.width*.52, y:by-S/2+Math.sin(a2)*R0.height*.5,
+      scale:.45, opacity:0}); });
+
+  const core=mk('div','core'); document.body.appendChild(core);
+  gsap.set(core,{scale:.2});
+  const rip=$('rip'); rip.innerHTML=''; rip.style.display='block';
+  const rings=[0,1,2].map(()=>{ const s3=mk('s'); rip.appendChild(s3); return s3; });
+
+  /* the board's own chips travel with the light */
+  const layer=mk('div','zook'); document.body.appendChild(layer);
   const clones=[];
-  src.forEach(el=>{
+  [...document.querySelectorAll('#vb .vbc, #vb .vbl')].forEach(el=>{
     const r=el.getBoundingClientRect(); if(!r.width) return;
     const c2=el.cloneNode(true); c2.className=el.className+' zc';
     c2.style.cssText+=';position:fixed;left:'+r.left+'px;top:'+r.top+'px;font-size:'+getComputedStyle(el).fontSize+';';
     layer.appendChild(c2); clones.push({c:c2,r:r});
   });
-  gsap.to('#vb',{opacity:0,duration:.45});
   const names=COS();
-  const tiles=names.map(()=>{ const t2=mk('div','ztile');
+  const tiles=names.map((n,i)=>{ const t2=mk('div','ztile',LOGO[n]||'');
     t2.style.left=(cx-37)+'px'; t2.style.top=(cy-37)+'px'; layer.appendChild(t2); return t2; });
-  tiles.forEach((t2,i)=>{ t2.innerHTML=LOGO[names[i]]||''; });
   gsap.set(tiles,{scale:0,opacity:0});
 
   const tl=gsap.timeline();
-  /* zook, zook, zook: they snap in one after another, fast and hard */
+  /* 1 · the light blooms and the board goes soft */
+  tl.set(aur,{opacity:1})
+    .to(blobs,{scale:1,opacity:.92,duration:.85,stagger:.08,ease:'power2.out'},0)
+    .to(vb,{filter:'blur(15px)',scale:1.06,opacity:.5,duration:1.0,ease:EIO},.18);
+  /* 2 · zook, zook, zook: every chip it wrote is pulled into the middle */
   clones.forEach((o,i)=>{
-    tl.to(o.c,{x:cx-o.r.left-o.r.width/2, y:cy-o.r.top-o.r.height/2, scale:.6,
-      rotate:(i%2?7:-7), duration:.44, ease:'power4.in'}, i*0.055);
-    tl.call(()=>sfx('tick'),null,i*0.055+0.4);
+    tl.to(o.c,{x:cx-o.r.left-o.r.width/2, y:cy-o.r.top-o.r.height/2, scale:.5,
+      rotate:(i%2?8:-8), filter:'blur(3px)', duration:.5, ease:'power4.in'}, .3+i*.06);
+    tl.call(()=>sfx('tick'),null,.3+i*.06+.46);
   });
-  const t0=clones.length*0.055+0.44;
-  /* it turns over once */
-  tl.to(layer,{rotation:378,scale:1.14,duration:.95,ease:'power2.inOut',transformOrigin:'50% 50%'},t0)
-    .call(()=>sfx('bloom'),null,t0+.05)
-    .to(clones.map(o=>o.c),{opacity:0,scale:.28,duration:.42,ease:'power2.in'},t0+.66);
-  /* and opens out as the companies */
-  const R=Math.max(150,Math.min(innerWidth,innerHeight)*0.29);
-  const t1=t0+.78;
+  const tZ=.3+clones.length*.06+.5;
+  /* 3 · everything gathers and ignites */
+  tl.to(blobs,{x:cx-S/2,y:cy-S/2,scale:.36,duration:.95,ease:'power3.inOut'},tZ-.35)
+    .to(vb,{opacity:0,duration:.4},tZ-.3)
+    .to(core,{opacity:1,scale:1,duration:.55,ease:'power2.out'},tZ)
+    .to(clones.map(o=>o.c),{opacity:0,scale:.2,filter:'blur(10px)',duration:.45,ease:'power2.in'},tZ)
+    .call(()=>sfx('bloom'),null,tZ);
+  /* 4 · a ripple opens out of it */
+  rings.forEach((s3,i)=>{
+    tl.fromTo(s3,{scale:0,opacity:.9},{scale:38,opacity:0,duration:1.6,ease:'power2.out'},tZ+.35+i*.2); });
+  tl.to(core,{scale:1.45,opacity:.25,duration:.7,ease:'power2.out'},tZ+.5);
+  /* 5 · and it comes back as the companies */
+  const R=Math.max(160,Math.min(innerWidth,innerHeight)*0.29);
+  const tB=tZ+.72;
   tiles.forEach((t2,i)=>{
-    const a=(i/tiles.length)*Math.PI*2-Math.PI/2;
-    tl.to(t2,{x:Math.cos(a)*R, y:Math.sin(a)*R, scale:1, opacity:1, rotate:(i%2?9:-9),
-      duration:.82, ease:'back.out(1.5)'}, t1+i*.055);
-  });
-  const t2e=t1+tiles.length*.055+.62;
-  /* a throttled tab freezes the ticker, so both handoffs are guaranteed by the clock too */
+    const a2=(i/tiles.length)*Math.PI*2-Math.PI/2;
+    tl.fromTo(t2,{scale:0,opacity:0,filter:'blur(12px)'},
+      {x:Math.cos(a2)*R, y:Math.sin(a2)*R, scale:1, opacity:1, filter:'blur(0px)',
+       rotate:(i%2?9:-9), duration:.85, ease:'back.out(1.5)'}, tB+i*.06); });
+  const tS=tB+tiles.length*.06+.6;
+  tl.to(tiles,{rotate:0,scale:1.06,duration:.5,ease:'sine.inOut'},tS)
+    .to(core,{opacity:0,duration:.5},tS)
+    .to(blobs,{opacity:.35,scale:.9,duration:.8},tS);
+
   let landed=false, fired=false;
-  const land=()=>{ if(landed) return; landed=true; sfx('page'); if(onLand) onLand(); };
+  const land=()=>{ if(landed) return; landed=true; sfx('page');
+    if(onLand) onLand();
+    setTimeout(()=>sheen(document.querySelector('.shell'),1.35),320); };
   const finish=()=>{ land(); if(fired) return; fired=true;
-    if(layer.isConnected) layer.remove(); if(onDone) onDone(); };
-  tl.to(tiles,{rotate:0,scale:1.06,duration:.55,ease:'sine.inOut'},t2e)
-    .call(land,null,t2e+.42)
-    .to(tiles,{x:-cx*0.62,y:0,scale:.5,opacity:0,duration:.75,ease:EIO,stagger:.035},t2e+.5)
-    .to(layer,{opacity:0,duration:.4},t2e+1.15);
+    if(layer.isConnected) layer.remove();
+    if(core.isConnected) core.remove();
+    rip.style.display='none'; rip.innerHTML='';
+    gsap.to(aur,{opacity:0,duration:.6,onComplete:()=>{aur.innerHTML='';}});
+    if(onDone) onDone(); };
+  tl.call(land,null,tS+.4)
+    .to(tiles,{x:-cx*0.62,y:0,scale:.45,opacity:0,filter:'blur(8px)',duration:.8,ease:EIO,stagger:.035},tS+.5);
   tl.eventCallback('onComplete',finish);
-  setTimeout(land,(t2e+.42)*1000+700);
-  setTimeout(finish,(t2e+1.6)*1000+900);
+  /* a throttled tab freezes the ticker, so the clock guarantees both handoffs */
+  setTimeout(land,(tS+.4)*1000+700);
+  setTimeout(finish,(tS+1.5)*1000+900);
 }
 
 /* ============================ 17 · where you belong ============================ */
@@ -1438,7 +1619,7 @@ function addRoleCards(){
 function transformStage(){
   setPhase(1);
   line('Then here is where that lands.');
-  zook(()=>{ swapPanel('Where you belong',buildBelong,false); },
+  revealSequence(()=>{ swapPanel('Where you belong',buildBelong,false,true); },
     async ()=>{
       await wait(500);
       addRoleCards();
@@ -1449,7 +1630,7 @@ function transformStage(){
 function aimStage(){
   const {box}=turn({q:'Which one are you going for?'});
   const ic=ROLE_ICONS[PKEY]||['target','target','target'];
-  squares(box,pack().roles.map(([r],i)=>[ic[i]||'target',r,r]),v=>{
+  choices(box,pack().roles.map(([r],i)=>[ic[i]||'target',r,r]),v=>{
     P.aim=v; P.role=v; sfx('success'); go(calibrateStage); });
 }
 
@@ -1500,14 +1681,14 @@ function calibrateStage(){
   clearTurn();
   setTimeout(()=>{
     const {box}=turn({q:'Do you mind sharing your LinkedIn, so I can see where you are starting from?'});
-    squares(box,[['link','Connect LinkedIn','LinkedIn'],['doc','Upload a resume','Resume'],
+    choices(box,[['link','Connect LinkedIn','LinkedIn'],['doc','Upload a resume','Resume'],
       ['arrow','Skip for now','Skip']],async v=>{
       if(v==='Skip'){ go(roadmapStage); return; }
       P.linked=v;
       clearTurn(); dockHide(); await wait(380);
       line(v==='LinkedIn'?'Reading your LinkedIn.':'Reading your resume.');
       sfx('loading');
-      await swapPanel('Reading your profile',buildLinked,true);
+      await swapPanel('Reading your profile',buildLinked,true,true);
       await wait(500);
       await readLinked();
       setCap('Calibrated',false);
@@ -1556,7 +1737,7 @@ async function roadmapStage(){
   const scen=d.projects.reduce((a,p)=>a+p.steps.length,0);
   line('This is how you get there.');
   await wait(1500);
-  await swapPanel('Your roadmap',buildPlan,false);
+  await swapPanel('Your roadmap',buildPlan,false,true);
   await wait(700);
   line(total+' weeks. '+scen+' real briefs, each one reviewed.');
   await wait(2200);
@@ -1620,7 +1801,7 @@ async function portfolioStage(){
   clearTurn(); dockHide(); await wait(380);
   line('This is what your portfolio could look like.');
   await wait(1500);
-  await swapPanel('Your portfolio, at the end of the road',buildPortfolioShell,false);
+  await swapPanel('Your portfolio, at the end of the road',buildPortfolioShell,false,true);
   await wait(550);
   if(P.linked){ await beat('This is everything you have today.',()=>addHave(),1900); }
   await beat('You would start here.',()=>addProject(0),1650);
@@ -1658,7 +1839,7 @@ async function zeroStage(){
   clearTurn(); dockHide(); await wait(380);
   line('This is how Zero works.');
   await wait(1400);
-  await swapPanel('How Zero works',buildLoop,false);
+  await swapPanel('How Zero works',buildLoop,false,true);
   await wait(800);
   line('Real briefs, a manager who tells you the truth, and proof at the end of it.');
   await wait(2200);
@@ -1690,7 +1871,7 @@ async function creditsStage(){
   clearTurn(); dockHide(); await wait(380);
   line('To get started, here is ten thousand credits.');
   await wait(1500);
-  await swapPanel('What you start with',buildReward,false);
+  await swapPanel('What you start with',buildReward,false,true);
   await wait(450);
   const c2={v:0};
   safeTL(gsap.timeline().to(c2,{v:10000,duration:1.7,ease:EIO,
