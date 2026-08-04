@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<!-- ZERO · Concept Training · Root Cause Analysis
-     Complete revamp on the opex v6 stack: fixed voice, whisper beat map,
-     warm-stone theme, pop-v9 PoP gates (single / rank / cloze), no underlines,
-     no printed narration - visuals carry the screen. -->
+<!-- ZERO · Concept Training · Root Cause Analysis — v2 "drawn explainer" master
+     One SVG canvas per scene; the story draws itself in sync with the voice.
+     Fixed coordinates = nothing ever overlaps. Draw-in / erase-out transitions.
+     Engine + pop-v9 gates identical to the opex v6 stack. -->
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
@@ -12,17 +12,16 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ============ theme (final theme, fixed) ============ */
 :root[data-theme="light"]{
   --bg:#F5F4F1;--bg2:#EFEEEB;--surface:#FBFAF8;--surface2:#E9E8E4;--stone:rgba(23,24,26,0.05);
-  --ink:#17181A;--ink-2:#5C5F63;--ink-3:#9A9C9E;--line:#DAD9D5;--border-sub:rgba(23,24,26,0.08);
+  --ink:#17181A;--ink-2:#5C5F63;--ink-3:#9A9C9E;--line:#DAD9D5;
   --accent:#2A2C2F;--pos:#2E7D53;--neg:#B4544C;
   --shadow-card:rgba(0,0,0,0.06) 0px 0px 0px 1px,rgba(0,0,0,0.04) 0px 1px 2px,rgba(0,0,0,0.05) 0px 6px 16px;
   --shadow-inset:rgba(0,0,0,0.075) 0px 0px 0px 0.5px inset;
 }
 :root[data-theme="dark"]{
   --bg:#17181A;--bg2:#1B1C1E;--surface:#212326;--surface2:#282B2E;--stone:rgba(237,237,234,0.06);
-  --ink:#EDEDEA;--ink-2:#A6A7A4;--ink-3:#75777A;--line:#313438;--border-sub:rgba(237,237,234,0.08);
+  --ink:#EDEDEA;--ink-2:#A6A7A4;--ink-3:#75777A;--line:#313438;
   --accent:#EDEDEA;--pos:#5DBE8A;--neg:#D9736B;
   --shadow-card:rgba(0,0,0,0.6) 0px 0px 0px 1px,rgba(0,0,0,0.45) 0px 8px 24px;
   --shadow-inset:rgba(255,255,255,0.05) 0px 0px 0px 0.5px inset;
@@ -35,155 +34,60 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}html,body{height:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow:hidden;-webkit-font-smoothing:antialiased;transition:background .5s ease,color .4s ease}
-.app{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:clamp(14px,3vw,42px);padding-bottom:clamp(84px,11vh,120px)}
+.app{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:clamp(14px,3vw,42px);padding-bottom:clamp(80px,10.5vh,116px)}
 .stage{position:relative;width:min(98vw,1180px);height:100%;display:flex;align-items:center;justify-content:center;transition:filter .5s cubic-bezier(.22,1,.36,1)}
 .scene{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;opacity:0;visibility:hidden;pointer-events:none}
 .scene.on{opacity:1;visibility:visible;pointer-events:auto}
-.wrap{width:100%;max-width:1040px;margin:auto;display:flex;flex-direction:column;gap:clamp(16px,2.6vh,30px);align-items:center;text-align:center;padding:clamp(8px,2vw,16px)}
+.wrap{width:100%;max-width:1100px;margin:auto;display:flex;flex-direction:column;gap:clamp(10px,2vh,22px);align-items:center;text-align:center;padding:clamp(8px,2vw,16px)}
 .heading{font-family:var(--font-head);font-weight:400;letter-spacing:-.02em;line-height:1.06;font-size:clamp(2rem,5vw,3.2rem);max-width:20ch}
-.statement{font-family:var(--font-head);font-weight:400;letter-spacing:-.015em;line-height:1.12;font-size:clamp(1.9rem,4.6vw,3rem);max-width:22ch}
-.microdef{display:inline-flex;align-items:center;gap:10px;background:var(--stone);box-shadow:var(--shadow-inset);border-radius:9999px;padding:10px 22px;font-size:clamp(1rem,2.1vw,1.22rem);color:var(--ink);font-weight:500}
-.minipill{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:clamp(.82rem,1.7vw,.96rem);font-weight:500;padding:8px 16px;border-radius:9999px;background:var(--surface2);box-shadow:var(--shadow-inset);color:var(--ink-2)}
-.minipill .ic{width:16px;height:16px;flex:0 0 auto}
-.hid{opacity:0}
 
-/* ============ r1 / r7 — the dig diagram ============ */
-.digvz{width:min(90vw,560px);height:auto;display:block}
-.digvz .surf{stroke:var(--line);stroke-width:2}
-.digvz .crack{fill:none;stroke:var(--neg);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
-.digvz .crackring{fill:none;stroke:var(--neg);stroke-width:2;opacity:0}
-.digvz .dig{fill:none;stroke:var(--ink-3);stroke-width:2.5;stroke-dasharray:4 7;stroke-linecap:round}
-.digvz .root{fill:var(--surface);stroke:var(--accent);stroke-width:3}
-.digvz .rootdot{fill:var(--accent)}
-.digvz .rootok{fill:none;stroke:var(--pos);stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
-.digvz .seal{stroke:var(--pos);stroke-width:2.6;stroke-linecap:round}
-.r7 .moves3{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+/* ============ the drawn canvas ============ */
+.cv{width:min(96vw,1080px);height:auto;display:block}
+.cv .st{fill:none;stroke:var(--ink-2);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.cv .st3{fill:none;stroke:var(--ink-3);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.cv .hair{fill:none;stroke:var(--line);stroke-width:2;stroke-linecap:round}
+.cv .neg{stroke:var(--neg)}
+.cv .pos{stroke:var(--pos)}
+.cv .acc{stroke:var(--accent)}
+.cv .thick{stroke-width:3.6}
+.cv .dsh{stroke-dasharray:4 8}
+.cv .tint{fill:var(--stone)}
+.cv .nodefill{fill:var(--bg)}
+.cv .accdot{fill:var(--accent)}
+.cv .posdot{fill:var(--pos)}
+.cv text{font-family:var(--font-sans);fill:var(--ink-2)}
+.cv .lb{font-size:17px;font-weight:500}
+.cv .lbi{font-size:17px;font-weight:600;fill:var(--ink)}
+.cv .lb3{font-size:15px;fill:var(--ink-3)}
+.cv .mono{font-family:var(--font-mono);font-size:14px;fill:var(--ink-3)}
+.cv .mononeg{font-family:var(--font-mono);font-size:14px;fill:var(--neg)}
+.cv .monopos{font-family:var(--font-mono);font-size:14px;fill:var(--pos)}
+.cv .serif{font-family:var(--font-head);fill:var(--ink)}
+.cv .qmark{font-family:var(--font-head);font-size:26px;fill:var(--ink-2);font-weight:600}
+.cv .num{font-family:var(--font-mono);font-size:19px;fill:var(--ink-3);font-weight:600}
+.cv .strike{stroke:var(--ink-3);stroke-width:2.4}
+.cv .logoc{color:var(--ink-2)}
 
-/* ============ r2 — two people, same problem ============ */
-.cols2{display:flex;gap:clamp(16px,3vw,34px);justify-content:center;flex-wrap:wrap;width:100%}
-.pcol{flex:1 1 0;min-width:250px;max-width:400px;background:var(--surface);border-radius:20px;box-shadow:var(--shadow-card);padding:clamp(18px,2.4vw,26px);display:flex;flex-direction:column;align-items:center;gap:14px}
-.pcol.win2{box-shadow:0 0 0 2px var(--accent),var(--shadow-card)}
-.probsvg{width:100%;max-width:280px;height:auto}
-.probsvg .box{fill:var(--surface2);stroke:var(--line);stroke-width:1.5}
-.probsvg .crack{fill:none;stroke:var(--neg);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
-.probsvg .patch{fill:var(--ink-3);opacity:.9}
-.probsvg .dig{fill:none;stroke:var(--ink-3);stroke-width:2.2;stroke-dasharray:4 6;stroke-linecap:round}
-.probsvg .root{fill:var(--surface);stroke:var(--accent);stroke-width:2.6}
-.probsvg .rootdot{fill:var(--accent)}
-.probsvg .ok{fill:none;stroke:var(--pos);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
-.rail{width:100%;max-width:280px;height:34px}
-.rail .rl{stroke:var(--line);stroke-width:1.5}
-.rail .rx{fill:none;stroke:var(--neg);stroke-width:2.6;stroke-linecap:round}
-.rail .rok{fill:none;stroke:var(--pos);stroke-width:2.6;stroke-linecap:round}
+/* ============ controls (compact) ============ */
+.controls{position:fixed;left:50%;transform:translateX(-50%);bottom:clamp(14px,2.4vh,24px);z-index:56;display:flex;align-items:center;gap:10px;background:color-mix(in srgb,var(--surface) 88%,transparent);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:9999px;padding:7px 14px;box-shadow:var(--shadow-card);width:min(92vw,720px);max-width:92vw}
+.cbtn{flex:0 0 auto;width:36px;height:36px;border-radius:50%;border:none;background:transparent;color:var(--ink);display:grid;place-items:center;cursor:pointer;transition:background .2s}
+.cbtn:hover{background:var(--surface2)}
+.cbtn.primary{background:var(--accent);color:var(--bg);width:42px;height:42px}
+.cbtn svg{width:17px;height:17px}
+.cbtn.primary svg{width:19px;height:19px}
+.cseek{flex:1 1 auto;min-width:140px;height:6px;background:var(--line);border-radius:9999px;position:relative;cursor:pointer}
+.cseek .fill{position:absolute;left:0;top:0;bottom:0;background:var(--accent);border-radius:9999px;width:0}
+.cseek .knob{position:absolute;top:50%;transform:translate(-50%,-50%);width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 1px 4px rgba(0,0,0,.4);left:0;z-index:5}
+.ctime{font-family:var(--font-mono);font-size:.7rem;color:var(--ink-2);flex:0 0 auto;min-width:80px;text-align:center}
+.ctog{flex:0 0 auto;border:1px solid var(--line);background:transparent;color:var(--ink-2);border-radius:9999px;padding:6px 10px;font-family:var(--font-mono);font-size:.68rem;font-weight:600;cursor:pointer;transition:all .2s}
+.ctog:hover{color:var(--ink)}
+.ctog.act{background:var(--accent);color:var(--bg);border-color:transparent}
+.ccbar{position:fixed;left:50%;transform:translateX(-50%);bottom:clamp(70px,9.4vh,96px);z-index:45;max-width:min(86vw,800px);text-align:center;padding:0 18px;pointer-events:none}
+.ccbar span{background:color-mix(in srgb,#000 64%,transparent);color:#fff;font-size:clamp(.92rem,2vw,1.08rem);line-height:1.45;padding:7px 15px;border-radius:11px;display:inline;-webkit-box-decoration-break:clone;box-decoration-break:clone;font-weight:500}
+:root[data-theme="light"] .ccbar span{background:color-mix(in srgb,#000 82%,transparent)}
+.ccbar.off{display:none}
 
-/* ============ r3 — everywhere ============ */
-.cards{display:flex;gap:clamp(14px,2.2vw,24px);justify-content:center;flex-wrap:wrap;width:100%}
-.examp{flex:1 1 0;min-width:215px;max-width:300px;background:var(--surface);border-radius:20px;box-shadow:var(--shadow-card);padding:clamp(22px,2.6vw,30px);display:flex;flex-direction:column;align-items:center;gap:9px;text-align:center;position:relative}
-.examp .logo{height:52px;display:flex;align-items:center;justify-content:center}
-.examp .logo svg{height:44px;width:auto}
-.examp h3{font-family:var(--font-head);font-size:1.55rem;font-weight:600;letter-spacing:-.02em}
-.examp .metric{font-weight:600;font-size:1.02rem;color:var(--ink-2)}
-.lanes{display:flex;flex-direction:column;gap:10px;width:100%;max-width:520px}
-.lane{display:flex;align-items:center;gap:14px;background:var(--surface);border-radius:14px;box-shadow:var(--shadow-card);padding:12px 18px}
-.lane.dimmed{opacity:.55}
-.lane .lbl{font-family:var(--font-mono);font-size:.78rem;color:var(--ink-2);flex:0 0 64px;text-align:left}
-.lane svg{flex:1;height:26px}
-.lane .rl{stroke:var(--line);stroke-width:1.5}
-.lane .rx{fill:none;stroke:var(--neg);stroke-width:2.4;stroke-linecap:round}
-.lane .rok{fill:none;stroke:var(--pos);stroke-width:2.4;stroke-linecap:round}
-
-/* ============ r4 — the doctor ============ */
-.docwrap{display:flex;flex-direction:column;gap:clamp(12px,2vh,20px);width:100%;max-width:860px;align-items:center}
-.patient{display:flex;align-items:center;gap:14px;background:var(--surface);border-radius:16px;box-shadow:var(--shadow-card);padding:12px 22px;position:relative}
-.patient .av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#7a6a8a,#4a3f5a);display:grid;place-items:center;font-family:var(--font-head);font-weight:700;font-size:1.1rem;color:#fff}
-.patient .ptxt{font-family:var(--font-head);font-weight:600;font-size:1.2rem}
-.patient .ache{width:26px;height:26px;color:var(--neg)}
-.patient .ache svg{width:100%;height:100%}
-.paths{display:flex;gap:clamp(14px,2.4vw,26px);width:100%;justify-content:center;flex-wrap:wrap;align-items:flex-start}
-.pathc{flex:1 1 0;min-width:270px;max-width:410px;background:var(--surface);border-radius:20px;box-shadow:var(--shadow-card);padding:clamp(16px,2.2vw,24px);display:flex;flex-direction:column;gap:11px;align-items:stretch;text-align:left}
-.pathc.good2{box-shadow:0 0 0 2px var(--accent),var(--shadow-card)}
-.pathc.dimmed{opacity:.5}
-.dchip{display:flex;align-items:center;gap:10px;background:var(--surface2);box-shadow:var(--shadow-inset);border-radius:12px;padding:10px 14px;font-weight:500;font-size:.98rem;color:var(--ink)}
-.dchip .ic{width:19px;height:19px;flex:0 0 auto;color:var(--ink-2)}
-.dchip .ic svg{width:100%;height:100%}
-.dchip.qq{background:var(--surface);border:1px solid var(--line);box-shadow:none}
-.dchip.rootc{background:var(--surface);box-shadow:0 0 0 2px var(--accent),var(--shadow-inset);font-weight:600}
-.dchip.rootc .ic{color:var(--ink)}
-.dchip.crossed{position:relative;opacity:.6}
-.dchip .xmark{margin-left:auto;color:var(--neg);font-family:var(--font-mono);font-weight:700}
-.dchip .okmark{margin-left:auto;color:var(--pos);font-family:var(--font-mono);font-weight:700}
-.causeline{width:min(90%,560px);height:38px}
-.causeline .arr{fill:none;stroke:var(--accent);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
-
-/* ============ r5 — three moves ============ */
-.r5 .wrap{gap:clamp(12px,2vh,20px)}
-.moves{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;width:100%}
-.mv{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:14px;box-shadow:var(--shadow-card);padding:11px 18px;text-align:left}
-.mv .n{flex:0 0 auto;width:30px;height:30px;border-radius:9px;background:var(--stone);box-shadow:var(--shadow-inset);color:var(--ink);display:grid;place-items:center;font-family:var(--font-mono);font-weight:600;font-size:.9rem}
-.mv.onm .n{background:var(--accent);color:var(--bg);box-shadow:none}
-.mv .t{font-family:var(--font-head);font-weight:600;font-size:1.05rem;color:var(--ink-3)}
-.mv.onm .t{color:var(--ink)}
-.demo{position:relative;width:100%;min-height:clamp(240px,38vh,340px);display:flex;align-items:center;justify-content:center}
-.demoP{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
-/* five whys chain */
-.chain{display:flex;flex-direction:column;gap:7px;align-items:center}
-.cnode{display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:12px;box-shadow:var(--shadow-card);padding:10px 18px;font-weight:500;font-size:clamp(.92rem,1.9vw,1.05rem)}
-.cnode.rootn{box-shadow:0 0 0 2px var(--accent),var(--shadow-card);font-weight:600}
-.cnode .patchchip{font-family:var(--font-mono);font-size:.72rem;color:var(--ink-3);background:var(--surface2);box-shadow:var(--shadow-inset);border-radius:9999px;padding:4px 10px;margin-left:8px;text-decoration:line-through}
-.cwhy{display:flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:.72rem;color:var(--ink-2)}
-.cwhy svg{width:14px;height:18px}
-.cwhy svg path{fill:none;stroke:var(--ink-2);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-/* loud vs quiet */
-.lq{display:flex;flex-direction:column;gap:14px;align-items:center}
-.lqcard{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:16px;box-shadow:var(--shadow-card);padding:14px 22px;font-weight:500;font-size:clamp(.98rem,2vw,1.12rem)}
-.lqcard .ic{width:22px;height:22px;color:var(--ink-2)}.lqcard .ic svg{width:100%;height:100%}
-.lqcard.loud.dimmed{opacity:.45}
-.lqcard.quiet{box-shadow:0 0 0 2px var(--accent),var(--shadow-card);font-weight:600}
-.lqcard.quiet .ic{color:var(--ink)}
-.lqdig{width:20px;height:30px}
-.lqdig path{fill:none;stroke:var(--ink-3);stroke-width:2.2;stroke-dasharray:3 6;stroke-linecap:round}
-/* evidence alignment */
-.evwrap{position:relative;display:flex;flex-direction:column;gap:12px;width:min(92%,540px)}
-.evrow{display:flex;align-items:center;gap:12px}
-.evrow .lbl{font-family:var(--font-mono);font-size:.74rem;color:var(--ink-2);flex:0 0 76px;text-align:left}
-.evtrack{position:relative;flex:1;height:36px;background:var(--surface2);box-shadow:var(--shadow-inset);border-radius:10px}
-.evchip{position:absolute;top:50%;transform:translateY(-50%);width:92px;height:24px;border-radius:7px;background:var(--surface);box-shadow:var(--shadow-card);display:flex;align-items:center;justify-content:center}
-.evchip i{width:8px;height:8px;border-radius:50%;background:var(--accent);display:block}
-.evline{position:absolute;top:-6px;bottom:-6px;width:2.5px;background:var(--pos);border-radius:2px;left:calc(88px + (100% - 88px)/2 - 1px);transform-origin:top center}
-.evok{align-self:center;padding-left:88px;color:var(--pos);font-family:var(--font-mono);font-weight:700;font-size:1.05rem}
-.evghost{position:absolute;right:-14px;top:-10px;color:var(--neg);font-family:var(--font-mono);font-weight:700;opacity:0}
-
-/* ============ r6 — Priya ============ */
-.r6 .wrap{gap:clamp(12px,2vh,20px)}
-.person{display:flex;align-items:center;gap:16px;background:var(--surface);border-radius:18px;box-shadow:var(--shadow-card);padding:14px 24px;text-align:left}
-.person .av{flex:0 0 auto;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#8a6a44,#5a3f24);display:grid;place-items:center;font-size:1.4rem;font-weight:700;color:#fff;font-family:var(--font-head)}
-.person .pn{font-family:var(--font-head);font-size:1.35rem;font-weight:600}
-.person .pr{font-size:.88rem;color:var(--ink-3);margin-top:3px}
-.r6grid{display:flex;gap:clamp(14px,2.2vw,24px);width:100%;justify-content:center;align-items:stretch;flex-wrap:wrap}
-.chartcard{flex:1 1 0;min-width:300px;max-width:480px;background:var(--surface);border-radius:18px;box-shadow:var(--shadow-card);padding:18px 20px;display:flex;flex-direction:column;gap:8px}
-.chartcard .ct{font-family:var(--font-mono);font-size:.74rem;color:var(--ink-2);text-align:left}
-.chartcard svg{width:100%;height:auto}
-.chartcard .ax{stroke:var(--line);stroke-width:1.5}
-.chartcard .churn{fill:none;stroke:var(--neg);stroke-width:3;stroke-linecap:round}
-.chartcard .churndown{fill:none;stroke:var(--pos);stroke-width:3;stroke-linecap:round}
-.chartcard .ob{fill:none;stroke:var(--ink-3);stroke-width:2.2;stroke-dasharray:5 6;stroke-linecap:round}
-.chartcard .fixdot{fill:var(--pos)}
-.chartcard .leg{display:flex;gap:14px;font-family:var(--font-mono);font-size:.68rem;color:var(--ink-3)}
-.chartcard .leg .k{display:inline-flex;align-items:center;gap:5px}
-.chartcard .leg .k i{width:10px;height:3px;border-radius:2px;display:inline-block}
-.r6act{flex:1 1 0;min-width:280px;max-width:420px;display:flex;flex-direction:column;gap:9px;justify-content:center}
-.r6act .dchip{text-align:left}
-.minichain{display:flex;flex-direction:column;gap:6px}
-.minichain .cnode{padding:8px 14px;font-size:.92rem}
-.minichain .cwhy{align-self:center}
-.receipts{display:flex;gap:8px;justify-content:center}
-.rchip{display:flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:.72rem;color:var(--ink-2);background:var(--surface2);box-shadow:var(--shadow-inset);border-radius:9999px;padding:6px 12px}
-.rchip b{color:var(--pos);font-weight:700}
-
-/* ============ mentor cursor (unused, kept for engine parity) ============ */
-#mcursor{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0;pointer-events:none}
-
-/* ============ Proof of Progress — pop-v9 fluid morph, theme-recolored ============ */
+/* ============ Proof of Progress — pop-v9 fluid morph ============ */
 :root{--r-card:30px;--r-tile:24px;--pill2:999px;--pad-card:20px;--pad-tight:13px;--pad-content:6px;--pgap:22px;
   --ease-out2:cubic-bezier(.22,1,.36,1);--ease2:cubic-bezier(.625,.05,0,1);
   --spring:linear(0,0.006,0.025 2.8%,0.101 6.1%,0.539 18.9%,0.721 25.3%,0.849,0.937 34.6%,0.968,0.991,1.006 43%,1.014,1.017 48%,1.017,1.013,1.006 58%,0.995 63%,0.991,0.988,0.99 77%,1.001 85%,1.004,1.002 97%,1)}
@@ -196,7 +100,6 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
 #popscrim{position:fixed;inset:0;z-index:52;background:rgba(10,9,8,0);pointer-events:none;transition:background .45s var(--ease-out2)}
 #popscrim.on{background:rgba(10,9,8,.5)}
 .stage.dim{filter:blur(7px) brightness(.72)}
-.controls{z-index:56}
 .poplayer{position:fixed;inset:0;z-index:58;pointer-events:none}
 #confetti{position:fixed;inset:0;pointer-events:none;z-index:70;width:100vw;height:100vh}
 .pop{position:fixed;width:340px;pointer-events:auto;font-family:var(--font-sans);
@@ -280,25 +183,6 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
 .pop .tries.xp{color:var(--pop-green);font-weight:700;border-color:color-mix(in srgb,var(--pop-green) 42%,transparent);background:color-mix(in srgb,var(--pop-green) 14%,var(--pop-bg))}
 .pop .tries.miss{color:var(--pop-ink2)}
 
-/* ============ controls (compact) ============ */
-.controls{position:fixed;left:50%;transform:translateX(-50%);bottom:clamp(14px,2.4vh,24px);z-index:56;display:flex;align-items:center;gap:10px;background:color-mix(in srgb,var(--surface) 88%,transparent);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:9999px;padding:7px 14px;box-shadow:var(--shadow-card);width:min(92vw,720px);max-width:92vw}
-.cbtn{flex:0 0 auto;width:36px;height:36px;border-radius:50%;border:none;background:transparent;color:var(--ink);display:grid;place-items:center;cursor:pointer;transition:background .2s}
-.cbtn:hover{background:var(--surface2)}
-.cbtn.primary{background:var(--accent);color:var(--bg);width:42px;height:42px}
-.cbtn svg{width:17px;height:17px}
-.cbtn.primary svg{width:19px;height:19px}
-.cseek{flex:1 1 auto;min-width:140px;height:6px;background:var(--line);border-radius:9999px;position:relative;cursor:pointer}
-.cseek .fill{position:absolute;left:0;top:0;bottom:0;background:var(--accent);border-radius:9999px;width:0}
-.cseek .knob{position:absolute;top:50%;transform:translate(-50%,-50%);width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 1px 4px rgba(0,0,0,.4);left:0;z-index:5}
-.ctime{font-family:var(--font-mono);font-size:.7rem;color:var(--ink-2);flex:0 0 auto;min-width:80px;text-align:center}
-.ctog{flex:0 0 auto;border:1px solid var(--line);background:transparent;color:var(--ink-2);border-radius:9999px;padding:6px 10px;font-family:var(--font-mono);font-size:.68rem;font-weight:600;cursor:pointer;transition:all .2s}
-.ctog:hover{color:var(--ink)}
-.ctog.act{background:var(--accent);color:var(--bg);border-color:transparent}
-.ccbar{position:fixed;left:50%;transform:translateX(-50%);bottom:clamp(70px,9.4vh,96px);z-index:45;max-width:min(86vw,800px);text-align:center;padding:0 18px;pointer-events:none}
-.ccbar span{background:color-mix(in srgb,#000 64%,transparent);color:#fff;font-size:clamp(.92rem,2vw,1.08rem);line-height:1.45;padding:7px 15px;border-radius:11px;display:inline;-webkit-box-decoration-break:clone;box-decoration-break:clone;font-weight:500}
-:root[data-theme="light"] .ccbar span{background:color-mix(in srgb,#000 82%,transparent)}
-.ccbar.off{display:none}
-
 /* ============ loader ============ */
 .loader{position:fixed;inset:0;background:var(--bg);z-index:80;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;transition:opacity .6s}
 .loader.gone{opacity:0;pointer-events:none}
@@ -309,11 +193,11 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
 .bigplay:hover{transform:scale(1.06)}
 .bigplay svg{width:30px;height:30px;margin-left:3px}
 .loader .lt{font-family:var(--font-mono);font-size:.78rem;color:var(--ink-3)}
+#mcursor{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0;pointer-events:none}
 </style>
 </head>
 <body>
 
-<!-- ===== SVG sprite — real marks (icons0) ===== -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="ic-zero" viewBox="0 0 373 136"><path d="M303.572 115.999C294.465 115.999 286.219 113.845 278.834 109.538C271.45 105.23 265.604 99.4455 261.296 92.1841C256.988 84.9226 254.835 76.9228 254.835 68.1845C254.835 59.3231 256.988 51.3232 261.296 44.1849C265.604 37.0466 271.45 31.3236 278.834 27.016C286.219 22.7084 294.465 20.5546 303.572 20.5546C312.926 20.5546 321.233 22.7084 328.495 27.016C335.879 31.3236 341.664 37.1081 345.848 44.3695C350.156 51.5079 352.31 59.4462 352.31 68.1845C352.31 76.9228 350.156 84.9226 345.848 92.1841C341.664 99.4455 335.879 105.23 328.495 109.538C321.11 113.845 312.803 115.999 303.572 115.999ZM303.572 95.8763C308.864 95.8763 313.541 94.6456 317.603 92.1841C321.664 89.5995 324.864 86.2149 327.202 82.0304C329.664 77.8459 330.895 73.2921 330.895 68.3691C330.895 63.323 329.664 58.7077 327.202 54.5232C324.864 50.3386 321.664 47.0156 317.603 44.5541C313.541 41.9696 308.864 40.6773 303.572 40.6773C298.403 40.6773 293.726 41.9696 289.542 44.5541C285.48 47.0156 282.219 50.3386 279.757 54.5232C277.419 58.7077 276.25 63.323 276.25 68.3691C276.25 73.2921 277.419 77.8459 279.757 82.0304C282.219 86.2149 285.48 89.5995 289.542 92.1841C293.726 94.6456 298.403 95.8763 303.572 95.8763Z"/><path d="M224.893 113.785H203.478V52.6503C203.478 36.2582 216.767 22.9698 233.159 22.9698H257.939V43.831H232.313C228.215 43.831 224.893 47.1531 224.893 51.2511V113.785Z"/><path d="M152.213 115.998C142.982 115.998 134.675 113.968 127.29 109.906C119.906 105.722 114.06 99.9986 109.752 92.7372C105.568 85.4758 103.475 77.1067 103.475 67.6299C103.475 59.0147 105.383 51.0764 109.198 43.815C113.137 36.5536 118.614 30.769 125.629 26.4614C132.644 22.1538 140.767 20 149.998 20C159.351 20 167.351 22.0923 173.997 26.2768C180.643 30.3383 185.751 35.8151 189.32 42.7073C193.012 49.5995 194.858 57.2301 194.858 65.5992V73.1683H120.275L123.967 66.153C123.598 72.0606 124.583 77.3528 126.921 82.0297C129.26 86.7065 132.583 90.3988 136.89 93.1064C141.198 95.814 146.244 97.1679 152.028 97.1679C157.444 97.1679 162.305 95.9987 166.613 93.6602C171.043 91.1987 174.49 87.6296 176.951 82.9527L193.382 91.4449C189.443 99.3217 183.905 105.414 176.766 109.721C169.628 113.906 161.444 115.998 152.213 115.998ZM125.075 60.2454H173.443C173.074 56.0609 171.843 52.3687 169.751 49.1687C167.782 45.9688 165.074 43.5073 161.628 41.7842C158.182 39.9381 154.244 39.015 149.813 39.015C145.259 39.015 141.198 39.9996 137.629 41.9688C134.183 43.815 131.413 46.338 129.321 49.5379C127.229 52.7379 125.813 56.3071 125.075 60.2454Z"/><path d="M98.8426 113.782H40.6897C33.9206 113.782 28.7515 112.059 25.1823 108.613C21.7362 105.044 20.0132 101.044 20.0132 96.6134C19.8901 92.675 20.6286 89.2904 22.2285 86.4597C23.8285 83.629 26.4131 81.0444 29.9822 78.706L75.766 46.2143C76.7506 45.3527 77.2429 44.4297 77.2429 43.4451C77.2429 42.5836 76.9353 42.0297 76.3199 41.7836C75.8276 41.4143 75.2122 41.2297 74.4738 41.2297H22.4131V22.9531H78.9045C85.6736 22.9531 90.7812 24.7377 94.2273 28.3069C97.7964 31.753 99.581 35.6914 99.581 40.1221C99.581 44.0604 98.781 47.445 97.1811 50.2757C95.7042 53.1064 93.1811 55.691 89.612 58.0294L43.8282 90.7058C42.7205 91.4442 42.1666 92.3673 42.1666 93.475C42.1666 94.2134 42.4128 94.7672 42.9051 95.1365C43.5205 95.3826 44.1974 95.5057 44.9358 95.5057H98.8426V113.782Z"/></symbol>
   <symbol id="ic-cloudflare" viewBox="0 0 24 24"><path fill="currentColor" d="M16.509 16.845c.147-.507.09-.971-.155-1.316c-.225-.316-.605-.499-1.062-.52l-8.66-.113a.16.16 0 0 1-.133-.07a.2.2 0 0 1-.02-.156a.24.24 0 0 1 .203-.156l8.736-.113c1.035-.049 2.16-.886 2.554-1.913l.499-1.302a.27.27 0 0 0 .014-.168a5.689 5.689 0 0 0-10.937-.584a2.58 2.58 0 0 0-1.794-.498a2.56 2.56 0 0 0-2.223 3.18A3.634 3.634 0 0 0 0 16.751q.002.264.035.527a.174.174 0 0 0 .17.148h15.98a.22.22 0 0 0 .204-.155zm2.757-5.564c-.077 0-.161 0-.239.011c-.056 0-.105.042-.127.098l-.337 1.174c-.148.507-.092.971.154 1.317c.225.316.605.498 1.062.52l1.844.113c.056 0 .105.026.133.07a.2.2 0 0 1 .021.156a.24.24 0 0 1-.204.156l-1.92.112c-1.042.049-2.159.887-2.553 1.914l-.141.358c-.028.072.021.142.099.142h6.597a.174.174 0 0 0 .17-.126a5 5 0 0 0 .175-1.28a4.74 4.74 0 0 0-4.734-4.727"/></symbol>
@@ -323,25 +207,30 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
   <symbol id="ic-water" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M5.116 4.104A1 1 0 0 1 6.11 3h11.78a1 1 0 0 1 .994 1.105L17.19 20.21A2 2 0 0 1 15.2 22H8.8a2 2 0 0 1-2-1.79z"/><path d="M6 12a5 5 0 0 1 6 0a5 5 0 0 0 6 0"/></g></symbol>
   <symbol id="ic-db" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></g></symbol>
   <symbol id="ic-mega" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M11 6a13 13 0 0 0 8.4-2.8A1 1 0 0 1 21 4v12a1 1 0 0 1-1.6.8A13 13 0 0 0 11 14H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/><path d="M6 14a12 12 0 0 0 2.4 7.2a2 2 0 0 0 3.2-2.4A8 8 0 0 1 10 14M8 6v8"/></g></symbol>
-  <symbol id="ic-bell" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.268 21a2 2 0 0 0 3.464 0M22 8c0-2.3-.8-4.3-2-6M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326M4 2C2.8 3.7 2 5.7 2 8"/></symbol>
   <symbol id="ic-tag" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></g></symbol>
-  <symbol id="ic-steth" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M11 2v2M5 2v2m0-1H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1"/><path d="M8 15a6 6 0 0 0 12 0v-3"/><circle cx="20" cy="10" r="2"/></g></symbol>
 </svg>
 
 <div class="app">
   <div class="stage" id="stage">
 
-    <!-- ============ r1 — what it is ============ -->
+    <!-- ============ r1 — what it is: the dig ============ -->
     <section class="scene r1" data-sc="r1">
-      <div class="wrap" style="gap:clamp(14px,2.6vh,26px)">
-        <div class="s1title"><h1 class="heading">Root cause analysis</h1></div>
-        <svg class="digvz" viewBox="0 0 640 340" aria-hidden="true">
-          <line class="surf pd" x1="80" y1="110" x2="560" y2="110"/>
-          <path class="crack pd" d="M288 110 l10 -16 l12 8 l10 -14 l12 9"/>
-          <circle class="crackring" cx="310" cy="100" r="34"/>
-          <path class="dig pd" d="M320 128 V 246"/>
-          <circle class="root hid" cx="320" cy="272" r="20"/>
-          <circle class="rootdot hid" cx="320" cy="272" r="7"/>
+      <div class="wrap">
+        <h1 class="heading">Root cause analysis</h1>
+        <svg class="cv" viewBox="0 0 1200 500" aria-hidden="true">
+          <rect class="tint gTint" x="70" y="150" width="1060" height="330" rx="4"/>
+          <line class="hair surf pd" x1="70" y1="150" x2="1130" y2="150"/>
+          <path class="st neg thick crack pd" d="M560 150 l14 -22 l16 11 l14 -19 l16 12 l12 -16"/>
+          <circle class="st3 ring" cx="600" cy="122" r="46"/>
+          <path class="st3 dsh strata pd" d="M140 260 C 400 244 800 276 1060 258"/>
+          <path class="st3 dsh strata pd" d="M180 360 C 430 346 780 374 1020 356"/>
+          <path class="st root pd" d="M600 150 C 598 200 610 224 600 262 C 590 300 606 330 600 368"/>
+          <path class="st3 rlet pd" d="M600 220 C 578 228 566 240 552 244"/>
+          <path class="st3 rlet pd" d="M600 250 C 622 258 636 268 650 274"/>
+          <path class="st3 rlet pd" d="M600 300 C 576 310 562 322 550 330"/>
+          <path class="st3 rlet pd" d="M600 330 C 624 340 640 350 654 358"/>
+          <circle class="st acc thick node nodefill" cx="600" cy="404" r="26"/>
+          <circle class="accdot ndot" cx="600" cy="404" r="9"/>
         </svg>
       </div>
     </section>
@@ -349,205 +238,245 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
     <!-- ============ r2 — two people, same problem ============ -->
     <section class="scene r2" data-sc="r2">
       <div class="wrap">
-        <div class="cols2">
-          <div class="pcol colA">
-            <svg class="probsvg" viewBox="0 0 280 150" aria-hidden="true">
-              <rect class="box" x="30" y="30" width="220" height="64" rx="12"/>
-              <path class="crack" d="M118 94 l9 -15 l11 7 l9 -13 l11 8"/>
-              <rect class="patch hid" x="104" y="52" width="78" height="20" rx="6" transform="rotate(-8 143 62)"/>
-            </svg>
-            <svg class="rail" viewBox="0 0 280 34" aria-hidden="true">
-              <line class="rl pd" x1="12" y1="17" x2="268" y2="17"/>
-              <g class="brk b1 hid"><path class="rx" d="M118 9 L134 25 M134 9 L118 25"/></g>
-              <g class="brk b2 hid"><path class="rx" d="M198 9 L214 25 M214 9 L198 25"/></g>
-            </svg>
-          </div>
-          <div class="pcol colB">
-            <svg class="probsvg" viewBox="0 0 280 150" aria-hidden="true">
-              <rect class="box" x="30" y="30" width="220" height="64" rx="12"/>
-              <path class="crack" d="M118 94 l9 -15 l11 7 l9 -13 l11 8"/>
-              <path class="dig pd2" d="M140 98 V 118"/>
-              <circle class="root hid" cx="140" cy="130" r="12"/>
-              <circle class="rootdot hid" cx="140" cy="130" r="4.5"/>
-              <path class="ok pd2" d="M133 130 l5 5 l10 -11"/>
-            </svg>
-            <svg class="rail" viewBox="0 0 280 34" aria-hidden="true">
-              <line class="rl pd" x1="12" y1="17" x2="268" y2="17"/>
-              <path class="rok pd2 calm" d="M110 12 l6 6 l12 -12"/>
-            </svg>
-          </div>
-        </div>
+        <svg class="cv" viewBox="0 0 1200 600" aria-hidden="true">
+          <!-- left: the quick fix -->
+          <g class="wgL">
+            <rect class="st box pd" x="230" y="80" width="200" height="120" rx="16"/>
+            <circle class="st3 gear pd" cx="330" cy="130" r="26"/>
+            <path class="st3 gear pd" d="M330 96 v-10 M330 164 v10 M296 130 h-10 M364 130 h10 M306 106 l-7 -7 M354 154 l7 7 M354 106 l7 -7 M306 154 l-7 7"/>
+            <path class="st neg thick crL pd" d="M300 200 l12 -18 l14 9 l12 -16 l14 10"/>
+          </g>
+          <rect class="patch" x="255" y="176" width="150" height="30" rx="10" fill="var(--ink-3)"/>
+          <line class="hair laneL pd" x1="180" y1="520" x2="480" y2="520"/>
+          <path class="st neg bx1 pd" d="M290 506 L316 534 M316 506 L290 534"/>
+          <path class="st neg bx2 pd" d="M390 506 L416 534 M416 506 L390 534"/>
+          <!-- right: the dig -->
+          <g class="wgR">
+            <rect class="st box2 pd" x="770" y="80" width="200" height="120" rx="16"/>
+            <circle class="st3 gear2 pd" cx="870" cy="130" r="26"/>
+            <path class="st3 gear2 pd" d="M870 96 v-10 M870 164 v10 M836 130 h-10 M904 130 h10 M846 106 l-7 -7 M894 154 l7 7 M894 106 l7 -7 M846 154 l-7 7"/>
+            <path class="st neg thick crR pd" d="M840 200 l12 -18 l14 9 l12 -16 l14 10"/>
+          </g>
+          <rect class="tint tintR" x="700" y="300" width="340" height="150" rx="4"/>
+          <line class="hair surfR pd" x1="700" y1="300" x2="1040" y2="300"/>
+          <path class="st3 dsh shaft pd" d="M870 210 V 288"/>
+          <path class="st3 dsh shaft2 pd" d="M870 300 V 356"/>
+          <circle class="st acc thick nodeR nodefill" cx="870" cy="392" r="24"/>
+          <path class="st pos thick okR pd" d="M858 392 l8 8 l16 -17"/>
+          <path class="st pos sealR pd" d="M842 200 l14 -10 l14 10 l14 -10 l14 10"/>
+          <line class="hair laneR pd" x1="720" y1="520" x2="1020" y2="520"/>
+          <path class="st pos okLane pd" d="M786 518 l9 9 l18 -19"/>
+        </svg>
       </div>
     </section>
 
     <!-- ============ r3 — this matters everywhere ============ -->
     <section class="scene r3" data-sc="r3">
       <div class="wrap">
-        <div class="cards">
-          <div class="examp e-cf">
-            <div class="logo" style="color:#F38020"><svg><use href="#ic-cloudflare"/></svg></div>
-            <h3>Cloudflare</h3>
-            <div class="metric">Why did the site go down?</div>
-          </div>
-          <div class="examp e-ty">
-            <div class="logo" style="color:#EB0A1E"><svg><use href="#ic-toyota"/></svg></div>
-            <h3>Toyota</h3>
-            <div class="metric">Trace the defect to its machine</div>
-          </div>
-          <div class="examp e-sup">
-            <div class="logo" style="color:var(--ink)"><svg><use href="#ic-headset"/></svg></div>
-            <h3>Support</h3>
-            <div class="metric">Why do customers keep canceling?</div>
-          </div>
-        </div>
-        <div class="lanes">
-          <div class="lane laneA">
-            <span class="lbl">once</span>
-            <svg viewBox="0 0 360 26" preserveAspectRatio="none">
-              <path class="rok pd2" d="M14 13 l5 5 l10 -11"/>
-              <line class="rl pd2" x1="42" y1="13" x2="348" y2="13"/>
-            </svg>
-          </div>
-          <div class="lane laneB">
-            <span class="lbl">forever</span>
-            <svg viewBox="0 0 360 26" preserveAspectRatio="none">
-              <line class="rl pd2" x1="14" y1="13" x2="348" y2="13"/>
-              <g class="fx1 hid"><path class="rx" d="M96 6 L110 20 M110 6 L96 20"/></g>
-              <g class="fx2 hid"><path class="rx" d="M196 6 L210 20 M210 6 L196 20"/></g>
-              <g class="fx3 hid"><path class="rx" d="M296 6 L310 20 M310 6 L296 20"/></g>
-            </svg>
-          </div>
-        </div>
+        <svg class="cv" viewBox="0 0 1200 560" aria-hidden="true">
+          <g class="mCF">
+            <circle class="st3 mc pd" cx="300" cy="150" r="64"/>
+            <g class="logoc lg" transform="translate(264,114)" style="color:#F38020"><use href="#ic-cloudflare" width="72" height="72"/></g>
+            <text class="lb tx" x="300" y="260" text-anchor="middle">Why did the site go down?</text>
+          </g>
+          <g class="mTY">
+            <circle class="st3 mc pd" cx="600" cy="150" r="64"/>
+            <g class="logoc lg" transform="translate(566,116)" style="color:#EB0A1E"><use href="#ic-toyota" width="68" height="68"/></g>
+            <text class="lb tx" x="600" y="260" text-anchor="middle">Trace the defect to its machine</text>
+          </g>
+          <g class="mSUP">
+            <circle class="st3 mc pd" cx="900" cy="150" r="64"/>
+            <g class="logoc lg" transform="translate(870,120)" style="color:var(--ink-2)"><use href="#ic-headset" width="60" height="60"/></g>
+            <text class="lb tx" x="900" y="260" text-anchor="middle">Why do customers keep canceling?</text>
+          </g>
+          <!-- the fork: fix once vs fight forever -->
+          <path class="st stem pd" d="M600 300 V 356"/>
+          <path class="st brL pd" d="M600 356 C 600 400 520 430 420 430 H 180"/>
+          <path class="st pos okOnce pd" d="M330 428 l9 9 l18 -19"/>
+          <text class="mono txOnce" x="180" y="466" text-anchor="start">once</text>
+          <g class="brRg">
+            <path class="st brR pd" d="M600 356 C 600 400 680 430 780 430 H 1020"/>
+            <path class="st neg fx1 pd" d="M788 417 L812 443 M812 417 L788 443"/>
+            <path class="st neg fx2 pd" d="M878 417 L902 443 M902 417 L878 443"/>
+            <path class="st neg fx3 pd" d="M968 417 L992 443 M992 417 L968 443"/>
+            <text class="mono txFor" x="1020" y="466" text-anchor="end">forever</text>
+          </g>
+        </svg>
       </div>
     </section>
 
     <!-- ============ r4 — the doctor ============ -->
     <section class="scene r4" data-sc="r4">
       <div class="wrap">
-        <div class="docwrap">
-          <div class="patient">
-            <div class="av">•</div>
-            <div class="ptxt">A headache</div>
-            <span class="ache achepulse"><svg><use href="#ic-bell"/></svg></span>
-          </div>
-          <div class="paths">
-            <div class="pathc lazy">
-              <div class="dchip pillc"><span class="ic"><svg><use href="#ic-pill"/></svg></span>Painkiller<span class="xmark xback hid">&#8635; back tomorrow</span></div>
-            </div>
-            <div class="pathc good">
-              <div class="dchip qq q1">When did it start?</div>
-              <div class="dchip qq q2">How's your sleep?</div>
-              <div class="dchip qq q3">Drinking enough water?</div>
-              <div class="dchip rootc rootq"><span class="ic"><svg><use href="#ic-water"/></svg></span>Dehydration<span class="okmark okr hid">&#10003;</span></div>
-            </div>
-          </div>
-        </div>
+        <svg class="cv" viewBox="0 0 1200 600" aria-hidden="true">
+          <!-- the patient -->
+          <circle class="st head pd" cx="240" cy="210" r="54"/>
+          <g class="star">
+            <path class="st neg thick pd" d="M300 118 v-26 M287 131 h-26 M313 131 h26 M291 122 l-18 -18 M309 122 l18 -18 M291 140 l-18 18"/>
+          </g>
+          <!-- lazy branch -->
+          <g class="lazyG">
+            <path class="st3 lzPath pd" d="M298 186 C 380 140 470 120 540 116"/>
+            <g class="logoc pillIc" transform="translate(552,92)" style="color:var(--ink-2)"><use href="#ic-pill" width="46" height="46"/></g>
+            <text class="lb3 txPill" x="575" y="178" text-anchor="middle">painkiller</text>
+            <path class="st3 dsh loopArc pd" d="M620 108 C 720 60 460 46 330 96 M344 88 L328 97 L340 108"/>
+            <path class="st neg strkPill pd" d="M540 84 L612 146"/>
+          </g>
+          <!-- good branch -->
+          <g class="goodG">
+            <path class="st3 gdPath pd" d="M282 258 C 360 320 420 336 470 340"/>
+            <circle class="st q1c pd" cx="520" cy="340" r="27"/>
+            <text class="qmark txQ1" x="520" y="350" text-anchor="middle">?</text>
+            <text class="lb3 txQ1b" x="520" y="404" text-anchor="middle">when did it start</text>
+            <path class="st3 gd2 pd" d="M549 340 H 636"/>
+            <circle class="st q2c pd" cx="665" cy="340" r="27"/>
+            <text class="qmark txQ2" x="665" y="350" text-anchor="middle">?</text>
+            <text class="lb3 txQ2b" x="665" y="404" text-anchor="middle">how's your sleep</text>
+            <path class="st3 gd3 pd" d="M694 340 H 781"/>
+            <circle class="st q3c pd" cx="810" cy="340" r="27"/>
+            <text class="qmark txQ3" x="810" y="350" text-anchor="middle">?</text>
+            <text class="lb3 txQ3b" x="810" y="404" text-anchor="middle">enough water?</text>
+            <path class="st3 gd4 pd" d="M839 340 H 926"/>
+          </g>
+          <g class="glassG">
+            <g class="logoc glassIc" transform="translate(946,296)" style="color:var(--ink)"><use href="#ic-water" width="88" height="88"/></g>
+            <text class="lbi txDehy" x="990" y="440" text-anchor="middle">dehydration</text>
+            <circle class="st acc thick glassRing" cx="990" cy="340" r="62"/>
+          </g>
+        </svg>
       </div>
     </section>
 
     <!-- ============ r5 — three moves ============ -->
     <section class="scene r5" data-sc="r5">
       <div class="wrap">
-        <div class="moves">
-          <div class="mv m1"><span class="n">1</span><span class="t">Keep asking why</span></div>
-          <div class="mv m2"><span class="n">2</span><span class="t">Symptom vs cause</span></div>
-          <div class="mv m3"><span class="n">3</span><span class="t">Prove it first</span></div>
-        </div>
-        <div class="demo">
-          <div class="demoP dwhys">
-            <div class="chain">
-              <div class="cnode n0">The site went down<span class="patchchip">restart it</span></div>
-              <div class="cwhy w1"><svg viewBox="0 0 14 18"><path d="M7 2 V13 M3 10 L7 15 L11 10"/></svg>why</div>
-              <div class="cnode n1">Memory spiked</div>
-              <div class="cwhy w2"><svg viewBox="0 0 14 18"><path d="M7 2 V13 M3 10 L7 15 L11 10"/></svg>why</div>
-              <div class="cnode n2">One request loaded everything at once</div>
-              <div class="cwhy w3"><svg viewBox="0 0 14 18"><path d="M7 2 V13 M3 10 L7 15 L11 10"/></svg>why</div>
-              <div class="cnode rootn n3">Nobody set a limit on it</div>
-            </div>
-          </div>
-          <div class="demoP dlq">
-            <div class="lq">
-              <div class="lqcard loud"><span class="ic"><svg><use href="#ic-mega"/></svg></span>Slow checkout &middot; angry tweets</div>
-              <svg class="lqdig" viewBox="0 0 20 30"><path class="pd2" d="M10 2 V 26"/></svg>
-              <div class="lqcard quiet"><span class="ic"><svg><use href="#ic-db"/></svg></span>No index on the database</div>
-            </div>
-          </div>
-          <div class="demoP dev">
-            <div class="evwrap">
-              <div class="evrow"><span class="lbl">timeline</span><div class="evtrack t1"><div class="evchip" style="left:8%"><i></i></div></div></div>
-              <div class="evrow"><span class="lbl">logs</span><div class="evtrack t2"><div class="evchip" style="left:52%"><i></i></div></div></div>
-              <div class="evrow"><span class="lbl">numbers</span><div class="evtrack t3"><div class="evchip" style="left:28%"><i></i></div></div></div>
-              <div class="evline hid"></div>
-              <span class="evghost">&#10005; wrong guess</span>
-              <span class="evok hid">&#10003; it lines up</span>
-            </div>
-          </div>
-        </div>
+        <svg class="cv" viewBox="0 0 1200 640" aria-hidden="true">
+          <!-- the three medallions -->
+          <g class="mv1"><circle class="st3 mvc1 pd" cx="420" cy="66" r="30"/><text class="num txN1" x="420" y="73" text-anchor="middle">1</text><text class="lb3 txT1" x="420" y="126" text-anchor="middle">keep asking why</text></g>
+          <g class="mv2"><circle class="st3 mvc2 pd" cx="600" cy="66" r="30"/><text class="num txN2" x="600" y="73" text-anchor="middle">2</text><text class="lb3 txT2" x="600" y="126" text-anchor="middle">symptom vs cause</text></g>
+          <g class="mv3"><circle class="st3 mvc3 pd" cx="780" cy="66" r="30"/><text class="num txN3" x="780" y="73" text-anchor="middle">3</text><text class="lb3 txT3" x="780" y="126" text-anchor="middle">prove it first</text></g>
+
+          <!-- demo 1: the five-whys staircase -->
+          <g class="dWhys">
+            <rect class="tint wTint" x="170" y="230" width="900" height="380" rx="4"/>
+            <line class="hair wSurf pd" x1="170" y1="230" x2="1070" y2="230"/>
+            <text class="lbi txS0" x="190" y="208" text-anchor="start">The site went down</text>
+            <g class="restG"><text class="mono txRest" x="392" y="208" text-anchor="start">restart it</text>
+            <line class="strike stRest pd" x1="386" y1="203" x2="464" y2="203"/></g>
+            <path class="st wD1 pd" d="M480 230 V 300"/>
+            <text class="mono txW1" x="462" y="272" text-anchor="end">why</text>
+            <path class="st wL1 pd" d="M480 300 H 760"/>
+            <text class="lbi txS1" x="496" y="288" text-anchor="start">Memory spiked</text>
+            <path class="st wD2 pd" d="M760 300 V 370"/>
+            <text class="mono txW2" x="742" y="342" text-anchor="end">why</text>
+            <path class="st wL2 pd" d="M760 370 H 1040"/>
+            <text class="lbi txS2" x="776" y="358" text-anchor="start">One request loaded everything</text>
+            <path class="st wD3 pd" d="M1040 370 V 440"/>
+            <text class="mono txW3" x="1022" y="412" text-anchor="end">why</text>
+            <circle class="st acc thick wNode nodefill" cx="1040" cy="474" r="26"/>
+            <circle class="accdot wDot" cx="1040" cy="474" r="9"/>
+            <text class="lbi txS3" x="1040" y="548" text-anchor="middle">Nobody set a limit on it</text>
+          </g>
+
+          <!-- demo 2: loud vs quiet -->
+          <g class="dLq">
+            <g class="logoc megaIc" transform="translate(330,240)" style="color:var(--ink-2)"><use href="#ic-mega" width="92" height="92"/></g>
+            <path class="st3 wv1 pd" d="M448 258 C 470 272 470 300 448 314"/>
+            <path class="st3 wv2 pd" d="M480 244 C 512 266 512 306 480 328"/>
+            <path class="st3 wv3 pd" d="M512 230 C 554 260 554 312 512 342"/>
+            <text class="lb3 txLoud" x="376" y="386" text-anchor="middle">slow checkout &middot; angry tweets</text>
+            <path class="st neg strkLoud pd" d="M436 240 L 542 336"/>
+            <rect class="tint lqTint" x="560" y="420" width="480" height="160" rx="4"/>
+            <line class="hair lqSurf pd" x1="560" y1="420" x2="1040" y2="420"/>
+            <path class="st3 dsh lqShaft pd" d="M800 352 V 408"/>
+            <g class="logoc dbIc" transform="translate(766,462)" style="color:var(--ink)"><use href="#ic-db" width="68" height="68"/></g>
+            <text class="lbi txQuiet" x="800" y="566" text-anchor="middle">no index on the database</text>
+            <circle class="st acc thick dbRing" cx="800" cy="496" r="44"/>
+          </g>
+
+          <!-- demo 3: prove it — evidence alignment -->
+          <g class="dEv">
+            <text class="mono txE1" x="250" y="272" text-anchor="end">timeline</text>
+            <line class="hair ev1 pd" x1="290" y1="266" x2="950" y2="266"/>
+            <rect class="st3 evm1 nodefill" x="400" y="248" width="36" height="36" rx="9" transform="rotate(45 418 266)"/>
+            <text class="mono txE2" x="250" y="352" text-anchor="end">logs</text>
+            <line class="hair ev2 pd" x1="290" y1="346" x2="950" y2="346"/>
+            <rect class="st3 evm2 nodefill" x="742" y="328" width="36" height="36" rx="9" transform="rotate(45 760 346)"/>
+            <text class="mono txE3" x="250" y="432" text-anchor="end">numbers</text>
+            <line class="hair ev3 pd" x1="290" y1="426" x2="950" y2="426"/>
+            <rect class="st3 evm3 nodefill" x="562" y="408" width="36" height="36" rx="9" transform="rotate(45 580 426)"/>
+            <path class="st pos dsh evLine pd" d="M620 226 V 466"/>
+            <path class="st pos evOk pd" d="M604 500 l10 10 l20 -21"/>
+            <path class="st neg evGhost pd" d="M816 226 L 844 254 M844 226 L816 254"/>
+          </g>
+        </svg>
       </div>
     </section>
 
     <!-- ============ r6 — Priya ============ -->
     <section class="scene r6" data-sc="r6">
       <div class="wrap">
-        <div class="person">
-          <div class="av">P</div>
-          <div style="text-align:left">
-            <div class="pn">Priya</div>
-            <div class="pr">Analyst &middot; subscription app</div>
-          </div>
-        </div>
-        <div class="r6grid">
-          <div class="chartcard">
-            <div class="ct">churn &middot; monthly</div>
-            <svg viewBox="0 0 420 190" aria-hidden="true">
-              <line class="ax" x1="34" y1="14" x2="34" y2="164"/>
-              <line class="ax" x1="34" y1="164" x2="406" y2="164"/>
-              <path class="churn pd2" d="M34 140 C 100 132 150 118 210 96 C 250 82 280 70 306 58"/>
-              <path class="ob pd2" d="M40 146 C 104 138 154 124 212 101 C 252 87 280 75 302 64"/>
-              <circle class="fixdot hid" cx="306" cy="58" r="6"/>
-              <path class="churndown pd2" d="M306 58 C 330 66 356 92 396 122"/>
-            </svg>
-            <div class="leg">
-              <span class="k"><i style="background:var(--neg)"></i>cancellations</span>
-              <span class="k kob hid"><i style="background:var(--ink-3)"></i>never finished setup</span>
-              <span class="k kfx hid"><i style="background:var(--pos)"></i>after the fix</span>
-            </div>
-          </div>
-          <div class="r6act">
-            <div class="dchip disc"><span class="ic"><svg><use href="#ic-tag"/></svg></span>Discounts for everyone<span class="xmark">symptom</span></div>
-            <div class="minichain">
-              <div class="cnode mc0">Cancelling right after month one</div>
-              <div class="cwhy mw1"><svg viewBox="0 0 14 18"><path d="M7 2 V13 M3 10 L7 15 L11 10"/></svg>why</div>
-              <div class="cnode mc1">Never used the main feature</div>
-              <div class="cwhy mw2"><svg viewBox="0 0 14 18"><path d="M7 2 V13 M3 10 L7 15 L11 10"/></svg>why</div>
-              <div class="cnode rootn mc2">Couldn't find it during setup</div>
-            </div>
-            <div class="receipts">
-              <span class="rchip rc1">timeline <b>&#10003;</b></span>
-              <span class="rchip rc2">logs <b>&#10003;</b></span>
-              <span class="rchip rc3">numbers <b>&#10003;</b></span>
-            </div>
-            <div class="dchip rootc fixchip"><span class="ic"><svg><use href="#ic-water"/></svg></span>Welcome flow fixed<span class="okmark">&#10003;</span></div>
-          </div>
-        </div>
+        <svg class="cv" viewBox="0 0 1200 640" aria-hidden="true">
+          <!-- who -->
+          <g class="whoG">
+            <circle class="pAv" cx="120" cy="84" r="34" fill="var(--surface2)" stroke="var(--ink-3)" stroke-width="2"/>
+            <text class="serif txPP" x="120" y="94" text-anchor="middle" font-size="30">P</text>
+            <text class="lbi txPN" x="174" y="78" text-anchor="start" font-size="21">Priya</text>
+            <text class="lb3 txPR" x="174" y="102" text-anchor="start">analyst &middot; subscription app</text>
+          </g>
+          <!-- the chart -->
+          <g class="chartG">
+            <line class="hair axY pd" x1="140" y1="160" x2="140" y2="470"/>
+            <line class="hair axX pd" x1="140" y1="470" x2="700" y2="470"/>
+            <path class="st neg thick churn pd" d="M160 440 C 300 420 420 370 520 316 C 570 288 610 262 640 240"/>
+            <text class="mononeg txChurn" x="588" y="222" text-anchor="start">churn</text>
+            <path class="st3 dsh ob pd" d="M166 452 C 304 432 424 382 522 328 C 570 301 608 274 636 252"/>
+            <path class="st pos okT1 pd" d="M296 402 l7 7 l13 -14"/>
+            <path class="st pos okT2 pd" d="M456 356 l7 7 l13 -14"/>
+            <path class="st pos okT3 pd" d="M576 292 l7 7 l13 -14"/>
+            <path class="st pos thick churnFix pd" d="M640 240 C 662 268 678 306 692 348"/>
+            <text class="mono txLeg1" x="150" y="516" text-anchor="start">&#9472; cancellations</text>
+            <text class="mono txLeg2" x="330" y="516" text-anchor="start">&#9472; never finished setup</text>
+            <text class="monopos txLeg3" x="560" y="516" text-anchor="start">&#9472; after the fix</text>
+          </g>
+          <!-- the dig, next to the chart -->
+          <path class="st3 dsh leader pd" d="M660 236 C 700 240 730 248 762 258 M750 250 L764 259 L748 266"/>
+          <g class="digG">
+            <text class="lbi txC0" x="955" y="266" text-anchor="middle">Cancelling right after month one</text>
+            <path class="st cD1 pd" d="M955 282 V 316"/>
+            <text class="mono txCW1" x="937" y="304" text-anchor="end">why</text>
+            <text class="lbi txC1" x="955" y="346" text-anchor="middle">Never used the main feature</text>
+            <path class="st cD2 pd" d="M955 362 V 396"/>
+            <text class="mono txCW2" x="937" y="384" text-anchor="end">why</text>
+            <rect class="st acc rootBox nodefill" x="810" y="408" width="290" height="46" rx="14"/>
+            <text class="lbi txC2" x="955" y="437" text-anchor="middle">Couldn't find it during setup</text>
+            <path class="st pos flag pd" d="M1084 402 V 374 M1084 374 l26 8 l-26 8"/>
+            <text class="monopos txFix" x="955" y="492" text-anchor="middle">welcome flow fixed &#10003;</text>
+          </g>
+          <!-- the tempting shortcut -->
+          <g class="discG">
+            <g class="logoc tagIc" transform="translate(830,540)" style="color:var(--ink-3)"><use href="#ic-tag" width="34" height="34"/></g>
+            <text class="lb3 txDisc" x="878" y="563" text-anchor="start">discounts for everyone</text>
+            <line class="strike stDisc pd" x1="872" y1="558" x2="1046" y2="558"/>
+          </g>
+        </svg>
       </div>
     </section>
 
     <!-- ============ r7 — close ============ -->
     <section class="scene r7" data-sc="r7">
-      <div class="wrap" style="gap:clamp(14px,2.6vh,26px)">
-        <svg class="digvz" viewBox="0 0 640 340" aria-hidden="true">
-          <line class="surf pd" x1="80" y1="110" x2="560" y2="110"/>
-          <path class="seal pd" d="M288 110 H 352"/>
-          <path class="dig pd" d="M320 128 V 246"/>
-          <circle class="root hid" cx="320" cy="272" r="20"/>
-          <path class="rootok pd" d="M311 272 l6 6 l12 -13"/>
+      <div class="wrap">
+        <svg class="cv" viewBox="0 0 1200 620" aria-hidden="true">
+          <rect class="tint gTint" x="70" y="150" width="1060" height="330" rx="4"/>
+          <line class="hair surf pd" x1="70" y1="150" x2="1130" y2="150"/>
+          <path class="st pos seal pd" d="M552 150 l16 -11 l16 11 l16 -11 l16 11 l16 -11 l16 11"/>
+          <path class="st root pd" d="M600 150 C 598 200 610 224 600 262 C 590 300 606 330 600 368"/>
+          <circle class="st acc thick node nodefill" cx="600" cy="404" r="26"/>
+          <path class="st pos thick nodeOk pd" d="M586 404 l10 10 l20 -21"/>
+          <g class="mv1"><circle class="st3 mvc pd" cx="450" cy="560" r="26"/><text class="num txN" x="450" y="567" text-anchor="middle">1</text><text class="lb3 txT" x="450" y="613" text-anchor="middle">keep asking why</text></g>
+          <g class="mv2"><circle class="st3 mvc pd" cx="600" cy="560" r="26"/><text class="num txN" x="600" y="567" text-anchor="middle">2</text><text class="lb3 txT" x="600" y="613" text-anchor="middle">symptom vs cause</text></g>
+          <g class="mv3"><circle class="st3 mvc pd" cx="750" cy="560" r="26"/><text class="num txN" x="750" y="567" text-anchor="middle">3</text><text class="lb3 txT" x="750" y="613" text-anchor="middle">prove it first</text></g>
         </svg>
-        <div class="moves3">
-          <div class="mv onm"><span class="n">1</span><span class="t">Keep asking why</span></div>
-          <div class="mv onm"><span class="n">2</span><span class="t">Symptom vs cause</span></div>
-          <div class="mv onm"><span class="n">3</span><span class="t">Prove it first</span></div>
-        </div>
       </div>
     </section>
 
@@ -555,15 +484,11 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
   </div>
 </div>
 
-<!-- CC -->
 <div class="ccbar off" id="ccbar"><span id="cctext"></span></div>
-
-<!-- proof of progress -->
 <div id="popscrim"></div>
 <div class="poplayer" id="poplayer"></div>
 <canvas id="confetti"></canvas>
 
-<!-- controls -->
 <div class="controls" id="controls">
   <button class="cbtn primary" id="play" aria-label="Play/Pause"><svg id="playicon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
   <button class="cbtn" id="restart" aria-label="Restart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9 9 0 0 0-6.5 2.8L3 8"/><path d="M3 3v5h5"/></svg></button>
@@ -574,7 +499,6 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
   <button class="ctog" id="themetog">&#9788;</button>
 </div>
 
-<!-- loader -->
 <div class="loader" id="loader">
   <svg class="zwm" viewBox="0 0 373 136" aria-label="ZERO"><use href="#ic-zero"/></svg>
   <div style="display:flex;flex-direction:column;align-items:center;gap:14px">
@@ -601,335 +525,386 @@ const E1='power2.out', E2='power3.out', EB='back.out(1.6)';
 
 function T(inst){const tl=gsap.timeline({paused:false});tl._inst=!!inst;return tl;}
 function fin(tl,inst){if(inst)tl.progress(1);return tl;}
-function pop(tl,els,pos,d){tl.fromTo(els,{opacity:0,scale:.86,y:14},{opacity:1,scale:1,y:0,duration:d||.55,ease:EB,stagger:.09},pos||0);return tl;}
-function rise(tl,els,pos,d){tl.fromTo(els,{opacity:0,y:16},{opacity:1,y:0,duration:d||.5,ease:E2,stagger:.08},pos||0);return tl;}
-function drawPath(tl,els,pos,d){
-  els.forEach((p,i)=>{
-    const L=p._len||(p._len=p.getTotalLength?p.getTotalLength():300);
-    tl.fromTo(p,{strokeDasharray:L,strokeDashoffset:L,opacity:1},{strokeDashoffset:0,duration:d||.6,ease:'power1.inOut'},(pos||0)+i*.12);
-  });
-  return tl;}
-function dashKeep(tl,p,pos,d){ /* draw a dashed line without destroying its dash pattern at the end */
-  const L=p._len||(p._len=p.getTotalLength());
+function len(p){return p._len||(p._len=p.getTotalLength?p.getTotalLength():300);}
+/* dasharray must be an explicit "L L" string — a bare number merges with any
+   CSS dash pattern (e.g. the .dsh "4 8") and leaves the path visible */
+function drawPath(tl,els,pos,d,stag){
+  els.forEach((p,i)=>{const L=len(p),at=(pos||0)+i*(stag!==undefined?stag:.12);
+    tl.set(p,{opacity:1},at);
+    tl.fromTo(p,{strokeDasharray:L+' '+L,strokeDashoffset:L},{strokeDashoffset:0,duration:d||.6,ease:'power1.inOut'},at);
+  });return tl;}
+function erasePaths(tl,els,pos,d){
+  els.forEach((p,i)=>{const L=len(p),at=(pos||0)+i*.03;
+    tl.to(p,{strokeDashoffset:L,duration:d||.4,ease:'power1.in'},at);
+    tl.set(p,{opacity:0},at+(d||.4)+.02);
+  });return tl;}
+function dashKeep(tl,p,pos,d,pattern){
+  const L=len(p);
   tl.fromTo(p,{opacity:0},{opacity:1,duration:.2},pos||0);
-  tl.fromTo(p,{strokeDashoffset:L,strokeDasharray:L},{strokeDashoffset:0,duration:d||.6,ease:'power1.inOut'},pos||0);
-  tl.set(p,{strokeDasharray:'4 7'},(pos||0)+(d||.6)+.02);
+  tl.fromTo(p,{strokeDashoffset:L,strokeDasharray:L+' '+L},{strokeDashoffset:0,duration:d||.6,ease:'power1.inOut'},pos||0);
+  tl.set(p,{strokeDasharray:pattern||'4 8'},(pos||0)+(d||.6)+.02);
   return tl;}
+function txt(tl,els,pos,d,stag){
+  tl.fromTo(els,{opacity:0,y:8},{opacity:1,y:0,duration:d||.45,ease:E2,stagger:stag||0},pos||0);return tl;}
+function fadeIn(tl,els,pos,d){tl.fromTo(els,{opacity:0},{opacity:1,duration:d||.4,ease:E1},pos||0);return tl;}
+function popIn(tl,els,pos,d){tl.fromTo(els,{opacity:0,scale:.5,transformOrigin:'center center',transformBox:'fill-box'},{opacity:1,scale:1,duration:d||.45,ease:EB},pos||0);return tl;}
+function pulse(tl,el,pos,amt){tl.fromTo(el,{scale:1,transformOrigin:'center center',transformBox:'fill-box'},{scale:amt||1.12,duration:.26,ease:E1},pos||0).to(el,{scale:1,duration:.3,ease:E1},(pos||0)+.26);return tl;}
 
 /* ================================================================
-   SCENE INITIAL STATES
+   SCENE INITIAL STATES — every drawn stroke starts undrawn,
+   every label starts hidden. Rebuild = INIT + replay.
 ================================================================ */
+function hideAllPd(r){$$('.pd',r).forEach(p=>{const L=len(p);gsap.set(p,{strokeDasharray:L+' '+L,strokeDashoffset:L,opacity:0});});}
 const INIT={
   r1(){const r=scEl.r1;
-    gsap.set($('.s1title',r),{opacity:0,y:24});
-    $$('.pd',r).forEach(p=>{const L=p._len||(p._len=p.getTotalLength());gsap.set(p,{strokeDasharray:L,strokeDashoffset:L,opacity:1});});
-    gsap.set($('.crackring',r),{opacity:0,scale:.6,transformOrigin:'center center',transformBox:'fill-box'});
-    gsap.set($$('.root,.rootdot',r),{opacity:0});
+    gsap.set($('.heading',r),{opacity:0,y:24});
+    hideAllPd(r);
+    gsap.set($('.gTint',r),{opacity:0});
+    gsap.set($('.ring',r),{opacity:0});
+    gsap.set($$('.node,.ndot',r),{opacity:0});
   },
   r2(){const r=scEl.r2;
-    gsap.set($$('.pcol',r),{opacity:0,y:22,scale:.94});
-    $('.colB',r).classList.remove('win2');
-    gsap.set($('.colA',r),{opacity:1});
-    $$('.pd,.pd2',r).forEach(p=>{const L=p._len||(p._len=p.getTotalLength());gsap.set(p,{strokeDasharray:L,strokeDashoffset:L});});
-    gsap.set($('.patch',r),{opacity:0,y:-26,rotation:-16,transformOrigin:'center center',transformBox:'fill-box'});
-    gsap.set($$('.brk',r),{opacity:0});
-    gsap.set($$('.root,.rootdot',r),{opacity:0});
+    hideAllPd(r);
+    gsap.set($('.patch',r),{opacity:0,y:-34,rotation:-14,transformOrigin:'center center',transformBox:'fill-box'});
+    gsap.set($('.tintR',r),{opacity:0});
+    gsap.set($('.nodeR',r),{opacity:0});
+    gsap.set($('.wgL',r),{opacity:1});
+    gsap.set([$('.laneL',r),$('.bx1',r),$('.bx2',r)],{opacity:1});
   },
   r3(){const r=scEl.r3;
-    gsap.set($$('.examp',r),{opacity:0,y:22,scale:.92});
-    gsap.set($$('.lane',r),{opacity:0,y:14});
-    $('.laneB',r).classList.remove('dimmed');
-    $$('.pd2',r).forEach(p=>{const L=p._len||(p._len=p.getTotalLength());gsap.set(p,{strokeDasharray:L,strokeDashoffset:L});});
-    gsap.set($$('.fx1,.fx2,.fx3',r),{opacity:0});
+    hideAllPd(r);
+    gsap.set($$('.lg',r),{opacity:0,scale:.7,transformOrigin:'center center',transformBox:'fill-box'});
+    gsap.set($$('.tx,.txOnce,.txFor',r),{opacity:0});
+    gsap.set($('.brRg',r),{opacity:1});
   },
   r4(){const r=scEl.r4;
-    gsap.set($('.patient',r),{opacity:0,y:20});
-    gsap.set($('.ache',r),{opacity:0,scale:.6,transformOrigin:'center center'});
-    gsap.set($$('.pathc',r),{opacity:0,y:22});
-    $('.pathc.lazy',r).classList.remove('dimmed');
-    $('.pathc.good',r).classList.remove('good2');
-    gsap.set($$('.qq',r),{opacity:0,x:-14});
-    gsap.set($('.rootq',r),{opacity:0,y:12});
-    gsap.set($('.xback',r),{opacity:0});
-    gsap.set($('.okr',r),{opacity:0});
+    hideAllPd(r);
+    gsap.set($$('.pillIc,.glassIc',r),{opacity:0,scale:.7,transformOrigin:'center center',transformBox:'fill-box'});
+    gsap.set($$('.txPill,.txQ1,.txQ1b,.txQ2,.txQ2b,.txQ3,.txQ3b,.txDehy',r),{opacity:0});
+    gsap.set($('.glassRing',r),{opacity:0});
+    gsap.set($('.lazyG',r),{opacity:1});
+    gsap.set($$('.qmark',r),{opacity:0});
   },
   r5(){const r=scEl.r5;
-    gsap.set($$('.mv',r),{opacity:0,y:14});
-    $$('.mv',r).forEach(m=>m.classList.remove('onm'));
-    gsap.set($$('.demoP',r),{opacity:0,pointerEvents:'none'});
-    gsap.set($$('.chain .cnode,.chain .cwhy',r),{opacity:0,y:10});
-    $$('.chain .cnode',r).forEach(n=>n.style.removeProperty('box-shadow'));
-    gsap.set($$('.lqcard,.lqdig',r),{opacity:0,y:12});
-    $('.lqcard.loud',r).classList.remove('dimmed');
-    gsap.set($$('.evrow',r),{opacity:0,y:12});
-    gsap.set($('.evline',r),{opacity:0,scaleY:0,transformOrigin:'top center'});
-    gsap.set($('.evok',r),{opacity:0});
-    gsap.set($('.evghost',r),{opacity:0});
-    $$('.pd2',r).forEach(p=>{const L=p._len||(p._len=p.getTotalLength());gsap.set(p,{strokeDasharray:L,strokeDashoffset:L});});
-    $$('.evchip',r).forEach(c=>gsap.set(c,{x:0}));
+    hideAllPd(r);
+    gsap.set($$('.txN1,.txN2,.txN3,.txT1,.txT2,.txT3',r),{opacity:0});
+    $$('.mvc1,.mvc2,.mvc3',r).forEach(c=>{c.classList.remove('acc');c.classList.add('st3');});
+    gsap.set($$('.wTint,.lqTint',r),{opacity:0});
+    gsap.set($$('.dWhys text,.dLq text,.dEv text',r),{opacity:0});
+    gsap.set($$('.megaIc,.dbIc',r),{opacity:0,scale:.7,transformOrigin:'center center',transformBox:'fill-box'});
+    gsap.set($$('.wNode,.wDot,.dbRing',r),{opacity:0});
+    gsap.set($$('.evm1,.evm2,.evm3',r),{opacity:0});
+    gsap.set($('.evm1',r),{x:0});gsap.set($('.evm2',r),{x:0});gsap.set($('.evm3',r),{x:0});
+    gsap.set($('.dLq',r),{opacity:1});gsap.set($('.dWhys',r),{opacity:1});gsap.set($('.dEv',r),{opacity:1});
   },
   r6(){const r=scEl.r6;
-    gsap.set($('.person',r),{opacity:0,y:20});
-    gsap.set($('.chartcard',r),{opacity:0,y:22,scale:.96});
-    gsap.set($('.r6act',r),{opacity:1});
-    gsap.set($$('.r6act > *',r),{opacity:0,y:12});
-    gsap.set($$('.minichain .cnode,.minichain .cwhy',r),{opacity:0,y:8});
-    $$('.pd2',r).forEach(p=>{const L=p._len||(p._len=p.getTotalLength());gsap.set(p,{strokeDasharray:L,strokeDashoffset:L});});
-    gsap.set($('.fixdot',r),{opacity:0});
-    gsap.set($$('.kob,.kfx',r),{opacity:0});
-    gsap.set($$('.receipts .rchip',r),{opacity:0,y:8});
+    hideAllPd(r);
+    gsap.set($$('.whoG text,.chartG text,.digG text,.discG text',r),{opacity:0});
+    gsap.set($('.pAv',r),{opacity:0});
+    gsap.set($('.tagIc',r),{opacity:0});
+    gsap.set($('.rootBox',r),{opacity:0});
+    gsap.set($('.discG',r),{opacity:1});
   },
   r7(){const r=scEl.r7;
-    $$('.pd',r).forEach(p=>{const L=p._len||(p._len=p.getTotalLength());gsap.set(p,{strokeDasharray:L,strokeDashoffset:L,opacity:1});});
-    gsap.set($('.root',r),{opacity:0});
-    gsap.set($$('.moves3 .mv',r),{opacity:0,y:14});
+    hideAllPd(r);
+    gsap.set($('.gTint',r),{opacity:0});
+    gsap.set($('.node',r),{opacity:0});
+    gsap.set($$('.txN,.txT',r),{opacity:0});
   }
 };
 
 /* ================================================================
-   BEAT FUNCTIONS
+   BEAT FUNCTIONS — the story draws itself.
 ================================================================ */
 const FN={};
 FN.noop=i=>{const tl=T();return fin(tl,i);};
 
-/* ---- r1 ---- */
+/* ---- r1: title, the crack you can see, the dig to the real reason ---- */
 FN.r1_title=i=>{const r=scEl.r1,tl=T();
-  tl.fromTo($('.s1title',r),{opacity:0,y:24},{opacity:1,y:0,duration:.7,ease:E2},0);
+  tl.fromTo($('.heading',r),{opacity:0,y:24},{opacity:1,y:0,duration:.7,ease:E2},0);
   return fin(tl,i);};
 FN.r1_surface=i=>{const r=scEl.r1,tl=T();
-  drawPath(tl,[$('.surf',r)],0,.55);
-  drawPath(tl,[$('.crack',r)],.45,.5);
-  tl.fromTo($('.crackring',r),{opacity:0,scale:.6},{opacity:.9,scale:1,duration:.45,ease:EB},.95)
-    .to($('.crackring',r),{opacity:0,duration:.5},1.7);
+  drawPath(tl,[$('.surf',r)],0,.7);
+  drawPath(tl,[$('.crack',r)],.55,.55);
+  tl.fromTo($('.ring',r),{opacity:0,scale:.6,transformOrigin:'center center',transformBox:'fill-box'},{opacity:.9,scale:1,duration:.5,ease:EB},1.1)
+    .to($('.ring',r),{opacity:0,duration:.6},2.0);
   return fin(tl,i);};
 FN.r1_dig=i=>{const r=scEl.r1,tl=T();
-  dashKeep(tl,$('.dig',r),0,.7);
-  tl.fromTo($('.root',r),{opacity:0,scale:.5,transformOrigin:'center center',transformBox:'fill-box'},{opacity:1,scale:1,duration:.5,ease:EB},.6);
-  tl.fromTo($('.rootdot',r),{opacity:0},{opacity:1,duration:.3},.85);
+  fadeIn(tl,[$('.gTint',r)],0,.6);
+  drawPath(tl,$$('.strata',r),.1,.8,.2);
+  drawPath(tl,[$('.root',r)],.4,.9);
+  drawPath(tl,$$('.rlet',r),.9,.4,.12);
+  popIn(tl,[$('.node',r)],1.5,.5);
+  fadeIn(tl,[$('.ndot',r)],1.8,.3);
   return fin(tl,i);};
 
-/* ---- r2 ---- */
+/* ---- r2: two people, same problem ---- */
 FN.r2_two=i=>{const r=scEl.r2,tl=T();
-  pop(tl,$$('.pcol',r),0,.6);
+  drawPath(tl,[$('.box',r),$('.box2',r)],0,.6,.15);
+  drawPath(tl,$$('.gear',r),.4,.5,.06);
+  drawPath(tl,$$('.gear2',r),.55,.5,.06);
+  drawPath(tl,[$('.crL',r),$('.crR',r)],.9,.5,.15);
   return fin(tl,i);};
 FN.r2_patch=i=>{const r=scEl.r2,tl=T();
-  tl.fromTo($('.patch',r),{opacity:0,y:-26,rotation:-16},{opacity:1,y:0,rotation:-8,duration:.45,ease:'power2.in'},0);
-  tl.fromTo($('.colA',r),{scale:1},{scale:1.015,duration:.09,ease:'none'},.45).to($('.colA',r),{scale:1,duration:.2},.54);
-  drawPath(tl,[$('.colA .rl',r)],.5,.4);
+  tl.fromTo($('.patch',r),{opacity:0,y:-34,rotation:-14},{opacity:1,y:0,rotation:-7,duration:.4,ease:'power2.in'},0);
+  pulse(tl,$('.wgL',r),.4,1.015);
   return fin(tl,i);};
 FN.r2_breaks=i=>{const r=scEl.r2,tl=T();
-  tl.fromTo($('.b1',r),{opacity:0,scale:.5,transformOrigin:'center center',transformBox:'fill-box'},{opacity:1,scale:1,duration:.35,ease:EB},0);
-  tl.fromTo($('.b2',r),{opacity:0,scale:.5,transformOrigin:'center center',transformBox:'fill-box'},{opacity:1,scale:1,duration:.35,ease:EB},.9);
+  drawPath(tl,[$('.laneL',r)],0,.5);
+  drawPath(tl,[$('.bx1',r)],.5,.3);
+  pulse(tl,$('.wgL',r),.55,1.02);
+  drawPath(tl,[$('.bx2',r)],1.5,.3);
+  pulse(tl,$('.wgL',r),1.55,1.02);
   return fin(tl,i);};
 FN.r2_dig=i=>{const r=scEl.r2,tl=T();
-  drawPath(tl,[$('.colB .rl',r)],0,.4);
-  tl.fromTo($('.colB .dig',r),{opacity:0},{opacity:1,duration:.15},.2);
-  drawPath(tl,[$('.colB .dig',r)],.2,.5);
-  tl.fromTo($('.colB .root',r),{opacity:0,scale:.5,transformOrigin:'center center',transformBox:'fill-box'},{opacity:1,scale:1,duration:.45,ease:EB},.7);
-  tl.fromTo($('.colB .rootdot',r),{opacity:0},{opacity:1,duration:.3},.95);
+  dashKeep(tl,$('.shaft',r),0,.45);
+  fadeIn(tl,[$('.tintR',r)],.3,.5);
+  drawPath(tl,[$('.surfR',r)],.3,.5);
+  dashKeep(tl,$('.shaft2',r),.75,.4);
+  popIn(tl,[$('.nodeR',r)],1.15,.45);
   return fin(tl,i);};
 FN.r2_fix=i=>{const r=scEl.r2,tl=T();
-  drawPath(tl,[$('.colB .ok',r)],0,.4);
-  drawPath(tl,[$('.colB .calm',r)],.45,.4);
-  tl.add(()=>$('.colB',r).classList.add('win2'),.5);
-  if(i)$('.colB',r).classList.add('win2');
+  drawPath(tl,[$('.okR',r)],0,.4);
+  drawPath(tl,[$('.sealR',r)],.4,.5);
+  tl.to($('.crR',r),{opacity:0,duration:.4},.5);
+  drawPath(tl,[$('.laneR',r)],.9,.5);
+  drawPath(tl,[$('.okLane',r)],1.4,.35);
   return fin(tl,i);};
 FN.r2_same=i=>{const r=scEl.r2,tl=T();
-  tl.to($('.colA',r),{opacity:.55,duration:.6,ease:E1},0);
+  tl.to([$('.wgL',r),$('.patch',r),$('.laneL',r),$('.bx1',r),$('.bx2',r)],{opacity:.4,duration:.6,ease:E1},0);
   return fin(tl,i);};
 
-/* ---- r3 ---- */
-function r3card(cls){return i=>{const r=scEl.r3,tl=T();
-  pop(tl,[$(cls,r)],0,.6);
+/* ---- r3: three medallions, then the fork ---- */
+function r3st(mc,lg,tx){return i=>{const r=scEl.r3,tl=T();
+  drawPath(tl,[$(mc,r)],0,.55);
+  popIn(tl,[$(lg,r)],.35,.5);
+  txt(tl,[$(tx,r)],.55,.45);
   return fin(tl,i);};}
-FN.r3_cf=r3card('.e-cf');
-FN.r3_ty=r3card('.e-ty');
-FN.r3_sup=r3card('.e-sup');
+FN.r3_cf=r3st('.mCF .mc','.mCF .lg','.mCF .tx');
+FN.r3_ty=r3st('.mTY .mc','.mTY .lg','.mTY .tx');
+FN.r3_sup=r3st('.mSUP .mc','.mSUP .lg','.mSUP .tx');
 FN.r3_once=i=>{const r=scEl.r3,tl=T();
-  rise(tl,[$('.laneA',r)],0,.45);
-  drawPath(tl,$$('.laneA .pd2',r),.3,.5);
+  drawPath(tl,[$('.stem',r)],0,.35);
+  drawPath(tl,[$('.brL',r)],.3,.7);
+  drawPath(tl,[$('.okOnce',r)],1.0,.35);
+  txt(tl,[$('.txOnce',r)],1.1,.4);
   return fin(tl,i);};
 FN.r3_forever=i=>{const r=scEl.r3,tl=T();
-  rise(tl,[$('.laneB',r)],0,.45);
-  drawPath(tl,[$('.laneB .rl',r)],.3,.5);
-  ['.fx1','.fx2','.fx3'].forEach((c,k)=>{
-    tl.fromTo($(c,r),{opacity:0,scale:.5,transformOrigin:'center center',transformBox:'fill-box'},{opacity:1,scale:1,duration:.32,ease:EB},.7+k*.5);
-  });
+  drawPath(tl,[$('.brR',r)],0,.7);
+  drawPath(tl,[$('.fx1',r)],.8,.3);
+  drawPath(tl,[$('.fx2',r)],1.5,.3);
+  drawPath(tl,[$('.fx3',r)],2.2,.3);
+  txt(tl,[$('.txFor',r)],.9,.4);
   return fin(tl,i);};
 FN.r3_gap=i=>{const r=scEl.r3,tl=T();
-  tl.to($('.laneB',r),{opacity:.55,y:4,duration:.6,ease:E1},0);
-  tl.to($('.laneA',r),{y:-4,duration:.6,ease:E1},0);
-  if(i)$('.laneB',r).classList.add('dimmed');
+  tl.to($('.brRg',r),{opacity:.42,duration:.6,ease:E1},0);
   return fin(tl,i);};
 
-/* ---- r4 ---- */
+/* ---- r4: the doctor ---- */
 FN.r4_patient=i=>{const r=scEl.r4,tl=T();
-  rise(tl,[$('.patient',r)],0,.55);
-  tl.fromTo($('.ache',r),{opacity:0,scale:.6},{opacity:1,scale:1,duration:.4,ease:EB},.4);
-  tl.fromTo($('.ache',r),{rotation:-8},{rotation:8,duration:.14,repeat:5,yoyo:true,ease:'none'},.8).set($('.ache',r),{rotation:0});
+  drawPath(tl,[$('.head',r)],0,.6);
+  drawPath(tl,$$('.star .pd',r),.5,.3,.06);
+  pulse(tl,$('.star',r),1.1,1.15);
   return fin(tl,i);};
 FN.r4_pill=i=>{const r=scEl.r4,tl=T();
-  rise(tl,[$('.pathc.lazy',r)],0,.5);
-  tl.to($('.ache',r),{opacity:.35,duration:.5,ease:E1},.6);
+  drawPath(tl,[$('.lzPath',r)],0,.55);
+  popIn(tl,[$('.pillIc',r)],.45,.45);
+  txt(tl,[$('.txPill',r)],.6,.4);
+  tl.to($('.star',r),{opacity:.3,duration:.5,ease:E1},1.0);
   return fin(tl,i);};
 FN.r4_back=i=>{const r=scEl.r4,tl=T();
-  tl.to($('.ache',r),{opacity:1,duration:.3,ease:E1},0);
-  tl.fromTo($('.ache',r),{rotation:-8},{rotation:8,duration:.14,repeat:3,yoyo:true,ease:'none'},.3).set($('.ache',r),{rotation:0});
-  tl.fromTo($('.xback',r),{opacity:0},{opacity:1,duration:.35},.2);
+  dashKeep(tl,$('.loopArc',r),0,.7);
+  tl.to($('.star',r),{opacity:1,duration:.3,ease:E1},.6);
+  pulse(tl,$('.star',r),.9,1.2);
   return fin(tl,i);};
 FN.r4_asks=i=>{const r=scEl.r4,tl=T();
-  rise(tl,[$('.pathc.good',r)],0,.5);
-  tl.fromTo($$('.qq',r),{opacity:0,x:-14},{opacity:1,x:0,duration:.45,ease:E2,stagger:1.15},.3);
+  drawPath(tl,[$('.gdPath',r)],0,.5);
+  drawPath(tl,[$('.q1c',r)],.4,.4);fadeIn(tl,[$('.txQ1',r)],.6,.3);txt(tl,[$('.txQ1b',r)],.7,.4);
+  drawPath(tl,[$('.gd2',r)],1.5,.3);
+  drawPath(tl,[$('.q2c',r)],1.75,.4);fadeIn(tl,[$('.txQ2',r)],1.95,.3);txt(tl,[$('.txQ2b',r)],2.05,.4);
+  drawPath(tl,[$('.gd3',r)],2.9,.3);
+  drawPath(tl,[$('.q3c',r)],3.15,.4);fadeIn(tl,[$('.txQ3',r)],3.35,.3);txt(tl,[$('.txQ3b',r)],3.45,.4);
   return fin(tl,i);};
 FN.r4_root=i=>{const r=scEl.r4,tl=T();
-  pop(tl,[$('.rootq',r)],0,.55);
+  drawPath(tl,[$('.gd4',r)],0,.35);
+  popIn(tl,[$('.glassIc',r)],.3,.5);
+  txt(tl,[$('.txDehy',r)],.55,.45);
   return fin(tl,i);};
 FN.r4_sc=i=>{const r=scEl.r4,tl=T();
-  tl.to($('.pillc',r),{opacity:.55,duration:.5,ease:E1},0);
-  tl.fromTo($('.okr',r),{opacity:0},{opacity:1,duration:.35},.5);
+  drawPath(tl,[$('.strkPill',r)],0,.4);
+  tl.to([$('.pillIc',r),$('.txPill',r)],{opacity:.4,duration:.5,ease:E1},.2);
+  tl.fromTo($('.glassRing',r),{opacity:0,scale:.7,transformOrigin:'center center',transformBox:'fill-box'},{opacity:1,scale:1,duration:.5,ease:EB},.5);
   return fin(tl,i);};
 FN.r4_bedoc=i=>{const r=scEl.r4,tl=T();
-  tl.add(()=>{$('.pathc.good',r).classList.add('good2');$('.pathc.lazy',r).classList.add('dimmed');},.05);
-  tl.fromTo($('.pathc.good',r),{y:0},{y:-5,duration:.5,ease:E1},.05);
-  if(i){$('.pathc.good',r).classList.add('good2');$('.pathc.lazy',r).classList.add('dimmed');}
+  tl.to($('.lazyG',r),{opacity:.3,duration:.6,ease:E1},0);
   return fin(tl,i);};
 FN.r4_alarm=i=>{const r=scEl.r4,tl=T();
-  /* cause and alarm answer each other: dehydration pulses, then the bell */
-  tl.fromTo($('.rootq',r),{scale:1},{scale:1.06,duration:.3,ease:E1,transformOrigin:'center center'},0).to($('.rootq',r),{scale:1,duration:.3},.3);
-  tl.fromTo($('.ache',r),{scale:1},{scale:1.3,duration:.25,ease:E1},.75).to($('.ache',r),{scale:1,duration:.3},1.0);
-  tl.fromTo($('.ache',r),{rotation:-8},{rotation:8,duration:.13,repeat:3,yoyo:true,ease:'none'},.75).set($('.ache',r),{rotation:0});
-  tl.fromTo($('.rootq',r),{scale:1},{scale:1.06,duration:.3,ease:E1},1.7).to($('.rootq',r),{scale:1,duration:.3},2.0);
+  pulse(tl,$('.glassG',r),0,1.05);
+  pulse(tl,$('.star',r),.75,1.25);
+  pulse(tl,$('.glassG',r),1.7,1.05);
   return fin(tl,i);};
 
-/* ---- r5 ---- */
+/* ---- r5: the three moves ---- */
 FN.r5_three=i=>{const r=scEl.r5,tl=T();
-  rise(tl,$$('.mv',r),0,.5);
+  drawPath(tl,[$('.mvc1',r),$('.mvc2',r),$('.mvc3',r)],0,.5,.15);
+  txt(tl,$$('.txN1,.txN2,.txN3',r),.3,.3,.15);
+  txt(tl,$$('.txT1,.txT2,.txT3',r),.45,.4,.15);
   return fin(tl,i);};
-function showDemo(r,tl,cls,pos){
-  ['.dwhys','.dlq','.dev'].forEach(c=>{ if(c!==cls) tl.to($(c,r),{opacity:0,duration:.35,ease:'power1.in'},pos||0); });
-  tl.to($(cls,r),{opacity:1,duration:.45,ease:E1},(pos||0)+.25);
-}
-function mvOn(r,tl,n,pos){
-  tl.add(()=>{$('.m'+n,r).classList.add('onm');},pos||0);
+function mvActivate(r,tl,n,pos){
+  tl.add(()=>{const c=$('.mvc'+n,r);c.classList.remove('st3');c.classList.add('st','acc');},pos||0);
+  pulse(tl,$('.mvc'+n,r),(pos||0)+.02,1.15);
 }
 FN.r5_m1=i=>{const r=scEl.r5,tl=T();
-  mvOn(r,tl,1,.05);
-  if(i)$('.m1',r).classList.add('onm');
+  mvActivate(r,tl,1,.05);
+  if(i){const c=$('.mvc1',r);c.classList.remove('st3');c.classList.add('st','acc');}
   return fin(tl,i);};
 FN.r5_whys=i=>{const r=scEl.r5,tl=T();
-  showDemo(r,tl,'.dwhys',0);
+  fadeIn(tl,[$('.wTint',r)],0,.5);
+  drawPath(tl,[$('.wSurf',r)],.1,.6);
   return fin(tl,i);};
 FN.r5_c0=i=>{const r=scEl.r5,tl=T();
-  tl.fromTo($('.chain .n0',r),{opacity:0,y:10},{opacity:1,y:0,duration:.45,ease:E2},0);
+  txt(tl,[$('.txS0',r)],0,.45);
+  txt(tl,[$('.txRest',r)],.5,.35);
+  drawPath(tl,[$('.stRest',r)],.9,.3);
   return fin(tl,i);};
-function r5chain(w,n){return i=>{const r=scEl.r5,tl=T();
-  tl.fromTo($('.chain .'+w,r),{opacity:0,y:8},{opacity:1,y:0,duration:.3,ease:E1},0);
-  tl.fromTo($('.chain .'+n,r),{opacity:0,y:10},{opacity:1,y:0,duration:.4,ease:E2},.18);
-  return fin(tl,i);};}
-FN.r5_c1=r5chain('w1','n1');
-FN.r5_c2=r5chain('w2','n2');
-FN.r5_c3=r5chain('w3','n3');
+FN.r5_c1=i=>{const r=scEl.r5,tl=T();
+  drawPath(tl,[$('.wD1',r)],0,.3);txt(tl,[$('.txW1',r)],.1,.3);
+  drawPath(tl,[$('.wL1',r)],.3,.4);txt(tl,[$('.txS1',r)],.5,.4);
+  return fin(tl,i);};
+FN.r5_c2=i=>{const r=scEl.r5,tl=T();
+  drawPath(tl,[$('.wD2',r)],0,.3);txt(tl,[$('.txW2',r)],.1,.3);
+  drawPath(tl,[$('.wL2',r)],.3,.4);txt(tl,[$('.txS2',r)],.5,.4);
+  return fin(tl,i);};
+FN.r5_c3=i=>{const r=scEl.r5,tl=T();
+  drawPath(tl,[$('.wD3',r)],0,.3);txt(tl,[$('.txW3',r)],.1,.3);
+  popIn(tl,[$('.wNode',r)],.4,.45);fadeIn(tl,[$('.wDot',r)],.65,.3);
+  txt(tl,[$('.txS3',r)],.7,.4);
+  return fin(tl,i);};
 FN.r5_found=i=>{const r=scEl.r5,tl=T();
-  tl.fromTo($('.chain .n3',r),{scale:1},{scale:1.05,duration:.28,ease:E1},0).to($('.chain .n3',r),{scale:1,duration:.3},.28);
+  pulse(tl,$('.wNode',r),0,1.15);
   return fin(tl,i);};
 FN.r5_flow=i=>{const r=scEl.r5,tl=T();
-  $$('.chain .cwhy',r).forEach((w,k)=>{
-    tl.fromTo(w,{scale:1},{scale:1.18,duration:.2,ease:E1},k*.22).to(w,{scale:1,duration:.22,ease:E1},k*.22+.2);
-  });
+  pulse(tl,$('.txW1',r),0,1.25);pulse(tl,$('.txW2',r),.3,1.25);pulse(tl,$('.txW3',r),.6,1.25);
+  pulse(tl,$('.wNode',r),.95,1.1);
   return fin(tl,i);};
+function eraseWhys(r,tl,pos){
+  erasePaths(tl,$$('.dWhys .pd',r),pos||0,.35);
+  tl.to($$('.dWhys text',r),{opacity:0,duration:.3},pos||0);
+  tl.to([$('.wTint',r),$('.wNode',r),$('.wDot',r)],{opacity:0,duration:.35},pos||0);
+}
+function eraseLq(r,tl,pos){
+  erasePaths(tl,$$('.dLq .pd',r),pos||0,.35);
+  tl.to($$('.dLq text',r),{opacity:0,duration:.3},pos||0);
+  tl.to([$('.megaIc',r),$('.dbIc',r),$('.dbRing',r),$('.lqTint',r)],{opacity:0,duration:.35},pos||0);
+}
 FN.r5_m2=i=>{const r=scEl.r5,tl=T();
-  mvOn(r,tl,2,.05);
-  showDemo(r,tl,'.dlq',0);
-  if(i)$('.m2',r).classList.add('onm');
+  eraseWhys(r,tl,0);
+  mvActivate(r,tl,2,.45);
+  if(i){const c=$('.mvc2',r);c.classList.remove('st3');c.classList.add('st','acc');}
   return fin(tl,i);};
 FN.r5_loud=i=>{const r=scEl.r5,tl=T();
-  tl.fromTo($('.lqcard.loud',r),{opacity:0,y:12},{opacity:1,y:0,duration:.45,ease:E2},0);
-  tl.fromTo($('.lqcard.loud',r),{x:-3},{x:3,duration:.09,repeat:5,yoyo:true,ease:'none'},.5).set($('.lqcard.loud',r),{x:0});
+  popIn(tl,[$('.megaIc',r)],0,.5);
+  drawPath(tl,[$('.wv1',r),$('.wv2',r),$('.wv3',r)],.35,.35,.15);
+  txt(tl,[$('.txLoud',r)],.6,.4);
+  tl.fromTo($('.megaIc',r),{x:-2},{x:2,duration:.09,repeat:5,yoyo:true,ease:'none'},1.1).set($('.megaIc',r),{x:0});
   return fin(tl,i);};
 FN.r5_quiet=i=>{const r=scEl.r5,tl=T();
-  tl.fromTo($('.lqdig',r),{opacity:0},{opacity:1,duration:.2},0);
-  drawPath(tl,$$('.lqdig .pd2',r),.1,.45);
-  tl.fromTo($('.lqcard.quiet',r),{opacity:0,y:12},{opacity:1,y:0,duration:.5,ease:E2},.4);
+  dashKeep(tl,$('.lqShaft',r),0,.5);
+  fadeIn(tl,[$('.lqTint',r)],.3,.5);
+  drawPath(tl,[$('.lqSurf',r)],.3,.5);
+  popIn(tl,[$('.dbIc',r)],.85,.5);
+  txt(tl,[$('.txQuiet',r)],1.1,.45);
   return fin(tl,i);};
 FN.r5_fixquiet=i=>{const r=scEl.r5,tl=T();
-  tl.to($('.lqcard.loud',r),{opacity:.45,duration:.55,ease:E1},0);
-  tl.fromTo($('.lqcard.quiet',r),{scale:1},{scale:1.05,duration:.28,ease:E1},.1).to($('.lqcard.quiet',r),{scale:1,duration:.3},.38);
-  if(i)$('.lqcard.loud',r).classList.add('dimmed');
+  drawPath(tl,[$('.strkLoud',r)],0,.45);
+  tl.to([$('.megaIc',r),$('.wv1',r),$('.wv2',r),$('.wv3',r),$('.txLoud',r)],{opacity:.35,duration:.5,ease:E1},.3);
+  tl.fromTo($('.dbRing',r),{opacity:0,scale:.7,transformOrigin:'center center',transformBox:'fill-box'},{opacity:1,scale:1,duration:.5,ease:EB},.6);
   return fin(tl,i);};
 FN.r5_m3=i=>{const r=scEl.r5,tl=T();
-  mvOn(r,tl,3,.05);
-  showDemo(r,tl,'.dev',0);
-  if(i)$('.m3',r).classList.add('onm');
+  eraseLq(r,tl,0);
+  tl.to($('.strkLoud',r),{opacity:0,duration:.3},0);
+  mvActivate(r,tl,3,.45);
+  if(i){const c=$('.mvc3',r);c.classList.remove('st3');c.classList.add('st','acc');}
   return fin(tl,i);};
 FN.r5_evidence=i=>{const r=scEl.r5,tl=T();
-  rise(tl,$$('.evrow',r),0,.45);
-  /* chips slide until their dots share one vertical line (align at 50%) */
-  tl.to($('.t1 .evchip',r),{left:'calc(50% - 46px)',duration:.9,ease:E2},.8);
-  tl.to($('.t2 .evchip',r),{left:'calc(50% - 46px)',duration:.9,ease:E2},1.0);
-  tl.to($('.t3 .evchip',r),{left:'calc(50% - 46px)',duration:.9,ease:E2},1.2);
+  drawPath(tl,[$('.ev1',r),$('.ev2',r),$('.ev3',r)],0,.5,.12);
+  txt(tl,$$('.txE1,.txE2,.txE3',r),.2,.4,.12);
+  fadeIn(tl,[$('.evm1',r)],.5,.3);fadeIn(tl,[$('.evm2',r)],.65,.3);fadeIn(tl,[$('.evm3',r)],.8,.3);
+  tl.to($('.evm1',r),{x:202,duration:.9,ease:E2},1.3);
+  tl.to($('.evm2',r),{x:-140,duration:.9,ease:E2},1.55);
+  tl.to($('.evm3',r),{x:40,duration:.9,ease:E2},1.8);
   return fin(tl,i);};
 FN.r5_match=i=>{const r=scEl.r5,tl=T();
-  tl.fromTo($('.evline',r),{opacity:1,scaleY:0},{scaleY:1,duration:.55,ease:E1},0);
-  tl.fromTo($('.evok',r),{opacity:0,y:6},{opacity:1,y:0,duration:.4,ease:E2},.5);
+  dashKeep(tl,$('.evLine',r),0,.6,'5 7');
+  drawPath(tl,[$('.evOk',r)],.6,.4);
   return fin(tl,i);};
 FN.r5_wrong=i=>{const r=scEl.r5,tl=T();
-  tl.fromTo($('.evghost',r),{opacity:0},{opacity:1,duration:.3},0).to($('.evghost',r),{opacity:0,duration:.5},1.6);
+  drawPath(tl,[$('.evGhost',r)],0,.35);
+  tl.to($('.evGhost',r),{opacity:0,duration:.5},1.6);
   return fin(tl,i);};
 
-/* ---- r6 ---- */
+/* ---- r6: Priya ---- */
 FN.r6_priya=i=>{const r=scEl.r6,tl=T();
-  rise(tl,[$('.person',r)],0,.55);
+  fadeIn(tl,[$('.pAv',r)],0,.4);
+  txt(tl,$$('.txPP,.txPN,.txPR',r),.15,.4,.1);
   return fin(tl,i);};
 FN.r6_churn=i=>{const r=scEl.r6,tl=T();
-  tl.fromTo($('.chartcard',r),{opacity:0,y:22,scale:.96},{opacity:1,y:0,scale:1,duration:.55,ease:E2},0);
-  drawPath(tl,[$('.churn',r)],.5,1.4);
+  drawPath(tl,[$('.axY',r),$('.axX',r)],0,.5,.1);
+  drawPath(tl,[$('.churn',r)],.5,1.6);
+  txt(tl,[$('.txChurn',r)],1.9,.4);
+  txt(tl,[$('.txLeg1',r)],2.0,.35);
   return fin(tl,i);};
 FN.r6_discount=i=>{const r=scEl.r6,tl=T();
-  tl.fromTo($('.disc',r),{opacity:0,y:12},{opacity:1,y:0,duration:.45,ease:E2},0);
-  tl.to($('.disc',r),{opacity:.55,duration:.5,ease:E1},1.4);
+  fadeIn(tl,[$('.tagIc',r)],0,.35);
+  txt(tl,[$('.txDisc',r)],.15,.4);
+  drawPath(tl,[$('.stDisc',r)],1.3,.4);
+  tl.to($('.discG',r),{opacity:.5,duration:.4,ease:E1},1.8);
   return fin(tl,i);};
 FN.r6_whys=i=>{const r=scEl.r6,tl=T();
-  tl.fromTo($('.minichain',r),{opacity:0,y:12},{opacity:1,y:0,duration:.4,ease:E2},0);
-  tl.fromTo($('.mc0',r),{opacity:0,y:8},{opacity:1,y:0,duration:.4,ease:E2},.4);
-  tl.fromTo($('.mw1',r),{opacity:0},{opacity:1,duration:.25},2.4);
-  tl.fromTo($('.mc1',r),{opacity:0,y:8},{opacity:1,y:0,duration:.4,ease:E2},2.6);
-  tl.fromTo($('.mw2',r),{opacity:0},{opacity:1,duration:.25},4.3);
-  tl.fromTo($('.mc2',r),{opacity:0,y:8},{opacity:1,y:0,duration:.45,ease:E2},4.55);
+  dashKeep(tl,$('.leader',r),0,.5);
+  txt(tl,[$('.txC0',r)],.6,.45);
+  drawPath(tl,[$('.cD1',r)],2.4,.3);txt(tl,[$('.txCW1',r)],2.5,.3);
+  txt(tl,[$('.txC1',r)],2.8,.45);
+  drawPath(tl,[$('.cD2',r)],4.4,.3);txt(tl,[$('.txCW2',r)],4.5,.3);
+  tl.fromTo($('.rootBox',r),{opacity:0,scale:.9,transformOrigin:'center center',transformBox:'fill-box'},{opacity:1,scale:1,duration:.45,ease:EB},4.8);
+  txt(tl,[$('.txC2',r)],4.95,.4);
   return fin(tl,i);};
 FN.r6_prove=i=>{const r=scEl.r6,tl=T();
-  tl.fromTo($('.kob',r),{opacity:0},{opacity:1,duration:.3},.1);
+  txt(tl,[$('.txLeg2',r)],0,.4);
   return fin(tl,i);};
 FN.r6_align=i=>{const r=scEl.r6,tl=T();
-  drawPath(tl,[$('.ob',r)],0,1.5);
-  tl.fromTo($('.receipts',r),{opacity:0,y:8},{opacity:1,y:0,duration:.35,ease:E2},1.1);
-  tl.fromTo($$('.receipts .rchip',r),{opacity:0,y:8},{opacity:1,y:0,duration:.4,ease:E2,stagger:.16},1.2);
+  drawPath(tl,[$('.ob',r)],0,1.6);
+  drawPath(tl,[$('.okT1',r)],1.4,.3);
+  drawPath(tl,[$('.okT2',r)],1.7,.3);
+  drawPath(tl,[$('.okT3',r)],2.0,.3);
   return fin(tl,i);};
 FN.r6_fix=i=>{const r=scEl.r6,tl=T();
-  pop(tl,[$('.fixchip',r)],0,.5);
-  tl.fromTo($('.fixdot',r),{opacity:0,scale:.4,transformOrigin:'center center',transformBox:'fill-box'},{opacity:1,scale:1,duration:.35,ease:EB},.3);
+  drawPath(tl,[$('.flag',r)],0,.45);
+  txt(tl,[$('.txFix',r)],.4,.4);
   return fin(tl,i);};
 FN.r6_drop=i=>{const r=scEl.r6,tl=T();
-  tl.fromTo($('.kfx',r),{opacity:0},{opacity:1,duration:.3},.1);
-  drawPath(tl,[$('.churndown',r)],.2,1.2);
+  drawPath(tl,[$('.churnFix',r)],0,1.0);
+  txt(tl,[$('.txLeg3',r)],.9,.4);
   return fin(tl,i);};
 FN.r6_evid=i=>{const r=scEl.r6,tl=T();
-  $$('.receipts .rchip',r).forEach((c,k)=>{
-    tl.fromTo(c,{scale:1},{scale:1.12,duration:.22,ease:E1},k*.18).to(c,{scale:1,duration:.25,ease:E1},k*.18+.22);
-  });
+  pulse(tl,$('.okT1',r),0,1.35);pulse(tl,$('.okT2',r),.2,1.35);pulse(tl,$('.okT3',r),.4,1.35);
   return fin(tl,i);};
 
-/* ---- r7 ---- */
+/* ---- r7: close ---- */
 FN.r7_recap=i=>{const r=scEl.r7,tl=T();
-  drawPath(tl,[$('.surf',r)],0,.5);
-  dashKeep(tl,$('.dig',r),.4,.6);
-  tl.fromTo($('.root',r),{opacity:0,scale:.5,transformOrigin:'center center',transformBox:'fill-box'},{opacity:1,scale:1,duration:.5,ease:EB},.9);
+  fadeIn(tl,[$('.gTint',r)],0,.5);
+  drawPath(tl,[$('.surf',r)],.1,.6);
+  drawPath(tl,[$('.root',r)],.6,.8);
+  popIn(tl,[$('.node',r)],1.3,.5);
   return fin(tl,i);};
 FN.r7_doctor=i=>{const r=scEl.r7,tl=T();
-  rise(tl,$$('.moves3 .mv',r),0,.5);
+  drawPath(tl,$$('.mvc',r),0,.5,.15);
+  txt(tl,$$('.txN',r),.3,.3,.15);
+  txt(tl,$$('.txT',r),.45,.4,.15);
   return fin(tl,i);};
 FN.r7_once=i=>{const r=scEl.r7,tl=T();
-  drawPath(tl,[$('.rootok',r)],0,.5);
-  drawPath(tl,[$('.seal',r)],.4,.5);
+  drawPath(tl,[$('.nodeOk',r)],0,.45);
+  drawPath(tl,[$('.seal',r)],.4,.6);
   return fin(tl,i);};
 
 /* ================================================================
@@ -1052,7 +1027,7 @@ function paintMarks(){$$('.pmk',seek).forEach(m=>{const g=GATES[+m.dataset.k];
 function armGates(t){GATES.forEach(g=>{g.done=g.t<=t+0.04;});paintMarks();}
 function markerEl(g){return $$('.pmk',seek).find(m=>+m.dataset.k===GATES.indexOf(g));}
 function gel(t,c){const e=document.createElement(t);e.className=c;return e;}
-function gpill(pop,txt,cls){let p=$('.tries',pop);if(!p){p=gel('div','tries');pop.appendChild(p);}p.className='tries'+(cls?' '+cls:'');p.textContent=txt;void p.offsetWidth;p.classList.add('in');return p;}
+function gpill(pop,txt2,cls){let p=$('.tries',pop);if(!p){p=gel('div','tries');pop.appendChild(p);}p.className='tries'+(cls?' '+cls:'');p.textContent=txt2;void p.offsetWidth;p.classList.add('in');return p;}
 function ghide(pop){const p=$('.tries',pop);if(p){p.classList.remove('in');setTimeout(()=>{p.parentNode&&p.remove();},420);}}
 function gshake(pop){sndWrong();pop.classList.remove('shake');void pop.offsetWidth;pop.classList.add('shake');}
 function greenRise(pop){const fx=$('.fx',pop);if(!fx)return;fx.classList.remove('glow');void fx.offsetWidth;fx.classList.add('glow');setTimeout(()=>fx.classList.remove('glow'),1300);}
@@ -1078,8 +1053,8 @@ function buildSingle(body,pop,g){const st=gel('div','pstack');
 function buildRank(body,pop,g){
   body.insertAdjacentHTML('beforeend','<div class="phint">Drag into the right order, or tap two to swap</div>');
   const list=gel('div','ranklist');
-  gshuffle(g.items.map((txt,k)=>({txt,k}))).forEach(it=>{const row=gel('div','rankrow');row.draggable=true;row.dataset.i=it.k;
-    row.innerHTML=`<span class="rgrip">${GICON.grip}</span><span>${it.txt}</span>`;list.appendChild(row);});
+  gshuffle(g.items.map((txt2,k)=>({txt2,k}))).forEach(it=>{const row=gel('div','rankrow');row.draggable=true;row.dataset.i=it.k;
+    row.innerHTML=`<span class="rgrip">${GICON.grip}</span><span>${it.txt2}</span>`;list.appendChild(row);});
   let drag=null,selRow=null;
   function afterRow(y){const rows=$$('.rankrow:not(.dragging)',list);
     return rows.reduce((cl,row)=>{const bx=row.getBoundingClientRect();const off=y-bx.top-bx.height/2;
