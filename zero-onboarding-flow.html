@@ -1139,14 +1139,27 @@ async function introStage(){
   await wait(2400);
   line('Five minutes of questions, and you leave with a vision board and the road to it.');
   await wait(1700);
-  dockAction('Ready',()=>go(aboutStage));
+  dockAction('Ready',()=>go(nameStage));
 }
 
-/* ============================ 3 · tell me about yourself ============================ */
-/* Open, on purpose. Not a name field. Whatever lands here gets mined. */
-function aboutStage(){
+/* ============================ 3 · the name ============================ */
+/* First thing, so everything after it can use it. */
+function nameStage(){
   setPhase(0);
-  const {box}=turn({q:'Tell me about yourself.'});
+  turn({q:'What should I call you?'});
+  dockMode='type';
+  dockInput(v=>{
+    const nm=v.trim().split(/\s+/)[0].replace(/[^A-Za-z'-]/g,'');
+    P.name=(nm||'You').charAt(0).toUpperCase()+(nm||'ou').slice(1).toLowerCase();
+    dockMode='voice';
+    go(aboutStage);
+  });
+}
+
+/* ============================ 4 · tell me about yourself ============================ */
+/* Open, on purpose. Whatever lands here gets mined. */
+function aboutStage(){
+  const {box}=turn({q:'Good to meet you, '+P.name+'. Tell me about yourself.'});
   const handle=async text=>{
     P.about=quoteOf(text);
     extractInto(text);
@@ -1274,28 +1287,10 @@ function jobtypeStage(){
   const {box}=turn({q:'Are you looking for a full time job, or an internship?'});
   squares(box,[['bld','Full time','Full time'],['box','An internship','An internship'],
     ['compass','Either, if it is the right one','Either']],
-    v=>{ P.jobtype=v; renderBoard(); afterCommit(()=>go(P.name?synthStage:nameStage)); });
+    v=>{ P.jobtype=v; renderBoard(); afterCommit(()=>go(synthStage)); });
 }
 
-/* ============================ 14 · the name, last ============================ */
-/* The founder was clear: do not open with this. It lands at the end, and the
-   first line of the board rewrites itself the moment it arrives. */
-function nameStage(){
-  turn({q:'By the way, I did not catch your name.'});
-  dockMode='type';
-  dockInput(async v=>{
-    const nm=v.trim().split(/\s+/)[0].replace(/[^A-Za-z'-]/g,'');
-    P.name=(nm||'You').charAt(0).toUpperCase()+(nm||'ou').slice(1).toLowerCase();
-    dockMode='voice';
-    setCap('Adding you to it',true);
-    renderBoard();
-    dockHide(); clearTurn();
-    await wait(1500);
-    synthStage();
-  });
-}
-
-/* ============================ 15 · reading it back ============================ */
+/* ============================ 14 · reading it back ============================ */
 async function synthStage(){
   setPhase(1);
   clearTurn(); dockHide(); await wait(380);
