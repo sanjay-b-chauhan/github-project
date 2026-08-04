@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.simpleicons.org">
 <link rel="preconnect" href="https://upload.wikimedia.org">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#f3f0e8; --panel:#ffffff;
@@ -116,6 +116,14 @@ body{font-family:Nunito,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;b
   font-size:15px;line-height:1;cursor:pointer;display:grid;place-items:center;transition:.18s}
 .row .glyphs button:hover{background:rgba(22,40,29,.13)}
 .row .glyphs button.on{background:var(--lilac);border-color:var(--ink)}
+.row .pickimg{flex:none;width:42px;height:42px;border-radius:10px;border:2px dashed rgba(22,40,29,.26);
+  background:rgba(22,40,29,.04);color:var(--ink-3);cursor:pointer;display:grid;place-items:center;
+  overflow:hidden;padding:0;transition:.2s var(--ease)}
+.row .pickimg:hover{border-color:var(--ink);color:var(--ink)}
+.row .pickimg svg{width:19px;height:19px}
+.row .pickimg img{width:100%;height:100%;object-fit:cover;display:block}
+.row .pickimg.busy{opacity:.5}
+.row .pickimg.bad{border-color:var(--thread);color:var(--thread);border-style:solid}
 
 .emptyrow{padding:22px 16px;text-align:center;border:2px dashed var(--line);border-radius:14px;
   font-family:Fredoka,sans-serif;font-weight:500;font-size:13px;color:var(--ink-3);line-height:1.5}
@@ -222,6 +230,17 @@ body{font-family:Nunito,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;b
 .p-note:after{content:'';position:absolute;right:-3px;bottom:-3px;width:30px;height:30px;background:linear-gradient(135deg,transparent 50%,rgba(0,0,0,.16) 50%);border-bottom-right-radius:6px}
 .p-note.t0{background:var(--sun)} .p-note.t1{background:var(--mint)} .p-note.t2{background:var(--pink)} .p-note.t3{background:var(--sky)}
 
+/* ── polaroid: your own picture, our frame ── */
+.p-photo{background:#fff;padding:11px 11px 0;width:236px;border-radius:6px}
+.p-photo .mark{position:absolute;top:-19px;left:50%;margin-left:-17px;width:34px;height:38px;z-index:6;pointer-events:none}
+.p-photo .mark svg{display:block;filter:drop-shadow(0 3px 3px rgba(5,20,11,.42))}
+.p-photo .shot{position:relative;width:100%;height:214px;border-radius:3px;overflow:hidden;background:#e8e4da;display:grid;place-items:center}
+.p-photo .shot img{width:100%;height:100%;object-fit:cover;display:block}
+.p-photo .shot .none{color:rgba(22,40,29,.3);font-family:Fredoka,sans-serif;font-weight:500;font-size:13px;text-align:center;padding:0 18px;line-height:1.4}
+.p-photo .cap{font-family:Caveat,cursive;font-weight:600;font-size:23px;line-height:1.15;color:#23301f;
+  text-align:center;padding:12px 6px 16px;min-height:52px;word-break:break-word}
+.p-photo .sheen{border-radius:6px}
+
 .p-stk{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;font-size:33px;background:#fff}
 .p-stk .sheen{border-radius:50%}
 .p-stk.s1{background:var(--sun)} .p-stk.s2{background:var(--mint)} .p-stk.s3{background:var(--lilac)} .p-stk.s4{background:var(--coral)}
@@ -239,6 +258,17 @@ body{font-family:Nunito,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;b
 .kill:hover{background:var(--thread)}
 .p-name .kill{top:2px;right:-6px}
 body.exporting .kill{display:none}
+
+/* one hue across the whole board when a theme is picked */
+body.themed .p-tag{background:var(--accent) !important}
+body.themed .p-role{background:var(--accent) !important}
+body.themed .p-stk.s1,body.themed .p-stk.s2,body.themed .p-stk.s3,body.themed .p-stk.s4{background:var(--accent) !important}
+body.themed .p-note.t0,body.themed .p-note.t1,body.themed .p-note.t2,body.themed .p-note.t3{background:var(--accent-soft) !important}
+body.themed .p-vision mark{background:linear-gradient(transparent 54%, var(--accent) 54%) !important}
+body.themed .chip{background:var(--accent) !important}
+body.themed .chip.co{background:#fff !important}
+body.themed .brand-mark,body.themed .addrow:hover{background:var(--accent) !important}
+body.themed .p-loc .mark svg circle[fill="#e0473a"]{fill:var(--accent)}
 /* html2canvas throws box-shadow away, which is why the download looked flat.
    It does honour drop-shadow filters, and a zero-blur one gives the same hard
    edge — so for the shot every piece swaps its shadow over to a filter. */
@@ -332,6 +362,12 @@ body.shooting .board{visibility:visible;position:fixed !important;left:0;top:0;
           <button class="ibtn" id="tProps" data-tip="Props" aria-label="Props">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M17 8.5V17a5 5 0 0 1-10 0V6.6a3.2 3.2 0 0 1 6.4 0V16a1.4 1.4 0 0 1-2.8 0V8.5"/></svg>
+          </button>
+          <button class="ibtn" id="tTheme" data-tip="Many colours" aria-label="Colour theme">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3a9 9 0 1 0 0 18c1.4 0 2.2-.9 2.2-2 0-1.5-1.3-1.8-1.3-3 0-.9.8-1.7 1.8-1.7H17a4 4 0 0 0 4-4c0-4-4-7.3-9-7.3Z"/>
+              <circle cx="7.5" cy="11" r="1.2" fill="currentColor" stroke="none"/><circle cx="11" cy="7.5" r="1.2" fill="currentColor" stroke="none"/>
+              <circle cx="15.5" cy="8.5" r="1.2" fill="currentColor" stroke="none"/></svg>
           </button>
           <button class="ibtn" id="tSpread" data-tip="Tidy" aria-label="Spacing">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -444,9 +480,10 @@ const TYPES = {
   note   :{label:'Note',    icon:'🗒️', ph:'Say no to the good ones.',           accent:'#ffb3d1'},
   field  :{label:'Field',   icon:'▦',  ph:'₹42L', ph2:'Salary',                 accent:'#cfd6dc'},
   line   :{label:'Line',    icon:'❝',  ph:'Made hiring feel like a first day.', accent:'#ffd84d'},
-  sticker:{label:'Sticker', icon:'⭐', ph:'',                                   accent:'#c9b8ff'}
+  sticker:{label:'Sticker', icon:'⭐', ph:'',                                   accent:'#c9b8ff'},
+  photo  :{label:'Photo',   icon:'🖼️', ph:'write something underneath',         accent:'#ffb3d1'}
 };
-const TYPE_ORDER = ['role','company','place','tag','note','field','line','sticker'];
+const TYPE_ORDER = ['role','company','place','tag','note','field','line','photo','sticker'];
 /* Every name here was checked against the icon CDN and returns a real mark,
    so anything picked from the suggestions gets its true logo, never a stand-in.
    Anything typed by hand still works and falls back to a coloured monogram. */
@@ -459,9 +496,70 @@ const COMPANIES = ['Google','Apple','Meta','Netflix','Nvidia','Tesla','Stripe','
 const STICKERS = ['★','♥','⚡','🔥','✓','☺','✿','!'];
 const TAG_TONES = ['#c9f24f','#8ecdff','#c9b8ff','#ff9e7d','#8fe3c0','#ffb3d1'];
 
+/* ═══════════════════════════════════════════════════════════
+   THEME — the pills are many-coloured by default. Pick a theme
+   and the whole board drops to that one hue instead.
+   ═══════════════════════════════════════════════════════════ */
+const THEMES = [
+  {id:'default', name:'Many colours', c:'',        soft:''       },
+  {id:'sun',     name:'Yellow',       c:'#ffd84d', soft:'#ffeeb0'},
+  {id:'orange',  name:'Orange',       c:'#ffa552', soft:'#ffdcbc'},
+  {id:'coral',   name:'Coral',        c:'#ff9e7d', soft:'#ffd4c4'},
+  {id:'lime',    name:'Lime',         c:'#c9f24f', soft:'#e6faab'},
+  {id:'mint',    name:'Mint',         c:'#8fe3c0', soft:'#ccf3e3'},
+  {id:'sky',     name:'Blue',         c:'#8ecdff', soft:'#d2eaff'},
+  {id:'lilac',   name:'Lilac',        c:'#c9b8ff', soft:'#e5ddff'},
+  {id:'paper',   name:'No colour',    c:'#ffffff', soft:'#f2efe6'}
+];
+function applyTheme(){
+  const t = THEMES.find(x=>x.id===S.theme) || THEMES[0];
+  const themed = t.id !== 'default';
+  document.body.classList.toggle('themed', themed);
+  if(themed){
+    document.documentElement.style.setProperty('--accent', t.c);
+    document.documentElement.style.setProperty('--accent-soft', t.soft);
+  }
+  const b = $('#tTheme');
+  if(b){ b.dataset.tip = t.name; b.classList.toggle('on', themed); }
+}
+
+/* An image goes straight into the board, so it has to survive a reload in
+   localStorage. Stills get scaled down and re-encoded; GIFs are left alone,
+   because redrawing one through a canvas would freeze it on frame one. */
+const MAX_GIF = 2.2 * 1024 * 1024;
+function readImage(file){
+  return new Promise((resolve, reject)=>{
+    if(!file || !/^image\//.test(file.type)) return reject(new Error('That is not an image.'));
+    const fr = new FileReader();
+    fr.onerror = ()=>reject(new Error('Could not read that file.'));
+    fr.onload = ()=>{
+      const raw = fr.result;
+      if(file.type === 'image/gif'){
+        if(raw.length > MAX_GIF) return reject(new Error('That GIF is too big — keep it under about 2 MB.'));
+        return resolve(raw);
+      }
+      const im = new Image();
+      im.onerror = ()=>resolve(raw);
+      im.onload = ()=>{
+        try{
+          const max = 760;
+          const k = Math.min(1, max/Math.max(im.width, im.height));
+          const c = document.createElement('canvas');
+          c.width = Math.max(1, Math.round(im.width*k));
+          c.height = Math.max(1, Math.round(im.height*k));
+          c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+          resolve(c.toDataURL('image/jpeg', 0.82));
+        }catch(e){ resolve(raw); }
+      };
+      im.src = raw;
+    };
+    fr.readAsDataURL(file);
+  });
+}
+
 let S = {
   name:'', entries:[],
-  thread:true, props:false, chrome:true, spread:'tidy', sound:true,
+  thread:true, props:false, chrome:true, spread:'tidy', sound:true, theme:'default',
   mat:{theme:'classic', step:28, major:5, grid:'square', opacity:.17, angles:true, angleStep:15, radii:true, ticks:true, numbers:true, corner:'bl'}
 };
 let POS = {}, zTop = 10, uid = 1;
@@ -659,8 +757,9 @@ function manifest(){
   if(S.name.trim()) out.push({id:'name', type:'name', rot:-1.2});
   let tagIdx = 0;
   S.entries.forEach(en=>{
-    if(!String(en.value||'').trim() && en.type!=='field') return;
+    if(!String(en.value||'').trim() && en.type!=='field' && en.type!=='photo') return;
     if(en.type==='field' && !String(en.value||'').trim() && !String(en.label||'').trim()) return;
+    if(en.type==='photo' && !en.src && !String(en.value||'').trim()) return;   // a picture is content on its own
     const it = {id:'e'+en.id, type:en.type, data:en, rot:en.rot};
     if(en.type==='tag') it.tone = TAG_TONES[tagIdx++ % TAG_TONES.length];
     out.push(it);
@@ -680,6 +779,12 @@ function markup(it){
     case 'line':    return {cls:'p-vision',html:SHEEN+KILL+'<span class="q">“</span>'+highlight(v)};
     case 'note':    return {cls:'p-note t'+(it.data.tone%4), html:SHEEN+KILL+esc(v)};
     case 'sticker': return {cls:'p-stk s'+(it.data.tone%4+1), html:SHEEN+KILL+esc(v||'★')};
+    case 'photo':   return {cls:'p-photo', html:SHEEN+KILL+
+      `<span class="mark">${ART.propPin}</span>
+       <div class="shot">${it.data.src
+          ? `<img alt="" src="${it.data.src}"/>`
+          : '<span class="none">pick a picture or a gif in the panel</span>'}</div>
+       <div class="cap">${esc(v)}</div>`};
     case 'field':   return {cls:'p-cus', html:SHEEN+KILL+
       `<span class="ck">${esc(it.data.label||'Note')}</span><span class="cv">${esc(v||it.data.label)}</span>`};
     case 'company':{
@@ -923,7 +1028,7 @@ function centreOf(el){
   return { x:(parseFloat(el.style.left)||0)+(G?(+G.getProperty(el,'x')||0):0)+el.offsetWidth/2,
            y:(parseFloat(el.style.top) ||0)+(G?(+G.getProperty(el,'y')||0):0)+el.offsetHeight/2 };
 }
-const SPOKE_TYPES = ['role','company','place','tag','note','field','line'];
+const SPOKE_TYPES = ['role','company','place','tag','note','field','line','photo'];
 const SEGMENTS = 14;
 let ropes = [], ropeSig = '', focusType = null;
 
@@ -1121,6 +1226,40 @@ function buildRow(en){
       g.appendChild(b);
     });
     row.appendChild(g);
+  } else if(en.type === 'photo'){
+    const pick = document.createElement('button');
+    pick.type='button'; pick.className='pickimg';
+    pick.innerHTML = en.src
+      ? `<img alt="" src="${en.src}"/>`
+      : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+           <rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="m4 17 5-5 4.5 4.5L16 14l4 4"/></svg>`;
+    pick.title = en.src ? 'Change the picture' : 'Pick a picture or a gif';
+    const file = document.createElement('input');
+    file.type='file'; file.accept='image/*,image/gif'; file.style.display='none';
+    pick.addEventListener('click', ()=>file.click());
+    file.addEventListener('change', async ()=>{
+      const f = file.files && file.files[0];
+      if(!f) return;
+      pick.classList.add('busy');
+      try{
+        en.src = await readImage(f);
+        pick.classList.remove('busy');
+        Snd.add();
+        renderRows(); sync(); save();
+      }catch(err){
+        pick.classList.remove('busy');
+        pick.classList.add('bad');
+        pick.title = err.message || 'Could not use that file.';
+        setTimeout(()=>{ pick.classList.remove('bad'); }, 2200);
+      }
+    });
+    row.appendChild(pick); row.appendChild(file);
+
+    const cap = document.createElement('input');
+    cap.value = en.value||''; cap.placeholder = T.ph; cap.maxLength = 44;
+    cap.addEventListener('input', ()=>{ en.value = cap.value; queueSync(en.id); });
+    row.appendChild(cap);
+
   } else {
     if(en.type === 'field'){
       const l = document.createElement('input');
@@ -1167,7 +1306,7 @@ function buildRow(en){
   x.title = onlyOfKind ? 'Clear' : 'Remove';
   x.addEventListener('click', ()=>{
     Snd.remove();
-    if(onlyOfKind){ en.value=''; en.label=''; }     // the five basics stay put, they just empty
+    if(onlyOfKind){ en.value=''; en.label=''; en.src=null; }     // the five basics stay put, they just empty
     else { S.entries = S.entries.filter(e=>e.id!==en.id); }
     delete POS['e'+en.id];
     renderRows(); sync(); save();
@@ -1258,6 +1397,12 @@ $('#tMat').addEventListener('click', e=>{
   const t = MAT_THEMES.find(x=>x.id===S.mat.theme);
   e.currentTarget.dataset.tip = t ? t.name+' mat' : 'New mat';
   if(G) G.fromTo('#matSvg',{opacity:.25},{opacity:1,duration:.55,ease:'power2.out'});
+});
+$('#tTheme').addEventListener('click', ()=>{
+  Snd.click();
+  const i = THEMES.findIndex(t=>t.id===S.theme);
+  S.theme = THEMES[(i+1) % THEMES.length].id;
+  applyTheme(); save();
 });
 $('#tThread').addEventListener('click', e=>{ Snd.click(); S.thread=!S.thread; e.currentTarget.classList.toggle('on',S.thread); drawThread(); save(); });
 $('#tProps').addEventListener('click',  e=>{ Snd.click(); S.props=!S.props;  e.currentTarget.classList.toggle('on',S.props);  sync(); save(); });
@@ -1420,6 +1565,7 @@ function boot(){
   $('#colist').innerHTML = COMPANIES.map(c=>`<option value="${esc(c)}"></option>`).join('');
   nameInput.value = S.name || '';
   nameTick(!!S.name);
+  applyTheme();
   renderRows(); drawMat(); sync();
   if(!S.name.trim()) setTimeout(()=>nameInput.focus(), 700);
 
