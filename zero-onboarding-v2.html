@@ -137,6 +137,20 @@ svg{ display:block; }
 .steps{ height:46px; padding:0 20px; display:flex; align-items:center; gap:8px; background:var(--field); border-radius:var(--pill); }
 .steps i{ width:4px; height:4px; border-radius:var(--pill); background:var(--tx-4); }
 .steps .sl{ font-size:12px; color:var(--tx-3); margin-right:4px; white-space:nowrap; }
+.cred{ height:46px; padding:0 17px 0 13px; display:flex; align-items:center; gap:9px;
+  background:var(--field); border-radius:var(--pill); font-size:13.5px; font-weight:600;
+  opacity:0; transform:translateY(-6px); }
+.cred .ci{ display:flex; }
+.cred .ci svg{ width:15px; height:15px; color:#D99A12; }
+.cred b{ font-variant-numeric:tabular-nums; letter-spacing:-.02em; }
+.cred .lbl{ color:var(--tx-3); font-weight:400; font-size:12.5px; }
+/* the drop: it lands where you answered, then rides up to the counter */
+.cdrop{ position:fixed; z-index:93; pointer-events:none; display:flex; flex-direction:column;
+  align-items:center; gap:7px; }
+.cdrop .n{ display:flex; align-items:center; gap:11px; font-size:clamp(34px,3.8vw,54px);
+  font-weight:600; letter-spacing:-.05em; color:#D99A12; line-height:1; }
+.cdrop .n svg{ width:.6em; height:.6em; }
+.cdrop i{ font-style:normal; font-size:12.5px; letter-spacing:-.01em; color:var(--tx-3); }
 .snd{ width:46px; height:46px; border-radius:var(--pill); background:var(--field); display:flex; align-items:center; justify-content:center; color:var(--tx-2); }
 .snd svg{ width:17px; height:17px; }
 .snd.off{ color:var(--tx-4); }
@@ -754,6 +768,7 @@ body.dark .lit{ animation-name:litd; }
     <svg viewBox="0 0 333 96" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ZERO"><path d="M283.572 95.9991C274.465 95.9991 266.219 93.8453 258.834 89.5377C251.45 85.2301 245.604 79.4456 241.296 72.1842C236.988 64.9228 234.834 56.9229 234.834 48.1846C234.834 39.3232 236.988 31.3234 241.296 24.185C245.604 17.0467 251.45 11.3237 258.834 7.0161C266.219 2.70849 274.465 0.554688 283.572 0.554688C292.926 0.554688 301.233 2.70849 308.495 7.0161C315.879 11.3237 321.664 17.1082 325.848 24.3696C330.156 31.508 332.31 39.4463 332.31 48.1846C332.31 56.9229 330.156 64.9228 325.848 72.1842C321.664 79.4456 315.879 85.2301 308.495 89.5377C301.11 93.8453 292.803 95.9991 283.572 95.9991ZM283.572 75.8764C288.864 75.8764 293.541 74.6457 297.603 72.1842C301.664 69.5996 304.864 66.2151 307.202 62.0305C309.664 57.846 310.895 53.2922 310.895 48.3692C310.895 43.3232 309.664 38.7079 307.202 34.5233C304.864 30.3388 301.664 27.0158 297.603 24.5543C293.541 21.9697 288.864 20.6774 283.572 20.6774C278.403 20.6774 273.726 21.9697 269.542 24.5543C265.48 27.0158 262.219 30.3388 259.757 34.5233C257.419 38.7079 256.249 43.3232 256.249 48.3692C256.249 53.2922 257.419 57.846 259.757 62.0305C262.219 66.2151 265.48 69.5996 269.542 72.1842C273.726 74.6457 278.403 75.8764 283.572 75.8764Z" fill="currentColor"/><path d="M204.893 93.7845H183.478V32.6502C183.478 16.2581 196.767 2.96973 213.159 2.96973H237.939V23.8309H212.313C208.215 23.8309 204.893 27.153 204.893 31.251V93.7845Z" fill="currentColor"/><path d="M132.213 95.9983C122.982 95.9983 114.675 93.9676 107.29 89.9061C99.9058 85.7216 94.0598 79.9986 89.7522 72.7372C85.5676 65.4758 83.4753 57.1067 83.4753 47.6299C83.4753 39.0147 85.383 31.0764 89.1983 23.815C93.1367 16.5536 98.6135 10.769 105.629 6.46142C112.644 2.15381 120.767 0 129.998 0C139.351 0 147.351 2.09227 153.997 6.27681C160.643 10.3383 165.751 15.8151 169.32 22.7073C173.012 29.5995 174.858 37.2301 174.858 45.5992V53.1683H100.275L103.967 46.153C103.598 52.0606 104.583 57.3528 106.921 62.0297C109.26 66.7065 112.583 70.3988 116.89 73.1064C121.198 75.814 126.244 77.1679 132.028 77.1679C137.444 77.1679 142.305 75.9987 146.613 73.6602C151.043 71.1987 154.489 67.6296 156.951 62.9527L173.381 71.4449C169.443 79.3217 163.905 85.4139 156.766 89.7215C149.628 93.906 141.444 95.9983 132.213 95.9983ZM105.075 40.2454H153.443C153.074 36.0609 151.843 32.3687 149.751 29.1687C147.782 25.9688 145.074 23.5073 141.628 21.7842C138.182 19.9381 134.244 19.015 129.813 19.015C125.259 19.015 121.198 19.9996 117.629 21.9688C114.182 23.815 111.413 26.338 109.321 29.5379C107.229 32.7379 105.813 36.3071 105.075 40.2454Z" fill="currentColor"/><path d="M78.8426 93.7823H20.6897C13.9206 93.7823 8.75149 92.0592 5.18233 88.6132C1.73623 85.044 0.0131865 81.0441 0.0131865 76.6134C-0.109888 72.675 0.628561 69.2904 2.22853 66.4597C3.8285 63.629 6.41307 61.0444 9.98224 58.706L55.766 26.2143C56.7506 25.3527 57.2429 24.4297 57.2429 23.4451C57.2429 22.5836 56.9353 22.0297 56.3199 21.7836C55.8276 21.4143 55.2122 21.2297 54.4738 21.2297H2.41314V2.95312H58.9045C65.6736 2.95312 70.7812 4.73771 74.2273 8.30687C77.7964 11.753 79.581 15.6914 79.581 20.1221C79.581 24.0604 78.781 27.445 77.1811 30.2757C75.7042 33.1064 73.1811 35.691 69.612 38.0294L23.8282 70.7058C22.7205 71.4442 22.1666 72.3673 22.1666 73.475C22.1666 74.2134 22.4128 74.7672 22.9051 75.1365C23.5205 75.3826 24.1974 75.5057 24.9358 75.5057H78.8426V93.7823Z" fill="currentColor"/></svg>
   </div>
   <div class="tr">
+    <div class="cred" id="credPill"><span class="ci"></span><b id="credN">0</b><span class="lbl">credits</span></div>
     <button class="snd" id="sndBtn" aria-label="Toggle sound"></button>
     <div class="steps" id="steps"><span class="sl" id="stepLbl">Align</span></div>
   </div>
@@ -769,7 +784,6 @@ body.dark .lit{ animation-name:litd; }
   </div>
 </div>
 
-<div class="cel" id="cel"><div class="celc" id="celc"></div></div>
 <div class="aur" id="aur"></div>
 <div class="rip" id="rip"></div>
 <div class="dtr" id="dtr"></div>
@@ -1317,6 +1331,15 @@ function avStyle(name){ const c=avPair(name);
   return 'background:linear-gradient(142deg,'+c[0]+','+c[1]+')'; }
 function avatar(name){ return '<span class="av" style="'+avStyle(name)+'">'+
   String(name||'Y').charAt(0).toUpperCase()+'</span>'; }
+/* how each answer reads once it is a fact about you */
+const STAGE_SAY={ 'In university':'still in university','Just graduated':'fresh out of university',
+  'Working already':'already working','Switching careers':'switching careers','Taking a break':'taking a break' };
+/* a list reads like a sentence: commas, then an and */
+function joinChips(arr){
+  if(!arr.length) return '';
+  if(arr.length===1) return arr[0];
+  return arr.slice(0,-1).join(G_(', '))+G_(' and ')+arr[arr.length-1];
+}
 const T_=x=>'<span class="t">'+x+'</span>';
 const G_=x=>'<span class="g">'+x+'</span>';
 const low=x=>x?x.charAt(0).toLowerCase()+x.slice(1):x;
@@ -1333,11 +1356,19 @@ function cityList(str){ return String(str||'').split(', ').filter(Boolean); }
 /* The board never shows blanks. Each sentence loads itself, then lands finished. */
 function SENTENCES(){
   return [
-   { id:'s1', g:0, ready:!!(P.name||P.role), key:[P.name,P.career,P.role,P.company].join('|'),
+   { id:'s0', g:0, ready:!!P.name, key:[P.name,P.age,P.stage].join('|'),
      html:()=>{
-       const who=P.name?chip(avatar(P.name)+T_(P.name)):'';
-       if(!P.role) return who+(P.career?G_(', going into ')+chip(I.spark+T_(P.career))+G_('.'):G_(' starts here.'));
-       return (who?who+G_(' is going after '):G_('Going after '))+chip(I.target+T_(P.role))
+       const who=chip(avatar(P.name)+T_(P.name));
+       const bits=[];
+       if(P.age) bits.push(chip(cico('cal')+T_(P.age)));
+       if(P.stage) bits.push(chip(cico('cap')+T_(STAGE_SAY[P.stage]||low(P.stage))));
+       if(!bits.length) return who+G_(' starts here.');
+       if(bits.length===1) return who+G_(' is ')+bits[0]+G_('.');
+       return who+G_(' is ')+bits[0]+G_(' and ')+bits[1]+G_('.'); } },
+   { id:'s1', g:0, ready:!!(P.career||P.role), key:[P.career,P.role,P.company].join('|'),
+     html:()=>{
+       if(!P.role) return G_('Going into ')+chip(I.spark+T_(P.career))+G_('.');
+       return G_('Going after ')+chip(I.target+T_(P.role))
          +(P.company?G_(' at a ')+chip(cico('bldg')+T_(low(P.company))):'')+G_('.'); } },
    { id:'s2', g:0, ready:!!P.industry, key:[P.industry,P.mode].join('|'),
      html:()=>G_('In ')+chip(cico(IND_ICON[P.industry]||'spark')+T_(P.industry))
@@ -1345,11 +1376,11 @@ function SENTENCES(){
    { id:'s3', g:1, ready:!!P.citynext, key:[P.citynext].join('|'),
      html:()=>{ const c=cityList(P.citynext).filter(x=>x!=='No preference');
        if(!c.length) return G_('Open to anywhere.');
-       return G_('Based in ')+c.map(cityChip).join(G_(' '))+G_('.'); } },
+       return G_('Based in ')+joinChips(c.map(cityChip))+G_('.'); } },
    { id:'s4', g:1, ready:!!(P.projects&&P.projects.length), key:(P.projects||[]).join('|'),
-     html:()=>G_('Building ')+(P.projects||[]).slice(0,3).map(x=>chip(I.box+T_(low(x)))).join(G_(' '))+G_('.') },
+     html:()=>G_('Building ')+joinChips((P.projects||[]).slice(0,3).map(x=>chip(I.box+T_(x))))+G_('.') },
    { id:'s5', g:1, ready:!!P.deadline, key:[P.deadline].join('|'),
-     html:()=>G_('Aiming for ')+chip(cico('cal')+T_(low(P.deadline)))+G_('.') },
+     html:()=>G_('Starting ')+chip(cico('cal')+T_(low(P.deadline)))+G_('.') },
    { id:'s6', g:2, ready:!!(P.role&&P.industry), key:COS().join('|'),
      html:()=>G_('The best opportunities open to you right now: ')+logoChip(COS(12),6) },
   ];
@@ -1363,7 +1394,7 @@ function boardHTML(){
 let shown={}, keys={}, queue=[], scanning=false, boardLive=false;
 /* Each sentence loads itself: a skeleton with a green shine, then it resolves.
    The container never flashes, only the row that is arriving. */
-const SKW=[[5,9,4],[6,4,8],[4,7],[7,5,6],[5,4],[6,7]];
+const SKW=[[5,7,4],[6,9],[6,4,8],[4,7],[7,5,6],[5,4],[6,7]];
 function skeleton(o){
   const r=mk('div','vbs sk'); r.dataset.o=String(o);
   (SKW[o]||[6,5]).forEach(ch=>{ const b=mk('span','skb'); b.style.width=ch+'ch'; r.appendChild(b); });
@@ -1687,11 +1718,9 @@ async function introStage(){
 function nameStage(){
   setPhase(0);
   turn({q:'First things first, what should I call you?'});
-  dockMode='type';
-  dockInput(async v=>{
+  linkDock(async v=>{
     const nm=v.trim().split(/\s+/)[0].replace(/[^A-Za-z'-]/g,'');
     P.name=(nm||'You').charAt(0).toUpperCase()+(nm||'ou').slice(1).toLowerCase();
-    dockMode='voice';
     bornPanel(); renderBoard();
     clearTurn(); dockHide();
     await wait(700);
@@ -1700,13 +1729,13 @@ function nameStage(){
     clearTurn(); await wait(320);
     await celebrate(500,'welcome bonus');
     ageStage();
-  });
+  },'Your name');
 }
 function ageStage(){
   const {box}=turn({q:'And roughly how old are you? It just helps me pitch this at the right level.'});
-  choices(box,[['user','Under 18','Under 18'],['user','18 to 24','18-24'],['user','25 to 34','25-34'],
-    ['user','35 to 44','35-44'],['user','45 or over','45+']],async v=>{
-    P.age=v; clearTurn(); dockHide(); await wait(520);
+  choices(box,[['user','Under 18','under 18'],['user','18 to 24','18 to 24'],['user','25 to 34','25 to 34'],
+    ['user','35 to 44','35 to 44'],['user','45 or over','45 or over']],async v=>{
+    P.age=v; renderBoard(); clearTurn(); dockHide(); await wait(520);
     line('Got it.'); await wait(1400); go(whereStage);
   },{nomorph:true});
 }
@@ -1715,7 +1744,7 @@ function whereStage(){
   choices(box,[['cap','In university','In university'],['flag','Just graduated','Just graduated'],
     ['bld','Working already','Working already'],['route','Switching careers','Switching careers'],
     ['leaf','Taking a break','Taking a break']],async v=>{
-    P.stage=v; clearTurn(); dockHide(); await wait(520);
+    P.stage=v; renderBoard(); clearTurn(); dockHide(); await wait(520);
     line('Nice, a great time to start.'); await wait(1500); go(careerStage);
   },{nomorph:true});
 }
@@ -1837,7 +1866,8 @@ async function synthStage(){
   setTimeout(()=>sheen(document.querySelector('.shell'),1.45),1300);
   sfx('ready');
   await wait(900);
-  line("Here's your vision board, "+P.name+': a '+P.role+' at a '+low(P.company||'company')+
+  line("Here's your vision board, "+P.name+': '+(P.age?P.age+', ':'')+
+    (P.stage?(STAGE_SAY[P.stage]||low(P.stage))+', ':'')+'a '+P.role+' at a '+low(P.company||'company')+
     ', in '+low(P.industry||'tech')+', working '+low(P.mode||'flexible')+
     ', building things like '+(P.projects||[]).join(' and ').toLowerCase()+'.');
   await wait(3200);
@@ -1903,29 +1933,44 @@ async function destinationStage(){
   cta('Show me how Zero works',zeroStage);
 }
 /* ============================ 16 · the transformation ============================ */
-/* a credit drop is a moment, not a toast */
+/* a credit drop is small and quick: it lands, then rides up to the counter */
+function creditPillShow(){
+  const p=$('credPill'); if(!p||p.dataset.up) return; p.dataset.up='1';
+  p.querySelector('.ci').innerHTML=I.bolt;
+  safeTL(gsap.timeline().to(p,{opacity:1,y:0,duration:.55,ease:'power3.out'}),1000);
+}
 async function celebrate(n,label){
-  P.credits+=n;
-  const cel=$('cel'), c=$('celc');
-  c.innerHTML='<div class="celcoin">'+I.bolt+'</div>'+
-    '<div class="celn">+'+fmt(n)+'<small>Credits</small></div><div class="cell">'+label+'</div>';
-  cel.classList.add('on');
-  gsap.set(cel,{opacity:0}); gsap.set(c,{scale:.86,y:26,filter:'blur(18px)'});
-  safeTL(gsap.timeline()
-    .to(cel,{opacity:1,duration:.42,ease:'power2.out'},0)
-    .to(c,{scale:1,y:0,filter:'blur(0px)',duration:.8,ease:'back.out(1.5)'},.05),1900);
+  creditPillShow();
+  const from=P.credits; P.credits=from+n;
+  const pill=$('credPill'), num=$('credN');
+  const col=$('col').getBoundingClientRect();
+  const d=mk('div','cdrop','<div class="n">'+I.bolt+'<span>+'+fmt(n)+'</span></div><i>'+label+'</i>');
+  document.body.appendChild(d);
+  d.style.left='0px'; d.style.top='0px';
+  const r=d.getBoundingClientRect();
+  const sx=(col.left+col.width/2)-r.width/2, sy=(col.top+col.height/2)-r.height/2;
+  gsap.set(d,{x:sx,y:sy,scale:.72,opacity:0,filter:'blur(16px)'});
   sfx('sparkle');
-  setTimeout(()=>{ const r=c.getBoundingClientRect();
-    confetti(r.left+r.width/2, r.top+r.height*.42, 92); },420);
-  await wait(2150);
+  safeTL(gsap.timeline().to(d,{scale:1,opacity:1,filter:'blur(0px)',duration:.55,ease:'back.out(1.5)'}),1000);
+  await wait(880);
+  const pr=pill.getBoundingClientRect();
+  const tx=pr.left+pr.width/2-r.width/2, ty=pr.top+pr.height/2-r.height/2;
   safeTL(gsap.timeline()
-    .to(c,{scale:.94,y:-18,filter:'blur(16px)',opacity:0,duration:.5,ease:'power2.in'},0)
-    .to(cel,{opacity:0,duration:.45},.1),1200);
-  await wait(580);
-  cel.classList.remove('on');
+    .to(d,{x:tx,y:ty,scale:.16,opacity:0,filter:'blur(4px)',duration:.72,ease:'power3.inOut'}),1400);
+  setTimeout(()=>{ if(d.isConnected) d.remove(); },900);
+  await wait(620);
+  /* it arrives: the counter climbs and a short burst goes off */
+  const o={v:from};
+  safeTL(gsap.timeline().to(o,{v:P.credits,duration:.65,ease:'power2.out',
+    onUpdate:()=>{ num.textContent=fmt(Math.round(o.v)); }}),1100);
+  setTimeout(()=>{ num.textContent=fmt(P.credits); },800);
+  safeTL(gsap.timeline().fromTo(pill,{scale:1},{scale:1.1,duration:.2,yoyo:true,repeat:1,ease:'power2.out'}),700);
+  confetti(pr.left+pr.width/2, pr.top+pr.height/2, 26, 150);
+  sfx('chime');
+  await wait(760);
 }
 /* green, blue and yellow, thrown from wherever the good news landed */
-function confetti(x,y,n){
+function confetti(x,y,n,spread){
   n=n||84;
   const layer=mk('div','conf'); document.body.appendChild(layer);
   const CC=['#4ADE80','#5D87FF','#F5DE6B','#A8E6CF','#0084CE','#C8F169','#FACC15'];
@@ -1939,9 +1984,9 @@ function confetti(x,y,n){
     const spin=(Math.random()<.5?-1:1)*(380+Math.random()*620);
     gsap.to(p,{x:Math.cos(ang)*sp, y:Math.sin(ang)*sp, rotation:spin,
       duration:.7+Math.random()*.45, ease:'power2.out'});
-    gsap.to(p,{y:'+='+(innerHeight*.8+Math.random()*260), rotation:'+='+(spin*.6),
-      duration:1.9+Math.random()*1.3, ease:'power1.in', delay:.5+Math.random()*.25});
-    gsap.to(p,{opacity:0, duration:.7, delay:1.8+Math.random()*.9});
+    gsap.to(p,{y:'+='+((spread?260:innerHeight*.8)+Math.random()*(spread?180:260)), rotation:'+='+(spin*.6),
+      duration:(spread?1.1:1.9)+Math.random()*(spread?.6:1.3), ease:'power1.in', delay:.45+Math.random()*.25});
+    gsap.to(p,{opacity:0, duration:.6, delay:(spread?.85:1.8)+Math.random()*(spread?.5:.9)});
   }
   /* cleanup rides the last tween, with a wall clock backstop behind it */
   let dead=false;
@@ -2602,7 +2647,7 @@ const DBG_STEPS=[
 function dbgFill(upTo){
   const set=(i,fn)=>{ if(upTo>i) fn(); };
   set(3,()=>P.name='Sanjay');
-  set(4,()=>P.age='25-34');
+  set(4,()=>P.age='25 to 34');
   set(5,()=>P.stage='In university');
   set(6,()=>P.career='Design');
   set(7,()=>P.role=(ROLES2[P.career]||ROLES2['Design'])[0]);
