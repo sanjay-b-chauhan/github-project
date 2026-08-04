@@ -1241,14 +1241,36 @@ td.cell-active::after{border-color:var(--accent)}
 .work{justify-content:center}
 .center{max-width:none}
 
-/* the sticky row keeps the progress and drops everything else */
-.chat-peer .pava,
-.chat-peer .pmeta,
-.chat-peer .ph-flex{display:none!important}
-.chat-peer{justify-content:center;padding:0;width:100%;max-width:none}
-.ct-r2{height:56px}
-.wu-prog{margin:0 auto!important;flex:0 0 auto;gap:12px}
-.wu-prog .wu-track{width:min(360px,42vw)}
+/* The progress moves UP onto the top bar, on the same line as Back and the
+   XP chips, and gets real width. Its own row is gone entirely - it was a
+   second bar of chrome carrying one thing. Absolute centring keeps it on the
+   viewport centre no matter how wide Back or the chips are. */
+.ct-r2{display:none!important}
+/* Three columns: Back, the bar, the chips. Absolute centring put the bar on
+   the viewport centre but let it run underneath the XP and performance chips
+   at anything under ~1400px. A real middle column cannot collide at any
+   width, and the bar takes every pixel the other two do not need. */
+.topbar{display:grid;grid-template-columns:auto minmax(0,1fr) auto;
+  gap:16px;align-items:center;height:58px;padding:0 16px}
+.topbar .spacer{display:none}
+.tb-right{display:flex;align-items:center;gap:9px;justify-self:end}
+.wu-prog{position:static;transform:none;justify-self:center;
+  width:100%;max-width:760px;margin:0!important;gap:14px}
+.wu-prog .wu-track{flex:1 1 auto;width:auto;height:5px}
+.wu-prog .wu-pct{flex:0 0 auto}
+/* .wu-prog is one of the elements the shell staggers in from opacity:0.
+   Relocating the node leaves that reveal able to strand it invisible, and a
+   progress bar that sometimes is not there is worse than one that never
+   animates. It is always on. */
+.wu-prog{opacity:1!important}
+
+/* ---- the conversation has one left edge, and it is the BUBBLE ----
+   The avatar occupies 36px plus a 14px gap, so the bubbles start 50px in.
+   Everything that answers those bubbles - options, widgets, the reply, the
+   hint - has to start there too, or the interaction reads as a separate
+   column hanging off the avatar rather than as part of the conversation. */
+.segment > *:not(.beats){margin-left:50px}
+.segment > .beats{margin-left:0}
 
 /* Her identity moves OUT of the sticky row and back INTO the chat, which is
    where a person's identity belongs in a chat. v2 hid the per-message avatar
@@ -3358,5 +3380,33 @@ function celebrate(){
 })();
 
 </script>
+
+<script>
+/* The progress bar lives in a row below the top bar in the markup. v3 puts it
+   ON the top bar, so it has to move in the DOM for the absolute centring to
+   resolve against the right box. Runs once, before first paint of the app. */
+(function(){
+  function place(){
+    var tb=document.querySelector('.topbar');
+    var p=document.querySelector('.wu-prog');
+    if(!tb||!p) return;
+    /* group the right-hand chips so the grid sees three cells, not four */
+    var right=tb.querySelector('.tb-right');
+    if(!right){
+      var xp=tb.querySelector('.xp-chip'), pf=tb.querySelector('.perf');
+      if(xp&&pf){
+        right=document.createElement('span'); right.className='tb-right';
+        xp.parentNode.insertBefore(right,xp);
+        right.appendChild(xp); right.appendChild(pf);
+      }
+    }
+    /* the bar must sit BEFORE the chips in the DOM to land in the middle cell */
+    if(right) tb.insertBefore(p,right); else tb.appendChild(p);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',place);
+  else place();
+})();
+</script>
+
 </body>
 </html>
