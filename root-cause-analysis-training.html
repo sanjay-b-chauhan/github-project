@@ -1,9 +1,7 @@
 <!DOCTYPE html>
-<!-- ZERO · Concept Training · Root Cause Analysis — v3 "premium board" master
-     v1's premium surface styling + v2's drawn-diagram storytelling, scaled UP.
-     Every scene = one big warm board (dot-grid drawing surface) that is on
-     screen from the first frame — never an empty stage. Diagrams draw
-     themselves stroke-by-stroke on the voice, with filled weighted shapes. -->
+<!-- ZERO · Concept Training · Root Cause Analysis — v4 master
+     Big drawn diagrams directly on the screen (no container), filled weighted
+     shapes, stroke-by-stroke builds in sync with the voice. -->
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
@@ -36,15 +34,13 @@
 *{margin:0;padding:0;box-sizing:border-box}html,body{height:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow:hidden;-webkit-font-smoothing:antialiased;transition:background .5s ease,color .4s ease}
 .app{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:clamp(12px,2.4vw,36px);padding-bottom:clamp(78px,10vh,112px)}
-.stage{position:relative;width:min(98vw,1220px);height:100%;display:flex;align-items:center;justify-content:center;transition:filter .5s cubic-bezier(.22,1,.36,1)}
+.stage{position:relative;width:min(98vw,1320px);height:100%;display:flex;align-items:center;justify-content:center;transition:filter .5s cubic-bezier(.22,1,.36,1)}
 .scene{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;opacity:0;visibility:hidden;pointer-events:none}
 .scene.on{opacity:1;visibility:visible;pointer-events:auto}
 .wrap{width:100%;margin:auto;display:flex;flex-direction:column;align-items:center;text-align:center}
 
 /* ============ the premium drawing board ============ */
-.cv{width:min(97vw,1200px);height:auto;max-height:calc(100vh - 185px);display:block;filter:drop-shadow(0 10px 30px rgba(0,0,0,.22))}
-.cv .board{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
-.cv .dotc{fill:var(--ink-3);opacity:.35}
+.cv{width:min(98vw,1310px);height:auto;max-height:calc(100vh - 175px);display:block}
 .cv .st{fill:none;stroke:var(--ink-2);stroke-width:4.5;stroke-linecap:round;stroke-linejoin:round}
 .cv .st3{fill:none;stroke:var(--ink-3);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
 .cv .ln{fill:none;stroke:var(--line);stroke-width:3;stroke-linecap:round}
@@ -220,12 +216,9 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
     <!-- ============ r1 — what it is: the dig ============ -->
     <section class="scene r1" data-sc="r1">
       <div class="wrap">
-        <svg class="cv" viewBox="0 0 1200 660" aria-hidden="true">
-          <defs><pattern id="dg1" width="30" height="30" patternUnits="userSpaceOnUse"><circle class="dotc" cx="15" cy="15" r="1.7"/></pattern></defs>
-          <rect class="board" x="14" y="10" width="1172" height="640" rx="30"/>
-          <rect x="14" y="10" width="1172" height="640" rx="30" fill="url(#dg1)"/>
+        <svg class="cv" viewBox="16 7 1168 649" aria-hidden="true"><defs><linearGradient id="tg1" x1="0" x2="1"><stop offset="0%" stop-color="#fff" stop-opacity="0"/><stop offset="16%" stop-color="#fff" stop-opacity="1"/><stop offset="84%" stop-color="#fff" stop-opacity="1"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/></linearGradient><mask id="tm1"><rect x="16" y="252" width="1168" height="500" fill="url(#tg1)"/></mask></defs>
           <text class="serif txTitle" x="600" y="104" text-anchor="middle" font-size="52">Root cause analysis</text>
-          <rect class="tint gTint" x="60" y="252" width="1080" height="360" rx="6"/>
+          <rect class="tint gTint" x="16" y="252" width="1168" height="500" mask="url(#tm1)"/>
           <line class="ln surf pd" x1="60" y1="252" x2="1140" y2="252"/>
           <path class="st neg thick crack pd" d="M548 252 l18 -30 l22 15 l18 -26 l22 16 l16 -22"/>
           <circle class="st3 ring" cx="606" cy="212" r="62"/>
@@ -245,10 +238,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
     <!-- ============ r2 — two people, same problem ============ -->
     <section class="scene r2" data-sc="r2">
       <div class="wrap">
-        <svg class="cv" viewBox="0 0 1200 660" aria-hidden="true">
-          <defs><pattern id="dg2" width="30" height="30" patternUnits="userSpaceOnUse"><circle class="dotc" cx="15" cy="15" r="1.7"/></pattern></defs>
-          <rect class="board" x="14" y="10" width="1172" height="640" rx="30"/>
-          <rect x="14" y="10" width="1172" height="640" rx="30" fill="url(#dg2)"/>
+        <svg class="cv" viewBox="76 26 1108 596" aria-hidden="true"><defs><linearGradient id="tg2" x1="0" x2="1"><stop offset="0%" stop-color="#fff" stop-opacity="0"/><stop offset="16%" stop-color="#fff" stop-opacity="1"/><stop offset="84%" stop-color="#fff" stop-opacity="1"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/></linearGradient><mask id="tm2"><rect x="600" y="350" width="584" height="350" fill="url(#tg2)"/></mask></defs>
           <!-- left: the quick fix -->
           <g class="wgL">
             <rect class="s2fill box pd st" x="150" y="70" width="260" height="150" rx="20"/>
@@ -267,7 +257,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
             <path class="st3 gear2 pd" d="M920 84 v-14 M920 180 v14 M872 132 h-14 M968 132 h14 M886 98 l-10 -10 M954 166 l10 10 M954 98 l10 -10 M886 166 l-10 10"/>
             <path class="st neg thick crR pd" d="M878 220 l16 -24 l18 12 l16 -21 l18 13"/>
           </g>
-          <rect class="tint tintR" x="700" y="350" width="440" height="180" rx="6"/>
+          <rect class="tint tintR" x="600" y="350" width="584" height="350" mask="url(#tm2)"/>
           <line class="ln surfR pd" x1="700" y1="350" x2="1140" y2="350"/>
           <path class="st3 dsh shaft pd" d="M920 232 V 338"/>
           <path class="st3 dsh shaft2 pd" d="M920 350 V 408"/>
@@ -283,10 +273,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
     <!-- ============ r3 — this matters everywhere ============ -->
     <section class="scene r3" data-sc="r3">
       <div class="wrap">
-        <svg class="cv" viewBox="0 0 1200 660" aria-hidden="true">
-          <defs><pattern id="dg3" width="30" height="30" patternUnits="userSpaceOnUse"><circle class="dotc" cx="15" cy="15" r="1.7"/></pattern></defs>
-          <rect class="board" x="14" y="10" width="1172" height="640" rx="30"/>
-          <rect x="14" y="10" width="1172" height="640" rx="30" fill="url(#dg3)"/>
+        <svg class="cv" viewBox="106 48 1003 546" aria-hidden="true">
           <g class="mCF">
             <circle class="s2fill mc pd st3" cx="290" cy="176" r="84"/>
             <g class="logoc lg" transform="translate(242,128)" style="color:#F38020"><use href="#ic-cloudflare" width="96" height="96"/></g>
@@ -321,10 +308,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
     <!-- ============ r4 — the doctor ============ -->
     <section class="scene r4" data-sc="r4">
       <div class="wrap">
-        <svg class="cv" viewBox="0 0 1200 660" aria-hidden="true">
-          <defs><pattern id="dg4" width="30" height="30" patternUnits="userSpaceOnUse"><circle class="dotc" cx="15" cy="15" r="1.7"/></pattern></defs>
-          <rect class="board" x="14" y="10" width="1172" height="640" rx="30"/>
-          <rect x="14" y="10" width="1172" height="640" rx="30" fill="url(#dg4)"/>
+        <svg class="cv" viewBox="132 19 1023 551" aria-hidden="true">
           <!-- the patient -->
           <circle class="s2fill head pd st" cx="240" cy="250" r="64"/>
           <g class="star">
@@ -366,10 +350,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
     <!-- ============ r5 — three moves ============ -->
     <section class="scene r5" data-sc="r5">
       <div class="wrap">
-        <svg class="cv" viewBox="0 0 1200 660" aria-hidden="true">
-          <defs><pattern id="dg5" width="30" height="30" patternUnits="userSpaceOnUse"><circle class="dotc" cx="15" cy="15" r="1.7"/></pattern></defs>
-          <rect class="board" x="14" y="10" width="1172" height="640" rx="30"/>
-          <rect x="14" y="10" width="1172" height="640" rx="30" fill="url(#dg5)"/>
+        <svg class="cv" viewBox="16 4 1186 658" aria-hidden="true"><defs><linearGradient id="tg4" x1="0" x2="1"><stop offset="0%" stop-color="#fff" stop-opacity="0"/><stop offset="16%" stop-color="#fff" stop-opacity="1"/><stop offset="84%" stop-color="#fff" stop-opacity="1"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/></linearGradient><mask id="tm4"><rect x="540" y="430" width="662" height="300" fill="url(#tg4)"/></mask></defs><defs><linearGradient id="tg3" x1="0" x2="1"><stop offset="0%" stop-color="#fff" stop-opacity="0"/><stop offset="16%" stop-color="#fff" stop-opacity="1"/><stop offset="84%" stop-color="#fff" stop-opacity="1"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/></linearGradient><mask id="tm3"><rect x="16" y="260" width="1186" height="460" fill="url(#tg3)"/></mask></defs>
           <!-- the three medallions -->
           <g class="mv1"><circle class="s2fill mvc1 pd st3" cx="404" cy="88" r="40"/><text class="num txN1" x="404" y="97" text-anchor="middle">1</text><text class="lb3 txT1" x="404" y="166" text-anchor="middle">keep asking why</text></g>
           <g class="mv2"><circle class="s2fill mvc2 pd st3" cx="600" cy="88" r="40"/><text class="num txN2" x="600" y="97" text-anchor="middle">2</text><text class="lb3 txT2" x="600" y="166" text-anchor="middle">symptom vs cause</text></g>
@@ -377,7 +358,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
 
           <!-- demo 1: the five-whys staircase -->
           <g class="dWhys">
-            <rect class="tint wTint" x="60" y="260" width="1080" height="352" rx="6"/>
+            <rect class="tint wTint" x="16" y="260" width="1186" height="460" mask="url(#tm3)"/>
             <line class="ln wSurf pd" x1="60" y1="260" x2="1140" y2="260"/>
             <text class="lbi txS0" x="96" y="234" text-anchor="start">The site went down</text>
             <g class="restG"><text class="mono txRest" x="320" y="234" text-anchor="start">restart it</text>
@@ -405,7 +386,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
             <path class="st3 wv3 pd" d="M526 256 C 580 292 580 368 526 404"/>
             <text class="lb3 txLoud" x="360" y="470" text-anchor="middle">slow checkout &middot; angry tweets</text>
             <path class="st neg thick strkLoud pd" d="M424 268 L 546 394"/>
-            <rect class="tint lqTint" x="620" y="430" width="520" height="182" rx="6"/>
+            <rect class="tint lqTint" x="540" y="430" width="662" height="300" mask="url(#tm4)"/>
             <line class="ln lqSurf pd" x1="620" y1="430" x2="1140" y2="430"/>
             <path class="st3 dsh lqShaft pd" d="M880 366 V 418"/>
             <g class="logoc dbIc" transform="translate(832,462)" style="color:var(--ink)"><use href="#ic-db" width="96" height="96"/></g>
@@ -435,10 +416,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
     <!-- ============ r6 — Priya ============ -->
     <section class="scene r6" data-sc="r6">
       <div class="wrap">
-        <svg class="cv" viewBox="0 0 1200 660" aria-hidden="true">
-          <defs><pattern id="dg6" width="30" height="30" patternUnits="userSpaceOnUse"><circle class="dotc" cx="15" cy="15" r="1.7"/></pattern></defs>
-          <rect class="board" x="14" y="10" width="1172" height="640" rx="30"/>
-          <rect x="14" y="10" width="1172" height="640" rx="30" fill="url(#dg6)"/>
+        <svg class="cv" viewBox="56 12 1140 653" aria-hidden="true">
           <!-- who -->
           <g class="whoG">
             <circle class="pAv s2fill" cx="140" cy="96" r="40" stroke="var(--ink-3)" stroke-width="2.5"/>
@@ -488,11 +466,8 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
     <!-- ============ r7 — close ============ -->
     <section class="scene r7" data-sc="r7">
       <div class="wrap">
-        <svg class="cv" viewBox="0 0 1200 660" aria-hidden="true">
-          <defs><pattern id="dg7" width="30" height="30" patternUnits="userSpaceOnUse"><circle class="dotc" cx="15" cy="15" r="1.7"/></pattern></defs>
-          <rect class="board" x="14" y="10" width="1172" height="640" rx="30"/>
-          <rect x="14" y="10" width="1172" height="640" rx="30" fill="url(#dg7)"/>
-          <rect class="tint gTint" x="60" y="200" width="1080" height="290" rx="6"/>
+        <svg class="cv" viewBox="16 141 1168 540" aria-hidden="true"><defs><linearGradient id="tg5" x1="0" x2="1"><stop offset="0%" stop-color="#fff" stop-opacity="0"/><stop offset="16%" stop-color="#fff" stop-opacity="1"/><stop offset="84%" stop-color="#fff" stop-opacity="1"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/></linearGradient><mask id="tm5"><rect x="16" y="200" width="1168" height="520" fill="url(#tg5)"/></mask></defs>
+          <rect class="tint gTint" x="16" y="200" width="1168" height="520" mask="url(#tm5)"/>
           <line class="ln surf pd" x1="60" y1="200" x2="1140" y2="200"/>
           <path class="st pos thick seal pd" d="M540 200 l22 -15 l22 15 l22 -15 l22 15 l22 -15 l22 15"/>
           <path class="st root pd" d="M606 200 C 603 256 618 284 606 324 C 594 364 612 396 606 424"/>
