@@ -125,6 +125,35 @@ body{font-family:Nunito,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;b
 .row .pickimg.busy{opacity:.5}
 .row .pickimg.bad{border-color:var(--thread);color:var(--thread);border-style:solid}
 
+/* the colour circle, and the swatches it opens */
+.sizes{display:flex;gap:3px;flex:none;background:rgba(22,40,29,.06);border-radius:9px;padding:3px}
+.sizes button{border:0;background:none;cursor:pointer;padding:4px 6px;border-radius:6px;
+  font-family:Fredoka,sans-serif;font-weight:600;font-size:10.5px;color:var(--ink-3);transition:.15s}
+.sizes button:hover{color:var(--ink)}
+.sizes button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(5,20,11,.16)}
+
+.dot-wrap{position:relative;flex:none}
+.dot{width:26px;height:26px;border-radius:50%;border:2.5px solid #fff;cursor:pointer;padding:0;
+  box-shadow:0 0 0 1.5px rgba(22,40,29,.2), var(--sh-ui);transition:transform .18s var(--ease)}
+.dot:hover{transform:scale(1.12)}
+.dot.auto{box-shadow:0 0 0 1.5px rgba(22,40,29,.2)}
+.dot.auto:after{content:'';display:block;width:100%;height:100%;border-radius:50%;
+  background:linear-gradient(135deg,transparent 44%,rgba(22,40,29,.34) 44%,rgba(22,40,29,.34) 56%,transparent 56%)}
+.dotpop{position:absolute;right:-4px;top:34px;z-index:40;display:none;
+  grid-template-columns:repeat(6,22px);gap:7px;padding:11px;border-radius:14px;
+  background:var(--panel);border:2px solid rgba(22,40,29,.14);box-shadow:0 10px 26px rgba(5,20,11,.22)}
+.dot-wrap.open .dotpop{display:grid}
+.dotpop .sw{width:22px;height:22px;border-radius:50%;border:2px solid #fff;cursor:pointer;padding:0;
+  box-shadow:0 0 0 1.5px rgba(22,40,29,.18);transition:transform .16s var(--ease)}
+.dotpop .sw:hover{transform:scale(1.15)}
+.dotpop .sw.on{box-shadow:0 0 0 2.5px var(--ink)}
+.dotpop .autobtn{background:var(--panel);color:var(--ink-2);font-family:Nunito,sans-serif;font-weight:800;
+  font-size:13px;line-height:1;display:grid;place-items:center}
+.dotpop .wheel{width:22px;height:22px;border-radius:50%;cursor:pointer;overflow:hidden;position:relative;
+  border:2px solid #fff;box-shadow:0 0 0 1.5px rgba(22,40,29,.18);
+  background:conic-gradient(#ff6b6b,#ffd84d,#c9f24f,#8fe3c0,#8ecdff,#c9b8ff,#ffb3d1,#ff6b6b)}
+.dotpop .wheel input{position:absolute;inset:-6px;width:200%;height:200%;opacity:0;cursor:pointer;border:0;padding:0}
+
 .emptyrow{padding:22px 16px;text-align:center;border:2px dashed var(--line);border-radius:14px;
   font-family:Fredoka,sans-serif;font-weight:500;font-size:13px;color:var(--ink-3);line-height:1.5}
 
@@ -192,7 +221,7 @@ body{font-family:Nunito,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;b
 }
 .p-name:hover,.p-name.dragging{box-shadow:none}
 
-.p-role{background:var(--sun);padding:12px 22px 13px 17px;font-family:Fredoka,sans-serif;font-weight:600;font-size:21px;
+.p-role{background:var(--tone,var(--sun));padding:12px 22px 13px 17px;font-family:Fredoka,sans-serif;font-weight:600;font-size:21px;
   color:var(--ink);border-radius:99px;display:flex;align-items:center;gap:11px}
 .p-role .sheen{border-radius:99px}
 .p-role .bag{flex:none;width:32px;height:32px;border-radius:50%;background:rgba(22,40,29,.14);display:grid;place-items:center}
@@ -228,10 +257,10 @@ body{font-family:Nunito,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;b
 .p-note{width:176px;min-height:148px;padding:16px 15px;border-radius:6px;font-family:Fredoka,sans-serif;font-weight:500;font-size:15px;line-height:1.34;color:#2a2410;word-break:break-word}
 .p-note .sheen{border-radius:3px}
 .p-note:after{content:'';position:absolute;right:-3px;bottom:-3px;width:30px;height:30px;background:linear-gradient(135deg,transparent 50%,rgba(0,0,0,.16) 50%);border-bottom-right-radius:6px}
-.p-note.t0{background:var(--sun)} .p-note.t1{background:var(--mint)} .p-note.t2{background:var(--pink)} .p-note.t3{background:var(--sky)}
+.p-note{background:var(--tone,var(--sun))}
 
 /* ── polaroid: your own picture, our frame ── */
-.p-photo{background:#fff;padding:11px 11px 0;width:236px;border-radius:6px}
+.p-photo{background:#fff;padding:11px 11px 0;width:var(--pw,236px);border-radius:6px}
 .p-photo .mark{position:absolute;top:-19px;left:50%;margin-left:-17px;width:34px;height:38px;z-index:6;pointer-events:none}
 .p-photo .mark svg{display:block;filter:drop-shadow(0 3px 3px rgba(5,20,11,.42))}
 .p-photo .shot{position:relative;width:100%;height:214px;border-radius:3px;overflow:hidden;background:#e8e4da;display:grid;place-items:center}
@@ -240,10 +269,28 @@ body{font-family:Nunito,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;b
 .p-photo .cap{font-family:Caveat,cursive;font-weight:600;font-size:23px;line-height:1.15;color:#23301f;
   text-align:center;padding:12px 6px 16px;min-height:52px;word-break:break-word}
 .p-photo .sheen{border-radius:6px}
+.p-photo .shot{height:calc(var(--pw,236px) * 0.9)}
 
-.p-stk{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;font-size:33px;background:#fff}
+/* ── a bare image ── */
+.p-image{background:#fff;padding:8px;width:var(--pw,236px);border-radius:12px;line-height:0}
+.p-image img{width:100%;height:auto;display:block;border-radius:6px}
+.p-image .none{display:block;padding:26px 14px;line-height:1.4;color:rgba(22,40,29,.3);
+  font-family:Fredoka,sans-serif;font-weight:500;font-size:13px;text-align:center}
+.p-image .sheen{border-radius:9px}
+/* a cut-out PNG: no card, no box — the white stroke traces the shape itself */
+.p-image.cut{background:none;border:0;box-shadow:none;padding:0;border-radius:0}
+.p-image.cut img{border-radius:0;
+  filter:drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff)
+         drop-shadow(2px 2px 0 #fff) drop-shadow(-2px 2px 0 #fff) drop-shadow(2px -2px 0 #fff) drop-shadow(-2px -2px 0 #fff)
+         drop-shadow(0 6px 10px rgba(5,20,11,.34))}
+.p-image.cut:hover img{filter:drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff)
+         drop-shadow(2px 2px 0 #fff) drop-shadow(-2px 2px 0 #fff) drop-shadow(2px -2px 0 #fff) drop-shadow(-2px -2px 0 #fff)
+         drop-shadow(0 18px 24px rgba(5,20,11,.4))}
+.p-image.cut .kill{top:-6px;right:-6px}
+
+.p-stk{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;font-size:33px;background:var(--tone,#fff)}
 .p-stk .sheen{border-radius:50%}
-.p-stk.s1{background:var(--sun)} .p-stk.s2{background:var(--mint)} .p-stk.s3{background:var(--lilac)} .p-stk.s4{background:var(--coral)}
+
 
 .p-prop{border:0;box-shadow:none;background:none;border-radius:0}
 .p-prop:hover{box-shadow:none}
@@ -259,16 +306,6 @@ body{font-family:Nunito,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;b
 .p-name .kill{top:2px;right:-6px}
 body.exporting .kill{display:none}
 
-/* one hue across the whole board when a theme is picked */
-body.themed .p-tag{background:var(--accent) !important}
-body.themed .p-role{background:var(--accent) !important}
-body.themed .p-stk.s1,body.themed .p-stk.s2,body.themed .p-stk.s3,body.themed .p-stk.s4{background:var(--accent) !important}
-body.themed .p-note.t0,body.themed .p-note.t1,body.themed .p-note.t2,body.themed .p-note.t3{background:var(--accent-soft) !important}
-body.themed .p-vision mark{background:linear-gradient(transparent 54%, var(--accent) 54%) !important}
-body.themed .chip{background:var(--accent) !important}
-body.themed .chip.co{background:#fff !important}
-body.themed .brand-mark,body.themed .addrow:hover{background:var(--accent) !important}
-body.themed .p-loc .mark svg circle[fill="#e0473a"]{fill:var(--accent)}
 /* html2canvas throws box-shadow away, which is why the download looked flat.
    It does honour drop-shadow filters, and a zero-blur one gives the same hard
    edge — so for the shot every piece swaps its shadow over to a filter. */
@@ -362,12 +399,6 @@ body.shooting .board{visibility:visible;position:fixed !important;left:0;top:0;
           <button class="ibtn" id="tProps" data-tip="Props" aria-label="Props">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M17 8.5V17a5 5 0 0 1-10 0V6.6a3.2 3.2 0 0 1 6.4 0V16a1.4 1.4 0 0 1-2.8 0V8.5"/></svg>
-          </button>
-          <button class="ibtn" id="tTheme" data-tip="Many colours" aria-label="Colour theme">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 3a9 9 0 1 0 0 18c1.4 0 2.2-.9 2.2-2 0-1.5-1.3-1.8-1.3-3 0-.9.8-1.7 1.8-1.7H17a4 4 0 0 0 4-4c0-4-4-7.3-9-7.3Z"/>
-              <circle cx="7.5" cy="11" r="1.2" fill="currentColor" stroke="none"/><circle cx="11" cy="7.5" r="1.2" fill="currentColor" stroke="none"/>
-              <circle cx="15.5" cy="8.5" r="1.2" fill="currentColor" stroke="none"/></svg>
           </button>
           <button class="ibtn" id="tSpread" data-tip="Tidy" aria-label="Spacing">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -481,9 +512,10 @@ const TYPES = {
   field  :{label:'Field',   icon:'▦',  ph:'₹42L', ph2:'Salary',                 accent:'#cfd6dc'},
   line   :{label:'Line',    icon:'❝',  ph:'Made hiring feel like a first day.', accent:'#ffd84d'},
   sticker:{label:'Sticker', icon:'⭐', ph:'',                                   accent:'#c9b8ff'},
-  photo  :{label:'Photo',   icon:'🖼️', ph:'write something underneath',         accent:'#ffb3d1'}
+  polaroid:{label:'Polaroid',icon:'🖼️', ph:'write something underneath',        accent:'#ffb3d1'},
+  image  :{label:'Image',   icon:'🏞️', ph:'',                                   accent:'#8fe3c0'}
 };
-const TYPE_ORDER = ['role','company','place','tag','note','field','line','photo','sticker'];
+const TYPE_ORDER = ['role','company','place','tag','note','field','line','polaroid','image','sticker'];
 /* Every name here was checked against the icon CDN and returns a real mark,
    so anything picked from the suggestions gets its true logo, never a stand-in.
    Anything typed by hand still works and falls back to a coloured monogram. */
@@ -494,34 +526,27 @@ const COMPANIES = ['Google','Apple','Meta','Netflix','Nvidia','Tesla','Stripe','
   'Razorpay','Paytm','Zomato','Swiggy','Infosys','Wipro','TCS','Accenture','SAP','Cisco','Intel','AMD',
   'Qualcomm','Samsung','Sony','LG','Xiaomi','OnePlus','Duolingo','Coursera','Udemy','Khan Academy','Medium','Substack'];
 const STICKERS = ['★','♥','⚡','🔥','✓','☺','✿','!'];
-const TAG_TONES = ['#c9f24f','#8ecdff','#c9b8ff','#ff9e7d','#8fe3c0','#ffb3d1'];
+const TAG_TONES  = ['#c9f24f','#8ecdff','#c9b8ff','#ff9e7d','#8fe3c0','#ffb3d1'];
+const NOTE_TONES = ['#ffd84d','#8fe3c0','#ffb3d1','#8ecdff'];
+const STK_TONES  = ['#ffd84d','#8fe3c0','#c9b8ff','#ff9e7d'];
 
-/* ═══════════════════════════════════════════════════════════
-   THEME — the pills are many-coloured by default. Pick a theme
-   and the whole board drops to that one hue instead.
-   ═══════════════════════════════════════════════════════════ */
-const THEMES = [
-  {id:'default', name:'Many colours', c:'',        soft:''       },
-  {id:'sun',     name:'Yellow',       c:'#ffd84d', soft:'#ffeeb0'},
-  {id:'orange',  name:'Orange',       c:'#ffa552', soft:'#ffdcbc'},
-  {id:'coral',   name:'Coral',        c:'#ff9e7d', soft:'#ffd4c4'},
-  {id:'lime',    name:'Lime',         c:'#c9f24f', soft:'#e6faab'},
-  {id:'mint',    name:'Mint',         c:'#8fe3c0', soft:'#ccf3e3'},
-  {id:'sky',     name:'Blue',         c:'#8ecdff', soft:'#d2eaff'},
-  {id:'lilac',   name:'Lilac',        c:'#c9b8ff', soft:'#e5ddff'},
-  {id:'paper',   name:'No colour',    c:'#ffffff', soft:'#f2efe6'}
-];
-function applyTheme(){
-  const t = THEMES.find(x=>x.id===S.theme) || THEMES[0];
-  const themed = t.id !== 'default';
-  document.body.classList.toggle('themed', themed);
-  if(themed){
-    document.documentElement.style.setProperty('--accent', t.c);
-    document.documentElement.style.setProperty('--accent-soft', t.soft);
-  }
-  const b = $('#tTheme');
-  if(b){ b.dataset.tip = t.name; b.classList.toggle('on', themed); }
+/* Colour belongs to the piece, not the board. Only things that ARE a block of
+   colour get the option — a place or a photo is a white frame round a picture,
+   so there is nothing there to recolour. */
+const COLOURABLE = ['role','tag','note','sticker'];
+const PICTURE = ['polaroid','image'];
+const SIZES = [['s','S',176],['m','M',236],['l','L',310],['xl','XL',396]];
+const sizeOf = en => (SIZES.find(z=>z[0]===(en.size||'m')) || SIZES[1])[2];
+const SWATCHES = ['#c9f24f','#8ecdff','#c9b8ff','#ff9e7d','#ffd84d',
+                  '#8fe3c0','#ffb3d1','#ffa552','#ffffff','#b7c5ba'];
+function defaultTone(en, tagIdx){
+  if(en.type==='tag')     return TAG_TONES[tagIdx % TAG_TONES.length];
+  if(en.type==='note')    return NOTE_TONES[en.tone % NOTE_TONES.length];
+  if(en.type==='sticker') return STK_TONES[en.tone % STK_TONES.length];
+  if(en.type==='role')    return '#ffd84d';
+  return null;
 }
+
 
 /* An image goes straight into the board, so it has to survive a reload in
    localStorage. Stills get scaled down and re-encoded; GIFs are left alone,
@@ -536,10 +561,11 @@ function readImage(file){
       const raw = fr.result;
       if(file.type === 'image/gif'){
         if(raw.length > MAX_GIF) return reject(new Error('That GIF is too big — keep it under about 2 MB.'));
-        return resolve(raw);
+        return resolve({src:raw, kind:'gif'});
       }
+      const isPng = file.type === 'image/png';
       const im = new Image();
-      im.onerror = ()=>resolve(raw);
+      im.onerror = ()=>resolve({src:raw, kind:isPng?'png':'jpg'});
       im.onload = ()=>{
         try{
           const max = 760;
@@ -548,8 +574,11 @@ function readImage(file){
           c.width = Math.max(1, Math.round(im.width*k));
           c.height = Math.max(1, Math.round(im.height*k));
           c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
-          resolve(c.toDataURL('image/jpeg', 0.82));
-        }catch(e){ resolve(raw); }
+          // a PNG stays a PNG — re-encoding it as JPEG would fill its
+          // transparency with black and there would be no shape to outline
+          resolve(isPng ? {src:c.toDataURL('image/png'), kind:'png'}
+                        : {src:c.toDataURL('image/jpeg', 0.82), kind:'jpg'});
+        }catch(e){ resolve({src:raw, kind:isPng?'png':'jpg'}); }
       };
       im.src = raw;
     };
@@ -559,7 +588,7 @@ function readImage(file){
 
 let S = {
   name:'', entries:[],
-  thread:true, props:false, chrome:true, spread:'tidy', sound:true, theme:'default',
+  thread:true, props:false, chrome:true, spread:'tidy', sound:true,
   mat:{theme:'classic', step:28, major:5, grid:'square', opacity:.17, angles:true, angleStep:15, radii:true, ticks:true, numbers:true, corner:'bl'}
 };
 let POS = {}, zTop = 10, uid = 1;
@@ -757,11 +786,11 @@ function manifest(){
   if(S.name.trim()) out.push({id:'name', type:'name', rot:-1.2});
   let tagIdx = 0;
   S.entries.forEach(en=>{
-    if(!String(en.value||'').trim() && en.type!=='field' && en.type!=='photo') return;
+    if(!String(en.value||'').trim() && en.type!=='field' && !PICTURE.includes(en.type)) return;
     if(en.type==='field' && !String(en.value||'').trim() && !String(en.label||'').trim()) return;
-    if(en.type==='photo' && !en.src && !String(en.value||'').trim()) return;   // a picture is content on its own
+    if(PICTURE.includes(en.type) && !en.src && !String(en.value||'').trim()) return;   // a picture is content on its own
     const it = {id:'e'+en.id, type:en.type, data:en, rot:en.rot};
-    if(en.type==='tag') it.tone = TAG_TONES[tagIdx++ % TAG_TONES.length];
+    if(COLOURABLE.includes(en.type)) it.tone = en.color || defaultTone(en, en.type==='tag' ? tagIdx++ : 0);
     out.push(it);
   });
   if(S.props) PROPS.forEach((p,i)=> out.push({id:'prop:'+i, type:'prop', data:p, full:p.f, rot:p.rot}));
@@ -772,19 +801,28 @@ function markup(it){
   switch(it.type){
     case 'name':    return {cls:'p-name',  html:KILL+esc(S.name.trim())};
     /* a role wears a briefcase so it never reads as just another tag */
-    case 'role':    return {cls:'p-role',  html:SHEEN+KILL+
+    case 'role':    return {cls:'p-role', style:`--tone:${it.tone||'#ffd84d'}`, html:SHEEN+KILL+
       `<span class="bag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="2.5" y="7" width="19" height="13.5" rx="3"/><path d="M8.5 7V5.4A2.4 2.4 0 0 1 11 3h2a2.4 2.4 0 0 1 2.5 2.4V7"/><path d="M2.5 12.5h19"/></svg></span><span>${esc(v)}</span>`};
     case 'tag':     return {cls:'p-tag',   html:SHEEN+KILL+esc(v), style:`--tone:${it.tone}`};
     case 'line':    return {cls:'p-vision',html:SHEEN+KILL+'<span class="q">“</span>'+highlight(v)};
-    case 'note':    return {cls:'p-note t'+(it.data.tone%4), html:SHEEN+KILL+esc(v)};
-    case 'sticker': return {cls:'p-stk s'+(it.data.tone%4+1), html:SHEEN+KILL+esc(v||'★')};
-    case 'photo':   return {cls:'p-photo', html:SHEEN+KILL+
+    case 'note':    return {cls:'p-note', style:`--tone:${it.tone||'#ffd84d'}`, html:SHEEN+KILL+esc(v)};
+    case 'sticker': return {cls:'p-stk', style:`--tone:${it.tone||'#ffd84d'}`, html:SHEEN+KILL+esc(v||'★')};
+    case 'polaroid': return {cls:'p-photo', style:`--pw:${sizeOf(it.data)}px`, html:SHEEN+KILL+
       `<span class="mark">${ART.propPin}</span>
        <div class="shot">${it.data.src
           ? `<img alt="" src="${it.data.src}"/>`
           : '<span class="none">pick a picture or a gif in the panel</span>'}</div>
        <div class="cap">${esc(v)}</div>`};
+    /* A bare image. A PNG keeps its own silhouette, so the stroke follows the
+       shape instead of boxing it in; anything opaque gets the usual frame. */
+    case 'image': {
+      const png = it.data.kind === 'png';
+      return {cls:'p-image'+(png?' cut':''), style:`--pw:${sizeOf(it.data)}px`, html:
+        (png?'':SHEEN) + KILL + (it.data.src
+          ? `<img alt="" src="${it.data.src}"/>`
+          : '<span class="none">pick a picture or a gif in the panel</span>')};
+    }
     case 'field':   return {cls:'p-cus', html:SHEEN+KILL+
       `<span class="ck">${esc(it.data.label||'Note')}</span><span class="cv">${esc(v||it.data.label)}</span>`};
     case 'company':{
@@ -825,6 +863,15 @@ function loadShot(el, city){
 }
 
 /* ═══════════ reconcile ═══════════ */
+/* Never setAttribute('style') on a live piece — that wipes the transform GSAP
+   is holding it in place with. Set each custom property on its own instead. */
+function setVars(el, str){
+  if(!str) return;
+  str.split(';').forEach(part=>{
+    const i = part.indexOf(':');
+    if(i > 0) el.style.setProperty(part.slice(0,i).trim(), part.slice(i+1).trim());
+  });
+}
 const pieceEl = id => plane.querySelector(`.piece[data-id="${CSS.escape(id)}"]`);
 function sync(fromEl){
   const want = manifest(), wantIds = new Set(want.map(i=>i.id)), fresh = [];
@@ -837,7 +884,7 @@ function sync(fromEl){
       el = document.createElement('div');
       el.className = 'piece ' + m.cls;
       el.dataset.id = it.id; el.dataset.type = it.type; el.dataset.rot = it.rot||0;
-      if(m.style) el.setAttribute('style', m.style);
+      setVars(el, m.style);
       el.innerHTML = m.html;
       el.style.zIndex = it.type==='name' ? 40 : ++zTop;
       plane.appendChild(el);
@@ -847,13 +894,13 @@ function sync(fromEl){
       fresh.push([el,it]);
     } else if(el.dataset.sig !== m.html){
       el.className = 'piece ' + m.cls;
-      if(m.style) el.setAttribute('style', m.style);
+      setVars(el, m.style);
       el.innerHTML = m.html;
       wire(el,it);
       if(m.after) m.after(el);
       if(G) G.fromTo(el,{scale:.94},{scale:1,duration:.45,ease:'back.out(2.4)'});
     }
-    el.dataset.sig = m.html;
+    el.dataset.sig = m.html + '|' + (m.style||'');
   });
   layout(want, fresh.map(f=>f[0]));
   fresh.forEach(([el,it])=> springIn(el,it,fromEl));
@@ -1028,7 +1075,7 @@ function centreOf(el){
   return { x:(parseFloat(el.style.left)||0)+(G?(+G.getProperty(el,'x')||0):0)+el.offsetWidth/2,
            y:(parseFloat(el.style.top) ||0)+(G?(+G.getProperty(el,'y')||0):0)+el.offsetHeight/2 };
 }
-const SPOKE_TYPES = ['role','company','place','tag','note','field','line','photo'];
+const SPOKE_TYPES = ['role','company','place','tag','note','field','line','polaroid','image'];
 const SEGMENTS = 14;
 let ropes = [], ropeSig = '', focusType = null;
 
@@ -1207,6 +1254,7 @@ function buildRow(en){
       en.type = select.value;
       if(en.type==='sticker' && !STICKERS.includes(en.value)) en.value = '★';
       if(en.type!=='sticker' && STICKERS.includes(en.value)) en.value = '';
+      if(!COLOURABLE.includes(en.type)) en.color = null;
       renderRows(); sync(); save();
       const fresh = rowsBox.querySelector(`.row[data-id="${en.id}"] input, .row[data-id="${en.id}"] button`);
       if(fresh && fresh.focus) fresh.focus();
@@ -1226,7 +1274,7 @@ function buildRow(en){
       g.appendChild(b);
     });
     row.appendChild(g);
-  } else if(en.type === 'photo'){
+  } else if(PICTURE.includes(en.type)){
     const pick = document.createElement('button');
     pick.type='button'; pick.className='pickimg';
     pick.innerHTML = en.src
@@ -1242,7 +1290,8 @@ function buildRow(en){
       if(!f) return;
       pick.classList.add('busy');
       try{
-        en.src = await readImage(f);
+        const got = await readImage(f);
+        en.src = got.src; en.kind = got.kind;
         pick.classList.remove('busy');
         Snd.add();
         renderRows(); sync(); save();
@@ -1255,10 +1304,27 @@ function buildRow(en){
     });
     row.appendChild(pick); row.appendChild(file);
 
-    const cap = document.createElement('input');
-    cap.value = en.value||''; cap.placeholder = T.ph; cap.maxLength = 44;
-    cap.addEventListener('input', ()=>{ en.value = cap.value; queueSync(en.id); });
-    row.appendChild(cap);
+    // a caption only belongs on a polaroid; an image is just the image
+    if(en.type === 'polaroid'){
+      const cap = document.createElement('input');
+      cap.value = en.value||''; cap.placeholder = T.ph; cap.maxLength = 44;
+      cap.addEventListener('input', ()=>{ en.value = cap.value; queueSync(en.id); });
+      row.appendChild(cap);
+    } else {
+      const sp = document.createElement('span'); sp.style.flex = '1'; row.appendChild(sp);
+    }
+
+    const sizes = document.createElement('div');
+    sizes.className = 'sizes';
+    SIZES.forEach(([k,lab])=>{
+      const b = document.createElement('button');
+      b.type='button'; b.textContent = lab;
+      if((en.size||'m') === k) b.classList.add('on');
+      b.title = 'Size: ' + lab;
+      b.addEventListener('click', ()=>{ en.size = k; Snd.click(); renderRows(); sync(); save(); });
+      sizes.appendChild(b);
+    });
+    row.appendChild(sizes);
 
   } else {
     if(en.type === 'field'){
@@ -1280,6 +1346,56 @@ function buildRow(en){
       else addRow(en.type);
     });
     row.appendChild(inp);
+  }
+
+  // only a piece that is itself a block of colour gets a colour circle
+  if(COLOURABLE.includes(en.type)){
+    const idx = S.entries.filter(e=>e.type==='tag').indexOf(en);
+    const shown = en.color || defaultTone(en, idx < 0 ? 0 : idx);
+    const wrap = document.createElement('div');
+    wrap.className = 'dot-wrap';
+    const dot = document.createElement('button');
+    dot.type='button'; dot.className='dot'; dot.title='Colour';
+    dot.style.background = shown;
+    if(!en.color) dot.classList.add('auto');
+    const pop = document.createElement('div');
+    pop.className = 'dotpop';
+    SWATCHES.forEach(c=>{
+      const b = document.createElement('button');
+      b.type='button'; b.className='sw'; b.style.background=c;
+      if((en.color||'').toLowerCase()===c) b.classList.add('on');
+      b.addEventListener('click', ev=>{
+        ev.stopPropagation();
+        en.color = c; Snd.click();
+        renderRows(); sync(); save();
+      });
+      pop.appendChild(b);
+    });
+    // anything else you like, straight off the wheel
+    const wheel = document.createElement('label');
+    wheel.className = 'wheel'; wheel.title = 'Pick any colour';
+    const ci = document.createElement('input');
+    ci.type='color'; ci.value = /^#[0-9a-f]{6}$/i.test(shown) ? shown : '#c9f24f';
+    ci.addEventListener('input', ()=>{ en.color = ci.value; dot.style.background = ci.value; queueSync(en.id); });
+    ci.addEventListener('change', ()=>{ en.color = ci.value; renderRows(); sync(); save(); });
+    ci.addEventListener('click', ev=>ev.stopPropagation());
+    wheel.appendChild(ci);
+    pop.appendChild(wheel);
+    // back to whatever it would have been
+    const auto = document.createElement('button');
+    auto.type='button'; auto.className='sw autobtn'; auto.title='Back to default';
+    auto.textContent='↺';
+    auto.addEventListener('click', ev=>{ ev.stopPropagation(); en.color=null; Snd.click(); renderRows(); sync(); save(); });
+    pop.appendChild(auto);
+
+    dot.addEventListener('click', ev=>{
+      ev.stopPropagation();
+      const open = wrap.classList.contains('open');
+      document.querySelectorAll('.dot-wrap.open').forEach(w=>w.classList.remove('open'));
+      wrap.classList.toggle('open', !open);
+    });
+    wrap.appendChild(dot); wrap.appendChild(pop);
+    row.appendChild(wrap);
   }
 
   // a basic row can spawn another of its own kind — a second company, a third tag
@@ -1306,7 +1422,7 @@ function buildRow(en){
   x.title = onlyOfKind ? 'Clear' : 'Remove';
   x.addEventListener('click', ()=>{
     Snd.remove();
-    if(onlyOfKind){ en.value=''; en.label=''; en.src=null; }     // the five basics stay put, they just empty
+    if(onlyOfKind){ en.value=''; en.label=''; en.src=null; en.kind=null; }     // the five basics stay put, they just empty
     else { S.entries = S.entries.filter(e=>e.id!==en.id); }
     delete POS['e'+en.id];
     renderRows(); sync(); save();
@@ -1331,6 +1447,9 @@ function addRow(type){
   if(G && row) G.from(row,{y:-8,opacity:0,duration:.45,ease:'back.out(2)'});
 }
 $('#addRow').addEventListener('click', ()=>addRow());
+document.addEventListener('click', ()=>{
+  document.querySelectorAll('.dot-wrap.open').forEach(w=>w.classList.remove('open'));
+});
 
 /* name */
 const nameInput = $('#f-name');
@@ -1397,12 +1516,6 @@ $('#tMat').addEventListener('click', e=>{
   const t = MAT_THEMES.find(x=>x.id===S.mat.theme);
   e.currentTarget.dataset.tip = t ? t.name+' mat' : 'New mat';
   if(G) G.fromTo('#matSvg',{opacity:.25},{opacity:1,duration:.55,ease:'power2.out'});
-});
-$('#tTheme').addEventListener('click', ()=>{
-  Snd.click();
-  const i = THEMES.findIndex(t=>t.id===S.theme);
-  S.theme = THEMES[(i+1) % THEMES.length].id;
-  applyTheme(); save();
 });
 $('#tThread').addEventListener('click', e=>{ Snd.click(); S.thread=!S.thread; e.currentTarget.classList.toggle('on',S.thread); drawThread(); save(); });
 $('#tProps').addEventListener('click',  e=>{ Snd.click(); S.props=!S.props;  e.currentTarget.classList.toggle('on',S.props);  sync(); save(); });
@@ -1543,6 +1656,7 @@ function load(){
     const o = JSON.parse(raw); if(!o||!o.S) return false;
     S = Object.assign(S,o.S);
     if(!Array.isArray(S.entries)) S.entries = [];
+    S.entries.forEach(e=>{ if(e.type==='photo') e.type='polaroid'; });   // renamed
     POS = o.POS||{}; uid = o.uid||1;
     return true;
   }catch(e){ return false; }
@@ -1565,7 +1679,6 @@ function boot(){
   $('#colist').innerHTML = COMPANIES.map(c=>`<option value="${esc(c)}"></option>`).join('');
   nameInput.value = S.name || '';
   nameTick(!!S.name);
-  applyTheme();
   renderRows(); drawMat(); sync();
   if(!S.name.trim()) setTimeout(()=>nameInput.focus(), 700);
 
