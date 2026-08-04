@@ -1224,8 +1224,8 @@ td.cell-active::after{border-color:var(--accent)}
 
 /* the fade covered 42% of the clipped proposal, so the summary the learner is
    told to read washed out before they could read it */
-.doc.clip{max-height:380px}
-.doc.clip:not(.open):after{height:88px}
+.doc.clip{max-height:560px}
+.doc.clip:not(.open):after{height:76px}
 
 /* a hardcoded warm beige against the dark card, only reachable now that the
    proposal expands */
@@ -1630,7 +1630,7 @@ function renderSide(){
 /* ---- debug stepper: jump straight to any step to review its mechanic ---- */
 function updateDbg(){
   const l=$('dbgLabel'); if(l) l.textContent=Math.min(S.i+1,STEPS.length)+' / '+STEPS.length;
-  const p=$('dbgPrev'); if(p) p.disabled = S.i<=0;
+  const p=$('dbgPrev'); if(p) p.disabled = S.i<=0 || S._ended;
   const n=$('dbgNextBtn'); if(n) n.disabled = S.i>=STEPS.length-1;
 }
 function dbgGo(i){
@@ -1845,7 +1845,7 @@ function autoGo(btn,ms,fn){
   requestAnimationFrame(function(){ btn.classList.add('run'); });
   t=setTimeout(go, ms);
   btn.addEventListener('click', go, {once:true});
-  ['keydown','pointerdown'].forEach(function(ev){
+  ['keydown','pointerdown','wheel'].forEach(function(ev){
     document.addEventListener(ev, function h(e){
       if(btn.contains(e.target)) return;
       cancel(); document.removeEventListener(ev,h,true);
@@ -2955,7 +2955,7 @@ function navDown(){
   const h=$('holder'),cur=h.scrollTop;
   const next=segTops().find(t=>t>cur+30);
   if(next!==undefined){h.scrollTo({top:next,behavior:'smooth'});sfx.tap();}
-  else{ try{dbgNext();}catch(e){} }
+  else{ h.scrollTo({top:h.scrollHeight,behavior:'smooth'}); }
 }
 document.addEventListener('keydown',e=>{
   const tag=(e.target.tagName||'').toLowerCase();
@@ -2997,7 +2997,10 @@ function paintStageFocus(){
   /* a deliberate scroll gesture hands control to the user */
   ['wheel','touchmove'].forEach(ev=>
     h.addEventListener(ev,()=>{
-      const nearBottom = h.scrollHeight - h.scrollTop - h.clientHeight < 120;
+      /* against the live segment's bottom, not the padded scroll height */
+      let contentBottom = h.scrollHeight;
+      if(curSeg) contentBottom = curSeg.offsetTop + curSeg.offsetHeight;
+      const nearBottom = contentBottom - h.scrollTop - h.clientHeight < 140;
       userScrolled = !nearBottom;
     },{passive:true}));
 })();
