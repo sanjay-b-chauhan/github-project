@@ -115,6 +115,8 @@ svg{ display:block; }
 
 .draw{ position:fixed; inset:0; z-index:90; background:var(--page); display:none; align-items:center; justify-content:center; }
 .draw canvas{ position:absolute; inset:0; width:100%; height:100%; cursor:crosshair; touch-action:none; }
+.draw::before{ content:''; position:absolute; inset:0; pointer-events:none; z-index:1; opacity:.5;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.055'/%3E%3C/svg%3E"); }
 .dcenter{ text-align:center; pointer-events:none; position:relative; }
 .dh{ font-family:var(--serif); font-size:clamp(28px,2.3vw,42px); letter-spacing:-.03em; line-height:1.15; }
 
@@ -467,20 +469,21 @@ const I={
 const TINT=['#EEF1F5','#EDF3EE','#F4F0EA'];
 let sndOn=true;
 function sfx(n){ try{ if(sndOn&&window.CUE) window.CUE.play(n); }catch(e){} }
-const INK={max:18,min:5,sens:5.5,tol:.35,color:'#111113'};
+const INK={max:100,min:26,sens:34,tol:.35,wet:.16,color:'#111113'};
 
 /* ============================ persona packs ============================ */
 const PACKS = {"design": {"label": "Design", "role": "Product Designer", "cos": ["Linear", "Airbnb", "Vercel", "Figma"], "bio": "I would rather watch one person use the thing than read ten opinions about it. I design in the open, ship the flow end to end, and write down why each call was made.", "guessLine": "Sounds like design. Tap to confirm.", "starterChips": ["I am a design student", "I work in design already", "I want to move into design"], "roleCards": ["Product Designer", "UX Designer", "Design Engineer"], "dreamExamples": ["Airbnb", "Figma"], "problemChips": ["Confusing tools", "Flows people abandon", "Products that feel cold"], "projects": [{"co": "Linear", "short": "Issue Triage Flow", "title": "Issue triage redesign for Linear", "weeks": 5, "desc": "Cut triage from six clicks to two, tested the new flow against the old one with eight users, and shipped the version that held up.", "steps": ["Audit the current triage flow", "Interview three people who use it daily", "Prototype two alternatives", "Test both and ship the winner"], "chips": [["play", "Walkthrough · 4:02"], ["doc", "Prototype"], ["doc", "Usability test"]]}, {"co": "Airbnb", "short": "Host Onboarding", "title": "Host listing flow rebuild for Airbnb", "weeks": 5, "desc": "Rebuilt a twelve-step listing flow into four, and moved prototype completion from 38 to 61 percent across nine sessions.", "steps": ["Map the twelve steps and their drop-offs", "Rewrite the flow as four", "Build the clickable prototype", "Run nine sessions and revise"], "chips": [["play", "Walkthrough · 4:24"], ["doc", "Flows"], ["doc", "Research notes"]]}, {"co": "Vercel", "short": "Dashboard System", "title": "Design system foundations for the Vercel dashboard", "weeks": 6, "desc": "Audited forty-one screens, cut ninety loose components down to twenty-three, and documented the ones the team reaches for.", "steps": ["Audit forty-one screens for duplication", "Define the token and component set", "Build the library properly", "Document rules people will follow"], "chips": [["play", "Walkthrough · 3:36"], ["doc", "Component library"], ["doc", "Documentation"]]}], "skills": [["Interaction design", "Excellent", ""], ["Prototyping", "Excellent", ""], ["Design systems", "Strong", "aim Excellent"], ["Visual craft", "Strong", ""]], "soft": [["Design critique", "Strong", "aim Excellent"], ["Written rationale", "Excellent", ""], ["User interviews", "Good", "aim Strong"], ["Working with engineers", "Strong", ""]], "todo": [["Design critique", "Defend a screen to a room that disagrees with you."], ["Accessibility pass", "Take a shipped flow to WCAG AA without redesigning it."]], "roles": [["Product Designer", "$95k – $125k", "Most openings"], ["UX Designer", "$90k – $120k", "Research-heavy"], ["Design Engineer", "$110k – $140k", "Rarer, pays more"]]}, "ba": {"label": "Business analysis", "role": "Business Analyst", "cos": ["Stripe", "Shopify", "Spotify", "Notion"], "bio": "Give me a messy spreadsheet and a real question and I am happy. I chase the number that actually decides things, build the model behind it, and write the one page that ends the debate.", "guessLine": "Sounds like business analysis. Tap to confirm.", "starterChips": ["I am a business student", "I work with data already", "I want to move into strategy"], "roleCards": ["Business Analyst", "Strategy Analyst", "Operations Analyst"], "dreamExamples": ["Stripe", "Spotify"], "problemChips": ["Decisions made on gut feel", "Money leaking somewhere", "Reports nobody reads"], "projects": [{"co": "Shopify", "short": "Support Ops Audit", "title": "Support ops audit for Shopify", "weeks": 5, "desc": "Mapped where 1,200 weekly merchant tickets actually come from, found 34% traced back to one refund policy gap, and sized the fix at 18 saved agent hours a week.", "steps": ["Pull three months of ticket data", "Tag the top drivers by hand", "Trace the worst driver to its root cause", "Size the fix and present the case"], "chips": [["play", "Walkthrough · 3:48"], ["doc", "Ticket driver model"], ["doc", "Recommendation memo"]]}, {"co": "Spotify", "short": "Plan Pricing Model", "title": "Plan pricing analysis for Spotify", "weeks": 5, "desc": "Modeled what a $1 move on the Duo plan does to churn and revenue across three scenarios, then recommended the one that nets $2.1M a year without touching the student tier.", "steps": ["Rebuild the plan mix from public data", "Model churn sensitivity at three price points", "Stress test the ugliest scenario", "Write the pricing memo"], "chips": [["play", "Walkthrough · 4:15"], ["doc", "Pricing model"], ["doc", "Scenario memo"]]}, {"co": "Stripe", "short": "Funnel Economics", "title": "Activation funnel economics for Stripe", "weeks": 6, "desc": "Broke signup to first payment into five stages, found the 48-hour verification wait cost more accounts than the next three drop-offs combined, and priced the fix against two cheaper options.", "steps": ["Define the funnel stages and metrics", "Find where accounts actually stall", "Put a dollar value on each drop-off", "Rank three fixes by cost and payback"], "chips": [["play", "Walkthrough · 4:31"], ["doc", "Funnel model"], ["doc", "Cost-benefit brief"]]}], "skills": [["Spreadsheet modeling", "Excellent", ""], ["SQL", "Strong", "aim Excellent"], ["Market sizing", "Strong", ""], ["Data visualization", "Good", "aim Strong"]], "soft": [["Executive memos", "Excellent", ""], ["Stakeholder interviews", "Strong", "aim Excellent"], ["Defending a number", "Good", "aim Strong"], ["Scoping ambiguity", "Strong", ""]], "todo": [["Board-level memo", "Compress a six-week analysis into one page a CFO reads in two minutes."], ["Live model defense", "Walk a room through your assumptions while they try to break them."]], "roles": [["Business Analyst", "$70k – $95k", "Most openings"], ["Strategy Analyst", "$75k – $100k", "Fewer, more competitive"], ["Operations Analyst", "$65k – $90k", "Fastest to land"]]}, "swe": {"label": "Software engineering", "role": "Software Engineer", "cos": ["Stripe", "Vercel", "Datadog", "Linear"], "bio": "I would rather read the stack trace than guess. I ship small, test what I ship, and leave the codebase easier to read than I found it.", "guessLine": "Sounds like engineering. Tap to confirm.", "starterChips": ["I am a CS student", "I write code already", "I want to move into engineering"], "roleCards": ["Frontend Engineer", "Full-stack Engineer", "Backend Engineer"], "dreamExamples": ["Stripe", "Vercel"], "problemChips": ["Slow, clunky apps", "Things that break under load", "Code nobody can read"], "projects": [{"co": "Vercel", "short": "Deploy Status Dashboard", "title": "Deployment dashboard for Vercel", "weeks": 5, "desc": "Built a live dashboard tracking 200 deploys a day and cut the time to spot a failed build from four minutes to under ten seconds.", "steps": ["Map the data the dashboard actually needs", "Build the API layer and cache the hot paths", "Wire the live UI with loading and error states", "Ship behind a flag and watch real traffic"], "chips": [["play", "Walkthrough · 3:47"], ["doc", "Live demo"], ["doc", "Pull request"]]}, {"co": "Stripe", "short": "Webhook Retry Service", "title": "Webhook retry service for Stripe", "weeks": 5, "desc": "Built a retry service that took webhook delivery from 97.1% to 99.9% across 50k events a day, with dead-letter handling for the rest.", "steps": ["Trace the current delivery path and log every failure", "Design the retry schedule and dead-letter queue", "Build the service with a test around each failure mode", "Replay a week of production events against it"], "chips": [["play", "Walkthrough · 4:20"], ["doc", "Design doc"], ["doc", "Test suite"]]}, {"co": "Datadog", "short": "Ingest Latency Fix", "title": "Ingest performance work at Datadog", "weeks": 6, "desc": "Profiled a slow ingest path, cut p95 latency 43% by fixing two N+1 queries and one hot lock, and proved the fix held at triple the normal load.", "steps": ["Profile the pipeline and rank the bottlenecks", "Fix the top two and measure each one in isolation", "Load test at three times normal traffic", "Write up what moved the number and what did not"], "chips": [["play", "Walkthrough · 5:03"], ["doc", "Profiling report"], ["doc", "Load test"]]}], "skills": [["React and TypeScript", "Excellent", ""], ["API design", "Strong", "aim Excellent"], ["Testing", "Strong", ""], ["SQL and data modeling", "Good", "aim Strong"]], "soft": [["Code review", "Strong", "aim Excellent"], ["Written design docs", "Excellent", ""], ["Debugging under pressure", "Strong", ""], ["Working with product", "Good", "aim Strong"]], "todo": [["Code review", "Defend a diff to a senior engineer who wants it rewritten."], ["Performance pass", "Take a slow page under one second without a rewrite."]], "roles": [["Frontend Engineer", "$95k – $130k", "Most openings"], ["Full-stack Engineer", "$100k – $135k", "Startup favorite"], ["Backend Engineer", "$105k – $140k", "Fewer, pays more"]]}};
 let PKEY='design';
 function pack(){ return PACKS[PKEY]; }
 
+/* tints derived from the kit's signal palette, softened to card weight */
 const FOCI=[
-  {id:'Design',icon:'pen',a:'#FBEFE9',b:'#F7DCCD'},
-  {id:'Engineering',icon:'code',a:'#EAF1FB',b:'#D6E5F7'},
-  {id:'Product',icon:'box',a:'#EFEDFB',b:'#DFDBF7'},
-  {id:'Data',icon:'bars',a:'#EDF6EC',b:'#DBEDD9'},
-  {id:'Sales',icon:'shake',a:'#FBEEF3',b:'#F7DAE5'},
-  {id:'Operations',icon:'route',a:'#FBF6E8',b:'#F5EBCE'},
+  {id:'Design',icon:'pen',a:'rgba(255,106,77,.10)',b:'rgba(255,106,77,.20)'},
+  {id:'Engineering',icon:'code',a:'rgba(93,135,255,.10)',b:'rgba(93,135,255,.20)'},
+  {id:'Product',icon:'box',a:'rgba(167,120,255,.10)',b:'rgba(167,120,255,.20)'},
+  {id:'Data',icon:'bars',a:'rgba(63,185,104,.10)',b:'rgba(63,185,104,.20)'},
+  {id:'Sales',icon:'shake',a:'rgba(250,204,21,.12)',b:'rgba(250,204,21,.24)'},
+  {id:'Operations',icon:'route',a:'rgba(231,185,10,.10)',b:'rgba(231,185,10,.20)'},
 ];
 const FOCUS_GUESS={design:'Design',ba:'Data',swe:'Engineering'};
 
@@ -855,32 +858,48 @@ function showDraw(){
     ctx.setTransform(dpr,0,0,dpr,0,0);
     ctx.lineCap='round'; ctx.lineJoin='round'; }
   size(); addEventListener('resize',size);
-  const mid=(a,b)=>({x:(a.x+b.x)/2,y:(a.y+b.y)/2});
-  /* ink: slow strokes pool thick, fast strokes thin out. INK is live-tunable. */
+  /* A real brush: the stroke is a filled ribbon whose width breathes with speed.
+     Slow hand means the nib dwells and ink pools. Fast hand starves it. */
+  function ribbon(a,b,wa,wb){
+    const ang=Math.atan2(b.y-a.y,b.x-a.x);
+    const n1=ang+Math.PI/2, n2=ang-Math.PI/2;
+    ctx.beginPath();
+    ctx.moveTo(a.x+Math.cos(n1)*wa/2, a.y+Math.sin(n1)*wa/2);
+    ctx.lineTo(b.x+Math.cos(n1)*wb/2, b.y+Math.sin(n1)*wb/2);
+    ctx.lineTo(b.x+Math.cos(n2)*wb/2, b.y+Math.sin(n2)*wb/2);
+    ctx.lineTo(a.x+Math.cos(n2)*wa/2, a.y+Math.sin(n2)*wa/2);
+    ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.arc(b.x,b.y,wb/2,0,7); ctx.fill();
+  }
   function inkSeg(){
-    const n=pts.length; if(n<3) return;
-    const a=pts[n-3], b=pts[n-2], c2=pts[n-1];
-    const d2=Math.hypot(c2.x-b.x,c2.y-b.y), dt=Math.max(1,c2.t-b.t);
+    const n=pts.length; if(n<2) return;
+    const a=pts[n-2], b=pts[n-1];
+    const d2=Math.hypot(b.x-a.x,b.y-a.y), dt=Math.max(1,b.t-a.t);
     const speed=d2/dt;
     const target=Math.max(INK.min,Math.min(INK.max,INK.max-speed*INK.sens));
-    W+=(target-W)*.28;
-    const m1=mid(a,b), m2=mid(b,c2);
-    ctx.strokeStyle=INK.color;
-    ctx.beginPath(); ctx.lineWidth=W;
-    ctx.moveTo(m1.x,m1.y); ctx.quadraticCurveTo(b.x,b.y,m2.x,m2.y);
-    ctx.stroke();
+    const prev=W;
+    W+=(target-W)*.22;
+    ctx.fillStyle=INK.color;
+    ctx.globalAlpha=1;
+    ribbon(a,b,prev,W);
+    /* wetness: a slow nib bleeds a soft halo where it dwelt */
+    if(INK.wet>0 && speed<0.35){
+      ctx.globalAlpha=INK.wet;
+      ctx.beginPath(); ctx.arc(b.x,b.y,W*0.62,0,7); ctx.fill();
+      ctx.globalAlpha=1;
+    }
   }
   function clearInk(){ ctx.save(); ctx.setTransform(1,0,0,1,0,0);
     ctx.clearRect(0,0,cv.width,cv.height); ctx.restore(); }
-  cv.addEventListener('pointerdown',e=>{ down=true; len=0; W=INK.max*0.6;
+  cv.addEventListener('pointerdown',e=>{ down=true; len=0; W=INK.max*0.5;
     if(!cv.width) size();
     pts=[{x:e.clientX,y:e.clientY,t:performance.now()}];
     ctx.fillStyle=INK.color;
-    ctx.beginPath(); ctx.arc(e.clientX,e.clientY,INK.max*0.32,0,7); ctx.fill(); });
+    ctx.beginPath(); ctx.arc(e.clientX,e.clientY,W/2,0,7); ctx.fill(); });
   cv.addEventListener('pointermove',e=>{ if(!down)return;
     const p={x:e.clientX,y:e.clientY,t:performance.now()}, q2=pts[pts.length-1];
     const d2=Math.hypot(p.x-q2.x,p.y-q2.y);
-    if(d2<2) return;
+    if(d2<2.5) return;
     len+=d2; pts.push(p); inkSeg(); });
   const fin=()=>{ if(!down)return; down=false;
     /* the zero must close: start and end land near each other */
@@ -907,11 +926,9 @@ function showDraw(){
     if(!skip&&pts.length>2){
       const obj={w:W};
       const cover=Math.hypot(innerWidth,innerHeight)*2.2;
-      const redraw=()=>{ ctx.strokeStyle=INK.color;
-        ctx.beginPath(); ctx.lineWidth=obj.w;
-        ctx.moveTo(pts[0].x,pts[0].y);
-        for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x,pts[i].y);
-        ctx.closePath(); ctx.stroke(); };
+      const redraw=()=>{ ctx.fillStyle=INK.color; ctx.globalAlpha=1;
+        for(let i=1;i<pts.length;i++) ribbon(pts[i-1],pts[i],obj.w,obj.w);
+        ribbon(pts[pts.length-1],pts[0],obj.w,obj.w); };
       safeTL(gsap.timeline().to(obj,{w:cover,duration:1.15,ease:'power3.in',onUpdate:redraw}),1900);
     }
     setTimeout(()=>{
@@ -1403,9 +1420,10 @@ personaPick();
     }
     panel.appendChild(r);
   }
-  row('Ink max','range',6,34,1,()=>INK.max,v=>INK.max=v);
-  row('Ink min','range',1,12,.5,()=>INK.min,v=>INK.min=v);
-  row('Speed thin','range',0,14,.5,()=>INK.sens,v=>INK.sens=v);
+  row('Ink max','range',20,180,2,()=>INK.max,v=>INK.max=v);
+  row('Ink min','range',4,90,2,()=>INK.min,v=>INK.min=v);
+  row('Speed thin','range',0,80,2,()=>INK.sens,v=>INK.sens=v);
+  row('Wetness','range',0,.5,.02,()=>INK.wet,v=>INK.wet=v);
   row('Close tol','range',.1,.7,.05,()=>INK.tol,v=>INK.tol=v);
   row('Ink color','color',0,0,0,()=>INK.color,v=>INK.color=v);
   row('Dark mode','check',0,0,0,()=>document.body.classList.contains('dark'),
