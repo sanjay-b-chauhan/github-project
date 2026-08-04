@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<!-- ZERO · Concept Training · Root Cause Analysis — v2 "drawn explainer" master
-     One SVG canvas per scene; the story draws itself in sync with the voice.
-     Fixed coordinates = nothing ever overlaps. Draw-in / erase-out transitions.
-     Engine + pop-v9 gates identical to the opex v6 stack. -->
+<!-- ZERO · Concept Training · Root Cause Analysis — v3 "premium board" master
+     v1's premium surface styling + v2's drawn-diagram storytelling, scaled UP.
+     Every scene = one big warm board (dot-grid drawing surface) that is on
+     screen from the first frame — never an empty stage. Diagrams draw
+     themselves stroke-by-stroke on the voice, with filled weighted shapes. -->
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
@@ -34,38 +35,41 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}html,body{height:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow:hidden;-webkit-font-smoothing:antialiased;transition:background .5s ease,color .4s ease}
-.app{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:clamp(14px,3vw,42px);padding-bottom:clamp(80px,10.5vh,116px)}
-.stage{position:relative;width:min(98vw,1180px);height:100%;display:flex;align-items:center;justify-content:center;transition:filter .5s cubic-bezier(.22,1,.36,1)}
+.app{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:clamp(12px,2.4vw,36px);padding-bottom:clamp(78px,10vh,112px)}
+.stage{position:relative;width:min(98vw,1220px);height:100%;display:flex;align-items:center;justify-content:center;transition:filter .5s cubic-bezier(.22,1,.36,1)}
 .scene{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;opacity:0;visibility:hidden;pointer-events:none}
 .scene.on{opacity:1;visibility:visible;pointer-events:auto}
-.wrap{width:100%;max-width:1100px;margin:auto;display:flex;flex-direction:column;gap:clamp(10px,2vh,22px);align-items:center;text-align:center;padding:clamp(8px,2vw,16px)}
-.heading{font-family:var(--font-head);font-weight:400;letter-spacing:-.02em;line-height:1.06;font-size:clamp(2rem,5vw,3.2rem);max-width:20ch}
+.wrap{width:100%;margin:auto;display:flex;flex-direction:column;align-items:center;text-align:center}
 
-/* ============ the drawn canvas ============ */
-.cv{width:min(96vw,1080px);height:auto;display:block}
-.cv .st{fill:none;stroke:var(--ink-2);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
-.cv .st3{fill:none;stroke:var(--ink-3);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-.cv .hair{fill:none;stroke:var(--line);stroke-width:2;stroke-linecap:round}
+/* ============ the premium drawing board ============ */
+.cv{width:min(97vw,1200px);height:auto;max-height:calc(100vh - 185px);display:block;filter:drop-shadow(0 10px 30px rgba(0,0,0,.22))}
+.cv .board{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+.cv .dotc{fill:var(--ink-3);opacity:.35}
+.cv .st{fill:none;stroke:var(--ink-2);stroke-width:4.5;stroke-linecap:round;stroke-linejoin:round}
+.cv .st3{fill:none;stroke:var(--ink-3);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+.cv .ln{fill:none;stroke:var(--line);stroke-width:3;stroke-linecap:round}
 .cv .neg{stroke:var(--neg)}
 .cv .pos{stroke:var(--pos)}
 .cv .acc{stroke:var(--accent)}
-.cv .thick{stroke-width:3.6}
-.cv .dsh{stroke-dasharray:4 8}
+.cv .thick{stroke-width:5.5}
+.cv .dsh{stroke-dasharray:5 10}
 .cv .tint{fill:var(--stone)}
-.cv .nodefill{fill:var(--bg)}
-.cv .accdot{fill:var(--accent)}
-.cv .posdot{fill:var(--pos)}
+.cv .s2fill{fill:var(--surface2)}
+.cv .nfill{fill:var(--accent)}
+.cv .bgstroke{stroke:var(--bg)}
+.cv .bgfill{fill:var(--bg)}
 .cv text{font-family:var(--font-sans);fill:var(--ink-2)}
-.cv .lb{font-size:17px;font-weight:500}
-.cv .lbi{font-size:17px;font-weight:600;fill:var(--ink)}
-.cv .lb3{font-size:15px;fill:var(--ink-3)}
-.cv .mono{font-family:var(--font-mono);font-size:14px;fill:var(--ink-3)}
-.cv .mononeg{font-family:var(--font-mono);font-size:14px;fill:var(--neg)}
-.cv .monopos{font-family:var(--font-mono);font-size:14px;fill:var(--pos)}
+.cv .lb{font-size:19px;font-weight:500}
+.cv .lbi{font-size:21px;font-weight:600;fill:var(--ink)}
+.cv .lb3{font-size:17px;fill:var(--ink-3)}
+.cv .mono{font-family:var(--font-mono);font-size:15px;fill:var(--ink-3)}
+.cv .mononeg{font-family:var(--font-mono);font-size:15px;fill:var(--neg)}
+.cv .monopos{font-family:var(--font-mono);font-size:15px;fill:var(--pos)}
 .cv .serif{font-family:var(--font-head);fill:var(--ink)}
-.cv .qmark{font-family:var(--font-head);font-size:26px;fill:var(--ink-2);font-weight:600}
-.cv .num{font-family:var(--font-mono);font-size:19px;fill:var(--ink-3);font-weight:600}
-.cv .strike{stroke:var(--ink-3);stroke-width:2.4}
+.cv .qmark{font-family:var(--font-head);font-size:32px;fill:var(--ink);font-weight:600}
+.cv .num{font-family:var(--font-mono);font-size:22px;fill:var(--ink-2);font-weight:600}
+.cv .numOn{fill:var(--bg)}
+.cv .strike{stroke:var(--ink-3);stroke-width:2.6}
 .cv .logoc{color:var(--ink-2)}
 
 /* ============ controls (compact) ============ */
@@ -216,21 +220,24 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
     <!-- ============ r1 — what it is: the dig ============ -->
     <section class="scene r1" data-sc="r1">
       <div class="wrap">
-        <h1 class="heading">Root cause analysis</h1>
-        <svg class="cv" viewBox="0 0 1200 500" aria-hidden="true">
-          <rect class="tint gTint" x="70" y="150" width="1060" height="330" rx="4"/>
-          <line class="hair surf pd" x1="70" y1="150" x2="1130" y2="150"/>
-          <path class="st neg thick crack pd" d="M560 150 l14 -22 l16 11 l14 -19 l16 12 l12 -16"/>
-          <circle class="st3 ring" cx="600" cy="122" r="46"/>
-          <path class="st3 dsh strata pd" d="M140 260 C 400 244 800 276 1060 258"/>
-          <path class="st3 dsh strata pd" d="M180 360 C 430 346 780 374 1020 356"/>
-          <path class="st root pd" d="M600 150 C 598 200 610 224 600 262 C 590 300 606 330 600 368"/>
-          <path class="st3 rlet pd" d="M600 220 C 578 228 566 240 552 244"/>
-          <path class="st3 rlet pd" d="M600 250 C 622 258 636 268 650 274"/>
-          <path class="st3 rlet pd" d="M600 300 C 576 310 562 322 550 330"/>
-          <path class="st3 rlet pd" d="M600 330 C 624 340 640 350 654 358"/>
-          <circle class="st acc thick node nodefill" cx="600" cy="404" r="26"/>
-          <circle class="accdot ndot" cx="600" cy="404" r="9"/>
+        <svg class="cv" viewBox="0 0 1200 660" aria-hidden="true">
+          <defs><pattern id="dg1" width="30" height="30" patternUnits="userSpaceOnUse"><circle class="dotc" cx="15" cy="15" r="1.7"/></pattern></defs>
+          <rect class="board" x="14" y="10" width="1172" height="640" rx="30"/>
+          <rect x="14" y="10" width="1172" height="640" rx="30" fill="url(#dg1)"/>
+          <text class="serif txTitle" x="600" y="104" text-anchor="middle" font-size="52">Root cause analysis</text>
+          <rect class="tint gTint" x="60" y="252" width="1080" height="360" rx="6"/>
+          <line class="ln surf pd" x1="60" y1="252" x2="1140" y2="252"/>
+          <path class="st neg thick crack pd" d="M548 252 l18 -30 l22 15 l18 -26 l22 16 l16 -22"/>
+          <circle class="st3 ring" cx="606" cy="212" r="62"/>
+          <path class="st3 dsh strata pd" d="M120 380 C 400 360 800 402 1080 378"/>
+          <path class="st3 dsh strata pd" d="M160 494 C 430 476 780 512 1040 490"/>
+          <path class="st root pd" d="M606 252 C 603 316 618 348 606 396 C 594 444 612 480 606 516"/>
+          <path class="st3 rlet pd" d="M606 340 C 576 350 558 364 540 370"/>
+          <path class="st3 rlet pd" d="M606 380 C 636 392 654 404 672 412"/>
+          <path class="st3 rlet pd" d="M606 444 C 574 456 556 470 542 480"/>
+          <path class="st3 rlet pd" d="M606 478 C 638 492 658 504 676 514"/>
+          <circle class="nfill node" cx="606" cy="556" r="36"/>
+          <circle class="bgfill ndot" cx="606" cy="556" r="12"/>
         </svg>
       </div>
     </section>
@@ -238,34 +245,37 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
     <!-- ============ r2 — two people, same problem ============ -->
     <section class="scene r2" data-sc="r2">
       <div class="wrap">
-        <svg class="cv" viewBox="0 0 1200 600" aria-hidden="true">
+        <svg class="cv" viewBox="0 0 1200 660" aria-hidden="true">
+          <defs><pattern id="dg2" width="30" height="30" patternUnits="userSpaceOnUse"><circle class="dotc" cx="15" cy="15" r="1.7"/></pattern></defs>
+          <rect class="board" x="14" y="10" width="1172" height="640" rx="30"/>
+          <rect x="14" y="10" width="1172" height="640" rx="30" fill="url(#dg2)"/>
           <!-- left: the quick fix -->
           <g class="wgL">
-            <rect class="st box pd" x="230" y="80" width="200" height="120" rx="16"/>
-            <circle class="st3 gear pd" cx="330" cy="130" r="26"/>
-            <path class="st3 gear pd" d="M330 96 v-10 M330 164 v10 M296 130 h-10 M364 130 h10 M306 106 l-7 -7 M354 154 l7 7 M354 106 l7 -7 M306 154 l-7 7"/>
-            <path class="st neg thick crL pd" d="M300 200 l12 -18 l14 9 l12 -16 l14 10"/>
+            <rect class="s2fill box pd st" x="150" y="70" width="260" height="150" rx="20"/>
+            <circle class="st3 gear pd" cx="280" cy="132" r="38"/>
+            <path class="st3 gear pd" d="M280 84 v-14 M280 180 v14 M232 132 h-14 M328 132 h14 M246 98 l-10 -10 M314 166 l10 10 M314 98 l10 -10 M246 166 l-10 10"/>
+            <path class="st neg thick crL pd" d="M238 220 l16 -24 l18 12 l16 -21 l18 13"/>
           </g>
-          <rect class="patch" x="255" y="176" width="150" height="30" rx="10" fill="var(--ink-3)"/>
-          <line class="hair laneL pd" x1="180" y1="520" x2="480" y2="520"/>
-          <path class="st neg bx1 pd" d="M290 506 L316 534 M316 506 L290 534"/>
-          <path class="st neg bx2 pd" d="M390 506 L416 534 M416 506 L390 534"/>
+          <rect class="patch" x="182" y="190" width="196" height="40" rx="13" fill="var(--ink-3)"/>
+          <line class="ln laneL pd" x1="120" y1="560" x2="500" y2="560"/>
+          <path class="st neg thick bx1 pd" d="M256 542 L292 578 M292 542 L256 578"/>
+          <path class="st neg thick bx2 pd" d="M386 542 L422 578 M422 542 L386 578"/>
           <!-- right: the dig -->
           <g class="wgR">
-            <rect class="st box2 pd" x="770" y="80" width="200" height="120" rx="16"/>
-            <circle class="st3 gear2 pd" cx="870" cy="130" r="26"/>
-            <path class="st3 gear2 pd" d="M870 96 v-10 M870 164 v10 M836 130 h-10 M904 130 h10 M846 106 l-7 -7 M894 154 l7 7 M894 106 l7 -7 M846 154 l-7 7"/>
-            <path class="st neg thick crR pd" d="M840 200 l12 -18 l14 9 l12 -16 l14 10"/>
+            <rect class="s2fill box2 pd st" x="790" y="70" width="260" height="150" rx="20"/>
+            <circle class="st3 gear2 pd" cx="920" cy="132" r="38"/>
+            <path class="st3 gear2 pd" d="M920 84 v-14 M920 180 v14 M872 132 h-14 M968 132 h14 M886 98 l-10 -10 M954 166 l10 10 M954 98 l10 -10 M886 166 l-10 10"/>
+            <path class="st neg thick crR pd" d="M878 220 l16 -24 l18 12 l16 -21 l18 13"/>
           </g>
-          <rect class="tint tintR" x="700" y="300" width="340" height="150" rx="4"/>
-          <line class="hair surfR pd" x1="700" y1="300" x2="1040" y2="300"/>
-          <path class="st3 dsh shaft pd" d="M870 210 V 288"/>
-          <path class="st3 dsh shaft2 pd" d="M870 300 V 356"/>
-          <circle class="st acc thick nodeR nodefill" cx="870" cy="392" r="24"/>
-          <path class="st pos thick okR pd" d="M858 392 l8 8 l16 -17"/>
-          <path class="st pos sealR pd" d="M842 200 l14 -10 l14 10 l14 -10 l14 10"/>
-          <line class="hair laneR pd" x1="720" y1="520" x2="1020" y2="520"/>
-          <path class="st pos okLane pd" d="M786 518 l9 9 l18 -19"/>
+          <rect class="tint tintR" x="700" y="350" width="440" height="180" rx="6"/>
+          <line class="ln surfR pd" x1="700" y1="350" x2="1140" y2="350"/>
+          <path class="st3 dsh shaft pd" d="M920 232 V 338"/>
+          <path class="st3 dsh shaft2 pd" d="M920 350 V 408"/>
+          <circle class="nfill nodeR" cx="920" cy="452" r="32"/>
+          <path class="st bgstroke thick okR pd" d="M904 452 l11 11 l22 -23"/>
+          <path class="st pos thick sealR pd" d="M880 220 l18 -13 l18 13 l18 -13 l18 13"/>
+          <line class="ln laneR pd" x1="720" y1="560" x2="1100" y2="560"/>
+          <path class="st pos thick okLane pd" d="M800 556 l12 12 l24 -25"/>
         </svg>
       </div>
     </section>
@@ -273,33 +283,36 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
     <!-- ============ r3 — this matters everywhere ============ -->
     <section class="scene r3" data-sc="r3">
       <div class="wrap">
-        <svg class="cv" viewBox="0 0 1200 560" aria-hidden="true">
+        <svg class="cv" viewBox="0 0 1200 660" aria-hidden="true">
+          <defs><pattern id="dg3" width="30" height="30" patternUnits="userSpaceOnUse"><circle class="dotc" cx="15" cy="15" r="1.7"/></pattern></defs>
+          <rect class="board" x="14" y="10" width="1172" height="640" rx="30"/>
+          <rect x="14" y="10" width="1172" height="640" rx="30" fill="url(#dg3)"/>
           <g class="mCF">
-            <circle class="st3 mc pd" cx="300" cy="150" r="64"/>
-            <g class="logoc lg" transform="translate(264,114)" style="color:#F38020"><use href="#ic-cloudflare" width="72" height="72"/></g>
-            <text class="lb tx" x="300" y="260" text-anchor="middle">Why did the site go down?</text>
+            <circle class="s2fill mc pd st3" cx="290" cy="176" r="84"/>
+            <g class="logoc lg" transform="translate(242,128)" style="color:#F38020"><use href="#ic-cloudflare" width="96" height="96"/></g>
+            <text class="lb tx" x="290" y="318" text-anchor="middle">Why did the site go down?</text>
           </g>
           <g class="mTY">
-            <circle class="st3 mc pd" cx="600" cy="150" r="64"/>
-            <g class="logoc lg" transform="translate(566,116)" style="color:#EB0A1E"><use href="#ic-toyota" width="68" height="68"/></g>
-            <text class="lb tx" x="600" y="260" text-anchor="middle">Trace the defect to its machine</text>
+            <circle class="s2fill mc pd st3" cx="600" cy="176" r="84"/>
+            <g class="logoc lg" transform="translate(556,132)" style="color:#EB0A1E"><use href="#ic-toyota" width="88" height="88"/></g>
+            <text class="lb tx" x="600" y="318" text-anchor="middle">Trace the defect to its machine</text>
           </g>
           <g class="mSUP">
-            <circle class="st3 mc pd" cx="900" cy="150" r="64"/>
-            <g class="logoc lg" transform="translate(870,120)" style="color:var(--ink-2)"><use href="#ic-headset" width="60" height="60"/></g>
-            <text class="lb tx" x="900" y="260" text-anchor="middle">Why do customers keep canceling?</text>
+            <circle class="s2fill mc pd st3" cx="910" cy="176" r="84"/>
+            <g class="logoc lg" transform="translate(870,136)" style="color:var(--ink)"><use href="#ic-headset" width="80" height="80"/></g>
+            <text class="lb tx" x="910" y="318" text-anchor="middle">Why do customers keep canceling?</text>
           </g>
           <!-- the fork: fix once vs fight forever -->
-          <path class="st stem pd" d="M600 300 V 356"/>
-          <path class="st brL pd" d="M600 356 C 600 400 520 430 420 430 H 180"/>
-          <path class="st pos okOnce pd" d="M330 428 l9 9 l18 -19"/>
-          <text class="mono txOnce" x="180" y="466" text-anchor="start">once</text>
+          <path class="st stem pd" d="M600 356 V 420"/>
+          <path class="st brL pd" d="M600 420 C 600 470 512 500 410 500 H 150"/>
+          <path class="st pos thick okOnce pd" d="M310 496 l12 12 l24 -25"/>
+          <text class="mono txOnce" x="150" y="546" text-anchor="start">once</text>
           <g class="brRg">
-            <path class="st brR pd" d="M600 356 C 600 400 680 430 780 430 H 1020"/>
-            <path class="st neg fx1 pd" d="M788 417 L812 443 M812 417 L788 443"/>
-            <path class="st neg fx2 pd" d="M878 417 L902 443 M902 417 L878 443"/>
-            <path class="st neg fx3 pd" d="M968 417 L992 443 M992 417 L968 443"/>
-            <text class="mono txFor" x="1020" y="466" text-anchor="end">forever</text>
+            <path class="st brR pd" d="M600 420 C 600 470 688 500 790 500 H 1050"/>
+            <path class="st neg thick fx1 pd" d="M796 484 L828 516 M828 484 L796 516"/>
+            <path class="st neg thick fx2 pd" d="M896 484 L928 516 M928 484 L896 516"/>
+            <path class="st neg thick fx3 pd" d="M996 484 L1028 516 M1028 484 L996 516"/>
+            <text class="mono txFor" x="1050" y="546" text-anchor="end">forever</text>
           </g>
         </svg>
       </div>
@@ -308,40 +321,43 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
     <!-- ============ r4 — the doctor ============ -->
     <section class="scene r4" data-sc="r4">
       <div class="wrap">
-        <svg class="cv" viewBox="0 0 1200 600" aria-hidden="true">
+        <svg class="cv" viewBox="0 0 1200 660" aria-hidden="true">
+          <defs><pattern id="dg4" width="30" height="30" patternUnits="userSpaceOnUse"><circle class="dotc" cx="15" cy="15" r="1.7"/></pattern></defs>
+          <rect class="board" x="14" y="10" width="1172" height="640" rx="30"/>
+          <rect x="14" y="10" width="1172" height="640" rx="30" fill="url(#dg4)"/>
           <!-- the patient -->
-          <circle class="st head pd" cx="240" cy="210" r="54"/>
+          <circle class="s2fill head pd st" cx="240" cy="250" r="64"/>
           <g class="star">
-            <path class="st neg thick pd" d="M300 118 v-26 M287 131 h-26 M313 131 h26 M291 122 l-18 -18 M309 122 l18 -18 M291 140 l-18 18"/>
+            <path class="st neg thick pd" d="M318 132 v-34 M301 149 h-34 M335 149 h34 M306 137 l-24 -24 M330 137 l24 -24 M306 161 l-24 24"/>
           </g>
           <!-- lazy branch -->
           <g class="lazyG">
-            <path class="st3 lzPath pd" d="M298 186 C 380 140 470 120 540 116"/>
-            <g class="logoc pillIc" transform="translate(552,92)" style="color:var(--ink-2)"><use href="#ic-pill" width="46" height="46"/></g>
-            <text class="lb3 txPill" x="575" y="178" text-anchor="middle">painkiller</text>
-            <path class="st3 dsh loopArc pd" d="M620 108 C 720 60 460 46 330 96 M344 88 L328 97 L340 108"/>
-            <path class="st neg strkPill pd" d="M540 84 L612 146"/>
+            <path class="st3 lzPath pd" d="M298 218 C 390 158 480 134 556 128"/>
+            <g class="logoc pillIc" transform="translate(574,96)" style="color:var(--ink-2)"><use href="#ic-pill" width="64" height="64"/></g>
+            <text class="lb3 txPill" x="606" y="206" text-anchor="middle">painkiller</text>
+            <path class="st3 dsh loopArc pd" d="M660 116 C 790 56 480 40 348 102 M366 92 L346 103 L360 118"/>
+            <path class="st neg thick strkPill pd" d="M560 84 L 652 172"/>
           </g>
           <!-- good branch -->
           <g class="goodG">
-            <path class="st3 gdPath pd" d="M282 258 C 360 320 420 336 470 340"/>
-            <circle class="st q1c pd" cx="520" cy="340" r="27"/>
-            <text class="qmark txQ1" x="520" y="350" text-anchor="middle">?</text>
-            <text class="lb3 txQ1b" x="520" y="404" text-anchor="middle">when did it start</text>
-            <path class="st3 gd2 pd" d="M549 340 H 636"/>
-            <circle class="st q2c pd" cx="665" cy="340" r="27"/>
-            <text class="qmark txQ2" x="665" y="350" text-anchor="middle">?</text>
-            <text class="lb3 txQ2b" x="665" y="404" text-anchor="middle">how's your sleep</text>
-            <path class="st3 gd3 pd" d="M694 340 H 781"/>
-            <circle class="st q3c pd" cx="810" cy="340" r="27"/>
-            <text class="qmark txQ3" x="810" y="350" text-anchor="middle">?</text>
-            <text class="lb3 txQ3b" x="810" y="404" text-anchor="middle">enough water?</text>
-            <path class="st3 gd4 pd" d="M839 340 H 926"/>
+            <path class="st3 gdPath pd" d="M280 306 C 366 386 440 408 490 412"/>
+            <circle class="s2fill q1c pd st" cx="548" cy="412" r="34"/>
+            <text class="qmark txQ1" x="548" y="424" text-anchor="middle">?</text>
+            <text class="lb3 txQ1b" x="548" y="490" text-anchor="middle">when did it start</text>
+            <path class="st3 gd2 pd" d="M584 412 H 668"/>
+            <circle class="s2fill q2c pd st" cx="704" cy="412" r="34"/>
+            <text class="qmark txQ2" x="704" y="424" text-anchor="middle">?</text>
+            <text class="lb3 txQ2b" x="704" y="490" text-anchor="middle">how's your sleep</text>
+            <path class="st3 gd3 pd" d="M740 412 H 824"/>
+            <circle class="s2fill q3c pd st" cx="860" cy="412" r="34"/>
+            <text class="qmark txQ3" x="860" y="424" text-anchor="middle">?</text>
+            <text class="lb3 txQ3b" x="860" y="490" text-anchor="middle">enough water?</text>
+            <path class="st3 gd4 pd" d="M896 412 H 962"/>
           </g>
           <g class="glassG">
-            <g class="logoc glassIc" transform="translate(946,296)" style="color:var(--ink)"><use href="#ic-water" width="88" height="88"/></g>
-            <text class="lbi txDehy" x="990" y="440" text-anchor="middle">dehydration</text>
-            <circle class="st acc thick glassRing" cx="990" cy="340" r="62"/>
+            <g class="logoc glassIc" transform="translate(978,338)" style="color:var(--ink)"><use href="#ic-water" width="110" height="110"/></g>
+            <text class="lbi txDehy" x="1033" y="520" text-anchor="middle">dehydration</text>
+            <circle class="st acc thick glassRing" cx="1033" cy="394" r="78"/>
           </g>
         </svg>
       </div>
@@ -350,64 +366,67 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
     <!-- ============ r5 — three moves ============ -->
     <section class="scene r5" data-sc="r5">
       <div class="wrap">
-        <svg class="cv" viewBox="0 0 1200 640" aria-hidden="true">
+        <svg class="cv" viewBox="0 0 1200 660" aria-hidden="true">
+          <defs><pattern id="dg5" width="30" height="30" patternUnits="userSpaceOnUse"><circle class="dotc" cx="15" cy="15" r="1.7"/></pattern></defs>
+          <rect class="board" x="14" y="10" width="1172" height="640" rx="30"/>
+          <rect x="14" y="10" width="1172" height="640" rx="30" fill="url(#dg5)"/>
           <!-- the three medallions -->
-          <g class="mv1"><circle class="st3 mvc1 pd" cx="420" cy="66" r="30"/><text class="num txN1" x="420" y="73" text-anchor="middle">1</text><text class="lb3 txT1" x="420" y="126" text-anchor="middle">keep asking why</text></g>
-          <g class="mv2"><circle class="st3 mvc2 pd" cx="600" cy="66" r="30"/><text class="num txN2" x="600" y="73" text-anchor="middle">2</text><text class="lb3 txT2" x="600" y="126" text-anchor="middle">symptom vs cause</text></g>
-          <g class="mv3"><circle class="st3 mvc3 pd" cx="780" cy="66" r="30"/><text class="num txN3" x="780" y="73" text-anchor="middle">3</text><text class="lb3 txT3" x="780" y="126" text-anchor="middle">prove it first</text></g>
+          <g class="mv1"><circle class="s2fill mvc1 pd st3" cx="404" cy="88" r="40"/><text class="num txN1" x="404" y="97" text-anchor="middle">1</text><text class="lb3 txT1" x="404" y="166" text-anchor="middle">keep asking why</text></g>
+          <g class="mv2"><circle class="s2fill mvc2 pd st3" cx="600" cy="88" r="40"/><text class="num txN2" x="600" y="97" text-anchor="middle">2</text><text class="lb3 txT2" x="600" y="166" text-anchor="middle">symptom vs cause</text></g>
+          <g class="mv3"><circle class="s2fill mvc3 pd st3" cx="796" cy="88" r="40"/><text class="num txN3" x="796" y="97" text-anchor="middle">3</text><text class="lb3 txT3" x="796" y="166" text-anchor="middle">prove it first</text></g>
 
           <!-- demo 1: the five-whys staircase -->
           <g class="dWhys">
-            <rect class="tint wTint" x="170" y="230" width="900" height="380" rx="4"/>
-            <line class="hair wSurf pd" x1="170" y1="230" x2="1070" y2="230"/>
-            <text class="lbi txS0" x="190" y="208" text-anchor="start">The site went down</text>
-            <g class="restG"><text class="mono txRest" x="392" y="208" text-anchor="start">restart it</text>
-            <line class="strike stRest pd" x1="386" y1="203" x2="464" y2="203"/></g>
-            <path class="st wD1 pd" d="M480 230 V 300"/>
-            <text class="mono txW1" x="462" y="272" text-anchor="end">why</text>
-            <path class="st wL1 pd" d="M480 300 H 760"/>
-            <text class="lbi txS1" x="496" y="288" text-anchor="start">Memory spiked</text>
-            <path class="st wD2 pd" d="M760 300 V 370"/>
-            <text class="mono txW2" x="742" y="342" text-anchor="end">why</text>
-            <path class="st wL2 pd" d="M760 370 H 1040"/>
-            <text class="lbi txS2" x="776" y="358" text-anchor="start">One request loaded everything</text>
-            <path class="st wD3 pd" d="M1040 370 V 440"/>
-            <text class="mono txW3" x="1022" y="412" text-anchor="end">why</text>
-            <circle class="st acc thick wNode nodefill" cx="1040" cy="474" r="26"/>
-            <circle class="accdot wDot" cx="1040" cy="474" r="9"/>
-            <text class="lbi txS3" x="1040" y="548" text-anchor="middle">Nobody set a limit on it</text>
+            <rect class="tint wTint" x="60" y="260" width="1080" height="352" rx="6"/>
+            <line class="ln wSurf pd" x1="60" y1="260" x2="1140" y2="260"/>
+            <text class="lbi txS0" x="96" y="234" text-anchor="start">The site went down</text>
+            <g class="restG"><text class="mono txRest" x="320" y="234" text-anchor="start">restart it</text>
+            <line class="strike stRest pd" x1="314" y1="228" x2="398" y2="228"/></g>
+            <path class="st wD1 pd" d="M470 260 V 344"/>
+            <text class="mono txW1" x="450" y="312" text-anchor="end">why</text>
+            <path class="st wL1 pd" d="M470 344 H 760"/>
+            <text class="lbi txS1" x="488" y="330" text-anchor="start">Memory spiked</text>
+            <path class="st wD2 pd" d="M760 344 V 428"/>
+            <text class="mono txW2" x="740" y="396" text-anchor="end">why</text>
+            <path class="st wL2 pd" d="M760 428 H 1050"/>
+            <text class="lbi txS2" x="778" y="414" text-anchor="start" font-size="19">One request loaded everything</text>
+            <path class="st wD3 pd" d="M1050 428 V 500"/>
+            <text class="mono txW3" x="1030" y="474" text-anchor="end">why</text>
+            <circle class="nfill wNode" cx="1050" cy="540" r="34"/>
+            <circle class="bgfill wDot" cx="1050" cy="540" r="11"/>
+            <text class="lbi txS3" x="1044" y="612" text-anchor="middle">Nobody set a limit on it</text>
           </g>
 
           <!-- demo 2: loud vs quiet -->
           <g class="dLq">
-            <g class="logoc megaIc" transform="translate(330,240)" style="color:var(--ink-2)"><use href="#ic-mega" width="92" height="92"/></g>
-            <path class="st3 wv1 pd" d="M448 258 C 470 272 470 300 448 314"/>
-            <path class="st3 wv2 pd" d="M480 244 C 512 266 512 306 480 328"/>
-            <path class="st3 wv3 pd" d="M512 230 C 554 260 554 312 512 342"/>
-            <text class="lb3 txLoud" x="376" y="386" text-anchor="middle">slow checkout &middot; angry tweets</text>
-            <path class="st neg strkLoud pd" d="M436 240 L 542 336"/>
-            <rect class="tint lqTint" x="560" y="420" width="480" height="160" rx="4"/>
-            <line class="hair lqSurf pd" x1="560" y1="420" x2="1040" y2="420"/>
-            <path class="st3 dsh lqShaft pd" d="M800 352 V 408"/>
-            <g class="logoc dbIc" transform="translate(766,462)" style="color:var(--ink)"><use href="#ic-db" width="68" height="68"/></g>
-            <text class="lbi txQuiet" x="800" y="566" text-anchor="middle">no index on the database</text>
-            <circle class="st acc thick dbRing" cx="800" cy="496" r="44"/>
+            <g class="logoc megaIc" transform="translate(290,270)" style="color:var(--ink-2)"><use href="#ic-mega" width="120" height="120"/></g>
+            <path class="st3 wv1 pd" d="M442 292 C 470 310 470 350 442 368"/>
+            <path class="st3 wv2 pd" d="M484 274 C 526 302 526 358 484 386"/>
+            <path class="st3 wv3 pd" d="M526 256 C 580 292 580 368 526 404"/>
+            <text class="lb3 txLoud" x="360" y="470" text-anchor="middle">slow checkout &middot; angry tweets</text>
+            <path class="st neg thick strkLoud pd" d="M424 268 L 546 394"/>
+            <rect class="tint lqTint" x="620" y="430" width="520" height="182" rx="6"/>
+            <line class="ln lqSurf pd" x1="620" y1="430" x2="1140" y2="430"/>
+            <path class="st3 dsh lqShaft pd" d="M880 366 V 418"/>
+            <g class="logoc dbIc" transform="translate(832,462)" style="color:var(--ink)"><use href="#ic-db" width="96" height="96"/></g>
+            <text class="lbi txQuiet" x="880" y="600" text-anchor="middle" font-size="19">no index on the database</text>
+            <circle class="st acc thick dbRing" cx="880" cy="510" r="62"/>
           </g>
 
           <!-- demo 3: prove it — evidence alignment -->
           <g class="dEv">
-            <text class="mono txE1" x="250" y="272" text-anchor="end">timeline</text>
-            <line class="hair ev1 pd" x1="290" y1="266" x2="950" y2="266"/>
-            <rect class="st3 evm1 nodefill" x="400" y="248" width="36" height="36" rx="9" transform="rotate(45 418 266)"/>
-            <text class="mono txE2" x="250" y="352" text-anchor="end">logs</text>
-            <line class="hair ev2 pd" x1="290" y1="346" x2="950" y2="346"/>
-            <rect class="st3 evm2 nodefill" x="742" y="328" width="36" height="36" rx="9" transform="rotate(45 760 346)"/>
-            <text class="mono txE3" x="250" y="432" text-anchor="end">numbers</text>
-            <line class="hair ev3 pd" x1="290" y1="426" x2="950" y2="426"/>
-            <rect class="st3 evm3 nodefill" x="562" y="408" width="36" height="36" rx="9" transform="rotate(45 580 426)"/>
-            <path class="st pos dsh evLine pd" d="M620 226 V 466"/>
-            <path class="st pos evOk pd" d="M604 500 l10 10 l20 -21"/>
-            <path class="st neg evGhost pd" d="M816 226 L 844 254 M844 226 L816 254"/>
+            <text class="mono txE1" x="240" y="316" text-anchor="end">timeline</text>
+            <line class="ln ev1 pd" x1="280" y1="310" x2="1080" y2="310"/>
+            <rect class="s2fill evm1 st" x="404" y="284" width="52" height="52" rx="13" transform="rotate(45 430 310)"/>
+            <text class="mono txE2" x="240" y="416" text-anchor="end">logs</text>
+            <line class="ln ev2 pd" x1="280" y1="410" x2="1080" y2="410"/>
+            <rect class="s2fill evm2 st" x="844" y="384" width="52" height="52" rx="13" transform="rotate(45 870 410)"/>
+            <text class="mono txE3" x="240" y="516" text-anchor="end">numbers</text>
+            <line class="ln ev3 pd" x1="280" y1="510" x2="1080" y2="510"/>
+            <rect class="s2fill evm3 st" x="624" y="484" width="52" height="52" rx="13" transform="rotate(45 650 510)"/>
+            <path class="st pos dsh evLine pd" d="M680 268 V 552"/>
+            <path class="st pos thick evOk pd" d="M660 584 l13 13 l26 -27"/>
+            <path class="st neg thick evGhost pd" d="M886 268 L 922 304 M922 268 L886 304"/>
           </g>
         </svg>
       </div>
@@ -416,48 +435,51 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
     <!-- ============ r6 — Priya ============ -->
     <section class="scene r6" data-sc="r6">
       <div class="wrap">
-        <svg class="cv" viewBox="0 0 1200 640" aria-hidden="true">
+        <svg class="cv" viewBox="0 0 1200 660" aria-hidden="true">
+          <defs><pattern id="dg6" width="30" height="30" patternUnits="userSpaceOnUse"><circle class="dotc" cx="15" cy="15" r="1.7"/></pattern></defs>
+          <rect class="board" x="14" y="10" width="1172" height="640" rx="30"/>
+          <rect x="14" y="10" width="1172" height="640" rx="30" fill="url(#dg6)"/>
           <!-- who -->
           <g class="whoG">
-            <circle class="pAv" cx="120" cy="84" r="34" fill="var(--surface2)" stroke="var(--ink-3)" stroke-width="2"/>
-            <text class="serif txPP" x="120" y="94" text-anchor="middle" font-size="30">P</text>
-            <text class="lbi txPN" x="174" y="78" text-anchor="start" font-size="21">Priya</text>
-            <text class="lb3 txPR" x="174" y="102" text-anchor="start">analyst &middot; subscription app</text>
+            <circle class="pAv s2fill" cx="140" cy="96" r="40" stroke="var(--ink-3)" stroke-width="2.5"/>
+            <text class="serif txPP" x="140" y="109" text-anchor="middle" font-size="36">P</text>
+            <text class="lbi txPN" x="202" y="90" text-anchor="start" font-size="24">Priya</text>
+            <text class="lb3 txPR" x="202" y="118" text-anchor="start">analyst &middot; subscription app</text>
           </g>
           <!-- the chart -->
           <g class="chartG">
-            <line class="hair axY pd" x1="140" y1="160" x2="140" y2="470"/>
-            <line class="hair axX pd" x1="140" y1="470" x2="700" y2="470"/>
-            <path class="st neg thick churn pd" d="M160 440 C 300 420 420 370 520 316 C 570 288 610 262 640 240"/>
-            <text class="mononeg txChurn" x="588" y="222" text-anchor="start">churn</text>
-            <path class="st3 dsh ob pd" d="M166 452 C 304 432 424 382 522 328 C 570 301 608 274 636 252"/>
-            <path class="st pos okT1 pd" d="M296 402 l7 7 l13 -14"/>
-            <path class="st pos okT2 pd" d="M456 356 l7 7 l13 -14"/>
-            <path class="st pos okT3 pd" d="M576 292 l7 7 l13 -14"/>
-            <path class="st pos thick churnFix pd" d="M640 240 C 662 268 678 306 692 348"/>
-            <text class="mono txLeg1" x="150" y="516" text-anchor="start">&#9472; cancellations</text>
-            <text class="mono txLeg2" x="330" y="516" text-anchor="start">&#9472; never finished setup</text>
-            <text class="monopos txLeg3" x="560" y="516" text-anchor="start">&#9472; after the fix</text>
+            <line class="ln axY pd" x1="150" y1="190" x2="150" y2="510"/>
+            <line class="ln axX pd" x1="150" y1="510" x2="720" y2="510"/>
+            <path class="st neg thick churn pd" d="M172 478 C 320 454 440 396 540 336 C 592 306 634 276 664 252"/>
+            <text class="mononeg txChurn" x="606" y="232" text-anchor="start">churn</text>
+            <path class="st3 dsh ob pd" d="M178 492 C 324 468 444 410 542 350 C 592 320 630 290 660 266"/>
+            <path class="st pos thick okT1 pd" d="M312 434 l9 9 l17 -18"/>
+            <path class="st pos thick okT2 pd" d="M472 376 l9 9 l17 -18"/>
+            <path class="st pos thick okT3 pd" d="M592 306 l9 9 l17 -18"/>
+            <path class="st pos thick churnFix pd" d="M664 252 C 686 286 700 330 712 376"/>
+            <text class="mono txLeg1" x="160" y="560" text-anchor="start">&#9472; cancellations</text>
+            <text class="mono txLeg2" x="352" y="560" text-anchor="start">&#9472; never finished setup</text>
+            <text class="monopos txLeg3" x="596" y="560" text-anchor="start">&#9472; after the fix</text>
           </g>
           <!-- the dig, next to the chart -->
-          <path class="st3 dsh leader pd" d="M660 236 C 700 240 730 248 762 258 M750 250 L764 259 L748 266"/>
+          <path class="st3 dsh leader pd" d="M676 248 C 720 252 752 262 786 274 M772 264 L788 275 L770 282"/>
           <g class="digG">
-            <text class="lbi txC0" x="955" y="266" text-anchor="middle">Cancelling right after month one</text>
-            <path class="st cD1 pd" d="M955 282 V 316"/>
-            <text class="mono txCW1" x="937" y="304" text-anchor="end">why</text>
-            <text class="lbi txC1" x="955" y="346" text-anchor="middle">Never used the main feature</text>
-            <path class="st cD2 pd" d="M955 362 V 396"/>
-            <text class="mono txCW2" x="937" y="384" text-anchor="end">why</text>
-            <rect class="st acc rootBox nodefill" x="810" y="408" width="290" height="46" rx="14"/>
-            <text class="lbi txC2" x="955" y="437" text-anchor="middle">Couldn't find it during setup</text>
-            <path class="st pos flag pd" d="M1084 402 V 374 M1084 374 l26 8 l-26 8"/>
-            <text class="monopos txFix" x="955" y="492" text-anchor="middle">welcome flow fixed &#10003;</text>
+            <text class="lbi txC0" x="975" y="290" text-anchor="middle" font-size="20">Cancelling right after month one</text>
+            <path class="st cD1 pd" d="M975 308 V 348"/>
+            <text class="mono txCW1" x="955" y="334" text-anchor="end">why</text>
+            <text class="lbi txC1" x="975" y="382" text-anchor="middle" font-size="20">Never used the main feature</text>
+            <path class="st cD2 pd" d="M975 400 V 440"/>
+            <text class="mono txCW2" x="955" y="426" text-anchor="end">why</text>
+            <rect class="s2fill rootBox st acc" x="810" y="452" width="330" height="56" rx="16"/>
+            <text class="lbi txC2" x="975" y="488" text-anchor="middle" font-size="20">Couldn't find it during setup</text>
+            <path class="st pos thick flag pd" d="M1122 446 V 414 M1122 414 l30 10 l-30 10"/>
+            <text class="monopos txFix" x="975" y="546" text-anchor="middle" font-size="16">welcome flow fixed &#10003;</text>
           </g>
           <!-- the tempting shortcut -->
           <g class="discG">
-            <g class="logoc tagIc" transform="translate(830,540)" style="color:var(--ink-3)"><use href="#ic-tag" width="34" height="34"/></g>
-            <text class="lb3 txDisc" x="878" y="563" text-anchor="start">discounts for everyone</text>
-            <line class="strike stDisc pd" x1="872" y1="558" x2="1046" y2="558"/>
+            <g class="logoc tagIc" transform="translate(836,586)" style="color:var(--ink-3)"><use href="#ic-tag" width="38" height="38"/></g>
+            <text class="lb3 txDisc" x="888" y="612" text-anchor="start">discounts for everyone</text>
+            <line class="strike stDisc pd" x1="882" y1="606" x2="1066" y2="606"/>
           </g>
         </svg>
       </div>
@@ -466,16 +488,19 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
     <!-- ============ r7 — close ============ -->
     <section class="scene r7" data-sc="r7">
       <div class="wrap">
-        <svg class="cv" viewBox="0 0 1200 620" aria-hidden="true">
-          <rect class="tint gTint" x="70" y="150" width="1060" height="330" rx="4"/>
-          <line class="hair surf pd" x1="70" y1="150" x2="1130" y2="150"/>
-          <path class="st pos seal pd" d="M552 150 l16 -11 l16 11 l16 -11 l16 11 l16 -11 l16 11"/>
-          <path class="st root pd" d="M600 150 C 598 200 610 224 600 262 C 590 300 606 330 600 368"/>
-          <circle class="st acc thick node nodefill" cx="600" cy="404" r="26"/>
-          <path class="st pos thick nodeOk pd" d="M586 404 l10 10 l20 -21"/>
-          <g class="mv1"><circle class="st3 mvc pd" cx="450" cy="560" r="26"/><text class="num txN" x="450" y="567" text-anchor="middle">1</text><text class="lb3 txT" x="450" y="613" text-anchor="middle">keep asking why</text></g>
-          <g class="mv2"><circle class="st3 mvc pd" cx="600" cy="560" r="26"/><text class="num txN" x="600" y="567" text-anchor="middle">2</text><text class="lb3 txT" x="600" y="613" text-anchor="middle">symptom vs cause</text></g>
-          <g class="mv3"><circle class="st3 mvc pd" cx="750" cy="560" r="26"/><text class="num txN" x="750" y="567" text-anchor="middle">3</text><text class="lb3 txT" x="750" y="613" text-anchor="middle">prove it first</text></g>
+        <svg class="cv" viewBox="0 0 1200 660" aria-hidden="true">
+          <defs><pattern id="dg7" width="30" height="30" patternUnits="userSpaceOnUse"><circle class="dotc" cx="15" cy="15" r="1.7"/></pattern></defs>
+          <rect class="board" x="14" y="10" width="1172" height="640" rx="30"/>
+          <rect x="14" y="10" width="1172" height="640" rx="30" fill="url(#dg7)"/>
+          <rect class="tint gTint" x="60" y="200" width="1080" height="290" rx="6"/>
+          <line class="ln surf pd" x1="60" y1="200" x2="1140" y2="200"/>
+          <path class="st pos thick seal pd" d="M540 200 l22 -15 l22 15 l22 -15 l22 15 l22 -15 l22 15"/>
+          <path class="st root pd" d="M606 200 C 603 256 618 284 606 324 C 594 364 612 396 606 424"/>
+          <circle class="nfill node" cx="606" cy="452" r="34"/>
+          <path class="st bgstroke thick nodeOk pd" d="M588 452 l12 12 l24 -25"/>
+          <g class="mv1"><circle class="nfill mvc pd" cx="440" cy="568" r="32"/><text class="num numOn txN" x="440" y="577" text-anchor="middle">1</text><text class="lb3 txT" x="440" y="632" text-anchor="middle">keep asking why</text></g>
+          <g class="mv2"><circle class="nfill mvc pd" cx="600" cy="568" r="32"/><text class="num numOn txN" x="600" y="577" text-anchor="middle">2</text><text class="lb3 txT" x="600" y="632" text-anchor="middle">symptom vs cause</text></g>
+          <g class="mv3"><circle class="nfill mvc pd" cx="760" cy="568" r="32"/><text class="num numOn txN" x="760" y="577" text-anchor="middle">3</text><text class="lb3 txT" x="760" y="632" text-anchor="middle">prove it first</text></g>
         </svg>
       </div>
     </section>
@@ -527,7 +552,7 @@ function T(inst){const tl=gsap.timeline({paused:false});tl._inst=!!inst;return t
 function fin(tl,inst){if(inst)tl.progress(1);return tl;}
 function len(p){return p._len||(p._len=p.getTotalLength?p.getTotalLength():300);}
 /* dasharray must be an explicit "L L" string — a bare number merges with any
-   CSS dash pattern (e.g. the .dsh "4 8") and leaves the path visible */
+   CSS dash pattern (e.g. the .dsh "5 10") and leaves the path visible */
 function drawPath(tl,els,pos,d,stag){
   els.forEach((p,i)=>{const L=len(p),at=(pos||0)+i*(stag!==undefined?stag:.12);
     tl.set(p,{opacity:1},at);
@@ -542,7 +567,7 @@ function dashKeep(tl,p,pos,d,pattern){
   const L=len(p);
   tl.fromTo(p,{opacity:0},{opacity:1,duration:.2},pos||0);
   tl.fromTo(p,{strokeDashoffset:L,strokeDasharray:L+' '+L},{strokeDashoffset:0,duration:d||.6,ease:'power1.inOut'},pos||0);
-  tl.set(p,{strokeDasharray:pattern||'4 8'},(pos||0)+(d||.6)+.02);
+  tl.set(p,{strokeDasharray:pattern||'5 10'},(pos||0)+(d||.6)+.02);
   return tl;}
 function txt(tl,els,pos,d,stag){
   tl.fromTo(els,{opacity:0,y:8},{opacity:1,y:0,duration:d||.45,ease:E2,stagger:stag||0},pos||0);return tl;}
@@ -551,20 +576,20 @@ function popIn(tl,els,pos,d){tl.fromTo(els,{opacity:0,scale:.5,transformOrigin:'
 function pulse(tl,el,pos,amt){tl.fromTo(el,{scale:1,transformOrigin:'center center',transformBox:'fill-box'},{scale:amt||1.12,duration:.26,ease:E1},pos||0).to(el,{scale:1,duration:.3,ease:E1},(pos||0)+.26);return tl;}
 
 /* ================================================================
-   SCENE INITIAL STATES — every drawn stroke starts undrawn,
-   every label starts hidden. Rebuild = INIT + replay.
+   SCENE INITIAL STATES — the board is always on; strokes start undrawn.
 ================================================================ */
 function hideAllPd(r){$$('.pd',r).forEach(p=>{const L=len(p);gsap.set(p,{strokeDasharray:L+' '+L,strokeDashoffset:L,opacity:0});});}
 const INIT={
   r1(){const r=scEl.r1;
-    gsap.set($('.heading',r),{opacity:0,y:24});
     hideAllPd(r);
+    gsap.set($('.txTitle',r),{opacity:0});
     gsap.set($('.gTint',r),{opacity:0});
     gsap.set($('.ring',r),{opacity:0});
     gsap.set($$('.node,.ndot',r),{opacity:0});
   },
   r2(){const r=scEl.r2;
     hideAllPd(r);
+    gsap.set([$('.box',r),$('.box2',r)],{fillOpacity:0});
     gsap.set($('.patch',r),{opacity:0,y:-34,rotation:-14,transformOrigin:'center center',transformBox:'fill-box'});
     gsap.set($('.tintR',r),{opacity:0});
     gsap.set($('.nodeR',r),{opacity:0});
@@ -573,22 +598,25 @@ const INIT={
   },
   r3(){const r=scEl.r3;
     hideAllPd(r);
+    gsap.set($$('.mc',r),{fillOpacity:0});
     gsap.set($$('.lg',r),{opacity:0,scale:.7,transformOrigin:'center center',transformBox:'fill-box'});
     gsap.set($$('.tx,.txOnce,.txFor',r),{opacity:0});
     gsap.set($('.brRg',r),{opacity:1});
   },
   r4(){const r=scEl.r4;
     hideAllPd(r);
+    gsap.set([$('.head',r),$('.q1c',r),$('.q2c',r),$('.q3c',r)],{fillOpacity:0});
     gsap.set($$('.pillIc,.glassIc',r),{opacity:0,scale:.7,transformOrigin:'center center',transformBox:'fill-box'});
     gsap.set($$('.txPill,.txQ1,.txQ1b,.txQ2,.txQ2b,.txQ3,.txQ3b,.txDehy',r),{opacity:0});
     gsap.set($('.glassRing',r),{opacity:0});
     gsap.set($('.lazyG',r),{opacity:1});
-    gsap.set($$('.qmark',r),{opacity:0});
   },
   r5(){const r=scEl.r5;
     hideAllPd(r);
+    gsap.set($$('.mvc1,.mvc2,.mvc3',r),{fillOpacity:0});
     gsap.set($$('.txN1,.txN2,.txN3,.txT1,.txT2,.txT3',r),{opacity:0});
-    $$('.mvc1,.mvc2,.mvc3',r).forEach(c=>{c.classList.remove('acc');c.classList.add('st3');});
+    $$('.mvc1,.mvc2,.mvc3',r).forEach(c=>{c.classList.remove('acc','st');c.classList.add('st3');});
+    $$('.txN1,.txN2,.txN3',r).forEach(t=>t.classList.remove('numOn'));
     gsap.set($$('.wTint,.lqTint',r),{opacity:0});
     gsap.set($$('.dWhys text,.dLq text,.dEv text',r),{opacity:0});
     gsap.set($$('.megaIc,.dbIc',r),{opacity:0,scale:.7,transformOrigin:'center center',transformBox:'fill-box'});
@@ -609,19 +637,20 @@ const INIT={
     hideAllPd(r);
     gsap.set($('.gTint',r),{opacity:0});
     gsap.set($('.node',r),{opacity:0});
+    gsap.set($$('.mvc',r),{opacity:0});
     gsap.set($$('.txN,.txT',r),{opacity:0});
   }
 };
 
 /* ================================================================
-   BEAT FUNCTIONS — the story draws itself.
+   BEAT FUNCTIONS — the story draws itself on the board.
 ================================================================ */
 const FN={};
 FN.noop=i=>{const tl=T();return fin(tl,i);};
 
-/* ---- r1: title, the crack you can see, the dig to the real reason ---- */
+/* ---- r1 ---- */
 FN.r1_title=i=>{const r=scEl.r1,tl=T();
-  tl.fromTo($('.heading',r),{opacity:0,y:24},{opacity:1,y:0,duration:.7,ease:E2},0);
+  txt(tl,[$('.txTitle',r)],0,.7);
   return fin(tl,i);};
 FN.r1_surface=i=>{const r=scEl.r1,tl=T();
   drawPath(tl,[$('.surf',r)],0,.7);
@@ -638,9 +667,10 @@ FN.r1_dig=i=>{const r=scEl.r1,tl=T();
   fadeIn(tl,[$('.ndot',r)],1.8,.3);
   return fin(tl,i);};
 
-/* ---- r2: two people, same problem ---- */
+/* ---- r2 ---- */
 FN.r2_two=i=>{const r=scEl.r2,tl=T();
   drawPath(tl,[$('.box',r),$('.box2',r)],0,.6,.15);
+  tl.to([$('.box',r),$('.box2',r)],{fillOpacity:1,duration:.5,ease:E1},.5);
   drawPath(tl,$$('.gear',r),.4,.5,.06);
   drawPath(tl,$$('.gear2',r),.55,.5,.06);
   drawPath(tl,[$('.crL',r),$('.crR',r)],.9,.5,.15);
@@ -674,15 +704,16 @@ FN.r2_same=i=>{const r=scEl.r2,tl=T();
   tl.to([$('.wgL',r),$('.patch',r),$('.laneL',r),$('.bx1',r),$('.bx2',r)],{opacity:.4,duration:.6,ease:E1},0);
   return fin(tl,i);};
 
-/* ---- r3: three medallions, then the fork ---- */
-function r3st(mc,lg,tx){return i=>{const r=scEl.r3,tl=T();
-  drawPath(tl,[$(mc,r)],0,.55);
-  popIn(tl,[$(lg,r)],.35,.5);
-  txt(tl,[$(tx,r)],.55,.45);
+/* ---- r3 ---- */
+function r3st(g){return i=>{const r=scEl.r3,tl=T();
+  drawPath(tl,[$(g+' .mc',r)],0,.55);
+  tl.to($(g+' .mc',r),{fillOpacity:1,duration:.4,ease:E1},.4);
+  popIn(tl,[$(g+' .lg',r)],.35,.5);
+  txt(tl,[$(g+' .tx',r)],.55,.45);
   return fin(tl,i);};}
-FN.r3_cf=r3st('.mCF .mc','.mCF .lg','.mCF .tx');
-FN.r3_ty=r3st('.mTY .mc','.mTY .lg','.mTY .tx');
-FN.r3_sup=r3st('.mSUP .mc','.mSUP .lg','.mSUP .tx');
+FN.r3_cf=r3st('.mCF');
+FN.r3_ty=r3st('.mTY');
+FN.r3_sup=r3st('.mSUP');
 FN.r3_once=i=>{const r=scEl.r3,tl=T();
   drawPath(tl,[$('.stem',r)],0,.35);
   drawPath(tl,[$('.brL',r)],.3,.7);
@@ -700,9 +731,10 @@ FN.r3_gap=i=>{const r=scEl.r3,tl=T();
   tl.to($('.brRg',r),{opacity:.42,duration:.6,ease:E1},0);
   return fin(tl,i);};
 
-/* ---- r4: the doctor ---- */
+/* ---- r4 ---- */
 FN.r4_patient=i=>{const r=scEl.r4,tl=T();
   drawPath(tl,[$('.head',r)],0,.6);
+  tl.to($('.head',r),{fillOpacity:1,duration:.4,ease:E1},.45);
   drawPath(tl,$$('.star .pd',r),.5,.3,.06);
   pulse(tl,$('.star',r),1.1,1.15);
   return fin(tl,i);};
@@ -719,11 +751,11 @@ FN.r4_back=i=>{const r=scEl.r4,tl=T();
   return fin(tl,i);};
 FN.r4_asks=i=>{const r=scEl.r4,tl=T();
   drawPath(tl,[$('.gdPath',r)],0,.5);
-  drawPath(tl,[$('.q1c',r)],.4,.4);fadeIn(tl,[$('.txQ1',r)],.6,.3);txt(tl,[$('.txQ1b',r)],.7,.4);
+  drawPath(tl,[$('.q1c',r)],.4,.4);tl.to($('.q1c',r),{fillOpacity:1,duration:.3},.7);fadeIn(tl,[$('.txQ1',r)],.6,.3);txt(tl,[$('.txQ1b',r)],.7,.4);
   drawPath(tl,[$('.gd2',r)],1.5,.3);
-  drawPath(tl,[$('.q2c',r)],1.75,.4);fadeIn(tl,[$('.txQ2',r)],1.95,.3);txt(tl,[$('.txQ2b',r)],2.05,.4);
+  drawPath(tl,[$('.q2c',r)],1.75,.4);tl.to($('.q2c',r),{fillOpacity:1,duration:.3},2.05);fadeIn(tl,[$('.txQ2',r)],1.95,.3);txt(tl,[$('.txQ2b',r)],2.05,.4);
   drawPath(tl,[$('.gd3',r)],2.9,.3);
-  drawPath(tl,[$('.q3c',r)],3.15,.4);fadeIn(tl,[$('.txQ3',r)],3.35,.3);txt(tl,[$('.txQ3b',r)],3.45,.4);
+  drawPath(tl,[$('.q3c',r)],3.15,.4);tl.to($('.q3c',r),{fillOpacity:1,duration:.3},3.45);fadeIn(tl,[$('.txQ3',r)],3.35,.3);txt(tl,[$('.txQ3b',r)],3.45,.4);
   return fin(tl,i);};
 FN.r4_root=i=>{const r=scEl.r4,tl=T();
   drawPath(tl,[$('.gd4',r)],0,.35);
@@ -744,19 +776,22 @@ FN.r4_alarm=i=>{const r=scEl.r4,tl=T();
   pulse(tl,$('.glassG',r),1.7,1.05);
   return fin(tl,i);};
 
-/* ---- r5: the three moves ---- */
+/* ---- r5 ---- */
 FN.r5_three=i=>{const r=scEl.r5,tl=T();
   drawPath(tl,[$('.mvc1',r),$('.mvc2',r),$('.mvc3',r)],0,.5,.15);
+  tl.to($$('.mvc1,.mvc2,.mvc3',r),{fillOpacity:1,duration:.4,ease:E1,stagger:.12},.4);
   txt(tl,$$('.txN1,.txN2,.txN3',r),.3,.3,.15);
   txt(tl,$$('.txT1,.txT2,.txT3',r),.45,.4,.15);
   return fin(tl,i);};
 function mvActivate(r,tl,n,pos){
-  tl.add(()=>{const c=$('.mvc'+n,r);c.classList.remove('st3');c.classList.add('st','acc');},pos||0);
-  pulse(tl,$('.mvc'+n,r),(pos||0)+.02,1.15);
+  tl.add(()=>{const c=$('.mvc'+n,r);c.classList.remove('st3');c.classList.add('st','acc');
+    c.style.fill='var(--accent)';c.style.fillOpacity=1;
+    $('.txN'+n,r).classList.add('numOn');},pos||0);
+  pulse(tl,$('.mvc'+n,r),(pos||0)+.02,1.12);
 }
 FN.r5_m1=i=>{const r=scEl.r5,tl=T();
   mvActivate(r,tl,1,.05);
-  if(i){const c=$('.mvc1',r);c.classList.remove('st3');c.classList.add('st','acc');}
+  if(i){const c=$('.mvc1',r);c.classList.remove('st3');c.classList.add('st','acc');c.style.fill='var(--accent)';c.style.fillOpacity=1;$('.txN1',r).classList.add('numOn');}
   return fin(tl,i);};
 FN.r5_whys=i=>{const r=scEl.r5,tl=T();
   fadeIn(tl,[$('.wTint',r)],0,.5);
@@ -800,7 +835,7 @@ function eraseLq(r,tl,pos){
 FN.r5_m2=i=>{const r=scEl.r5,tl=T();
   eraseWhys(r,tl,0);
   mvActivate(r,tl,2,.45);
-  if(i){const c=$('.mvc2',r);c.classList.remove('st3');c.classList.add('st','acc');}
+  if(i){const c=$('.mvc2',r);c.classList.remove('st3');c.classList.add('st','acc');c.style.fill='var(--accent)';c.style.fillOpacity=1;$('.txN2',r).classList.add('numOn');}
   return fin(tl,i);};
 FN.r5_loud=i=>{const r=scEl.r5,tl=T();
   popIn(tl,[$('.megaIc',r)],0,.5);
@@ -824,18 +859,18 @@ FN.r5_m3=i=>{const r=scEl.r5,tl=T();
   eraseLq(r,tl,0);
   tl.to($('.strkLoud',r),{opacity:0,duration:.3},0);
   mvActivate(r,tl,3,.45);
-  if(i){const c=$('.mvc3',r);c.classList.remove('st3');c.classList.add('st','acc');}
+  if(i){const c=$('.mvc3',r);c.classList.remove('st3');c.classList.add('st','acc');c.style.fill='var(--accent)';c.style.fillOpacity=1;$('.txN3',r).classList.add('numOn');}
   return fin(tl,i);};
 FN.r5_evidence=i=>{const r=scEl.r5,tl=T();
   drawPath(tl,[$('.ev1',r),$('.ev2',r),$('.ev3',r)],0,.5,.12);
   txt(tl,$$('.txE1,.txE2,.txE3',r),.2,.4,.12);
-  fadeIn(tl,[$('.evm1',r)],.5,.3);fadeIn(tl,[$('.evm2',r)],.65,.3);fadeIn(tl,[$('.evm3',r)],.8,.3);
-  tl.to($('.evm1',r),{x:202,duration:.9,ease:E2},1.3);
-  tl.to($('.evm2',r),{x:-140,duration:.9,ease:E2},1.55);
-  tl.to($('.evm3',r),{x:40,duration:.9,ease:E2},1.8);
+  popIn(tl,[$('.evm1',r)],.5,.4);popIn(tl,[$('.evm2',r)],.65,.4);popIn(tl,[$('.evm3',r)],.8,.4);
+  tl.to($('.evm1',r),{x:250,duration:.9,ease:E2},1.3);
+  tl.to($('.evm2',r),{x:-190,duration:.9,ease:E2},1.55);
+  tl.to($('.evm3',r),{x:30,duration:.9,ease:E2},1.8);
   return fin(tl,i);};
 FN.r5_match=i=>{const r=scEl.r5,tl=T();
-  dashKeep(tl,$('.evLine',r),0,.6,'5 7');
+  dashKeep(tl,$('.evLine',r),0,.6,'6 9');
   drawPath(tl,[$('.evOk',r)],.6,.4);
   return fin(tl,i);};
 FN.r5_wrong=i=>{const r=scEl.r5,tl=T();
@@ -843,7 +878,7 @@ FN.r5_wrong=i=>{const r=scEl.r5,tl=T();
   tl.to($('.evGhost',r),{opacity:0,duration:.5},1.6);
   return fin(tl,i);};
 
-/* ---- r6: Priya ---- */
+/* ---- r6 ---- */
 FN.r6_priya=i=>{const r=scEl.r6,tl=T();
   fadeIn(tl,[$('.pAv',r)],0,.4);
   txt(tl,$$('.txPP,.txPN,.txPR',r),.15,.4,.1);
@@ -890,7 +925,7 @@ FN.r6_evid=i=>{const r=scEl.r6,tl=T();
   pulse(tl,$('.okT1',r),0,1.35);pulse(tl,$('.okT2',r),.2,1.35);pulse(tl,$('.okT3',r),.4,1.35);
   return fin(tl,i);};
 
-/* ---- r7: close ---- */
+/* ---- r7 ---- */
 FN.r7_recap=i=>{const r=scEl.r7,tl=T();
   fadeIn(tl,[$('.gTint',r)],0,.5);
   drawPath(tl,[$('.surf',r)],.1,.6);
@@ -898,7 +933,7 @@ FN.r7_recap=i=>{const r=scEl.r7,tl=T();
   popIn(tl,[$('.node',r)],1.3,.5);
   return fin(tl,i);};
 FN.r7_doctor=i=>{const r=scEl.r7,tl=T();
-  drawPath(tl,$$('.mvc',r),0,.5,.15);
+  popIn(tl,[$('.mv1 .mvc',r)],0,.45);popIn(tl,[$('.mv2 .mvc',r)],.15,.45);popIn(tl,[$('.mv3 .mvc',r)],.3,.45);
   txt(tl,$$('.txN',r),.3,.3,.15);
   txt(tl,$$('.txT',r),.45,.4,.15);
   return fin(tl,i);};
