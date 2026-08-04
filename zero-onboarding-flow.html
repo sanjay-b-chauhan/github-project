@@ -49,16 +49,12 @@ svg{ display:block; }
 .wrap{ display:flex; gap:16px; padding:16px; height:100dvh; }
 .mid{ flex:1; min-width:0; display:flex; align-items:center; justify-content:center; padding:84px 24px 24px; }
 .col{ width:100%; max-width:660px; }
-.right{ width:0; min-width:0; opacity:0; overflow:hidden; padding-top:64px; }
+.right{ width:0; min-width:0; opacity:0; overflow:hidden; padding-top:64px; order:-1; }
 
 .draw{ position:fixed; inset:0; z-index:90; background:var(--page); display:none; align-items:center; justify-content:center; }
-.draw canvas{ position:absolute; inset:0; cursor:crosshair; touch-action:none; }
+.draw canvas{ position:absolute; inset:0; width:100%; height:100%; cursor:crosshair; touch-action:none; }
 .dcenter{ text-align:center; pointer-events:none; position:relative; }
-.dghost{ width:190px; margin:0 auto 34px; color:var(--tx); opacity:.06; }
-.dghost svg{ width:100%; height:auto; }
 .dh{ font-family:var(--serif); font-size:clamp(28px,2.3vw,42px); letter-spacing:-.03em; line-height:1.15; }
-.ds{ margin-top:13px; font-size:14px; color:var(--tx-3); }
-.dhint{ margin-top:30px; font-size:12.5px; color:var(--tx-4); opacity:0; }
 
 .said{ min-height:24px; margin-bottom:18px; font-size:15px; color:var(--tx-2); text-align:center; text-wrap:balance; position:relative; }
 .said .hl{ color:var(--tx); font-weight:600; }
@@ -313,10 +309,7 @@ svg{ display:block; }
 <div class="draw" id="drawScreen">
   <canvas id="drawCanvas"></canvas>
   <div class="dcenter">
-    <div class="dghost" id="dGhost"></div>
-    <div class="dh">Draw a zero to begin.</div>
-    <div class="ds">Anywhere. Any size.</div>
-    <div class="dhint" id="dHint">Or double-tap anywhere.</div>
+    <div class="dh" id="dH">Draw zero to begin.</div>
   </div>
 </div>
 
@@ -612,7 +605,7 @@ function bornPanel(){
   });
   s.appendChild(wrapS);
   gsap.set('.right',{width:'34%',opacity:0});
-  safeTL(gsap.timeline().fromTo('.right',{opacity:0,x:60},{opacity:1,x:0,duration:.9,ease:EIO}),2200);
+  safeTL(gsap.timeline().fromTo('.right',{opacity:0,x:-60},{opacity:1,x:0,duration:.9,ease:EIO}),2200);
   sfx('bloom');
 }
 function slotVal(k){
@@ -694,56 +687,78 @@ function afterCommit(next){ if(editReturn){ const r=editReturn; editReturn=null;
 /* ============================ 0 · persona pick (demo) ============================ */
 function personaPick(){
   setPhase(0);
-  const {box}=turn({q:'Today, you are…', sub:'Pick a persona. Zero adapts everything after this.'});
+  const {box}=turn({q:'Select your persona.'});
   orows(box,[
-    ['pen','#FBEFE9','A designer','Zero guesses design, talks craft, builds a design portfolio.','design'],
-    ['bars','#EDF6EC','A business analyst','Zero guesses analysis, talks numbers, builds an analyst portfolio.','ba'],
-    ['code','#EAF1FB','A software engineer','Zero guesses engineering, talks shipping, builds an engineering portfolio.','swe'],
-  ],(v)=>{ PKEY=v; go(showDraw); });
+    ['pen','#FBEFE9','A designer',null,'design'],
+    ['bars','#EDF6EC','A business analyst',null,'ba'],
+    ['code','#EAF1FB','A software engineer',null,'swe'],
+  ],(v)=>{
+    PKEY=v;
+    const t=$('turn');
+    safeTL(gsap.timeline().to(t,{scale:1.06,opacity:0,duration:.55,ease:EIO}),900);
+    setTimeout(()=>{ if(t.isConnected) t.remove(); showDraw(); },560);
+  });
 }
 
 /* ============================ 1 · draw ============================ */
 let drawInit=false;
 function showDraw(){
   const d=$('drawScreen'); d.style.display='flex';
-  gsap.fromTo(d,{opacity:0},{opacity:1,duration:.5});
+  safeTL(gsap.timeline()
+    .fromTo(d,{opacity:0},{opacity:1,duration:.55},0)
+    .fromTo('.dcenter',{scale:.94,opacity:0},{scale:1,opacity:1,duration:.7,ease:EIO},.1),1400);
   if(drawInit) return; drawInit=true;
-  $('dGhost').innerHTML=ZSVG;
   const cv=$('drawCanvas'), ctx=cv.getContext('2d');
-  let pts=[], down=false, len=0;
-  function size(){ cv.width=innerWidth*devicePixelRatio; cv.height=innerHeight*devicePixelRatio;
-    ctx.scale(devicePixelRatio,devicePixelRatio); ctx.lineCap='round'; ctx.lineJoin='round'; }
+  let pts=[], down=false, len=0, W=6;
+  function size(){ const dpr=devicePixelRatio||1;
+    cv.width=innerWidth*dpr; cv.height=innerHeight*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#111113'; ctx.fillStyle='#111113'; }
   size(); addEventListener('resize',size);
-  function paint(){ ctx.clearRect(0,0,innerWidth,innerHeight);
-    if(pts.length<2) return;
-    ctx.strokeStyle='#111113'; ctx.lineWidth=5;
-    ctx.beginPath(); ctx.moveTo(pts[0].x,pts[0].y);
-    for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x,pts[i].y);
-    ctx.stroke(); }
-  cv.addEventListener('pointerdown',e=>{ down=true; pts=[{x:e.clientX,y:e.clientY}]; len=0; });
+  const mid=(a,b)=>({x:(a.x+b.x)/2,y:(a.y+b.y)/2});
+  /* ink: slow strokes pool thick, fast strokes thin out */
+  function inkSeg(){
+    const n=pts.length; if(n<3) return;
+    const a=pts[n-3], b=pts[n-2], c2=pts[n-1];
+    const d2=Math.hypot(c2.x-b.x,c2.y-b.y), dt=Math.max(1,c2.t-b.t);
+    const speed=d2/dt;
+    const target=Math.max(3.2,Math.min(15,15-speed*6.5));
+    W+=(target-W)*.28;
+    const m1=mid(a,b), m2=mid(b,c2);
+    ctx.beginPath(); ctx.lineWidth=W;
+    ctx.moveTo(m1.x,m1.y); ctx.quadraticCurveTo(b.x,b.y,m2.x,m2.y);
+    ctx.stroke();
+  }
+  function clearInk(){ ctx.save(); ctx.setTransform(1,0,0,1,0,0);
+    ctx.clearRect(0,0,cv.width,cv.height); ctx.restore(); }
+  cv.addEventListener('pointerdown',e=>{ down=true; len=0; W=9;
+    pts=[{x:e.clientX,y:e.clientY,t:performance.now()}];
+    ctx.beginPath(); ctx.arc(e.clientX,e.clientY,4.5,0,7); ctx.fill(); });
   cv.addEventListener('pointermove',e=>{ if(!down)return;
-    const p={x:e.clientX,y:e.clientY}, q2=pts[pts.length-1];
-    len+=Math.hypot(p.x-q2.x,p.y-q2.y); pts.push(p); paint(); });
+    const p={x:e.clientX,y:e.clientY,t:performance.now()}, q2=pts[pts.length-1];
+    const d2=Math.hypot(p.x-q2.x,p.y-q2.y);
+    if(d2<2) return;
+    len+=d2; pts.push(p); inkSeg(); });
   const fin=()=>{ if(!down)return; down=false;
     if(len>220) accept(); else { sfx('tick');
-      gsap.to(cv,{opacity:0,duration:.4,onComplete:()=>{pts=[];paint();gsap.set(cv,{opacity:1});}});
-      setTimeout(()=>{pts=[];paint();gsap.set(cv,{opacity:1});},450); } };
+      gsap.to(cv,{opacity:0,duration:.4});
+      setTimeout(()=>{ clearInk(); gsap.set(cv,{opacity:1}); },450); } };
   cv.addEventListener('pointerup',fin); cv.addEventListener('pointercancel',fin);
   cv.addEventListener('dblclick',()=>accept());
   addEventListener('keydown',e=>{ if(e.key==='Enter'&&$('drawScreen').style.display!=='none') accept(); });
-  setTimeout(()=>gsap.to('#dHint',{opacity:1,duration:.6}),5200);
   let accepted=false;
   window.__acceptDraw=accept;
   function accept(){
     if(accepted) return; accepted=true;
     sfx('bloom');
+    /* the ink itself is the hero: it settles, then slides to the left,
+       where the vision board is about to live */
     safeTL(gsap.timeline()
-      .to(cv,{opacity:0,duration:.5},0)
-      .to('#dGhost',{opacity:.9,scale:1.04,duration:.7,ease:EIO},0)
-      .to('.dh, .ds, #dHint',{opacity:0,y:-10,duration:.4},0)
-      .to('#dGhost',{opacity:0,scale:.92,duration:.5},'+=.35')
-      .to('#drawScreen',{opacity:0,duration:.5},'-=.2'),3200);
-    setTimeout(()=>{ $('drawScreen').style.display='none'; introStage(); },2200);
+      .to(cv,{scale:1.02,duration:.35,ease:'power2.out'},0)
+      .to('#dH',{opacity:0,y:-10,duration:.4},0)
+      .to(cv,{x:'-30vw',opacity:0,scale:.92,duration:.9,ease:EIO},'+=.15')
+      .to('#drawScreen',{opacity:0,duration:.5},'-=.35'),3000);
+    setTimeout(()=>{ $('drawScreen').style.display='none'; introStage(); },1900);
   }
 }
 
@@ -771,7 +786,7 @@ function nameStage(){
 /* ============================ 4 · about you ============================ */
 function aboutStage(){
   const {box}=turn({ said:'Good to meet you, <span class="hl">'+P.name+'</span>.',
-    q:'Tell me about yourself.', sub:'Who you are, how you got here. Say it like you would to a friend.'});
+    q:'Tell me about yourself.'});
   voiceUI(box,async text=>{
     const found=extractInto(text);
     if(!P.level) P.level='Finding out';
@@ -787,7 +802,7 @@ function aboutStage(){
 /* ============================ 5 · focus ============================ */
 function focusStage(){
   const guess=FOCUS_GUESS[PKEY];
-  const {box}=turn({q:'Pick your focus.', sub:pack().guessLine});
+  const {box}=turn({said:pack().guessLine, q:'Pick your focus.'});
   const grid=mk('div','cards');
   FOCI.forEach(o=>{
     const b=mk('button','card'); b.style.setProperty('--a',o.a); b.style.setProperty('--b',o.b);
@@ -833,13 +848,13 @@ function companyStage(){
   });
 }
 function dreamStage(){
-  const {box}=turn({q:'Which company is the dream?', sub:'Exact name. We will find it.'});
+  const {box}=turn({q:'Which company is the dream?'});
   typedInput(box,'Type the name',v=>{ P.dream=quoteOf(v); fillSlot('dream'); afterCommit(()=>go(whyStage)); });
   chipsRow(box,pack().dreamExamples,c2=>{ if(!locked){ locked=true; sfx('droplet'); P.dream=c2; fillSlot('dream'); afterCommit(()=>go(whyStage)); } });
 }
 function whyStage(){
   const {box}=turn({ said:'<span class="hl">'+P.dream+'</span>. Good taste.', react:'🔥',
-    q:'Why that one?', sub:'Say it out loud. This part matters.'});
+    q:'Why that one?'});
   voiceUI(box,text=>{ P.why=quoteOf(text); fillSlot('why'); afterCommit(()=>go(locationStage)); },null);
   const sk=mk('div','skiplink'); const b=mk('button',null,'Skip this one');
   b.onclick=()=>{ if(locked)return; locked=true; sfx('tick'); afterCommit(()=>go(locationStage)); };
@@ -860,7 +875,7 @@ function locationStage(){
   typedInput(box,'Your city today',v=>{ P.location=quoteOf(v); fillSlot('location'); go(nextCityStage); });
 }
 function nextCityStage(){
-  const {box}=turn({q:'Where next?', sub:'Where do you want the work to be.'});
+  const {box}=turn({q:'Where next?'});
   pills(box,['Stay here','Dubai','London','New York','Remote'],v=>{
     P.citynext=v==='Stay here'?P.location:v; fillSlot('location');
     afterCommit(()=>go(industryStage));
@@ -883,7 +898,7 @@ function industryStage(){
   });
 }
 function problemsStage(){
-  const {box}=turn({q:'What problems do you want to solve?', sub:'Your words go on the board exactly as you say them.'});
+  const {box}=turn({q:'What problems do you want to solve?'});
   voiceUI(box,text=>{ P.problems=quoteOf(text); fillSlot('problems'); go(timelineStage); }, pack().problemChips);
 }
 function timelineStage(){
@@ -936,7 +951,7 @@ async function synthStage(){
 }
 function visionStage(fromEdit){
   if(fromEdit){ swapPanel('Your vision board',buildVision,false); }
-  const {box}=turn({q:'Am I getting you?', sub:'This board is the brief for everything Zero builds you.'});
+  const {box}=turn({q:'Am I getting you?'});
   pills(box,['That is me','Fix one thing','Add more'],v=>{
     if(v==='That is me'){ sfx('success'); go(rolesFitStage); }
     else if(v==='Fix one thing'){ go(editStage); }
@@ -988,7 +1003,7 @@ function calibrateStage(){
   setPhase(2);
   clearTurn();
   setTimeout(()=>{
-    const {box}=turn({q:'Match the plan to your experience?', sub:'Zero calibrates to where you are, not where a syllabus assumes.'});
+    const {box}=turn({q:'Match the plan to your experience?'});
     orows(box,[
       ['link','#EAF1FB','Connect LinkedIn','Zero reads your experience and skips what you already know.','LinkedIn'],
       ['doc','#EFEDFB','Upload a resume','Same idea, from the document you already have.','Resume'],
