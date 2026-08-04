@@ -44,6 +44,36 @@ body.dark{
 .pcard .pl{ font-size:15px; font-weight:600; letter-spacing:-.02em; }
 .pcard:hover{ transform:translateY(-5px); box-shadow:0 14px 32px rgba(0,0,0,.09); }
 
+/* the dock: one global place the user acts, always centered at the bottom */
+.dock{ position:fixed; left:0; right:0; bottom:0; z-index:80; display:flex; justify-content:center;
+  padding:0 24px 34px; pointer-events:none; opacity:0; }
+.dockin{ display:flex; align-items:center; gap:14px; pointer-events:auto; }
+.dbig{ height:58px; padding:0 34px; border-radius:var(--pill); background:var(--ink); color:var(--on-ink);
+  font-size:16px; font-weight:600; letter-spacing:-.02em; display:inline-flex; align-items:center;
+  transition:transform .22s cubic-bezier(.2,.8,.3,1); }
+.dbig:hover{ transform:translateY(-2px); }
+.dmic{ width:66px; height:66px; border-radius:var(--pill); background:var(--ink); color:var(--on-ink);
+  display:flex; align-items:center; justify-content:center; position:relative;
+  transition:transform .22s cubic-bezier(.2,.8,.3,1); }
+.dmic svg{ width:25px; height:25px; }
+.dmic:hover{ transform:scale(1.05); }
+.dghostbtn{ width:50px; height:50px; border-radius:var(--pill); background:var(--field); color:var(--tx-3);
+  display:flex; align-items:center; justify-content:center; transition:color .2s ease; }
+.dghostbtn svg{ width:19px; height:19px; }
+.dghostbtn:hover{ color:var(--tx); }
+.dfield{ display:flex; align-items:center; gap:12px; height:66px; padding:0 10px 0 28px;
+  background:var(--field); border-radius:var(--pill); min-width:520px; }
+.dfield input{ flex:1; font-size:17px; min-width:0; }
+.dsend{ width:48px; height:48px; flex-shrink:0; border-radius:var(--pill); background:var(--ink); color:var(--on-ink);
+  display:flex; align-items:center; justify-content:center; opacity:.25; }
+.dsend.on{ opacity:1; }
+.dsend svg{ width:17px; height:17px; }
+.drec{ display:flex; align-items:center; gap:16px; height:66px; padding:0 10px 0 22px;
+  background:var(--field); border-radius:var(--pill); }
+.wave{ display:flex; align-items:center; gap:3px; height:34px; width:300px; }
+.wave span{ flex:1; height:5px; border-radius:2px; background:var(--tx-3); }
+.dtime{ font-size:14px; color:var(--tx-2); font-variant-numeric:tabular-nums; min-width:38px; }
+
 .dbg{ position:fixed; left:18px; bottom:18px; z-index:98; }
 .dbgbtn{ height:36px; padding:0 15px; border-radius:var(--pill); background:var(--field); color:var(--tx-3);
   font-size:12px; display:flex; align-items:center; }
@@ -77,7 +107,7 @@ svg{ display:block; }
 .snd.off{ color:var(--tx-4); }
 
 .wrap{ display:flex; gap:16px; padding:16px; height:100dvh; }
-.mid{ flex:1; min-width:0; display:flex; align-items:center; justify-content:center; padding:84px 24px 24px; }
+.mid{ flex:1; min-width:0; display:flex; align-items:center; justify-content:center; padding:84px 24px 150px; }
 .col{ width:100%; max-width:660px; }
 .right{ width:0; min-width:0; opacity:0; overflow:hidden; padding-top:64px; order:-1; }
 
@@ -89,8 +119,8 @@ svg{ display:block; }
 .said{ min-height:24px; margin-bottom:18px; font-size:15px; color:var(--tx-2); text-align:center; text-wrap:balance; position:relative; }
 .said .hl{ color:var(--tx); font-weight:600; }
 .react{ position:absolute; top:-8px; right:8%; font-size:19px; opacity:0; }
-.q{ font-family:var(--serif); font-weight:400; font-size:clamp(26px,2.15vw,40px); line-height:1.15;
-  letter-spacing:-.03em; text-align:center; text-wrap:balance; }
+.q{ font-family:var(--serif); font-weight:400; font-size:clamp(30px,2.7vw,50px); line-height:1.12;
+  letter-spacing:-.032em; text-align:center; text-wrap:balance; max-width:15ch; margin:0 auto; }
 .q .w{ display:inline-block; }
 .qs{ margin-top:12px; font-size:14px; color:var(--tx-3); text-align:center; text-wrap:balance; }
 .opts{ margin-top:46px; }
@@ -336,6 +366,8 @@ svg{ display:block; }
   </div>
 </div>
 
+<div class="dock" id="dock"><div class="dockin" id="dockIn"></div></div>
+
 <div class="dbg" id="dbg">
   <div class="dbgpanel" id="dbgPanel"></div>
   <button class="dbgbtn" id="dbgBtn">Tuning</button>
@@ -366,6 +398,7 @@ const I={
   arrow:'<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" d="m9 18l6-6l-6-6"/></svg>',
   check:'<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.2" d="M20 6L9 17l-5-5"/></svg>',
   micro:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3"/></g></svg>',
+  x:'<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2.2" d="M18 6 6 18M6 6l12 12"/></svg>',
   kbd:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M10 8h.01M12 12h.01M14 8h.01M16 12h.01M18 8h.01M6 8h.01M7 16h10M8 12h.01"/><rect width="20" height="16" x="2" y="4" rx="2"/></g></svg>',
   stop:'<svg viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor"/></svg>',
   play:'<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg>',
@@ -494,43 +527,119 @@ function setCap(text,listening){ const c=$('cap');
   gsap.to(c,{opacity:0,y:-5,duration:.22,onComplete:once}); setTimeout(once,380); }
 
 /* ============================ screen scaffolding ============================ */
+/* Content area = Zero speaking. One title, never body text, never a button. */
 function turn(o){
-  /* o:{said,react,q,sub} returns {t,box} */
   const t=mk('div','turn'); t.id='turn'; locked=false;
-  if(o.said){ const sd=mk('div','said'); sd.innerHTML=o.said; t.appendChild(sd);
-    if(o.react){ const r=mk('span','react',o.react); sd.appendChild(r);
-      setTimeout(()=>{ sfx('sparkle');
-        safeTL(gsap.timeline().fromTo(r,{opacity:0,scale:.4,rotate:-14},{opacity:1,scale:1,rotate:0,duration:.5,ease:'back.out(2)'}),900); },700); } }
   const q=mk('div','q'); t.appendChild(q);
-  if(o.sub) t.appendChild(mk('div','qs',o.sub));
   const box=mk('div','opts'); t.appendChild(box);
-  $('col').innerHTML=''; $('col').appendChild(t);
-  const ws=words(q,o.q); const qs=t.querySelector('.qs'); const sd=t.querySelector('.said');
-  const tl=gsap.timeline();
-  if(sd) tl.fromTo(sd,{opacity:0,y:10},{opacity:1,y:0,duration:.5},0);
-  tl.fromTo(ws,{opacity:0,y:20},{opacity:1,y:0,duration:.64,stagger:.032},sd?.15:0);
-  if(qs) tl.fromTo(qs,{opacity:0,y:9},{opacity:1,y:0,duration:.42},'-=.32');
-  tl.fromTo(box,{opacity:0,y:14},{opacity:1,y:0,duration:.5},'-=.3');
-  safeTL(tl); sfx('whisper');
+  const old=$('col').firstChild;
+  if(old){ gsap.to(old,{opacity:0,y:-26,duration:.34,ease:'power2.in'});
+    setTimeout(()=>{ if(old.isConnected) old.remove(); },420); }
+  setTimeout(()=>{
+    $('col').innerHTML=''; $('col').appendChild(t);
+    const ws=words(q,o.q);
+    safeTL(gsap.timeline()
+      .fromTo(ws,{opacity:0,y:24},{opacity:1,y:0,duration:.66,stagger:.034})
+      .fromTo(box,{opacity:0,y:16},{opacity:1,y:0,duration:.5},'-=.3'),1900);
+    if(o.after) o.after(box);
+  }, old?300:0);
+  sfx('whisper');
   return {t,box};
 }
 function clearTurn(){ const t=$('turn');
-  if(t){ gsap.to(t,{opacity:0,y:-16,duration:.3,ease:'power2.in'});
-    setTimeout(()=>{ if(t.isConnected) t.remove(); },420); } }
-async function go(next){ clearTurn(); await wait(380); next(); }
+  if(t){ gsap.to(t,{opacity:0,y:-26,duration:.32,ease:'power2.in'});
+    setTimeout(()=>{ if(t.isConnected) t.remove(); },430); } }
+async function go(next){ clearTurn(); dockHide(); await wait(400); next(); }
+function line(text){ turn({q:text}); }
+async function beat(text,add,hold){ line(text); await wait(800); if(add) add(); await wait(hold||1300); }
 
-function typedInput(box,ph,onFire,center){
-  const r=mk('div','row'); const f=mk('div','box');
-  const inp=document.createElement('input');
-  inp.placeholder=ph; inp.maxLength=40; inp.setAttribute('aria-label',ph);
-  const gbtn=mk('button','go',I.arrow); gbtn.setAttribute('aria-label','Continue');
-  const fire=()=>{ const v=inp.value.trim(); if(!v||locked)return; locked=true; sfx('droplet'); onFire(v); };
-  inp.oninput=()=>gsap.to(gbtn,{opacity:inp.value.trim()?1:.25,duration:.2});
-  inp.onkeydown=e=>{if(e.key==='Enter')fire();};
-  gbtn.onclick=fire;
-  f.appendChild(inp); r.appendChild(f); r.appendChild(gbtn); box.appendChild(r);
-  setTimeout(()=>inp.focus(),650);
-  return inp;
+/* ============================ the dock ============================ */
+let dockMode='voice', rec=null, listening=false;
+function stopRec(){ try{ if(rec) rec.stop(); }catch(e){} listening=false; }
+function dockClear(){ $('dockIn').innerHTML=''; }
+function dockShow(){ gsap.to('#dock',{opacity:1,duration:.4}); $('dock').style.pointerEvents='none'; }
+function dockHide(){ stopRec(); gsap.to('#dock',{opacity:0,duration:.28}); setTimeout(dockClear,320); }
+function dockIn(node){
+  dockClear(); $('dockIn').appendChild(node); dockShow();
+  safeTL(gsap.timeline().fromTo(node,{opacity:0,y:16},{opacity:1,y:0,duration:.5}),1000);
+}
+/* single action, always centered at the bottom */
+function dockAction(label,fn){
+  const b=mk('button','dbig',label);
+  b.onclick=()=>{ if(locked)return; locked=true; sfx('droplet'); fn(); };
+  dockIn(b);
+}
+const cta=dockAction;
+/* the conversation input: mic by default, keyboard optional, both always swappable */
+function dockInput(onText){
+  if(dockMode==='voice') voiceDock(onText); else typeDock(onText);
+}
+function voiceDock(onText){
+  const wrap=mk('div','dockin');
+  const kb=mk('button','dghostbtn',I.kbd); kb.setAttribute('aria-label','Type instead');
+  const mic=mk('button','dmic',I.micro); mic.setAttribute('aria-label','Talk to Zero');
+  const sp=mk('div','dghostbtn'); sp.style.visibility='hidden';
+  wrap.appendChild(kb); wrap.appendChild(mic); wrap.appendChild(sp);
+  dockIn(wrap);
+  kb.onclick=()=>{ if(locked)return; sfx('tick'); dockMode='type'; typeDock(onText); };
+  mic.onclick=()=>{ if(locked)return; startRecording(onText); };
+}
+function typeDock(onText){
+  const wrap=mk('div','dockin');
+  const mic=mk('button','dghostbtn',I.micro); mic.setAttribute('aria-label','Talk instead');
+  const f=mk('div','dfield');
+  const inp=document.createElement('input'); inp.placeholder='Type your answer'; inp.setAttribute('aria-label','Your answer');
+  const send=mk('button','dsend',I.arrow); send.setAttribute('aria-label','Send');
+  const fire=()=>{ const v=inp.value.trim(); if(!v||locked)return; locked=true; sfx('droplet'); onText(v); };
+  inp.oninput=()=>send.classList.toggle('on',!!inp.value.trim());
+  inp.onkeydown=e=>{ if(e.key==='Enter') fire(); };
+  send.onclick=fire;
+  f.appendChild(inp); f.appendChild(send);
+  wrap.appendChild(mic); wrap.appendChild(f);
+  dockIn(wrap);
+  setTimeout(()=>inp.focus(),420);
+  mic.onclick=()=>{ if(locked)return; sfx('tick'); dockMode='voice'; voiceDock(onText); };
+}
+/* recording: waveform, cancel, send. The voice note is the message. */
+function startRecording(onText){
+  const wrap=mk('div','dockin');
+  const cancel=mk('button','dghostbtn',I.x); cancel.setAttribute('aria-label','Cancel');
+  const r=mk('div','drec');
+  const wave=mk('div','wave');
+  const bars=[]; for(let i=0;i<26;i++){ const b=mk('span'); wave.appendChild(b); bars.push(b); }
+  const time=mk('div','dtime','0:00');
+  const send=mk('button','dsend on',I.arrow); send.setAttribute('aria-label','Send');
+  r.appendChild(wave); r.appendChild(time); r.appendChild(send);
+  wrap.appendChild(cancel); wrap.appendChild(r);
+  dockIn(wrap);
+  sfx('press');
+  let t0=Date.now(), heard='', live=true;
+  const wav=gsap.timeline({repeat:-1});
+  bars.forEach((b,i)=>wav.to(b,{height:6+Math.random()*26,duration:.34,yoyo:true,repeat:-1,
+    ease:'sine.inOut',delay:i*0.012},0));
+  const tick=setInterval(()=>{ const s2=Math.floor((Date.now()-t0)/1000);
+    time.textContent='0:'+String(s2).padStart(2,'0'); },500);
+  const stopAll=()=>{ live=false; wav.kill(); clearInterval(tick); stopRec(); };
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(SR){ try{
+      rec=new SR(); rec.lang='en-US'; rec.interimResults=true; rec.continuous=true;
+      rec.onresult=e=>{ let f2='';
+        for(let i=0;i<e.results.length;i++) if(e.results[i].isFinal) f2+=e.results[i][0].transcript;
+        if(f2) heard=f2; };
+      rec.onerror=()=>{};
+      rec.start(); listening=true;
+    }catch(e){} }
+  cancel.onclick=()=>{ if(!live)return; stopAll(); sfx('tick'); dockInput(onText); };
+  send.onclick=()=>{ if(!live||locked)return; stopAll(); locked=true; sfx('release');
+    onText(heard.trim()||'__voice__'); };
+}
+/* Zero's own visuals live in the content area */
+function chipsRow(box,items,onPick){
+  const ch=mk('div','chips');
+  items.forEach(c2=>{ const b=mk('button','chip2',c2);
+    b.onclick=()=>{ if(locked)return; locked=true; sfx('tick'); onPick(c2); };
+    ch.appendChild(b); });
+  box.appendChild(ch); return ch;
 }
 function pills(box,items,onPick){
   const w=mk('div','pils');
@@ -543,70 +652,12 @@ function pills(box,items,onPick){
   });
   box.appendChild(w); return w;
 }
-function chipsRow(box,items,onPick){
-  const ch=mk('div','chips');
-  items.forEach(c2=>{ const b=mk('button','chip2',c2);
-    b.onclick=()=>{ if(locked)return; sfx('tick'); onPick(c2); };
-    ch.appendChild(b); });
-  box.appendChild(ch); return ch;
-}
-let rec=null, listening=false;
-function stopRec(){ try{ if(rec) rec.stop(); }catch(e){} listening=false; }
-function voiceUI(box,onText,starters){
-  const v=mk('div','voice');
-  const interim=mk('div','interim');
-  const rowv=mk('div','vrow');
-  const kb=mk('button','mini',I.kbd); kb.setAttribute('aria-label','Type instead');
-  const wrapM=mk('div','micwrap');
-  const ring1=mk('span','ring'), ring2=mk('span','ring');
-  const mic=mk('button','mic',I.micro); mic.setAttribute('aria-label','Talk');
-  wrapM.appendChild(ring1); wrapM.appendChild(ring2); wrapM.appendChild(mic);
-  const sp=mk('div','mini'); sp.style.visibility='hidden';
-  rowv.appendChild(kb); rowv.appendChild(wrapM); rowv.appendChild(sp);
-  const hint=mk('div','vhint','Tap and talk. Zero is listening.');
-  v.appendChild(interim); v.appendChild(rowv); v.appendChild(hint);
-  box.appendChild(v);
-  let pulse=null;
-  const startPulse=()=>{ pulse=gsap.timeline({repeat:-1});
-    pulse.fromTo([ring1,ring2],{opacity:.5,scale:1},{opacity:0,scale:1.65,duration:1.4,stagger:.45,ease:'power1.out'}); };
-  const stopPulse=()=>{ if(pulse){pulse.kill();pulse=null;} gsap.set([ring1,ring2],{opacity:0,scale:1}); };
-  const swapToType=()=>{ stopRec(); v.remove();
-    typedInput(box,'Say it any way you like',t=>onText(t));
-    box.insertBefore(box.lastChild,box.querySelector('.chips')); };
-  mic.onclick=()=>{
-    if(locked) return;
-    if(listening){ stopRec(); stopPulse(); mic.innerHTML=I.micro;
-      hint.textContent='Tap and talk. Zero is listening.'; sfx('release'); return; }
-    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-    if(!SR){ sfx('error'); hint.textContent='No microphone here, so we will type.'; swapToType(); return; }
-    try{
-      rec=new SR(); rec.lang='en-US'; rec.interimResults=true; rec.continuous=false;
-      let final='';
-      rec.onresult=e=>{ let it='';
-        for(let i=e.resultIndex;i<e.results.length;i++){
-          if(e.results[i].isFinal) final+=e.results[i][0].transcript; else it+=e.results[i][0].transcript; }
-        interim.textContent=final||it; };
-      rec.onerror=()=>{ stopPulse(); listening=false; mic.innerHTML=I.micro;
-        hint.textContent='I could not catch that. Tap to try again, or type.'; };
-      rec.onend=()=>{ stopPulse(); listening=false; mic.innerHTML=I.micro;
-        if(final.trim()&&!locked){ locked=true; sfx('release'); onText(final.trim()); }
-        else hint.textContent='Tap and talk. Zero is listening.'; };
-      rec.start(); listening=true; mic.innerHTML=I.stop;
-      hint.textContent='Listening. Tap again when you are done.';
-      startPulse(); sfx('press');
-    }catch(e){ listening=false; }
-  };
-  kb.onclick=()=>{ sfx('tick'); swapToType(); };
-  if(starters&&starters.length) chipsRow(box,starters,c2=>{ if(!locked){ locked=true; sfx('droplet'); onText(c2); } });
-}
 function orows(box,items,onPick){
-  /* items: [icon,tint,title,desc,value] */
   const rows=mk('div','rows');
   items.forEach(([icon,tint,title,desc,value])=>{
     const b=mk('button','orow'); b.style.setProperty('--t',tint);
     b.appendChild(mk('span','oi',I[icon]));
     const n=mk('span','on2'); n.appendChild(mk('span','ot',title));
-    if(desc) n.appendChild(mk('span','od',desc));
     b.appendChild(n);
     b.onclick=()=>{ if(locked)return; locked=true; b.classList.add('on'); sfx('toggle');
       gsap.fromTo(b,{scale:1},{scale:.985,duration:.11,yoyo:true,repeat:1});
@@ -615,6 +666,7 @@ function orows(box,items,onPick){
   });
   box.appendChild(rows); return rows;
 }
+function afterCommit(next){ if(editReturn){ editReturn=null; visionStage(true); } else next(); }
 
 /* ============================ panel ============================ */
 const SLOTS=[
@@ -695,34 +747,12 @@ function printDots(ms){
   safeTL(tl,ms||3200);
   setTimeout(()=>{ if(g.isConnected) g.remove(); },(ms||3200)+200);
 }
-function line(text,sub){
-  const t=mk('div','turn'); t.id='turn';
-  const q=mk('div','q'); t.appendChild(q);
-  const old=$('col').firstChild;
-  if(old){ gsap.to(old,{opacity:0,y:-14,duration:.28,ease:'power2.in'});
-    setTimeout(()=>{ if(old.isConnected) old.remove(); },400); }
-  setTimeout(()=>{
-    $('col').innerHTML=''; $('col').appendChild(t);
-    if(sub) t.appendChild(mk('div','qs',sub));
-    const ws=words(q,text);
-    const tl=gsap.timeline().fromTo(ws,{opacity:0,y:18},{opacity:1,y:0,duration:.58,stagger:.03});
-    if(sub) tl.fromTo(t.querySelector('.qs'),{opacity:0,y:9},{opacity:1,y:0,duration:.42},'-=.3');
-    safeTL(tl,1800);
-  },300);
-}
-async function beat(text,add,hold,sub){ line(text,sub); await wait(780); if(add) add(); await wait(hold||1300); }
-function cta(label,fn){
-  const t=$('turn'); if(!t) return;
-  const n=mk('div','next show'); const b=mk('button','btn',label);
-  b.onclick=()=>{ sfx('droplet'); fn(); };
-  n.appendChild(b); t.appendChild(n);
-  safeTL(gsap.timeline().fromTo(n,{opacity:0,y:12},{opacity:1,y:0,duration:.45}),900);
-}
-function afterCommit(next){ if(editReturn){ const r=editReturn; editReturn=null; visionStage(true); } else next(); }
+
 
 /* ============================ 0 · persona pick (demo) ============================ */
 function personaPick(){
   setPhase(0);
+  dockHide();
   const {box}=turn({q:'Select your persona.'});
   const wrapP=mk('div','pcards');
   [['pen','A designer','design'],['bars','A business analyst','ba'],['code','A software engineer','swe']]
@@ -830,30 +860,27 @@ function showDraw(){
 /* ============================ 2 · intro, 3 · name ============================ */
 async function introStage(){
   safeTL(gsap.timeline().to(['#logoPill','.tr'],{opacity:1,y:0,duration:.55,stagger:.07}),1400);
-  line('Hey. I am the voice of the founder.');
-  await wait(1700);
-  line('Five minutes. I ask, you talk.','You leave with a vision board and the road to it.');
-  await wait(1500);
-  const t=$('turn');
-  const n=mk('div','next show'); const b=mk('button','btn','Ready');
-  b.onclick=()=>{ sfx('droplet'); go(nameStage); };
-  n.appendChild(b); t.appendChild(n);
-  safeTL(gsap.timeline().fromTo(n,{opacity:0,y:12},{opacity:1,y:0,duration:.45}),900);
+  line('I am the voice of the founder.');
+  await wait(1900);
+  line('Five minutes. I ask, you talk, and you leave with the road to it.');
+  await wait(1300);
+  dockAction('Ready',()=>go(nameStage));
 }
 function nameStage(){
-  const {box}=turn({q:'What is your name?'});
-  typedInput(box,'Your first name',v=>{
+  turn({q:'What should I call you?'});
+  dockMode='type';
+  dockInput(v=>{
     const nm=v.split(/\s+/)[0];
     P.name=nm.charAt(0).toUpperCase()+nm.slice(1).toLowerCase();
+    dockMode='voice';
     go(aboutStage);
   });
 }
 
 /* ============================ 4 · about you ============================ */
 function aboutStage(){
-  const {box}=turn({ said:'Good to meet you, <span class="hl">'+P.name+'</span>.',
-    q:'Tell me about yourself.'});
-  voiceUI(box,async text=>{
+  const {box}=turn({ q:'Good to meet you, '+P.name+'. Tell me about yourself.'});
+  const handle=async text=>{
     const found=extractInto(text);
     if(!P.level) P.level='Finding out';
     bornPanel();
@@ -862,13 +889,15 @@ function aboutStage(){
     setCap('Putting that on the board',true);
     await wait(900);
     go(focusStage);
-  }, pack().starterChips);
+  };
+  chipsRow(box,pack().starterChips,handle);
+  dockInput(handle);
 }
 
 /* ============================ 5 · focus ============================ */
 function focusStage(){
   const guess=FOCUS_GUESS[PKEY];
-  const {box}=turn({said:pack().guessLine, q:'Pick your focus.'});
+  const {box}=turn({q:'Which of these is your world?'});
   const grid=mk('div','cards');
   FOCI.forEach(o=>{
     const b=mk('button','card'); b.style.setProperty('--a',o.a); b.style.setProperty('--b',o.b);
@@ -889,20 +918,17 @@ function focusStage(){
 /* ============================ 6 · role ============================ */
 function roleStage(){
   if(P.role&&!editReturn){ /* heard it earlier, confirm */
-    const {box}=turn({ said:'You said it already.', q:P.role+', right?'});
+    const {box}=turn({ q:'You said '+P.role+'. Still right?'});
     pills(box,['Yes, that is the one','Change it'],v=>{
       if(v.startsWith('Yes')){ fillSlot('role'); go(companyStage); }
       else { P.role=null; go(roleStage); }
     });
     return;
   }
-  const {box}=turn({q:'What role do you want?'});
+  const {box}=turn({q:'What role are you going for?'});
   const items=pack().roleCards.map(r=>['target','#F7F7F5',r,null,r]);
   orows(box,items,v=>{ P.role=v; fillSlot('role'); afterCommit(()=>go(companyStage)); });
-  const sk=mk('div','skiplink'); const b=mk('button',null,'Say it your way');
-  b.onclick=()=>{ if(locked)return; sfx('tick'); sk.remove();
-    typedInput(box,'Any words you like',v=>{ P.role=quoteOf(v); fillSlot('role'); afterCommit(()=>go(companyStage)); }); };
-  sk.appendChild(b); box.appendChild(sk);
+  dockInput(v=>{ P.role=quoteOf(v); fillSlot('role'); afterCommit(()=>go(companyStage)); });
 }
 
 /* ============================ 7 · company, 8 · dream, 9 · why ============================ */
@@ -915,33 +941,31 @@ function companyStage(){
 }
 function dreamStage(){
   const {box}=turn({q:'Which company is the dream?'});
-  typedInput(box,'Type the name',v=>{ P.dream=quoteOf(v); fillSlot('dream'); afterCommit(()=>go(whyStage)); });
-  chipsRow(box,pack().dreamExamples,c2=>{ if(!locked){ locked=true; sfx('droplet'); P.dream=c2; fillSlot('dream'); afterCommit(()=>go(whyStage)); } });
+  const take=v=>{ P.dream=quoteOf(v); fillSlot('dream'); afterCommit(()=>go(whyStage)); };
+  chipsRow(box,pack().dreamExamples,take);
+  dockMode='type'; dockInput(v=>{ dockMode='voice'; take(v); });
 }
 function whyStage(){
-  const {box}=turn({ said:'<span class="hl">'+P.dream+'</span>. Good taste.', react:'🔥',
-    q:'Why that one?'});
-  voiceUI(box,text=>{ P.why=quoteOf(text); fillSlot('why'); afterCommit(()=>go(locationStage)); },null);
-  const sk=mk('div','skiplink'); const b=mk('button',null,'Skip this one');
-  b.onclick=()=>{ if(locked)return; locked=true; sfx('tick'); afterCommit(()=>go(locationStage)); };
-  sk.appendChild(b); box.appendChild(sk);
+  turn({ q:P.dream+'. Why that one?'});
+  dockInput(text=>{ P.why=quoteOf(text); fillSlot('why'); afterCommit(()=>go(locationStage)); });
 }
 
 /* ============================ 10 · location ============================ */
 function locationStage(){
   if(P.location&&!editReturn){
-    const {box}=turn({ said:'You mentioned it already.', q:P.location+', right?'});
+    const {box}=turn({ q:'You mentioned '+P.location+'. Still home?'});
     pills(box,['That is home','Change it'],v=>{
       if(v.startsWith('That')){ fillSlot('location'); go(nextCityStage); }
       else { P.location=null; go(locationStage); }
     });
     return;
   }
-  const {box}=turn({q:'Where do you live now?'});
-  typedInput(box,'Your city today',v=>{ P.location=quoteOf(v); fillSlot('location'); go(nextCityStage); });
+  turn({q:'Where do you live now?'});
+  dockMode='type';
+  dockInput(v=>{ P.location=quoteOf(v); fillSlot('location'); dockMode='voice'; go(nextCityStage); });
 }
 function nextCityStage(){
-  const {box}=turn({q:'Where next?'});
+  const {box}=turn({q:'And where do you want the work to be?'});
   pills(box,['Stay here','Dubai','London','New York','Remote'],v=>{
     P.citynext=v==='Stay here'?P.location:v; fillSlot('location');
     afterCommit(()=>go(industryStage));
@@ -951,7 +975,7 @@ function nextCityStage(){
 /* ============================ 11 · industry, 12 · problems, 13 · timeline ============================ */
 function industryStage(){
   if(P.industry&&!editReturn){
-    const {box}=turn({ said:'Heard this one too.', q:P.industry+', right?'});
+    const {box}=turn({ q:'I heard '+P.industry+'. Still right?'});
     pills(box,['Right','Change it'],v=>{
       if(v==='Right'){ fillSlot('industry'); go(problemsStage); }
       else { P.industry=null; go(industryStage); }
@@ -964,8 +988,10 @@ function industryStage(){
   });
 }
 function problemsStage(){
-  const {box}=turn({q:'What problems do you want to solve?'});
-  voiceUI(box,text=>{ P.problems=quoteOf(text); fillSlot('problems'); go(timelineStage); }, pack().problemChips);
+  const {box}=turn({q:'What problems do you actually want to solve?'});
+  const take=text=>{ P.problems=quoteOf(text); fillSlot('problems'); go(timelineStage); };
+  chipsRow(box,pack().problemChips,take);
+  dockInput(take);
 }
 function timelineStage(){
   const {box}=turn({q:'When does this need to work?'});
@@ -1024,6 +1050,7 @@ async function synthStage(){
 }
 function visionStage(fromEdit){
   if(fromEdit){ swapPanel('Your vision board',buildVision,false); }
+  dockHide();
   const {box}=turn({q:'Am I getting you?'});
   pills(box,['That is me','Fix one thing','Add more'],v=>{
     if(v==='That is me'){ sfx('success'); go(rolesFitStage); }
@@ -1041,11 +1068,11 @@ function editStage(){
   });
 }
 function addMoreStage(){
-  const {box}=turn({q:'Tell me more.', sub:'Anything I should hold on to.'});
-  voiceUI(box,text=>{
+  turn({q:'Tell me more.'});
+  dockInput(text=>{
     P.problems=P.problems?P.problems+' · '+quoteOf(text):quoteOf(text);
-    fillSlot('problems'); editReturn=null; visionStage(true);
-  },null);
+    fillSlot('problems'); editReturn=null; dockHide(); visionStage(true);
+  });
 }
 
 /* ============================ 16 · roles that fit ============================ */
@@ -1076,11 +1103,11 @@ function calibrateStage(){
   setPhase(2);
   clearTurn();
   setTimeout(()=>{
-    const {box}=turn({q:'Match the plan to your experience?'});
+    const {box}=turn({q:'Should I calibrate this to your experience?'});
     orows(box,[
-      ['link','#EAF1FB','Connect LinkedIn','Zero reads your experience and skips what you already know.','LinkedIn'],
-      ['doc','#EFEDFB','Upload a resume','Same idea, from the document you already have.','Resume'],
-      ['arrow','#F7F7F5','Skip for now','Fair. Your first scenario calibrates you instead.','Skip'],
+      ['link','#EAF1FB','Connect LinkedIn',null,'LinkedIn'],
+      ['doc','#EFEDFB','Upload a resume',null,'Resume'],
+      ['arrow','#F7F7F5','Skip for now',null,'Skip'],
     ],async v=>{
       if(v==='Skip'){ go(roadmapStage); return; }
       clearTurn(); await wait(380);
@@ -1252,23 +1279,15 @@ async function creditsStage(){
     onUpdate:()=>{const e=$('rewN'); if(e) e.textContent=fmt(Math.round(c2.v));}}),1900);
   setTimeout(()=>{const e=$('rewN'); if(e) e.textContent=fmt(5000);},1950);
   sfx('sparkle'); await wait(1700); sfx('chime');
-  line('Five thousand credits, for this conversation.','They pay for scenarios and reviews. Put an email on them and the plan is waiting in the app.');
-  await wait(1700);
-  const t=$('turn'); const acct=mk('div','acct');
-  const rowA=mk('div','row'); const bx=mk('div','box'); bx.style.width='360px';
-  const inp=document.createElement('input'); inp.placeholder='you@email.com'; inp.type='email'; inp.setAttribute('aria-label','Your email');
-  const gbtn=mk('button','go',I.arrow); gbtn.setAttribute('aria-label','Create account');
-  const ok=v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-  const fire=()=>{const v=inp.value.trim();
-    if(!ok(v)){ sfx('error'); gsap.fromTo(bx,{x:0},{x:7,duration:.07,yoyo:true,repeat:5}); return; }
-    sfx('success'); finishStage(v); };
-  inp.oninput=()=>gsap.to(gbtn,{opacity:ok(inp.value.trim())?1:.25,duration:.2});
-  inp.onkeydown=e=>{if(e.key==='Enter')fire();}; gbtn.onclick=fire;
-  bx.appendChild(inp); rowA.appendChild(bx); rowA.appendChild(gbtn);
-  acct.appendChild(rowA); acct.appendChild(mk('div','note','No card. Nothing to cancel.'));
-  t.appendChild(acct);
-  safeTL(gsap.timeline().fromTo(acct,{opacity:0,y:12},{opacity:1,y:0,duration:.45}),900);
-  setTimeout(()=>inp.focus(),500);
+  line('Five thousand credits. Where should I send them?');
+  await wait(1300);
+  dockMode='type';
+  dockInput(v=>{
+    const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+    if(!ok){ sfx('error'); locked=false;
+      gsap.fromTo('.dfield',{x:0},{x:7,duration:.07,yoyo:true,repeat:5}); return; }
+    sfx('success'); finishStage(v.trim());
+  });
 }
 async function finishStage(email){
   clearTurn();
@@ -1277,12 +1296,9 @@ async function finishStage(email){
     safeTL(gsap.timeline().fromTo(dlC,{opacity:0,y:16},{opacity:1,y:0,duration:.6}),1000);
     const s=$('scroll'); setTimeout(()=>{s.scrollTop=Math.max(0,s.scrollHeight-s.clientHeight);},300); }
   setCap('Ready when you are',false); await wait(520);
-  line('That is it, '+(P.name||'you')+'.','Your account is on '+email+'. Open Zero and your first scenario is already briefed.');
-  await wait(1900);
-  const t=$('turn'); const n=mk('div','next show');
-  const again=mk('button','btn quiet','Run it again'); again.onclick=()=>location.reload();
-  n.appendChild(again); t.appendChild(n);
-  safeTL(gsap.timeline().fromTo(n,{opacity:0,y:12},{opacity:1,y:0,duration:.45}),900);
+  line('That is it, '+(P.name||'you')+'. Your first scenario is already briefed.');
+  await wait(1500);
+  dockAction('Run it again',()=>location.reload());
   sfx('ready');
 }
 
