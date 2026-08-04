@@ -711,6 +711,7 @@ function showDraw(){
   const cv=$('drawCanvas'), ctx=cv.getContext('2d');
   let pts=[], down=false, len=0, W=6;
   function size(){ const dpr=devicePixelRatio||1;
+    if(!innerWidth||!innerHeight) return; /* hidden or prerendered, try again later */
     cv.width=innerWidth*dpr; cv.height=innerHeight*dpr;
     ctx.setTransform(dpr,0,0,dpr,0,0);
     ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#111113'; ctx.fillStyle='#111113'; }
@@ -732,6 +733,7 @@ function showDraw(){
   function clearInk(){ ctx.save(); ctx.setTransform(1,0,0,1,0,0);
     ctx.clearRect(0,0,cv.width,cv.height); ctx.restore(); }
   cv.addEventListener('pointerdown',e=>{ down=true; len=0; W=9;
+    if(!cv.width) size();
     pts=[{x:e.clientX,y:e.clientY,t:performance.now()}];
     ctx.beginPath(); ctx.arc(e.clientX,e.clientY,4.5,0,7); ctx.fill(); });
   cv.addEventListener('pointermove',e=>{ if(!down)return;
