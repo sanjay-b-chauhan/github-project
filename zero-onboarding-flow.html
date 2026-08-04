@@ -131,8 +131,8 @@ svg{ display:block; }
   justify-content:space-between; padding:0 22px; pointer-events:none;
   transition:padding-left .9s cubic-bezier(.625,.05,0,1); }
 .top > *{ pointer-events:auto; }
-.logo{ height:46px; padding:0 21px; display:flex; align-items:center; background:var(--field); border-radius:var(--pill); }
-.logo svg{ height:16px; width:auto; color:var(--ink); }
+.logo{ height:40px; padding:0 17px; display:flex; align-items:center; background:var(--field); border-radius:var(--pill); }
+.logo svg{ height:13px; width:auto; color:var(--ink); }
 .tr{ display:flex; align-items:center; gap:9px; }
 .steps{ height:46px; padding:0 20px; display:flex; align-items:center; gap:8px; background:var(--field); border-radius:var(--pill); }
 .steps i{ width:4px; height:4px; border-radius:var(--pill); background:var(--tx-4); }
@@ -837,6 +837,7 @@ const I={
 };
 const TINT=['#EEF1F5','#EDF3EE','#F4F0EA'];
 let sndOn=true;
+try{ addEventListener('pointerdown',function once(){ try{ window.CUE&&window.CUE.setEnabled(true); }catch(e){} removeEventListener('pointerdown',once); },{once:true}); }catch(e){}
 function sfx(n){ try{ if(sndOn&&window.CUE) window.CUE.play(n); }catch(e){} }
 const INK={max:180,min:46,sens:30,tol:.2,wet:.38,color:'#111113'};
 
@@ -1833,7 +1834,7 @@ async function synthStage(){
   veil.style.background='radial-gradient(circle at 50% 50%, #FFFFFF 0%, #F2FBEA 45%, #FAFAF9 100%)';
   safeTL(gsap.timeline().to(veil,{opacity:1,duration:.5,ease:'power2.in'}),900);
   await wait(520);
-  document.body.classList.remove('dark');
+  document.body.classList.remove('dark'); sfx('bloom');
   safeTL(gsap.timeline().to(veil,{opacity:0,duration:.75,ease:'power2.out'}),1200);
   setTimeout(()=>{ if(veil.isConnected) veil.remove(); },1000);
   await swapPanel('Your vision board',s2=>{ s2.classList.add('ctr');
@@ -1881,7 +1882,7 @@ function addMoreStage(){
 /* ============================ 16 · the transformation ============================ */
 /* green, blue and yellow, thrown from wherever the good news landed */
 function confetti(x,y,n){
-  n=n||84;
+  n=n||84; sfx('press');
   const layer=mk('div','conf'); document.body.appendChild(layer);
   const CC=['#4ADE80','#5D87FF','#F5DE6B','#A8E6CF','#0084CE','#C8F169','#FACC15'];
   for(let i=0;i<n;i++){

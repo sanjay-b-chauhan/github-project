@@ -131,8 +131,8 @@ svg{ display:block; }
   justify-content:space-between; padding:0 22px; pointer-events:none;
   transition:padding-left .9s cubic-bezier(.625,.05,0,1); }
 .top > *{ pointer-events:auto; }
-.logo{ height:46px; padding:0 21px; display:flex; align-items:center; background:var(--field); border-radius:var(--pill); }
-.logo svg{ height:16px; width:auto; color:var(--ink); }
+.logo{ height:40px; padding:0 17px; display:flex; align-items:center; background:var(--field); border-radius:var(--pill); }
+.logo svg{ height:13px; width:auto; color:var(--ink); }
 .tr{ display:flex; align-items:center; gap:9px; }
 .steps{ height:46px; padding:0 20px; display:flex; align-items:center; gap:8px; background:var(--field); border-radius:var(--pill); }
 .steps i{ width:4px; height:4px; border-radius:var(--pill); background:var(--tx-4); }
@@ -868,6 +868,7 @@ const I={
 };
 const TINT=['#EEF1F5','#EDF3EE','#F4F0EA'];
 let sndOn=true;
+try{ addEventListener('pointerdown',function once(){ try{ window.CUE&&window.CUE.setEnabled(true); }catch(e){} removeEventListener('pointerdown',once); },{once:true}); }catch(e){}
 function sfx(n){ try{ if(sndOn&&window.CUE) window.CUE.play(n); }catch(e){} }
 const INK={max:180,min:46,sens:30,tol:.2,wet:.38,color:'#111113'};
 
@@ -1332,8 +1333,11 @@ function avStyle(name){ const c=avPair(name);
 function avatar(name){ return '<span class="av" style="'+avStyle(name)+'">'+
   String(name||'Y').charAt(0).toUpperCase()+'</span>'; }
 /* how each answer reads once it is a fact about you */
-const STAGE_SAY={ 'In university':'still in university','Just graduated':'fresh out of university',
+const STAGE_SAY={ 'In university':'in university','Just graduated':'fresh out of university',
   'Working already':'already working','Switching careers':'switching careers','Taking a break':'taking a break' };
+/* the age is not a number on the board, it is when in the run you are */
+const AGE_SAY={ 'under 18':'starting young','18 to 24':'starting young','25 to 34':'starting early',
+  '35 to 44':'with real experience behind it','45 or over':'with a whole career behind it' };
 /* a list reads like a sentence: commas, then an and */
 function joinChips(arr){
   if(!arr.length) return '';
@@ -1356,20 +1360,17 @@ function cityList(str){ return String(str||'').split(', ').filter(Boolean); }
 /* The board never shows blanks. Each sentence loads itself, then lands finished. */
 function SENTENCES(){
   return [
-   { id:'s0', g:0, ready:!!P.name, key:[P.name,P.age,P.stage].join('|'),
+   { id:'s0', g:0, ready:!!P.name, key:[P.name,P.stage].join('|'),
      html:()=>{
        const who=chip(avatar(P.name)+T_(P.name));
-       const bits=[];
-       if(P.age) bits.push(chip(cico('cal')+T_(P.age)));
-       if(P.stage) bits.push(chip(cico('cap')+T_(STAGE_SAY[P.stage]||low(P.stage))));
-       if(!bits.length) return who+G_(' starts here.');
-       if(bits.length===1) return who+G_(' is ')+bits[0]+G_('.');
-       return who+G_(' is ')+bits[0]+G_(' and ')+bits[1]+G_('.'); } },
-   { id:'s1', g:0, ready:!!(P.career||P.role), key:[P.career,P.role,P.company].join('|'),
+       if(!P.stage) return who+G_(' starts here.');
+       return who+G_(' is ')+chip(cico('cap')+T_(STAGE_SAY[P.stage]||low(P.stage)))+G_('.'); } },
+   { id:'s1', g:0, ready:!!(P.career||P.role), key:[P.career,P.role,P.company,P.age].join('|'),
      html:()=>{
        if(!P.role) return G_('Going into ')+chip(I.spark+T_(P.career))+G_('.');
        return G_('Going after ')+chip(I.target+T_(P.role))
-         +(P.company?G_(' at a ')+chip(cico('bldg')+T_(low(P.company))):'')+G_('.'); } },
+         +(P.company?G_(' at a ')+chip(cico('bldg')+T_(low(P.company))):'')
+         +(P.age?G_(', ')+chip(cico('spark')+T_(AGE_SAY[P.age]||P.age)):'')+G_('.'); } },
    { id:'s2', g:0, ready:!!P.industry, key:[P.industry,P.mode].join('|'),
      html:()=>G_('In ')+chip(cico(IND_ICON[P.industry]||'spark')+T_(P.industry))
        +(P.mode?G_(', working ')+chip(cico('bag')+T_(low(P.mode))):'')+G_('.') },
@@ -1852,7 +1853,7 @@ async function synthStage(){
   veil.style.background='radial-gradient(circle at 50% 50%, #FFFFFF 0%, #F2FBEA 45%, #FAFAF9 100%)';
   safeTL(gsap.timeline().to(veil,{opacity:1,duration:.5,ease:'power2.in'}),900);
   await wait(520);
-  document.body.classList.remove('dark');
+  document.body.classList.remove('dark'); sfx('bloom');
   safeTL(gsap.timeline().to(veil,{opacity:0,duration:.75,ease:'power2.out'}),1200);
   setTimeout(()=>{ if(veil.isConnected) veil.remove(); },1000);
   const cs=cityList(P.citynext).filter(x=>x!=='No preference');
@@ -1866,10 +1867,11 @@ async function synthStage(){
   setTimeout(()=>sheen(document.querySelector('.shell'),1.45),1300);
   sfx('ready');
   await wait(900);
-  line("Here's your vision board, "+P.name+': '+(P.age?P.age+', ':'')+
+  line("Here's your vision board, "+P.name+': '+
     (P.stage?(STAGE_SAY[P.stage]||low(P.stage))+', ':'')+'a '+P.role+' at a '+low(P.company||'company')+
     ', in '+low(P.industry||'tech')+', working '+low(P.mode||'flexible')+
-    ', building things like '+(P.projects||[]).join(' and ').toLowerCase()+'.');
+    ', building things like '+(P.projects||[]).join(' and ').toLowerCase()+
+    (P.age?', '+(AGE_SAY[P.age]||P.age):'')+'.');
   await wait(3200);
   visionStage();
 }
@@ -1911,7 +1913,7 @@ async function planStage(){
   choices(box,[['check','Approve plan','ok'],['clock','Adjust the pace','pace']],async v=>{
     clearTurn(); dockHide(); await wait(600);
     if(v==='pace'){ line('Sure. Same roadmap, paced to fit you.'); await wait(1800); }
-    line('Plan approved.'); await wait(1500);
+    sfx('success'); line('Plan approved.'); await wait(1500);
     clearTurn(); await wait(320);
     await celebrate(2500,'learning plan approved');
     destinationStage();
@@ -1971,7 +1973,7 @@ async function celebrate(n,label){
 }
 /* green, blue and yellow, thrown from wherever the good news landed */
 function confetti(x,y,n,spread){
-  n=n||84;
+  n=n||84; sfx('press');
   const layer=mk('div','conf'); document.body.appendChild(layer);
   const CC=['#4ADE80','#5D87FF','#F5DE6B','#A8E6CF','#0084CE','#C8F169','#FACC15'];
   for(let i=0;i<n;i++){
