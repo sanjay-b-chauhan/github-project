@@ -191,11 +191,13 @@ svg{ display:block; }
   display:flex; align-items:center; justify-content:center; }
 .mini svg{ width:17px; height:17px; }
 .mini:hover{ color:var(--tx); }
-.chips{ margin-top:20px; display:flex; flex-wrap:wrap; gap:9px; justify-content:center; }
-.chip2{ height:42px; padding:0 18px; border-radius:var(--pill); background:var(--card); border:1px solid var(--line);
-  font-size:13.5px; color:var(--tx-2); display:flex; align-items:center;
-  transition:transform .2s cubic-bezier(.2,.8,.3,1), box-shadow .2s ease, color .2s ease; }
-.chip2:hover{ transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.07); color:var(--tx); }
+.chips{ margin-top:20px; display:flex; flex-wrap:wrap; gap:12px; justify-content:center; }
+/* the starters are the same pill as every other answer */
+.chip2{ height:54px; padding:0 24px; border-radius:var(--pill); background:var(--card); border:1px solid var(--line);
+  font-size:15px; font-weight:500; letter-spacing:-.022em; color:var(--tx); display:flex; align-items:center;
+  transition:transform .3s cubic-bezier(.2,.8,.3,1), box-shadow .3s ease, background .3s ease, color .3s ease; }
+.chip2:hover{ transform:translateY(-4px); box-shadow:0 14px 30px rgba(0,0,0,.1); }
+.chip2.on{ background:var(--ink); color:var(--on-ink); border-color:transparent; }
 .skiplink{ margin-top:18px; text-align:center; }
 .skiplink button{ font-size:13.5px; color:var(--tx-3); border-bottom:1px solid var(--line); padding-bottom:2px; }
 .skiplink button:hover{ color:var(--tx-2); }
@@ -223,10 +225,18 @@ svg{ display:block; }
 
 /* the vision board: one living sentence, visuals inside the type */
 /* the board is ONE paragraph that wraps, never a stack of segments */
-.vb{ font-size:clamp(17px,1.62vw,30px); line-height:2.1; letter-spacing:-.022em; font-weight:500;
-  max-width:min(52ch,100%); margin:0 auto; text-align:center; word-spacing:.05em; }
+/* three zones: who you are, where this goes, and who is hiring for it */
+.vb{ font-size:clamp(17px,1.6vw,29px); line-height:1.95; letter-spacing:-.022em; font-weight:500;
+  max-width:min(38ch,100%); margin:0 auto; text-align:center; word-spacing:.04em; }
 .vbs{ display:inline; }
 .vbs::after{ content:' '; }
+.vbg:empty{ display:none; }
+.vbg.g0{ font-size:.72em; line-height:1.9; color:var(--tx-2); }
+.vbg.g1{ margin-top:1.05em; }
+.vbg.g2{ margin-top:1.7em; font-size:.56em; line-height:1.7; }
+.vbg.g2 .vbl span{ width:2.5em; height:2.5em; border-radius:.62em; margin-left:-.5em; }
+.vbg.g2 .vbl span svg{ width:1.5em; height:1.5em; }
+.vblab{ display:block; margin-bottom:.85em; color:var(--tx-3); letter-spacing:.01em; }
 /* centred, but it grows into the space instead of clipping */
 .scroll.ctr{ display:flex; flex-direction:column; justify-content:flex-start; overflow-y:auto; }
 .scroll.ctr > *{ margin-top:auto; margin-bottom:auto; }
@@ -407,15 +417,22 @@ body.dark .pfbox{ box-shadow:0 0 0 1.5px rgba(255,255,255,.07), 0 0 0 2.5px rgba
 .tgl{ display:inline-flex; padding:3px; background:var(--field); border-radius:var(--pill); flex-shrink:0; }
 .tgl button{ height:30px; padding:0 14px; border-radius:var(--pill); font-size:12.5px; color:var(--tx-3); transition:all .22s ease; }
 .tgl button.on{ background:var(--card); color:var(--tx); box-shadow:0 2px 7px rgba(0,0,0,.09); }
-.tlwrap{ position:relative; margin-top:34px; }
-.tlrail{ position:absolute; left:8px; right:8px; top:0; height:2px; background:var(--line); border-radius:2px; }
-.tlrow{ display:flex; gap:14px; overflow-x:auto; padding:16px 2px 10px; scroll-snap-type:x mandatory; scroll-behavior:smooth; }
+.tlwrap{ position:relative; margin-top:30px;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 34px,#000 calc(100% - 34px),transparent 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 34px,#000 calc(100% - 34px),transparent 100%); }
+.tlrail{ position:absolute; left:0; right:0; top:16px; height:2px;
+  background:rgba(13,13,13,.13); border-radius:2px; }
+body.dark .tlrail{ background:rgba(255,255,255,.15); }
+.tlrow{ display:flex; gap:14px; overflow-x:auto; padding:40px 2px 8px; scroll-snap-type:x mandatory; scroll-behavior:smooth; }
 .tlrow::-webkit-scrollbar{ height:0; }
-.tlc{ position:relative; flex:0 0 292px; scroll-snap-align:start; text-align:left;
+.tlc{ position:relative; flex:0 0 292px; scroll-snap-align:center; text-align:left;
   background:var(--card); border:1px solid var(--line); border-radius:20px; padding:26px 20px 20px; }
-.tlc .nd{ position:absolute; top:-15px; left:20px; width:30px; height:30px; border-radius:var(--pill);
+/* the number sits on the line, not beside it */
+.tlc .nd{ position:absolute; top:-40px; left:50%; transform:translateX(-50%);
+  width:34px; height:34px; border-radius:var(--pill);
   background:var(--ink); color:var(--on-ink); display:flex; align-items:center; justify-content:center;
-  font-size:13px; font-weight:600; box-shadow:0 0 0 5px var(--shell); }
+  font-size:13px; font-weight:600; box-shadow:0 0 0 6px var(--shell); }
+.tlc .nd svg{ width:15px; height:15px; }
 .tlc .ct{ font-size:15.5px; font-weight:600; letter-spacing:-.03em; }
 .tlc .cw{ margin-top:4px; font-size:11.5px; color:var(--tx-3); }
 .tls{ display:flex; align-items:flex-start; gap:10px; padding:9px 0; text-align:left;
@@ -434,27 +451,37 @@ body.dark .pfbox{ box-shadow:0 0 0 1.5px rgba(255,255,255,.07), 0 0 0 2.5px rgba
 .tlc.end .cw{ color:rgba(255,255,255,.55); }
 .tlc.end .ce{ margin-top:14px; font-size:15px; line-height:1.42; letter-spacing:-.025em; }
 .tlc .tro{ width:42px; height:42px; }
-.tlrow.vert{ flex-direction:column; overflow-x:visible; padding-left:12px; }
+.tlrow.vert{ flex-direction:column; overflow-x:visible; padding:14px 0 14px 30px; gap:34px; }
 .tlrow.vert .tlc{ flex:1 1 auto; width:100%; }
-.tlwrap.vert .tlrail{ left:0; top:8px; bottom:8px; right:auto; width:2px; height:auto; }
+.tlrow.vert .tlc .nd{ top:50%; left:-26px; transform:translate(-50%,-50%); }
+.tlwrap.vert{ padding-top:0; -webkit-mask-image:none; mask-image:none; }
+.tlwrap.vert .tlrail{ left:0; top:14px; bottom:14px; right:auto; width:2px; height:auto; }
 
-/* Most answers are a chip. A square is only earned by something with a face. */
-.chs{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; max-width:680px; margin:0 auto; }
-.ch{ height:54px; padding:0 24px 0 15px; border-radius:var(--pill); background:var(--card);
-  border:1px solid var(--line); display:inline-flex; align-items:center; gap:12px;
-  font-size:15.5px; font-weight:500; letter-spacing:-.022em; position:relative;
-  transition:transform .24s cubic-bezier(.2,.8,.3,1), box-shadow .24s ease, background .26s ease, border-color .26s ease, color .26s ease; }
-.ch .ci{ width:30px; height:30px; flex-shrink:0; border-radius:var(--pill); background:var(--wash);
-  color:var(--tx-2); display:flex; align-items:center; justify-content:center; transition:background .26s ease, color .26s ease; }
-.ch .ci svg{ width:15px; height:15px; }
-.ch .ci.lg{ background:#fff; box-shadow:0 4px 12px rgba(0,0,0,.15); }
-.ch .ci.lg svg{ width:17px; height:17px; }
-.ch:hover{ transform:translateY(-3px); box-shadow:0 12px 26px rgba(0,0,0,.09); }
-.ch.on{ background:var(--ink); color:var(--on-ink); border-color:transparent; }
-.ch.on .ci{ background:rgba(255,255,255,.17); color:var(--on-ink); }
-.ch.on .ci.lg{ background:#fff; }
-.ch.dim{ opacity:.34; }
-.chs.multi .ch.on{ box-shadow:0 10px 24px rgba(0,0,0,.12); }
+/* ONE option component. Rectangle with the icon centred over the label by
+   default; the same thing laid flat as a pill when the answer is just a yes. */
+.opts2{ display:flex; flex-wrap:wrap; gap:12px; justify-content:center; max-width:730px; margin:0 auto; }
+.opt{ position:relative; flex:0 0 auto; min-width:154px; max-width:212px;
+  padding:22px 20px 20px; border-radius:22px; background:var(--card); border:1px solid var(--line);
+  display:flex; flex-direction:column; align-items:center; gap:15px; text-align:center;
+  font-size:15px; font-weight:500; letter-spacing:-.022em; line-height:1.3;
+  transition:transform .3s cubic-bezier(.2,.8,.3,1), box-shadow .3s ease, background .3s ease,
+             border-color .3s ease, color .3s ease; }
+.opt .oi2{ width:46px; height:46px; border-radius:16px; background:var(--wash); color:var(--tx-2);
+  display:flex; align-items:center; justify-content:center;
+  transition:background .3s ease, color .3s ease, transform .3s cubic-bezier(.2,.9,.3,1); }
+.opt .oi2 svg{ width:22px; height:22px; }
+.opt .oi2.lg{ background:#fff; box-shadow:0 6px 18px rgba(0,0,0,.14); }
+.opt .oi2.lg svg{ width:25px; height:25px; }
+.opt:hover{ transform:translateY(-6px); box-shadow:0 20px 42px rgba(0,0,0,.11); }
+.opt:hover .oi2{ transform:scale(1.07); }
+.opt.on{ background:var(--ink); color:var(--on-ink); border-color:transparent; }
+.opt.on .oi2{ background:rgba(255,255,255,.17); color:var(--on-ink); }
+.opt.on .oi2.lg{ background:#fff; }
+.opt.pill{ flex-direction:row; align-items:center; min-width:0; max-width:none;
+  height:54px; padding:0 24px 0 15px; border-radius:var(--pill); gap:12px; }
+.opt.pill .oi2{ width:30px; height:30px; border-radius:var(--pill); }
+.opt.pill .oi2 svg{ width:15px; height:15px; }
+.opt.pill.bare{ padding:0 24px; }
 
 /* the light: mint, green, lime and yellow, moving behind everything */
 .aur{ position:fixed; inset:0; z-index:86; pointer-events:none; opacity:0; overflow:hidden; }
@@ -475,7 +502,8 @@ body.dark .pfbox{ box-shadow:0 0 0 1.5px rgba(255,255,255,.07), 0 0 0 2.5px rgba
 /* A long panel is a document, not a wall: one column at a readable measure,
    and the user can scroll it themselves. */
 .doc{ max-width:620px; margin:0 auto; padding-bottom:16px; }
-.scroll.docs{ overflow-y:auto; overscroll-behavior:contain; }
+.scroll.docs{ display:flex; flex-direction:column; overflow-y:auto; overscroll-behavior:contain; }
+.scroll.docs > .doc{ width:100%; margin-top:auto; margin-bottom:auto; }
 /* each piece is lit as it lands, so the eye knows where to look */
 .lit{ animation:lit 1.7s cubic-bezier(.625,.05,0,1) forwards; }
 @keyframes lit{
@@ -730,6 +758,16 @@ const wait=ms=>new Promise(r=>setTimeout(r,ms));
 const EIO='power3.inOut';
 const fmt=n=>n.toLocaleString('en-US');
 gsap.defaults({ease:'power3.out'});
+/* every arrival comes out of a blur, never just a fade */
+function enter(t,o,ms){
+  o=o||{};
+  return safeTL(gsap.timeline().fromTo(t,
+    {opacity:0,y:o.y!==undefined?o.y:22,scale:o.scale!==undefined?o.scale:.96,
+     filter:'blur('+(o.blur!==undefined?o.blur:12)+'px)'},
+    {opacity:1,y:0,scale:1,filter:'blur(0px)',
+     duration:o.duration||.72,stagger:o.stagger||0,ease:o.ease||'power3.out'}),
+    ms||((o.duration||.72)*1000+(o.stagger||0)*1000*(t.length||1)+1200));
+}
 function safeTL(tl,ms){
   const t=setTimeout(()=>{ try{ tl.progress(1); tl.kill(); }catch(e){} }, ms||2000);
   /* chain, never replace: this used to clobber the caller's onComplete */
@@ -759,22 +797,21 @@ function turn(o){
   const q=mk('div','q'); t.appendChild(q);
   const box=mk('div','opts'); t.appendChild(box);
   const old=$('col').firstChild;
-  if(old){ gsap.to(old,{opacity:0,y:-26,duration:.34,ease:'power2.in'});
-    setTimeout(()=>{ if(old.isConnected) old.remove(); },420); }
+  if(old){ gsap.to(old,{opacity:0,y:-30,scale:.97,filter:'blur(10px)',duration:.4,ease:'power2.in'});
+    setTimeout(()=>{ if(old.isConnected) old.remove(); },460); }
   setTimeout(()=>{
     $('col').innerHTML=''; $('col').appendChild(t);
     const ws=words(q,o.q);
-    safeTL(gsap.timeline()
-      .fromTo(ws,{opacity:0,y:24},{opacity:1,y:0,duration:.66,stagger:.034})
-      .fromTo(box,{opacity:0,y:16},{opacity:1,y:0,duration:.5},'-=.3'),1900);
+    enter(ws,{y:26,blur:10,scale:1,stagger:.038,duration:.72},2600);
+    enter([box],{y:16,blur:8,scale:1,duration:.6},1400);
     if(o.after) o.after(box);
   }, old?300:0);
   sfx('whisper');
   return {t,box};
 }
 function clearTurn(){ const t=$('turn');
-  if(t){ gsap.to(t,{opacity:0,y:-26,duration:.32,ease:'power2.in'});
-    setTimeout(()=>{ if(t.isConnected) t.remove(); },430); } }
+  if(t){ gsap.to(t,{opacity:0,y:-30,scale:.97,filter:'blur(10px)',duration:.36,ease:'power2.in'});
+    setTimeout(()=>{ if(t.isConnected) t.remove(); },460); } }
 async function go(next){ clearTurn(); dockHide(); await wait(400); next(); }
 function line(text){ turn({q:text}); }
 async function beat(text,add,hold){ line(text); await wait(800); if(add) await add(); await wait(hold||1300); }
@@ -788,7 +825,7 @@ function dockHide(){ stopRec(); gsap.to(['#dock','#dtr'],{opacity:0,duration:.28
   setTimeout(()=>{ dockClear(); $('dtr').innerHTML=''; },320); }
 function dockIn(node){
   dockClear(); $('dockIn').appendChild(node); dockShow();
-  safeTL(gsap.timeline().fromTo(node,{opacity:0,y:16},{opacity:1,y:0,duration:.5}),1000);
+  enter([node],{y:18,blur:10,scale:.97,duration:.6},1200);
 }
 /* single action, always centered at the bottom */
 function dockAction(label,fn){
@@ -921,7 +958,9 @@ function chipsRow(box,items,onPick){
   items.forEach(c2=>{ const b=mk('button','chip2',c2);
     b.onclick=()=>{ if(locked)return; locked=true; sfx('tick'); onPick(c2); };
     ch.appendChild(b); });
-  box.appendChild(ch); return ch;
+  box.appendChild(ch);
+  enter(ch.children,{y:24,blur:12,scale:.92,stagger:.06,duration:.68},2000);
+  return ch;
 }
 function pills(box,items,onPick){
   const w=mk('div','pils');
@@ -956,73 +995,66 @@ function matchLabel(v,items){
     if(t.includes(l)||l.includes(t)) return it[2]!==undefined?it[2]:it[1]; }
   return null;
 }
+/* the chosen answer does not just vanish: it flies into the board and becomes
+   the thing it always was */
+function morphToBoard(el){
+  try{
+    const r=el.getBoundingClientRect();
+    const pr=document.querySelector('.right').getBoundingClientRect();
+    if(!r.width||!pr.width) return;
+    const c2=el.cloneNode(true);
+    c2.style.cssText+=';position:fixed;left:'+r.left+'px;top:'+r.top+'px;width:'+r.width+'px;'+
+      'height:'+r.height+'px;margin:0;z-index:84;pointer-events:none;';
+    document.body.appendChild(c2);
+    safeTL(gsap.timeline({onComplete:()=>{ if(c2.isConnected) c2.remove(); }})
+      .to(c2,{ x:pr.left+pr.width/2-r.left-r.width/2, y:pr.top+pr.height/2-r.top-r.height/2,
+        scale:.34, opacity:0, filter:'blur(9px)', duration:.85, ease:'power3.inOut' }),1400);
+    setTimeout(()=>{ if(c2.isConnected) c2.remove(); },1500);
+  }catch(e){}
+}
 function choices(box,items,onPick,opts){
   opts=opts||{};
-  const w=mk('div','chs'+(opts.multi?' multi':''));
+  const w=mk('div','opts2'+(opts.multi?' multi':''));
   const picked=[];
-  const commit=v=>{ if(locked)return; locked=true; setTimeout(()=>onPick(v),340); };
   items.forEach(it=>{
     const [icon,label,value]=it;
-    const b=mk('button','ch');
-    if(icon){ const ic=mk('span','ci',LOGO[icon]||I[icon]||I.target);
-      if(LOGO[icon]) ic.classList.add('lg'); b.appendChild(ic); }
+    const b=mk('button','opt'+(opts.pill?' pill':'')+(icon?'':' bare'));
+    if(icon){ const ic=mk('span','oi2',LOGO[icon]||CI[icon]||I[icon]||I.target);
+      if(LOGO[icon]||CI[icon]) ic.classList.add('lg'); b.appendChild(ic); }
     b.appendChild(mk('span',null,label));
     const val=value!==undefined?value:label;
     b.onclick=()=>{
       if(locked) return;
       sfx('toggle');
-      gsap.fromTo(b,{scale:1},{scale:.96,duration:.12,yoyo:true,repeat:1});
+      gsap.fromTo(b,{scale:1},{scale:.955,duration:.13,yoyo:true,repeat:1});
       if(opts.multi){
         const i=picked.indexOf(val);
         if(i>=0){ picked.splice(i,1); b.classList.remove('on'); }
         else { picked.push(val); b.classList.add('on'); }
-        multiDock();
-        return;
+        multiDock(); return;
       }
+      locked=true;
       b.classList.add('on');
-      [...w.children].forEach(c2=>{ if(c2!==b) gsap.to(c2,{opacity:.26,scale:.96,duration:.34}); });
-      commit(val);
+      if(panelBorn&&!opts.nomorph) morphToBoard(b);
+      gsap.to([...w.children].filter(c2=>c2!==b),
+        {opacity:0,scale:.9,filter:'blur(8px)',y:8,duration:.42,stagger:.03,ease:'power2.in'});
+      gsap.to(b,{y:-6,duration:.42,ease:'power2.out'});
+      setTimeout(()=>onPick(val),380);
     };
     w.appendChild(b);
   });
   box.appendChild(w);
-  safeTL(gsap.timeline().fromTo(w.children,{opacity:0,y:20,filter:'blur(6px)'},
-    {opacity:1,y:0,filter:'blur(0px)',duration:.6,stagger:.055,ease:'power3.out'}),1900);
-  /* you can always just say it instead */
-  const speak=v=>{ if(locked)return; const m=matchLabel(v,items);
-    locked=true; onPick(m||quoteOf(v)); };
+  enter(w.children,{y:30,blur:14,scale:.9,stagger:.07,duration:.75},2400);
+  const speak=v=>{ if(locked)return; const m=matchLabel(v,items); locked=true; onPick(m||quoteOf(v)); };
   function multiDock(){
     if(!picked.length){ locked=false; dockInput(speak); return; }
     dockInput(speak,{label:'Continue with '+picked.length,fn:()=>{
-      if(locked)return; locked=true; sfx('droplet'); onPick(opts.join?picked.join(', '):picked.slice()); }});
+      if(locked)return; locked=true; sfx('droplet');
+      [...w.children].forEach(c2=>{ if(c2.classList.contains('on')&&panelBorn) morphToBoard(c2); });
+      onPick(opts.join?picked.join(', '):picked.slice()); }});
   }
   if(opts.multi) multiDock(); else dockInput(speak);
   return w;
-}
-/* Answers are squares. Three answers means three squares in a row, four means four. */
-function squares(box,items,onPick){
-  const n=items.length;
-  const cols=n<=4?n:(n<=6?3:4);
-  const w=cols>=4?170:(cols===3?196:212);
-  const g=mk('div','sq');
-  g.style.gridTemplateColumns='repeat('+cols+',1fr)';
-  g.style.maxWidth=(cols*w+(cols-1)*12)+'px';
-  items.forEach(([icon,label,value])=>{
-    const b=mk('button','sqc');
-    const ic=mk('span','si',LOGO[icon]||I[icon]||I.target);
-    if(LOGO[icon]) ic.classList.add('lg');
-    b.appendChild(ic); b.appendChild(mk('span','sl',label)); b.appendChild(mk('span','tk',I.check));
-    b.onclick=()=>{ if(locked)return; locked=true; sfx('toggle');
-      b.classList.add('on');
-      gsap.fromTo(b,{scale:1},{scale:.955,duration:.13,yoyo:true,repeat:1});
-      [...g.children].forEach(c2=>{ if(c2!==b) gsap.to(c2,{opacity:.24,scale:.95,duration:.36}); });
-      setTimeout(()=>onPick(value!==undefined?value:label),360); };
-    g.appendChild(b);
-  });
-  box.appendChild(g);
-  safeTL(gsap.timeline().fromTo(g.children,{opacity:0,y:28,scale:.93},
-    {opacity:1,y:0,scale:1,duration:.64,stagger:.065,ease:'back.out(1.4)'}),2000);
-  return g;
 }
 function afterCommit(next){ if(editReturn){ editReturn=null; visionStage(true); } else next(); }
 
@@ -1082,32 +1114,34 @@ function cityList(str){ return String(str||'').split(', ').filter(Boolean); }
 /* The board never shows blanks. Each sentence loads itself, then lands finished. */
 function SENTENCES(){
   return [
-   { id:'s1', ready:!!P.role, key:[P.name,P.role,P.company].join('|'),
+   { id:'s1', g:0, ready:!!P.role, key:[P.name,P.role,P.company].join('|'),
      html:()=>(P.name
          ? chip('<span class="av">'+P.name.charAt(0).toUpperCase()+'</span>'+T_(P.name))+G_(' is going after ')
          : G_('Going after '))
        +chip(I.target+T_(P.role))
        +(P.company?G_(' at ')+chip(cico('bldg')+T_(low(P.company))):'')+G_('.') },
-   { id:'s2', ready:!!P.dream, key:[P.dream,P.openness].join('|'),
+   { id:'s2', g:0, ready:!!P.dream, key:[P.dream,P.openness].join('|'),
      html:()=>G_('The dream is ')+chip((LOGO[P.dream]||I.spark)+T_(P.dream))
        +(P.openness?G_(', '+P.openness):'')+G_('.') },
-   { id:'s3', ready:!!(P.location||P.citynext), key:[P.location,P.citynext].join('|'),
+   { id:'s3', g:1, ready:!!(P.location||P.citynext), key:[P.location,P.citynext].join('|'),
      html:()=>{ const nxt=cityList(P.citynext).filter(c2=>c2!==P.location);
        return G_('From ')+(P.location?cityChip(P.location):'')
          +(nxt.length?G_(', open to ')+nxt.map(cityChip).join(G_(' ')):'')+G_('.'); } },
-   { id:'s4', ready:!!P.industry, key:[P.industry,P.problems].join('|'),
+   { id:'s4', g:1, ready:!!P.industry, key:[P.industry,P.problems].join('|'),
      html:()=>G_('Into ')+chip(cico(IND_ICON[P.industry]||'spark')+T_(SHORT[P.industry]||P.industry))
        +(P.problems?G_(', to fix ')+'<span class="vbq">“'+P.problems+'”</span>':'')+G_('.') },
-   { id:'s5', ready:!!(P.timeline&&P.jobtype), key:[P.timeline,P.jobtype].join('|'),
+   { id:'s5', g:1, ready:!!(P.timeline&&P.jobtype), key:[P.timeline,P.jobtype].join('|'),
      html:()=>G_('Wants ')+chip(cico(JOB_ICON[P.jobtype]||'bag')+T_(low(P.jobtype)))
        +G_(', ')+chip(cico(TIME_ICON[P.timeline]||'cal')+T_(low(P.timeline)))+G_('.') },
-   { id:'s6', ready:!!(P.role&&P.industry), key:COS().join('|'),
-     html:()=>G_('Hiring here: ')+logoChip(COS()) },
+   { id:'s6', g:2, ready:!!(P.role&&P.industry), key:COS().join('|'),
+     html:()=>'<span class="vblab">'+G_('Hiring for exactly this')+'</span>'+logoChip(COS()) },
   ];
 }
 function boardHTML(){
-  return SENTENCES().filter(x=>x.ready)
-    .map(x=>'<div class="vbs" data-id="'+x.id+'">'+x.html()+'</div>').join('');
+  const on=SENTENCES().filter(x=>x.ready);
+  return [0,1,2].map(g=>'<div class="vbg g'+g+'" id="vbg'+g+'">'+
+    on.filter(x=>x.g===g).map(x=>'<div class="vbs" data-id="'+x.id+'">'+x.html()+'</div>').join('')+
+    '</div>').join('');
 }
 let shown={}, keys={}, queue=[], scanning=false, boardLive=false;
 /* Each sentence loads itself: a skeleton with a green shine, then it resolves.
@@ -1118,9 +1152,9 @@ function skeleton(o){
   (SKW[o]||[6,5]).forEach(ch=>{ const b=mk('span','skb'); b.style.width=ch+'ch'; r.appendChild(b); });
   return r;
 }
-function placeRow(vb,row,o){
-  const after=[...vb.children].find(r=>+r.dataset.o>o);
-  if(after) vb.insertBefore(row,after); else vb.appendChild(row);
+function placeRow(host,row,o){
+  const after=[...host.children].find(r=>+r.dataset.o>o);
+  if(after) host.insertBefore(row,after); else host.appendChild(row);
 }
 function spring(row){
   const bits=row.querySelectorAll('.vbc, .vbl, .vbq');
@@ -1133,9 +1167,9 @@ function pump(){
   scanning=true;
   queue.sort((a,b)=>a.o-b.o);
   const item=queue.shift();
-  const vb=$('vb'); if(!vb){ scanning=false; return; }
+  const host=$('vbg'+(item.g||0)); if(!host){ scanning=false; return; }
   const sk=skeleton(item.o);
-  placeRow(vb,sk,item.o);
+  placeRow(host,sk,item.o);
   safeTL(gsap.timeline().fromTo(sk,{opacity:0,y:10},{opacity:1,y:0,duration:.35}),700);
   sfx('loading');
   let done=false;
@@ -1143,7 +1177,7 @@ function pump(){
     if(done) return; done=true;
     const row=mk('div','vbs'); row.dataset.o=String(item.o); row.dataset.id=item.id;
     row.innerHTML=item.html();
-    if(sk.isConnected) vb.replaceChild(row,sk); else placeRow(vb,row,item.o);
+    if(sk.isConnected) host.replaceChild(row,sk); else placeRow(host,row,item.o);
     spring(row);
     sfx('droplet');
     setTimeout(()=>{ scanning=false; pump(); },620);
@@ -1153,7 +1187,7 @@ function pump(){
 /* a sentence already on the board can change: the name arriving rewrites the first line */
 function morphRow(x){
   const vb=$('vb'); if(!vb) return;
-  const row=[...vb.children].find(r=>r.dataset.id===x.id);
+  const row=vb.querySelector('.vbs[data-id="'+x.id+'"]');
   /* still waiting its turn in the queue: it will render with the newer words anyway */
   if(!row){ if(!queue.some(q2=>q2.id===x.id)) shown[x.id]=0; return; }
   safeTL(gsap.timeline().to(row,{opacity:.25,duration:.22}),400);
@@ -1170,7 +1204,9 @@ function renderBoard(){
   const s2=$('scroll');
   s2.classList.add('ctr');
   let vb=$('vb');
-  if(!vb){ s2.innerHTML=''; vb=mk('div','vb'); vb.id='vb'; s2.appendChild(vb); }
+  if(!vb){ s2.innerHTML=''; vb=mk('div','vb'); vb.id='vb';
+    [0,1,2].forEach(g=>{ const d=mk('div','vbg g'+g); d.id='vbg'+g; vb.appendChild(d); });
+    s2.appendChild(vb); }
   SENTENCES().forEach((x,i)=>{
     if(!x.ready) return;
     x.o=i;
@@ -1217,7 +1253,7 @@ function ghostIn(node,h,ms){
 function landIn(node,silent){
   $('pBody').appendChild(node);
   if(!silent) litten(node);
-  safeTL(gsap.timeline().fromTo(node,{opacity:0,y:18},{opacity:1,y:0,duration:.6,ease:EIO}),900);
+  enter([node],{y:20,blur:11,scale:.97,duration:.68},1400);
   const s=$('scroll'); const bot=()=>Math.max(0,s.scrollHeight-s.clientHeight);
   safeTL(gsap.timeline().to(s,{scrollTop:bot(),duration:.7,ease:EIO}),900);
   setTimeout(()=>{s.scrollTop=bot();},950);
@@ -1225,15 +1261,15 @@ function landIn(node,silent){
 }
 async function swapPanel(capText,build,listening,doc){
   const s=$('scroll');
-  safeTL(gsap.timeline().to(s,{opacity:0,y:-10,duration:.32}),500);
+  safeTL(gsap.timeline().to(s,{opacity:0,y:-14,filter:'blur(12px)',duration:.36}),600);
   setCap(capText,listening); await wait(380);
   boardLive=false; s.innerHTML=''; s.scrollTop=0; s.classList.remove('ctr');
   s.classList.toggle('docs',!!doc);
   let host=s;
   if(doc){ host=mk('div','doc'); host.id='doc'; s.appendChild(host); }
   build(host);
-  gsap.set(s,{opacity:0,y:12});
-  safeTL(gsap.timeline().to(s,{opacity:1,y:0,duration:.55}),900);
+  gsap.set(s,{opacity:0,y:16,filter:'blur(14px)'});
+  safeTL(gsap.timeline().to(s,{opacity:1,y:0,filter:'blur(0px)',duration:.75,ease:'power3.out'}),1400);
   sfx('page');
 }
 function printDots(ms){
@@ -1425,7 +1461,7 @@ function roleStage(){
     const {box}=turn({q:'You said '+P.role+'. Still the one?'});
     choices(box,[['check','Still the one','yes'],['pen','Change it','no']],v=>{
       if(v==='yes'){ renderBoard(); go(companyStage); }
-      else { P.role=null; go(roleStage); } });
+      else { P.role=null; go(roleStage); } },{pill:true,nomorph:true});
     return;
   }
   const {box}=turn({q:'What kind of role do you want?'});
@@ -1440,7 +1476,7 @@ function companyStage(){
   choices(box,[
     ['rocket','Small and scrappy','Startup'],
     ['bars','A scale-up','Scale-up'],
-    ['bld','Big tech','Big tech'],
+    ['bldg','Big tech','Big tech'],
     ['users','An agency','Agency'],
   ],v=>{ P.company=v; renderBoard(); afterCommit(()=>go(dreamStage)); });
 }
@@ -1450,7 +1486,7 @@ const DREAMS={ design:['Figma','Airbnb','Apple'], ba:['Stripe','Salesforce','Sno
 function dreamStage(){
   const {box}=turn({q:'What would be a company you consider a dream company?'});
   const take=v=>{ P.dream=v; renderBoard(); afterCommit(()=>go(probeStage)); };
-  squares(box,(DREAMS[PKEY]||DREAMS.design).map(n=>[n,n,n]),take);
+  choices(box,(DREAMS[PKEY]||DREAMS.design).map(n=>[n,n,n]),take);
   dockMode='type';
   dockInput(v=>{ dockMode='voice'; take(quoteOf(v)); });
 }
@@ -1477,7 +1513,7 @@ function locationStage(){
     const {box}=turn({q:'You mentioned '+P.location+'. Still home?'});
     choices(box,[['check','Still home','yes'],['pen','Change it','no']],v=>{
       if(v==='yes'){ renderBoard(); go(citiesStage); }
-      else { P.location=null; go(locationStage); } });
+      else { P.location=null; go(locationStage); } },{pill:true,nomorph:true});
     return;
   }
   turn({q:'Where do you live now?'});
@@ -1489,9 +1525,10 @@ function locationStage(){
 function citiesStage(){
   const here=P.location||'here';
   const {box}=turn({q:'What kind of cities would you want to live in?'});
-  const opts=[['pin','Stay in '+here,here],['pin','Dubai','Dubai'],['pin','Bangalore','Bangalore'],
-    ['pin','Mumbai','Mumbai'],['pin','London','London'],['pin','New York','New York'],
-    ['pin','San Francisco','San Francisco'],['globe','Remote, anywhere','Remote']];
+  const ci=n=>CITY_ICON[n]||'pin';
+  const opts=[[ci(here),'Stay in '+here,here],['UAE','Dubai','Dubai'],['India','Bangalore','Bangalore'],
+    ['India','Mumbai','Mumbai'],['UK','London','London'],['USA','New York','New York'],
+    ['USA','San Francisco','San Francisco'],['globe','Remote, anywhere','Remote']];
   choices(box,opts,v=>{
     const list=Array.isArray(v)?v:[v];
     P.citynext=list.filter((x,i)=>list.indexOf(x)===i).join(', ');
@@ -1504,12 +1541,12 @@ function industryStage(){
     const {box}=turn({q:'I heard '+P.industry+'. Still right?'});
     choices(box,[['check','Still right','yes'],['pen','Change it','no']],v=>{
       if(v==='yes'){ renderBoard(); go(problemsStage); }
-      else { P.industry=null; go(industryStage); } });
+      else { P.industry=null; go(industryStage); } },{pill:true,nomorph:true});
     return;
   }
   const {box}=turn({q:'What industry do you want to work in?'});
-  choices(box,[['spark','Tech and AI','Tech and AI'],['heart','Health','Health'],['coin','Finance','Finance'],
-    ['leaf','Climate','Climate'],['cart','Commerce','Commerce'],['cam','Media','Media']],
+  choices(box,[['spark','Tech and AI','Tech and AI'],['health','Health','Health'],['money','Finance','Finance'],
+    ['seedling','Climate','Climate'],['cart','Commerce','Commerce'],['clap','Media','Media']],
     v=>{ P.industry=v; renderBoard(); afterCommit(()=>go(problemsStage)); });
 }
 
@@ -1524,14 +1561,14 @@ function problemsStage(){
 /* ============================ 12 · timing, 13 · shape ============================ */
 function timelineStage(){
   const {box}=turn({q:'Do you have any timelines?'});
-  choices(box,[['rocket','Now','Now'],['clock','In three months','In three months'],
-    ['flag','This year','This year'],['leaf','No rush','No rush']],
+  choices(box,[['rocket','Now','Now'],['cal','In three months','In three months'],
+    ['cal','This year','This year'],['hour','No rush','No rush']],
     v=>{ P.timeline=v; afterCommit(()=>go(jobtypeStage)); });
 }
 function jobtypeStage(){
   const {box}=turn({q:'Are you looking for a full time job, or an internship?'});
-  choices(box,[['bld','Full time','Full time'],['box','An internship','An internship'],
-    ['compass','Either, if it is the right one','Either']],
+  choices(box,[['bag','Full time','Full time'],['cap','An internship','An internship'],
+    ['globe','Either, if it is the right one','Either']],
     v=>{ P.jobtype=v; renderBoard(); afterCommit(()=>go(synthStage)); });
 }
 
@@ -1574,7 +1611,7 @@ function visionStage(fromEdit){
   choices(box,[['check','That is me','ok'],['pen','Fix one thing','fix'],['plus','Add more','more']],v=>{
     if(v==='ok'){ sfx('success'); clearTurn(); dockHide(); setTimeout(transformStage,520); }
     else if(v==='fix'){ go(editStage); }
-    else { go(addMoreStage); } });
+    else { go(addMoreStage); } },{pill:true,nomorph:true});
 }
 function editStage(){
   const {box}=turn({q:'What should I fix?'});
@@ -1586,7 +1623,7 @@ function editStage(){
     if(v==='Where'){ P.location=null; P.citynext=null; }
     if(v==='Industry') P.industry=null;
     if(v==='Timing'){ P.timeline=null; P.jobtype=null; }
-    editReturn='vision'; go(map[v]); });
+    editReturn='vision'; go(map[v]); },{pill:true,nomorph:true});
 }
 function addMoreStage(){
   turn({q:'Tell me more.'});
