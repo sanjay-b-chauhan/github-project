@@ -33,11 +33,14 @@ body.dark{
   --ink:#F4F4F3; --on-ink:#131315;
 }
 .veil{ position:fixed; inset:0; z-index:95; background:#FAFAF9; opacity:0; pointer-events:none; }
-/* the charge: green floods in from the edges before the world goes dark */
-.energ{ position:fixed; inset:0; z-index:94; pointer-events:none; opacity:0; --r:70%;
-  background:radial-gradient(circle at 50% 50%, #C8F169 0%, #4ADE80 42%, #16a34a 100%);
-  -webkit-mask-image:radial-gradient(circle at 50% 50%, transparent var(--r), #000 calc(var(--r) + 9%));
-  mask-image:radial-gradient(circle at 50% 50%, transparent var(--r), #000 calc(var(--r) + 9%)); }
+/* the charge: it opens out of the middle and leaves the screen, and black is
+   what it leaves behind */
+.energ{ position:fixed; inset:0; z-index:94; pointer-events:none; opacity:0; --r1:0%; --r2:0%;
+  background:radial-gradient(circle at 50% 50%, #FFFFFF 0%, #C8F169 26%, #4ADE80 58%, #16a34a 100%);
+  -webkit-mask-image:radial-gradient(circle at 50% 50%,
+    transparent var(--r2), #000 calc(var(--r2) + 5%), #000 var(--r1), transparent calc(var(--r1) + 5%));
+  mask-image:radial-gradient(circle at 50% 50%,
+    transparent var(--r2), #000 calc(var(--r2) + 5%), #000 var(--r1), transparent calc(var(--r1) + 5%)); }
 
 .pcards{ display:flex; gap:16px; justify-content:center; }
 .pcard{ width:212px; height:264px; background:var(--card); border:1px solid var(--line); border-radius:28px;
@@ -1529,27 +1532,32 @@ function showDraw(){
       safeTL(gsap.timeline().to(obj,{w:cover,duration:1.15,ease:'power3.in',onUpdate:redraw}),1900);
     }
     setTimeout(()=>{
-      /* the charge closes in from the edges */
+      /* the charge opens out of the middle and rides off the screen */
       const en=mk('div','energ'); document.body.appendChild(en);
-      const o={r:72};
-      en.style.setProperty('--r','72%');
-      sfx('bloom');
-      safeTL(gsap.timeline()
-        .to(en,{opacity:1,duration:.28},0)
-        .to(o,{r:0,duration:.72,ease:'power2.inOut',
-          onUpdate:()=>en.style.setProperty('--r',o.r+'%')},0.06),1600);
+      const d=$('drawScreen');
       let flipped=false;
       const flip=()=>{
         if(flipped) return; flipped=true;
         document.body.classList.add('dark');
-        const d=$('drawScreen');
         d.style.background='#0E0E10';
-        gsap.to(d,{opacity:0,duration:.6});
-        safeTL(gsap.timeline().to(en,{opacity:0,duration:.62,ease:'power2.out'}),1200);
-        setTimeout(()=>{ if(en.isConnected) en.remove(); },1000);
-        setTimeout(()=>{ d.style.display='none'; introStage(); },820);
       };
-      setTimeout(flip,980);
+      const o={p:0};
+      const paint=()=>{
+        const r1=o.p*132;
+        const r2=Math.max(0,(o.p-.44)/.56)*132;
+        en.style.setProperty('--r1',r1.toFixed(1)+'%');
+        en.style.setProperty('--r2',r2.toFixed(1)+'%');
+        if(o.p>.46) flip();
+      };
+      en.style.setProperty('--r1','0%'); en.style.setProperty('--r2','0%');
+      sfx('bloom');
+      safeTL(gsap.timeline()
+        .set(en,{opacity:1})
+        .to(o,{p:1,duration:1.15,ease:'power2.out',onUpdate:paint}),2000);
+      setTimeout(flip,620);
+      setTimeout(()=>{ gsap.to(d,{opacity:0,duration:.55}); },820);
+      setTimeout(()=>{ if(en.isConnected) en.remove(); },1500);
+      setTimeout(()=>{ d.style.display='none'; introStage(); },1180);
     }, skip?350:1250);
   }
 }
