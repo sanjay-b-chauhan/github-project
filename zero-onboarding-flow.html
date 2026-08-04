@@ -75,17 +75,41 @@ body.dark{
 .wave span{ flex:1; height:5px; border-radius:2px; background:var(--tx-3); }
 .dtime{ font-size:14px; color:var(--tx-2); font-variant-numeric:tabular-nums; min-width:38px; }
 
-.dbg{ position:fixed; left:18px; bottom:18px; z-index:98; }
-.dbgbtn{ height:36px; padding:0 15px; border-radius:var(--pill); background:var(--field); color:var(--tx-3);
-  font-size:12px; display:flex; align-items:center; }
-.dbgbtn:hover{ color:var(--tx); }
-.dbgpanel{ display:none; position:absolute; left:0; bottom:44px; width:240px; padding:16px;
-  background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.1); }
+.dbg{ position:fixed; right:18px; bottom:18px; z-index:98; }
+.dbgbar{ display:flex; align-items:center; gap:4px; padding:4px; border-radius:var(--pill);
+  background:var(--card); border:1px solid var(--line); box-shadow:0 10px 26px rgba(0,0,0,.1); }
+.dbgnav{ width:32px; height:32px; border-radius:var(--pill); color:var(--tx-3);
+  display:flex; align-items:center; justify-content:center; transition:background .2s ease, color .2s ease; }
+.dbgnav svg{ width:15px; height:15px; }
+.dbgnav:hover{ background:var(--field); color:var(--tx); }
+.dbgnav:disabled{ opacity:.3; cursor:default; }
+.dbgnav.flip svg{ transform:rotate(180deg); }
+.dbgstep{ height:32px; padding:0 12px; border-radius:var(--pill); font-size:11.5px; color:var(--tx-2);
+  white-space:nowrap; min-width:96px; }
+.dbgstep:hover{ background:var(--field); color:var(--tx); }
+.dbgpanel{ display:none; position:absolute; right:0; bottom:48px; width:296px; padding:8px;
+  max-height:72vh; overflow-y:auto; background:var(--card); border:1px solid var(--line);
+  border-radius:18px; box-shadow:0 18px 44px rgba(0,0,0,.14); }
 .dbgpanel.open{ display:block; }
-.dbgrow{ display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:12px; color:var(--tx-2); padding:6px 0; }
-.dbgrow input[type=range]{ width:120px; accent-color:var(--tx); }
-.dbgrow input[type=color]{ width:28px; height:22px; border:none; background:none; padding:0; cursor:pointer; }
-.dbgrow .val{ width:26px; text-align:right; color:var(--tx-3); font-size:11px; }
+.dbgsec + .dbgsec{ margin-top:5px; }
+.dbgh{ display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%;
+  height:42px; padding:0 13px; border-radius:12px; font-size:12.5px; font-weight:500;
+  letter-spacing:-.015em; color:var(--tx); background:var(--wash); transition:background .2s ease; }
+.dbgh:hover{ background:var(--field); }
+.dbgh .cv{ width:14px; height:14px; flex-shrink:0; color:var(--tx-3);
+  transition:transform .3s cubic-bezier(.625,.05,0,1); }
+.dbgsec.open .dbgh .cv{ transform:rotate(90deg); }
+.dbgbody{ display:none; padding:10px 13px 12px; }
+.dbgsec.open .dbgbody{ display:block; }
+.dbgrow{ display:block; padding:8px 0; }
+.dbgrow .lb{ display:flex; align-items:center; justify-content:space-between; gap:8px;
+  font-size:11.5px; color:var(--tx-3); margin-bottom:9px; white-space:nowrap; }
+.dbgrow .lb .val{ color:var(--tx-2); font-variant-numeric:tabular-nums; }
+.dbgrow input[type=range]{ width:100%; accent-color:var(--tx); }
+.dbgrow.flat{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.dbgrow.flat .lb{ margin-bottom:0; }
+.dbgrow input[type=color]{ width:34px; height:24px; border:none; background:none; padding:0; cursor:pointer; }
+.dbgrow input[type=checkbox]{ accent-color:var(--tx); width:16px; height:16px; }
 button{ font:inherit; letter-spacing:inherit; color:inherit; background:none; border:none; cursor:pointer; }
 input{ font:inherit; letter-spacing:inherit; color:var(--tx); background:none; border:none; outline:none; }
 input::placeholder{ color:var(--tx-4); }
@@ -219,6 +243,13 @@ svg{ display:block; }
 .cap .live.pulse{ animation:capPulse 1.6s ease-in-out infinite; }
 @keyframes capPulse{ 0%,100%{opacity:1} 50%{opacity:.3} }
 .paper{ flex:1; min-height:0; position:relative; overflow:hidden; }
+.paper::before{ content:''; position:absolute; inset:0; z-index:0; pointer-events:none; opacity:0;
+  transition:opacity .8s ease;
+  background-image:radial-gradient(rgba(13,13,13,.14) 1.1px, transparent 1.1px);
+  background-size:24px 24px; }
+body.dark .paper::before{ background-image:radial-gradient(rgba(255,255,255,.13) 1.1px, transparent 1.1px); }
+.paper.canvas::before{ opacity:1; }
+.scroll{ position:relative; z-index:1; }
 .paper::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:70px;
   background:linear-gradient(to bottom, transparent, var(--shell)); pointer-events:none; z-index:2; }
 .scroll{ height:100%; overflow:hidden; padding:0 46px 46px; }
@@ -233,9 +264,7 @@ svg{ display:block; }
 .vbg:empty{ display:none; }
 .vbg.g1{ margin-top:1.35em; }
 .vbg.g2{ margin-top:2.1em; }
-.vbg.g2 .vbl span{ width:1.72em; height:1.72em; border-radius:.44em; margin-left:-.38em; }
-.vbg.g2 .vbl span svg{ width:1em; height:1em; }
-.vblab{ display:block; margin-bottom:.85em; font-size:.6em; color:var(--tx-3); letter-spacing:.01em; }
+.vblab{ display:block; margin-bottom:.85em; color:var(--tx-3); }
 /* centred, but it grows into the space instead of clipping */
 .scroll.ctr{ display:flex; flex-direction:column; justify-content:flex-start; overflow-y:auto; }
 .scroll.ctr > *{ margin-top:auto; margin-bottom:auto; }
@@ -302,7 +331,7 @@ svg{ display:block; }
 .pname{ font-size:19px; font-weight:600; line-height:1.2; letter-spacing:-.03em; }
 .pmeta{ display:flex; align-items:center; gap:9px; margin-top:7px; font-size:12.5px; color:var(--tx-2); flex-wrap:wrap; }
 .pmeta .m{ white-space:nowrap; }
-.pmeta .m + .m::before{ content:'·'; margin-right:9px; color:var(--tx-4); }
+.pmeta .m:not(:first-child)::before{ content:'·'; margin-right:9px; color:var(--tx-4); }
 .pmeta .sep{ display:none; }
 .pmeta .m{ display:flex; align-items:center; gap:6px; }
 .pmeta .m svg{ width:12px; height:12px; color:var(--tx-3); }
@@ -376,6 +405,18 @@ svg{ display:block; }
 .lrow .lt{ font-size:13.5px; font-weight:600; letter-spacing:-.025em; }
 .lrow .ld{ margin-top:3px; font-size:12px; color:var(--tx-3); }
 .lcon{ height:14px; margin-left:32px; border-left:1px solid var(--line); }
+/* how Zero works, one big card at a time */
+.zstep{ display:flex; align-items:flex-start; gap:16px; padding:20px 22px; border-radius:20px;
+  background:var(--card); border:1px solid var(--line); }
+.zstep .zn{ width:34px; height:34px; flex-shrink:0; border-radius:12px; background:var(--ink);
+  color:var(--on-ink); display:flex; align-items:center; justify-content:center;
+  font-size:13.5px; font-weight:600; }
+.zstep .zb{ flex:1; min-width:0; }
+.zstep .zt{ font-size:16px; font-weight:600; letter-spacing:-.03em; }
+.zstep .zd{ margin-top:6px; font-size:13px; line-height:1.55; color:var(--tx-2); }
+.zstep.last{ background:var(--ink); border-color:transparent; color:var(--on-ink); }
+.zstep.last .zn{ background:var(--on-ink); color:var(--ink); }
+.zstep.last .zd{ color:rgba(255,255,255,.62); }
 .rew{ text-align:center; padding:16px 0 4px; }
 .rewn{ font-size:clamp(62px,8.4vw,138px); font-weight:600; letter-spacing:-.055em;
   font-variant-numeric:tabular-nums; line-height:.92; }
@@ -568,6 +609,12 @@ body.dark .lit{ animation-name:litd; }
   box-shadow:0 24px 48px rgba(0,0,0,.3), 0 2px 6px rgba(0,0,0,.18); }
 .ztile svg{ width:34px; height:34px; }
 
+.metapills{ display:flex; flex-wrap:wrap; gap:8px; margin-top:11px; }
+.mp{ display:inline-flex; align-items:center; gap:9px; height:34px; padding:0 15px 0 8px;
+  border-radius:var(--pill); background:var(--card); border:1px solid var(--line);
+  font-size:12.5px; font-weight:500; letter-spacing:-.015em; }
+.mp .mi{ width:21px; height:21px; display:inline-flex; flex-shrink:0; }
+.mp .mi svg{ width:100%; height:100%; }
 .cosbig{ display:flex; flex-wrap:wrap; gap:12px; }
 .cbg{ width:60px; height:60px; border-radius:19px; background:#fff; display:flex; align-items:center;
   justify-content:center; box-shadow:0 14px 28px rgba(0,0,0,.16), 0 1px 3px rgba(0,0,0,.09); }
@@ -622,7 +669,12 @@ body.dark .lit{ animation-name:litd; }
 
 <div class="dbg" id="dbg">
   <div class="dbgpanel" id="dbgPanel"></div>
-  <button class="dbgbtn" id="dbgBtn">Tuning</button>
+  <div class="dbgbar">
+    <button class="dbgnav" id="dbgPrev" aria-label="Previous step"></button>
+    <button class="dbgstep" id="dbgStep">Start</button>
+    <button class="dbgnav" id="dbgNext" aria-label="Next step"></button>
+    <button class="dbgnav" id="dbgBtn" aria-label="Settings"></button>
+  </div>
 </div>
 
 <div class="draw" id="drawScreen">
@@ -685,6 +737,7 @@ const I={
   coin:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v12m3-9H10.5a2.5 2.5 0 0 0 0 5h3a2.5 2.5 0 0 1 0 5H9"/></g></svg>',
   leaf:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8c0 5.5-4.78 10-10 10"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></g></svg>',
   cart:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></g></svg>',
+  gear:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2"/><circle cx="12" cy="12" r="3"/></g></svg>',
   plus:'<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2.4" d="M12 5v14M5 12h14"/></svg>',
   cam:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m16 13l5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></g></svg>',
 };
@@ -694,7 +747,7 @@ function sfx(n){ try{ if(sndOn&&window.CUE) window.CUE.play(n); }catch(e){} }
 const INK={max:100,min:26,sens:34,tol:.35,wet:.10,color:'#111113'};
 
 /* ============================ persona packs ============================ */
-const PACKS = {"design": {"label": "Design", "role": "Product Designer", "cos": ["Linear", "Airbnb", "Vercel", "Figma"], "bio": "I would rather watch one person use the thing than read ten opinions about it. I design in the open, ship the flow end to end, and write down why each call was made.", "guessLine": "Sounds like design. Tap to confirm.", "starterChips": ["I am a design student", "I work in design already", "I want to move into design"], "roleCards": ["Product Designer", "UX Designer", "Design Engineer"], "dreamExamples": ["Airbnb", "Figma"], "problemChips": ["Confusing tools", "Flows people abandon", "Products that feel cold"], "projects": [{"co": "Linear", "short": "Issue Triage Flow", "title": "Issue triage redesign for Linear", "weeks": 5, "desc": "Cut triage from six clicks to two, tested the new flow against the old one with eight users, and shipped the version that held up.", "steps": ["Audit the current triage flow", "Interview three people who use it daily", "Prototype two alternatives", "Test both and ship the winner"], "chips": [["play", "Walkthrough · 4:02"], ["doc", "Prototype"], ["doc", "Usability test"]]}, {"co": "Airbnb", "short": "Host Onboarding", "title": "Host listing flow rebuild for Airbnb", "weeks": 5, "desc": "Rebuilt a twelve-step listing flow into four, and moved prototype completion from 38 to 61 percent across nine sessions.", "steps": ["Map the twelve steps and their drop-offs", "Rewrite the flow as four", "Build the clickable prototype", "Run nine sessions and revise"], "chips": [["play", "Walkthrough · 4:24"], ["doc", "Flows"], ["doc", "Research notes"]]}, {"co": "Vercel", "short": "Dashboard System", "title": "Design system foundations for the Vercel dashboard", "weeks": 6, "desc": "Audited forty-one screens, cut ninety loose components down to twenty-three, and documented the ones the team reaches for.", "steps": ["Audit forty-one screens for duplication", "Define the token and component set", "Build the library properly", "Document rules people will follow"], "chips": [["play", "Walkthrough · 3:36"], ["doc", "Component library"], ["doc", "Documentation"]]}], "skills": [["Interaction design", "Excellent", ""], ["Prototyping", "Excellent", ""], ["Design systems", "Strong", "aim Excellent"], ["Visual craft", "Strong", ""]], "soft": [["Design critique", "Strong", "aim Excellent"], ["Written rationale", "Excellent", ""], ["User interviews", "Good", "aim Strong"], ["Working with engineers", "Strong", ""]], "todo": [["Design critique", "Defend a screen to a room that disagrees with you."], ["Accessibility pass", "Take a shipped flow to WCAG AA without redesigning it."]], "roles": [["Product Designer", "$95k – $125k", "Most openings"], ["UX Designer", "$90k – $120k", "Research-heavy"], ["Design Engineer", "$110k – $140k", "Rarer, pays more"]]}, "ba": {"label": "Business analysis", "role": "Business Analyst", "cos": ["Stripe", "Shopify", "Spotify", "Notion"], "bio": "Give me a messy spreadsheet and a real question and I am happy. I chase the number that actually decides things, build the model behind it, and write the one page that ends the debate.", "guessLine": "Sounds like business analysis. Tap to confirm.", "starterChips": ["I am a business student", "I work with data already", "I want to move into strategy"], "roleCards": ["Business Analyst", "Strategy Analyst", "Operations Analyst"], "dreamExamples": ["Stripe", "Spotify"], "problemChips": ["Decisions made on gut feel", "Money leaking somewhere", "Reports nobody reads"], "projects": [{"co": "Shopify", "short": "Support Ops Audit", "title": "Support ops audit for Shopify", "weeks": 5, "desc": "Mapped where 1,200 weekly merchant tickets actually come from, found 34% traced back to one refund policy gap, and sized the fix at 18 saved agent hours a week.", "steps": ["Pull three months of ticket data", "Tag the top drivers by hand", "Trace the worst driver to its root cause", "Size the fix and present the case"], "chips": [["play", "Walkthrough · 3:48"], ["doc", "Ticket driver model"], ["doc", "Recommendation memo"]]}, {"co": "Spotify", "short": "Plan Pricing Model", "title": "Plan pricing analysis for Spotify", "weeks": 5, "desc": "Modeled what a $1 move on the Duo plan does to churn and revenue across three scenarios, then recommended the one that nets $2.1M a year without touching the student tier.", "steps": ["Rebuild the plan mix from public data", "Model churn sensitivity at three price points", "Stress test the ugliest scenario", "Write the pricing memo"], "chips": [["play", "Walkthrough · 4:15"], ["doc", "Pricing model"], ["doc", "Scenario memo"]]}, {"co": "Stripe", "short": "Funnel Economics", "title": "Activation funnel economics for Stripe", "weeks": 6, "desc": "Broke signup to first payment into five stages, found the 48-hour verification wait cost more accounts than the next three drop-offs combined, and priced the fix against two cheaper options.", "steps": ["Define the funnel stages and metrics", "Find where accounts actually stall", "Put a dollar value on each drop-off", "Rank three fixes by cost and payback"], "chips": [["play", "Walkthrough · 4:31"], ["doc", "Funnel model"], ["doc", "Cost-benefit brief"]]}], "skills": [["Spreadsheet modeling", "Excellent", ""], ["SQL", "Strong", "aim Excellent"], ["Market sizing", "Strong", ""], ["Data visualization", "Good", "aim Strong"]], "soft": [["Executive memos", "Excellent", ""], ["Stakeholder interviews", "Strong", "aim Excellent"], ["Defending a number", "Good", "aim Strong"], ["Scoping ambiguity", "Strong", ""]], "todo": [["Board-level memo", "Compress a six-week analysis into one page a CFO reads in two minutes."], ["Live model defense", "Walk a room through your assumptions while they try to break them."]], "roles": [["Business Analyst", "$70k – $95k", "Most openings"], ["Strategy Analyst", "$75k – $100k", "Fewer, more competitive"], ["Operations Analyst", "$65k – $90k", "Fastest to land"]]}, "swe": {"label": "Software engineering", "role": "Software Engineer", "cos": ["Stripe", "Vercel", "Datadog", "Linear"], "bio": "I would rather read the stack trace than guess. I ship small, test what I ship, and leave the codebase easier to read than I found it.", "guessLine": "Sounds like engineering. Tap to confirm.", "starterChips": ["I am a CS student", "I write code already", "I want to move into engineering"], "roleCards": ["Frontend Engineer", "Full-stack Engineer", "Backend Engineer"], "dreamExamples": ["Stripe", "Vercel"], "problemChips": ["Slow, clunky apps", "Things that break under load", "Code nobody can read"], "projects": [{"co": "Vercel", "short": "Deploy Status Dashboard", "title": "Deployment dashboard for Vercel", "weeks": 5, "desc": "Built a live dashboard tracking 200 deploys a day and cut the time to spot a failed build from four minutes to under ten seconds.", "steps": ["Map the data the dashboard actually needs", "Build the API layer and cache the hot paths", "Wire the live UI with loading and error states", "Ship behind a flag and watch real traffic"], "chips": [["play", "Walkthrough · 3:47"], ["doc", "Live demo"], ["doc", "Pull request"]]}, {"co": "Stripe", "short": "Webhook Retry Service", "title": "Webhook retry service for Stripe", "weeks": 5, "desc": "Built a retry service that took webhook delivery from 97.1% to 99.9% across 50k events a day, with dead-letter handling for the rest.", "steps": ["Trace the current delivery path and log every failure", "Design the retry schedule and dead-letter queue", "Build the service with a test around each failure mode", "Replay a week of production events against it"], "chips": [["play", "Walkthrough · 4:20"], ["doc", "Design doc"], ["doc", "Test suite"]]}, {"co": "Datadog", "short": "Ingest Latency Fix", "title": "Ingest performance work at Datadog", "weeks": 6, "desc": "Profiled a slow ingest path, cut p95 latency 43% by fixing two N+1 queries and one hot lock, and proved the fix held at triple the normal load.", "steps": ["Profile the pipeline and rank the bottlenecks", "Fix the top two and measure each one in isolation", "Load test at three times normal traffic", "Write up what moved the number and what did not"], "chips": [["play", "Walkthrough · 5:03"], ["doc", "Profiling report"], ["doc", "Load test"]]}], "skills": [["React and TypeScript", "Excellent", ""], ["API design", "Strong", "aim Excellent"], ["Testing", "Strong", ""], ["SQL and data modeling", "Good", "aim Strong"]], "soft": [["Code review", "Strong", "aim Excellent"], ["Written design docs", "Excellent", ""], ["Debugging under pressure", "Strong", ""], ["Working with product", "Good", "aim Strong"]], "todo": [["Code review", "Defend a diff to a senior engineer who wants it rewritten."], ["Performance pass", "Take a slow page under one second without a rewrite."]], "roles": [["Frontend Engineer", "$95k – $130k", "Most openings"], ["Full-stack Engineer", "$100k – $135k", "Startup favorite"], ["Backend Engineer", "$105k – $140k", "Fewer, pays more"]]}};
+const PACKS = {"design": {"label": "Design", "role": "Product Designer", "cos": ["Linear", "Airbnb", "Vercel", "Figma"], "bio": "I would rather watch 1 person use the thing than read 10 opinions about it. I design in the open, ship the flow end to end, and write down why each call was made.", "guessLine": "Sounds like design. Tap to confirm.", "starterChips": ["I am a design student", "I work in design already", "I want to move into design"], "roleCards": ["Product Designer", "UX Designer", "Design Engineer"], "dreamExamples": ["Airbnb", "Figma"], "problemChips": ["Confusing tools", "Flows people abandon", "Products that feel cold"], "projects": [{"co": "Linear", "short": "Issue Triage Flow", "title": "Issue triage redesign for Linear", "weeks": 5, "desc": "Cut triage from 6 clicks to 2, tested the new flow against the old one with 8 users, and shipped the version that held up.", "steps": ["Audit the current triage flow", "Interview 3 people who use it daily", "Prototype 2 alternatives", "Test both and ship the winner"], "chips": [["play", "Walkthrough · 4:02"], ["doc", "Prototype"], ["doc", "Usability test"]]}, {"co": "Airbnb", "short": "Host Onboarding", "title": "Host listing flow rebuild for Airbnb", "weeks": 5, "desc": "Rebuilt a 12-step listing flow into four, and moved prototype completion from 38 to 61 percent across 9 sessions.", "steps": ["Map the 12 steps and their drop-offs", "Rewrite the flow as 4", "Build the clickable prototype", "Run 9 sessions and revise"], "chips": [["play", "Walkthrough · 4:24"], ["doc", "Flows"], ["doc", "Research notes"]]}, {"co": "Vercel", "short": "Dashboard System", "title": "Design system foundations for the Vercel dashboard", "weeks": 6, "desc": "Audited 41 screens, cut 90 loose components down to 23, and documented the ones the team reaches for.", "steps": ["Audit 41 screens for duplication", "Define the token and component set", "Build the library properly", "Document rules people will follow"], "chips": [["play", "Walkthrough · 3:36"], ["doc", "Component library"], ["doc", "Documentation"]]}], "skills": [["Interaction design", "Excellent", ""], ["Prototyping", "Excellent", ""], ["Design systems", "Strong", "aim Excellent"], ["Visual craft", "Strong", ""]], "soft": [["Design critique", "Strong", "aim Excellent"], ["Written rationale", "Excellent", ""], ["User interviews", "Good", "aim Strong"], ["Working with engineers", "Strong", ""]], "todo": [["Design critique", "Defend a screen to a room that disagrees with you."], ["Accessibility pass", "Take a shipped flow to WCAG AA without redesigning it."]], "roles": [["Product Designer", "$95k – $125k", "Most openings"], ["UX Designer", "$90k – $120k", "Research-heavy"], ["Design Engineer", "$110k – $140k", "Rarer, pays more"]]}, "ba": {"label": "Business analysis", "role": "Business Analyst", "cos": ["Stripe", "Shopify", "Spotify", "Notion"], "bio": "Give me a messy spreadsheet and a real question and I am happy. I chase the number that actually decides things, build the model behind it, and write the one page that ends the debate.", "guessLine": "Sounds like business analysis. Tap to confirm.", "starterChips": ["I am a business student", "I work with data already", "I want to move into strategy"], "roleCards": ["Business Analyst", "Strategy Analyst", "Operations Analyst"], "dreamExamples": ["Stripe", "Spotify"], "problemChips": ["Decisions made on gut feel", "Money leaking somewhere", "Reports nobody reads"], "projects": [{"co": "Shopify", "short": "Support Ops Audit", "title": "Support ops audit for Shopify", "weeks": 5, "desc": "Mapped where 1,200 weekly merchant tickets actually come from, found 34% traced back to one refund policy gap, and sized the fix at 18 saved agent hours a week.", "steps": ["Pull 3 months of ticket data", "Tag the top drivers by hand", "Trace the worst driver to its root cause", "Size the fix and present the case"], "chips": [["play", "Walkthrough · 3:48"], ["doc", "Ticket driver model"], ["doc", "Recommendation memo"]]}, {"co": "Spotify", "short": "Plan Pricing Model", "title": "Plan pricing analysis for Spotify", "weeks": 5, "desc": "Modeled what a $1 move on the Duo plan does to churn and revenue across three scenarios, then recommended the one that nets $2.1M a year without touching the student tier.", "steps": ["Rebuild the plan mix from public data", "Model churn sensitivity at three price points", "Stress test the ugliest scenario", "Write the pricing memo"], "chips": [["play", "Walkthrough · 4:15"], ["doc", "Pricing model"], ["doc", "Scenario memo"]]}, {"co": "Stripe", "short": "Funnel Economics", "title": "Activation funnel economics for Stripe", "weeks": 6, "desc": "Broke signup to first payment into five stages, found the 48-hour verification wait cost more accounts than the next three drop-offs combined, and priced the fix against two cheaper options.", "steps": ["Define the funnel stages and metrics", "Find where accounts actually stall", "Put a dollar value on each drop-off", "Rank three fixes by cost and payback"], "chips": [["play", "Walkthrough · 4:31"], ["doc", "Funnel model"], ["doc", "Cost-benefit brief"]]}], "skills": [["Spreadsheet modeling", "Excellent", ""], ["SQL", "Strong", "aim Excellent"], ["Market sizing", "Strong", ""], ["Data visualization", "Good", "aim Strong"]], "soft": [["Executive memos", "Excellent", ""], ["Stakeholder interviews", "Strong", "aim Excellent"], ["Defending a number", "Good", "aim Strong"], ["Scoping ambiguity", "Strong", ""]], "todo": [["Board-level memo", "Compress a six-week analysis into one page a CFO reads in two minutes."], ["Live model defense", "Walk a room through your assumptions while they try to break them."]], "roles": [["Business Analyst", "$70k – $95k", "Most openings"], ["Strategy Analyst", "$75k – $100k", "Fewer, more competitive"], ["Operations Analyst", "$65k – $90k", "Fastest to land"]]}, "swe": {"label": "Software engineering", "role": "Software Engineer", "cos": ["Stripe", "Vercel", "Datadog", "Linear"], "bio": "I would rather read the stack trace than guess. I ship small, test what I ship, and leave the codebase easier to read than I found it.", "guessLine": "Sounds like engineering. Tap to confirm.", "starterChips": ["I am a CS student", "I write code already", "I want to move into engineering"], "roleCards": ["Frontend Engineer", "Full-stack Engineer", "Backend Engineer"], "dreamExamples": ["Stripe", "Vercel"], "problemChips": ["Slow, clunky apps", "Things that break under load", "Code nobody can read"], "projects": [{"co": "Vercel", "short": "Deploy Status Dashboard", "title": "Deployment dashboard for Vercel", "weeks": 5, "desc": "Built a live dashboard tracking 200 deploys a day and cut the time to spot a failed build from four minutes to under ten seconds.", "steps": ["Map the data the dashboard actually needs", "Build the API layer and cache the hot paths", "Wire the live UI with loading and error states", "Ship behind a flag and watch real traffic"], "chips": [["play", "Walkthrough · 3:47"], ["doc", "Live demo"], ["doc", "Pull request"]]}, {"co": "Stripe", "short": "Webhook Retry Service", "title": "Webhook retry service for Stripe", "weeks": 5, "desc": "Built a retry service that took webhook delivery from 97.1% to 99.9% across 50k events a day, with dead-letter handling for the rest.", "steps": ["Trace the current delivery path and log every failure", "Design the retry schedule and dead-letter queue", "Build the service with a test around each failure mode", "Replay a week of production events against it"], "chips": [["play", "Walkthrough · 4:20"], ["doc", "Design doc"], ["doc", "Test suite"]]}, {"co": "Datadog", "short": "Ingest Latency Fix", "title": "Ingest performance work at Datadog", "weeks": 6, "desc": "Profiled a slow ingest path, cut p95 latency 43% by fixing two N+1 queries and one hot lock, and proved the fix held at triple the normal load.", "steps": ["Profile the pipeline and rank the bottlenecks", "Fix the top two and measure each one in isolation", "Load test at three times normal traffic", "Write up what moved the number and what did not"], "chips": [["play", "Walkthrough · 5:03"], ["doc", "Profiling report"], ["doc", "Load test"]]}], "skills": [["React and TypeScript", "Excellent", ""], ["API design", "Strong", "aim Excellent"], ["Testing", "Strong", ""], ["SQL and data modeling", "Good", "aim Strong"]], "soft": [["Code review", "Strong", "aim Excellent"], ["Written design docs", "Excellent", ""], ["Debugging under pressure", "Strong", ""], ["Working with product", "Good", "aim Strong"]], "todo": [["Code review", "Defend a diff to a senior engineer who wants it rewritten."], ["Performance pass", "Take a slow page under one second without a rewrite."]], "roles": [["Frontend Engineer", "$95k – $130k", "Most openings"], ["Full-stack Engineer", "$100k – $135k", "Startup favorite"], ["Backend Engineer", "$105k – $140k", "Fewer, pays more"]]}};
 let PKEY='design';
 function pack(){ return PACKS[PKEY]; }
 
@@ -908,6 +961,22 @@ function levelMeter(bars,idleTL){
     try{ stream&&stream.getTracks().forEach(t2=>t2.stop()); }catch(e){}
     try{ ac&&ac.close(); }catch(e){} };
 }
+/* paste a link, hit submit, and Zero goes and reads it */
+function linkDock(onText,placeholder){
+  const wrap=mk('div','dockin');
+  const f=mk('div','dfield');
+  const inp=document.createElement('input');
+  inp.type='text'; inp.placeholder=placeholder||'linkedin.com/in/yourname';
+  inp.setAttribute('aria-label','Your link');
+  const send=mk('button','dsend',I.arrow); send.setAttribute('aria-label','Submit');
+  const fire=()=>{ const v=inp.value.trim(); if(!v||locked) return; sfx('droplet'); onText(v); };
+  inp.oninput=()=>send.classList.toggle('on',!!inp.value.trim());
+  inp.onkeydown=e=>{ if(e.key==='Enter') fire(); };
+  send.onclick=fire;
+  f.appendChild(inp); f.appendChild(send); wrap.appendChild(f);
+  dockIn(wrap);
+  setTimeout(()=>inp.focus(),420);
+}
 /* one field, nothing else: an email is typed, never spoken */
 function emailDock(onText){
   const wrap=mk('div','dockin');
@@ -1023,7 +1092,8 @@ function morphToBoard(el){
 const LINE_FOR={ health:'heart', money:'coin', seedling:'leaf', cart:'cart', clap:'cam',
   cal:'clock', hour:'clock', bag:'bld', cap:'box', bldg:'bld', trophy:'flag',
   India:'pin', UAE:'pin', UK:'pin', USA:'pin' };
-function optIcon(k){ return LOGO[k]||I[LINE_FOR[k]||k]||I.target; }
+const FLAGS={India:1,UAE:1,UK:1,USA:1,globe:1};
+function optIcon(k){ return LOGO[k]||(FLAGS[k]&&CI[k])||I[LINE_FOR[k]||k]||I.target; }
 function choices(box,items,onPick,opts){
   opts=opts||{};
   const w=mk('div','opts2'+(opts.multi?' multi':''));
@@ -1032,7 +1102,7 @@ function choices(box,items,onPick,opts){
     const [icon,label,value]=it;
     const b=mk('button','opt'+(opts.pill?' pill':'')+(icon?'':' bare'));
     if(icon){ const ic=mk('span','oi2',optIcon(icon));
-      if(LOGO[icon]) ic.classList.add('lg'); b.appendChild(ic); }
+      if(LOGO[icon]||FLAGS[icon]) ic.classList.add('lg'); b.appendChild(ic); }
     b.appendChild(mk('span',null,label));
     const val=value!==undefined?value:label;
     b.onclick=()=>{
@@ -1118,7 +1188,7 @@ const CITY_ICON={ Mumbai:'India', Bangalore:'India', Delhi:'India', Dubai:'UAE',
   London:'UK', 'New York':'USA', 'San Francisco':'USA', Remote:'globe', Anywhere:'globe' };
 const IND_ICON={ 'Tech and AI':'spark','Health':'health','Finance':'money','Climate':'seedling',
   'Commerce':'cart','Media':'clap','Open to anything':'globe' };
-const TIME_ICON={ 'Now':'rocket','In three months':'cal','This year':'cal','No rush':'hour' };
+const TIME_ICON={ 'Now':'rocket','In 3 months':'cal','This year':'cal','No rush':'hour' };
 const JOB_ICON={ 'Full time':'bag','An internship':'cap','Either':'globe' };
 function cico(k){ return CI[k]?'<span class="cico">'+CI[k]+'</span>':''; }
 function cityChip(name){ return chip((CI[CITY_ICON[name]]?cico(CITY_ICON[name]):I.pin)+T_(name)); }
@@ -1126,12 +1196,17 @@ function cityList(str){ return String(str||'').split(', ').filter(Boolean); }
 /* The board never shows blanks. Each sentence loads itself, then lands finished. */
 function SENTENCES(){
   return [
-   { id:'s1', g:0, ready:!!P.role, key:[P.name,P.role,P.company].join('|'),
-     html:()=>(P.name
-         ? chip('<span class="av">'+P.name.charAt(0).toUpperCase()+'</span>'+T_(P.name))+G_(' is going after ')
-         : G_('Going after '))
-       +chip(I.target+T_(P.role))
-       +(P.company?G_(' at ')+chip(cico('bldg')+T_(low(P.company))):'')+G_('.') },
+   { id:'s1', g:0, ready:!!(P.name||P.role), key:[P.name,P.level,P.role,P.company].join('|'),
+     html:()=>{
+       const who=P.name
+         ? chip('<span class="av">'+P.name.charAt(0).toUpperCase()+'</span>'+T_(P.name))
+         : '';
+       if(!P.role) return who+(P.level&&P.level!=='Finding out'
+         ? G_(', a ')+chip(cico('cap')+T_(low(P.level)))+G_('.')
+         : G_(' starts here.'));
+       return (who?who+G_(' is going after '):G_('Going after '))
+         +chip(I.target+T_(P.role))
+         +(P.company?G_(' at ')+chip(cico('bldg')+T_(low(P.company))):'')+G_('.'); } },
    { id:'s2', g:0, ready:!!P.dream, key:[P.dream,P.openness].join('|'),
      html:()=>G_('The dream is ')+chip((LOGO[P.dream]||I.spark)+T_(P.dream))
        +(P.openness?G_(', '+P.openness):'')+G_('.') },
@@ -1146,7 +1221,7 @@ function SENTENCES(){
      html:()=>G_('Wants ')+chip(cico(JOB_ICON[P.jobtype]||'bag')+T_(low(P.jobtype)))
        +G_(', ')+chip(cico(TIME_ICON[P.timeline]||'cal')+T_(low(P.timeline)))+G_('.') },
    { id:'s6', g:2, ready:!!(P.role&&P.industry), key:COS().join('|'),
-     html:()=>'<span class="vblab">'+G_('Hiring for exactly this')+'</span>'+logoChip(COS()) },
+     html:()=>(P.name?T_(P.name):G_('And'))+G_(' is interested in getting into ')+logoChip(COS())+G_('.') },
   ];
 }
 function boardHTML(){
@@ -1215,6 +1290,7 @@ function renderBoard(){
   if(!boardLive) return;
   const s2=$('scroll');
   s2.classList.add('ctr');
+  $('paper').classList.add('canvas');
   let vb=$('vb');
   if(!vb){ s2.innerHTML=''; vb=mk('div','vb'); vb.id='vb';
     [0,1,2].forEach(g=>{ const d=mk('div','vbg g'+g); d.id='vbg'+g; vb.appendChild(d); });
@@ -1263,7 +1339,8 @@ function ghostIn(node,h,ms,into){
   });
 }
 function landIn(node,silent){
-  $('pBody').appendChild(node);
+  const host=$('pBody'); if(!host) return;   /* the step moved on under us */
+  host.appendChild(node);
   if(!silent) litten(node);
   enter([node],{y:20,blur:11,scale:.97,duration:.68},1400);
   const s=$('scroll'); const bot=()=>Math.max(0,s.scrollHeight-s.clientHeight);
@@ -1275,7 +1352,8 @@ async function swapPanel(capText,build,listening,doc){
   const s=$('scroll');
   safeTL(gsap.timeline().to(s,{opacity:0,y:-14,filter:'blur(12px)',duration:.36}),600);
   setCap(capText,listening); await wait(380);
-  boardLive=false; s.innerHTML=''; s.scrollTop=0; s.classList.remove('ctr');
+  boardLive=false; $('paper').classList.remove('canvas');
+  s.innerHTML=''; s.scrollTop=0; s.classList.remove('ctr');
   s.classList.toggle('docs',!!doc);
   let host=s;
   if(doc){ host=mk('div','doc'); host.id='doc'; s.appendChild(host); }
@@ -1428,7 +1506,7 @@ async function introStage(){
   await wait(2100);
   line('Before we get started, we want to understand everything about you.');
   await wait(2400);
-  line('Five minutes of questions, and you leave with a vision board and the road to it.');
+  line('5 minutes of questions, and you leave with a vision board and the road to it.');
   await wait(1700);
   dockAction('Ready',()=>go(nameStage));
 }
@@ -1540,7 +1618,8 @@ function citiesStage(){
   const ci=n=>CITY_ICON[n]||'pin';
   const opts=[[ci(here),'Stay in '+here,here],['UAE','Dubai','Dubai'],['India','Bangalore','Bangalore'],
     ['India','Mumbai','Mumbai'],['UK','London','London'],['USA','New York','New York'],
-    ['USA','San Francisco','San Francisco'],['globe','Remote, anywhere','Remote']];
+    ['USA','San Francisco','San Francisco'],['globe','Remote, anywhere','Remote']]
+    .filter((o,i)=>i===0||o[2]!==here);
   choices(box,opts,v=>{
     const list=Array.isArray(v)?v:[v];
     P.citynext=list.filter((x,i)=>list.indexOf(x)===i).join(', ');
@@ -1573,7 +1652,7 @@ function problemsStage(){
 /* ============================ 12 · timing, 13 · shape ============================ */
 function timelineStage(){
   const {box}=turn({q:'Do you have any timelines?'});
-  choices(box,[['rocket','Now','Now'],['cal','In three months','In three months'],
+  choices(box,[['rocket','Now','Now'],['cal','In 3 months','In 3 months'],
     ['cal','This year','This year'],['hour','No rush','No rush']],
     v=>{ P.timeline=v; afterCommit(()=>go(jobtypeStage)); });
 }
@@ -1604,7 +1683,7 @@ async function synthStage(){
   setTimeout(()=>{ if(veil.isConnected) veil.remove(); },1000);
   await swapPanel('Your vision board',s2=>{ s2.classList.add('ctr');
     const vb=mk('div','vb'); vb.id='vb';
-    vb.innerHTML=boardHTML(); s2.appendChild(vb); boardLive=true;
+    vb.innerHTML=boardHTML(); s2.appendChild(vb); boardLive=true; $('paper').classList.add('canvas');
     /* out of the blur, one line at a time, and then the light passes over it */
     safeTL(gsap.timeline().fromTo(vb.querySelectorAll('.vbs'),
       {opacity:0,y:20,filter:'blur(16px)',scale:1.04},
@@ -1617,7 +1696,7 @@ async function synthStage(){
 function visionStage(fromEdit){
   if(fromEdit){ swapPanel('Your vision board',s2=>{ s2.classList.add('ctr');
     const vb=mk('div','vb'); vb.id='vb';
-    vb.innerHTML=boardHTML(); s2.appendChild(vb); boardLive=true; },false); }
+    vb.innerHTML=boardHTML(); s2.appendChild(vb); boardLive=true; $('paper').classList.add('canvas'); },false); }
   dockHide();
   const {box}=turn({q:'How does this look to you?'});
   choices(box,[['check','That is me','ok'],['pen','Fix one thing','fix'],['plus','Add more','more']],v=>{
@@ -1775,32 +1854,43 @@ function revealSequence(onLand,onDone){
 }
 
 /* ============================ 17 · where you belong ============================ */
+function metaPill(iconKey,label){
+  const w=mk('div','mp');
+  w.appendChild(mk('span','mi',CI[iconKey]||I[iconKey]||I.target));
+  w.appendChild(mk('span',null,label));
+  return w;
+}
 function buildBelong(s){
-  const d=pack();
+  const cities=cityList(P.citynext).filter(Boolean);
+  const home=cities.length?cities[0]:(P.location||'anywhere');
+  const more=cities.length>1?' +'+(cities.length-1):'';
   const h2=mk('div','ph');
   h2.innerHTML='<div class="pav">'+(P.name||'Y').charAt(0).toUpperCase()+'</div>'+
-    '<div class="pid"><div class="pname">Where you belong</div><div class="pmeta">'+
-    '<span class="m">'+(SHORT[P.industry]||P.industry||'any industry')+'</span><span class="sep"></span>'+
-    '<span class="m">'+(P.citynext||P.location||'anywhere')+'</span><span class="sep"></span>'+
-    '<span class="m">'+(P.jobtype?low(P.jobtype):'any shape')+'</span></div></div>';
+    '<div class="pid" id="belongId"><div class="pname">'+
+    (P.name?P.name+', this is where you belong':'This is where you belong')+'</div></div>';
   s.appendChild(h2);
-  s.appendChild(section('Companies hiring this profile'));
+  const pills=mk('div','metapills');
+  pills.appendChild(metaPill(IND_ICON[P.industry]||'spark',SHORT[P.industry]||P.industry||'open to anything'));
+  pills.appendChild(metaPill(CITY_ICON[home]||'pin',home+more));
+  pills.appendChild(metaPill(JOB_ICON[P.jobtype]||'bag',low(P.jobtype||'any shape')));
+  h2.querySelector('#belongId').appendChild(pills);
+  const cos=COS();
+  s.appendChild(section(cos.length+' companies are hiring exactly this'));
   const cw=mk('div','cosbig'); cw.id='cosBig';
-  COS().forEach(n=>cw.appendChild(mk('div','cbg',LOGO[n]||'')));
+  cos.forEach(n=>cw.appendChild(mk('div','cbg',LOGO[n]||'')));
   s.appendChild(cw);
   const body=mk('div'); body.id='pBody'; s.appendChild(body);
-  safeTL(gsap.timeline().fromTo(cw.children,{scale:.4,opacity:0,rotate:-14},
-    {scale:1,opacity:1,rotate:0,duration:.6,stagger:.07,ease:'back.out(1.6)'}),2200);
+  safeTL(gsap.timeline().fromTo(cw.children,{scale:.4,opacity:0,rotate:-14,filter:'blur(8px)'},
+    {scale:1,opacity:1,rotate:0,filter:'blur(0px)',duration:.62,stagger:.07,ease:'back.out(1.6)'}),2400);
 }
 async function addRoleCards(){
-  landIn(section('Roles that fit you'),true);
+  landIn(section(pack().roles.length+' roles you could walk into'),true);
   const wrapR=mk('div');
   pack().roles.forEach(([role,pay,note],i)=>{
     const c2=mk('div','rcard');
     c2.appendChild(mk('div','rk',String(i+1)));
     const n=mk('div','rn'); n.appendChild(mk('div','rt',role));
-    n.appendChild(mk('div','rd',note+' · '+(SHORT[P.industry]||P.industry||'any industry')+
-      (P.citynext?' · '+P.citynext:'')));
+    n.appendChild(mk('div','rd',note));
     c2.appendChild(n); c2.appendChild(mk('div','rp',pay));
     wrapR.appendChild(c2);
   });
@@ -1808,8 +1898,8 @@ async function addRoleCards(){
 }
 function transformStage(){
   setPhase(1);
-  line('Then here is where that lands.');
-  revealSequence(()=>{ swapPanel('Where you belong',buildBelong,false,true); },
+  line(P.name?'Then here is where you land, '+P.name+'.':'Then here is where that lands.');
+  revealSequence(()=>{ swapPanel(P.name?P.name+', you belong here':'Where you belong',buildBelong,false,true); },
     async ()=>{
       await wait(500);
       addRoleCards();
@@ -1827,24 +1917,25 @@ function aimStage(){
 /* ============================ 18 · calibrate ============================ */
 const LINKEDIN={
   design:{ headline:'Final year, Visual Communication', org:'Middlesex University',
-    exp:'Two internships, one studio', skills:'Figma, prototyping, user research, typography',
-    have:[['Course project','A campus app concept, six screens, no research behind it'],
-          ['Studio internship','Marketing assets and two landing pages']] },
+    exp:'2 internships, one studio', skills:'Figma, prototyping, user research, typography',
+    have:[['Course project','A campus app concept, 6 screens, no research behind it'],
+          ['Studio internship','Marketing assets and 2 landing pages']] },
   ba:{ headline:'Final year, Business and Economics', org:'University of Manchester',
-    exp:'One internship, one campus society', skills:'Excel, SQL basics, PowerPoint, stakeholder decks',
+    exp:'1 internship, one campus society', skills:'Excel, SQL basics, PowerPoint, stakeholder decks',
     have:[['Coursework','A market sizing exercise, graded, never used'],
           ['Society role','Ran the budget for a 300 person event']] },
   swe:{ headline:'Final year, Computer Science', org:'Delhi Technological University',
-    exp:'One internship, four side projects', skills:'JavaScript, React, Python, Git',
+    exp:'1 internship, 4 side projects', skills:'JavaScript, React, Python, Git',
     have:[['Side project','A weather app, works, nobody uses it'],
-          ['Internship','Bug fixes on an internal tool for three months']] },
+          ['Internship','Bug fixes on an internal tool for 3 months']] },
 };
 function buildLinked(s){
   const d=LINKEDIN[PKEY]||LINKEDIN.design;
   const h2=mk('div','ph');
   h2.innerHTML='<div class="pav">'+(P.name||'Y').charAt(0).toUpperCase()+'</div>'+
     '<div class="pid"><div class="pname">'+(P.name||'You')+'</div><div class="pmeta">'+
-    '<span class="m">'+d.headline+'</span></div></div><div class="pbadge">'+I.link+'<span>LinkedIn</span></div>';
+    '<span class="m">'+(P.linkedUrl||d.headline)+'</span></div></div><div class="pbadge">'+I.link+
+    '<span>'+(P.linked==='Resume'?'Resume':'LinkedIn')+'</span></div>';
   s.appendChild(h2);
   const body=mk('div'); body.id='pBody'; body.style.marginTop='20px'; s.appendChild(body);
 }
@@ -1866,28 +1957,47 @@ async function readLinked(){
     await wait(430);
   }
 }
+async function readProfile(kind){
+  clearTurn(); dockHide(); await wait(380);
+  line(kind==='Resume'?'Reading your resume.':'Reading your LinkedIn.');
+  sfx('loading');
+  await swapPanel('Reading your profile',buildLinked,true,true);
+  await wait(500);
+  await readLinked();
+  setCap(P.name?'Got everything, '+P.name:'Got everything',false);
+  sfx('success');
+  await wait(700);
+  line('2 people can want the same job and start miles apart.');
+  await wait(2100);
+  roadmapStage();
+}
+function linkStage(kind){
+  P.linked=kind;
+  const {box}=turn({q:kind==='Resume'
+    ? 'Paste a link to your resume.'
+    : 'Drop your LinkedIn link and I will read it.'});
+  dockMode='type';
+  linkDock(v=>{
+    const ok=v.length>4;
+    if(!ok){ sfx('error'); locked=false;
+      gsap.fromTo('.dfield',{x:0},{x:7,duration:.07,yoyo:true,repeat:5}); return; }
+    locked=true;
+    P.linkedUrl=v.replace(/^https?:\/\//,'').replace(/\/$/,'');
+    dockMode='voice';
+    readProfile(kind);
+  }, kind==='Resume'?'drive.google.com/your-resume':'linkedin.com/in/yourname');
+}
 function calibrateStage(){
   setPhase(2);
   clearTurn();
   setTimeout(()=>{
     const {box}=turn({q:'Do you mind sharing your LinkedIn, so I can see where you are starting from?'});
-    choices(box,[['link','Connect LinkedIn','LinkedIn'],['doc','Upload a resume','Resume'],
-      ['arrow','Skip for now','Skip']],async v=>{
+    choices(box,[['link','Connect LinkedIn','LinkedIn'],['doc','Share a resume','Resume'],
+      ['arrow','Skip for now','Skip']],v=>{
       if(v==='Skip'){ go(roadmapStage); return; }
-      P.linked=v;
-      clearTurn(); dockHide(); await wait(380);
-      line(v==='LinkedIn'?'Reading your LinkedIn.':'Reading your resume.');
-      sfx('loading');
-      await swapPanel('Reading your profile',buildLinked,true,true);
-      await wait(500);
-      await readLinked();
-      setCap('Calibrated',false);
-      sfx('success');
-      await wait(600);
-      line('Two people can want the same job and start miles apart.');
-      await wait(2100);
-      roadmapStage();
-    });
+      clearTurn(); dockHide();
+      setTimeout(()=>{ locked=false; linkStage(v); },460);
+    },{nomorph:true});
   },380);
 }
 
@@ -2087,24 +2197,32 @@ async function portfolioStage(){
 }
 
 /* ============================ 21 · how Zero works ============================ */
+const ZSTEPS=[
+  ['You get a scenario','A real brief from a real company, with a real deadline.'],
+  ['You get the goal','What good looks like, handed to you before you start. Not after.'],
+  ['You build the real thing','Not an exercise. The actual deliverable, in the actual tools.'],
+  ['A manager reviews it','Someone senior reads your work and tells you the truth about it.'],
+  ['You present it','You defend the call you made, out loud, to people who push back.'],
+  ['You level up','Finished work earns XP. XP unlocks harder briefs and the job portal.'],
+  ['You get guaranteed interviews','Partners browse verified portfolios, and yours is one of them.'],
+];
 function buildLoop(s){
-  const rowsL=[['Scenario','A real brief with a deadline and a reviewer','folder'],
-    ['Deliverable','The work you actually hand in','doc'],
-    ['Manager feedback','A manager reads it and tells you the truth','users'],
-    ['Presentation','You defend the call you made, out loud','play'],
-    ['Portfolio','Reviewed work becomes proof','target'],
-    ['Hired','Partners browse verified portfolios','spark']];
   const head=mk('div'); head.style.cssText='display:flex;align-items:center;gap:14px;margin-bottom:6px';
-  const z=mk('div'); z.style.cssText='width:58px;height:58px;border-radius:12px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;padding:0 12px';
+  const z=mk('div'); z.style.cssText='width:58px;height:58px;border-radius:16px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;padding:0 12px';
   z.innerHTML=ZSVG; z.querySelector('svg').style.cssText='height:15px;width:auto';
-  const zt=mk('div'); zt.innerHTML='<div class="pname">Zero</div><div class="pmeta"><span class="m">The system that runs the loop</span></div>';
+  const zt=mk('div'); zt.innerHTML='<div class="pname">'+(P.name?'How Zero gets you there, '+P.name:'How Zero gets you there')+
+    '</div><div class="pmeta"><span class="m">7 steps, on repeat, until you are hired</span></div>';
   head.appendChild(z); head.appendChild(zt); s.appendChild(head);
-  s.appendChild(mk('p','pbio','You do not study first and apply later. You do the job, a manager reviews it, you defend it, and the proof accumulates. Every finished scenario adds XP, and XP unlocks harder work and the job portal.'));
-  const loop=mk('div','loop'); loop.style.marginTop='18px';
-  rowsL.forEach(([t,dd,ic],i)=>{ const r=mk('div','lrow'); r.appendChild(mk('div','li',I[ic]));
-    const n=mk('div'); n.appendChild(mk('div','lt',t)); n.appendChild(mk('div','ld',dd)); r.appendChild(n);
-    loop.appendChild(r); if(i<rowsL.length-1) loop.appendChild(mk('div','lcon')); });
-  s.appendChild(loop);
+  const body=mk('div'); body.id='pBody'; body.style.marginTop='20px'; s.appendChild(body);
+}
+async function addLoopStep(i){
+  const [t,d]=ZSTEPS[i];
+  const r=mk('div','zstep'+(i===ZSTEPS.length-1?' last':''));
+  r.appendChild(mk('div','zn',i===ZSTEPS.length-1?I.check:String(i+1)));
+  const b=mk('div','zb'); b.appendChild(mk('div','zt',t)); b.appendChild(mk('div','zd',d));
+  r.appendChild(b);
+  const wrap=mk('div'); wrap.style.marginBottom='12px'; wrap.appendChild(r);
+  await ghostIn(wrap,84,620);
 }
 async function zeroStage(){
   setPhase(4);
@@ -2112,18 +2230,23 @@ async function zeroStage(){
   line('This is how Zero works.');
   await wait(1400);
   await swapPanel('How Zero works',buildLoop,false,true);
-  await wait(800);
-  line('Real briefs, a manager who tells you the truth, and proof at the end of it.');
-  await wait(2200);
+  await wait(600);
+  await beat('It starts with a brief, not a lesson.',()=>addLoopStep(0),1500);
+  await beat('You know what good looks like before you begin.',()=>addLoopStep(1),1600);
+  await beat('Then you build the real thing.',()=>addLoopStep(2),1500);
+  await beat('A manager reads it and tells you the truth.',()=>addLoopStep(3),1600);
+  await beat('You defend it out loud.',()=>addLoopStep(4),1500);
+  await beat('Finished work levels you up.',()=>addLoopStep(5),1500);
+  await beat('And that is what gets you in the room.',()=>addLoopStep(6),1800);
+  line('Every loop leaves proof behind. That is the whole idea.');
+  await wait(2000);
   cta('What do I start with?',creditsStage);
 }
-
-/* ============================ 22 · credits, 23 · account ============================ */
 function buildReward(s){
   const boxR=mk('div','rew');
   const n=mk('div','rewn','0'); n.id='rewN'; boxR.appendChild(n);
   boxR.appendChild(mk('div','rewl','credits, yours to claim'));
-  boxR.appendChild(mk('div','rewsub','Credits are what scenarios and reviews cost inside Zero. Ten thousand covers your first two months in full. After that, finished work keeps paying for the next brief.'));
+  boxR.appendChild(mk('div','rewsub','Credits are what scenarios and reviews cost inside Zero. 10,000 covers your first 2 months in full. After that, finished work keeps paying for the next brief.'));
   s.appendChild(boxR);
   const d=pack();
   const scen=d.projects.reduce((a,p)=>a+p.steps.length,0);
@@ -2141,7 +2264,7 @@ function buildReward(s){
 }
 async function creditsStage(){
   clearTurn(); dockHide(); await wait(380);
-  line('To get started, here is ten thousand credits.');
+  line('To get started, here is 10,000 credits.');
   await wait(1500);
   await swapPanel('What you start with',buildReward,false,true);
   $('scroll').classList.add('ctr');
@@ -2184,40 +2307,176 @@ gsap.set(['#logoPill','.tr'],{opacity:0,y:-9});
 setPhase(0);
 personaPick();
 
+/* ============================ step-through (prototype only) ============================ */
+/* Walk the whole flow with sensible answers already filled in, no clicking. */
+const DBG_STEPS=[
+  ['Persona',    ()=>personaPick()],
+  ['Draw ZERO',  ()=>{ $('drawScreen').style.display='flex'; gsap.set('#drawScreen',{opacity:1});
+                       gsap.set('#dH',{opacity:1,y:0}); }],
+  ['Founder',    ()=>introStage()],
+  ['Name',       ()=>nameStage()],
+  ['About you',  ()=>aboutStage()],
+  ['Role',       ()=>roleStage()],
+  ['Company',    ()=>companyStage()],
+  ['Dream',      ()=>dreamStage()],
+  ['Push back',  ()=>probeStage()],
+  ['Where now',  ()=>locationStage()],
+  ['Cities',     ()=>citiesStage()],
+  ['Industry',   ()=>industryStage()],
+  ['Problems',   ()=>problemsStage()],
+  ['Timing',     ()=>timelineStage()],
+  ['Shape',      ()=>jobtypeStage()],
+  ['Read back',  ()=>synthStage()],
+  ['Vision',     ()=>visionStage(true)],
+  ['Transform',  ()=>transformStage()],
+  ['Which role', ()=>aimStage()],
+  ['Calibrate',  ()=>calibrateStage()],
+  ['Curriculum', ()=>roadmapStage()],
+  ['Portfolio',  ()=>portfolioStage()],
+  ['How it works',()=>zeroStage()],
+  ['Credits',    ()=>creditsStage()],
+  ['Handoff',    ()=>finishStage('sanjay@z-ro.co')],
+];
+/* what each step would have produced, so any step can be entered cold */
+function dbgFill(upTo){
+  const d=pack();
+  const set=(i,fn)=>{ if(upTo>i) fn(); };
+  set(3,()=>P.name='Sanjay');
+  set(4,()=>{ P.about='I am a final year design student in Mumbai'; if(!P.level) P.level='Student'; });
+  set(5,()=>P.role=d.roleCards[0]);
+  set(6,()=>P.company='Big tech');
+  set(7,()=>P.dream=(DREAMS[PKEY]||DREAMS.design)[0]);
+  set(8,()=>P.openness='open to a smaller team');
+  set(9,()=>P.location='Mumbai');
+  set(10,()=>P.citynext='Mumbai, Dubai, London');
+  set(11,()=>P.industry='Tech and AI');
+  set(12,()=>P.problems=d.problemChips[0]);
+  set(13,()=>P.timeline='This year');
+  set(14,()=>P.jobtype='Full time');
+  set(18,()=>{ P.aim=d.roles[0][0]; P.role=P.aim; });
+  set(19,()=>P.linked='LinkedIn');
+}
+let dbgAt=0;
+function dbgGoto(i){
+  i=Math.max(0,Math.min(DBG_STEPS.length-1,i));
+  dbgAt=i;
+  /* wipe anything the previous step left behind */
+  locked=false; editReturn=null; scanning=false; queue.length=0; shown={}; keys={}; tlMode='h';
+  clearTurn(); dockHide();
+  document.querySelectorAll('.zook,.conf,.core,.veil,.sheen,.gh').forEach(n=>n.remove());
+  $('rip').style.display='none'; $('rip').innerHTML='';
+  $('aur').innerHTML=''; gsap.set('#aur',{opacity:0});
+  gsap.set(['#logoPill','.tr'],{opacity:i>=2?1:0,y:0});
+  if(i!==1) $('drawScreen').style.display='none';
+  document.body.classList.toggle('dark', i>=2&&i<=15);
+  $('col').innerHTML='';
+  dbgFill(i);
+  /* the panel exists from the moment Zero starts writing things down */
+  const wide=i>=15;
+  if(i>=5){
+    panelBorn=true; boardLive=true;
+    gsap.set('.right',{width:wide?'56%':'40%',opacity:1,x:0});
+    shiftLeft(wide?'56vw':'40vw');
+    $('cap').innerHTML='<span class="live pulse"></span>'+(wide?'Your vision board':'Zero is listening');
+    const sc=$('scroll'); sc.className='scroll ctr'; sc.innerHTML='';
+    const vb=mk('div','vb'); vb.id='vb'; vb.innerHTML=boardHTML(); sc.appendChild(vb);
+    SENTENCES().forEach(x=>{ if(x.ready){ shown[x.id]=1; keys[x.id]=x.key; } });
+  } else {
+    panelBorn=false; boardLive=false;
+    gsap.set('.right',{width:0,opacity:0}); shiftLeft('0px');
+  }
+  setPhase(i<15?0:(i<18?1:(i<21?2:(i<22?3:4))));
+  const lbl=$('dbgStep'); if(lbl) lbl.textContent=(i+1)+'. '+DBG_STEPS[i][0];
+  const pv=$('dbgPrev'), nx=$('dbgNext');
+  if(pv) pv.disabled=i<=0;
+  if(nx) nx.disabled=i>=DBG_STEPS.length-1;
+  setTimeout(()=>{ try{ DBG_STEPS[i][1](); }catch(e){ console.warn('step',i,e); } },300);
+}
+(function(){
+  const pv=$('dbgPrev'), nx=$('dbgNext'), st=$('dbgStep'), gr=$('dbgBtn');
+  pv.className='dbgnav flip'; pv.innerHTML=I.arrow;
+  nx.className='dbgnav'; nx.innerHTML=I.arrow;
+  gr.innerHTML=I.gear;
+  pv.onclick=()=>{ sfx('tick'); dbgGoto(dbgAt-1); };
+  nx.onclick=()=>{ sfx('tick'); dbgGoto(dbgAt+1); };
+  st.onclick=()=>{ sfx('tick'); dbgGoto(0); };
+  st.textContent='1. Persona';
+  addEventListener('keydown',e=>{
+    if(document.activeElement&&document.activeElement.tagName==='INPUT') return;
+    if(e.key==='ArrowRight'){ dbgGoto(dbgAt+1); }
+    if(e.key==='ArrowLeft'){ dbgGoto(dbgAt-1); }
+  });
+})();
+
 /* ---- tuning drawer (debug, prototype only) ---- */
+/* grouped, so only the thing you are tuning is open */
 (function(){
   const panel=$('dbgPanel'), btn=$('dbgBtn');
-  function row(label,type,min,max,step,get,set){
-    const r=document.createElement('div'); r.className='dbgrow';
-    const l=document.createElement('span'); l.textContent=label; r.appendChild(l);
-    if(type==='range'){
-      const inp=document.createElement('input'); inp.type='range';
-      inp.min=min; inp.max=max; inp.step=step; inp.value=get();
-      const val=document.createElement('span'); val.className='val'; val.textContent=get();
-      inp.oninput=()=>{ set(parseFloat(inp.value)); val.textContent=inp.value; };
-      r.appendChild(inp); r.appendChild(val);
-    } else if(type==='color'){
-      const inp=document.createElement('input'); inp.type='color'; inp.value=get();
-      inp.oninput=()=>set(inp.value);
-      r.appendChild(inp);
-    } else if(type==='check'){
-      const inp=document.createElement('input'); inp.type='checkbox'; inp.checked=get();
-      inp.onchange=()=>set(inp.checked);
-      r.appendChild(inp);
-    }
-    panel.appendChild(r);
+  let openSec=null;
+  function section(title){
+    const sec=mk('div','dbgsec');
+    const h=mk('button','dbgh');
+    h.appendChild(mk('span',null,title));
+    h.appendChild(mk('span','cv',I.arrow));
+    const body=mk('div','dbgbody');
+    sec.appendChild(h); sec.appendChild(body); panel.appendChild(sec);
+    h.onclick=()=>{
+      const isOpen=sec.classList.contains('open');
+      if(openSec) openSec.classList.remove('open');
+      if(isOpen){ openSec=null; }
+      else { sec.classList.add('open'); openSec=sec;
+        safeTL(gsap.timeline().fromTo(body.children,{opacity:0,y:8},
+          {opacity:1,y:0,duration:.34,stagger:.035}),1200); }
+      sfx('tick');
+    };
+    return body;
   }
-  row('Board text','range',14,34,1,
+  function range(body,label,min,max,step,get,set){
+    const r=mk('div','dbgrow');
+    const lb=mk('div','lb');
+    lb.appendChild(mk('span',null,label));
+    const val=mk('span','val',String(get()));
+    lb.appendChild(val); r.appendChild(lb);
+    const inp=document.createElement('input'); inp.type='range';
+    inp.min=min; inp.max=max; inp.step=step; inp.value=get();
+    inp.oninput=()=>{ set(parseFloat(inp.value)); val.textContent=inp.value; };
+    r.appendChild(inp); body.appendChild(r);
+  }
+  function swatch(body,label,get,set){
+    const r=mk('div','dbgrow flat');
+    const lb=mk('div','lb'); lb.appendChild(mk('span',null,label)); r.appendChild(lb);
+    const inp=document.createElement('input'); inp.type='color'; inp.value=get();
+    inp.oninput=()=>set(inp.value);
+    r.appendChild(inp); body.appendChild(r);
+  }
+  function toggle(body,label,get,set){
+    const r=mk('div','dbgrow flat');
+    const lb=mk('div','lb'); lb.appendChild(mk('span',null,label)); r.appendChild(lb);
+    const inp=document.createElement('input'); inp.type='checkbox'; inp.checked=get();
+    inp.onchange=()=>set(inp.checked);
+    r.appendChild(inp); body.appendChild(r);
+  }
+
+  const draw=section('Draw ZERO');
+  range(draw,'Ink max',20,180,2,()=>INK.max,v=>INK.max=v);
+  range(draw,'Ink min',4,90,2,()=>INK.min,v=>INK.min=v);
+  range(draw,'Speed thin',0,80,2,()=>INK.sens,v=>INK.sens=v);
+  range(draw,'Wetness',0,.5,.02,()=>INK.wet,v=>INK.wet=v);
+  range(draw,'Close tolerance',.1,.7,.05,()=>INK.tol,v=>INK.tol=v);
+  swatch(draw,'Ink colour',()=>INK.color,v=>INK.color=v);
+
+  const board=section('Vision board');
+  range(board,'Text size',14,34,1,
     ()=>parseInt(getComputedStyle(document.documentElement).getPropertyValue('--vbfs'))||22,
     v=>document.documentElement.style.setProperty('--vbfs',v+'px'));
-  row('Ink max','range',20,180,2,()=>INK.max,v=>INK.max=v);
-  row('Ink min','range',4,90,2,()=>INK.min,v=>INK.min=v);
-  row('Speed thin','range',0,80,2,()=>INK.sens,v=>INK.sens=v);
-  row('Wetness','range',0,.5,.02,()=>INK.wet,v=>INK.wet=v);
-  row('Close tol','range',.1,.7,.05,()=>INK.tol,v=>INK.tol=v);
-  row('Ink color','color',0,0,0,()=>INK.color,v=>INK.color=v);
-  row('Dark mode','check',0,0,0,()=>document.body.classList.contains('dark'),
-      v=>document.body.classList.toggle('dark',v));
+
+  const motion=section('Motion');
+  range(motion,'Speed',.25,2,.05,()=>1,v=>gsap.globalTimeline.timeScale(v));
+
+  const theme=section('Theme');
+  toggle(theme,'Dark mode',()=>document.body.classList.contains('dark'),
+    v=>document.body.classList.toggle('dark',v));
+
   btn.onclick=()=>{ panel.classList.toggle('open'); sfx('tick'); };
 })();
 </script>
