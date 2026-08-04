@@ -862,6 +862,7 @@ const I={
   leaf:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8c0 5.5-4.78 10-10 10"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></g></svg>',
   cart:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></g></svg>',
   bolt:'<svg viewBox="0 0 24 24"><path fill="currentColor" d="M13 2L4.09 12.11a1 1 0 0 0 .77 1.64H11l-1 8.25L18.91 11.9a1 1 0 0 0-.77-1.64H12z"/></svg>',
+  redo:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></g></svg>',
   gear:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2"/><circle cx="12" cy="12" r="3"/></g></svg>',
   plus:'<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2.4" d="M12 5v14M5 12h14"/></svg>',
   cam:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m16 13l5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></g></svg>',
@@ -1019,9 +1020,12 @@ let dockMode='voice', rec=null, listening=false;
 function stopRec(){ try{ if(rec) rec.stop(); }catch(e){} listening=false; }
 function dockClear(){ $('dockIn').innerHTML=''; }
 function dockShow(){ gsap.to('#dock',{opacity:1,duration:.4}); $('dock').style.pointerEvents='none'; }
+let dockClearT=null;
 function dockHide(){ stopRec(); gsap.to(['#dock','#dtr'],{opacity:0,duration:.28});
-  setTimeout(()=>{ dockClear(); $('dtr').innerHTML=''; },320); }
+  clearTimeout(dockClearT);
+  dockClearT=setTimeout(()=>{ dockClear(); $('dtr').innerHTML=''; },320); }
 function dockIn(node){
+  clearTimeout(dockClearT);   /* a pending hide must not wipe what we just put here */
   dockClear(); $('dockIn').appendChild(node); dockShow();
   enter([node],{y:18,blur:10,scale:.97,duration:.6},1200);
 }
@@ -1032,6 +1036,17 @@ function dockAction(label,fn){
   dockIn(b);
 }
 const cta=dockAction;
+/* the closing screen: one thing to do, and a quiet way to start over */
+function dockFinal(label,fn){
+  const wrap=mk('div','dockin');
+  const reset=mk('button','dghostbtn',I.redo);
+  reset.setAttribute('aria-label','Start over');
+  reset.onclick=()=>{ sfx('tick'); location.reload(); };
+  const b=mk('button','dbig',label);
+  b.onclick=()=>{ if(locked) return; locked=true; sfx('success'); fn(); };
+  wrap.appendChild(reset); wrap.appendChild(b);
+  dockIn(wrap);
+}
 /* the conversation input: mic by default, keyboard optional, both always swappable */
 function dockInput(onText,extra){
   if(dockMode==='voice') voiceDock(onText,extra); else typeDock(onText,extra);
@@ -1711,7 +1726,7 @@ async function introStage(){
   await wait(1900);
   line("In the next few minutes we'll design your career plan together.");
   await wait(2000);
-  line("You'll earn credits along the way that make Zero free to start.");
+  line('Credits along the way make Zero free to start.');
   await wait(1700);
   dockAction('Ready',()=>go(nameStage));
 }
@@ -1866,12 +1881,9 @@ async function synthStage(){
   setTimeout(()=>sheen(document.querySelector('.shell'),1.45),1300);
   sfx('ready');
   await wait(900);
-  line("Here's your vision board, "+P.name+': '+
-    (P.stage?(STAGE_SAY[P.stage]||low(P.stage))+', ':'')+'a '+P.role+' at a '+low(P.company||'company')+
-    ', in '+low(P.industry||'tech')+', working '+low(P.mode||'flexible')+
-    ', building things like '+(P.projects||[]).join(' and ').toLowerCase()+
-    (P.age?', '+(AGE_SAY[P.age]||P.age):'')+'.');
-  await wait(3200);
+  line("Here it is, "+P.name+'. A '+P.role+' at a '+low(P.company||'company')+
+    ', in '+low(P.industry||'tech')+'.');
+  await wait(2400);
   visionStage();
 }
 function visionStage(fromEdit){
@@ -1900,36 +1912,65 @@ function deadlineStage(){
       planStage();
     });
 }
+/* 60 hours of real work: move the hours and the finish date moves with it */
+const PACE_HOURS=60;
+function paceMonths(h){
+  const weeks=Math.max(2,Math.round(PACE_HOURS/h));
+  const m=weeks/4.34;
+  if(m<1.2) return {weeks:weeks,label:'1 to 2',unit:'months'};
+  const lo=Math.max(1,Math.round(m)), hi=lo+1;
+  return {weeks:weeks,label:lo+' to '+hi,unit:'months'};
+}
+function paceCard(box,onChange){
+  const c=mk('div','pace');
+  const row=mk('div','pacerow');
+  const a=mk('div','pacev'); a.innerHTML='<div class="pacen" id="paceH">5</div><div class="pacel">hours a week</div>';
+  const ar=mk('span','pacear',I.arrow);
+  const b=mk('div','pacev'); b.innerHTML='<div class="pacen" id="paceM">3 to 4</div><div class="pacel">months to finish</div>';
+  row.appendChild(a); row.appendChild(ar); row.appendChild(b); c.appendChild(row);
+  const sl=mk('div','pacesl');
+  const inp=document.createElement('input'); inp.type='range'; inp.min=2; inp.max=15; inp.step=1; inp.value=5;
+  sl.appendChild(inp); c.appendChild(sl);
+  const ends=mk('div','paceends'); ends.innerHTML='<span>2 hrs</span><span>15 hrs</span>'; c.appendChild(ends);
+  const paint=()=>{ const h=+inp.value, r=paceMonths(h);
+    const eh=$('paceH'), em=$('paceM'); if(!eh||!em) return;   /* the step moved on */
+    eh.textContent=h; em.textContent=r.label;
+    P.paceHours=h; P.paceWeeks=r.weeks; P.paceLabel=r.label;
+    if(onChange) onChange(h,r); };
+  let last=5;
+  inp.oninput=()=>{ paint(); if(+inp.value!==last){ last=+inp.value; sfx('tick'); } };
+  box.appendChild(c);
+  enter([c],{y:20,blur:12,scale:.96,duration:.65},1400);
+  paint();
+}
 async function planStage(){
   setPhase(2);
-  line("Now the fun part. I've turned that vision into a learning plan.");
-  await wait(2100);
-  line('3 portfolio projects, 5 real-world scenarios.');
-  await wait(2000);
-  line('Good news, that lines up with the 12 weeks, about 3 months, this roadmap is built for.');
-  await wait(2400);
-  const {box}=turn({q:"At 5 hrs a week you'd finish in about 3 to 4 months. Want to lock it in?"});
-  choices(box,[['check','Approve plan','ok'],['clock','Adjust the pace','pace']],async v=>{
-    clearTurn(); dockHide(); await wait(600);
-    if(v==='pace'){ line('Sure. Same roadmap, paced to fit you.'); await wait(1800); }
-    sfx('success'); line('Plan approved.'); await wait(1500);
+  line("Now the fun part. Your plan.");
+  await wait(1700);
+  line('3 projects, 5 real scenarios.');
+  await wait(1700);
+  const {box}=turn({q:'How much time can you give it?'});
+  paceCard(box);
+  dockAction('Lock it in',async()=>{
+    clearTurn(); dockHide(); await wait(520);
+    sfx('success'); line('Plan approved.'); await wait(1400);
     clearTurn(); await wait(320);
     await celebrate(2500,'learning plan approved');
     destinationStage();
-  },{pill:true,nomorph:true});
+  });
 }
 async function destinationStage(){
   setPhase(3);
   clearTurn(); dockHide(); await wait(400);
-  line("Before we talk about how, here's where this ends.");
+  line("Here's where this ends.");
   await wait(2000);
   await swapPanel('Your portfolio, at the end of the road',buildPortfolioShell,false,true);
   await wait(600);
   await beat('Your finished portfolio.',()=>addProject(0),1500);
   await beat('The deliverables inside it.',()=>addProject(1),1400);
-  await beat('And the real roles it unlocks, like '+(P.role||'Product Designer')+' at Linear, 95 to 125k.',
-    ()=>addProject(2),1900);
-  line("That's the destination. Everything in Zero exists to get you there.");
+  await beat('And the roles it unlocks. '+(P.role||'Product Designer')+' at Linear, 95 to 125k.',
+    ()=>addProject(2),1800);
+  line("That's the destination.");
   await wait(2000);
   cta('Show me how Zero works',zeroStage);
 }
@@ -2533,15 +2574,15 @@ async function zeroStage(){
   await wait(1400);
   await swapPanel('How Zero works',buildLoop,false,true);
   await wait(600);
-  await beat("Zero flips the classroom: you don't study first and apply later. You learn by doing the job.",
-    ()=>addLoopStep(0),1900);
+  await beat("You don't study first and apply later. You learn by doing the job.",
+    ()=>addLoopStep(0),1700);
   await beat('Every scenario is a real task with real context.',()=>addLoopStep(1),1500);
   await beat('Scenarios produce deliverables.',()=>addLoopStep(2),1400);
   await beat('Deliverables build projects.',()=>addLoopStep(3),1400);
   await beat('Projects build your portfolio.',()=>addLoopStep(4),1500);
   await beat("And your portfolio isn't homework.",()=>addLoopStep(5),1500);
-  await beat('Recruiting partners like Stripe, Figma and Datadog browse verified Zero portfolios to hire.',
-    ()=>addLoopStep(6),2100);
+  await beat('Partners like Stripe and Figma hire straight from these.',
+    ()=>addLoopStep(6),1900);
   cta('Claim my 10,000 credits',creditsStage);
 }
 function buildReward(s){
@@ -2584,11 +2625,11 @@ async function creditsStage(){
     safeTL(gsap.timeline().fromTo(e,{scale:.94},{scale:1,duration:.6,ease:'back.out(2.4)'}),1200);
     sfx('success'); },1900);
   await wait(2200); sfx('chime');
-  line("You've earned 10,000 credits. They're already applied to your account, so your first weeks cost nothing.");
-  await wait(3000);
-  line('Your career plan is saved and your coach knows it. Ready to start?');
-  await wait(2200);
-  line('Enter your email and I will send it all over.');
+  line("10,000 credits, already on your account. Your first weeks cost nothing.");
+  await wait(2400);
+  line('Your plan is saved. Ready to start?');
+  await wait(1900);
+  line('Where should I send it?');
   await wait(1200);
   emailDock(v=>{
     const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
@@ -2604,9 +2645,9 @@ async function finishStage(email){
     safeTL(gsap.timeline().fromTo(dlC,{opacity:0,y:16},{opacity:1,y:0,duration:.6}),1000);
     const s=$('scroll'); setTimeout(()=>{s.scrollTop=Math.max(0,s.scrollHeight-s.clientHeight);},300); }
   setCap('Ready when you are',false); await wait(600);
-  line('That is it, '+(P.name||'you')+'. Your first scenario is already briefed.');
+  line('Sent to '+(email||'your inbox')+'. Your first scenario is already briefed.');
   await wait(1600);
-  dockAction('Run it again',()=>location.reload());
+  dockFinal('Download the app',()=>{ sfx('success'); });
   sfx('ready');
 }
 
