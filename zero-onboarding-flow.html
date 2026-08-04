@@ -222,11 +222,17 @@ svg{ display:block; }
 .scroll{ height:100%; overflow:hidden; padding:0 42px 50px; }
 
 /* the vision board: one living sentence, visuals inside the type */
-.vb{ font-size:clamp(21px,1.72vw,29px); line-height:1.6; letter-spacing:-.022em; font-weight:500; max-width:22ch; }
-.vbs{ margin-bottom:.5em; }
-.scan{ position:absolute; left:0; right:0; top:0; height:150px; pointer-events:none; z-index:4;
-  background:linear-gradient(to bottom, transparent, rgba(63,185,104,.16), transparent); }
-.scan::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:1px; background:rgba(63,185,104,.65); }
+.vb{ font-size:clamp(21px,1.72vw,29px); line-height:1.6; letter-spacing:-.022em; font-weight:500;
+  max-width:24ch; margin:0 auto; text-align:center; }
+.vbs{ margin-bottom:.62em; }
+.scroll.ctr{ display:flex; flex-direction:column; justify-content:center; }
+/* the sentence loads itself: skeleton bars with a green shine, then it resolves */
+.skb{ display:inline-block; height:1.02em; border-radius:.32em; background:var(--field);
+  vertical-align:-.2em; margin:0 .22em .18em 0; position:relative; overflow:hidden; }
+.skb::after{ content:''; position:absolute; inset:0;
+  background:linear-gradient(100deg,transparent 18%,rgba(63,185,104,.38) 50%,transparent 82%);
+  animation:shine 1.05s linear infinite; }
+@keyframes shine{ from{transform:translateX(-110%)} to{transform:translateX(110%)} }
 .vb .g{ color:var(--tx-3); }
 .vb .t{ color:var(--tx); }
 .vbc{ display:inline-flex; align-items:center; gap:.34em; padding:.1em .46em .14em;
@@ -753,38 +759,45 @@ function boardHTML(){
     .map(x=>'<div class="vbs">'+x.html()+'</div>').join('');
 }
 let shown={}, queue=[], scanning=false;
-function scanSweep(then){
-  const p=$('paper'); const sc=mk('div','scan'); p.appendChild(sc);
-  sfx('loading');
-  let done=false;
-  const finish=()=>{ if(done) return; done=true; if(sc.isConnected) sc.remove(); then(); };
-  const tl=gsap.timeline({onComplete:finish});
-  tl.fromTo(sc,{y:-150,opacity:0},{opacity:1,duration:.18})
-    .to(sc,{y:(p.clientHeight||600)+160,duration:.72,ease:'power2.inOut'},0)
-    .to(sc,{opacity:0,duration:.2},'-=.2');
-  safeTL(tl,1400);
-  setTimeout(finish,1600); /* the queue can never stall */
+/* Each sentence loads itself: a skeleton with a green shine, then it resolves.
+   The container never flashes, only the row that is arriving. */
+const SKW=[[5,9,4],[6,4,8],[4,7],[7,5,6],[5,4]];
+function skeleton(o){
+  const r=mk('div','vbs sk'); r.dataset.o=String(o);
+  (SKW[o]||[6,5]).forEach(ch=>{ const b=mk('span','skb'); b.style.width=ch+'ch'; r.appendChild(b); });
+  return r;
+}
+function placeRow(vb,row,o){
+  const after=[...vb.children].find(r=>+r.dataset.o>o);
+  if(after) vb.insertBefore(row,after); else vb.appendChild(row);
 }
 function pump(){
   if(scanning||!queue.length) return;
   scanning=true;
   queue.sort((a,b)=>a.o-b.o);
   const item=queue.shift();
-  scanSweep(()=>{
-    const vb=$('vb'); if(!vb){ scanning=false; return; }
-    const row=mk('div','vbs'); row.dataset.o=item.o; row.innerHTML=item.html();
-    const after=[...vb.children].find(r=>+r.dataset.o>item.o);
-    if(after) vb.insertBefore(row,after); else vb.appendChild(row);
+  const vb=$('vb'); if(!vb){ scanning=false; return; }
+  const sk=skeleton(item.o);
+  placeRow(vb,sk,item.o);
+  safeTL(gsap.timeline().fromTo(sk,{opacity:0,y:10},{opacity:1,y:0,duration:.35}),700);
+  sfx('loading');
+  let done=false;
+  const resolve=()=>{
+    if(done) return; done=true;
+    const row=mk('div','vbs'); row.dataset.o=String(item.o); row.innerHTML=item.html();
+    if(sk.isConnected) vb.replaceChild(row,sk); else placeRow(vb,row,item.o);
     const bits=row.querySelectorAll('.vbc, .vbl, .vbq');
     safeTL(gsap.timeline()
-      .fromTo(row,{opacity:0,y:14},{opacity:1,y:0,duration:.5})
-      .fromTo(bits,{scale:.76,opacity:0},{scale:1,opacity:1,duration:.5,stagger:.08,ease:'back.out(1.7)'},'-=.3'),1600);
+      .fromTo(row,{opacity:0,y:8},{opacity:1,y:0,duration:.45})
+      .fromTo(bits,{scale:.78,opacity:0},{scale:1,opacity:1,duration:.48,stagger:.08,ease:'back.out(1.7)'},'-=.28'),1500);
     sfx('droplet');
-    setTimeout(()=>{ scanning=false; pump(); },700);
-  });
+    setTimeout(()=>{ scanning=false; pump(); },620);
+  };
+  setTimeout(resolve,1150);
 }
 function renderBoard(){
   const s2=$('scroll');
+  s2.classList.add('ctr');
   let vb=$('vb');
   if(!vb){ s2.innerHTML=''; vb=mk('div','vb'); vb.id='vb'; s2.appendChild(vb); }
   SENTENCES().forEach((x,i)=>{
@@ -808,7 +821,7 @@ async function swapPanel(capText,build,listening){
   const s=$('scroll');
   safeTL(gsap.timeline().to(s,{opacity:0,y:-10,duration:.32}),500);
   setCap(capText,listening); await wait(380);
-  s.innerHTML=''; s.scrollTop=0; build(s);
+  s.innerHTML=''; s.scrollTop=0; s.classList.remove('ctr'); build(s);
   gsap.set(s,{opacity:0,y:12});
   safeTL(gsap.timeline().to(s,{opacity:1,y:0,duration:.55}),900);
   sfx('page');
@@ -1137,7 +1150,8 @@ async function synthStage(){
   document.body.classList.remove('dark');
   safeTL(gsap.timeline().to(veil,{opacity:0,duration:.5}),900);
   setTimeout(()=>{ if(veil.isConnected) veil.remove(); },1000);
-  await swapPanel('Your vision board',s2=>{ const vb=mk('div','vb'); vb.id='vb';
+  await swapPanel('Your vision board',s2=>{ s2.classList.add('ctr');
+    const vb=mk('div','vb'); vb.id='vb';
     vb.innerHTML=boardHTML(); s2.appendChild(vb);
     safeTL(gsap.timeline().fromTo(vb.querySelectorAll('.vbs'),
       {opacity:0,y:16},{opacity:1,y:0,duration:.55,stagger:.12}),2000); },false);
@@ -1146,7 +1160,8 @@ async function synthStage(){
   visionStage();
 }
 function visionStage(fromEdit){
-  if(fromEdit){ swapPanel('Your vision board',s2=>{ const vb=mk('div','vb'); vb.id='vb';
+  if(fromEdit){ swapPanel('Your vision board',s2=>{ s2.classList.add('ctr');
+    const vb=mk('div','vb'); vb.id='vb';
     vb.innerHTML=boardHTML(); s2.appendChild(vb); },false); }
   dockHide();
   const {box}=turn({q:'Am I getting you?'});
