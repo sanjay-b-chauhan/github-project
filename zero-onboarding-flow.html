@@ -46,7 +46,8 @@ body.dark{
 
 /* the dock: one global place the user acts, always centered at the bottom */
 .dock{ position:fixed; left:0; right:0; bottom:0; z-index:80; display:flex; justify-content:center;
-  padding:0 24px 34px; pointer-events:none; opacity:0; }
+  padding:0 24px 34px; pointer-events:none; opacity:0;
+  transition:padding-left .9s cubic-bezier(.625,.05,0,1); }
 .dockin{ display:flex; align-items:center; gap:14px; pointer-events:auto; }
 .dbig{ height:58px; padding:0 34px; border-radius:var(--pill); background:var(--ink); color:var(--on-ink);
   font-size:16px; font-weight:600; letter-spacing:-.02em; display:inline-flex; align-items:center;
@@ -107,10 +108,10 @@ svg{ display:block; }
 .snd svg{ width:17px; height:17px; }
 .snd.off{ color:var(--tx-4); }
 
-.wrap{ display:flex; gap:16px; padding:16px; height:100dvh; }
+.wrap{ display:flex; gap:0; padding:0; height:100dvh; }
 .mid{ flex:1; min-width:0; display:flex; align-items:center; justify-content:center; padding:84px 24px 150px; }
 .col{ width:100%; max-width:660px; }
-.right{ width:0; min-width:0; opacity:0; overflow:hidden; padding-top:64px; order:-1; }
+.right{ width:0; min-width:0; opacity:0; overflow:hidden; order:-1; }
 
 .draw{ position:fixed; inset:0; z-index:90; background:var(--page); display:none; align-items:center; justify-content:center; }
 .draw canvas{ position:absolute; inset:0; width:100%; height:100%; cursor:crosshair; touch-action:none; }
@@ -207,20 +208,24 @@ svg{ display:block; }
 .acct{ margin-top:30px; display:flex; flex-direction:column; align-items:center; gap:12px; }
 .acct .note{ font-size:12.5px; color:var(--tx-4); }
 
-.shell{ height:100%; background:var(--shell); border-radius:var(--r-xl); display:flex; flex-direction:column;
-  padding:26px 0 0; overflow:hidden; }
-.cap{ font-size:12px; color:var(--tx-3); margin:0 0 18px 40px; flex-shrink:0; display:flex; align-items:center; gap:7px; height:15px; }
+.shell{ height:100%; background:var(--shell); display:flex; flex-direction:column;
+  padding:0; overflow:hidden; }
+.cap{ font-size:12px; color:var(--tx-3); margin:0; padding:34px 0 22px 48px; flex-shrink:0; display:flex; align-items:center; gap:7px; }
 .cap .live{ width:5px; height:5px; border-radius:var(--pill); background:var(--ok); }
 .cap .live.pulse{ animation:capPulse 1.6s ease-in-out infinite; }
 @keyframes capPulse{ 0%,100%{opacity:1} 50%{opacity:.3} }
 .paper{ flex:1; min-height:0; position:relative; overflow:hidden; }
 .paper::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:70px;
   background:linear-gradient(to bottom, transparent, var(--shell)); pointer-events:none; z-index:2; }
-.scroll{ height:100%; overflow:hidden; padding:8px 40px 60px; }
+.scroll{ height:100%; overflow:hidden; padding:0 48px 60px; }
 
 /* the vision board: one living sentence, visuals inside the type */
-.vb{ font-size:clamp(21px,1.78vw,30px); line-height:1.62; letter-spacing:-.022em; font-weight:500; }
-.vb .g{ color:var(--tx-4); }
+.vb{ font-size:clamp(21px,1.72vw,29px); line-height:1.6; letter-spacing:-.022em; font-weight:500; max-width:22ch; }
+.vbs{ margin-bottom:.5em; }
+.scan{ position:absolute; left:0; right:0; top:0; height:150px; pointer-events:none; z-index:4;
+  background:linear-gradient(to bottom, transparent, rgba(63,185,104,.16), transparent); }
+.scan::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:1px; background:rgba(63,185,104,.65); }
+.vb .g{ color:var(--tx-3); }
 .vb .t{ color:var(--tx); }
 .vbc{ display:inline-flex; align-items:center; gap:.34em; padding:.1em .46em .14em;
   background:var(--card); border-radius:.4em; vertical-align:baseline;
@@ -703,6 +708,7 @@ function bornPanel(){
   renderBoard();
   gsap.set('.right',{width:'40%',opacity:0});
   $('top').style.paddingLeft='calc(40vw + 26px)';
+  $('dock').style.paddingLeft='calc(40vw + 24px)';
   safeTL(gsap.timeline().fromTo('.right',{opacity:0,x:-60},{opacity:1,x:0,duration:.9,ease:EIO}),2200);
   sfx('bloom');
 }
@@ -711,58 +717,69 @@ function logoChip(names){
   return '<span class="vbl">'+names.slice(0,4).map(n=>'<span>'+(LOGO[n]||'')+'</span>').join('')+'</span>';
 }
 function chip(inner){ return '<span class="vbc">'+inner+'</span>'; }
-/* the board is one sentence. Ghost words fill in as Zero hears them. */
-function boardHTML(){
+/* The board never shows blanks. Zero scans, then a finished sentence lands. */
+function whereNow(){ return P.citynext&&P.citynext!==P.location?P.citynext:(P.location||P.citynext); }
+function SENTENCES(){
   const d=pack();
-  const g=t=>'<span class="g">'+t+'</span>';
   const t=x=>'<span class="t">'+x+'</span>';
-  const parts=[];
-  parts.push(P.name
-    ? chip('<span class="av">'+P.name.charAt(0).toUpperCase()+'</span>'+t(P.name))
-    : g('Someone'));
-  parts.push(g(' is going into '));
-  parts.push(P.focus ? chip(I.spark+t(P.focus)) : g('a field'));
-  parts.push(g(', aiming at '));
-  parts.push(P.role ? chip(I.target+t(P.role)) : g('a role'));
-  if(P.company||P.dream){
-    parts.push(g(' at '));
-    if(P.company) parts.push(chip(I.bld+t(P.company)));
-    if(P.dream){ parts.push(g(' like ')); parts.push(chip(t(P.dream))); }
-  } else parts.push(g(' at a company'));
-  parts.push(g(', from '));
-  const where=P.citynext&&P.citynext!==P.location?P.citynext:(P.location||P.citynext);
-  parts.push(where ? chip(I.pin+t(where)) : g('somewhere'));
-  if(P.industry){ parts.push(g(', in ')); parts.push(chip(I.globe+t(SHORT[P.industry]||P.industry))); }
-  parts.push(g(', to solve '));
-  parts.push(P.problems ? '<span class="vbq">“'+P.problems+'”</span>' : g('problems that matter'));
-  if(P.timeline||P.jobtype){
-    parts.push(g(' within '));
-    parts.push(chip(I.clock+t([P.jobtype,P.timeline].filter(Boolean).join(' · '))));
-  }
-  parts.push(g('.'));
-  if(P.focus) parts.push('<br><br>'+g('Hiring here: ')+logoChip(d.cos));
-  return parts.join('');
+  const g=x=>'<span class="g">'+x+'</span>';
+  return [
+   { id:'s1', ready:!!(P.name&&P.focus),
+     html:()=>chip('<span class="av">'+P.name.charAt(0).toUpperCase()+'</span>'+t(P.name))
+       +g(' is going into ')+chip(I.spark+t(P.focus))+g('.') },
+   { id:'s2', ready:!!P.role,
+     html:()=>g('Aiming at ')+chip(I.target+t(P.role))
+       +(P.company?g(' at ')+chip(I.bld+t(P.company)):'')
+       +(P.dream?g(' like ')+chip(t(P.dream)):'')+g('.') },
+   { id:'s3', ready:!!(whereNow()||P.industry),
+     html:()=>g('From ')+(whereNow()?chip(I.pin+t(whereNow())):'')
+       +(P.industry?g(whereNow()?', in ':'')+chip(I.globe+t(SHORT[P.industry]||P.industry)):'')+g('.') },
+   { id:'s4', ready:!!P.problems,
+     html:()=>g('To solve ')+'<span class="vbq">“'+P.problems+'”</span>'
+       +((P.timeline||P.jobtype)?g(', within ')+chip(I.clock+t([P.jobtype,P.timeline].filter(Boolean).join(' · '))):'')+g('.') },
+   { id:'s5', ready:!!(P.role&&(P.company||P.dream)),
+     html:()=>g('Hiring here: ')+logoChip(d.cos) },
+  ];
+}
+function boardHTML(){
+  return SENTENCES().filter(x=>x.ready)
+    .map(x=>'<div class="vbs">'+x.html()+'</div>').join('');
+}
+let shown={}, queue=[], scanning=false;
+function scanSweep(then){
+  const p=$('paper'); const sc=mk('div','scan'); p.appendChild(sc);
+  sfx('loading');
+  const tl=gsap.timeline({onComplete:()=>{ if(sc.isConnected) sc.remove(); then(); }});
+  tl.fromTo(sc,{y:-150,opacity:0},{opacity:1,duration:.18})
+    .to(sc,{y:p.clientHeight||600,duration:.72,ease:'power2.inOut'},0)
+    .to(sc,{opacity:0,duration:.2},'-=.2');
+  safeTL(tl,1400);
+  setTimeout(()=>{ if(sc.isConnected){ sc.remove(); } },1500);
+}
+function pump(){
+  if(scanning||!queue.length) return;
+  scanning=true;
+  const item=queue.shift();
+  scanSweep(()=>{
+    const vb=$('vb'); if(!vb){ scanning=false; return; }
+    const row=mk('div','vbs'); row.innerHTML=item.html();
+    vb.appendChild(row);
+    const bits=row.querySelectorAll('.vbc, .vbl, .vbq');
+    safeTL(gsap.timeline()
+      .fromTo(row,{opacity:0,y:14},{opacity:1,y:0,duration:.5})
+      .fromTo(bits,{scale:.76,opacity:0},{scale:1,opacity:1,duration:.5,stagger:.08,ease:'back.out(1.7)'},'-=.3'),1600);
+    sfx('droplet');
+    setTimeout(()=>{ scanning=false; pump(); },700);
+  });
 }
 function renderBoard(){
   const s2=$('scroll');
   let vb=$('vb');
   if(!vb){ s2.innerHTML=''; vb=mk('div','vb'); vb.id='vb'; s2.appendChild(vb); }
-  vb.innerHTML=boardHTML();
-  /* pop only what is new */
-  const now={};
-  ['name','focus','role','company','dream','location','citynext','industry','problems','timeline','jobtype']
-    .forEach(k=>{ if(P[k]) now[k]=1; });
-  const fresh=Object.keys(now).filter(k=>!boardSeen[k]).length>0;
-  boardSeen=now;
-  const chips=vb.querySelectorAll('.vbc, .vbl, .vbq');
-  if(chips.length){
-    const last=chips[chips.length-1];
-    if(fresh){
-      safeTL(gsap.timeline().fromTo(last,{scale:.72,opacity:0,y:8},
-        {scale:1,opacity:1,y:0,duration:.55,ease:'back.out(1.7)'}),1000);
-      sfx('droplet');
-    }
-  }
+  SENTENCES().forEach(x=>{
+    if(x.ready&&!shown[x.id]){ shown[x.id]=1; queue.push(x); }
+  });
+  pump();
 }
 function fillSlot(){ renderBoard(); }
 function fillAll(){ renderBoard(); }
@@ -1082,6 +1099,7 @@ async function synthStage(){
   clearTurn(); await wait(380);
   line('Reading everything back.');
   $('top').style.paddingLeft='calc(56vw + 26px)';
+  $('dock').style.paddingLeft='calc(56vw + 24px)';
   safeTL(gsap.timeline().to('.right',{width:'56%',duration:.9,ease:EIO}),2200);
   sfx('loading');
   await wait(1000);
@@ -1095,7 +1113,9 @@ async function synthStage(){
   safeTL(gsap.timeline().to(veil,{opacity:0,duration:.5}),900);
   setTimeout(()=>{ if(veil.isConnected) veil.remove(); },1000);
   await swapPanel('Your vision board',s2=>{ const vb=mk('div','vb'); vb.id='vb';
-    vb.innerHTML=boardHTML(); s2.appendChild(vb); },false);
+    vb.innerHTML=boardHTML(); s2.appendChild(vb);
+    safeTL(gsap.timeline().fromTo(vb.querySelectorAll('.vbs'),
+      {opacity:0,y:16},{opacity:1,y:0,duration:.55,stagger:.12}),2000); },false);
   sfx('ready');
   await wait(1100);
   visionStage();
