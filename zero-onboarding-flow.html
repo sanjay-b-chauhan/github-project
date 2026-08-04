@@ -24,7 +24,37 @@
 *{ margin:0; padding:0; box-sizing:border-box; }
 html,body{ height:100%; }
 body{ background:var(--page); color:var(--tx); font-family:var(--f); font-size:14px;
-  letter-spacing:-.018em; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  letter-spacing:-.018em; overflow:hidden; -webkit-font-smoothing:antialiased;
+  transition:background-color .6s ease, color .6s ease; }
+body.dark{
+  --page:#0E0E10; --shell:#17171A; --card:#1C1C1F; --field:#222226; --wash:#1A1A1D; --bubble:#222226;
+  --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.05);
+  --tx:#F4F4F3; --tx-2:#A6A6AC; --tx-3:#77777E; --tx-4:#4A4A51;
+  --ink:#F4F4F3; --on-ink:#131315;
+}
+.veil{ position:fixed; inset:0; z-index:95; background:#FAFAF9; opacity:0; pointer-events:none; }
+
+.pcards{ display:flex; gap:16px; justify-content:center; }
+.pcard{ width:212px; height:264px; background:var(--card); border:1px solid var(--line); border-radius:28px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px;
+  transition:transform .24s cubic-bezier(.2,.8,.3,1), box-shadow .24s ease; }
+.pcard .pi{ width:58px; height:58px; border-radius:19px; background:var(--wash);
+  display:flex; align-items:center; justify-content:center; color:var(--tx-2); }
+.pcard .pi svg{ width:24px; height:24px; }
+.pcard .pl{ font-size:15px; font-weight:600; letter-spacing:-.02em; }
+.pcard:hover{ transform:translateY(-5px); box-shadow:0 14px 32px rgba(0,0,0,.09); }
+
+.dbg{ position:fixed; left:18px; bottom:18px; z-index:98; }
+.dbgbtn{ height:36px; padding:0 15px; border-radius:var(--pill); background:var(--field); color:var(--tx-3);
+  font-size:12px; display:flex; align-items:center; }
+.dbgbtn:hover{ color:var(--tx); }
+.dbgpanel{ display:none; position:absolute; left:0; bottom:44px; width:240px; padding:16px;
+  background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.1); }
+.dbgpanel.open{ display:block; }
+.dbgrow{ display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:12px; color:var(--tx-2); padding:6px 0; }
+.dbgrow input[type=range]{ width:120px; accent-color:var(--tx); }
+.dbgrow input[type=color]{ width:28px; height:22px; border:none; background:none; padding:0; cursor:pointer; }
+.dbgrow .val{ width:26px; text-align:right; color:var(--tx-3); font-size:11px; }
 button{ font:inherit; letter-spacing:inherit; color:inherit; background:none; border:none; cursor:pointer; }
 input{ font:inherit; letter-spacing:inherit; color:var(--tx); background:none; border:none; outline:none; }
 input::placeholder{ color:var(--tx-4); }
@@ -84,7 +114,7 @@ svg{ display:block; }
 .card .cl{ position:relative; font-size:14.5px; font-weight:500; color:#35353c; }
 .card:hover{ transform:translateY(-4px); box-shadow:0 12px 28px rgba(0,0,0,.1); }
 .card .tick{ position:absolute; top:11px; right:11px; width:23px; height:23px; border-radius:var(--pill);
-  background:var(--ink); color:#fff; display:flex; align-items:center; justify-content:center;
+  background:var(--ink); color:var(--on-ink); display:flex; align-items:center; justify-content:center;
   opacity:0; transform:scale(.5); transition:opacity .2s ease, transform .26s cubic-bezier(.2,1.4,.4,1); }
 .card .tick svg{ width:12px; height:12px; }
 .card.on{ box-shadow:0 0 0 2px var(--ink), 0 12px 28px rgba(0,0,0,.11); }
@@ -95,7 +125,7 @@ svg{ display:block; }
   border:1px solid var(--line); border-radius:var(--r-lg); padding:18px 22px;
   transition:transform .22s cubic-bezier(.2,.8,.3,1), box-shadow .22s ease, background .2s ease, border-color .2s ease; }
 .orow .oi{ width:46px; height:46px; flex-shrink:0; border-radius:var(--r-md); background:var(--t,var(--wash));
-  display:flex; align-items:center; justify-content:center; color:#43434b; }
+  display:flex; align-items:center; justify-content:center; color:var(--tx-2); }
 .orow .oi svg{ width:20px; height:20px; }
 .orow .on2{ flex:1; min-width:0; display:block; }
 .orow .ot{ display:block; font-size:15.5px; font-weight:600; letter-spacing:-.025em; }
@@ -117,7 +147,7 @@ svg{ display:block; }
 .interim{ min-height:22px; max-width:480px; font-size:14.5px; color:var(--tx-2); text-align:center; }
 .micwrap{ position:relative; width:84px; height:84px; }
 .ring{ position:absolute; inset:0; border-radius:var(--pill); border:1.5px solid var(--tx-4); opacity:0; }
-.mic{ position:absolute; inset:0; border-radius:var(--pill); background:var(--ink); color:#fff;
+.mic{ position:absolute; inset:0; border-radius:var(--pill); background:var(--ink); color:var(--on-ink);
   display:flex; align-items:center; justify-content:center; transition:transform .22s cubic-bezier(.2,.8,.3,1); }
 .mic svg{ width:26px; height:26px; }
 .mic:hover{ transform:scale(1.05); }
@@ -155,7 +185,7 @@ svg{ display:block; }
 .paper{ width:min(660px,90%); flex:1; min-height:0; background:var(--card); border-radius:var(--r-lg);
   position:relative; box-shadow:0 1px 3px rgba(0,0,0,.04); overflow:hidden; }
 .paper::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:64px;
-  background:linear-gradient(to bottom,rgba(255,255,255,0),#fff); pointer-events:none; z-index:2; }
+  background:linear-gradient(to bottom, transparent, var(--card)); pointer-events:none; z-index:2; }
 .scroll{ height:100%; overflow:hidden; padding:30px 30px 50px; }
 
 .slots{ display:flex; flex-direction:column; }
@@ -167,7 +197,7 @@ svg{ display:block; }
 .slot .sk{ flex:1; font-size:13px; color:var(--tx-3); }
 .slot .sv{ font-size:13.5px; text-align:right; max-width:58%; color:var(--tx-4); font-weight:400; }
 .slot.f .sv{ color:var(--tx); font-weight:600; }
-.slot.f .si{ background:var(--ink); color:#fff; }
+.slot.f .si{ background:var(--ink); color:var(--on-ink); }
 
 .dots{ position:absolute; inset:34px 34px 44px; z-index:3; pointer-events:none; }
 .dots span{ position:absolute; width:3px; height:3px; margin:-1.5px 0 0 -1.5px; border-radius:var(--pill); background:var(--tx-4); }
@@ -183,7 +213,7 @@ svg{ display:block; }
 .artifact li .v{ font-weight:600; text-align:right; }
 
 .ph{ display:flex; align-items:flex-start; gap:15px; }
-.pav{ width:58px; height:58px; flex-shrink:0; border-radius:var(--r-md); background:var(--ink); color:#fff;
+.pav{ width:58px; height:58px; flex-shrink:0; border-radius:var(--r-md); background:var(--ink); color:var(--on-ink);
   display:flex; align-items:center; justify-content:center; font-size:19px; font-weight:600; }
 .pid{ flex:1; min-width:0; padding-top:4px; }
 .pname{ font-size:19px; font-weight:600; line-height:1.2; letter-spacing:-.03em; }
@@ -306,6 +336,11 @@ svg{ display:block; }
   </div>
 </div>
 
+<div class="dbg" id="dbg">
+  <div class="dbgpanel" id="dbgPanel"></div>
+  <button class="dbgbtn" id="dbgBtn">Tuning</button>
+</div>
+
 <div class="draw" id="drawScreen">
   <canvas id="drawCanvas"></canvas>
   <div class="dcenter">
@@ -369,6 +404,7 @@ const I={
 const TINT=['#EEF1F5','#EDF3EE','#F4F0EA'];
 let sndOn=true;
 function sfx(n){ try{ if(sndOn&&window.CUE) window.CUE.play(n); }catch(e){} }
+const INK={max:18,min:5,sens:5.5,tol:.35,color:'#111113'};
 
 /* ============================ persona packs ============================ */
 const PACKS = {"design": {"label": "Design", "role": "Product Designer", "cos": ["Linear", "Airbnb", "Vercel", "Figma"], "bio": "I would rather watch one person use the thing than read ten opinions about it. I design in the open, ship the flow end to end, and write down why each call was made.", "guessLine": "Sounds like design. Tap to confirm.", "starterChips": ["I am a design student", "I work in design already", "I want to move into design"], "roleCards": ["Product Designer", "UX Designer", "Design Engineer"], "dreamExamples": ["Airbnb", "Figma"], "problemChips": ["Confusing tools", "Flows people abandon", "Products that feel cold"], "projects": [{"co": "Linear", "short": "Issue Triage Flow", "title": "Issue triage redesign for Linear", "weeks": 5, "desc": "Cut triage from six clicks to two, tested the new flow against the old one with eight users, and shipped the version that held up.", "steps": ["Audit the current triage flow", "Interview three people who use it daily", "Prototype two alternatives", "Test both and ship the winner"], "chips": [["play", "Walkthrough · 4:02"], ["doc", "Prototype"], ["doc", "Usability test"]]}, {"co": "Airbnb", "short": "Host Onboarding", "title": "Host listing flow rebuild for Airbnb", "weeks": 5, "desc": "Rebuilt a twelve-step listing flow into four, and moved prototype completion from 38 to 61 percent across nine sessions.", "steps": ["Map the twelve steps and their drop-offs", "Rewrite the flow as four", "Build the clickable prototype", "Run nine sessions and revise"], "chips": [["play", "Walkthrough · 4:24"], ["doc", "Flows"], ["doc", "Research notes"]]}, {"co": "Vercel", "short": "Dashboard System", "title": "Design system foundations for the Vercel dashboard", "weeks": 6, "desc": "Audited forty-one screens, cut ninety loose components down to twenty-three, and documented the ones the team reaches for.", "steps": ["Audit forty-one screens for duplication", "Define the token and component set", "Build the library properly", "Document rules people will follow"], "chips": [["play", "Walkthrough · 3:36"], ["doc", "Component library"], ["doc", "Documentation"]]}], "skills": [["Interaction design", "Excellent", ""], ["Prototyping", "Excellent", ""], ["Design systems", "Strong", "aim Excellent"], ["Visual craft", "Strong", ""]], "soft": [["Design critique", "Strong", "aim Excellent"], ["Written rationale", "Excellent", ""], ["User interviews", "Good", "aim Strong"], ["Working with engineers", "Strong", ""]], "todo": [["Design critique", "Defend a screen to a room that disagrees with you."], ["Accessibility pass", "Take a shipped flow to WCAG AA without redesigning it."]], "roles": [["Product Designer", "$95k – $125k", "Most openings"], ["UX Designer", "$90k – $120k", "Research-heavy"], ["Design Engineer", "$110k – $140k", "Rarer, pays more"]]}, "ba": {"label": "Business analysis", "role": "Business Analyst", "cos": ["Stripe", "Shopify", "Spotify", "Notion"], "bio": "Give me a messy spreadsheet and a real question and I am happy. I chase the number that actually decides things, build the model behind it, and write the one page that ends the debate.", "guessLine": "Sounds like business analysis. Tap to confirm.", "starterChips": ["I am a business student", "I work with data already", "I want to move into strategy"], "roleCards": ["Business Analyst", "Strategy Analyst", "Operations Analyst"], "dreamExamples": ["Stripe", "Spotify"], "problemChips": ["Decisions made on gut feel", "Money leaking somewhere", "Reports nobody reads"], "projects": [{"co": "Shopify", "short": "Support Ops Audit", "title": "Support ops audit for Shopify", "weeks": 5, "desc": "Mapped where 1,200 weekly merchant tickets actually come from, found 34% traced back to one refund policy gap, and sized the fix at 18 saved agent hours a week.", "steps": ["Pull three months of ticket data", "Tag the top drivers by hand", "Trace the worst driver to its root cause", "Size the fix and present the case"], "chips": [["play", "Walkthrough · 3:48"], ["doc", "Ticket driver model"], ["doc", "Recommendation memo"]]}, {"co": "Spotify", "short": "Plan Pricing Model", "title": "Plan pricing analysis for Spotify", "weeks": 5, "desc": "Modeled what a $1 move on the Duo plan does to churn and revenue across three scenarios, then recommended the one that nets $2.1M a year without touching the student tier.", "steps": ["Rebuild the plan mix from public data", "Model churn sensitivity at three price points", "Stress test the ugliest scenario", "Write the pricing memo"], "chips": [["play", "Walkthrough · 4:15"], ["doc", "Pricing model"], ["doc", "Scenario memo"]]}, {"co": "Stripe", "short": "Funnel Economics", "title": "Activation funnel economics for Stripe", "weeks": 6, "desc": "Broke signup to first payment into five stages, found the 48-hour verification wait cost more accounts than the next three drop-offs combined, and priced the fix against two cheaper options.", "steps": ["Define the funnel stages and metrics", "Find where accounts actually stall", "Put a dollar value on each drop-off", "Rank three fixes by cost and payback"], "chips": [["play", "Walkthrough · 4:31"], ["doc", "Funnel model"], ["doc", "Cost-benefit brief"]]}], "skills": [["Spreadsheet modeling", "Excellent", ""], ["SQL", "Strong", "aim Excellent"], ["Market sizing", "Strong", ""], ["Data visualization", "Good", "aim Strong"]], "soft": [["Executive memos", "Excellent", ""], ["Stakeholder interviews", "Strong", "aim Excellent"], ["Defending a number", "Good", "aim Strong"], ["Scoping ambiguity", "Strong", ""]], "todo": [["Board-level memo", "Compress a six-week analysis into one page a CFO reads in two minutes."], ["Live model defense", "Walk a room through your assumptions while they try to break them."]], "roles": [["Business Analyst", "$70k – $95k", "Most openings"], ["Strategy Analyst", "$75k – $100k", "Fewer, more competitive"], ["Operations Analyst", "$65k – $90k", "Fastest to land"]]}, "swe": {"label": "Software engineering", "role": "Software Engineer", "cos": ["Stripe", "Vercel", "Datadog", "Linear"], "bio": "I would rather read the stack trace than guess. I ship small, test what I ship, and leave the codebase easier to read than I found it.", "guessLine": "Sounds like engineering. Tap to confirm.", "starterChips": ["I am a CS student", "I write code already", "I want to move into engineering"], "roleCards": ["Frontend Engineer", "Full-stack Engineer", "Backend Engineer"], "dreamExamples": ["Stripe", "Vercel"], "problemChips": ["Slow, clunky apps", "Things that break under load", "Code nobody can read"], "projects": [{"co": "Vercel", "short": "Deploy Status Dashboard", "title": "Deployment dashboard for Vercel", "weeks": 5, "desc": "Built a live dashboard tracking 200 deploys a day and cut the time to spot a failed build from four minutes to under ten seconds.", "steps": ["Map the data the dashboard actually needs", "Build the API layer and cache the hot paths", "Wire the live UI with loading and error states", "Ship behind a flag and watch real traffic"], "chips": [["play", "Walkthrough · 3:47"], ["doc", "Live demo"], ["doc", "Pull request"]]}, {"co": "Stripe", "short": "Webhook Retry Service", "title": "Webhook retry service for Stripe", "weeks": 5, "desc": "Built a retry service that took webhook delivery from 97.1% to 99.9% across 50k events a day, with dead-letter handling for the rest.", "steps": ["Trace the current delivery path and log every failure", "Design the retry schedule and dead-letter queue", "Build the service with a test around each failure mode", "Replay a week of production events against it"], "chips": [["play", "Walkthrough · 4:20"], ["doc", "Design doc"], ["doc", "Test suite"]]}, {"co": "Datadog", "short": "Ingest Latency Fix", "title": "Ingest performance work at Datadog", "weeks": 6, "desc": "Profiled a slow ingest path, cut p95 latency 43% by fixing two N+1 queries and one hot lock, and proved the fix held at triple the normal load.", "steps": ["Profile the pipeline and rank the bottlenecks", "Fix the top two and measure each one in isolation", "Load test at three times normal traffic", "Write up what moved the number and what did not"], "chips": [["play", "Walkthrough · 5:03"], ["doc", "Profiling report"], ["doc", "Load test"]]}], "skills": [["React and TypeScript", "Excellent", ""], ["API design", "Strong", "aim Excellent"], ["Testing", "Strong", ""], ["SQL and data modeling", "Good", "aim Strong"]], "soft": [["Code review", "Strong", "aim Excellent"], ["Written design docs", "Excellent", ""], ["Debugging under pressure", "Strong", ""], ["Working with product", "Good", "aim Strong"]], "todo": [["Code review", "Defend a diff to a senior engineer who wants it rewritten."], ["Performance pass", "Take a slow page under one second without a rewrite."]], "roles": [["Frontend Engineer", "$95k – $130k", "Most openings"], ["Full-stack Engineer", "$100k – $135k", "Startup favorite"], ["Backend Engineer", "$105k – $140k", "Fewer, pays more"]]}};
@@ -688,16 +724,22 @@ function afterCommit(next){ if(editReturn){ const r=editReturn; editReturn=null;
 function personaPick(){
   setPhase(0);
   const {box}=turn({q:'Select your persona.'});
-  orows(box,[
-    ['pen','#FBEFE9','A designer',null,'design'],
-    ['bars','#EDF6EC','A business analyst',null,'ba'],
-    ['code','#EAF1FB','A software engineer',null,'swe'],
-  ],(v)=>{
-    PKEY=v;
-    const t=$('turn');
-    safeTL(gsap.timeline().to(t,{scale:1.06,opacity:0,duration:.55,ease:EIO}),900);
-    setTimeout(()=>{ if(t.isConnected) t.remove(); showDraw(); },560);
+  const wrapP=mk('div','pcards');
+  [['pen','A designer','design'],['bars','A business analyst','ba'],['code','A software engineer','swe']]
+  .forEach(([icon,label,v])=>{
+    const c2=mk('button','pcard');
+    c2.appendChild(mk('span','pi',I[icon]));
+    c2.appendChild(mk('span','pl',label));
+    c2.onclick=()=>{
+      if(locked) return; locked=true; PKEY=v; sfx('toggle');
+      gsap.fromTo(c2,{scale:1},{scale:.97,duration:.12,yoyo:true,repeat:1});
+      const t=$('turn');
+      safeTL(gsap.timeline().to(t,{scale:1.07,opacity:0,duration:.6,ease:EIO}),1000);
+      setTimeout(()=>{ if(t.isConnected) t.remove(); showDraw(); },620);
+    };
+    wrapP.appendChild(c2);
   });
+  box.appendChild(wrapP);
 }
 
 /* ============================ 1 · draw ============================ */
@@ -709,63 +751,85 @@ function showDraw(){
     .fromTo('.dcenter',{scale:.94,opacity:0},{scale:1,opacity:1,duration:.7,ease:EIO},.1),1400);
   if(drawInit) return; drawInit=true;
   const cv=$('drawCanvas'), ctx=cv.getContext('2d');
-  let pts=[], down=false, len=0, W=6;
+  let pts=[], down=false, len=0, W=11;
   function size(){ const dpr=devicePixelRatio||1;
     if(!innerWidth||!innerHeight) return; /* hidden or prerendered, try again later */
     cv.width=innerWidth*dpr; cv.height=innerHeight*dpr;
     ctx.setTransform(dpr,0,0,dpr,0,0);
-    ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#111113'; ctx.fillStyle='#111113'; }
+    ctx.lineCap='round'; ctx.lineJoin='round'; }
   size(); addEventListener('resize',size);
   const mid=(a,b)=>({x:(a.x+b.x)/2,y:(a.y+b.y)/2});
-  /* ink: slow strokes pool thick, fast strokes thin out */
+  /* ink: slow strokes pool thick, fast strokes thin out. INK is live-tunable. */
   function inkSeg(){
     const n=pts.length; if(n<3) return;
     const a=pts[n-3], b=pts[n-2], c2=pts[n-1];
     const d2=Math.hypot(c2.x-b.x,c2.y-b.y), dt=Math.max(1,c2.t-b.t);
     const speed=d2/dt;
-    const target=Math.max(3.2,Math.min(15,15-speed*6.5));
+    const target=Math.max(INK.min,Math.min(INK.max,INK.max-speed*INK.sens));
     W+=(target-W)*.28;
     const m1=mid(a,b), m2=mid(b,c2);
+    ctx.strokeStyle=INK.color;
     ctx.beginPath(); ctx.lineWidth=W;
     ctx.moveTo(m1.x,m1.y); ctx.quadraticCurveTo(b.x,b.y,m2.x,m2.y);
     ctx.stroke();
   }
   function clearInk(){ ctx.save(); ctx.setTransform(1,0,0,1,0,0);
     ctx.clearRect(0,0,cv.width,cv.height); ctx.restore(); }
-  cv.addEventListener('pointerdown',e=>{ down=true; len=0; W=9;
+  cv.addEventListener('pointerdown',e=>{ down=true; len=0; W=INK.max*0.6;
     if(!cv.width) size();
     pts=[{x:e.clientX,y:e.clientY,t:performance.now()}];
-    ctx.beginPath(); ctx.arc(e.clientX,e.clientY,4.5,0,7); ctx.fill(); });
+    ctx.fillStyle=INK.color;
+    ctx.beginPath(); ctx.arc(e.clientX,e.clientY,INK.max*0.32,0,7); ctx.fill(); });
   cv.addEventListener('pointermove',e=>{ if(!down)return;
     const p={x:e.clientX,y:e.clientY,t:performance.now()}, q2=pts[pts.length-1];
     const d2=Math.hypot(p.x-q2.x,p.y-q2.y);
     if(d2<2) return;
     len+=d2; pts.push(p); inkSeg(); });
   const fin=()=>{ if(!down)return; down=false;
-    if(len>220) accept(); else { sfx('tick');
+    /* the zero must close: start and end land near each other */
+    const a=pts[0], b=pts[pts.length-1];
+    let minx=1e9,miny=1e9,maxx=-1e9,maxy=-1e9;
+    pts.forEach(pp=>{ minx=Math.min(minx,pp.x); miny=Math.min(miny,pp.y);
+      maxx=Math.max(maxx,pp.x); maxy=Math.max(maxy,pp.y); });
+    const diag=Math.hypot(maxx-minx,maxy-miny);
+    const closed=len>250 && Math.hypot(b.x-a.x,b.y-a.y)<Math.max(80,diag*INK.tol);
+    if(closed) accept();
+    else { sfx('tick');
       gsap.to(cv,{opacity:0,duration:.4});
       setTimeout(()=>{ clearInk(); gsap.set(cv,{opacity:1}); },450); } };
   cv.addEventListener('pointerup',fin); cv.addEventListener('pointercancel',fin);
-  cv.addEventListener('dblclick',()=>accept());
-  addEventListener('keydown',e=>{ if(e.key==='Enter'&&$('drawScreen').style.display!=='none') accept(); });
+  cv.addEventListener('dblclick',()=>accept(true));
+  addEventListener('keydown',e=>{ if(e.key==='Enter'&&$('drawScreen').style.display!=='none') accept(true); });
   let accepted=false;
-  window.__acceptDraw=accept;
-  function accept(){
+  window.__acceptDraw=()=>accept(true);
+  function accept(skip){
     if(accepted) return; accepted=true;
     sfx('bloom');
-    /* the ink itself is the hero: it settles, then slides to the left,
-       where the vision board is about to live */
-    safeTL(gsap.timeline()
-      .to(cv,{scale:1.02,duration:.35,ease:'power2.out'},0)
-      .to('#dH',{opacity:0,y:-10,duration:.4},0)
-      .to(cv,{x:'-30vw',opacity:0,scale:.92,duration:.9,ease:EIO},'+=.15')
-      .to('#drawScreen',{opacity:0,duration:.5},'-=.35'),3000);
-    setTimeout(()=>{ $('drawScreen').style.display='none'; introStage(); },1900);
+    /* the ink swells until it floods the whole screen, then the world goes dark */
+    gsap.to('#dH',{opacity:0,y:-10,duration:.35});
+    if(!skip&&pts.length>2){
+      const obj={w:W};
+      const cover=Math.hypot(innerWidth,innerHeight)*2.2;
+      const redraw=()=>{ ctx.strokeStyle=INK.color;
+        ctx.beginPath(); ctx.lineWidth=obj.w;
+        ctx.moveTo(pts[0].x,pts[0].y);
+        for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x,pts[i].y);
+        ctx.closePath(); ctx.stroke(); };
+      safeTL(gsap.timeline().to(obj,{w:cover,duration:1.15,ease:'power3.in',onUpdate:redraw}),1900);
+    }
+    setTimeout(()=>{
+      document.body.classList.add('dark');
+      const d=$('drawScreen');
+      d.style.background='#0E0E10';
+      gsap.to(d,{opacity:0,duration:.7,delay:.1});
+      setTimeout(()=>{ d.style.display='none'; introStage(); },900);
+    }, skip?350:1250);
   }
 }
 
 /* ============================ 2 · intro, 3 · name ============================ */
 async function introStage(){
+  safeTL(gsap.timeline().to(['#logoPill','.tr'],{opacity:1,y:0,duration:.55,stagger:.07}),1400);
   line('Hey. I am the voice of the founder.');
   await wait(1700);
   line('Five minutes. I ask, you talk.','You leave with a vision board and the road to it.');
@@ -946,6 +1010,13 @@ async function synthStage(){
   await wait(1000);
   printDots(3000);
   await wait(2700);
+  /* lights on: the dark listening phase ends where the path begins */
+  const veil=mk('div','veil'); document.body.appendChild(veil);
+  safeTL(gsap.timeline().to(veil,{opacity:1,duration:.4}),800);
+  await wait(430);
+  document.body.classList.remove('dark');
+  safeTL(gsap.timeline().to(veil,{opacity:0,duration:.5}),900);
+  setTimeout(()=>{ if(veil.isConnected) veil.remove(); },1000);
   await swapPanel('Your vision board',buildVision,false);
   sfx('ready');
   await wait(1100);
@@ -1217,9 +1288,41 @@ async function finishStage(email){
 
 /* ============================ boot ============================ */
 gsap.set(['#logoPill','.tr'],{opacity:0,y:-9});
-safeTL(gsap.timeline({delay:.12}).to(['#logoPill','.tr'],{opacity:1,y:0,duration:.55,stagger:.07}),1400);
 setPhase(0);
 personaPick();
+
+/* ---- tuning drawer (debug, prototype only) ---- */
+(function(){
+  const panel=$('dbgPanel'), btn=$('dbgBtn');
+  function row(label,type,min,max,step,get,set){
+    const r=document.createElement('div'); r.className='dbgrow';
+    const l=document.createElement('span'); l.textContent=label; r.appendChild(l);
+    if(type==='range'){
+      const inp=document.createElement('input'); inp.type='range';
+      inp.min=min; inp.max=max; inp.step=step; inp.value=get();
+      const val=document.createElement('span'); val.className='val'; val.textContent=get();
+      inp.oninput=()=>{ set(parseFloat(inp.value)); val.textContent=inp.value; };
+      r.appendChild(inp); r.appendChild(val);
+    } else if(type==='color'){
+      const inp=document.createElement('input'); inp.type='color'; inp.value=get();
+      inp.oninput=()=>set(inp.value);
+      r.appendChild(inp);
+    } else if(type==='check'){
+      const inp=document.createElement('input'); inp.type='checkbox'; inp.checked=get();
+      inp.onchange=()=>set(inp.checked);
+      r.appendChild(inp);
+    }
+    panel.appendChild(r);
+  }
+  row('Ink max','range',6,34,1,()=>INK.max,v=>INK.max=v);
+  row('Ink min','range',1,12,.5,()=>INK.min,v=>INK.min=v);
+  row('Speed thin','range',0,14,.5,()=>INK.sens,v=>INK.sens=v);
+  row('Close tol','range',.1,.7,.05,()=>INK.tol,v=>INK.tol=v);
+  row('Ink color','color',0,0,0,()=>INK.color,v=>INK.color=v);
+  row('Dark mode','check',0,0,0,()=>document.body.classList.contains('dark'),
+      v=>document.body.classList.toggle('dark',v));
+  btn.onclick=()=>{ panel.classList.toggle('open'); sfx('tick'); };
+})();
 </script>
 </body>
 </html>
