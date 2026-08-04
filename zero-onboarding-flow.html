@@ -33,6 +33,11 @@ body.dark{
   --ink:#F4F4F3; --on-ink:#131315;
 }
 .veil{ position:fixed; inset:0; z-index:95; background:#FAFAF9; opacity:0; pointer-events:none; }
+/* the charge: green floods in from the edges before the world goes dark */
+.energ{ position:fixed; inset:0; z-index:94; pointer-events:none; opacity:0; --r:70%;
+  background:radial-gradient(circle at 50% 50%, #C8F169 0%, #4ADE80 42%, #16a34a 100%);
+  -webkit-mask-image:radial-gradient(circle at 50% 50%, transparent var(--r), #000 calc(var(--r) + 9%));
+  mask-image:radial-gradient(circle at 50% 50%, transparent var(--r), #000 calc(var(--r) + 9%)); }
 
 .pcards{ display:flex; gap:16px; justify-content:center; }
 .pcard{ width:212px; height:264px; background:var(--card); border:1px solid var(--line); border-radius:28px;
@@ -245,10 +250,10 @@ svg{ display:block; }
 .paper{ flex:1; min-height:0; position:relative; overflow:hidden; }
 .paper::before{ content:''; position:absolute; inset:0; z-index:0; pointer-events:none; opacity:0;
   transition:opacity .8s ease;
-  background-image:radial-gradient(rgba(13,13,13,.14) 1.1px, transparent 1.1px);
-  background-size:24px 24px; }
-body.dark .paper::before{ background-image:radial-gradient(rgba(255,255,255,.13) 1.1px, transparent 1.1px); }
-.paper.canvas::before{ opacity:1; }
+  background-image:radial-gradient(rgba(13,13,13,.085) 1px, transparent 1px);
+  background-size:28px 28px; }
+body.dark .paper::before{ background-image:radial-gradient(rgba(255,255,255,.07) 1px, transparent 1px); }
+.paper.canvas::before{ opacity:.75; }
 .scroll{ position:relative; z-index:1; }
 .paper::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:70px;
   background:linear-gradient(to bottom, transparent, var(--shell)); pointer-events:none; z-index:2; }
@@ -279,12 +284,13 @@ body.dark .paper::before{ background-image:radial-gradient(rgba(255,255,255,.13)
 @keyframes shine{ from{transform:translateX(-110%)} to{transform:translateX(110%)} }
 .vb .g{ color:var(--tx-3); }
 .vb .t{ color:var(--tx); }
-.vbc{ display:inline-flex; align-items:center; gap:.34em; padding:.1em .46em .14em;
-  background:var(--card); border-radius:.4em; vertical-align:baseline;
+.vbc{ display:inline-flex; align-items:center; gap:.34em; padding:.1em .5em .14em;
+  background:var(--card); border-radius:.66em; vertical-align:baseline;
   box-shadow:0 8px 18px rgba(0,0,0,.09), 0 1px 2px rgba(0,0,0,.07); }
 .vbc svg{ width:.82em; height:.82em; color:var(--tx-2); }
-.vbc .av{ width:.92em; height:.92em; border-radius:.24em; background:var(--ink); color:var(--on-ink);
-  font-size:.72em; display:inline-flex; align-items:center; justify-content:center; font-weight:600; }
+.vbc .av{ width:1.5em; height:1.5em; border-radius:50%; color:#fff; font-size:.66em;
+  display:inline-flex; align-items:center; justify-content:center; font-weight:600;
+  letter-spacing:0; line-height:1; flex-shrink:0; }
 .vbq{ color:var(--tx-2); font-style:italic; }
 .vbl{ display:inline-flex; align-items:center; gap:.2em; vertical-align:-.16em; }
 .vbl span{ width:1.42em; height:1.42em; border-radius:.34em; background:#fff; display:inline-flex;
@@ -325,8 +331,8 @@ body.dark .paper::before{ background-image:radial-gradient(rgba(255,255,255,.13)
 .artifact li .v{ font-weight:600; text-align:right; }
 
 .ph{ display:flex; align-items:flex-start; gap:15px; }
-.pav{ width:58px; height:58px; flex-shrink:0; border-radius:var(--r-md); background:var(--ink); color:var(--on-ink);
-  display:flex; align-items:center; justify-content:center; font-size:19px; font-weight:600; }
+.pav{ width:58px; height:58px; flex-shrink:0; border-radius:50%; background:var(--ink); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-size:21px; font-weight:600; }
 .pid{ flex:1; min-width:0; padding-top:4px; }
 .pname{ font-size:19px; font-weight:600; line-height:1.2; letter-spacing:-.03em; }
 .pmeta{ display:flex; align-items:center; gap:9px; margin-top:7px; font-size:12.5px; color:var(--tx-2); flex-wrap:wrap; }
@@ -744,7 +750,7 @@ const I={
 const TINT=['#EEF1F5','#EDF3EE','#F4F0EA'];
 let sndOn=true;
 function sfx(n){ try{ if(sndOn&&window.CUE) window.CUE.play(n); }catch(e){} }
-const INK={max:100,min:26,sens:34,tol:.35,wet:.10,color:'#111113'};
+const INK={max:180,min:46,sens:30,tol:.2,wet:.38,color:'#111113'};
 
 /* ============================ persona packs ============================ */
 const PACKS = {"design": {"label": "Design", "role": "Product Designer", "cos": ["Linear", "Airbnb", "Vercel", "Figma"], "bio": "I would rather watch 1 person use the thing than read 10 opinions about it. I design in the open, ship the flow end to end, and write down why each call was made.", "guessLine": "Sounds like design. Tap to confirm.", "starterChips": ["I am a design student", "I work in design already", "I want to move into design"], "roleCards": ["Product Designer", "UX Designer", "Design Engineer"], "dreamExamples": ["Airbnb", "Figma"], "problemChips": ["Confusing tools", "Flows people abandon", "Products that feel cold"], "projects": [{"co": "Linear", "short": "Issue Triage Flow", "title": "Issue triage redesign for Linear", "weeks": 5, "desc": "Cut triage from 6 clicks to 2, tested the new flow against the old one with 8 users, and shipped the version that held up.", "steps": ["Audit the current triage flow", "Interview 3 people who use it daily", "Prototype 2 alternatives", "Test both and ship the winner"], "chips": [["play", "Walkthrough · 4:02"], ["doc", "Prototype"], ["doc", "Usability test"]]}, {"co": "Airbnb", "short": "Host Onboarding", "title": "Host listing flow rebuild for Airbnb", "weeks": 5, "desc": "Rebuilt a 12-step listing flow into four, and moved prototype completion from 38 to 61 percent across 9 sessions.", "steps": ["Map the 12 steps and their drop-offs", "Rewrite the flow as 4", "Build the clickable prototype", "Run 9 sessions and revise"], "chips": [["play", "Walkthrough · 4:24"], ["doc", "Flows"], ["doc", "Research notes"]]}, {"co": "Vercel", "short": "Dashboard System", "title": "Design system foundations for the Vercel dashboard", "weeks": 6, "desc": "Audited 41 screens, cut 90 loose components down to 23, and documented the ones the team reaches for.", "steps": ["Audit 41 screens for duplication", "Define the token and component set", "Build the library properly", "Document rules people will follow"], "chips": [["play", "Walkthrough · 3:36"], ["doc", "Component library"], ["doc", "Documentation"]]}], "skills": [["Interaction design", "Excellent", ""], ["Prototyping", "Excellent", ""], ["Design systems", "Strong", "aim Excellent"], ["Visual craft", "Strong", ""]], "soft": [["Design critique", "Strong", "aim Excellent"], ["Written rationale", "Excellent", ""], ["User interviews", "Good", "aim Strong"], ["Working with engineers", "Strong", ""]], "todo": [["Design critique", "Defend a screen to a room that disagrees with you."], ["Accessibility pass", "Take a shipped flow to WCAG AA without redesigning it."]], "roles": [["Product Designer", "$95k – $125k", "Most openings"], ["UX Designer", "$90k – $120k", "Research-heavy"], ["Design Engineer", "$110k – $140k", "Rarer, pays more"]]}, "ba": {"label": "Business analysis", "role": "Business Analyst", "cos": ["Stripe", "Shopify", "Spotify", "Notion"], "bio": "Give me a messy spreadsheet and a real question and I am happy. I chase the number that actually decides things, build the model behind it, and write the one page that ends the debate.", "guessLine": "Sounds like business analysis. Tap to confirm.", "starterChips": ["I am a business student", "I work with data already", "I want to move into strategy"], "roleCards": ["Business Analyst", "Strategy Analyst", "Operations Analyst"], "dreamExamples": ["Stripe", "Spotify"], "problemChips": ["Decisions made on gut feel", "Money leaking somewhere", "Reports nobody reads"], "projects": [{"co": "Shopify", "short": "Support Ops Audit", "title": "Support ops audit for Shopify", "weeks": 5, "desc": "Mapped where 1,200 weekly merchant tickets actually come from, found 34% traced back to one refund policy gap, and sized the fix at 18 saved agent hours a week.", "steps": ["Pull 3 months of ticket data", "Tag the top drivers by hand", "Trace the worst driver to its root cause", "Size the fix and present the case"], "chips": [["play", "Walkthrough · 3:48"], ["doc", "Ticket driver model"], ["doc", "Recommendation memo"]]}, {"co": "Spotify", "short": "Plan Pricing Model", "title": "Plan pricing analysis for Spotify", "weeks": 5, "desc": "Modeled what a $1 move on the Duo plan does to churn and revenue across three scenarios, then recommended the one that nets $2.1M a year without touching the student tier.", "steps": ["Rebuild the plan mix from public data", "Model churn sensitivity at three price points", "Stress test the ugliest scenario", "Write the pricing memo"], "chips": [["play", "Walkthrough · 4:15"], ["doc", "Pricing model"], ["doc", "Scenario memo"]]}, {"co": "Stripe", "short": "Funnel Economics", "title": "Activation funnel economics for Stripe", "weeks": 6, "desc": "Broke signup to first payment into five stages, found the 48-hour verification wait cost more accounts than the next three drop-offs combined, and priced the fix against two cheaper options.", "steps": ["Define the funnel stages and metrics", "Find where accounts actually stall", "Put a dollar value on each drop-off", "Rank three fixes by cost and payback"], "chips": [["play", "Walkthrough · 4:31"], ["doc", "Funnel model"], ["doc", "Cost-benefit brief"]]}], "skills": [["Spreadsheet modeling", "Excellent", ""], ["SQL", "Strong", "aim Excellent"], ["Market sizing", "Strong", ""], ["Data visualization", "Good", "aim Strong"]], "soft": [["Executive memos", "Excellent", ""], ["Stakeholder interviews", "Strong", "aim Excellent"], ["Defending a number", "Good", "aim Strong"], ["Scoping ambiguity", "Strong", ""]], "todo": [["Board-level memo", "Compress a six-week analysis into one page a CFO reads in two minutes."], ["Live model defense", "Walk a room through your assumptions while they try to break them."]], "roles": [["Business Analyst", "$70k – $95k", "Most openings"], ["Strategy Analyst", "$75k – $100k", "Fewer, more competitive"], ["Operations Analyst", "$65k – $90k", "Fastest to land"]]}, "swe": {"label": "Software engineering", "role": "Software Engineer", "cos": ["Stripe", "Vercel", "Datadog", "Linear"], "bio": "I would rather read the stack trace than guess. I ship small, test what I ship, and leave the codebase easier to read than I found it.", "guessLine": "Sounds like engineering. Tap to confirm.", "starterChips": ["I am a CS student", "I write code already", "I want to move into engineering"], "roleCards": ["Frontend Engineer", "Full-stack Engineer", "Backend Engineer"], "dreamExamples": ["Stripe", "Vercel"], "problemChips": ["Slow, clunky apps", "Things that break under load", "Code nobody can read"], "projects": [{"co": "Vercel", "short": "Deploy Status Dashboard", "title": "Deployment dashboard for Vercel", "weeks": 5, "desc": "Built a live dashboard tracking 200 deploys a day and cut the time to spot a failed build from four minutes to under ten seconds.", "steps": ["Map the data the dashboard actually needs", "Build the API layer and cache the hot paths", "Wire the live UI with loading and error states", "Ship behind a flag and watch real traffic"], "chips": [["play", "Walkthrough · 3:47"], ["doc", "Live demo"], ["doc", "Pull request"]]}, {"co": "Stripe", "short": "Webhook Retry Service", "title": "Webhook retry service for Stripe", "weeks": 5, "desc": "Built a retry service that took webhook delivery from 97.1% to 99.9% across 50k events a day, with dead-letter handling for the rest.", "steps": ["Trace the current delivery path and log every failure", "Design the retry schedule and dead-letter queue", "Build the service with a test around each failure mode", "Replay a week of production events against it"], "chips": [["play", "Walkthrough · 4:20"], ["doc", "Design doc"], ["doc", "Test suite"]]}, {"co": "Datadog", "short": "Ingest Latency Fix", "title": "Ingest performance work at Datadog", "weeks": 6, "desc": "Profiled a slow ingest path, cut p95 latency 43% by fixing two N+1 queries and one hot lock, and proved the fix held at triple the normal load.", "steps": ["Profile the pipeline and rank the bottlenecks", "Fix the top two and measure each one in isolation", "Load test at three times normal traffic", "Write up what moved the number and what did not"], "chips": [["play", "Walkthrough · 5:03"], ["doc", "Profiling report"], ["doc", "Load test"]]}], "skills": [["React and TypeScript", "Excellent", ""], ["API design", "Strong", "aim Excellent"], ["Testing", "Strong", ""], ["SQL and data modeling", "Good", "aim Strong"]], "soft": [["Code review", "Strong", "aim Excellent"], ["Written design docs", "Excellent", ""], ["Debugging under pressure", "Strong", ""], ["Working with product", "Good", "aim Strong"]], "todo": [["Code review", "Defend a diff to a senior engineer who wants it rewritten."], ["Performance pass", "Take a slow page under one second without a rewrite."]], "roles": [["Frontend Engineer", "$95k – $130k", "Most openings"], ["Full-stack Engineer", "$100k – $135k", "Startup favorite"], ["Backend Engineer", "$105k – $140k", "Fewer, pays more"]]}};
@@ -1180,6 +1186,16 @@ function logoChip(names){
   return '<span class="vbl">'+names.slice(0,4).map(n=>'<span>'+(LOGO[n]||'')+'</span>').join('')+'</span>';
 }
 function chip(inner){ return '<span class="vbc">'+inner+'</span>'; }
+/* one good colour per person, always the same one */
+const AVC=[['#4ADE80','#16a34a'],['#5D87FF','#2f57d6'],['#F5DE6B','#d99a12'],
+  ['#A8E6CF','#2f9e6b'],['#FF8A6B','#dd4f2c'],['#C8F169','#6ba30f']];
+function avPair(name){ const t=String(name||'Y');
+  let h=0; for(let i=0;i<t.length;i++) h=(h*31+t.charCodeAt(i))>>>0;
+  return AVC[h%AVC.length]; }
+function avStyle(name){ const c=avPair(name);
+  return 'background:linear-gradient(142deg,'+c[0]+','+c[1]+')'; }
+function avatar(name){ return '<span class="av" style="'+avStyle(name)+'">'+
+  String(name||'Y').charAt(0).toUpperCase()+'</span>'; }
 const T_=x=>'<span class="t">'+x+'</span>';
 const G_=x=>'<span class="g">'+x+'</span>';
 const low=x=>x?x.charAt(0).toLowerCase()+x.slice(1):x;
@@ -1199,7 +1215,7 @@ function SENTENCES(){
    { id:'s1', g:0, ready:!!(P.name||P.role), key:[P.name,P.level,P.role,P.company].join('|'),
      html:()=>{
        const who=P.name
-         ? chip('<span class="av">'+P.name.charAt(0).toUpperCase()+'</span>'+T_(P.name))
+         ? chip(avatar(P.name)+T_(P.name))
          : '';
        if(!P.role) return who+(P.level&&P.level!=='Finding out'
          ? G_(', a ')+chip(cico('cap')+T_(low(P.level)))+G_('.')
@@ -1489,11 +1505,27 @@ function showDraw(){
       safeTL(gsap.timeline().to(obj,{w:cover,duration:1.15,ease:'power3.in',onUpdate:redraw}),1900);
     }
     setTimeout(()=>{
-      document.body.classList.add('dark');
-      const d=$('drawScreen');
-      d.style.background='#0E0E10';
-      gsap.to(d,{opacity:0,duration:.7,delay:.1});
-      setTimeout(()=>{ d.style.display='none'; introStage(); },900);
+      /* the charge closes in from the edges */
+      const en=mk('div','energ'); document.body.appendChild(en);
+      const o={r:72};
+      en.style.setProperty('--r','72%');
+      sfx('bloom');
+      safeTL(gsap.timeline()
+        .to(en,{opacity:1,duration:.28},0)
+        .to(o,{r:0,duration:.72,ease:'power2.inOut',
+          onUpdate:()=>en.style.setProperty('--r',o.r+'%')},0.06),1600);
+      let flipped=false;
+      const flip=()=>{
+        if(flipped) return; flipped=true;
+        document.body.classList.add('dark');
+        const d=$('drawScreen');
+        d.style.background='#0E0E10';
+        gsap.to(d,{opacity:0,duration:.6});
+        safeTL(gsap.timeline().to(en,{opacity:0,duration:.62,ease:'power2.out'}),1200);
+        setTimeout(()=>{ if(en.isConnected) en.remove(); },1000);
+        setTimeout(()=>{ d.style.display='none'; introStage(); },820);
+      };
+      setTimeout(flip,980);
     }, skip?350:1250);
   }
 }
@@ -1865,7 +1897,7 @@ function buildBelong(s){
   const home=cities.length?cities[0]:(P.location||'anywhere');
   const more=cities.length>1?' +'+(cities.length-1):'';
   const h2=mk('div','ph');
-  h2.innerHTML='<div class="pav">'+(P.name||'Y').charAt(0).toUpperCase()+'</div>'+
+  h2.innerHTML='<div class="pav" style="'+avStyle(P.name)+'">'+(P.name||'Y').charAt(0).toUpperCase()+'</div>'+
     '<div class="pid" id="belongId"><div class="pname">'+
     (P.name?P.name+', this is where you belong':'This is where you belong')+'</div></div>';
   s.appendChild(h2);
@@ -1932,7 +1964,7 @@ const LINKEDIN={
 function buildLinked(s){
   const d=LINKEDIN[PKEY]||LINKEDIN.design;
   const h2=mk('div','ph');
-  h2.innerHTML='<div class="pav">'+(P.name||'Y').charAt(0).toUpperCase()+'</div>'+
+  h2.innerHTML='<div class="pav" style="'+avStyle(P.name)+'">'+(P.name||'Y').charAt(0).toUpperCase()+'</div>'+
     '<div class="pid"><div class="pname">'+(P.name||'You')+'</div><div class="pmeta">'+
     '<span class="m">'+(P.linkedUrl||d.headline)+'</span></div></div><div class="pbadge">'+I.link+
     '<span>'+(P.linked==='Resume'?'Resume':'LinkedIn')+'</span></div>';
@@ -2132,7 +2164,7 @@ function buildPortfolioShell(s){
   const d=pack();
   const boxP=mk('div','pfbox'); s.appendChild(boxP); s=boxP;
   const h2=mk('div','ph');
-  h2.innerHTML='<div class="pav">'+(P.name||'Y').charAt(0).toUpperCase()+'</div><div class="pid"><div class="pname">'+
+  h2.innerHTML='<div class="pav" style="'+avStyle(P.name)+'">'+(P.name||'Y').charAt(0).toUpperCase()+'</div><div class="pid"><div class="pname">'+
     (P.name||'You')+'</div><div class="pmeta"><span class="m">'+I.box+'<span>'+(P.aim||P.role||d.role)+'</span></span>'+
     '<span class="m">'+I.pin+'<span>'+placeShort()+'</span></span></div></div>'+
     '<div class="pbadge"><span>Verified by Zero</span>'+I.spark+'</div>';
