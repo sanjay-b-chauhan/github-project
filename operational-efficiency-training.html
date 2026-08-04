@@ -69,8 +69,6 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
 .s1vz .plus{fill:var(--neg);font-size:11.5px;font-weight:600}
 .s1vz .mag circle{fill:none;stroke:var(--ink-2);stroke-width:3.2}
 .s1vz .mag line{stroke:var(--ink-2);stroke-width:3.2;stroke-linecap:round}
-.s1qa{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;text-align:center;padding:0 20px}
-.s1qa .qline{position:absolute;max-width:22ch}
 .s1vz{width:min(91vw,600px,calc((100vh - 340px)*1.83))}
 .s1micro2{display:inline}
 /* ============ scenes 2 & 18 — example cards ============ */
@@ -509,10 +507,6 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
           <span class="s1micro2" style="display:none">Make what you already spend go <span class="hl">further</span>.</span>
         </div>
       </div>
-      <div class="s1qa">
-        <div class="qline q statement">What are we actually solving for?</div>
-        <div class="qline a statement">Take the costs a company already has, and make them <span class="hl">work harder</span>.</div>
-      </div>
     </section>
 
     <!-- ============ SCENE s2 — real examples ============ -->
@@ -542,7 +536,6 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
     <!-- ============ SCENE s18 — growth vs efficiency ============ -->
     <section class="scene s18" data-sc="s18">
       <div class="wrap">
-        <div class="s18q"><div class="statement">Which one is an <span class="hl">efficiency</span> play?</div></div>
         <div class="cards">
           <div class="examp e-ubr">
             <span class="ring"></span>
@@ -674,7 +667,6 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
         <div class="pillrow">
           <div class="minipill p-rows"><b class="rowsn">0</b>&nbsp;rows &times; 11 columns &middot; 4,180 stores</div>
           <div class="minipill neg p-eye">Way too much to eyeball</div>
-          <div class="minipill p-q"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><circle cx="12" cy="17.2" r="0.6" fill="currentColor"/></svg>What do you think Daniel does here?</div>
         </div>
       </div>
     </section>
@@ -854,7 +846,6 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);overflow
             <div class="rec r3 hotrec"><span class="dot"></span>Cut food waste 30%</div>
           </div>
           <div class="kstate ks1"><div class="statement">The <span class="hl">one number</span> you're trying to move.</div></div>
-          <div class="kstate ks2"><div class="statement">Which KPI was Daniel moving?</div></div>
         </div>
         <div class="kpis">
           <div class="kpi k1"><span class="kt">The impact</span><span class="kv"><span class="big"><span class="m50">$0</span>M</span> a year<br>back in costs</span></div>
@@ -1019,7 +1010,6 @@ const INIT={
     gsap.set($('.peat',r),{scaleX:0,transformOrigin:'right center',transformBox:'fill-box'});
     gsap.set($('.microdef',r),{opacity:0,y:14});
     $('.s1micro1',r).style.display='';$('.s1micro2',r).style.display='none';
-    gsap.set($$('.qline',r),{opacity:0,y:18});
     gsap.set($('.mag',r),{x:210,y:58});
   },
   s2(){const r=scEl.s2;
@@ -1028,7 +1018,6 @@ const INIT={
     $$('.pd',r).forEach(p=>{const L=p._len||(p._len=p.getTotalLength());gsap.set(p,{strokeDasharray:L,strokeDashoffset:L});});
   },
   s18(){const r=scEl.s18;
-    gsap.set($('.s18q',r),{opacity:0,y:14});
     gsap.set($$('.examp',r),{opacity:0,y:22,scale:.92});
     gsap.set($$('.verdict',r),{opacity:0,scale:.6});
     gsap.set($$('.ring',r),{opacity:0});
@@ -1059,7 +1048,7 @@ const INIT={
     gsap.set($('.scrollinner',r),{y:0});
     $('.rowcounter',r).textContent='row 1 of 47,184';
     $('.rowsn',r).textContent='0';
-    gsap.set($$('.p-rows,.p-eye,.p-q',r),{opacity:0,y:14});
+    gsap.set($$('.p-rows,.p-eye',r),{opacity:0,y:14});
   },
   s7(){const r=scEl.s7;
     gsap.set($('.clw',r),{opacity:0,y:24,scale:.97});
@@ -1191,15 +1180,11 @@ FN.s1_further=i=>{const r=scEl.s1,tl=T();
   tl.fromTo($('.microdef',r),{opacity:0,y:12},{opacity:1,y:0,duration:.45,ease:E2},.34);
   if(i){$('.s1micro1',r).style.display='none';$('.s1micro2',r).style.display='';}
   return fin(tl,i);};
-FN.s1_qdim=i=>{const r=scEl.s1,tl=T();
-  tl.to([$('.s1vz',r),$('.microdef',r),$('.s1title',r)],{opacity:.10,scale:.97,duration:.7,ease:E1},0);
-  return fin(tl,i);};
-FN.s1_question=i=>{const r=scEl.s1,tl=T();
-  tl.fromTo($('.qline.q',r),{opacity:0,y:18},{opacity:1,y:0,duration:.55,ease:E2},0);
-  return fin(tl,i);};
-FN.s1_answer=i=>{const r=scEl.s1,tl=T();
-  tl.to($('.qline.q',r),{opacity:0,y:-14,duration:.35,ease:'power1.in'},0);
-  tl.fromTo($('.qline.a',r),{opacity:0,y:18},{opacity:1,y:0,duration:.6,ease:E2},.3);
+FN.noop=i=>{const tl=T();return fin(tl,i);};
+/* "make them work harder" — the profit row itself is the payoff, no overlay text */
+FN.s1_harder=i=>{const r=scEl.s1,tl=T();
+  tl.fromTo([$('.pfill',r),$('.pext',r)],{scale:1},{scale:1.06,duration:.3,ease:E1,transformOrigin:'left center',transformBox:'fill-box'},0)
+    .to([$('.pfill',r),$('.pext',r)],{scale:1,duration:.4,ease:E1},.3);
   return fin(tl,i);};
 
 /* ---- s2 ---- */
@@ -1219,8 +1204,7 @@ FN.s2_principle=i=>{const r=scEl.s2,tl=T();
 
 /* ---- s18 ---- */
 FN.s18_options=i=>{const r=scEl.s18,tl=T();
-  rise(tl,[$('.s18q',r)],0,.5);
-  pop(tl,$$('.examp',r),.25,.55);
+  pop(tl,$$('.examp',r),.1,.55);
   return fin(tl,i);};
 FN.s18_pick=i=>{const r=scEl.s18,tl=T();
   tl.fromTo($('.e-abn .ring',r),{opacity:0},{opacity:1,duration:.35,ease:E1},0);
@@ -1312,9 +1296,6 @@ FN.s6_rows=i=>{const r=scEl.s6,tl=T();
 FN.s6_eye=i=>{const r=scEl.s6,tl=T();
   rise(tl,[$('.p-eye',r)],0,.4);
   tl.fromTo($('.p-eye',r),{x:0},{x:3,duration:.06,repeat:4,yoyo:true,ease:'none'},.35).set($('.p-eye',r),{x:0});
-  return fin(tl,i);};
-FN.s6_q=i=>{const r=scEl.s6,tl=T();
-  rise(tl,[$('.p-q',r)],0,.45);
   return fin(tl,i);};
 
 /* ---- s7 ---- */
@@ -1462,12 +1443,8 @@ FN.s11_kpidef=i=>{const r=scEl.s11,tl=T();
   tl.to($('.recs',r),{opacity:0,y:-10,duration:.4,ease:'power1.in'},0);
   tl.fromTo($('.ks1',r),{opacity:0,y:16},{opacity:1,y:0,duration:.55,ease:E2},.35);
   return fin(tl,i);};
-FN.s11_whichq=i=>{const r=scEl.s11,tl=T();
-  tl.to($('.ks1',r),{opacity:0,y:-12,duration:.35,ease:'power1.in'},0);
-  tl.fromTo($('.ks2',r),{opacity:0,y:16},{opacity:1,y:0,duration:.5,ease:E2},.3);
-  return fin(tl,i);};
 FN.s11_kpi2=i=>{const r=scEl.s11,tl=T();
-  tl.to($('.ks2',r),{opacity:0,y:-12,duration:.3,ease:'power1.in'},0);
+  tl.to($('.ks1',r),{opacity:0,y:-12,duration:.3,ease:'power1.in'},0);
   tl.set($('.k2',r),{display:'inline-flex'},.22);
   pop(tl,[$('.k2',r)],.25,.55);
   return fin(tl,i);};
@@ -1519,9 +1496,10 @@ const BEATS=[
  {t:27.80,s:'s1', f:'s1_fix',    cc:"Fix it without breaking the business"},
  {t:29.95,s:'s1', f:'s1_micro',  cc:"More profit isn't always selling more"},
  {t:33.90,s:'s1', f:'s1_further',cc:"Make what you already spend go further"},
- {t:37.70,s:'s1', f:'s1_qdim',   cc:""},
- {t:42.40,s:'s1', f:'s1_question',cc:"What are we actually solving for?"},
- {t:45.10,s:'s1', f:'s1_answer', cc:"Costs you already have, working harder"},
+ {t:37.70,s:'s1', f:'noop',     cc:"I want to hear this one from you"},
+ {t:42.40,s:'s1', f:'noop',     cc:"What are we actually solving for here?"},
+ {t:45.10,s:'s1', f:'noop',     cc:"That's exactly what we're going for"},
+ {t:47.40,s:'s1', f:'s1_harder',cc:"Costs you already have, working harder"},
  {t:50.90,s:'s2', f:'s2_amazon', cc:"Amazon: cost per package"},
  {t:54.60,s:'s2', f:'s2_amzfocus',cc:"Shaving pennies off every box shipped"},
  {t:58.75,s:'s2', f:'s2_tesla',  cc:"Tesla: cost to build each car"},
@@ -1556,7 +1534,7 @@ const BEATS=[
  {t:125.15,s:'s6',f:'s6_scroll', cc:"Store-level costs, thousands of locations"},
  {t:127.80,s:'s6',f:'s6_rows',   cc:"Tens of thousands of rows"},
  {t:129.35,s:'s6',f:'s6_eye',    cc:"No way he's eyeballing that"},
- {t:130.75,s:'s6',f:'s6_q',     cc:"What do you think Daniel does here?"},
+ {t:130.75,s:'s6',f:'noop',     cc:"What do you think Daniel does here?"},
  {t:133.30,s:'s7',f:'s7_open',   cc:"He drops it into Claude"},
  {t:134.35,s:'s7',f:'s7_type1',  cc:"Where are costs climbing fastest vs sales?"},
  {t:136.95,s:'s7',f:'s7_send1',  cc:null},
@@ -1588,7 +1566,7 @@ const BEATS=[
  {t:188.70,s:'s11',f:'s11_rec3', cc:"Cut food waste 30%"},
  {t:190.30,s:'s11',f:'s11_kpi1', cc:"About $50M a year back in costs"},
  {t:193.50,s:'s11',f:'s11_kpidef',cc:"A KPI: the one number you're trying to move"},
- {t:197.70,s:'s11',f:'s11_whichq',cc:"Which KPI was Daniel moving?"},
+ {t:197.70,s:'s11',f:'noop',    cc:"Which KPI was Daniel moving?"},
  {t:201.40,s:'s11',f:'s11_kpi2', cc:"Food cost as a percent of sales"},
  {t:204.10,s:'s11',f:'s11_tie',  cc:"Tie every recommendation to a real number"},
  {t:208.45,s:'s11',f:'s11_dollar',cc:"Leadership acts on the dollar impact"},
