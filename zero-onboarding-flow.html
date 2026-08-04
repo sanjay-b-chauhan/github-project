@@ -768,11 +768,13 @@ function scanSweep(then){
 function pump(){
   if(scanning||!queue.length) return;
   scanning=true;
+  queue.sort((a,b)=>a.o-b.o);
   const item=queue.shift();
   scanSweep(()=>{
     const vb=$('vb'); if(!vb){ scanning=false; return; }
-    const row=mk('div','vbs'); row.innerHTML=item.html();
-    vb.appendChild(row);
+    const row=mk('div','vbs'); row.dataset.o=item.o; row.innerHTML=item.html();
+    const after=[...vb.children].find(r=>+r.dataset.o>item.o);
+    if(after) vb.insertBefore(row,after); else vb.appendChild(row);
     const bits=row.querySelectorAll('.vbc, .vbl, .vbq');
     safeTL(gsap.timeline()
       .fromTo(row,{opacity:0,y:14},{opacity:1,y:0,duration:.5})
@@ -785,8 +787,8 @@ function renderBoard(){
   const s2=$('scroll');
   let vb=$('vb');
   if(!vb){ s2.innerHTML=''; vb=mk('div','vb'); vb.id='vb'; s2.appendChild(vb); }
-  SENTENCES().forEach(x=>{
-    if(x.ready&&!shown[x.id]){ shown[x.id]=1; queue.push(x); }
+  SENTENCES().forEach((x,i)=>{
+    if(x.ready&&!shown[x.id]){ shown[x.id]=1; x.o=i; queue.push(x); }
   });
   pump();
 }
