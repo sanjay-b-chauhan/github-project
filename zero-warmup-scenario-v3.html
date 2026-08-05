@@ -1304,6 +1304,12 @@ td.cell-active::after{border-color:var(--accent)}
 .app.serif .resp .r-text .hl{background:none!important;padding:0!important;
   margin:0!important;border-radius:0!important}
 
+/* the status is a caption above the praise, which is the headline */
+.finmodal .fin-eyebrow{font-family:var(--sans);font-size:12.5px;font-weight:600;
+  color:var(--tx-3);margin-bottom:6px}
+.finmodal .fin-h{font-size:26px;font-weight:700;letter-spacing:-.025em;
+  line-height:1.2;color:var(--tx);margin-bottom:22px}
+
 /* three stats, so three columns rather than a 2x2 grid with a gap in it */
 .finmodal .fin-stats{grid-template-columns:repeat(3,1fr)}
 
@@ -3430,17 +3436,16 @@ function showFinaleModal(xp, stats){
   const back=document.createElement('div');back.className='finmodal-back';
   back.innerHTML='<div class="finmodal">'
    +'<div class="fin-star"><svg width="26" height="26" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l2.2 7.8L22 12l-7.8 2.2L12 22l-2.2-7.8L2 12l7.8-2.2z"/></svg></div>'
-   +'<div class="fin-h">Warm-up complete</div>'
+   +'<div class="fin-eyebrow">Warm-up scenario completed</div>'
+   +'<div class="fin-h">You did a great job today.</div>'
    /* every stat lives in here now, not behind the popup */
    +'<div class="fin-stats">'
    +'<div class="fin-stat"><div class="n g">+'+xp+'</div><div class="l">XP earned</div></div>'
    +'<div class="fin-stat"><div class="n g sm">'+(stats.cal||'—')+'</div><div class="l">Calibration</div></div>'
    +'<div class="fin-stat"><div class="n">'+(stats.time||'—')+'</div><div class="l">Time</div></div>'
    +'</div>'
-   +'<div class="fin-p">You did a great job today.</div>'
    +'<button class="wu-cta fin-cont">Continue to next scenario'
    +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>'
-   +'<button class="fin-again" onclick="location.reload()">Run it again</button>'
    +'</div>';
   document.body.appendChild(back);
   if(window.gsap){
