@@ -1978,6 +1978,14 @@ let forceFollow=false;
 addEventListener('unhandledrejection',e=>{
   try{console.error('[warm-up] sequence broke:',e.reason)}catch(_){}
 });
+function revealNew(el){
+  const h=$('holder'); if(!h||!el) return;
+  requestAnimationFrame(()=>{
+    const hr=h.getBoundingClientRect(), r=el.getBoundingClientRect();
+    const t=Math.max(0, h.scrollTop + (r.top-hr.top) - Math.round(h.clientHeight*0.34));
+    h.scrollTo({top:t, behavior:'smooth'});
+  });
+}
 function scrollToCurrent(instant){
   const h=$('holder');
   if(userScrolled && !forceFollow) return;   /* reading something else — unless this is the ending, which must stay in view */
@@ -2875,28 +2883,28 @@ async function renderEnd(){
   await wait(1300);
   {const _b=$('wuBar'); if(_b)_b.innerHTML='';}
   const _sent=document.createElement('div'); flow.appendChild(_sent);
+  _sent.className='sentmark-anchor';
   _sent.outerHTML='<div class="sentmark"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Delivered to M. Webb · 2:14 PM</div>';
   sndSend();
-  scrollToCurrent();
   await wait(900);
   /* Sophia forwards a cover note */
   const fwd=document.createElement('div');fwd.className='fwdnote';fwd.textContent='Sophia added a note: “The analysis is airtight. Worth two minutes of your afternoon.”';
   flow.appendChild(fwd);G.fromTo(fwd,{opacity:0,y:6},{opacity:1,y:0,duration:.4});
-  scrollToCurrent();
+  revealNew(fwd);
   await wait(1500);
   /* 3 · the CFO is typing, then replies */
   const cfo=document.createElement('div');cfo.className='cfocard';
   cfo.innerHTML=`<span class="cfo-av">MW</span><div style="flex:1"><div class="cfo-name">Marcus Webb · CFO <span class="cfo-time" id="cfoTime">online now</span></div><div class="typing" id="cfoTyping"><span></span><span></span><span></span></div><div class="cfo-msg" style="display:none"></div></div>`;
   flow.appendChild(cfo);
   G.fromTo(cfo,{y:16,opacity:0},{y:0,opacity:1,duration:.5,ease:'power3.out'});
-  scrollToCurrent();
+  revealNew(cfo);
   const tick=setInterval(()=>sndType(),620);
   await wait(2800);
   clearInterval(tick);
   cfo.querySelector('#cfoTyping').style.display='none';
   cfo.querySelector('#cfoTime').textContent='replied just now';
   cfo.querySelector('.cfo-msg').style.display='';
-  scrollToCurrent();
+  revealNew(cfo);
   sndPing();
   beatSkip=false;S.streaming=true;setContinue('skip');
   await streamInto(cfo.querySelector('.cfo-msg'),`Read it twice. This is the clearest cost case I've seen this quarter. You have my sign-off for a <b>two-market dispatch pilot</b>. Hold 5% there and we take it national. Good work, both of you.`,30);
@@ -2906,7 +2914,7 @@ async function renderEnd(){
   const sline=document.createElement('div');sline.className='beat';
   sline.innerHTML='<span class="bub on">'+AVA+'</span><div class="btext"></div>';
   sline.style.marginTop='22px';
-  flow.appendChild(sline);scrollToCurrent();
+  flow.appendChild(sline);revealNew(sline);
   beatSkip=false;S.streaming=true;setContinue('skip');
   await streamInto(sline.querySelector('.btext'),`He never replies the same day. <b>You did that.</b>`,40);
   S.streaming=false;setContinue('off');
@@ -2917,7 +2925,7 @@ async function renderEnd(){
   closing.textContent='You did a genuinely great job today. Thank you for running this with me.';
   flow.appendChild(closing);
   G.fromTo(closing,{y:14,opacity:0},{y:0,opacity:1,duration:.5,ease:'power3.out'});
-  scrollToCurrent();
+  revealNew(closing);
   await wait(400);
   {
     const bar=$('wuBar');
