@@ -187,27 +187,31 @@ svg{ display:block; }
   transition:color .2s var(--e), border-color .2s var(--e); }
 .devp:hover{ color:var(--tx); border-color:var(--tx-4); }
 /* the role pool has to hold 50 to 60 without becoming a wall */
-.pool{ max-width:730px; margin:0 auto; }
-.poolf{ display:flex; flex-wrap:wrap; gap:7px; justify-content:center; margin-bottom:14px; }
+.pool{ max-width:760px; margin:0 auto; }
+.poolf{ display:flex; flex-wrap:wrap; gap:7px; justify-content:center; margin-bottom:16px; }
 .pf{ font-size:12.5px; padding:7px 14px; border-radius:999px; border:1px solid var(--line);
   background:transparent; color:var(--tx-2); }
 .pf.on{ background:var(--ink); color:var(--on-ink); border-color:transparent; }
-.poolw{ max-height:420px; overflow-y:auto; padding:2px; scrollbar-width:thin; }
-.pgrp{ font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--tx-4);
-  padding:14px 4px 7px; position:sticky; top:0; background:var(--page); z-index:1; }
-.prow{ width:100%; display:grid; grid-template-columns:22px 1fr auto auto; gap:12px; align-items:center;
-  padding:11px 13px; border-radius:12px; border:1px solid transparent; text-align:left;
-  transition:background .18s var(--e), border-color .18s var(--e); }
-.prow:hover{ background:var(--wash); }
-.prow.on{ border-color:var(--ink); background:var(--wash); }
-.prow .pl{ width:22px; height:22px; display:grid; place-items:center; }
-.prow .pl svg{ width:100%; height:100%; }
-.prow .pr{ font-size:15px; font-weight:500; color:var(--tx); letter-spacing:-.02em; }
-.prow .pc{ font-size:12.5px; color:var(--tx-2); }
-.prow .pt{ font-size:12px; color:var(--tx-2); white-space:nowrap; }
-.prow.on .pt{ color:var(--ink); font-weight:600; }
-.prow .pp{ font-size:13.5px; font-variant-numeric:tabular-nums; color:var(--tx); white-space:nowrap; }
-.poolc{ margin-top:12px; font-size:12.5px; color:var(--tx-3); text-align:center; }
+.poolw{ max-height:544px; overflow-y:auto; padding:3px; scrollbar-width:thin; }
+.poolg{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+.pcard{ width:100%; aspect-ratio:1; min-width:0; overflow:hidden; display:flex; flex-direction:column;
+  align-items:flex-start; text-align:left;
+  padding:15px 14px; border-radius:16px; background:var(--card); border:1px solid var(--line);
+  transition:border-color .2s var(--e), transform .2s var(--e); }
+.pcard:hover{ transform:translateY(-2px); border-color:var(--tx-4); }
+.pcard.on{ border-color:var(--ink); }
+.pcard .ph{ width:100%; display:flex; align-items:center; justify-content:space-between; }
+.pcard .pl{ width:24px; height:24px; display:grid; place-items:center; }
+.pcard .pl svg{ width:100%; height:100%; }
+.pcard .pt{ font-size:11px; color:var(--tx-3); letter-spacing:.01em; }
+.pcard.on .pt{ color:var(--ink); font-weight:600; }
+.pcard .pr{ margin-top:auto; font-size:14.5px; font-weight:500; line-height:1.25;
+  letter-spacing:-.02em; color:var(--tx); max-width:100%; overflow-wrap:anywhere; }
+.pcard .pc{ margin-top:5px; font-size:12px; color:var(--tx-2); max-width:100%;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.pcard .pp{ margin-top:6px; font-size:13px; font-variant-numeric:tabular-nums; color:var(--tx);
+  white-space:nowrap; }
+.poolc{ margin-top:14px; font-size:12.5px; color:var(--tx-3); text-align:center; }
 /* a job, not a tag: the company, what the job is, where, and what it pays */
 .jobs{ display:grid; grid-template-columns:1fr 1fr; gap:12px; max-width:730px; margin:0 auto; }
 .job{ position:relative; display:grid; grid-template-columns:auto 1fr auto; gap:4px 10px;
@@ -2209,29 +2213,28 @@ function listingsStage(){
       : filt==='mine' ? want.indexOf(r[0])>=0 : r[4]===filt);
   }
   function paint(){
-    [...fr.children].forEach((b,i)=>{
-      const keys=['all','S','A','B','mine'].filter(k=>k!=='mine'||want.length);
-      b.classList.toggle('on',keys[i]===filt); });
+    const keys=['all','S','A','B'].concat(want.length?['mine']:[]);
+    [...fr.children].forEach((b,i)=> b.classList.toggle('on',keys[i]===filt));
     list.innerHTML='';
+    const g=mk('div','poolg');
     const rows=visible();
-    const byRole={};
-    rows.forEach(r=>{ (byRole[r[1]]=byRole[r[1]]||[]).push(r); });
-    Object.keys(byRole).forEach(role=>{
-      list.appendChild(mk('div','pgrp',role));
-      byRole[role].forEach(r=>{
-        const [co,ro,sen,pay,tier]=r;
-        const b=mk('button','prow'+(picks.indexOf(r)>=0?' on':''));
-        b.innerHTML='<span class="pl">'+(LOGO[co]||'')+'</span>'
-          +'<span class="pc">'+co+' &middot; '+sen+'</span>'
-          +'<span class="pt">'+tier+' tier</span>'
-          +'<span class="pp">'+pay+'</span>';
-        b.setAttribute('role','checkbox');
-        b.setAttribute('aria-checked',picks.indexOf(r)>=0?'true':'false');
-        b.onclick=()=>{ const i=picks.indexOf(r);
-          if(i>=0) picks.splice(i,1); else picks.push(r);
-          sfx('toggle'); paint(); dockNow(); };
-        list.appendChild(b); });
+    rows.forEach(r=>{
+      const [co,ro,sen,pay,tier]=r;
+      const b=mk('button','pcard'+(picks.indexOf(r)>=0?' on':''));
+      b.innerHTML='<span class="ph"><span class="pl">'+(LOGO[co]||'')+'</span>'
+        +'<span class="pt">'+tier+' tier</span></span>'
+        +'<span class="pr">'+ro+'</span>'
+        +'<span class="pc">'+co+' &middot; '+sen+'</span>'
+        +'<span class="pp">'+pay+'</span>';
+      b.setAttribute('role','checkbox');
+      b.setAttribute('aria-checked',picks.indexOf(r)>=0?'true':'false');
+      b.setAttribute('aria-label',ro+' at '+co+', '+sen+', '+tier+' tier, '+pay);
+      b.onclick=()=>{ const i=picks.indexOf(r);
+        if(i>=0) picks.splice(i,1); else picks.push(r);
+        sfx('toggle'); paint(); dockNow(); };
+      g.appendChild(b);
     });
+    list.appendChild(g);
     cnt.textContent=rows.length+' roles'+(picks.length?', '+picks.length+' picked':'');
   }
   function dockNow(){
