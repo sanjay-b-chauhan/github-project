@@ -155,7 +155,8 @@ svg{ display:block; }
 .draw::before{ content:''; position:absolute; inset:0; pointer-events:none; z-index:1; opacity:.5;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.055'/%3E%3C/svg%3E"); }
 .dcenter{ text-align:center; pointer-events:none; position:relative; }
-.dh{ font-family:var(--serif); font-size:clamp(28px,2.3vw,42px); letter-spacing:-.03em; line-height:1.15; }
+.dh{ font-family:var(--f); font-weight:500; font-size:clamp(15px,1.15vw,19px);
+  letter-spacing:-.01em; line-height:1.4; color:var(--tx-2); }
 
 .said{ min-height:24px; margin-bottom:18px; font-size:15px; color:var(--tx-2); text-align:center; text-wrap:balance; position:relative; }
 .said .hl{ color:var(--tx); font-weight:600; }
@@ -785,7 +786,7 @@ body.dark .lit{ animation-name:litd; }
 <div class="draw" id="drawScreen">
   <canvas id="drawCanvas"></canvas>
   <div class="dcenter">
-    <div class="dh" id="dH">Draw ZERO to start.</div>
+    <div class="dh" id="dH">draw zero to start</div>
   </div>
 </div>
 
@@ -1480,19 +1481,6 @@ function opener(){
   lastOpener=i; return OPENERS[i];
 }
 function said(bit){ return opener()+', '+bit+'.'; }
-/* say it back as meaning, not as the label they just tapped. The doc is explicit:
-   "sounds like you want strategy work, somewhere small and fast", never a bare echo. */
-const ECHO={
-  'Startup':'somewhere small and fast', 'Scale-up':'somewhere still growing',
-  'Big tech':'a big name then', 'Agency':'agency side',
-  'Remote':'remote, wherever you are', 'Hybrid':'hybrid then', 'In person':'in the room',
-  'Now':'you want this now', 'In 3 months':'three months', 'This year':'this year then',
-  'No rush':'no rush, but still moving',
-  'Full time':'full time', 'An internship':'an internship to get in', 'Either':'either, if it fits',
-  'Student':'still studying', 'Recent graduate':'just out', 'Working':'already working',
-  'Between things':'between things right now'
-};
-function echoOf(v){ return ECHO[v]||low(v); }
 
 /* ============================ panel ============================ */
 const SHORT={ 'Tech and AI':'tech','Health':'health','Finance':'finance','Climate':'climate',
@@ -1934,7 +1922,7 @@ async function introStage(stopBeforeName){
   safeTL(gsap.timeline().to(['#logoPill','.tr'],{opacity:1,y:0,duration:.55,stagger:.07}),1400);
   await voLine("Hey, I'm the voice of the founder.",2000);
   await voLine("I'm here to get you hired.",1700);
-  await voLine('First, I want to understand you properly.',2200);
+  await voLine('First, we want to understand everything about you.',2400);
   await voLine('A few questions, about five minutes.',2000);
   await voLine('Then a vision board, and the road to get there.',2400);
   await voLine('Ready?',1200);
@@ -2006,7 +1994,7 @@ function stageStage(){
   choices(box,[['cap','Studying','Student'],['flag','Just graduated','Recent graduate'],
     ['bld','Working','Working'],['route','Between things','Between things']],
     async v=>{ P.level=v; renderBoard();
-      await reflect(said(echoOf(v)));
+      await reflect(said(v.toLowerCase()));
       afterCommit(()=>go(nextAlign)); });
 }
 function doingStage(){
@@ -2024,7 +2012,7 @@ function modeStage(){
   const {box}=turn({q:'In person, hybrid, or remote?'});
   choices(box,[['bld','In person','In person'],['route','Hybrid','Hybrid'],['globe','Remote','Remote']],
     async v=>{ P.workmode=v; renderBoard();
-      await reflect(said(echoOf(v)));
+      await reflect(said(v.toLowerCase()));
       afterCommit(()=>go(nextAlign)); });
 }
 
@@ -2055,7 +2043,7 @@ function companyStage(){
     ['bldg','Big tech','Big tech'],
     ['users','An agency','Agency'],
   ],async v=>{ P.company=v; renderBoard();
-    await reflect(said(echoOf(v)));
+    await reflect(said(v.toLowerCase()));
     afterCommit(()=>go(nextAlign)); });
 }
 
@@ -2159,7 +2147,7 @@ function timelineStage(){
   choices(box,[['rocket','Now','Now'],['cal','In 3 months','In 3 months'],
     ['cal','This year','This year'],['hour','No rush','No rush']],
     async v=>{ P.timeline=v; renderBoard();
-      await reflect(said(echoOf(v)));
+      await reflect(said(v.toLowerCase()));
       afterCommit(()=>go(nextAlign)); });
 }
 function jobtypeStage(){
@@ -2167,7 +2155,7 @@ function jobtypeStage(){
   choices(box,[['bag','Full time','Full time'],['cap','An internship','An internship'],
     ['globe','Either one','Either']],
     async v=>{ P.jobtype=v; renderBoard();
-      await reflect(said(echoOf(v)),1300);
+      await reflect(said(v.toLowerCase()),1300);
       afterCommit(()=>go(nextAlign)); });
 }
 /* the founder asked for one question that is about the person, not the job */
