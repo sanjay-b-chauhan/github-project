@@ -993,6 +993,27 @@ function extractInto(text){
   const ind=grab(text,KW.industry); if(ind&&!P.industry){P.industry=ind;found.push('industry');}
   const lv=grab(text,KW.level); if(lv&&!P.level){P.level=lv;}
   for(const r of pack().roleCards) if(text.toLowerCase().includes(r.toLowerCase())&&!P.role){P.role=r;found.push('role');}
+  const t=text.toLowerCase();
+  /* a named company, so "more like Figma" lands without re-asking */
+  if(!P.dream){
+    const names=(DREAMS[PKEY]||DREAMS.design).concat(pack().cos||[],Object.keys(LOGO||{}));
+    for(const n of names){ if(n&&n.length>2&&t.includes(n.toLowerCase())){ P.dream=n; found.push('dream'); break; } }
+  }
+  if(!P.workmode){
+    if(/fully remote|\bremote\b|from home/.test(t)){ P.workmode='Remote'; found.push('mode'); }
+    else if(/hybrid/.test(t)){ P.workmode='Hybrid'; found.push('mode'); }
+    else if(/in person|in-person|onsite|on-site|in the office/.test(t)){ P.workmode='In person'; found.push('mode'); }
+  }
+  if(!P.timeline){
+    if(/right now|straight away|asap|as soon as/.test(t)){ P.timeline='Now'; found.push('timing'); }
+    else if(/3 months|three months/.test(t)){ P.timeline='In 3 months'; found.push('timing'); }
+    else if(/this year|by the end of the year/.test(t)){ P.timeline='This year'; found.push('timing'); }
+    else if(/no rush|no hurry/.test(t)){ P.timeline='No rush'; found.push('timing'); }
+  }
+  if(!P.jobtype){
+    if(/internship|intern\b/.test(t)){ P.jobtype='An internship'; found.push('shape'); }
+    else if(/full time|full-time/.test(t)){ P.jobtype='Full time'; found.push('shape'); }
+  }
   return found;
 }
 
@@ -2167,17 +2188,33 @@ function visionStage(fromEdit){
     else if(v==='fix'){ go(editStage); }
     else { go(addMoreStage); } },{pill:true,nomorph:true});
 }
+/* no menu of edit options. They say what is wrong in their own words, Zero
+   clears that one thing and reads the same sentence for the correction. */
 function editStage(){
-  const {box}=turn({q:'What should I fix?'});
-  const map={'Role':roleStage,'Company':companyStage,'Dream':dreamStage,'Where':locationStage,
-    'Industry':industryStage,'Timing':timelineStage};
-  const ic={'Role':'target','Company':'bld','Dream':'spark','Where':'pin','Industry':'globe','Timing':'clock'};
-  choices(box,Object.keys(map).map(k=>[ic[k],k,k]),v=>{
-    if(v==='Role') P.role=null;
-    if(v==='Where'){ P.location=null; P.citynext=null; }
-    if(v==='Industry') P.industry=null;
-    if(v==='Timing'){ P.timeline=null; P.jobtype=null; }
-    editReturn='vision'; go(map[v]); },{pill:true,nomorph:true});
+  const {box}=turn({q:"What doesn't line up?"});
+  let answered=false;
+  const take=async text=>{
+    answered=true;
+    const t=(text||'').toLowerCase();
+    if(/\brole\b|\bjob\b|title|position/.test(t)) P.role=null;
+    if(/compan|startup|scale|big tech|agency/.test(t)) P.company=null;
+    if(/dream/.test(t)) P.dream=null;
+    if(/cit(y|ies)|live|based|move|relocat/.test(t)) P.citynext=null;
+    if(/remote|hybrid|in person|office/.test(t)) P.workmode=null;
+    if(/industr|space|sector/.test(t)) P.industry=null;
+    if(/tim(e|ing)|month|year|deadline/.test(t)){ P.timeline=null; P.jobtype=null; }
+    if(/problem|project|work on/.test(t)) P.problems=null;
+    extractInto(text);              /* the same sentence usually carries the fix */
+    renderBoard();
+    await reflect(said('changed that'),1300);
+    if(!ALIGN.find(a=>!a[1]())){ visionStage(true); return; }
+    editReturn='vision';
+    go(nextAlign);
+  };
+  dockInput(take);
+  const g=gen;
+  setTimeout(()=>{ if(answered||locked||g!==gen) return;
+    chipsRow(box,['The role','The companies','Where I want to be','The timing'],take); },7000);
 }
 function addMoreStage(){
   turn({q:'Tell me more.'});
