@@ -258,11 +258,8 @@ svg{ display:block; }
 /* how much of the board is filled. Quiet on purpose: it answers "how far in am I",
    it is not a reward. */
 .caprow{ display:flex; align-items:center; flex-shrink:0; }
-.capm{ margin-left:auto; padding:28px 46px 18px 0; display:flex; align-items:center; gap:10px; opacity:0; }
-.capn{ font-size:11.5px; color:var(--tx-3); font-variant-numeric:tabular-nums; white-space:nowrap; }
-.capt{ width:96px; height:3px; border-radius:999px; background:var(--line); overflow:hidden; display:block; }
-.capt i{ display:block; height:100%; width:0%; border-radius:999px; background:var(--tx-3);
-  transition:width .9s cubic-bezier(.625,.05,0,1); }
+.capm{ margin-left:auto; padding:28px 46px 18px 0; display:flex; align-items:center; opacity:0; }
+.capn{ font-size:12px; color:var(--tx-3); font-variant-numeric:tabular-nums; white-space:nowrap; }
 .cap .live{ width:5px; height:5px; border-radius:var(--pill); background:var(--ok); }
 .cap .live.pulse{ animation:capPulse 1.6s ease-in-out infinite; }
 @keyframes capPulse{ 0%,100%{opacity:1} 50%{opacity:.3} }
@@ -759,7 +756,7 @@ body.dark .lit{ animation-name:litd; }
     <div class="shell">
       <div class="caprow">
         <div class="cap" id="cap"><span class="live pulse"></span>Zero is listening</div>
-        <div class="capm" id="capm"><span class="capn" id="capNum">Vision board 0%</span><span class="capt"><i id="capBar"></i></span></div>
+        <div class="capm" id="capm"><span class="capn" id="capNum">Vision board 0%</span></div>
       </div>
       <div class="paper" id="paper"><div class="scroll" id="scroll"></div></div>
     </div>
@@ -1533,11 +1530,10 @@ function retireMeter(){
   gsap.to(wrap,{opacity:0,y:-6,duration:.6,ease:EIO});
 }
 function renderMeter(){
-  const bar=$('capBar'), num=$('capNum'), wrap=$('capm');
-  if(!bar||!num||!wrap) return;
+  const num=$('capNum'), wrap=$('capm');
+  if(!num||!wrap) return;
   if(meterRetired){ gsap.set(wrap,{opacity:0}); return; }
   const pct=Math.round(boardDone()/BOARD_SLOTS.length*100);
-  bar.style.width=pct+'%';
   num.textContent='Vision board '+pct+'%';
   gsap.to(wrap,{opacity:pct?1:0,duration:.5,ease:EIO});
 }
@@ -1882,11 +1878,11 @@ async function introStage(stopBeforeName){
   safeTL(gsap.timeline().to(['#logoPill','.tr'],{opacity:1,y:0,duration:.55,stagger:.07}),1400);
   line("Hey, I'm Navid. I started Zero.");
   await wait(2100);
-  line('First I want to understand you properly.');
-  await wait(2200);
-  line("The role you're after, the places you want in.");
-  await wait(2400);
-  line('The more I get, the sharper your path.');
+  line('First, I want to understand you.');
+  await wait(2100);
+  line('The job you want, and where you want it.');
+  await wait(2300);
+  line('The more I know, the better your plan.');
   await wait(2300);
   line('Stay a few minutes and the credits are on us.');
   await wait(2300);
@@ -1914,7 +1910,7 @@ function nameStage(){
 /* ============================ 4 · tell me about yourself ============================ */
 /* Open, on purpose. Whatever lands here gets mined. */
 function aboutStage(){
-  const {box}=turn({q:'What do you actually want to be doing?'});
+  const {box}=turn({q:'What do you want to be doing?'});
   let answered=false, stall=null;
   const handle=async text=>{
     answered=true; clearTimeout(stall);
@@ -1940,7 +1936,7 @@ function aboutStage(){
 }
 /* only reached when the first answer was too thin to work with */
 function aboutMoreStage(){
-  const {box}=turn({q:'Say a bit more?'});
+  const {box}=turn({q:'Tell me a bit more?'});
   const handle=async text=>{
     P.about=quoteOf((P.about?P.about+' ':'')+text);
     extractInto(text);
@@ -1955,7 +1951,7 @@ function aboutMoreStage(){
 /* where they are now, and what they are doing. Short, because their LinkedIn
    will confirm all of it in Phase 4. */
 function stageStage(){
-  const {box}=turn({q:'And where are you right now?'});
+  const {box}=turn({q:'Where are you right now?'});
   choices(box,[['cap','Studying','Student'],['flag','Just graduated','Recent graduate'],
     ['bld','Working','Working'],['route','Between things','Between things']],
     async v=>{ P.level=v; renderBoard();
@@ -1985,13 +1981,13 @@ function modeStage(){
 const ROLE_ICONS={design:['pen','compass','box'],ba:['bars','target','route'],swe:['code','box','globe']};
 function roleStage(){
   if(P.role&&!editReturn){
-    const {box}=turn({q:'You said '+P.role+'. Still the one?'});
+    const {box}=turn({q:'You said '+P.role+'. Still right?'});
     choices(box,[['check','Still the one','yes'],['pen','Change it','no']],v=>{
       if(v==='yes'){ renderBoard(); go(nextAlign); }
       else { P.role=null; go(roleStage); } },{pill:true,nomorph:true});
     return;
   }
-  const {box}=turn({q:"If it went perfectly, what's the job?"});
+  const {box}=turn({q:'What job are you aiming for?'});
   const ic=ROLE_ICONS[PKEY]||['target','target','target'];
   choices(box,pack().roleCards.map((r,i)=>[ic[i]||'target',r,r]),async v=>{
     P.role=v; renderBoard();
@@ -2001,9 +1997,9 @@ function roleStage(){
 
 /* ============================ 5 · the company ============================ */
 function companyStage(){
-  const {box}=turn({q:'Big name, or smaller and scrappier?'});
+  const {box}=turn({q:'A big company, or somewhere smaller?'});
   choices(box,[
-    ['rocket','Small and scrappy','Startup'],
+    ['rocket','A small startup','Startup'],
     ['bars','A scale-up','Scale-up'],
     ['bldg','Big tech','Big tech'],
     ['users','An agency','Agency'],
@@ -2015,7 +2011,7 @@ function companyStage(){
 /* ============================ 6 · the dream company ============================ */
 const DREAMS={ design:['Figma','Airbnb','Apple'], ba:['Stripe','Salesforce','Snowflake'], swe:['OpenAI','Google','Stripe'] };
 function dreamStage(){
-  const {box}=turn({q:"Any names you'd kill to work at?"});
+  const {box}=turn({q:"What's your dream company?"});
   const take=async v=>{ P.dream=v; renderBoard();
     await reflect(said(v));
     afterCommit(()=>go(nextAlign)); };
@@ -2029,13 +2025,13 @@ function dreamStage(){
 const BIGNAMES=['Apple','Google','Microsoft','Netflix','Meta','Adobe','Salesforce','Amazon','Snowflake'];
 function probeStage(){
   const big=P.company==='Big tech'||BIGNAMES.indexOf(P.dream)>=0;
-  const {box}=turn({q:big?'Are you really dead set on the big ones?':'And if a big one came knocking?'});
+  const {box}=turn({q:big?'Are you sure about the big names?':'Would you consider a big company?'});
   const opts=big
-    ? [['target','Dead set on them','dead set on the big names'],
-       ['puzzle','Open to a smaller team','open to a smaller team'],
+    ? [['target','Yes, only the big ones','set on the big names'],
+       ['puzzle','Open to smaller','open to a smaller team'],
        ['compass','Wherever the work is good','following the work, not the name']]
-    : [['bld','I would take the call','open to the big names'],
-       ['leaf','Not interested','staying with smaller teams'],
+    : [['bld','Yes, I would','open to the big names'],
+       ['leaf','No, smaller is better','staying with smaller teams'],
        ['compass','Wherever the work is good','following the work, not the name']];
   choices(box,opts,async v=>{ P.openness=v; P.probed=1; renderBoard();
     await reflect('Fair enough. I\'ll hold you to that.');
@@ -2061,12 +2057,12 @@ function locationStage(){
 /* ============================ 9 · where you want to be ============================ */
 function citiesStage(){
   const here=P.location||'';
-  const {box}=turn({q:'Where in the world do you want to be?'});
+  const {box}=turn({q:'Where do you want to work?'});
   const ci=n=>CITY_ICON[n]||'pin';
   const opts=[].concat(here?[[ci(here),'Stay in '+here,here]]:[],
     [['UAE','Dubai','Dubai'],['India','Bangalore','Bangalore'],
     ['India','Mumbai','Mumbai'],['UK','London','London'],['USA','New York','New York'],
-    ['USA','San Francisco','San Francisco'],['globe','Remote, anywhere','Remote']])
+    ['USA','San Francisco','San Francisco'],['globe','Anywhere, remote','Remote']])
     .filter((o,i)=>i===0||o[2]!==here);
   choices(box,opts,async v=>{
     const list=Array.isArray(v)?v:[v];
@@ -2085,7 +2081,7 @@ function industryStage(){
       else { P.industry=null; go(industryStage); } },{pill:true,nomorph:true});
     return;
   }
-  const {box}=turn({q:'What problems do you like solving?'});
+  const {box}=turn({q:'Which industry interests you?'});
   choices(box,[['spark','Tech and AI','Tech and AI'],['health','Health','Health'],['money','Finance','Finance'],
     ['seedling','Climate','Climate'],['cart','Commerce','Commerce'],['clap','Media','Media']],
     async v=>{ P.industry=v; renderBoard();
@@ -2095,7 +2091,7 @@ function industryStage(){
 
 /* ============================ 11 · the problems ============================ */
 function problemsStage(){
-  const {box}=turn({q:'What kind of work would you love?'});
+  const {box}=turn({q:'What problems do you want to solve?'});
   let answered=false;
   const take=async text=>{ answered=true; P.problems=quoteOf(text); renderBoard();
     await reflect(said(low(P.problems)));
@@ -2108,7 +2104,7 @@ function problemsStage(){
 
 /* ============================ 12 · timing, 13 · shape ============================ */
 function timelineStage(){
-  const {box}=turn({q:'When do you want to be in the role?'});
+  const {box}=turn({q:'When do you want to start?'});
   choices(box,[['rocket','Now','Now'],['cal','In 3 months','In 3 months'],
     ['cal','This year','This year'],['hour','No rush','No rush']],
     async v=>{ P.timeline=v; renderBoard();
@@ -2118,14 +2114,14 @@ function timelineStage(){
 function jobtypeStage(){
   const {box}=turn({q:'Full time, or an internship?'});
   choices(box,[['bag','Full time','Full time'],['cap','An internship','An internship'],
-    ['globe','Either, if it is the right one','Either']],
+    ['globe','Either one','Either']],
     async v=>{ P.jobtype=v; renderBoard();
       await reflect(said(v.toLowerCase()),1300);
       afterCommit(()=>go(nextAlign)); });
 }
 /* the founder asked for one question that is about the person, not the job */
 function motivationStage(){
-  const {box}=turn({q:'Last one. Why does this matter to you?'});
+  const {box}=turn({q:'Why does this matter to you?'});
   let answered=false;
   const take=async text=>{ answered=true; P.why=quoteOf(text); renderBoard();
     await reflect(said("I'll keep that in mind"),1500);
@@ -2208,7 +2204,7 @@ function visionStage(fromEdit){
     const vb=mk('div','vb'); vb.id='vb';
     vb.innerHTML=boardHTML(); s2.appendChild(vb); boardLive=true; $('paper').classList.add('canvas'); },false); }
   dockHide();
-  const {box}=turn({q:'Have I got this right?'});
+  const {box}=turn({q:'Did I get this right?'});
   choices(box,[['check','That is me','ok'],['pen','Fix one thing','fix'],['plus','Add more','more']],v=>{
     if(v==='ok'){ sfx('success'); retireMeter(); boardRewards=true;
       clearTurn(); dockHide(); setTimeout(transformStage,520); }
@@ -2218,7 +2214,7 @@ function visionStage(fromEdit){
 /* no menu of edit options. They say what is wrong in their own words, Zero
    clears that one thing and reads the same sentence for the correction. */
 function editStage(){
-  const {box}=turn({q:"What doesn't line up?"});
+  const {box}=turn({q:'What should I change?'});
   let answered=false;
   const take=async text=>{
     answered=true;
@@ -2435,7 +2431,7 @@ function transformStage(){
     });
 }
 function aimStage(){
-  const {box}=turn({q:'Which one are you going for?'});
+  const {box}=turn({q:'Which one do you want?'});
   const ic=ROLE_ICONS[PKEY]||['target','target','target'];
   choices(box,pack().roles.map(([r],i)=>[ic[i]||'target',r,r]),v=>{
     P.aim=v; P.role=v; sfx('success'); go(calibrateStage); });
