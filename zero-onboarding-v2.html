@@ -912,6 +912,89 @@ async function voLine(text,fallback){
 }
 try{ addEventListener('pointerdown',function once(){ try{ window.CUE&&window.CUE.setEnabled(true); }catch(e){} removeEventListener('pointerdown',once); },{once:true}); }catch(e){}
 function sfx(n){ try{ if(sndOn&&window.CUE) window.CUE.play(n); }catch(e){} }
+
+/* ---- pen on paper: real friction noise that tracks the hand ----
+   Not a loop. A filtered noise bed whose brightness and level follow stroke
+   speed, so a slow nib whispers and a fast one hisses. */
+const AUD=(function(){
+  let ctx=null;
+  function ac(){
+    if(!ctx){ try{ ctx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return null; } }
+    if(ctx&&ctx.state==='suspended'){ try{ ctx.resume(); }catch(e){} }
+    return ctx;
+  }
+  let nb=null;
+  function noise(c){
+    if(nb&&nb.sampleRate===c.sampleRate) return nb;
+    const n=Math.floor(c.sampleRate*2), b=c.createBuffer(1,n,c.sampleRate), d=b.getChannelData(0);
+    let last=0;
+    for(let i=0;i<n;i++){ const w=Math.random()*2-1; last=(last+.02*w)/1.02; d[i]=last*3.2+w*.4; }
+    nb=b; return b;
+  }
+  /* the pen */
+  let src=null,hp=null,bp=null,gn=null,live=false,target=0,cur=0,raf=0;
+  function penStart(){
+    const c=ac(); if(!c||!sndOn||live) return; live=true;
+    src=c.createBufferSource(); src.buffer=noise(c); src.loop=true;
+    hp=c.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=620;
+    bp=c.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=1900; bp.Q.value=.8;
+    gn=c.createGain(); gn.gain.value=0;
+    src.connect(hp); hp.connect(bp); bp.connect(gn); gn.connect(c.destination);
+    src.start();
+    /* the nib touching down */
+    const t=c.currentTime, o=c.createOscillator(), og=c.createGain();
+    o.type='triangle'; o.frequency.setValueAtTime(320,t); o.frequency.exponentialRampToValueAtTime(90,t+.05);
+    og.gain.setValueAtTime(.055,t); og.gain.exponentialRampToValueAtTime(.0001,t+.07);
+    o.connect(og); og.connect(c.destination); o.start(t); o.stop(t+.09);
+    const tick=()=>{ if(!live) return;
+      cur+=(target-cur)*.22; target*=.82;   /* a still hand goes quiet on its own */
+      const c2=ac(); if(c2&&gn){
+        gn.gain.setTargetAtTime(Math.min(.075,cur*.075),c2.currentTime,.02);
+        bp.frequency.setTargetAtTime(1500+Math.min(1,cur)*3400,c2.currentTime,.03);
+      }
+      raf=requestAnimationFrame(tick); };
+    raf=requestAnimationFrame(tick);
+  }
+  function penMove(speed){ if(!live) return; target=Math.max(target,Math.min(1.6,speed*2.6)); }
+  function penStop(){
+    if(!live) return; live=false; cancelAnimationFrame(raf);
+    const c=ac(); if(!c||!gn){ src=null; return; }
+    const t=c.currentTime, g=gn, s=src;
+    g.gain.cancelScheduledValues(t); g.gain.setTargetAtTime(0,t,.05);
+    setTimeout(()=>{ try{ s.stop(); }catch(e){} },320);
+    src=null; gn=null; cur=0; target=0;
+  }
+  /* the flip into the dark: a sweep, a sub, and a shimmer tail */
+  function whoosh(){
+    const c=ac(); if(!c||!sndOn) return;
+    const t=c.currentTime;
+    const s=c.createBufferSource(); s.buffer=noise(c); s.loop=true;
+    const f=c.createBiquadFilter(); f.type='bandpass'; f.Q.value=1.1;
+    f.frequency.setValueAtTime(360,t);
+    f.frequency.exponentialRampToValueAtTime(5200,t+.62);
+    f.frequency.exponentialRampToValueAtTime(280,t+1.5);
+    const g=c.createGain();
+    g.gain.setValueAtTime(.0001,t);
+    g.gain.exponentialRampToValueAtTime(.13,t+.5);
+    g.gain.exponentialRampToValueAtTime(.0001,t+1.55);
+    s.connect(f); f.connect(g); g.connect(c.destination); s.start(t); s.stop(t+1.7);
+    const o=c.createOscillator(), og=c.createGain();
+    o.type='sine'; o.frequency.setValueAtTime(96,t+.34); o.frequency.exponentialRampToValueAtTime(34,t+1.1);
+    og.gain.setValueAtTime(.0001,t+.34); og.gain.exponentialRampToValueAtTime(.16,t+.46);
+    og.gain.exponentialRampToValueAtTime(.0001,t+1.25);
+    o.connect(og); og.connect(c.destination); o.start(t+.34); o.stop(t+1.3);
+    [1568,2093,2637].forEach((hz,i)=>{
+      const b=c.createOscillator(), bg=c.createGain();
+      b.type='sine'; b.frequency.value=hz;
+      const at=t+.72+i*.07;
+      bg.gain.setValueAtTime(.0001,at); bg.gain.exponentialRampToValueAtTime(.03,at+.05);
+      bg.gain.exponentialRampToValueAtTime(.0001,at+.85);
+      b.connect(bg); bg.connect(c.destination); b.start(at); b.stop(at+.9);
+    });
+  }
+  return { penStart:penStart, penMove:penMove, penStop:penStop, whoosh:whoosh };
+})();
+
 const INK={max:180,min:46,sens:30,tol:.2,wet:.38,color:'#111113'};
 
 /* ============================ persona packs ============================ */
@@ -1671,7 +1754,7 @@ function showDraw(){
   }
   function clearInk(){ ctx.save(); ctx.setTransform(1,0,0,1,0,0);
     ctx.clearRect(0,0,cv.width,cv.height); ctx.restore(); }
-  cv.addEventListener('pointerdown',e=>{ down=true; len=0; W=INK.max*0.5;
+  cv.addEventListener('pointerdown',e=>{ down=true; len=0; W=INK.max*0.5; AUD.penStart();
     if(!cv.width) size();
     pts=[{x:e.clientX,y:e.clientY,t:performance.now()}];
     ctx.fillStyle=INK.color;
@@ -1680,8 +1763,9 @@ function showDraw(){
     const p={x:e.clientX,y:e.clientY,t:performance.now()}, q2=pts[pts.length-1];
     const d2=Math.hypot(p.x-q2.x,p.y-q2.y);
     if(d2<2.5) return;
+    AUD.penMove(d2/Math.max(1,p.t-q2.t));
     len+=d2; pts.push(p); inkSeg(); });
-  const fin=()=>{ if(!down)return; down=false;
+  const fin=()=>{ if(!down)return; down=false; AUD.penStop();
     /* the zero must close: start and end land near each other */
     const a=pts[0], b=pts[pts.length-1];
     let minx=1e9,miny=1e9,maxx=-1e9,maxy=-1e9;
@@ -1700,7 +1784,7 @@ function showDraw(){
   window.__acceptDraw=()=>accept(true);
   function accept(skip){
     if(accepted) return; accepted=true;
-    sfx('bloom');
+    AUD.penStop(); AUD.whoosh();
     /* the ink swells until it floods the whole screen, then the world goes dark */
     gsap.to('#dH',{opacity:0,y:-10,duration:.35});
     if(!skip&&pts.length>2){
