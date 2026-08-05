@@ -1250,12 +1250,32 @@ td.cell-active::after{border-color:var(--accent)}
    the viewport centre but let it run underneath the XP and performance chips
    at anything under ~1400px. A real middle column cannot collide at any
    width, and the bar takes every pixel the other two do not need. */
-.topbar{display:grid;grid-template-columns:auto minmax(0,1fr) auto;
+.topbar{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;
   gap:16px;align-items:center;height:58px;padding:0 16px}
 .topbar .spacer{display:none}
 .tb-right{display:flex;align-items:center;gap:9px;justify-self:end}
-.wu-prog{position:static;transform:none;justify-self:center;
-  width:100%;max-width:760px;margin:0!important;gap:14px}
+/* Centred on the SCREEN, not on the column between Back and the chips, and
+   sized to the chat itself - avatar's left edge to the bubble's right edge,
+   which is the 600px reading column. It now sits over the conversation it
+   measures instead of floating at an unrelated width.
+
+   Absolute centring is what makes it screen-centred, and that is also what
+   let it run under the chips before. The guard is arithmetic, not luck: a
+   600px bar centred on the viewport reaches viewportCentre + 300, and the
+   chips need about 279px on the right, so anything under ~1160px would
+   collide. Below 1200 it drops back into the grid column, where it cannot. */
+/* The transforms are !important because the shell's reveal tween writes an
+   INLINE transform on this element, and inline beats any ordinary rule. That
+   is what dragged the narrow layout 260px off-screen: the stylesheet said
+   none, the inline style still said translate(-50%,-50%). Opacity is pinned
+   for the same reason, so nothing is lost by overriding the tween here. */
+.wu-prog{position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%)!important;
+  justify-self:auto;width:var(--maxw);max-width:none;margin:0!important;gap:14px}
+@media(max-width:1200px){
+  .wu-prog{position:static;left:auto;top:auto;transform:none!important;
+    justify-self:center;width:100%;max-width:520px}
+}
 .wu-prog .wu-track{flex:1 1 auto;width:auto;height:5px}
 .wu-prog .wu-pct{flex:0 0 auto}
 /* .wu-prog is one of the elements the shell staggers in from opacity:0.
