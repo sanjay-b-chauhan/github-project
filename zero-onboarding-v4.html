@@ -174,6 +174,40 @@ svg{ display:block; }
 @keyframes tdot{ 0%,72%,100%{ opacity:.2; transform:translateY(0); }
   36%{ opacity:1; transform:translateY(-.16em); } }
 .opts{ margin-top:46px; }
+/* Dev pills. These are not product UI. Each one is what a user would have SAID,
+   so we can walk the whole flow without speaking. Deliberately quiet: they must
+   never read as the primary way to answer. */
+.dev{ margin-top:34px; display:flex; flex-direction:column; align-items:center; gap:9px; opacity:.5;
+  transition:opacity .3s var(--e); }
+.dev:hover{ opacity:.92; }
+.devl{ font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--tx-4); }
+.devr{ display:flex; flex-wrap:wrap; gap:7px; justify-content:center; max-width:620px; }
+.devp{ font-size:12.5px; line-height:1.35; color:var(--tx-3); background:transparent;
+  border:1px dashed var(--line); border-radius:999px; padding:7px 13px; text-align:left;
+  transition:color .2s var(--e), border-color .2s var(--e); }
+.devp:hover{ color:var(--tx); border-color:var(--tx-4); }
+/* the role pool has to hold 50 to 60 without becoming a wall */
+.pool{ max-width:730px; margin:0 auto; }
+.poolf{ display:flex; flex-wrap:wrap; gap:7px; justify-content:center; margin-bottom:14px; }
+.pf{ font-size:12.5px; padding:7px 14px; border-radius:999px; border:1px solid var(--line);
+  background:transparent; color:var(--tx-2); }
+.pf.on{ background:var(--ink); color:var(--on-ink); border-color:transparent; }
+.poolw{ max-height:420px; overflow-y:auto; padding:2px; scrollbar-width:thin; }
+.pgrp{ font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--tx-4);
+  padding:14px 4px 7px; position:sticky; top:0; background:var(--page); z-index:1; }
+.prow{ width:100%; display:grid; grid-template-columns:22px 1fr auto auto; gap:12px; align-items:center;
+  padding:11px 13px; border-radius:12px; border:1px solid transparent; text-align:left;
+  transition:background .18s var(--e), border-color .18s var(--e); }
+.prow:hover{ background:var(--wash); }
+.prow.on{ border-color:var(--ink); background:var(--wash); }
+.prow .pl{ width:22px; height:22px; display:grid; place-items:center; }
+.prow .pl svg{ width:100%; height:100%; }
+.prow .pr{ font-size:15px; font-weight:500; color:var(--tx); letter-spacing:-.02em; }
+.prow .pc{ font-size:12.5px; color:var(--tx-2); }
+.prow .pt{ font-size:12px; color:var(--tx-2); white-space:nowrap; }
+.prow.on .pt{ color:var(--ink); font-weight:600; }
+.prow .pp{ font-size:13.5px; font-variant-numeric:tabular-nums; color:var(--tx); white-space:nowrap; }
+.poolc{ margin-top:12px; font-size:12.5px; color:var(--tx-3); text-align:center; }
 /* a job, not a tag: the company, what the job is, where, and what it pays */
 .jobs{ display:grid; grid-template-columns:1fr 1fr; gap:12px; max-width:730px; margin:0 auto; }
 .job{ position:relative; display:grid; grid-template-columns:auto 1fr auto; gap:4px 10px;
@@ -908,10 +942,15 @@ function voPlay(text){
 }
 /* say it and show it together, and fall back to the old timing when there is no take */
 async function voLine(text,fallback){
+  /* audio outlives a screen change: without this a stale line resumes when its
+     clip ends and paints over whatever is now on screen. */
+  const g=gen;
+  if(g!==gen) return;
   line(text);
   const p=voPlay(text);
-  if(p){ await p; await wait(300/voRate); }
+  if(p){ await p; if(g!==gen) return; await wait(300/voRate); }
   else await wait(fallback||1800);
+  if(g!==gen) return;
 }
 
 /* ---- pen on paper: real friction noise that tracks the hand ----
@@ -1364,6 +1403,18 @@ function startRecording(onText){
   send.onclick=()=>{ finish(heard.trim()||'__voice__'); };
 }
 /* Zero's own visuals live in the content area */
+/* what the user would have said, one click. Dev affordance only. */
+function devPills(box,lines,onSay){
+  const w=mk('div','dev');
+  w.appendChild(mk('div','devl','dev · what they would say'));
+  const r=mk('div','devr');
+  lines.forEach(t=>{ const b=mk('button','devp','\u201c'+t+'\u201d');
+    b.onclick=()=>{ if(locked) return; locked=true; sfx('tick'); onSay(t); };
+    r.appendChild(b); });
+  w.appendChild(r); box.appendChild(w);
+  enter([w],{y:14,blur:8,duration:.5},1200);
+  return w;
+}
 function chipsRow(box,items,onPick){
   const ch=mk('div','chips');
   items.forEach(c2=>{ const b=mk('button','chip2',c2);
@@ -1940,11 +1991,12 @@ function showDraw(){
 /* The exact opening from the meeting. He speaks first, and he explains the deal. */
 async function introStage(stopBeforeName){
   safeTL(gsap.timeline().to(['#logoPill','.tr'],{opacity:1,y:0,duration:.55,stagger:.07}),1400);
-  await voLine("Hey, I'm the voice of the founder.",2000);
-  await voLine("I'm here to get you hired.",1700);
-  await voLine('First, I want to understand you properly.',2200);
-  await voLine('A few questions, about five minutes.',2000);
-  await voLine('Then a vision board, and the road to get there.',2400);
+  const g0=gen;
+  await voLine("Hey, I'm the voice of the founder.",2000); if(g0!==gen) return;
+  await voLine("I'm here to get you hired.",1700); if(g0!==gen) return;
+  await voLine('First, I want to understand you properly.',2200); if(g0!==gen) return;
+  await voLine('A few questions, about five minutes.',2000); if(g0!==gen) return;
+  await voLine('Then a vision board, and the road to get there.',2400); if(g0!==gen) return;
   await voLine('Ready?',1200);
   if(stopBeforeName) return;      /* the stepper reviews the welcome on its own */
   dockAction("Let's go",()=>go(nameStage));
@@ -1969,7 +2021,7 @@ function nameStage(){
 /* ============================ 4 · tell me about yourself ============================ */
 /* Open, on purpose. Whatever lands here gets mined. */
 function aboutStage(){
-  const {box}=turn({q:'What job do you want, and at what companies?'});
+  const {box}=turn({q:'Tell me about yourself and what you want.'});
   let answered=false, stall=null;
   const handle=async text=>{
     answered=true; clearTimeout(stall);
@@ -1988,6 +2040,11 @@ function aboutStage(){
     go(nextAlign);
   };
   dockInput(handle);
+  devPills(box,[
+    "I'm Sanjay, a final year design student in Mumbai. I want to be a product designer at Apple or Google, I love e-commerce and cosmetics",
+    "I'm Sanjay, I want to get into design",
+    "not sure yet"
+  ],handle);
   /* the chips are a safety net, not the lead. They appear only if nothing is said. */
   const g=gen;
   stall=setTimeout(()=>{ if(answered||locked||g!==gen) return;
@@ -2098,50 +2155,99 @@ function aimTier(){
   if(n.A>=n.B&&n.A) return 'A';
   return n.B?'B':'A';
 }
-function listingsStage(){
-  const {box}=turn({q:'Which of these do you want to be ready for?'});
-  const deck=listingDeck();
-  let shownN=4;
-  const picks=[];
-  const w=mk('div','jobs');
-  const render=()=>{
-    w.innerHTML='';
-    deck.slice(0,shownN).forEach(r=>{
-      const [co,role,ctx,pay]=r;
-      const t=tierOf(co);
-      const c=mk('button','job'+(picks.indexOf(r)>=0?' on':''));
-      c.innerHTML='<span class="jt">'+(LOGO[co]||'')+'</span>'
-        +'<span class="jco">'+co+'</span>'
-        +(t?'<span class="jtier">'+t+' tier</span>':'')
-        +'<span class="jrole">'+role+'</span>'
-        +'<span class="jctx">'+ctx+'</span>'
-        +'<span class="jpay">'+pay+'</span>';
-      c.setAttribute('role','checkbox');
-      c.setAttribute('aria-checked',picks.indexOf(r)>=0?'true':'false');
-      c.onclick=()=>{ const i=picks.indexOf(r);
-        if(i>=0) picks.splice(i,1); else picks.push(r);
-        sfx('toggle'); render(); dock(); };
-      w.appendChild(c);
+/* Fifty-plus roles, built from real titles at real companies. Grouped so the
+   eye lands on a family first, filtered so the list never reads as a wall. */
+const TITLES={
+  design:[['Product Designer','mid'],['Senior Product Designer','senior'],['UX Designer','mid'],
+    ['UI Designer','mid'],['Design Engineer','mid'],['Brand Designer','mid'],
+    ['Design Systems Designer','mid'],['UX Researcher','mid'],['Motion Designer','mid'],
+    ['Staff Product Designer','staff']],
+  swe:[['Software Engineer','mid'],['Senior Software Engineer','senior'],['Full Stack Engineer','mid'],
+    ['Frontend Engineer','mid'],['Backend Engineer','mid'],['Product Engineer','mid'],
+    ['Infrastructure Engineer','mid'],['Machine Learning Engineer','mid'],
+    ['Member of Technical Staff','mid'],['Staff Engineer','staff']],
+  ba:[['Business Analyst','mid'],['Senior Business Analyst','senior'],['Data Analyst','mid'],
+    ['Strategy Analyst','mid'],['Product Analyst','mid'],['Analytics Engineer','mid'],
+    ['Operations Analyst','mid'],['Revenue Analyst','mid'],['Insights Analyst','mid'],
+    ['Strategy and Ops Manager','senior']]
+};
+const POOL_COS=['Figma','Airbnb','Apple','Google','OpenAI','Stripe','Linear','Notion',
+  'Spotify','Netflix','Microsoft','Vercel','Shopify','Salesforce','Snowflake','Datadog','HubSpot','Adobe'];
+const SEN_LABEL={mid:'Mid-level',senior:'Senior',staff:'Staff'};
+const BAND={ S:{mid:[155,205],senior:[190,245],staff:[230,300]},
+             A:{mid:[135,175],senior:[165,210],staff:[200,255]},
+             B:{mid:[115,150],senior:[140,180],staff:[170,215]} };
+function rolePool(){
+  const fam=TITLES[PKEY]||TITLES.design, out=[];
+  fam.forEach((t,ti)=>{
+    POOL_COS.forEach((co,ci)=>{
+      const tier=tierOf(co); if(!tier) return;
+      if((ti+ci)%3!==0) return;                 /* a readable spread, not every pairing */
+      const b=BAND[tier][t[1]];
+      out.push([co,t[0],SEN_LABEL[t[1]],'$'+b[0]+'k - $'+b[1]+'k',tier,t[1]]);
     });
-    if(shownN<deck.length){ const m=mk('button','jmore','Show 4 more');
-      m.onclick=()=>{ shownN=Math.min(deck.length,shownN+4); sfx('tick'); render(); };
-      w.appendChild(m); }
-  };
-  const dock=()=>{
+  });
+  return out;
+}
+function listingsStage(){
+  const {box}=turn({q:'Which of these roles do you want?'});
+  const all=rolePool();
+  const want=dreamList();
+  const picks=[];
+  let filt='all';
+  const wrap=mk('div','pool');
+  const fr=mk('div','poolf');
+  [['all','Everything'],['S','S tier'],['A','A tier'],['B','B tier'],['mine','My companies']]
+    .forEach(([k,lab])=>{ if(k==='mine'&&!want.length) return;
+      const b=mk('button','pf'+(filt===k?' on':''),lab);
+      b.onclick=()=>{ filt=k; sfx('tick'); paint(); }; fr.appendChild(b); });
+  const list=mk('div','poolw');
+  const cnt=mk('div','poolc');
+  wrap.appendChild(fr); wrap.appendChild(list); wrap.appendChild(cnt);
+  function visible(){
+    return all.filter(r=> filt==='all' ? true
+      : filt==='mine' ? want.indexOf(r[0])>=0 : r[4]===filt);
+  }
+  function paint(){
+    [...fr.children].forEach((b,i)=>{
+      const keys=['all','S','A','B','mine'].filter(k=>k!=='mine'||want.length);
+      b.classList.toggle('on',keys[i]===filt); });
+    list.innerHTML='';
+    const rows=visible();
+    const byRole={};
+    rows.forEach(r=>{ (byRole[r[1]]=byRole[r[1]]||[]).push(r); });
+    Object.keys(byRole).forEach(role=>{
+      list.appendChild(mk('div','pgrp',role));
+      byRole[role].forEach(r=>{
+        const [co,ro,sen,pay,tier]=r;
+        const b=mk('button','prow'+(picks.indexOf(r)>=0?' on':''));
+        b.innerHTML='<span class="pl">'+(LOGO[co]||'')+'</span>'
+          +'<span class="pc">'+co+' &middot; '+sen+'</span>'
+          +'<span class="pt">'+tier+' tier</span>'
+          +'<span class="pp">'+pay+'</span>';
+        b.setAttribute('role','checkbox');
+        b.setAttribute('aria-checked',picks.indexOf(r)>=0?'true':'false');
+        b.onclick=()=>{ const i=picks.indexOf(r);
+          if(i>=0) picks.splice(i,1); else picks.push(r);
+          sfx('toggle'); paint(); dockNow(); };
+        list.appendChild(b); });
+    });
+    cnt.textContent=rows.length+' roles'+(picks.length?', '+picks.length+' picked':'');
+  }
+  function dockNow(){
     if(!picks.length){ dockHide(); return; }
     dockAction('Continue with '+picks.length,async()=>{
       P.picks=picks.slice();
       P.dream=picks.map(r=>r[0]).filter((x,i,a)=>a.indexOf(x)===i).join(', ');
-      P.role=picks[0][1];
-      P.company=tierOf(picks[0][0])==='S'?'Big tech':'Startup';
+      P.role=picks[0][1]; P.company=tierOf(picks[0][0])==='S'?'Big tech':'Startup';
       renderBoard();
       const t=aimTier(), n=picks.filter(r=>tierOf(r[0])===t).length;
       await reflect(said(n+' of your '+picks.length+' are '+t+' tier'));
       go(tierStage);
     });
-  };
-  render(); box.appendChild(w);
-  enter(w.children,{y:26,blur:12,scale:.94,stagger:.05,duration:.7},2400);
+  }
+  paint(); box.appendChild(wrap);
+  enter([wrap],{y:22,blur:10,duration:.65},1600);
 }
 function tierStage(){
   const t=aimTier();
@@ -2287,6 +2393,7 @@ function problemsStage(){
     await reflect(said(low(P.problems)));
     afterCommit(()=>go(nextAlign)); };
   dockInput(take);
+  devPills(box,['confusing tools that people give up on','checkout flows that leak money'],take);
   const g=gen;
   setTimeout(()=>{ if(answered||locked||g!==gen) return;
     chipsRow(box,pack().problemChips,take); },7000);
@@ -2317,6 +2424,7 @@ function motivationStage(){
     await reflect(said("I'll keep that in mind"),1500);
     afterCommit(()=>go(synthStage)); };
   dockInput(take);
+  devPills(box,['I want to prove to myself I can do it','I need to get out of my current job'],take);
   const g=gen;
   setTimeout(()=>{ if(answered||locked||g!==gen) return;
     chipsRow(box,['I want to prove I can do it','I need a change','I want better work'],take); },7000);
