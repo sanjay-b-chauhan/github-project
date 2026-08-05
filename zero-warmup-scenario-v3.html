@@ -1304,6 +1304,9 @@ td.cell-active::after{border-color:var(--accent)}
 .app.serif .resp .r-text .hl{background:none!important;padding:0!important;
   margin:0!important;border-radius:0!important}
 
+/* three stats, so three columns rather than a 2x2 grid with a gap in it */
+.finmodal .fin-stats{grid-template-columns:repeat(3,1fr)}
+
 /* kickoff + story wear the workspace surface, and the shell is dark by default */
 .story,.kickoff{background:var(--bg)}
 .story .st-holder,.kickoff .ko-holder{inset:0!important;border:none;border-radius:0;background:var(--bg)}
@@ -1977,12 +1980,15 @@ function scrollToCurrent(instant){
       t=Math.max(0,curSeg.offsetTop-28);
       const segBottom = curSeg.offsetTop + curSeg.offsetHeight;
       if(segBottom > t + h.clientHeight){
-        /* Following with only 40px of slack pinned every new line to the
-           bottom edge, so the ending arrived in a cluttered strip with the
-           whole screen empty above it. Leave ~45% of the canvas below the
-           newest content: it lands around the middle and the conversation
-           climbs past it, which is how a chat actually reads. */
-        t = Math.max(t, segBottom - h.clientHeight + Math.round(h.clientHeight * 0.45));
+        /* Two different needs, so two different amounts of slack.
+           During a normal stage the content should simply be readable - a
+           big reserve here just opens a void under the widget, which is what
+           blanket-applying 45% did. Only the ENDING is a sequence of arriving
+           messages, and there the newest line should land around the middle
+           with room to climb into. forceFollow is already true exactly and
+           only for the ending, so it is the right switch. */
+        const slack = forceFollow ? Math.round(h.clientHeight * 0.42) : 56;
+        t = Math.max(t, segBottom - h.clientHeight + slack);
       }
     }
     h.scrollTo({top:t,behavior:instant?'auto':'smooth'});
@@ -2558,7 +2564,7 @@ function hint(text){
   const resp=curSeg.querySelector('.respEl');
   resp.className='resp respEl warn show';
   resp.innerHTML=`<div class="r-line"><span class="r-dot"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M12 7v6M12 16.8h.01"/></svg></span><div class="r-text">${text}</div></div>`;
-  scrollToCurrent();sfx.tap();
+  sfx.tap();
 }
 const WBTABS=['quarters.xlsx','notes.csv','tenure.csv','cost_model.xlsx'];
 function wbtabs(st){
@@ -3425,15 +3431,13 @@ function showFinaleModal(xp, stats){
   back.innerHTML='<div class="finmodal">'
    +'<div class="fin-star"><svg width="26" height="26" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l2.2 7.8L22 12l-7.8 2.2L12 22l-2.2-7.8L2 12l7.8-2.2z"/></svg></div>'
    +'<div class="fin-h">Warm-up complete</div>'
-   +'<div class="fin-xp">+'+xp+' XP</div>'
    /* every stat lives in here now, not behind the popup */
    +'<div class="fin-stats">'
    +'<div class="fin-stat"><div class="n g">+'+xp+'</div><div class="l">XP earned</div></div>'
-   +'<div class="fin-stat"><div class="n">'+(stats.acc!=null?stats.acc+'%':'—')+'</div><div class="l">First-try accuracy</div></div>'
    +'<div class="fin-stat"><div class="n g sm">'+(stats.cal||'—')+'</div><div class="l">Calibration</div></div>'
    +'<div class="fin-stat"><div class="n">'+(stats.time||'—')+'</div><div class="l">Time</div></div>'
    +'</div>'
-   +'<div class="fin-p">You did a genuinely great job. Thank you for this.</div>'
+   +'<div class="fin-p">You did a great job today.</div>'
    +'<button class="wu-cta fin-cont">Continue to next scenario'
    +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>'
    +'<button class="fin-again" onclick="location.reload()">Run it again</button>'
