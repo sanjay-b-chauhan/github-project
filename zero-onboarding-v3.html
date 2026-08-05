@@ -569,6 +569,7 @@ body.dark .tlrail{ background:rgba(255,255,255,.15); }
 .tlc .nd svg{ width:15px; height:15px; }
 .tlc .ct{ font-size:15.5px; font-weight:600; letter-spacing:-.03em; }
 .tlc .cw{ margin-top:4px; font-size:11.5px; color:var(--tx-3); }
+.cwhy{ margin-top:8px; font-size:12px; line-height:1.45; color:var(--tx-3); text-align:left; }
 .tls{ display:flex; align-items:flex-start; gap:10px; padding:9px 0; text-align:left;
   font-size:12.5px; line-height:1.5; color:var(--tx-2); }
 .tls + .tls{ border-top:1px solid var(--line-2); }
@@ -2097,7 +2098,7 @@ function problemsStage(){
   const {box}=turn({q:'What kind of work would you love?'});
   let answered=false;
   const take=async text=>{ answered=true; P.problems=quoteOf(text); renderBoard();
-    await reflect(said('that is the work I will aim your projects at'));
+    await reflect(said(low(P.problems)));
     afterCommit(()=>go(nextAlign)); };
   dockInput(take);
   const g=gen;
@@ -2127,7 +2128,7 @@ function motivationStage(){
   const {box}=turn({q:'Last one. Why does this matter to you?'});
   let answered=false;
   const take=async text=>{ answered=true; P.why=quoteOf(text); renderBoard();
-    await reflect('Thank you. I will keep that in mind.',1500);
+    await reflect(said("I'll keep that in mind"),1500);
     afterCommit(()=>go(synthStage)); };
   dockInput(take);
   const g=gen;
@@ -2146,6 +2147,28 @@ async function analysing(){
   await wait(420);
   if(vb) safeTL(gsap.timeline().to(vb,{filter:'blur(0px)',opacity:1,scale:1,duration:.75,ease:EIO}),1300);
   await wait(420);
+}
+/* Phase 3 is the hinge. Before it they were talking, after it Zero is showing.
+   The handshake in between is Zero proving it listened, in their own terms. */
+const CO_PHRASE={ 'Startup':'somewhere small and fast','Scale-up':'somewhere growing fast',
+  'Big tech':'somewhere big','Agency':'in an agency' };
+const TIME_PHRASE={ 'Now':'And you want it now.','In 3 months':'Inside three months.',
+  'This year':'This year.','No rush':'No rush on the timing.' };
+const upper=x=>x?x.charAt(0).toUpperCase()+x.slice(1):x;
+function summaryBeats(){
+  const out=[];
+  if(P.role) out.push('You, aiming at '+P.role+'.');
+  const place=[];
+  if(P.company) place.push(CO_PHRASE[P.company]||low(P.company));
+  if(P.industry) place.push('in '+low(SHORT[P.industry]||P.industry));
+  if(place.length) out.push(upper(place.join(', '))+'.');
+  const where=cityList(P.citynext)[0]||P.location;
+  const tail=[];
+  if(P.problems) tail.push('chasing '+low(P.problems));
+  if(where) tail.push('from '+where);
+  if(tail.length) out.push(upper(tail.join(', '))+'.');
+  if(P.timeline&&TIME_PHRASE[P.timeline]) out.push(TIME_PHRASE[P.timeline]);
+  return out.filter(x=>x&&x.length<=58);
 }
 async function synthStage(){
   setPhase(1);
@@ -2173,7 +2196,11 @@ async function synthStage(){
       {opacity:1,y:0,filter:'blur(0px)',scale:1,duration:.85,stagger:.16,ease:'power3.out'}),3000); },false);
   setTimeout(()=>sheen(document.querySelector('.shell'),1.45),1300);
   sfx('ready');
-  await wait(1400);
+  await wait(1500);
+  /* the board is up. Now Zero says it back, one short beat at a time. */
+  await reflect(P.name?"Okay, "+P.name+". Here's what I've got.":"Here's what I've got.",1800);
+  const beats=summaryBeats();
+  for(let i=0;i<beats.length;i++) await reflect(beats[i],1900);
   visionStage();
 }
 function visionStage(fromEdit){
@@ -2181,7 +2208,7 @@ function visionStage(fromEdit){
     const vb=mk('div','vb'); vb.id='vb';
     vb.innerHTML=boardHTML(); s2.appendChild(vb); boardLive=true; $('paper').classList.add('canvas'); },false); }
   dockHide();
-  const {box}=turn({q:'How does this look to you?'});
+  const {box}=turn({q:'Have I got this right?'});
   choices(box,[['check','That is me','ok'],['pen','Fix one thing','fix'],['plus','Add more','more']],v=>{
     if(v==='ok'){ sfx('success'); retireMeter(); boardRewards=true;
       clearTurn(); dockHide(); setTimeout(transformStage,520); }
@@ -2519,11 +2546,16 @@ const TOOLS={ design:['Figma','Notion','Linear'], ba:['Tableau','Notion','Salesf
 let tlMode='h';
 function statBox(v,k){ const b=mk('div','stat');
   b.appendChild(mk('div','sv',v)); b.appendChild(mk('div','sk2',k)); return b; }
+/* order is what turns a list into a road, so each card says why it sits here */
+const WHY_POS=['Starts here because it teaches the craft.',
+  'Sits second because it adds real pressure.',
+  'Comes last because it builds on both.'];
 function curriculumCard(p,i){
   const c2=mk('div','tlc');
   c2.appendChild(mk('div','nd',String(i+1)));
   c2.appendChild(mk('div','ct',p.short));
   c2.appendChild(mk('div','cw',p.weeks+' weeks · '+p.steps.length+' scenarios'));
+  if(WHY_POS[i]) c2.appendChild(mk('div','cwhy',WHY_POS[i]));
   const body=mk('div'); body.style.marginTop='12px';
   p.steps.forEach(st=>{ const r=mk('div','tls');
     r.appendChild(mk('span','sq')); r.appendChild(mk('span','tx',st)); body.appendChild(r); });
