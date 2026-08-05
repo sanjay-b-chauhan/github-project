@@ -1,0 +1,2078 @@
+<!DOCTYPE html>
+<!--
+  ─────────────────────────────────────────────────────────────
+  Vision Board
+  Copyright (c) 2026 Sanjay Chauhan. All rights reserved.
+
+  Proprietary. Not open source. No licence is granted.
+  You may view this page. You may not copy, adapt, republish or
+  build a derivative of it, in whole or in part, without prior
+  written permission from the copyright holder.
+  ─────────────────────────────────────────────────────────────
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Vision Board — by Sanjay Chauhan</title>
+<meta name="description" content="Say what you want. Watch it land on the mat." />
+<meta name="robots" content="noindex, nofollow, noarchive, noai, noimageai" />
+<meta name="googlebot" content="noindex, nofollow" />
+<meta name="CCBot" content="nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.simpleicons.org">
+<link rel="preconnect" href="https://upload.wikimedia.org">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3f0e8; --panel:#ffffff;
+  --ink:#16281d; --ink-2:rgba(22,40,29,.62); --ink-3:rgba(22,40,29,.34); --line:rgba(22,40,29,.13);
+  --mat:#2f9268;
+  --sun:#ffd84d; --lime:#c9f24f; --sky:#8ecdff; --lilac:#c9b8ff; --coral:#ff9e7d; --mint:#8fe3c0; --pink:#ffb3d1;
+  --thread:#e0473a;
+  --sh-rest:0 2px 3px rgba(5,20,11,.38), 0 10px 18px rgba(5,20,11,.22);
+  --sh-lift:0 5px 8px rgba(5,20,11,.28), 0 26px 40px rgba(5,20,11,.30);
+  --sh-ui:0 2px 3px rgba(5,20,11,.22), 0 8px 14px rgba(5,20,11,.14);
+  --drop-rest:drop-shadow(0 2px 2px rgba(5,20,11,.38)) drop-shadow(0 9px 13px rgba(5,20,11,.24));
+  --drop-lift:drop-shadow(0 4px 6px rgba(5,20,11,.26)) drop-shadow(0 22px 30px rgba(5,20,11,.3));
+  --ease:cubic-bezier(.22,1,.36,1); --stroke:3px;
+  --panelw:420px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overscroll-behavior:none}
+body{font-family:Nunito,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);overflow:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:var(--sun)}
+/* The column width is a variable so it can be tweened. Transitioning
+   grid-template-columns directly does not interpolate here — it simply sticks
+   at the start value and the panel never folds. */
+.shell{display:grid;grid-template-columns:var(--panelw,420px) 1fr;height:100vh;height:100dvh}
+/* a grid item defaults to min-width:auto, so the column would refuse to shrink
+   past the panel's own minimum */
+.dock{min-width:0}
+body.no-panel .dock{pointer-events:none;border-right:0}
+.panel-btn{margin-left:auto;flex:none;width:32px;height:32px;border-radius:10px;border:0;cursor:pointer;
+  background:rgba(22,40,29,.06);color:var(--ink-2);display:grid;place-items:center;transition:.2s var(--ease)}
+.panel-btn svg{width:17px;height:17px}
+.panel-btn:hover{background:var(--ink);color:#fff}
+.panel-show{position:fixed;left:14px;top:14px;z-index:80;width:40px;height:40px;border-radius:50%;
+  border:3px solid #fff;background:var(--ink);color:#fff;cursor:pointer;display:none;place-items:center;
+  box-shadow:var(--sh-rest);transition:transform .2s var(--ease)}
+.panel-show svg{width:18px;height:18px}
+.panel-show:hover{transform:translateX(2px)}
+body.no-panel .panel-show{display:grid}
+
+/* ══════════ left panel ══════════ */
+.dock{position:relative;z-index:6;display:flex;flex-direction:column;overflow:hidden;background:var(--bg);border-right:1.5px solid var(--line)}
+.dock-scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding:26px 24px 16px;scrollbar-width:thin;scrollbar-color:rgba(22,40,29,.2) transparent}
+.dock-scroll::-webkit-scrollbar{width:7px}
+.dock-scroll::-webkit-scrollbar-thumb{background:rgba(22,40,29,.16);border-radius:99px}
+
+.brand{display:flex;align-items:center;gap:11px;margin-bottom:20px}
+.brand > div:nth-child(2){min-width:0}
+.brand-mark{width:38px;height:38px;flex:none;border-radius:13px;background:var(--sun);border:3px solid #fff;display:grid;place-items:center;box-shadow:var(--sh-ui);transform:rotate(-5deg)}
+.brand-mark svg{width:18px;height:18px}
+.brand-name{font-family:Fredoka,sans-serif;font-weight:600;font-size:19px;line-height:1}
+.brand-by{display:inline-flex;align-items:center;gap:4px;margin-top:3px;text-decoration:none;
+  font-size:11px;font-weight:700;color:var(--ink-3);transition:color .2s var(--ease)}
+.brand-by svg{width:11px;height:11px;transition:transform .2s var(--ease)}
+.brand-by:hover{color:var(--ink)}
+.brand-by:hover svg{transform:translate(1.5px,-1.5px)}
+
+.roll{width:100%;position:relative;overflow:hidden;padding:14px 16px;border:3px solid #fff;border-radius:16px;cursor:pointer;
+  font-family:Fredoka,sans-serif;font-weight:600;font-size:14.5px;background:var(--ink);color:#fff;box-shadow:var(--sh-ui);
+  display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .2s var(--ease),box-shadow .2s var(--ease)}
+.roll:hover{transform:translateY(-3px);box-shadow:0 14px 22px rgba(5,20,11,.28)}
+.roll:active{transform:translateY(0)}
+.roll svg{width:21px;height:21px}
+.bshine{position:absolute;top:-30%;bottom:-30%;width:42%;left:-70%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);pointer-events:none;transform:rotate(8deg)}
+
+.nameask{margin:20px 0 6px;position:relative}
+.nameask label{display:block;font-family:Fredoka,sans-serif;font-weight:500;font-size:12.5px;color:var(--ink-2);margin:0 0 6px 4px}
+.nameask label b{font-weight:600;color:var(--ink)}
+.nameask input{width:100%;padding:14px 44px 14px 16px;background:var(--panel);border:2.5px solid rgba(22,40,29,.14);border-radius:16px;
+  color:var(--ink);font-family:Fredoka,sans-serif;font-weight:600;font-size:17px;outline:none;
+  transition:border-color .25s var(--ease),box-shadow .25s var(--ease)}
+.nameask input::placeholder{color:var(--ink-3);font-weight:400}
+.nameask input:focus{border-color:var(--ink);box-shadow:var(--sh-ui)}
+.nameask .tick{position:absolute;right:14px;bottom:15px;width:20px;height:20px;border-radius:50%;background:var(--ink);display:grid;place-items:center;opacity:0;transform:scale(.4)}
+.nameask .tick svg{width:11px;height:11px}
+
+.sechead{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:24px 2px 11px}
+.sechead.more{margin-top:26px;padding-top:20px;border-top:2px dashed var(--line)}
+.sechead .lh{font-family:Fredoka,sans-serif;font-weight:600;font-size:15px;color:var(--ink)}
+.sechead .lh i{font-style:normal;color:var(--ink-3);font-weight:500;margin-left:5px}
+.sechead .sub{font-size:11.5px;font-weight:600;color:var(--ink-3);margin-top:2px}
+/* a basic row wears its type as a fixed chip — no picker, nothing to decide */
+.row .fixed{flex:none;display:inline-flex;align-items:center;gap:6px;width:112px;padding:8px 10px;border-radius:10px;
+  background:rgba(22,40,29,.06);font-family:Fredoka,sans-serif;font-weight:600;font-size:12.5px;color:var(--ink)}
+.row .more-btn{flex:none;width:28px;height:28px;border-radius:9px;border:0;background:rgba(22,40,29,.06);color:var(--ink-2);
+  font-family:Nunito,sans-serif;font-weight:800;font-size:16px;line-height:1;cursor:pointer;display:grid;place-items:center;transition:.18s}
+.row .more-btn:hover{background:var(--sun);color:var(--ink)}
+/* always sits directly under the last field, so there is no scrolling back up */
+.addrow{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:9px;
+  padding:13px 16px;border-radius:14px;border:2px dashed rgba(22,40,29,.26);background:transparent;
+  color:var(--ink-2);font-family:Fredoka,sans-serif;font-weight:600;font-size:13.5px;cursor:pointer;
+  transition:border-color .2s var(--ease),color .2s var(--ease),background .2s var(--ease)}
+.addrow:hover{border-color:var(--ink);color:var(--ink);background:rgba(255,216,77,.24)}
+.addrow svg{width:15px;height:15px}
+
+.rows{display:flex;flex-direction:column;gap:9px}
+.row{display:flex;align-items:center;gap:8px;background:var(--panel);border:2px solid rgba(22,40,29,.12);
+  border-left:6px solid var(--rowc,#ddd);border-radius:14px;padding:7px 8px 7px 10px;
+  transition:border-color .2s var(--ease),box-shadow .2s var(--ease),transform .2s var(--ease)}
+.row:focus-within{border-color:rgba(22,40,29,.34);border-left-color:var(--rowc,#ddd);box-shadow:var(--sh-ui)}
+.row .sel{position:relative;flex:none}
+.row select{appearance:none;-webkit-appearance:none;border:0;outline:none;cursor:pointer;
+  background:rgba(22,40,29,.06);border-radius:10px;padding:8px 24px 8px 10px;
+  font-family:Fredoka,sans-serif;font-weight:600;font-size:12.5px;color:var(--ink);width:112px}
+.row select:hover{background:rgba(22,40,29,.11)}
+.row .sel:after{content:'';position:absolute;right:9px;top:50%;margin-top:-2px;width:0;height:0;pointer-events:none;
+  border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid var(--ink-3)}
+.row input{flex:1;min-width:0;border:0;outline:none;background:none;color:var(--ink);
+  font-family:Fredoka,sans-serif;font-weight:500;font-size:14px;padding:8px 4px}
+.row input::placeholder{color:var(--ink-3);font-weight:400}
+.row input.lbl{flex:0 0 34%;font-weight:600}
+.row .div{width:1.5px;height:20px;background:var(--line);flex:none}
+.row .rx{flex:none;width:28px;height:28px;border-radius:9px;border:0;background:rgba(22,40,29,.06);color:var(--ink-2);
+  font-family:Nunito,sans-serif;font-weight:800;font-size:15px;line-height:1;cursor:pointer;display:grid;place-items:center;transition:.18s}
+.row .rx:hover{background:var(--thread);color:#fff}
+.row .glyphs{display:flex;gap:5px;flex:1;flex-wrap:wrap}
+.row .glyphs button{width:30px;height:30px;border-radius:9px;border:2px solid transparent;background:rgba(22,40,29,.06);
+  font-size:15px;line-height:1;cursor:pointer;display:grid;place-items:center;transition:.18s}
+.row .glyphs button:hover{background:rgba(22,40,29,.13)}
+.row .glyphs button.on{background:var(--lilac);border-color:var(--ink)}
+.row .pickimg{flex:none;width:42px;height:42px;border-radius:10px;border:2px dashed rgba(22,40,29,.26);
+  background:rgba(22,40,29,.04);color:var(--ink-3);cursor:pointer;display:grid;place-items:center;
+  overflow:hidden;padding:0;transition:.2s var(--ease)}
+.row .pickimg:hover{border-color:var(--ink);color:var(--ink)}
+.row .pickimg svg{width:19px;height:19px}
+.row .pickimg img{width:100%;height:100%;object-fit:cover;display:block}
+.row .pickimg.busy{opacity:.5}
+.row .pickimg.bad{border-color:var(--thread);color:var(--thread);border-style:solid}
+
+/* the colour circle, and the swatches it opens */
+.sizes{display:flex;gap:3px;flex:none;background:rgba(22,40,29,.06);border-radius:9px;padding:3px}
+.sizes button{border:0;background:none;cursor:pointer;padding:4px 6px;border-radius:6px;
+  font-family:Fredoka,sans-serif;font-weight:600;font-size:10.5px;color:var(--ink-3);transition:.15s}
+.sizes button:hover{color:var(--ink)}
+.sizes button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(5,20,11,.16)}
+
+.dot-wrap{position:relative;flex:none}
+.dot{width:26px;height:26px;border-radius:50%;border:2.5px solid #fff;cursor:pointer;padding:0;
+  box-shadow:0 0 0 1.5px rgba(22,40,29,.2), var(--sh-ui);transition:transform .18s var(--ease)}
+.dot:hover{transform:scale(1.12)}
+.dot.auto{box-shadow:0 0 0 1.5px rgba(22,40,29,.2)}
+.dot.auto:after{content:'';display:block;width:100%;height:100%;border-radius:50%;
+  background:linear-gradient(135deg,transparent 44%,rgba(22,40,29,.34) 44%,rgba(22,40,29,.34) 56%,transparent 56%)}
+.dotpop{position:absolute;right:-4px;top:34px;z-index:40;display:none;
+  grid-template-columns:repeat(6,22px);gap:7px;padding:11px;border-radius:14px;
+  background:var(--panel);border:2px solid rgba(22,40,29,.14);box-shadow:0 10px 26px rgba(5,20,11,.22)}
+.dot-wrap.open .dotpop{display:grid}
+.dotpop .sw{width:22px;height:22px;border-radius:50%;border:2px solid #fff;cursor:pointer;padding:0;
+  box-shadow:0 0 0 1.5px rgba(22,40,29,.18);transition:transform .16s var(--ease)}
+.dotpop .sw:hover{transform:scale(1.15)}
+.dotpop .sw.on{box-shadow:0 0 0 2.5px var(--ink)}
+.dotpop .autobtn{background:var(--panel);color:var(--ink-2);font-family:Nunito,sans-serif;font-weight:800;
+  font-size:13px;line-height:1;display:grid;place-items:center}
+.dotpop .wheel{width:22px;height:22px;border-radius:50%;cursor:pointer;overflow:hidden;position:relative;
+  border:2px solid #fff;box-shadow:0 0 0 1.5px rgba(22,40,29,.18);
+  background:conic-gradient(#ff6b6b,#ffd84d,#c9f24f,#8fe3c0,#8ecdff,#c9b8ff,#ffb3d1,#ff6b6b)}
+.dotpop .wheel input{position:absolute;inset:-6px;width:200%;height:200%;opacity:0;cursor:pointer;border:0;padding:0}
+
+.emptyrow{padding:22px 16px;text-align:center;border:2px dashed var(--line);border-radius:14px;
+  font-family:Fredoka,sans-serif;font-weight:500;font-size:13px;color:var(--ink-3);line-height:1.5}
+
+.dock-foot{padding:14px 24px;border-top:1.5px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.count{font-size:12.5px;color:var(--ink-2);font-weight:700}
+.count b{color:var(--ink);font-weight:800}
+.wipe{background:none;border:0;color:var(--thread);font-family:Fredoka,sans-serif;font-weight:500;font-size:12.5px;cursor:pointer;padding:6px 10px;border-radius:10px;transition:.2s}
+.wipe:hover{background:rgba(224,71,58,.1)}
+
+/* ══════════ the mat ══════════ */
+.board{position:relative;overflow:hidden;background:var(--bg);padding:22px}
+.mat{position:absolute;inset:22px;border-radius:14px;overflow:hidden;background:var(--mat);box-shadow:0 10px 30px rgba(14,38,24,.16)}
+#matSvg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.board-top{position:absolute;left:54px;right:54px;top:46px;z-index:7;display:flex;align-items:flex-start;justify-content:space-between;gap:22px;pointer-events:none}
+.tw{display:inline-block;font-family:Fredoka,sans-serif;font-weight:600;line-height:1.05;border:3px solid #fff;border-radius:15px;
+  padding:7px 14px 9px;box-shadow:var(--sh-rest);background:#fff;color:var(--ink);font-size:17px;transform:rotate(-1.3deg)}
+.controls{display:flex;align-items:flex-start;gap:9px;pointer-events:auto}
+.pillrow{display:flex;gap:9px;justify-content:flex-end;transition:opacity .3s var(--ease),transform .35s var(--ease)}
+.pillrow.hidden{opacity:0;transform:translateY(-10px) scale(.96);pointer-events:none}
+.ibtn{position:relative;flex:none;width:40px;height:40px;border-radius:50%;border:3px solid #fff;background:rgba(255,255,255,.16);
+  color:#fff;cursor:pointer;display:grid;place-items:center;backdrop-filter:blur(6px);
+  transition:transform .22s var(--ease),background .22s,box-shadow .22s var(--ease),color .22s}
+.ibtn svg{width:19px;height:19px}
+.ibtn:hover{transform:translateY(-2px);background:rgba(255,255,255,.34);box-shadow:var(--sh-ui)}
+.ibtn.on,.ibtn.off{background:#fff;color:var(--ink);box-shadow:var(--sh-rest)}
+.ibtn.spin svg{animation:eyespin .8s linear infinite}
+@keyframes eyespin{to{transform:rotate(360deg)}}
+.ibtn:after{content:attr(data-tip);position:absolute;top:48px;left:50%;transform:translateX(-50%) translateY(-4px);
+  background:var(--ink);color:#fff;font-family:Fredoka,sans-serif;font-weight:500;font-size:11.5px;padding:5px 10px;border-radius:9px;
+  white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s var(--ease),transform .2s var(--ease);box-shadow:var(--sh-ui)}
+.ibtn:hover:after{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.stage{position:absolute;inset:22px;z-index:5;overflow:hidden;border-radius:14px}
+.plane{position:absolute;inset:0}
+#threads{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;overflow:visible}
+#threads .rope{fill:none;stroke:var(--thread);stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round;
+  filter:drop-shadow(2px 3px 0 rgba(5,20,11,.28));transition:opacity .3s var(--ease),stroke-width .3s var(--ease)}
+#threads .rope.cold{opacity:.14}
+#threads .rope.hot{stroke-width:4;opacity:1}
+#threads .spark{fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;opacity:0;
+  stroke-dasharray:18 260;pointer-events:none}
+#threads .spark.on{opacity:.95;animation:travel 1.15s linear infinite}
+@keyframes travel{from{stroke-dashoffset:278}to{stroke-dashoffset:0}}
+#threads .knot{fill:var(--thread);stroke:#fff;stroke-width:2.6;filter:drop-shadow(2px 3px 0 rgba(5,20,11,.26));transition:opacity .3s var(--ease)}
+#threads .knot.cold{opacity:.16}
+.piece.faded{opacity:.34;filter:saturate(.5)}
+.piece{transition:box-shadow .28s var(--ease),opacity .3s var(--ease),filter .3s var(--ease)}
+
+/* ══════════ pieces ══════════ */
+.piece{position:absolute;z-index:5;cursor:grab;user-select:none;will-change:transform;
+  border:var(--stroke) solid #fff;border-radius:20px;box-shadow:var(--sh-rest);transition:box-shadow .28s var(--ease)}
+.piece:hover,.piece.dragging{box-shadow:var(--sh-lift)}
+.piece.dragging{cursor:grabbing;z-index:60}
+/* An <img> is natively draggable, so the browser starts its own image-drag and
+   the piece never moves. Take the image out of the event path entirely. */
+.piece img, .piece svg{-webkit-user-drag:none;user-drag:none;pointer-events:none;user-select:none}
+.piece .sheen{position:absolute;inset:0;border-radius:17px;overflow:hidden;pointer-events:none}
+.piece .sheen i{position:absolute;top:-60%;bottom:-60%;width:46%;left:-90%;display:block;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.75),transparent);transform:rotate(9deg)}
+
+.p-name{background:none;border:0;box-shadow:none;border-radius:0;padding:6px 10px;
+  font-family:Fredoka,sans-serif;font-weight:700;font-size:clamp(38px,4.4vw,68px);line-height:.98;letter-spacing:-.02em;
+  color:var(--ink);text-align:center;max-width:min(560px,42vw);
+  text-shadow:-3px -3px 0 #fff,3px -3px 0 #fff,-3px 3px 0 #fff,3px 3px 0 #fff,-4px 0 0 #fff,4px 0 0 #fff,0 -4px 0 #fff,0 4px 0 #fff,6px 8px 0 rgba(5,20,11,.34)}
+@supports (paint-order: stroke){
+  .p-name{-webkit-text-stroke:8px #fff;paint-order:stroke fill;text-shadow:none;filter:var(--drop-rest)}
+  .p-name:hover,.p-name.dragging{filter:var(--drop-lift)}
+}
+.p-name:hover,.p-name.dragging{box-shadow:none}
+
+.p-role{background:var(--tone,var(--sun));padding:12px 22px 13px 17px;font-family:Fredoka,sans-serif;font-weight:600;font-size:21px;
+  color:var(--ink);border-radius:99px;display:flex;align-items:center;gap:11px}
+.p-role .sheen{border-radius:99px}
+.p-role .bag{flex:none;width:32px;height:32px;border-radius:50%;background:rgba(22,40,29,.14);display:grid;place-items:center}
+.p-role .bag svg{width:17px;height:17px;color:var(--ink)}
+.p-tag{padding:9px 18px 9px 13px;border-radius:99px;font-family:Fredoka,sans-serif;font-weight:600;font-size:15px;color:var(--ink);background:var(--tone,var(--lime));display:inline-flex;align-items:center;gap:8px}
+.p-tag .tic{width:19px;height:19px;flex:0 0 19px;display:grid;place-items:center;opacity:.9}
+.p-tag .tic svg{width:100%;height:100%;display:block}
+.p-tag .sheen{border-radius:99px}
+
+.p-co{background:#fff;padding:13px 17px 14px;display:flex;align-items:center;gap:12px}
+.p-co .logo{width:38px;height:38px;flex:none;border-radius:12px;display:grid;place-items:center;background:#f4f2ec;overflow:hidden}
+.p-co .logo svg{width:24px;height:24px;display:block}
+.p-co .logo.mono{color:#fff;font-family:Fredoka,sans-serif;font-weight:600;font-size:16px}
+.p-co .co-n{font-family:Fredoka,sans-serif;font-weight:600;font-size:18px;line-height:1.1;color:var(--ink);white-space:nowrap;max-width:170px;overflow:hidden;text-overflow:ellipsis}
+
+.p-loc{background:#fff;padding:10px;width:224px}
+.p-loc .mark{position:absolute;top:-19px;left:50%;margin-left:-17px;width:34px;height:38px;z-index:6;pointer-events:none}
+.p-loc .mark svg{display:block;filter:drop-shadow(0 3px 3px rgba(5,20,11,.42))}
+.p-loc .shot{position:relative;width:100%;height:134px;border-radius:13px;overflow:hidden;background:linear-gradient(150deg,#e2ebe5,#c9d9d0)}
+.p-loc .shot img{width:100%;height:100%;object-fit:cover;display:block;opacity:0}
+.p-loc .shot .fb{position:absolute;inset:0;display:grid;place-items:center;color:rgba(22,40,29,.28)}
+.p-loc .shot .fb svg{width:36px;height:36px}
+.p-loc .shot .shim{position:absolute;inset:0;background:linear-gradient(100deg,transparent,rgba(255,255,255,.65),transparent);transform:translateX(-100%)}
+.p-loc .cap{display:flex;align-items:center;padding:11px 4px 2px}
+.p-loc .cap span{font-family:Fredoka,sans-serif;font-weight:600;font-size:16px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.p-vision{background:#fff;padding:19px 21px 21px;width:284px;font-family:Fredoka,sans-serif;font-weight:400;font-size:16.5px;line-height:1.42;color:var(--ink)}
+.p-vision .q{display:block;font-size:36px;line-height:.5;color:var(--sun);margin-bottom:11px;font-weight:600}
+.p-vision mark{background:linear-gradient(transparent 54%, var(--sun) 54%);color:inherit;padding:0 2px;border-radius:2px}
+
+.p-cus{background:#fff;padding:14px 20px 16px;display:flex;flex-direction:column;gap:4px;min-width:132px;max-width:250px}
+.p-cus .ck{font-family:Nunito,sans-serif;font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
+.p-cus .cv{font-family:Fredoka,sans-serif;font-weight:600;font-size:22px;line-height:1.1;color:var(--ink);word-break:break-word}
+
+.p-note{width:176px;min-height:148px;padding:16px 15px;border-radius:6px;font-family:Fredoka,sans-serif;font-weight:500;font-size:15px;line-height:1.34;color:#2a2410;word-break:break-word}
+.p-note .sheen{border-radius:3px}
+.p-note:after{content:'';position:absolute;right:-3px;bottom:-3px;width:30px;height:30px;background:linear-gradient(135deg,transparent 50%,rgba(0,0,0,.16) 50%);border-bottom-right-radius:6px}
+.p-note{background:var(--tone,var(--sun))}
+
+/* ── polaroid: your own picture, our frame ── */
+.p-photo{background:#fff;padding:11px 11px 0;width:var(--pw,236px);border-radius:6px}
+.p-photo .mark{position:absolute;top:-19px;left:50%;margin-left:-17px;width:34px;height:38px;z-index:6;pointer-events:none}
+.p-photo .mark svg{display:block;filter:drop-shadow(0 3px 3px rgba(5,20,11,.42))}
+.p-photo .shot{position:relative;width:100%;height:214px;border-radius:3px;overflow:hidden;background:#e8e4da;display:grid;place-items:center}
+.p-photo .shot img{width:100%;height:100%;object-fit:cover;display:block}
+.p-photo .shot .none{color:rgba(22,40,29,.3);font-family:Fredoka,sans-serif;font-weight:500;font-size:13px;text-align:center;padding:0 18px;line-height:1.4}
+.p-photo .cap{font-family:Caveat,cursive;font-weight:600;font-size:23px;line-height:1.15;color:#23301f;
+  text-align:center;padding:12px 6px 16px;min-height:52px;word-break:break-word}
+.p-photo .sheen{border-radius:6px}
+.p-photo .shot{height:calc(var(--pw,236px) * 0.9)}
+
+/* ── just words on the mat: no card, no border, only the outline ── */
+.p-text{background:none;border:0;box-shadow:none;border-radius:0;padding:4px 10px;
+  font-family:Fredoka,sans-serif;font-weight:700;font-size:var(--fs,34px);line-height:1.05;
+  letter-spacing:-.02em;color:var(--tone,var(--ink));text-align:center;max-width:min(560px,42vw);
+  text-shadow:-2px -2px 0 #fff,2px -2px 0 #fff,-2px 2px 0 #fff,2px 2px 0 #fff,
+              -3px 0 0 #fff,3px 0 0 #fff,0 -3px 0 #fff,0 3px 0 #fff,4px 5px 0 rgba(5,20,11,.3)}
+@supports (paint-order: stroke){
+  .p-text{-webkit-text-stroke:var(--stw,6px) #fff;paint-order:stroke fill;text-shadow:none;filter:var(--drop-rest)}
+  .p-text:hover,.p-text.dragging{filter:var(--drop-lift)}
+}
+.p-text:hover,.p-text.dragging{box-shadow:none}
+.p-text .kill{top:-4px;right:-8px}
+
+/* ── a bare image ── */
+.p-image{background:#fff;padding:8px;width:var(--pw,236px);border-radius:12px;line-height:0}
+.p-image img{width:100%;height:auto;display:block;border-radius:6px}
+.p-image .none{display:block;padding:26px 14px;line-height:1.4;color:rgba(22,40,29,.3);
+  font-family:Fredoka,sans-serif;font-weight:500;font-size:13px;text-align:center}
+.p-image .sheen{border-radius:9px}
+/* a cut-out PNG: no card, no box — the white stroke traces the shape itself */
+.p-image.cut{background:none;border:0;box-shadow:none;padding:0;border-radius:0}
+.p-image.cut img{border-radius:0;
+  filter:drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff)
+         drop-shadow(2px 2px 0 #fff) drop-shadow(-2px 2px 0 #fff) drop-shadow(2px -2px 0 #fff) drop-shadow(-2px -2px 0 #fff)
+         drop-shadow(0 6px 10px rgba(5,20,11,.34))}
+.p-image.cut:hover img{filter:drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff)
+         drop-shadow(2px 2px 0 #fff) drop-shadow(-2px 2px 0 #fff) drop-shadow(2px -2px 0 #fff) drop-shadow(-2px -2px 0 #fff)
+         drop-shadow(0 18px 24px rgba(5,20,11,.4))}
+.p-image.cut .kill{top:-6px;right:-6px}
+
+.p-stk{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;font-size:33px;background:var(--tone,#fff)}
+.p-stk .sheen{border-radius:50%}
+
+
+.p-prop{border:0;box-shadow:none;background:none;border-radius:0}
+.p-prop:hover{box-shadow:none}
+.p-prop svg{display:block;filter:var(--drop-rest)}
+.p-prop:hover svg{filter:var(--drop-lift)}
+
+.kill{position:absolute;top:-11px;right:-11px;width:26px;height:26px;border-radius:50%;z-index:9;border:3px solid #fff;
+  background:var(--ink);color:#fff;font-size:13px;line-height:1;cursor:pointer;opacity:0;transform:scale(.4);
+  display:grid;place-items:center;font-family:Nunito,sans-serif;font-weight:800;box-shadow:var(--sh-ui);
+  transition:opacity .22s,transform .22s var(--ease),background .2s}
+.piece:hover .kill{opacity:1;transform:scale(1)}
+.kill:hover{background:var(--thread)}
+.p-name .kill{top:2px;right:-6px}
+body.exporting .kill{display:none}
+
+/* html2canvas renders neither box-shadow nor drop-shadow filters, so for the
+   shot we lay a real element under each piece and let it BE the shadow. */
+.shadow-proxy{position:absolute;pointer-events:none;background:rgba(6,22,13,.34);z-index:4}
+/* the picture is always landscape: if the live board is portrait we lay the
+   mat out in a wide frame just for the shot, then put everything back */
+body.shooting .shell{visibility:hidden}
+body.shooting .board{visibility:visible;position:fixed !important;left:0;top:0;
+  width:1600px !important;height:900px !important;padding:22px !important;z-index:9999}
+
+@media (max-width:1080px){
+  .shell{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  .dock{max-height:52vh;border-right:0;border-bottom:1.5px solid var(--line)}
+  .board{padding:12px}
+  .mat,.stage{inset:12px}
+  .board-top{left:24px;right:24px;top:24px}
+  .p-name{font-size:clamp(28px,7vw,44px);max-width:70vw;-webkit-text-stroke-width:6px}
+}
+
+body.driven .dock,body.driven aside,body.driven .panel-show,body.driven .board-top{display:none!important}
+body.driven .shell{grid-template-columns:1fr!important;grid-template-rows:1fr!important;height:100vh;height:100dvh}
+/* nothing here paints a background. The only surface is the mat, so whatever
+   the onboarding panel is behind it (dark or light) is what you see around it. */
+html.driven,body.driven,body.driven .shell,body.driven .board{background:transparent!important}
+body.driven .board{height:100%!important;min-height:0;display:grid;place-items:center;padding:16px!important}
+/* mat and stage share one cell, so the plane's bounds ARE the mat's bounds and
+   a piece can never be laid out past the green */
+body.driven .mat,body.driven .stage{grid-area:1/1;position:relative!important;inset:auto!important;
+  aspect-ratio:4/5;height:100%!important;width:auto!important;
+  max-width:100%!important;max-height:100%!important;
+  border-radius:20px!important;overflow:hidden}
+/* a tall mat wants smaller furniture */
+body.driven .p-name{font-size:clamp(38px,5.4vw,64px)}
+body.driven .p-role{font-size:15px;padding:8px 15px 9px 11px}
+body.driven .p-role .bag{width:22px;height:22px}
+body.driven .p-tag{font-size:12px;padding:7px 12px}
+body.driven .p-note{font-size:12px;padding:11px 11px;width:150px}
+body.driven .p-cus{padding:9px 14px 11px}
+body.driven .p-cus .ck{font-size:9.5px}
+body.driven .p-cus .cv{font-size:17px}
+body.driven .p-vision{font-size:13px;padding:13px 15px 15px;max-width:230px}
+body.driven .p-co{padding:8px 11px 9px}
+body.driven .p-co .co-n{font-size:14px}
+body.driven .p-loc{width:146px!important;padding:6px}
+body.driven .p-loc .shot{height:88px!important;border-radius:10px}
+body.driven .p-loc .cap{font-size:11.5px;padding:5px 2px 2px}
+body.driven .p-loc .mark{top:-13px;margin-left:-12px;width:24px;height:27px}
+body.driven .p-stk{width:48px;height:48px;font-size:22px}
+body.driven .p-text{font-size:var(--fs,26px)}
+body.driven .piece{border-width:2.5px}
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="dock">
+    <div class="dock-scroll">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#16281d" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2 15 9l7 .6-5.3 4.6L18.3 21 12 17.3 5.7 21l1.6-6.8L2 9.6 9 9z"/></svg>
+        </div>
+        <div>
+          <div class="brand-name">Vision Board Generator</div>
+          <a class="brand-by" href="https://www.chauhansanjay.com/" target="_blank" rel="noopener noreferrer">
+            generated by Sanjay Chauhan
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8.5 7H17v8.5"/></svg>
+          </a>
+        </div>
+        <button class="panel-btn" id="tPanel" title="Hide the panel" aria-label="Hide the panel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 6 8.5 12l6 6"/></svg>
+        </button>
+      </div>
+
+      <button class="roll" id="dice" type="button">
+        <span class="bshine"></span>
+        <svg id="dieIcon" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="8.5" cy="8.5" r="1.4" fill="#fff" stroke="none"/>
+          <circle cx="15.5" cy="15.5" r="1.4" fill="#fff" stroke="none"/><circle cx="12" cy="12" r="1.4" fill="#fff" stroke="none"/></svg>
+        Roll me a vision
+      </button>
+
+      <div class="nameask">
+        <label for="f-name">My name is <b>…</b></label>
+        <input id="f-name" maxlength="24" placeholder="Sanjay Chauhan" autocomplete="off" />
+        <span class="tick" id="nameTick"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>
+      </div>
+
+      <div class="sechead"><div class="lh">The basics</div><div class="sub">the five things worth filling in</div></div>
+      <div class="rows" id="basicRows"></div>
+      <datalist id="colist"></datalist>
+
+      <div class="sechead more">
+        <div><div class="lh">Anything else <i id="rowCount"></i></div><div class="sub">optional — add as many as you like</div></div>
+      </div>
+      <div class="rows" id="rows"></div>
+      <button class="addrow" id="addRow" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        Add another field
+      </button>
+    </div>
+
+    <div class="dock-foot">
+      <div class="count"><b id="cnt">0</b> on the board</div>
+      <button class="wipe" id="wipe">Start over</button>
+    </div>
+  </aside>
+
+  <button class="panel-show" id="tPanelShow" title="Show the panel" aria-label="Show the panel">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 6l6 6-6 6"/></svg>
+  </button>
+  <main class="board" id="board">
+    <div class="mat"><svg id="matSvg" aria-hidden="true"></svg></div>
+    <div class="board-top">
+      <div class="tw">vision board</div>
+      <div class="controls">
+        <div class="pillrow" id="pillrow">
+          <button class="ibtn" id="tMat" data-tip="Classic mat" aria-label="New mat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="3.5"/><path d="M3 9.5h18M3 15.5h18M9.5 3v18M15.5 3v18"/></svg>
+          </button>
+          <button class="ibtn on" id="tThread" data-tip="Thread" aria-label="Thread">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 18c7 0 5-12 12-12"/><circle cx="5" cy="18.5" r="2.2"/><circle cx="19" cy="5.5" r="2.2"/></svg>
+          </button>
+          <button class="ibtn" id="tProps" data-tip="Props" aria-label="Props">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 8.5V17a5 5 0 0 1-10 0V6.6a3.2 3.2 0 0 1 6.4 0V16a1.4 1.4 0 0 1-2.8 0V8.5"/></svg>
+          </button>
+          <button class="ibtn" id="tSpread" data-tip="Tidy" aria-label="Spacing">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 3H3v6M15 3h6v6M9 21H3v-6M15 21h6v-6"/></svg>
+          </button>
+        </div>
+        <button class="ibtn" id="tSave" data-tip="Download" aria-label="Download as an image">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3.5v11"/><path d="m7.5 10.5 4.5 4.5 4.5-4.5"/><path d="M4.5 19.5h15"/></svg>
+        </button>
+        <button class="ibtn on" id="tSound" data-tip="Sound" aria-label="Sound">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z"/><path d="M16 9.2a4 4 0 0 1 0 5.6" class="w1"/><path d="M18.6 6.6a7.6 7.6 0 0 1 0 10.8" class="w2"/></svg>
+        </button>
+        <button class="ibtn" id="tHide" data-tip="Hide" aria-label="Hide the controls">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 12s3.8-7 10-7 10 7 10 7-3.8 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="stage" id="stage"><div class="plane" id="plane"><svg id="threads"></svg></div></div>
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+(function(){
+'use strict';
+const G = window.gsap;
+const $  = s => document.querySelector(s);
+const clamp = (v,a,b) => Math.max(a, Math.min(b,v));
+const rnd = (a,b) => a + Math.random()*(b-a);
+const pick = a => a[Math.floor(Math.random()*a.length)];
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const plane = $('#plane'), threadSvg = $('#threads');
+const KEY = 'vision-board-v17';
+
+/* ═══════════════════════════════════════════════════════════
+   SOUND — every note is synthesised, so there is nothing to load.
+   The context only wakes on the first real gesture, which is also
+   the only time a browser will let it make a noise.
+   ═══════════════════════════════════════════════════════════ */
+const Snd = (()=>{
+  let ctx = null, master = null, on = true, lastHover = 0;
+  function wake(){
+    if(ctx) { if(ctx.state === 'suspended') ctx.resume(); return ctx; }
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if(!AC) return null;
+    ctx = new AC();
+    master = ctx.createGain();
+    master.gain.value = 0.28;
+    master.connect(ctx.destination);
+    return ctx;
+  }
+  ['pointerdown','keydown'].forEach(ev=> window.addEventListener(ev, ()=>wake(), {once:false, passive:true}));
+
+  function tone({freq=440, to=null, dur=.14, type='sine', gain=.5, delay=0, curve='exp'}){
+    if(!on) return;
+    const c = wake(); if(!c) return;
+    const t0 = c.currentTime + delay;
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = type;
+    o.frequency.setValueAtTime(freq, t0);
+    if(to) o.frequency.exponentialRampToValueAtTime(Math.max(40,to), t0+dur);
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(gain, t0+0.008);
+    if(curve==='exp') g.gain.exponentialRampToValueAtTime(0.0001, t0+dur);
+    else g.gain.linearRampToValueAtTime(0.0001, t0+dur);
+    o.connect(g); g.connect(master);
+    o.start(t0); o.stop(t0+dur+0.02);
+  }
+  /* no noise generator on purpose — every burst of it read as a thud.
+     the whole set is pitched tones now. */
+  return {
+    get on(){ return on; },
+    toggle(){ on = !on; if(on){ wake(); tone({freq:660,to:990,dur:.12,type:'triangle',gain:.4}); } return on; },
+    set(v){ on = !!v; },
+    /* a soft paper thock as a piece meets the mat */
+    /* the low thuds on settling and on pressing read as dull, so they are gone.
+       release keeps a faint, high tick in the same family as the click. */
+    land(){},
+    grab(){},
+    drop(){ tone({freq:940,to:1160,dur:.05,type:'sine',gain:.14}); },
+    hover(){
+      const now = performance.now();
+      if(now - lastHover < 90) return;
+      lastHover = now;
+      tone({freq:1180,dur:.045,type:'sine',gain:.075});
+    },
+    click(){ tone({freq:880,to:1240,dur:.06,type:'triangle',gain:.3}); },
+    add(){ tone({freq:600,to:900,dur:.09,type:'triangle',gain:.32}); tone({freq:900,to:1350,dur:.09,type:'sine',gain:.2,delay:.06}); },
+    remove(){ tone({freq:760,to:430,dur:.09,type:'triangle',gain:.22}); },
+    /* the dice: a little tumble, then the board lands */
+    roll(){
+      [0,1,2,3,4].forEach(i=> tone({freq:520+i*130, dur:.05, type:'triangle', gain:.17, delay:i*0.055}));
+      tone({freq:330,to:660,dur:.2,type:'triangle',gain:.34,delay:.3});
+    },
+    shutter(){ tone({freq:1500,to:1900,dur:.04,type:'sine',gain:.22}); tone({freq:1150,to:820,dur:.07,type:'sine',gain:.16,delay:.07}); },
+    sweep(){ tone({freq:240,to:880,dur:.3,type:'sine',gain:.24}); }
+  };
+})();
+
+/* ═══════════ one typed list drives everything ═══════════ */
+const TYPES = {
+  role   :{label:'Role',    icon:'💼', ph:'Head of Design',                     accent:'#ffd84d'},
+  company:{label:'Company', icon:'🏢', ph:'Figma',                              accent:'#cfd6dc'},
+  place  :{label:'Place',   icon:'📍', ph:'Mumbai',                             accent:'#8ecdff'},
+  tag    :{label:'Tag',     icon:'🏷️', ph:'Craft',                              accent:'#c9f24f'},
+  note   :{label:'Note',    icon:'🗒️', ph:'Say no to the good ones.',           accent:'#ffb3d1'},
+  field  :{label:'Field',   icon:'▦',  ph:'₹42L', ph2:'Salary',                 accent:'#cfd6dc'},
+  line   :{label:'Line',    icon:'❝',  ph:'Made hiring feel like a first day.', accent:'#ffd84d'},
+  sticker:{label:'Sticker', icon:'⭐', ph:'',                                   accent:'#c9b8ff'},
+  polaroid:{label:'Polaroid',icon:'🖼️', ph:'write something underneath',        accent:'#ffb3d1'},
+  image  :{label:'Image',   icon:'🏞️', ph:'',                                   accent:'#8fe3c0'},
+  text   :{label:'Only text',icon:'🅰️', ph:'type anything',                     accent:'#16281d'}
+};
+const TYPE_ORDER = ['role','company','place','tag','note','field','line','polaroid','image','text','sticker'];
+/* Every name here was checked against the icon CDN and returns a real mark,
+   so anything picked from the suggestions gets its true logo, never a stand-in.
+   Anything typed by hand still works and falls back to a coloured monogram. */
+const COMPANIES = ['Google','Apple','Meta','Netflix','Nvidia','Tesla','Stripe','Figma','Airbnb','Notion',
+  'Spotify','Vercel','Linear','GitHub','GitLab','Discord','Shopify','Uber','Lyft','DoorDash','Instacart',
+  'Anthropic','Framer','Webflow','Miro','Intercom','Raycast','Pinterest','Snapchat','TikTok','X','Reddit',
+  'Dropbox','Zoom','Atlassian','Jira','Asana','ClickUp','Coinbase','Robinhood','Revolut','Monzo','Klarna',
+  'Razorpay','Paytm','Zomato','Swiggy','Infosys','Wipro','TCS','Accenture','SAP','Cisco','Intel','AMD',
+  'Qualcomm','Samsung','Sony','LG','Xiaomi','OnePlus','Duolingo','Coursera','Udemy','Khan Academy','Medium','Substack'];
+const STICKERS = ['★','♥','⚡','🔥','✓','☺','✿','!'];
+const TAG_TONES  = ['#c9f24f','#8ecdff','#c9b8ff','#ff9e7d','#8fe3c0','#ffb3d1'];
+const NOTE_TONES = ['#ffd84d','#8fe3c0','#ffb3d1','#8ecdff'];
+const STK_TONES  = ['#ffd84d','#8fe3c0','#c9b8ff','#ff9e7d'];
+/* roll a place and it arrives with the thing you picture when you hear it */
+const LANDMARKS = {
+  'Mumbai':'Gateway of India','Dubai':'Burj Khalifa','Paris':'Eiffel Tower','Agra':'Taj Mahal',
+  'Tokyo':'Shibuya Crossing','Lisbon':'Belém Tower','Berlin':'Brandenburg Gate','Barcelona':'Sagrada Família',
+  'Accra':'Independence Arch','Amsterdam':'Rijksmuseum','Copenhagen':'Nyhavn','Bengaluru':'Vidhana Soudha',
+  'Seoul':'Gyeongbokgung','Mexico City':'El Ángel','Cape Town':'Table Mountain','Vancouver':'Stanley Park',
+  'Singapore':'Marina Bay Sands','Rome':'The Colosseum','Cairo':'The Pyramids','New York':'Empire State'
+};
+
+/* Colour belongs to the piece, not the board. Only things that ARE a block of
+   colour get the option — a place or a photo is a white frame round a picture,
+   so there is nothing there to recolour. */
+const COLOURABLE = ['role','tag','note','sticker','text'];
+const PICTURE = ['polaroid','image'];
+const SIZEABLE = ['polaroid','image','text'];
+/* bare text scales by type size, and its outline thickens with it */
+const TEXT_SIZE   = {s:22, m:34, l:50, xl:70};
+const TEXT_STROKE = {s:4,  m:6,  l:8,  xl:11};
+const SIZES = [['s','S',176],['m','M',236],['l','L',310],['xl','XL',396]];
+const sizeOf = en => (SIZES.find(z=>z[0]===(en.size||'m')) || SIZES[1])[2];
+const SWATCHES = ['#c9f24f','#8ecdff','#c9b8ff','#ff9e7d','#ffd84d',
+                  '#8fe3c0','#ffb3d1','#ffa552','#ffffff','#b7c5ba'];
+function defaultTone(en, tagIdx){
+  if(en.type==='tag')     return TAG_TONES[tagIdx % TAG_TONES.length];
+  if(en.type==='note')    return NOTE_TONES[en.tone % NOTE_TONES.length];
+  if(en.type==='sticker') return STK_TONES[en.tone % STK_TONES.length];
+  if(en.type==='role')    return '#ffd84d';
+  if(en.type==='text')    return '#16281d';
+  return null;
+}
+
+
+/* An image goes straight into the board, so it has to survive a reload in
+   localStorage. Stills get scaled down and re-encoded; GIFs are left alone,
+   because redrawing one through a canvas would freeze it on frame one. */
+const MAX_GIF = 2.2 * 1024 * 1024;
+function readImage(file){
+  return new Promise((resolve, reject)=>{
+    if(!file || !/^image\//.test(file.type)) return reject(new Error('That is not an image.'));
+    const fr = new FileReader();
+    fr.onerror = ()=>reject(new Error('Could not read that file.'));
+    fr.onload = ()=>{
+      const raw = fr.result;
+      if(file.type === 'image/gif'){
+        if(raw.length > MAX_GIF) return reject(new Error('That GIF is too big — keep it under about 2 MB.'));
+        return resolve({src:raw, kind:'gif'});
+      }
+      const isPng = file.type === 'image/png';
+      const im = new Image();
+      im.onerror = ()=>resolve({src:raw, kind:isPng?'png':'jpg'});
+      im.onload = ()=>{
+        try{
+          const max = 760;
+          const k = Math.min(1, max/Math.max(im.width, im.height));
+          const c = document.createElement('canvas');
+          c.width = Math.max(1, Math.round(im.width*k));
+          c.height = Math.max(1, Math.round(im.height*k));
+          c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+          // a PNG stays a PNG — re-encoding it as JPEG would fill its
+          // transparency with black and there would be no shape to outline
+          resolve(isPng ? {src:c.toDataURL('image/png'), kind:'png'}
+                        : {src:c.toDataURL('image/jpeg', 0.82), kind:'jpg'});
+        }catch(e){ resolve({src:raw, kind:isPng?'png':'jpg'}); }
+      };
+      im.src = raw;
+    };
+    fr.readAsDataURL(file);
+  });
+}
+
+let S = {
+  name:'', entries:[],
+  thread:true, props:false, chrome:true, spread:'tidy', sound:true, panel:true,
+  mat:{theme:'classic', step:28, major:5, grid:'square', opacity:.17, angles:true, angleStep:15, radii:true, ticks:true, numbers:true, corner:'bl'}
+};
+let POS = {}, zTop = 10, uid = 1;
+const newEntry = (type, value, label) => ({
+  id: uid++, type, value: value||'', label: label||'',
+  tone: Math.floor(rnd(0,4)), rot: +rnd(-3,3).toFixed(2)
+});
+
+/* ═══════════ dice pool ═══════════ */
+const POOL = {
+  names:['Sanjay Chauhan','Priya Nair','Marcus Bell','Ada Osei','Kenji Watanabe','Sofia Duarte','Dara Okafor','Ines Moreau','Tomas Vidal','Nour Haddad'],
+  roles:['Head of Design','Design Engineer','Staff Engineer','Creative Director','Product Manager','Research Lead','Motion Director','Founder','Brand Lead'],
+  companies:['Figma','Stripe','Airbnb','Notion','Spotify','Vercel','Linear','Netflix','Nvidia','Apple','Google','Duolingo','Framer','GitHub','Discord','Shopify','Tesla','Anthropic','Pinterest','Uber','Intercom','Raycast','Miro','Webflow'],
+  places:['Mumbai','Lisbon','Berlin','Tokyo','Accra','Barcelona','Amsterdam','Copenhagen','Bengaluru','Seoul','Mexico City','Cape Town','Vancouver','Singapore','Paris','Dubai','Agra','Rome','Cairo','New York'],
+  tags:['Craft','Systems','Motion','Prototyping','Speed','Storytelling','Research','Typography','Performance','Brand','Learning','Taste'],
+  lines:[
+    'Made hiring feel like a first day, not an exam.',
+    'Shipped prototypes that never needed a rewrite.',
+    'Turned a tool into a culture people defend.',
+    'Killed twelve features so three could sing.',
+    'Made the whole product feel like one hand drew it.',
+    'Proved streaks beat lectures, with data.',
+    'Every transition earned its milliseconds.',
+    'Built the thing everyone quietly depends on.'
+  ],
+  shouts:['dream big','no plan B','build it anyway','stay hungry','ship it','one day, or day one','go loud','make it count'],
+  notes:['Say no to the good ones.','Ship on Fridays anyway.','Learn one hard thing a quarter.','Keep a folder of things I love.','Write it before I build it.','Ask for the raise.'],
+  fields:[['Salary','₹42L'],['By when','Dec 2027'],['Team size','9 people'],['Side project','A type foundry'],['Wake up at','5:40am'],['Reading','40 books a year']]
+};
+const PROPS = [
+  {k:'clip',  f:[.285,.115], rot: 14},
+  {k:'clip',  f:[.655,.905], rot:-24},
+  {k:'pencil',f:[.865,.800], rot:-31},
+  {k:'pin',   f:[.955,.135], rot:  0}
+];
+
+/* ═══════════ mat generator ═══════════ */
+const MAT_THEMES = [
+  {id:'classic', name:'Classic',  bg:'#2f9268', bg2:'#26805a', line:'#ffffff'},
+  {id:'forest',  name:'Forest',   bg:'#1f6b4d', bg2:'#175640', line:'#d8f2e4'},
+  {id:'sage',    name:'Sage',     bg:'#3fa87c', bg2:'#33936b', line:'#ffffff'},
+  {id:'pine',    name:'Pine',     bg:'#17513c', bg2:'#0f3f2e', line:'#bfe6d3'},
+  {id:'ocean',   name:'Ocean',    bg:'#2c6f9e', bg2:'#235c85', line:'#e2f0fb'},
+  {id:'navy',    name:'Navy',     bg:'#1e4569', bg2:'#163553', line:'#cfe2f4'},
+  {id:'steel',   name:'Steel',    bg:'#3d7fa8', bg2:'#316b90', line:'#ffffff'},
+  {id:'deepsea', name:'Deep sea', bg:'#14384f', bg2:'#0e2a3d', line:'#a9cbe0'}
+];
+function randomMat(){
+  let t = pick(MAT_THEMES);
+  while(MAT_THEMES.length>1 && S.mat && t.id===S.mat.theme) t = pick(MAT_THEMES);
+  return { theme:t.id, step:pick([24,26,28,32]), major:pick([4,5,5,6]),
+           grid:pick(['square','square','diagonal','dots','iso']),
+           opacity:+rnd(.14,.22).toFixed(3), angles:Math.random()<.8, angleStep:pick([15,15,30,45]),
+           radii:Math.random()<.75, ticks:Math.random()<.9, numbers:Math.random()<.8, corner:pick(['bl','br']) };
+}
+function gridPattern(id, size, stroke, opacity, kind, weight){
+  const w = weight || 1;
+  if(kind === 'dots')
+    return `<pattern id="${id}" width="${size}" height="${size}" patternUnits="userSpaceOnUse">
+      <circle cx="${(size/2).toFixed(1)}" cy="${(size/2).toFixed(1)}" r="${(w*1.15).toFixed(2)}" fill="${stroke}" fill-opacity="${opacity}"/></pattern>`;
+  if(kind === 'iso'){
+    const h = (size*0.866).toFixed(2);
+    return `<pattern id="${id}" width="${size}" height="${h}" patternUnits="userSpaceOnUse">
+      <path d="M0 ${h} L${(size/2).toFixed(1)} 0 L${size} ${h} M${(size/2).toFixed(1)} 0 V${h}" fill="none" stroke="${stroke}" stroke-width="${w}" stroke-opacity="${opacity}"/></pattern>`;
+  }
+  const rot = kind === 'diagonal' ? ' patternTransform="rotate(45)"' : '';
+  return `<pattern id="${id}" width="${size}" height="${size}" patternUnits="userSpaceOnUse"${rot}>
+    <path d="M${size} 0 L0 0 0 ${size}" fill="none" stroke="${stroke}" stroke-width="${w}" stroke-opacity="${opacity}"/></pattern>`;
+}
+function drawMat(){
+  const svg = $('#matSvg'), box = $('.mat').getBoundingClientRect();
+  const W = Math.max(40,Math.round(box.width)), H = Math.max(40,Math.round(box.height));
+  const cfg = S.mat, t = MAT_THEMES.find(x=>x.id===cfg.theme) || MAT_THEMES[0];
+  const L = t.line, o = cfg.opacity, step = cfg.step, maj = step*cfg.major;
+  document.documentElement.style.setProperty('--mat', t.bg);
+  const cx = cfg.corner==='br' ? W : 0, cy = H, diag = Math.hypot(W,H);
+  let angles = '';
+  if(cfg.angles) for(let a=cfg.angleStep; a<90; a+=cfg.angleStep){
+    const r = a*Math.PI/180;
+    const dx = Math.cos(r)*diag*(cfg.corner==='br'?-1:1), dy = -Math.sin(r)*diag;
+    angles += `<line x1="${cx}" y1="${cy}" x2="${(cx+dx).toFixed(1)}" y2="${(cy+dy).toFixed(1)}"/>`;
+  }
+  let arcs = '';
+  if(cfg.radii){
+    const base = Math.min(W,H);
+    [.30,.52,.74].forEach(f=>{
+      const r = Math.round(base*f), sx = cfg.corner==='br' ? W-r : r;
+      arcs += `<path d="M${sx} ${cy} A${r} ${r} 0 0 ${cfg.corner==='br'?1:0} ${cx} ${cy-r}"/>`;
+    });
+  }
+  let ticks = '';
+  if(cfg.ticks){
+    for(let x=step;x<W;x+=step){ const len = Math.abs(x%maj)<.5 ? 11 : 6;
+      ticks += `<line x1="${x}" y1="0" x2="${x}" y2="${len}"/><line x1="${x}" y1="${H}" x2="${x}" y2="${H-len}"/>`; }
+    for(let y=step;y<H;y+=step){ const len = Math.abs(y%maj)<.5 ? 11 : 6;
+      ticks += `<line x1="0" y1="${y}" x2="${len}" y2="${y}"/><line x1="${W}" y1="${y}" x2="${W-len}" y2="${y}"/>`; }
+  }
+  let nums = '';
+  if(cfg.numbers){
+    let i=1; for(let x=maj;x<W-14;x+=maj,i++) nums += `<text x="${x+4}" y="21">${i}</text>`;
+    i=1;     for(let y=maj;y<H-14;y+=maj,i++) nums += `<text x="7" y="${y-5}">${i}</text>`;
+  }
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  svg.setAttribute('preserveAspectRatio','none');
+  svg.innerHTML = `
+    <defs>
+      <linearGradient id="matBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${t.bg}"/><stop offset="1" stop-color="${t.bg2}"/></linearGradient>
+      ${gridPattern('gMinor', step, L, o, cfg.grid||'square', 1)}
+      ${gridPattern('gMajor', maj, L, (o*1.7).toFixed(3), cfg.grid||'square', 1.8)}
+      <filter id="grain" x="0" y="0" width="150" height="150" filterUnits="userSpaceOnUse">
+        <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch" result="n"/>
+        <feColorMatrix in="n" type="saturate" values="0"/>
+      </filter>
+      <pattern id="grainP" width="150" height="150" patternUnits="userSpaceOnUse"><rect width="150" height="150" filter="url(#grain)"/></pattern>
+    </defs>
+    <rect width="${W}" height="${H}" fill="url(#matBg)"/>
+    <rect width="${W}" height="${H}" fill="url(#gMinor)"/>
+    <rect width="${W}" height="${H}" fill="url(#gMajor)"/>
+    <g stroke="${L}" stroke-opacity="${(o*1.15).toFixed(3)}" stroke-width="1.3" fill="none">${angles}</g>
+    <g stroke="${L}" stroke-opacity="${(o*1.15).toFixed(3)}" stroke-width="1.3" fill="none">${arcs}</g>
+    <g stroke="${L}" stroke-opacity="${(o*2.1).toFixed(3)}" stroke-width="1.6" stroke-linecap="round">${ticks}</g>
+    <g fill="${L}" fill-opacity="${(o*2.6).toFixed(3)}" font-family="Nunito, sans-serif" font-size="10" font-weight="800">${nums}</g>
+    <rect width="${W}" height="${H}" fill="url(#grainP)" opacity=".26" style="mix-blend-mode:overlay"/>
+    <rect width="${W}" height="${H}" fill="url(#grainP)" opacity=".10" style="mix-blend-mode:multiply"/>`;
+}
+
+/* ═══════════ art + lookups ═══════════ */
+const ART = {
+  pin:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="2.4"/></svg>`,
+  map:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5v-13L15 6.5 9 4Z"/><path d="M9 4v13M15 6.5v13"/></svg>`,
+  propClip:`<svg width="36" height="76" viewBox="0 0 36 76" fill="none"><g stroke-linecap="round" fill="none">
+      <path d="M11 58V17a7.5 7.5 0 0 1 15 0v43a10.5 10.5 0 0 1-21 0V21" stroke="#8e99a3" stroke-width="5.4"/>
+      <path d="M11 58V17a7.5 7.5 0 0 1 15 0v43a10.5 10.5 0 0 1-21 0V21" stroke="#dfe6ea" stroke-width="4"/>
+      <path d="M11 58V17a7.5 7.5 0 0 1 15 0v43a10.5 10.5 0 0 1-21 0V21" stroke="#ffffff" stroke-width="1.5" opacity=".85"/></g></svg>`,
+  propPencil:`<svg width="156" height="28" viewBox="0 0 156 28" fill="none">
+      <defs><clipPath id="barrel"><rect x="34" y="5" width="86" height="18" rx="1"/></clipPath></defs>
+      <g clip-path="url(#barrel)">
+        <rect x="34" y="5" width="86" height="18" fill="#d62b1e"/>
+        <rect x="34" y="5" width="86" height="5" fill="#f4685c"/>
+        <rect x="34" y="18.5" width="86" height="4.5" fill="#a3160c"/>
+        <g fill="#15171a"><rect x="41" y="5" width="5.5" height="18"/><rect x="55" y="5" width="5.5" height="18"/>
+        <rect x="69" y="5" width="5.5" height="18"/><rect x="83" y="5" width="5.5" height="18"/>
+        <rect x="97" y="5" width="5.5" height="18"/><rect x="111" y="5" width="5.5" height="18"/></g>
+        <rect x="34" y="9.6" width="86" height="1.2" fill="#fff" opacity=".28"/></g>
+      <path d="M34 5 11 14l23 9z" fill="#f0d3a8"/><path d="M34 14 11 14l23 9z" fill="#d9b485"/>
+      <path d="M17.5 11.6 3 14l14.5 2.4z" fill="#2a2c30"/>
+      <rect x="120" y="4.5" width="15" height="19" fill="#e3b23c"/><rect x="120" y="4.5" width="15" height="4.5" fill="#f6d777"/>
+      <rect x="120" y="19" width="15" height="4.5" fill="#bd8f22"/><rect x="124.5" y="4.5" width="1.6" height="19" fill="#fff" opacity=".35"/>
+      <rect x="134" y="5.5" width="14" height="17" rx="5" fill="#ff9d95"/><rect x="134" y="5.5" width="14" height="5" rx="4" fill="#ffb9b3"/></svg>`,
+  propPin:`<svg width="34" height="38" viewBox="0 0 34 38" fill="none"><ellipse cx="17" cy="35" rx="3.4" ry="2" fill="rgba(0,0,0,.3)"/>
+      <path d="M17 20v16" stroke="#8e1810" stroke-width="2.6" stroke-linecap="round"/><circle cx="17" cy="12" r="11" fill="#e0473a"/>
+      <circle cx="17" cy="12" r="11" stroke="#fff" stroke-width="2.6"/><circle cx="13" cy="8" r="3.4" fill="#ff9d92"/></svg>`
+};
+const slugify = s => s.toLowerCase().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'');
+const MONO = ['#ff9e7d','#8ecdff','#c9b8ff','#c9f24f','#ffd84d','#8fe3c0'];
+const markCache = new Map();
+function brandMark(slug){
+  if(!slug) return Promise.resolve(null);
+  if(markCache.has(slug)) return markCache.get(slug);
+  const p = fetch('https://cdn.simpleicons.org/'+slug)
+    .then(r => r.ok ? r.text() : null)
+    .then(t => (!t || !/^\s*<svg[\s>]/i.test(t) || /<script/i.test(t)) ? null : t.replace('<svg ','<svg width="24" height="24" '))
+    .catch(()=>null);
+  markCache.set(slug,p); return p;
+}
+const photoCache = new Map();
+function cityPhoto(city){
+  const key = city.trim().toLowerCase();
+  if(photoCache.has(key)) return photoCache.get(key);
+  const p = (async ()=>{
+    try{
+      const u = 'https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=pageimages&pithumbsize=760&redirects=1&titles='+encodeURIComponent(city.trim());
+      const r = await fetch(u); if(!r.ok) return null;
+      const d = await r.json();
+      const pages = d && d.query && d.query.pages; if(!pages) return null;
+      const pg = Object.values(pages)[0];
+      return (pg && pg.thumbnail && pg.thumbnail.source) || null;
+    }catch(e){ return null; }
+  })();
+  photoCache.set(key,p); return p;
+}
+function highlight(t){
+  const w = esc(t).split(' ');
+  if(w.length<5) return w.join(' ');
+  const a = Math.max(1,Math.floor(w.length*.36));
+  const b = Math.min(w.length, a+Math.max(2,Math.round(w.length*.3)));
+  return w.slice(0,a).join(' ')+' <mark>'+w.slice(a,b).join(' ')+'</mark> '+w.slice(b).join(' ');
+}
+const initials = s => { const p=s.trim().split(/\s+/); return ((p[0]||'?')[0]||'?').toUpperCase()+(p[1]?p[1][0].toUpperCase():''); };
+const SHEEN = '<div class="sheen"><i></i></div>';
+/* every tag carries its own mark, so "Scale-up" and "In person" read as the
+   kind of thing they are rather than as stray words */
+const TI = d => '<span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+  + 'stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg></span>';
+const TAG_ART = [
+  [/^(startup|small)/,        '<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.4 22.4 0 0 1-4 2"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0m1 7v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>'],
+  [/scale.?up/,               '<path d="M5 21v-6m7 6V3m7 18V9"/>'],
+  [/big tech|enterprise/,     '<path d="M10 12h4m-4-4h4m0 13v-3a2 2 0 0 0-4 0v3"/><path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"/><path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/>'],
+  [/agency|consult/,          '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/>'],
+  [/in person|on.?site|office/,'<path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-5h6v5"/>'],
+  [/hybrid/,                  '<circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/>'],
+  [/remote|anywhere/,         '<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20a14.5 14.5 0 0 0 0-20M2 12h20"/>'],
+  [/^(tech|ai\b|software)/,   '<path d="M11 2.8a1 1 0 0 1 2 0l1 5.3a2 2 0 0 0 1.6 1.6l5.3 1a1 1 0 0 1 0 2l-5.3 1a2 2 0 0 0-1.6 1.6l-1 5.3a1 1 0 0 1-2 0l-1-5.3a2 2 0 0 0-1.6-1.6l-5.3-1a1 1 0 0 1 0-2l5.3-1a2 2 0 0 0 1.6-1.6z"/>'],
+  [/health|medic/,            '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2c-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>'],
+  [/financ|fintech|bank/,     '<circle cx="12" cy="12" r="10"/><path d="M12 6v12m3-9H10.5a2.5 2.5 0 0 0 0 5h3a2.5 2.5 0 0 1 0 5H9"/>'],
+  [/climate|energy|green/,    '<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8c0 5.5-4.78 10-10 10"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>'],
+  [/commerce|retail|shop/,    '<circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2 2h2l2.7 12.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 1.9-1.6L22 7H5.1"/>'],
+  [/media|entertain|gaming/,  '<polygon points="6 3 20 12 6 21 6 3"/>'],
+  [/full.?time/,              '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>'],
+  [/intern|student|studying/, '<path d="M22 10v6M2 10l10-5l10 5l-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>'],
+  [/now|asap/,                '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>'],
+  [/month|year|week/,         '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>'],
+  [/no rush/,                 '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>']
+];
+function tagIcon(v){
+  const t = String(v||'').toLowerCase().trim();
+  for(const [re,d] of TAG_ART) if(re.test(t)) return TI(d);
+  return TI('<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.2"/>');   /* a mark is better than none */
+}
+/* Nothing on the mat can be removed here. What is on it was decided in the
+   conversation, so a delete affordance would be lying about who owns it.
+   Drag stays: the pointerdown guard and rebind both no-op without the button. */
+const KILL  = '';
+
+/* ═══════════ what is on the mat ═══════════ */
+function manifest(){
+  const out = [];
+  if(S.name.trim()) out.push({id:'name', type:'name', rot:-1.2});
+  let tagIdx = 0;
+  S.entries.forEach(en=>{
+    if(!String(en.value||'').trim() && en.type!=='field' && !PICTURE.includes(en.type)) return;
+    if(en.type==='field' && !String(en.value||'').trim() && !String(en.label||'').trim()) return;
+    if(PICTURE.includes(en.type) && !en.src && !String(en.value||'').trim()) return;   // a picture is content on its own
+    const it = {id:'e'+en.id, type:en.type, data:en, rot:en.rot};
+    if(COLOURABLE.includes(en.type)) it.tone = en.color || defaultTone(en, en.type==='tag' ? tagIdx++ : 0);
+    out.push(it);
+  });
+  if(S.props) PROPS.forEach((p,i)=> out.push({id:'prop:'+i, type:'prop', data:p, full:p.f, rot:p.rot}));
+  return out;
+}
+function markup(it){
+  const v = it.data ? String(it.data.value||'') : '';
+  switch(it.type){
+    case 'name':    return {cls:'p-name',  html:KILL+esc(S.name.trim())};
+    /* a role wears a briefcase so it never reads as just another tag */
+    case 'role':    return {cls:'p-role', style:`--tone:${it.tone||'#ffd84d'}`, html:SHEEN+KILL+
+      `<span class="bag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2.5" y="7" width="19" height="13.5" rx="3"/><path d="M8.5 7V5.4A2.4 2.4 0 0 1 11 3h2a2.4 2.4 0 0 1 2.5 2.4V7"/><path d="M2.5 12.5h19"/></svg></span><span>${esc(v)}</span>`};
+    case 'tag':     return {cls:'p-tag',   html:SHEEN+KILL+tagIcon(v)+'<span>'+esc(v)+'</span>', style:`--tone:${it.tone}`};
+    case 'line':    return {cls:'p-vision',html:SHEEN+KILL+'<span class="q">“</span>'+highlight(v)};
+    case 'note':    return {cls:'p-note', style:`--tone:${it.tone||'#ffd84d'}`, html:SHEEN+KILL+esc(v)};
+    case 'sticker': return {cls:'p-stk', style:`--tone:${it.tone||'#ffd84d'}`, html:SHEEN+KILL+esc(v||'★')};
+    case 'polaroid': return {cls:'p-photo', style:`--pw:${sizeOf(it.data)}px`, html:SHEEN+KILL+
+      `<span class="mark">${ART.propPin}</span>
+       <div class="shot">${it.data.src
+          ? `<img alt="" draggable="false" src="${it.data.src}"/>`
+          : '<span class="none">pick a picture or a gif in the panel</span>'}</div>
+       <div class="cap">${esc(v)}</div>`};
+    /* A bare image. A PNG keeps its own silhouette, so the stroke follows the
+       shape instead of boxing it in; anything opaque gets the usual frame. */
+    case 'text': {
+      const k = it.data.size || 'm';
+      return {cls:'p-text', style:`--fs:${TEXT_SIZE[k]}px;--stw:${TEXT_STROKE[k]}px;--tone:${it.tone||'#16281d'}`,
+              html:KILL+esc(v)};
+    }
+    case 'image': {
+      const png = it.data.kind === 'png';
+      return {cls:'p-image'+(png?' cut':''), style:`--pw:${sizeOf(it.data)}px`, html:
+        (png?'':SHEEN) + KILL + (it.data.src
+          ? `<img alt="" draggable="false" src="${it.data.src}"/>`
+          : '<span class="none">pick a picture or a gif in the panel</span>')};
+    }
+    case 'field':   return {cls:'p-cus', html:SHEEN+KILL+
+      `<span class="ck">${esc(it.data.label||'Note')}</span><span class="cv">${esc(v||it.data.label)}</span>`};
+    case 'company':{
+      const s = slugify(v), col = MONO[(s.charCodeAt(0)||0)%MONO.length];
+      return {cls:'p-co', html:SHEEN+KILL+`<div class="logo"></div><div class="co-n">${esc(v)}</div>`,
+        after: el=>{
+          const box = el.querySelector('.logo');
+          brandMark(s).then(svg=>{
+            if(!box.isConnected) return;
+            if(!svg){ box.classList.add('mono'); box.style.background=col; box.textContent=initials(v); return; }
+            box.innerHTML = svg;
+            const mark = box.firstElementChild;
+            if(G && mark) G.fromTo(mark,{scale:.4,opacity:0},{scale:1,opacity:1,duration:.55,ease:'back.out(3)'});
+          });
+        }};
+    }
+    case 'place': return {cls:'p-loc', html:SHEEN+KILL+
+      `<span class="mark">${ART.propPin}</span>
+       <div class="shot"><div class="fb">${ART.map}</div><div class="shim"></div><img alt="" draggable="false" crossorigin="anonymous"/></div>
+       <div class="cap"><span>${esc(v)}</span></div>`,
+      after: el=>loadShot(el, v)};
+    case 'prop':
+      return {cls:'p-prop', html: it.data.k==='clip' ? ART.propClip : it.data.k==='pencil' ? ART.propPencil : ART.propPin};
+  }
+}
+function loadShot(el, city){
+  const shot = el.querySelector('.shot'), img = shot.querySelector('img'), shim = shot.querySelector('.shim');
+  if(G) G.fromTo(shim,{x:'-100%'},{x:'110%',duration:1.1,ease:'power2.inOut',repeat:-1,repeatDelay:.25});
+  const stop = ()=>{ if(G) G.killTweensOf(shim); shim.style.display='none'; };
+  cityPhoto(city).then(src=>{
+    if(!src || !el.isConnected) return stop();
+    img.onload = ()=>{ stop(); shot.querySelector('.fb').style.display='none';
+      if(G) G.to(img,{opacity:1,duration:.7,ease:'power2.out'}); else img.style.opacity=1; };
+    img.onerror = stop;
+    img.crossOrigin = 'anonymous';
+    img.src = src;
+  });
+}
+
+/* ═══════════ reconcile ═══════════ */
+/* Never setAttribute('style') on a live piece — that wipes the transform GSAP
+   is holding it in place with. Set each custom property on its own instead. */
+function pieceBox(el){
+  return { x:(parseFloat(el.style.left)||0)+(G?(+G.getProperty(el,'x')||0):0),
+           y:(parseFloat(el.style.top) ||0)+(G?(+G.getProperty(el,'y')||0):0),
+           w:el.offsetWidth, h:el.offsetHeight };
+}
+/* drag a host and everything stuck to it comes along */
+function moveAttached(hostEl){
+  const id = hostEl.dataset.id;
+  const h = pieceBox(hostEl);
+  S.entries.forEach(en=>{
+    if(en.type!=='text' || en.attach !== id) return;
+    const el = pieceEl('e'+en.id); if(!el) return;
+    const bx = parseFloat(el.style.left)||0, by = parseFloat(el.style.top)||0;
+    const nx = h.x + (en.ax||0) - bx, ny = h.y + (en.ay||0) - by;
+    if(G){ G.killTweensOf(el); G.set(el,{x:nx, y:ny}); }
+    else el.style.transform = `translate(${nx}px,${ny}px)`;
+  });
+}
+/* dropped a label on top of something? then it belongs to that something */
+function attachIfDropped(en, el){
+  if(en.type !== 'text') return;
+  const me = pieceBox(el);
+  const cx = me.x + me.w/2, cy = me.y + me.h/2;
+  let host = null;
+  plane.querySelectorAll('.piece').forEach(o=>{
+    if(o === el) return;
+    const t = o.dataset.type;
+    if(t==='text' || t==='prop' || t==='name') return;
+    const b = pieceBox(o);
+    if(cx>=b.x && cx<=b.x+b.w && cy>=b.y && cy<=b.y+b.h) host = {el:o, b};
+  });
+  if(host){ en.attach = host.el.dataset.id; en.ax = me.x - host.b.x; en.ay = me.y - host.b.y; }
+  else { en.attach = null; en.ax = en.ay = 0; }
+}
+
+/* A shadow that html2canvas will actually draw: a plain div, same size and
+   corner radius as the piece, sitting just behind and a little down-right.
+   Text and cut-out PNGs are skipped — a box behind a glyph or a silhouette
+   would read as a mistake, not a shadow. */
+function buildExportShadows(){
+  const made = [];
+  plane.querySelectorAll('.piece').forEach(el=>{
+    const t = el.dataset.type;
+    if(t==='prop' || t==='name' || t==='text') return;
+    if(el.classList.contains('cut')) return;
+    const cs = getComputedStyle(el);
+    const d = document.createElement('div');
+    d.className = 'shadow-proxy';
+    d.style.left = el.style.left; d.style.top = el.style.top;
+    d.style.width = el.offsetWidth+'px'; d.style.height = el.offsetHeight+'px';
+    d.style.borderRadius = cs.borderRadius;
+    const x = (G?(+G.getProperty(el,'x')||0):0) + 5;
+    const y = (G?(+G.getProperty(el,'y')||0):0) + 7;
+    const rot = G?(+G.getProperty(el,'rotation')||0):0;
+    const sc  = G?(+G.getProperty(el,'scale')||1):1;
+    d.style.transform = `translate(${x}px,${y}px) rotate(${rot}deg) scale(${sc})`;
+    plane.appendChild(d);
+    made.push(d);
+  });
+  return made;
+}
+
+function setVars(el, str){
+  if(!str) return;
+  str.split(';').forEach(part=>{
+    const i = part.indexOf(':');
+    if(i > 0) el.style.setProperty(part.slice(0,i).trim(), part.slice(i+1).trim());
+  });
+}
+const pieceEl = id => plane.querySelector(`.piece[data-id="${CSS.escape(id)}"]`);
+function sync(fromEl){
+  const want = manifest(), wantIds = new Set(want.map(i=>i.id)), fresh = [];
+  plane.querySelectorAll('.piece').forEach(el=>{ if(!wantIds.has(el.dataset.id)) removeEl(el); });
+  want.forEach(it=>{
+    let el = pieceEl(it.id);
+    const m = markup(it);
+    if(!m) return;
+    if(!el){
+      el = document.createElement('div');
+      el.className = 'piece ' + m.cls;
+      el.dataset.id = it.id; el.dataset.type = it.type; el.dataset.rot = it.rot||0;
+      setVars(el, m.style);
+      el.innerHTML = m.html;
+      el.style.zIndex = it.type==='name' ? 40 : ++zTop;
+      plane.appendChild(el);
+      if(G) G.set(el,{x:0,y:0,rotation:it.rot||0,opacity:0});
+      wire(el,it);
+      if(m.after) m.after(el);
+      fresh.push([el,it]);
+    } else if(el.dataset.sig !== m.html){
+      el.className = 'piece ' + m.cls;
+      setVars(el, m.style);
+      el.innerHTML = m.html;
+      wire(el,it);
+      if(m.after) m.after(el);
+      if(G) G.fromTo(el,{scale:.94},{scale:1,duration:.45,ease:'back.out(2.4)'});
+    }
+    el.dataset.sig = m.html + '|' + (m.style||'');
+  });
+  layout(want, fresh.map(f=>f[0]));
+  fresh.forEach(([el,it])=> springIn(el,it,fromEl));
+  drawThread(); updateCount();
+}
+function removeEl(el){
+  const done = ()=>{ el.remove(); drawThread(); updateCount(); };
+  if(!G) return done();
+  G.killTweensOf(el);
+  G.to(el,{scale:.6,opacity:0,y:'+=16',duration:.38,ease:'power2.in',onComplete:done});
+}
+
+/* ═══════════ layout: name in the middle, spiral pack around it ═══════════ */
+function layout(want, skipAnim){
+  const W = plane.clientWidth, H = plane.clientHeight;
+  const cx = W/2, cy = H/2, PAD = 16;
+  const nodes = [];
+  want.forEach(it=>{
+    const el = pieceEl(it.id); if(!el) return;
+    const w = el.offsetWidth, h = el.offsetHeight;
+    const pinned = !!POS[it.id];
+    const p = POS[it.id] || {dx:0,dy:0};
+    let bx, by;
+    if(it.type==='prop'){ bx = W*it.full[0]; by = H*it.full[1]; }
+    else { bx = cx - w/2; by = cy - h/2; }
+    el.style.left = Math.round(bx)+'px'; el.style.top = Math.round(by)+'px';
+    nodes.push({el,it,sx:bx,sy:by,pinned,x:bx+p.dx,y:by+p.dy,w,h,
+                place: !pinned && it.type!=='prop' && it.type!=='name'
+                       && !(it.type==='text' && it.data && it.data.attach)});
+  });
+  const loose = S.spread === 'loose';
+  const GAP = loose ? PAD + 34 : PAD;
+  const occupied = nodes.filter(n=>!n.place && n.it.type!=='prop').map(n=>({x:n.x,y:n.y,w:n.w,h:n.h}));
+  const free = (x,y,w,h,gap)=>{
+    if(x < 8 || y < 8 || x+w > W-8 || y+h > H-8) return false;
+    for(const o of occupied)
+      if(x < o.x+o.w+gap && x+w+gap > o.x && y < o.y+o.h+gap && y+h+gap > o.y) return false;
+    return true;
+  };
+  const hub = nodes.find(n=>n.it.type==='name');
+  const r0 = (hub ? Math.hypot(hub.w, hub.h)/2 + 26 : 80) + (loose ? 60 : 0);
+  nodes.filter(n=>n.place)
+       .map((n,i)=>({n,i,area:n.w*n.h}))
+       .sort((a,b)=> b.area-a.area)
+       .forEach(({n,i})=>{
+    const a0 = i * 2.399963, rMax = Math.hypot(W,H);
+    let done = false;
+    for(const gap of [GAP, Math.round(GAP/2), 8, 2]){
+      for(let r = r0; r < rMax && !done; r += (loose ? 18 : 12)){
+        for(let k = 0; k < 48 && !done; k++){
+          const a = a0 + k*(Math.PI*2/48);
+          const x = cx + Math.cos(a)*r - n.w/2;
+          const y = cy + Math.sin(a)*r*(loose ? .92 : .84) - n.h/2;
+          if(free(x,y,n.w,n.h,gap)){ n.x = x; n.y = y; done = true; }
+        }
+      }
+      if(done) break;
+    }
+    if(!done){
+      n.x = clamp(n.x, 8, Math.max(8, W-n.w-8));
+      n.y = clamp(n.y, 8, Math.max(8, H-n.h-8));
+    }
+    occupied.push({x:n.x,y:n.y,w:n.w,h:n.h});
+  });
+  /* A text label dropped onto something belongs to it now: park it at its
+     stored offset from that piece rather than letting the packer move it. */
+  nodes.forEach(n=>{
+    const at = n.it.data && n.it.data.attach;
+    if(n.it.type !== 'text' || !at) return;
+    const host = nodes.find(o=>o.it.id === at);
+    if(!host){ n.it.data.attach = null; return; }
+    n.x = host.x + (n.it.data.ax || 0);
+    n.y = host.y + (n.it.data.ay || 0);
+  });
+
+  nodes.forEach(n=>{
+    const dx = n.x-n.sx, dy = n.y-n.sy;
+    if(!G){ n.el.style.transform = `translate(${dx}px,${dy}px)`; return; }
+    if(n.pinned || (skipAnim && skipAnim.includes(n.el))) G.set(n.el,{x:dx,y:dy});
+    else G.to(n.el,{x:dx,y:dy,duration:.6,ease:'power3.out',overwrite:'auto',onUpdate:drawThread});
+  });
+}
+function springIn(el, it, fromEl){
+  if(!G){ el.style.opacity=1; return; }
+  const rot = +el.dataset.rot||0;
+  const bx = +G.getProperty(el,'x')||0, by = +G.getProperty(el,'y')||0;
+  let from = {x:bx, y:by-60, scale:.6, rotation:rot-8};
+  if(fromEl){
+    const a = fromEl.getBoundingClientRect(), b = el.getBoundingClientRect();
+    from = {x: bx+(a.left+a.width/2)-(b.left+b.width/2),
+            y: by+(a.top+a.height/2)-(b.top+b.height/2), scale:.45, rotation:-4};
+  }
+  G.set(el,{transformPerspective:900, opacity:0, ...from});
+  const tl = G.timeline();
+  tl.to(el,{opacity:1,duration:.16,ease:'none'},0)
+    .to(el,{x:bx,y:by,scale:1,rotation:rot,duration:1.05,ease:'elastic.out(1, 0.55)',overwrite:'auto',onUpdate:drawThread,
+            onComplete:()=>{ if(it.type!=='name') idle(el,rot); }},0);
+  setTimeout(()=>{ if(tl.progress()<1) tl.progress(1); }, 3000);
+}
+function idle(el, rot){
+  if(!G || REDUCED) return;
+  if(el.dataset.type === 'text'){                 // a stuck label holds still
+    const id = el.dataset.id.slice(1);
+    const en = S.entries.find(e=>String(e.id)===id);
+    if(en && en.attach) return;
+  }
+  G.to(el,{y:'+=3', rotation:rot+rnd(-.4,.4), duration:rnd(3.6,5.6), ease:'sine.inOut', yoyo:true, repeat:-1, delay:rnd(0,1.4)});
+}
+
+/* ═══════════ drag ═══════════ */
+function wire(el, it){
+  const rebind = ()=>{ const k = el.querySelector('.kill');
+    if(k) k.addEventListener('click', ev=>{ ev.stopPropagation(); eraseFromBoard(it); }); };
+  if(el.dataset.wired){ rebind(); return; }
+  el.dataset.wired = '1'; rebind();
+  let live=false,sx=0,sy=0,ox=0,oy=0,vx=0,vy=0,lx=0,ly=0,lt=0;
+  el.addEventListener('pointerenter', ()=>{
+    if(SPOKE_TYPES.includes(it.type)) setFocusType(it.type);
+    Snd.hover();
+    if(!G) return;
+    const sh = el.querySelector('.sheen i');
+    if(sh) G.fromTo(sh,{x:'-190%'},{x:'470%',duration:.95,ease:'power2.inOut'});
+    if(!live) G.to(el,{scale:1.045,duration:.6,ease:'elastic.out(1,.75)',overwrite:'auto'});
+  });
+  el.addEventListener('pointerleave', ()=>{
+    if(!live) setFocusType(null);
+    if(G && !live) G.to(el,{scale:1,duration:.7,ease:'elastic.out(1,.6)',overwrite:'auto'});
+  });
+  el.addEventListener('pointerdown', e=>{
+    if(e.target.closest('.kill')) return;
+    live = true;
+    try{ el.setPointerCapture(e.pointerId); }catch(_){}
+    el.classList.add('dragging'); if(it.type!=='name') el.style.zIndex = ++zTop;
+    if(G) G.killTweensOf(el);
+    sx=e.clientX; sy=e.clientY;
+    ox = G ? (+G.getProperty(el,'x')||0) : 0;
+    oy = G ? (+G.getProperty(el,'y')||0) : 0;
+    lx=e.clientX; ly=e.clientY; lt=performance.now(); vx=vy=0;
+    if(G) G.to(el,{scale:1.07,duration:.28,ease:'power3.out',overwrite:'auto'});
+  });
+  el.addEventListener('pointermove', e=>{
+    if(!live) return;
+    const now=performance.now(), dt=Math.max(1,now-lt);
+    vx=(e.clientX-lx)/dt*16; vy=(e.clientY-ly)/dt*16; lx=e.clientX; ly=e.clientY; lt=now;
+    const bx = parseFloat(el.style.left)||0, by = parseFloat(el.style.top)||0;
+    const W = plane.clientWidth, H = plane.clientHeight;
+    const nx = clamp(bx+ox+(e.clientX-sx), 6, Math.max(6,W-el.offsetWidth-6)) - bx;
+    const ny = clamp(by+oy+(e.clientY-sy), 6, Math.max(6,H-el.offsetHeight-6)) - by;
+    if(G) G.to(el,{x:nx,y:ny,rotation:(+el.dataset.rot||0)+clamp(vx*.7,-9,9),duration:.18,ease:'power2.out',overwrite:'auto'});
+    else el.style.transform = `translate(${nx}px,${ny}px)`;
+    moveAttached(el);
+    drawThread();
+  });
+  const release = ()=>{
+    if(!live) return;
+    live=false; el.classList.remove('dragging');
+    Snd.drop();
+    const rot = +el.dataset.rot||0;
+    if(G){
+      const bx = parseFloat(el.style.left)||0, by = parseFloat(el.style.top)||0;
+      const W = plane.clientWidth, H = plane.clientHeight;
+      const nx = clamp(bx+(+G.getProperty(el,'x')||0)+vx*2.6, 6, Math.max(6,W-el.offsetWidth-6)) - bx;
+      const ny = clamp(by+(+G.getProperty(el,'y')||0)+vy*1.2, 6, Math.max(6,H-el.offsetHeight-6)) - by;
+      POS[el.dataset.id] = {dx:nx, dy:ny};
+      G.to(el,{x:nx,y:ny,duration:.7,ease:'power3.out',overwrite:'auto',
+               onUpdate:()=>{ moveAttached(el); drawThread(); },
+               onInterrupt:()=>moveAttached(el),
+               onComplete:()=>{ moveAttached(el); if(it.type!=='name') idle(el,rot); }});
+      G.to(el,{rotation:rot,scale:1,duration:1,ease:'elastic.out(1,.42)'});
+    }
+    if(it.type==='text' && it.data){ attachIfDropped(it.data, el); moveAttached(el); }
+    save();
+  };
+  el.addEventListener('pointerup', release);
+  el.addEventListener('pointercancel', release);
+}
+/* taking a piece off the mat removes its row too — one list, one truth */
+function eraseFromBoard(it){
+  if(it.type==='name'){ S.name=''; $('#f-name').value=''; nameTick(false); }
+  else if(it.data && it.data.id!=null){ S.entries = S.entries.filter(e=>e.id!==it.data.id); renderRows(); }
+  delete POS[it.id];
+  sync(); save();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   THE ROPES — real string, not a drawn curve.
+   Each strand is a little verlet chain pinned at the name and at
+   the piece. It hangs under gravity and swings when you drag
+   something. Hovering a piece lights up every rope of that kind
+   and sends a traveller running along it.
+   ═══════════════════════════════════════════════════════════ */
+function centreOf(el){
+  return { x:(parseFloat(el.style.left)||0)+(G?(+G.getProperty(el,'x')||0):0)+el.offsetWidth/2,
+           y:(parseFloat(el.style.top) ||0)+(G?(+G.getProperty(el,'y')||0):0)+el.offsetHeight/2 };
+}
+/* 'text' is deliberately absent: a loose label is free — you drop it beside
+   whatever it belongs to, and no thread ties it back to the name. */
+const SPOKE_TYPES = ['role','company','place','tag','note','field','line','polaroid','image'];
+const SEGMENTS = 14;
+let ropes = [], ropeSig = '', focusType = null;
+
+function ropeLayer(){ return threadSvg; }
+function makeRope(el){
+  const svgns = 'http://www.w3.org/2000/svg';
+  const line = document.createElementNS(svgns,'path'); line.setAttribute('class','rope');
+  const spark = document.createElementNS(svgns,'path'); spark.setAttribute('class','spark');
+  const knot = document.createElementNS(svgns,'circle'); knot.setAttribute('class','knot'); knot.setAttribute('r','5');
+  ropeLayer().appendChild(line); ropeLayer().appendChild(spark); ropeLayer().appendChild(knot);
+  const a = centreOf(el);
+  const pts = [];
+  for(let i=0;i<=SEGMENTS;i++) pts.push({x:a.x, y:a.y, px:a.x, py:a.y});
+  return {el, type:el.dataset.type, line, spark, knot, pts, born:false};
+}
+function clearRopes(){
+  ropes.forEach(r=>{ r.line.remove(); r.spark.remove(); r.knot.remove(); });
+  ropes = [];
+}
+/* called whenever the set of pieces may have changed */
+function drawThread(){
+  const hub = pieceEl('name');
+  const spokes = [];
+  SPOKE_TYPES.forEach(t=> plane.querySelectorAll(`.piece[data-type="${t}"]`).forEach(e=>spokes.push(e)));
+  if(!S.thread || !hub || !S.name.trim() || !spokes.length){
+    if(ropes.length) clearRopes();
+    ropeSig = ''; return;
+  }
+  const sig = spokes.map(e=>e.dataset.id).join('>');
+  if(sig !== ropeSig){
+    ropeSig = sig;
+    clearRopes();
+    spokes.forEach(el=> ropes.push(makeRope(el)));
+    stepRopes(28);                      // settle the new ropes before they are seen
+    ropes.forEach((r,i)=>{
+      if(!G || REDUCED) return;
+      const L = r.line.getTotalLength()||300;
+      G.fromTo(r.line,{strokeDasharray:L,strokeDashoffset:L},
+        {strokeDashoffset:0,duration:.75,delay:i*.05,ease:'power2.inOut',
+         onComplete:()=>{ r.line.style.strokeDasharray='none'; }});
+      G.from(r.knot,{scale:0,transformOrigin:'50% 50%',duration:.5,delay:i*.05,ease:'back.out(3)'});
+    });
+  }
+}
+/* one physics tick — runs off the GSAP ticker */
+function stepRopes(iterations){
+  if(!ropes.length) return;
+  const hub = pieceEl('name');
+  if(!hub){ clearRopes(); ropeSig=''; return; }
+  const h = centreOf(hub);
+  const passes = iterations || 1;
+  for(let pass=0; pass<passes; pass++){
+    ropes.forEach(r=>{
+      if(!r.el.isConnected) return;
+      const p = centreOf(r.el);
+      const pts = r.pts, last = pts.length-1;
+      // integrate the middle links
+      for(let i=1;i<last;i++){
+        const pt = pts[i];
+        const vx = (pt.x-pt.px)*0.94, vy = (pt.y-pt.py)*0.94;
+        pt.px = pt.x; pt.py = pt.y;
+        pt.x += vx; pt.y += vy + 0.9;                       // gravity
+      }
+      // pin both ends, then relax the chain toward its rest length
+      const rest = (Math.hypot(p.x-h.x, p.y-h.y) * 1.07) / last;
+      for(let k=0;k<5;k++){
+        pts[0].x = h.x; pts[0].y = h.y;
+        pts[last].x = p.x; pts[last].y = p.y;
+        for(let i=0;i<last;i++){
+          const a = pts[i], b = pts[i+1];
+          const dx = b.x-a.x, dy = b.y-a.y;
+          const d = Math.hypot(dx,dy) || 1;
+          const diff = (d-rest)/d*0.5;
+          const ox = dx*diff, oy = dy*diff;
+          if(i !== 0){ a.x += ox; a.y += oy; }
+          if(i+1 !== last){ b.x -= ox; b.y -= oy; }
+        }
+      }
+    });
+  }
+  // paint
+  ropes.forEach(r=>{
+    const pts = r.pts;
+    let d = `M${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
+    for(let i=1;i<pts.length-1;i++){
+      const a = pts[i], b = pts[i+1];
+      d += ` Q${a.x.toFixed(1)} ${a.y.toFixed(1)} ${((a.x+b.x)/2).toFixed(1)} ${((a.y+b.y)/2).toFixed(1)}`;
+    }
+    const e = pts[pts.length-1];
+    d += ` L${e.x.toFixed(1)} ${e.y.toFixed(1)}`;
+    r.line.setAttribute('d', d);
+    r.knot.setAttribute('cx', e.x.toFixed(1)); r.knot.setAttribute('cy', e.y.toFixed(1));
+    const hot = focusType && r.type === focusType;
+    const cold = focusType && r.type !== focusType;
+    r.line.classList.toggle('hot', !!hot);
+    r.line.classList.toggle('cold', !!cold);
+    r.knot.classList.toggle('cold', !!cold);
+    if(hot){ r.spark.setAttribute('d', d); r.spark.classList.add('on'); }
+    else if(r.spark.classList.contains('on')){ r.spark.classList.remove('on'); r.spark.setAttribute('d',''); }
+  });
+}
+function setFocusType(t){
+  if(focusType === t) return;
+  focusType = t;
+  plane.querySelectorAll('.piece').forEach(el=>{
+    const dim = t && SPOKE_TYPES.includes(el.dataset.type) && el.dataset.type !== t;
+    el.classList.toggle('faded', !!dim);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   THE PANEL — one row per thing, each row is
+   [type ▾] [what it says] [×]
+   ═══════════════════════════════════════════════════════════ */
+const rowsBox = $('#rows'), basicBox = $('#basicRows');
+const rowTimers = {};
+const BASIC_TYPES = ['role','company','place','tag','note'];
+
+/* the five basics always exist, in order, so the panel tells you
+   exactly what there is to fill in and nothing more */
+function ensureBasics(){
+  BASIC_TYPES.forEach(t=>{
+    if(!S.entries.some(e=>e.basic && e.type===t)){
+      const en = newEntry(t); en.basic = true;
+      S.entries.push(en);
+    }
+  });
+}
+function basicEntries(){
+  const out = [];
+  BASIC_TYPES.forEach(t=> S.entries.filter(e=>e.basic && e.type===t).forEach(e=>out.push(e)));
+  return out;
+}
+function renderRows(){
+  ensureBasics();
+  basicBox.innerHTML = '';
+  basicEntries().forEach(en => basicBox.appendChild(buildRow(en)));
+
+  const more = S.entries.filter(e=>!e.basic);
+  rowsBox.innerHTML = '';
+  if(!more.length){
+    const e = document.createElement('div');
+    e.className = 'emptyrow';
+    e.textContent = 'Optional. Hit Add for a field, a line, a sticker — or more of anything above.';
+    rowsBox.appendChild(e);
+  }
+  more.forEach(en => rowsBox.appendChild(buildRow(en)));
+  $('#rowCount').textContent = more.length ? '· ' + more.length : '';
+}
+
+function sizeControl(en){
+  const sizes = document.createElement('div');
+  sizes.className = 'sizes';
+  SIZES.forEach(([k,lab])=>{
+    const b = document.createElement('button');
+    b.type='button'; b.textContent = lab;
+    if((en.size||'m') === k) b.classList.add('on');
+    b.title = 'Size: ' + lab;
+    b.addEventListener('click', ()=>{ en.size = k; Snd.click(); renderRows(); sync(); save(); });
+    sizes.appendChild(b);
+  });
+  return sizes;
+}
+
+function buildRow(en){
+  const T = TYPES[en.type] || TYPES.tag;
+  const row = document.createElement('div');
+  row.className = 'row';
+  row.dataset.id = en.id;
+  row.style.setProperty('--rowc', T.accent);
+
+  if(en.basic){
+    const chip = document.createElement('span');
+    chip.className = 'fixed';
+    chip.textContent = T.icon + '  ' + T.label;
+    row.appendChild(chip);
+  } else {
+    const sel = document.createElement('div');
+    sel.className = 'sel';
+    const select = document.createElement('select');
+    select.setAttribute('aria-label','Type');
+    TYPE_ORDER.forEach(k=>{
+      const o = document.createElement('option');
+      o.value = k; o.textContent = TYPES[k].icon + '  ' + TYPES[k].label;
+      if(k===en.type) o.selected = true;
+      select.appendChild(o);
+    });
+    select.addEventListener('change', ()=>{
+      Snd.click();
+      en.type = select.value;
+      if(en.type==='sticker' && !STICKERS.includes(en.value)) en.value = '★';
+      if(en.type!=='sticker' && STICKERS.includes(en.value)) en.value = '';
+      if(!COLOURABLE.includes(en.type)) en.color = null;
+      renderRows(); sync(); save();
+      const fresh = rowsBox.querySelector(`.row[data-id="${en.id}"] input, .row[data-id="${en.id}"] button`);
+      if(fresh && fresh.focus) fresh.focus();
+    });
+    sel.appendChild(select);
+    row.appendChild(sel);
+  }
+
+  if(en.type === 'sticker'){
+    const g = document.createElement('div');
+    g.className = 'glyphs';
+    STICKERS.forEach(ch=>{
+      const b = document.createElement('button');
+      b.type='button'; b.textContent = ch;
+      if(en.value === ch) b.classList.add('on');
+      b.addEventListener('click', ()=>{ en.value = ch; renderRows(); sync(); save(); });
+      g.appendChild(b);
+    });
+    row.appendChild(g);
+  } else if(PICTURE.includes(en.type)){
+    const pick = document.createElement('button');
+    pick.type='button'; pick.className='pickimg';
+    pick.innerHTML = en.src
+      ? `<img alt="" src="${en.src}"/>`
+      : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+           <rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="m4 17 5-5 4.5 4.5L16 14l4 4"/></svg>`;
+    pick.title = en.src ? 'Change the picture' : 'Pick a picture or a gif';
+    const file = document.createElement('input');
+    file.type='file'; file.accept='image/*,image/gif'; file.style.display='none';
+    pick.addEventListener('click', ()=>file.click());
+    file.addEventListener('change', async ()=>{
+      const f = file.files && file.files[0];
+      if(!f) return;
+      pick.classList.add('busy');
+      try{
+        const got = await readImage(f);
+        en.src = got.src; en.kind = got.kind;
+        pick.classList.remove('busy');
+        Snd.add();
+        renderRows(); sync(); save();
+      }catch(err){
+        pick.classList.remove('busy');
+        pick.classList.add('bad');
+        pick.title = err.message || 'Could not use that file.';
+        setTimeout(()=>{ pick.classList.remove('bad'); }, 2200);
+      }
+    });
+    row.appendChild(pick); row.appendChild(file);
+
+    // a caption only belongs on a polaroid; an image is just the image
+    if(en.type === 'polaroid'){
+      const cap = document.createElement('input');
+      cap.value = en.value||''; cap.placeholder = T.ph; cap.maxLength = 44;
+      cap.addEventListener('input', ()=>{ en.value = cap.value; queueSync(en.id); });
+      row.appendChild(cap);
+    } else {
+      const sp = document.createElement('span'); sp.style.flex = '1'; row.appendChild(sp);
+    }
+
+    row.appendChild(sizeControl(en));
+
+  } else {
+    if(en.type === 'field'){
+      const l = document.createElement('input');
+      l.className='lbl'; l.value = en.label||''; l.placeholder = T.ph2 || 'Label'; l.maxLength = 18;
+      l.addEventListener('input', ()=>{ en.label = l.value; queueSync(en.id); });
+      row.appendChild(l);
+      const d = document.createElement('span'); d.className='div'; row.appendChild(d);
+    }
+    const inp = document.createElement('input');
+    inp.value = en.value||''; inp.placeholder = T.ph; inp.maxLength = en.type==='line' ? 90 : en.type==='note' ? 90 : 30;
+    if(en.type==='company') inp.setAttribute('list','colist');
+    inp.addEventListener('input', ()=>{ en.value = inp.value; queueSync(en.id); });
+    inp.addEventListener('keydown', e=>{
+      if(e.key!=='Enter') return;
+      e.preventDefault();
+      const plus = row.querySelector('.more-btn');
+      if(en.basic && plus) plus.click();          // Enter on a basic adds another of the same kind
+      else addRow(en.type);
+    });
+    row.appendChild(inp);
+    if(SIZEABLE.includes(en.type)) row.appendChild(sizeControl(en));
+  }
+
+  // only a piece that is itself a block of colour gets a colour circle
+  if(COLOURABLE.includes(en.type)){
+    const idx = S.entries.filter(e=>e.type==='tag').indexOf(en);
+    const shown = en.color || defaultTone(en, idx < 0 ? 0 : idx);
+    const wrap = document.createElement('div');
+    wrap.className = 'dot-wrap';
+    const dot = document.createElement('button');
+    dot.type='button'; dot.className='dot'; dot.title='Colour';
+    dot.style.background = shown;
+    if(!en.color) dot.classList.add('auto');
+    const pop = document.createElement('div');
+    pop.className = 'dotpop';
+    SWATCHES.forEach(c=>{
+      const b = document.createElement('button');
+      b.type='button'; b.className='sw'; b.style.background=c;
+      if((en.color||'').toLowerCase()===c) b.classList.add('on');
+      b.addEventListener('click', ev=>{
+        ev.stopPropagation();
+        en.color = c; Snd.click();
+        renderRows(); sync(); save();
+      });
+      pop.appendChild(b);
+    });
+    // anything else you like, straight off the wheel
+    const wheel = document.createElement('label');
+    wheel.className = 'wheel'; wheel.title = 'Pick any colour';
+    const ci = document.createElement('input');
+    ci.type='color'; ci.value = /^#[0-9a-f]{6}$/i.test(shown) ? shown : '#c9f24f';
+    ci.addEventListener('input', ()=>{ en.color = ci.value; dot.style.background = ci.value; queueSync(en.id); });
+    ci.addEventListener('change', ()=>{ en.color = ci.value; renderRows(); sync(); save(); });
+    ci.addEventListener('click', ev=>ev.stopPropagation());
+    wheel.appendChild(ci);
+    pop.appendChild(wheel);
+    // back to whatever it would have been
+    const auto = document.createElement('button');
+    auto.type='button'; auto.className='sw autobtn'; auto.title='Back to default';
+    auto.textContent='↺';
+    auto.addEventListener('click', ev=>{ ev.stopPropagation(); en.color=null; Snd.click(); renderRows(); sync(); save(); });
+    pop.appendChild(auto);
+
+    dot.addEventListener('click', ev=>{
+      ev.stopPropagation();
+      const open = wrap.classList.contains('open');
+      document.querySelectorAll('.dot-wrap.open').forEach(w=>w.classList.remove('open'));
+      wrap.classList.toggle('open', !open);
+    });
+    wrap.appendChild(dot); wrap.appendChild(pop);
+    row.appendChild(wrap);
+  }
+
+  // a basic row can spawn another of its own kind — a second company, a third tag
+  if(en.basic){
+    const plus = document.createElement('button');
+    plus.className='more-btn'; plus.type='button'; plus.textContent='+';
+    plus.title = 'Add another ' + T.label.toLowerCase();
+    plus.addEventListener('click', ()=>{
+      const twin = newEntry(en.type); twin.basic = true;
+      const at = S.entries.lastIndexOf(S.entries.filter(e=>e.basic && e.type===en.type).slice(-1)[0]);
+      S.entries.splice(at+1, 0, twin);
+      Snd.add();
+      renderRows(); sync(); save();
+      const row2 = basicBox.querySelector(`.row[data-id="${twin.id}"]`);
+      const f = row2 && row2.querySelector('input'); if(f) f.focus();
+      if(G && row2) G.from(row2,{y:-8,opacity:0,duration:.45,ease:'back.out(2)'});
+    });
+    row.appendChild(plus);
+  }
+
+  const x = document.createElement('button');
+  x.className='rx'; x.type='button'; x.textContent='×';
+  const onlyOfKind = en.basic && S.entries.filter(e=>e.basic && e.type===en.type).length === 1;
+  x.title = onlyOfKind ? 'Clear' : 'Remove';
+  x.addEventListener('click', ()=>{
+    Snd.remove();
+    if(onlyOfKind){ en.value=''; en.label=''; en.src=null; en.kind=null; }     // the five basics stay put, they just empty
+    else { S.entries = S.entries.filter(e=>e.id!==en.id); }
+    delete POS['e'+en.id];
+    renderRows(); sync(); save();
+  });
+  row.appendChild(x);
+  return row;
+}
+
+function queueSync(id){
+  clearTimeout(rowTimers[id]);
+  rowTimers[id] = setTimeout(()=>{ sync(); save(); }, 300);
+}
+function addRow(type){
+  const en = newEntry(type || 'field');
+  if(en.type==='sticker') en.value = '★';
+  S.entries.push(en);
+  Snd.add();
+  renderRows(); sync(); save();
+  const row = rowsBox.querySelector(`.row[data-id="${en.id}"]`);
+  const f = row && row.querySelector('input');
+  if(f) f.focus();
+  if(G && row) G.from(row,{y:-8,opacity:0,duration:.45,ease:'back.out(2)'});
+}
+$('#addRow').addEventListener('click', ()=>addRow());
+document.addEventListener('click', ()=>{
+  document.querySelectorAll('.dot-wrap.open').forEach(w=>w.classList.remove('open'));
+});
+
+/* name */
+const nameInput = $('#f-name');
+let nameTimer;
+function nameTick(on){
+  const t = $('#nameTick');
+  if(G) G.to(t,{opacity:on?1:0,scale:on?1:.4,duration:.35,ease:'back.out(3)'});
+  else t.style.opacity = on?1:0;
+}
+nameInput.addEventListener('input', ()=>{
+  S.name = nameInput.value;
+  nameTick(!!nameInput.value.trim());
+  clearTimeout(nameTimer);
+  nameTimer = setTimeout(()=>{ sync(nameInput); save(); }, 220);
+});
+
+/* ═══════════ dice ═══════════ */
+const shuffle = a => { const c=[...a]; for(let i=c.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [c[i],c[j]]=[c[j],c[i]]; } return c; };
+$('#dice').addEventListener('click', ()=>{
+  Snd.roll();
+  S.name = pick(POOL.names);
+  const E = [];
+  E.push(newEntry('role', pick(POOL.roles)));
+  shuffle(POOL.companies).slice(0, Math.floor(rnd(2,5))).forEach(c=>E.push(newEntry('company', c)));
+  shuffle(POOL.places).slice(0, Math.random()<.55?2:1).forEach(p=>{
+    E.push(newEntry('place', p));
+    const mark = LANDMARKS[p];                       // and the landmark that goes with it
+    if(mark){ const t = newEntry('text', mark); t.size='s'; E.push(t); }
+  });
+  shuffle(POOL.tags).slice(0, Math.floor(rnd(3,6))).forEach(t=>E.push(newEntry('tag', t)));
+  E.push(newEntry('line', pick(POOL.lines)));
+  shuffle(POOL.notes).slice(0, Math.floor(rnd(1,3))).forEach(n=>E.push(newEntry('note', n)));
+  shuffle(POOL.fields).slice(0, Math.floor(rnd(1,3))).forEach(f=>E.push(newEntry('field', f[1], f[0])));
+  shuffle(POOL.shouts).slice(0, Math.floor(rnd(1,3))).forEach(t=>{
+    const e = newEntry('text', t); e.size = pick(['s','m']); E.push(e);
+  });
+  shuffle(STICKERS).slice(0, Math.floor(rnd(1,3))).forEach(g=>E.push(newEntry('sticker', g)));
+  E.forEach(en=>{ if(BASIC_TYPES.includes(en.type)) en.basic = true; });   // the five live up top
+  S.entries = E;
+  POS = {};
+  nameInput.value = S.name; nameTick(true);
+  renderRows();
+  plane.querySelectorAll('.piece:not(.p-prop)').forEach(e=>e.remove());
+  ropeSig='';
+  sync($('#dice')); save();
+  if(G) G.fromTo('#dieIcon',{rotation:0},{rotation:360,duration:.7,ease:'back.out(2)',transformOrigin:'50% 50%'});
+});
+$('#wipe').addEventListener('click', ()=>{
+  Snd.remove();
+  S.name=''; S.entries=[]; POS={};
+  nameInput.value=''; nameTick(false);
+  renderRows();
+  const els = [...plane.querySelectorAll('.piece:not(.p-prop)')];
+  const finish = ()=>{ els.forEach(e=>e.remove()); ropeSig=''; sync(); };
+  if(!G){ finish(); return save(); }
+  G.to(els,{y:'+=60',opacity:0,scale:.85,duration:.42,ease:'power2.in',stagger:{each:.05,from:'end'},onComplete:finish});
+  save();
+});
+
+/* ═══════════ board controls ═══════════ */
+$('#tSound').addEventListener('click', e=>{
+  S.sound = Snd.toggle();
+  e.currentTarget.classList.toggle('on', S.sound);
+  e.currentTarget.dataset.tip = S.sound ? 'Sound' : 'Muted';
+  e.currentTarget.querySelectorAll('.w1,.w2').forEach(w=> w.style.opacity = S.sound ? 1 : 0);
+  save();
+});
+$('#tMat').addEventListener('click', e=>{
+  Snd.sweep();
+  S.mat = randomMat(); drawMat(); save();
+  const t = MAT_THEMES.find(x=>x.id===S.mat.theme);
+  e.currentTarget.dataset.tip = t ? t.name+' mat' : 'New mat';
+  if(G) G.fromTo('#matSvg',{opacity:.25},{opacity:1,duration:.55,ease:'power2.out'});
+});
+function setPanel(open){
+  S.panel = open;
+  document.body.classList.toggle('no-panel', !open);
+  save();
+  const settle = ()=>{ drawMat(); layout(manifest()); drawThread(); };
+  const root = document.documentElement;
+  const to = open ? 420 : 0;
+  const from = parseFloat(getComputedStyle(root).getPropertyValue('--panelw')) || (open ? 0 : 420);
+  if(!G){ root.style.setProperty('--panelw', to+'px'); settle(); return; }
+  // tween a plain number and write the variable ourselves — asking GSAP to
+  // animate the custom property directly does nothing here
+  const box = {v: from};
+  G.killTweensOf(box);
+  G.to(box, {v: to, duration:.42, ease:'power3.inOut',
+    onUpdate:()=>root.style.setProperty('--panelw', box.v.toFixed(1)+'px'),
+    onComplete:()=>{ root.style.setProperty('--panelw', to+'px'); settle(); }});
+  G.to($('.dock'), {opacity: open ? 1 : 0, duration:.28, ease:'power2.out'});
+}
+$('#tPanel').addEventListener('click', ()=>{ Snd.click(); setPanel(false); });
+$('#tPanelShow').addEventListener('click', ()=>{ Snd.click(); setPanel(true); });
+$('#tThread').addEventListener('click', e=>{ Snd.click(); S.thread=!S.thread; e.currentTarget.classList.toggle('on',S.thread); drawThread(); save(); });
+$('#tProps').addEventListener('click',  e=>{ Snd.click(); S.props=!S.props;  e.currentTarget.classList.toggle('on',S.props);  sync(); save(); });
+$('#tHide').addEventListener('click', e=>{
+  Snd.click();
+  S.chrome = !S.chrome;
+  $('#pillrow').classList.toggle('hidden', !S.chrome);
+  e.currentTarget.classList.toggle('off', !S.chrome);
+  e.currentTarget.dataset.tip = S.chrome ? 'Hide' : 'Show';
+  save();
+});
+$('#tSpread').addEventListener('click', e=>{
+  Snd.sweep();
+  S.spread = S.spread==='tidy' ? 'loose' : 'tidy';
+  e.currentTarget.dataset.tip = S.spread==='tidy' ? 'Tidy' : 'Spread out';
+  e.currentTarget.classList.toggle('on', S.spread==='loose');
+  POS = {}; layout(manifest()); save();
+});
+
+/* ═══════════ download ═══════════ */
+const SAVE_ICONS = {
+  idle:`<path d="M12 3.5v11"/><path d="m7.5 10.5 4.5 4.5 4.5-4.5"/><path d="M4.5 19.5h15"/>`,
+  busy:`<path d="M12 4a8 8 0 1 1-8 8" opacity=".9"/>`,
+  done:`<path d="M4.5 12.5 10 18 19.5 6.5"/>`,
+  fail:`<path d="M6 6l12 12M18 6 6 18"/>`
+};
+const setSaveIcon = (btn,k)=>{ const s=btn.querySelector('svg'); if(s) s.innerHTML=SAVE_ICONS[k]; btn.classList.toggle('spin',k==='busy'); };
+$('#tSave').addEventListener('click', async e=>{
+  const btn = e.currentTarget;
+  if(btn.dataset.busy) return;
+  btn.dataset.busy='1'; setSaveIcon(btn,'busy');
+  const wasChrome = S.chrome;
+  let reshaped = false, savedPOS = null;
+  const unshape = ()=>{
+    if(!reshaped) return;
+    reshaped = false;
+    document.body.classList.remove('shooting');
+    if(savedPOS) POS = savedPOS;
+    setTimeout(()=>{ drawMat(); layout(manifest()); }, 60);
+  };
+  try{
+    if(!window.html2canvas) await new Promise((res,rej)=>{
+      const sc = document.createElement('script');
+      sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+      sc.onload = res; sc.onerror = rej; document.head.appendChild(sc);
+    });
+    $('#pillrow').classList.add('hidden');
+    document.body.classList.add('exporting');
+    if(document.fonts && document.fonts.ready) await document.fonts.ready;
+    await new Promise(r=>setTimeout(r,240));
+
+    const board = $('#board'), mat = $('.mat');
+    // a portrait board would export as a tall mat floating in dark bands —
+    // relay it into a wide frame first so the mat itself is landscape
+    // always shoot from the same 5:4 frame, so the picture never depends on
+    // how the window happened to be sized
+    reshaped = true;
+    if(reshaped){
+      savedPOS = POS; POS = {};
+      document.body.classList.add('shooting');
+      void board.offsetHeight;                       // force the new frame to reflow
+      // rAF never fires on a hidden tab, so always give it a timer to fall back on
+      await new Promise(r=>{
+        let done = false;
+        const fin = ()=>{ if(!done){ done = true; r(); } };
+        requestAnimationFrame(()=>requestAnimationFrame(fin));
+        setTimeout(fin, 250);
+      });
+      drawMat();
+      layout(manifest());                            // pack against the real wide plane
+      await new Promise(r=>setTimeout(r,1000));
+      layout(manifest());                            // and settle once more, sizes now final
+      await new Promise(r=>setTimeout(r,700));
+      stepRopes(30);
+    }
+    const br = board.getBoundingClientRect(), mr = mat.getBoundingClientRect();
+    const s = Math.min(2, Math.max(1.5, window.devicePixelRatio||1));
+    const shadows = buildExportShadows();
+    const shot = await html2canvas(board, {
+      useCORS:true, allowTaint:false, backgroundColor:null, scale:s,
+      ignoreElements: el => el.classList && (el.classList.contains('controls') || el.classList.contains('kill'))
+    });
+    shadows.forEach(d=>d.remove());
+
+    /* Crop to what is actually on the mat. Exporting the whole frame left
+       wide bands of empty green down the sides. */
+    let bx0=Infinity, by0=Infinity, bx1=-Infinity, by1=-Infinity;
+    // the 'vision board' pill lives in the top-left corner of the mat; counting
+    // it would peg the crop to that corner forever, so it is left out here and
+    // painted back on afterwards
+    const marks = [...plane.querySelectorAll('.piece')];
+    marks.forEach(el=>{
+      const r = el.getBoundingClientRect();
+      if(!r.width || !r.height) return;
+      bx0 = Math.min(bx0, r.left  - mr.left);  by0 = Math.min(by0, r.top    - mr.top);
+      bx1 = Math.max(bx1, r.right - mr.left);  by1 = Math.max(by1, r.bottom - mr.top);
+    });
+    const BREATH = 100;          // even margin all the way round the content
+    if(!isFinite(bx0)){ bx0 = 0; by0 = 0; bx1 = mr.width; by1 = mr.height; }
+    bx0 = Math.max(0, bx0 - BREATH);          by0 = Math.max(0, by0 - BREATH);
+    bx1 = Math.min(mr.width,  bx1 + BREATH);  by1 = Math.min(mr.height, by1 + BREATH);
+    let cw = bx1 - bx0, ch = by1 - by0;
+    // still a landscape picture, even if the board happens to sit tall
+    if(cw/ch < 1.2){
+      const grow = (ch*1.2 - cw)/2;
+      bx0 = Math.max(0, bx0 - grow);
+      bx1 = Math.min(mr.width, bx1 + grow);
+      cw = bx1 - bx0;
+    }
+    const sx=(mr.left-br.left + bx0)*s, sy=(mr.top-br.top + by0)*s, sw=cw*s, sh=ch*s;
+    const padX=Math.round(26*s), padY=Math.round(46*s), foot=Math.round(88*s), radius=Math.round(18*s);
+    // the canvas hugs the mat — no stretched-out side bands
+    const outW = Math.round(sw+padX*2), outH = Math.round(sh+padY+foot);
+    const out = document.createElement('canvas');
+    out.width=outW; out.height=outH;
+    const g2 = out.getContext('2d');
+    g2.fillStyle='#12211a'; g2.fillRect(0,0,outW,outH);
+    const dx=Math.round((outW-sw)/2), dy=padY;
+    g2.save(); g2.beginPath();
+    if(g2.roundRect) g2.roundRect(dx,dy,sw,sh,radius);
+    else { g2.moveTo(dx+radius,dy); g2.arcTo(dx+sw,dy,dx+sw,dy+sh,radius); g2.arcTo(dx+sw,dy+sh,dx,dy+sh,radius);
+           g2.arcTo(dx,dy+sh,dx,dy,radius); g2.arcTo(dx,dy,dx+sw,dy,radius); g2.closePath(); }
+    g2.clip(); g2.drawImage(shot,sx,sy,sw,sh,dx,dy,sw,sh); g2.restore();
+
+    // the label, drawn at the corner of whatever we ended up cropping to
+    (()=>{
+      const pad=Math.round(15*s), fsz=Math.round(17*s);
+      g2.font=`600 ${fsz}px Fredoka, Nunito, sans-serif`;
+      const label='vision board', tw2=g2.measureText(label).width;
+      const bw=tw2+pad*2, bh=Math.round(38*s), r2=Math.round(13*s);
+      const lx=dx+Math.round(26*s), ly=dy+Math.round(26*s);
+      g2.beginPath();
+      if(g2.roundRect) g2.roundRect(lx,ly,bw,bh,r2);
+      else { g2.moveTo(lx+r2,ly); g2.arcTo(lx+bw,ly,lx+bw,ly+bh,r2); g2.arcTo(lx+bw,ly+bh,lx,ly+bh,r2);
+             g2.arcTo(lx,ly+bh,lx,ly,r2); g2.arcTo(lx,ly,lx+bw,ly,r2); g2.closePath(); }
+      g2.fillStyle='#fff'; g2.fill();
+      g2.fillStyle='#16281d'; g2.textAlign='left'; g2.textBaseline='middle';
+      g2.fillText(label, lx+pad, ly+bh/2+Math.round(1*s));
+    })();
+
+    // made with love, and where to find him underneath
+    g2.font = `500 ${Math.round(19*s)}px Fredoka, Nunito, sans-serif`;
+    g2.textBaseline='middle'; g2.textAlign='left';
+    const p1='made with ', p2='\u2665', p3=' by Sanjay Chauhan';
+    const w1=g2.measureText(p1).width, w2=g2.measureText(p2).width, w3=g2.measureText(p3).width;
+    let tx=(outW-(w1+w2+w3))/2;
+    const ty=dy + sh + foot/2 - Math.round(13*s);
+    g2.fillStyle='rgba(255,255,255,.92)'; g2.fillText(p1,tx,ty); tx+=w1;
+    g2.fillStyle='#e0473a';               g2.fillText(p2,tx,ty); tx+=w2;
+    g2.fillStyle='rgba(255,255,255,.92)'; g2.fillText(p3,tx,ty);
+    g2.font = `400 ${Math.round(14*s)}px Fredoka, Nunito, sans-serif`;
+    g2.textAlign='center'; g2.fillStyle='rgba(255,255,255,.55)';
+    g2.fillText('www.chauhansanjay.com', outW/2, ty + Math.round(25*s));
+    const a = document.createElement('a');
+    a.download = (S.name.trim() ? S.name.trim().toLowerCase().replace(/\s+/g,'-') : 'vision') + '-board.png';
+    a.href = out.toDataURL('image/png');
+    a.click();
+    Snd.shutter();
+    unshape();
+  }catch(err){
+    plane.querySelectorAll('.shadow-proxy').forEach(d=>d.remove());
+    unshape();
+    setSaveIcon(btn,'fail'); btn.dataset.tip="Couldn't save";
+    setTimeout(()=>{ setSaveIcon(btn,'idle'); btn.dataset.tip='Download'; }, 1800);
+    document.body.classList.remove('exporting');
+    if(wasChrome) $('#pillrow').classList.remove('hidden');
+    delete btn.dataset.busy; return;
+  }
+  document.body.classList.remove('exporting');
+  if(wasChrome) $('#pillrow').classList.remove('hidden');
+  setSaveIcon(btn,'done'); setTimeout(()=>setSaveIcon(btn,'idle'),1500);
+  delete btn.dataset.busy;
+});
+
+function updateCount(){
+  const c = $('#cnt');
+  const n = [...plane.querySelectorAll('.piece')].filter(p=>p.dataset.type!=='prop').length;
+  if(c.textContent===String(n)) return;
+  c.textContent = n;
+  if(G) G.fromTo(c,{scale:1.6},{scale:1,duration:.55,ease:'back.out(3)'});
+}
+
+/* ═══════════ persistence + boot ═══════════ */
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify({S,POS,uid})); }catch(e){} }
+function load(){
+  try{
+    const raw = localStorage.getItem(KEY); if(!raw) return false;
+    const o = JSON.parse(raw); if(!o||!o.S) return false;
+    S = Object.assign(S,o.S);
+    if(!Array.isArray(S.entries)) S.entries = [];
+    S.entries.forEach(e=>{ if(e.type==='photo') e.type='polaroid'; });   // renamed
+    POS = o.POS||{}; uid = o.uid||1;
+    return true;
+  }catch(e){ return false; }
+}
+function boot(){
+  load();
+  $('#tThread').classList.toggle('on', S.thread);
+  $('#tProps').classList.toggle('on', S.props);
+  $('#tSpread').dataset.tip = S.spread==='tidy' ? 'Tidy' : 'Spread out';
+  $('#tSpread').classList.toggle('on', S.spread==='loose');
+  $('#pillrow').classList.toggle('hidden', !S.chrome);
+  $('#tHide').classList.toggle('off', !S.chrome);
+  const mt = MAT_THEMES.find(x=>x.id===S.mat.theme);
+  if(mt) $('#tMat').dataset.tip = mt.name+' mat';
+  Snd.set(S.sound !== false);
+  $('#tSound').classList.toggle('on', S.sound !== false);
+  $('#tSound').dataset.tip = S.sound !== false ? 'Sound' : 'Muted';
+  $('#tSound').querySelectorAll('.w1,.w2').forEach(w=> w.style.opacity = S.sound !== false ? 1 : 0);
+
+  $('#colist').innerHTML = COMPANIES.map(c=>`<option value="${esc(c)}"></option>`).join('');
+  nameInput.value = S.name || '';
+  nameTick(!!S.name);
+  document.body.classList.toggle('no-panel', S.panel === false);
+  document.documentElement.style.setProperty('--panelw', S.panel === false ? '0px' : '420px');
+  if(S.panel === false) $('.dock').style.opacity = '0';
+  renderRows(); drawMat(); sync();
+  if(!S.name.trim()) setTimeout(()=>nameInput.focus(), 700);
+
+  if(G){
+    G.ticker.add(()=>stepRopes(1));        // the ropes live on the ticker
+    G.from('.dock-scroll > *',{x:-24,opacity:0,duration:.75,stagger:.05,ease:'power3.out',clearProps:'all'});
+    G.from('.tw',{y:-22,opacity:0,duration:.8,ease:'back.out(2.2)',clearProps:'all'});
+    G.from('.ibtn',{y:-14,opacity:0,duration:.6,stagger:.06,delay:.15,ease:'back.out(2)',clearProps:'all'});
+    G.to('.bshine',{left:'140%',duration:1.15,ease:'power2.inOut',repeat:-1,repeatDelay:3.6,delay:1.6});
+  }
+  let rt;
+  const reflow = ()=>{ clearTimeout(rt);
+    rt = setTimeout(()=>{ drawMat(); layout(manifest()); drawThread(); }, 120); };
+  window.addEventListener('resize', reflow);
+  /* the mat is not always the size of the window. Inside the onboarding the panel
+     grows and shrinks on its own, so watch the mat itself and redraw the grid,
+     the arcs and the ticks to whatever size it actually is. */
+  if(window.ResizeObserver){
+    const mat = $('.mat');
+    if(mat){ let w0=0,h0=0;
+      new ResizeObserver(es=>{
+        const r = es[0].contentRect;
+        if(Math.abs(r.width-w0)<2 && Math.abs(r.height-h0)<2) return;
+        w0=r.width; h0=r.height; reflow();
+      }).observe(mat);
+    }
+  }
+}
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', boot);
+else boot();
+/* ---- driven by the ZERO onboarding ----------------------------------------
+   The input panel is for the standalone tool. Inside the onboarding the
+   conversation is the input, so the panel hides and entries come from the
+   parent document. Declared inside the IIFE so it can reach S and sync(). */
+window.ZERO_VB = {
+  ready: true,
+  set: function(name, items){
+    try{
+      /* Freeze where everything already sits. Without this the ids change on
+         every answer, POS misses, and the whole board re-lays-out, throwing
+         away anything the user dragged. */
+      plane.querySelectorAll('.piece').forEach(function(el){
+        var id = el.dataset.id; if(!id) return;
+        var dx = G ? (+G.getProperty(el,'x')||0) : 0;
+        var dy = G ? (+G.getProperty(el,'y')||0) : 0;
+        POS[id] = {dx:dx, dy:dy};
+      });
+      S.name = name || '';
+      S.entries = (items||[]).map(function(it){
+        var e = newEntry(it.type, it.value, it.label);
+        e.basic = false;
+        /* a stable id keyed on content, so a piece keeps its identity and its
+           position across every re-sync */
+        e.id = it.type + ':' + String(it.value||it.label||'').toLowerCase().replace(/[^a-z0-9]+/g,'-');
+        return e;
+      });
+      S.panel = false; S.chrome = false; S.props = false;
+      document.body.classList.add('driven');
+      sync();
+      /* the mat is the frame: pull anything that overhangs back inside, and
+         remember where it ended up so it stays there */
+      setTimeout(function(){
+        var W = plane.clientWidth, H = plane.clientHeight, PAD = 10;
+        plane.querySelectorAll('.piece').forEach(function(el){
+          var L = parseFloat(el.style.left)||0, T = parseFloat(el.style.top)||0;
+          var dx = G ? (+G.getProperty(el,'x')||0) : 0;
+          var dy = G ? (+G.getProperty(el,'y')||0) : 0;
+          var w = el.offsetWidth, h = el.offsetHeight;
+          var x = L+dx, y = T+dy, nx = x, ny = y;
+          if(x < PAD) nx = PAD;
+          if(y < PAD) ny = PAD;
+          if(x+w > W-PAD) nx = Math.max(PAD, W-PAD-w);
+          if(y+h > H-PAD) ny = Math.max(PAD, H-PAD-h);
+          if(nx !== x || ny !== y){
+            var ndx = dx+(nx-x), ndy = dy+(ny-y);
+            if(G) G.to(el,{x:ndx,y:ndy,duration:.5,ease:'power3.out',onUpdate:drawThread});
+            POS[el.dataset.id] = {dx:ndx, dy:ndy};
+          }
+        });
+        drawThread();
+      }, 1250);
+      return S.entries.length;
+    }catch(err){ return 'ERR '+err.message; }
+  }
+};
+try{
+  if(window.parent !== window){
+    localStorage.removeItem(KEY);           /* never inherit a standalone session */
+    document.documentElement.classList.add('driven');
+    document.body.classList.add('driven');  /* transparent from the first frame */
+  }
+}catch(e){}
+
+})();
+</script>
+</body>
+</html>
