@@ -186,33 +186,42 @@ svg{ display:block; }
   border:1px dashed var(--line); border-radius:999px; padding:7px 13px; text-align:left;
   transition:color .2s var(--e), border-color .2s var(--e); }
 .devp:hover{ color:var(--tx); border-color:var(--tx-4); }
-/* Compact tiles. Money first, because that is what is being judged, then the
-   role, then the facts as tags. Class is jtile, NOT pcard: .pcard is already the
-   212x264 persona card and the collision is what made these oversized. */
+/* Six roles at a time, given room to breathe. Twenty-five tiny squares had no
+   hierarchy and nothing to look at; this has one hero number per card and a
+   clear second and third rank under it. */
 .pool{ width:100%; max-width:760px; margin:0 auto; }
-.poolf{ display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-bottom:14px; }
-.pf{ font-size:11.5px; padding:6px 13px; border-radius:999px; border:1px solid var(--line);
-  background:transparent; color:var(--tx-3); }
+.poolf{ display:flex; flex-wrap:wrap; gap:7px; justify-content:center; margin-bottom:20px; }
+.pf{ font-size:12px; padding:7px 15px; border-radius:999px; border:1px solid var(--line);
+  background:transparent; color:var(--tx-3); transition:color .18s var(--e), border-color .18s var(--e); }
+.pf:hover{ color:var(--tx); border-color:var(--tx-4); }
 .pf.on{ background:var(--ink); color:var(--on-ink); border-color:transparent; }
-.poolw{ max-height:470px; overflow-y:auto; padding:3px; scrollbar-width:thin; }
-.poolg{ display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; }
-.jtile{ width:100%; aspect-ratio:1; min-width:0; overflow:hidden;
-  display:flex; flex-direction:column; align-items:flex-start; text-align:left; gap:5px;
-  padding:12px 11px; border-radius:14px; background:var(--card); border:1px solid var(--line);
-  transition:border-color .18s var(--e), transform .18s var(--e); }
-.jtile:hover{ transform:translateY(-2px); border-color:var(--tx-4); }
-.jtile.on{ border-color:var(--ink); }
-.jtile .jp{ font-size:14.5px; font-weight:600; letter-spacing:-.03em; color:var(--tx);
-  font-variant-numeric:tabular-nums; white-space:nowrap; }
-.jtile .jr{ font-size:12px; line-height:1.25; color:var(--tx-2); max-width:100%; overflow-wrap:anywhere; }
-.jtile .jg{ margin-top:auto; display:flex; flex-wrap:wrap; gap:4px; max-width:100%; }
-.jtile .tg{ display:inline-flex; align-items:center; gap:4px; font-size:10px; line-height:1;
-  padding:4px 6px; border-radius:6px; background:var(--wash); color:var(--tx-2);
-  max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.jtile .tg .lg{ width:11px; height:11px; display:grid; place-items:center; flex:0 0 11px; }
-.jtile .tg .lg svg{ width:100%; height:100%; }
-.jtile.on .tg{ background:var(--field); color:var(--tx); }
-.poolc{ margin-top:12px; font-size:12px; color:var(--tx-3); text-align:center; }
+.poolw{ }
+.poolg{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+.jtile{ position:relative; width:100%; min-width:0; overflow:hidden; text-align:left;
+  display:flex; flex-direction:column; align-items:flex-start;
+  padding:20px 19px 18px; border-radius:18px; background:var(--card);
+  border:1px solid var(--line);
+  transition:border-color .22s var(--e), transform .22s var(--e), box-shadow .22s var(--e); }
+.jtile:hover{ transform:translateY(-3px); border-color:var(--tx-4);
+  box-shadow:0 14px 30px rgba(0,0,0,.18); }
+.jtile.on{ border-color:var(--ink); box-shadow:0 0 0 1px var(--ink), 0 14px 30px rgba(0,0,0,.2); }
+.jtile .jh{ width:100%; display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.jtile .lg{ width:34px; height:34px; border-radius:11px; background:var(--wash);
+  display:grid; place-items:center; flex:0 0 34px; }
+.jtile .lg svg{ width:19px; height:19px; }
+.jtile .jt{ font-size:11px; letter-spacing:.05em; color:var(--tx-3); }
+.jtile.on .jt{ color:var(--ink); font-weight:600; }
+.jtile .jp{ font-size:22px; font-weight:600; letter-spacing:-.045em; color:var(--tx);
+  font-variant-numeric:tabular-nums; line-height:1; }
+.jtile .jr{ margin-top:9px; font-size:15px; font-weight:500; line-height:1.25;
+  letter-spacing:-.02em; color:var(--tx); max-width:100%; overflow-wrap:anywhere; }
+.jtile .jc{ margin-top:5px; font-size:12.5px; color:var(--tx-2); max-width:100%;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.jmore{ margin:16px auto 0; display:block; height:44px; padding:0 22px; border-radius:999px;
+  border:1px solid var(--line); background:transparent; color:var(--tx-2); font-size:13px;
+  transition:color .18s var(--e), border-color .18s var(--e); }
+.jmore:hover{ color:var(--tx); border-color:var(--tx-4); }
+.poolc{ margin-top:14px; font-size:12.5px; color:var(--tx-3); text-align:center; }
 /* a job, not a tag: the company, what the job is, where, and what it pays */
 .jobs{ display:grid; grid-template-columns:1fr 1fr; gap:12px; max-width:730px; margin:0 auto; }
 .job{ position:relative; display:grid; grid-template-columns:auto 1fr auto; gap:4px 10px;
@@ -2213,19 +2222,21 @@ function listingsStage(){
     return all.filter(r=> filt==='all' ? true
       : filt==='mine' ? want.indexOf(r[0])>=0 : r[4]===filt);
   }
+  let shown=6;
   function paint(){
     const keys=['all','S','A','B'].concat(want.length?['mine']:[]);
     [...fr.children].forEach((b,i)=> b.classList.toggle('on',keys[i]===filt));
     list.innerHTML='';
+    const rows=visible(), page=rows.slice(0,shown);
     const g=mk('div','poolg');
-    const rows=visible();
-    rows.forEach(r=>{
+    page.forEach(r=>{
       const [co,ro,sen,pay,tier]=r;
       const b=mk('button','jtile'+(picks.indexOf(r)>=0?' on':''));
-      b.innerHTML='<span class="jp">'+pay+'</span>'
+      b.innerHTML='<span class="jh"><span class="lg">'+(LOGO[co]||'')+'</span>'
+        +'<span class="jt">'+tier+' tier</span></span>'
+        +'<span class="jp">'+pay+'</span>'
         +'<span class="jr">'+ro+'</span>'
-        +'<span class="jg"><span class="tg"><span class="lg">'+(LOGO[co]||'')+'</span>'+co+'</span>'
-        +'<span class="tg">'+tier+'</span><span class="tg">'+sen+'</span></span>';
+        +'<span class="jc">'+co+' &middot; '+sen+'</span>';
       b.setAttribute('role','checkbox');
       b.setAttribute('aria-checked',picks.indexOf(r)>=0?'true':'false');
       b.setAttribute('aria-label',ro+' at '+co+', '+sen+', '+tier+' tier, '+pay);
@@ -2235,7 +2246,15 @@ function listingsStage(){
       g.appendChild(b);
     });
     list.appendChild(g);
-    cnt.textContent=rows.length+' roles'+(picks.length?', '+picks.length+' picked':'');
+    if(shown<rows.length){
+      const m=mk('button','jmore','Show 6 more');
+      m.onclick=()=>{ const from=g.children.length; shown+=6; sfx('tick'); paint();
+        const kids=[...list.querySelectorAll('.jtile')].slice(from);
+        if(kids.length) enter(kids,{y:18,blur:10,scale:.96,stagger:.05,duration:.6},1400); };
+      list.appendChild(m);
+    }
+    cnt.textContent=Math.min(shown,rows.length)+' of '+rows.length+' roles'
+      +(picks.length?' \u00b7 '+picks.length+' picked':'');
   }
   function dockNow(){
     if(!picks.length){ dockHide(); return; }
