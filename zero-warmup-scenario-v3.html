@@ -1096,9 +1096,14 @@ td.cell-active::after{border-color:var(--accent)}
 /* [10] Netflix-style auto-advance: the button fills, and when the fill
    completes the flow moves on by itself. Continue stops being friction
    without taking away the ability to move early. */
-.wu-cta.autogo{position:relative;overflow:hidden;isolation:isolate}
-.wu-cta.autogo>i.fill{position:absolute;inset:0;transform-origin:left center;transform:scaleX(0);
-  background:rgba(127,127,127,.32);z-index:-1}
+/* The sweep was set to z-index:-1 inside isolation:isolate, which paints it
+   BEHIND the button's own background - so the mechanism ran perfectly and
+   nothing was ever visible. It sits above the fill now and under the label,
+   translucent enough to read through. */
+.wu-cta.autogo{position:relative;overflow:hidden}
+.wu-cta.autogo>i.fill{position:absolute;inset:0;transform-origin:left center;
+  transform:scaleX(0);background:rgba(0,0,0,.16);z-index:0;pointer-events:none}
+.wu-cta.autogo>svg{position:relative;z-index:1}
 .wu-cta.autogo.run>i.fill{transform:scaleX(1);transition:transform var(--autogo,6s) linear}
 
 
@@ -1984,18 +1989,14 @@ function scrollToCurrent(instant){
          out of view, and the opening line is never scrolled past — the
          bottom-follow branch used to cut it off on the taller stages. */
       t=Math.max(0,curSeg.offsetTop-28);
-      const segBottom = curSeg.offsetTop + curSeg.offsetHeight;
-      if(segBottom > t + h.clientHeight){
-        /* Two different needs, so two different amounts of slack.
-           During a normal stage the content should simply be readable - a
-           big reserve here just opens a void under the widget, which is what
-           blanket-applying 45% did. Only the ENDING is a sequence of arriving
-           messages, and there the newest line should land around the middle
-           with room to climb into. forceFollow is already true exactly and
-           only for the ending, so it is the right switch. */
-        const slack = forceFollow ? Math.round(h.clientHeight * 0.42) : 56;
-        t = Math.max(t, segBottom - h.clientHeight + slack);
-      }
+      /* NO BOTTOM-FOLLOW, ANYWHERE.
+         Every version of it clipped something. Scrolling down to reveal newly
+         appended content necessarily pushes the top of the stage up under the
+         progress bar, and on the ending - where the proposal alone is taller
+         than the canvas - it cut the document's first line off. Tuning the
+         slack only moved which part got cut.
+         The stage anchors at its top and grows downward. Nothing is ever
+         hidden above the fold, and the learner scrolls when they want to. */
     }
     h.scrollTo({top:t,behavior:instant?'auto':'smooth'});
   });
