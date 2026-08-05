@@ -1256,28 +1256,44 @@ td.cell-active::after{border-color:var(--accent)}
 .ko2-back:hover{background:var(--hover);color:var(--tx)}
 .ko2-back svg{width:19px;height:19px}
 
-/* ── 3 · OPTION 2: the serif reading mode ──────────────────────────────
-   From doordash-warmup-classic-v9: STK Bureau Serif, centred, one line at a
-   time, at the reference's own scale (.st-text was clamp(23px,3.2vw,30px)).
-   No highlight - that belongs to the old design system, not this one. */
-.app.serif .beat{flex-direction:column;align-items:center;gap:16px;text-align:center}
-.app.serif .beat .bub{margin:0 auto}
+/* ── 3 · OPTION 2: the v9 reading layout, matched to its own spec ──────
+   I centred this and put the avatar above the line. The reference does not:
+   .beat is a flex ROW, avatar on the left, text beside it and left-aligned.
+   Every value below is lifted from doordash-warmup-classic-v9 rather than
+   estimated - 34px avatar, 14px gap, clamp(19px,2.5vw,23px) serif at 1.5,
+   30px between beats, and its own option treatment at 15px/14px radius.
+
+   The blur-in word reveal (.w -> .w.vis) is already identical in this build,
+   so the animation needed nothing; it was only ever the layout that differed. */
+.app.serif .beat{display:flex;flex-direction:row;align-items:flex-start;
+  gap:14px;text-align:left;margin-bottom:30px!important}
+.app.serif .beat .bub{width:34px;height:34px;border-radius:50%;flex:0 0 auto;
+  border:var(--bw) solid var(--line);overflow:hidden;margin:0}
+.app.serif .beat .bub-img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .app.serif .beat .btext{
   font-family:var(--serif)!important;
-  font-size:clamp(23px,3.2vw,30px)!important;
-  line-height:1.45!important;font-weight:500!important;
-  text-align:center;max-width:none;width:100%;
-  background:none!important;border:none!important;padding:0!important}
+  font-size:clamp(19px,2.5vw,23px)!important;
+  line-height:1.5!important;font-weight:500!important;
+  text-align:left;padding-top:4px!important;
+  background:none!important;border:none!important;max-width:none;width:auto}
 .app.serif .resp .r-text{font-family:var(--serif)!important;
   font-size:clamp(19px,2.5vw,23px)!important;line-height:1.5!important;
   background:none!important;border:none!important;padding:0!important}
-/* the highlight is not part of this design system */
+
+/* v9's options: 15px, 14px radius, 1.5px border, left-aligned, 540 cap */
+.app.serif .opts{max-width:540px;margin-left:0!important;margin-right:0}
+.app.serif .opt{border:1.5px solid var(--line)!important;border-radius:14px!important;
+  padding:15px 18px!important;font-size:15px!important;font-weight:500!important;
+  line-height:1.5!important;text-align:left!important;background:var(--soft)!important}
+
+/* the interaction keeps the chat's left edge. 34px avatar + 14px gap = 48. */
+.app.serif .segment > *:not(.beats){margin-left:48px}
+
+/* no highlight - it belongs to the old design system, not this one */
 .app.serif .hl,.app.serif .hl.on,
 .app.serif .beat .btext .hl,.app.serif .beat .btext .hl.on,
-.app.serif .resp .r-text .hl{background:none!important;padding:0!important;margin:0!important}
-/* interaction re-centres under the centred text */
-.app.serif .segment > *:not(.beats){margin-left:0}
-.app.serif .opts{max-width:560px;margin-left:auto!important;margin-right:auto}
+.app.serif .resp .r-text .hl{background:none!important;padding:0!important;
+  margin:0!important;border-radius:0!important}
 
 /* kickoff + story wear the workspace surface, and the shell is dark by default */
 .story,.kickoff{background:var(--bg)}
