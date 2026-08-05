@@ -1028,7 +1028,7 @@ td.cell-active::after{border-color:var(--accent)}
 .wu-link{display:block;width:fit-content;margin:18px 0 0 0;
   font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--tx-3);
   background:none;border:none;padding:0;cursor:pointer;
-  text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;
+  text-decoration:none;
   transition:color var(--t-q) var(--ease)}
 .wu-link:hover{color:var(--tx)}
 
@@ -1317,6 +1317,16 @@ td.cell-active::after{border-color:var(--accent)}
 
 /* three stats, so three columns rather than a 2x2 grid with a gap in it */
 .finmodal .fin-stats{grid-template-columns:repeat(3,1fr)}
+
+/* Each deck row was a title stacked over its one-liner - two lines per row,
+   twelve rows on screen, and the widget ran past the fold. They share a
+   baseline now, so a row is half as tall and nothing is lost. */
+.oslot .o-body{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;flex:1;min-width:0}
+.oslot .o-t{font-weight:700;font-size:14.5px;flex:0 0 auto}
+.oslot .o-d{font-size:12.5px;color:var(--tx-3);margin-top:0!important;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.oslot{min-height:44px!important}
+.ord-slots{gap:7px}
 
 /* kickoff + story wear the workspace surface, and the shell is dark by default */
 .story,.kickoff{background:var(--bg)}
@@ -1957,7 +1967,9 @@ function setContinue(state, opts){
     autoGo(b, CONTINUE_MS, ()=>{ try{sfx.tap()}catch(e){} act(); });
   }
 }
+let _altT=null;
 function setAlt(label,fn){
+  if(_altT){clearTimeout(_altT);_altT=null;}
   if(!curSeg)return;
   const old=curSeg.querySelector('.wu-link');if(old)old.remove();
   if(!label)return;
@@ -1965,8 +1977,13 @@ function setAlt(label,fn){
   a.className='wu-link';a.textContent=label;
   a.onclick=()=>{cancelAuto();sfx.tap();fn()};
   const anchor=curSeg.querySelector('.whyEl');
-  anchor?curSeg.insertBefore(a,anchor):curSeg.appendChild(a);
-  G.fromTo(a,{opacity:0,y:6},{opacity:1,y:0,duration:.34,ease:'power3.out'});
+  const seg=curSeg;
+  _altT=setTimeout(()=>{
+    _altT=null;
+    if(!seg.isConnected) return;
+    (anchor && anchor.isConnected) ? seg.insertBefore(a,anchor) : seg.appendChild(a);
+    G.fromTo(a,{opacity:0,y:6},{opacity:1,y:0,duration:.4,ease:'power3.out'});
+  }, 2200);
 }
 
 /* ================= flow ================= */
