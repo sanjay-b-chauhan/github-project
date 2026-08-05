@@ -155,8 +155,7 @@ svg{ display:block; }
 .draw::before{ content:''; position:absolute; inset:0; pointer-events:none; z-index:1; opacity:.5;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.055'/%3E%3C/svg%3E"); }
 .dcenter{ text-align:center; pointer-events:none; position:relative; }
-.dh{ font-family:var(--f); font-weight:500; font-size:clamp(15px,1.15vw,19px);
-  letter-spacing:-.01em; line-height:1.4; color:var(--tx-2); }
+.dh{ font-family:var(--serif); font-size:clamp(28px,2.3vw,42px); letter-spacing:-.03em; line-height:1.15; }
 
 .said{ min-height:24px; margin-bottom:18px; font-size:15px; color:var(--tx-2); text-align:center; text-wrap:balance; position:relative; }
 .said .hl{ color:var(--tx); font-weight:600; }
@@ -786,7 +785,7 @@ body.dark .lit{ animation-name:litd; }
 <div class="draw" id="drawScreen">
   <canvas id="drawCanvas"></canvas>
   <div class="dcenter">
-    <div class="dh" id="dH">draw zero to start</div>
+    <div class="dh" id="dH">Draw ZERO to start.</div>
   </div>
 </div>
 
@@ -1038,8 +1037,10 @@ function extractInto(text){
   const t=text.toLowerCase();
   /* a named company, so "more like Figma" lands without re-asking */
   if(!P.dream){
-    const names=(DREAMS[PKEY]||DREAMS.design).concat(pack().cos||[],Object.keys(LOGO||{}));
-    for(const n of names){ if(n&&n.length>2&&t.includes(n.toLowerCase())){ P.dream=n; found.push('dream'); break; } }
+    const names=(DREAMS[PKEY]||DREAMS.design).concat(pack().cos||[],DREAM_EXTRA,Object.keys(LOGO||{}));
+    const hit=[], seen={};
+    for(const n of names){ if(n&&n.length>2&&!seen[n]&&t.includes(n.toLowerCase())){ seen[n]=1; hit.push(n); } }
+    if(hit.length){ P.dream=hit.join(', '); found.push('dream'); }
   }
   if(!P.workmode){
     if(/fully remote|\bremote\b|from home/.test(t)){ P.workmode='Remote'; found.push('mode'); }
@@ -1497,7 +1498,7 @@ const IND_COS={
 };
 function COS(n){
   const out=[], add=x=>{ if(x&&LOGO[x]&&out.indexOf(x)<0) out.push(x); };
-  add(P.dream); (IND_COS[P.industry]||[]).forEach(add); pack().cos.forEach(add);
+  dreamList().forEach(add); (IND_COS[P.industry]||[]).forEach(add); pack().cos.forEach(add);
   ['Figma','Stripe','Google','Notion','Airbnb','Linear','Vercel','Spotify','Shopify','Datadog'].forEach(add);
   return out.slice(0,n||8);
 }
@@ -1549,6 +1550,9 @@ const JOB_ICON={ 'Full time':'bag','An internship':'cap','Either':'globe' };
 function cico(k){ return CI[k]?'<span class="cico">'+CI[k]+'</span>':''; }
 function cityChip(name){ return chip((CI[CITY_ICON[name]]?cico(CITY_ICON[name]):I.pin)+T_(name)); }
 function cityList(str){ return String(str||'').split(', ').filter(Boolean); }
+/* a dream is rarely one company. Held as a list so the board, the probe and the
+   hiring row all read the same source. */
+function dreamList(){ return String(P.dream||'').split(', ').filter(Boolean); }
 /* The board never shows blanks. Each sentence loads itself, then lands finished. */
 /* the categories the conversation is trying to fill. The user never sees this list,
    they only see how much of it is done. */
@@ -1595,7 +1599,8 @@ function SENTENCES(){
          +chip(I.target+T_(P.role))
          +(P.company?G_(' at ')+chip(cico('bldg')+T_(low(P.company))):'')+G_('.'); } },
    { id:'s2', g:0, ready:!!P.dream, key:[P.dream,P.openness].join('|'),
-     html:()=>G_('The dream is ')+chip((LOGO[P.dream]||I.spark)+T_(P.dream))
+     html:()=>G_(dreamList().length>1?'The dreams are ':'The dream is ')
+       +dreamList().map(d=>chip((LOGO[d]||I.spark)+T_(d))).join(G_(' '))
        +(P.openness?G_(', '+P.openness):'')+G_('.') },
    { id:'s3', g:1, ready:!!(P.location||P.citynext), key:[P.location,P.citynext].join('|'),
      html:()=>{ const nxt=cityList(P.citynext).filter(c2=>c2!==P.location);
@@ -2049,21 +2054,30 @@ function companyStage(){
 
 /* ============================ 6 · the dream company ============================ */
 const DREAMS={ design:['Figma','Airbnb','Apple'], ba:['Stripe','Salesforce','Snowflake'], swe:['OpenAI','Google','Stripe'] };
+/* they should be able to want several, and the obvious big names must be here */
+const DREAM_EXTRA=['Google','Microsoft','Apple','OpenAI','Notion','Linear','Stripe','Airbnb','Figma','Netflix','Spotify','Vercel'];
+function DREAM_PICKS(){
+  const seen={}, out=[];
+  (DREAMS[PKEY]||DREAMS.design).concat(pack().cos||[],DREAM_EXTRA).forEach(n=>{
+    if(n&&!seen[n]){ seen[n]=1; out.push(n); } });
+  return out.slice(0,10);
+}
 function dreamStage(){
-  const {box}=turn({q:"What's your dream company?"});
-  const take=async v=>{ P.dream=v; renderBoard();
-    await reflect(said(v));
+  const {box}=turn({q:'Which companies are you dreaming of?'});
+  const take=async v=>{
+    const list=(Array.isArray(v)?v:[v]).filter(Boolean);
+    P.dream=list.filter((x,i)=>list.indexOf(x)===i).join(', ');
+    renderBoard();
+    await reflect(said(joinList(dreamList())));
     afterCommit(()=>go(nextAlign)); };
-  choices(box,(DREAMS[PKEY]||DREAMS.design).map(n=>[n,n,n]),take);
-  dockMode='type';
-  dockInput(v=>{ dockMode='voice'; take(quoteOf(v)); });
+  choices(box,DREAM_PICKS().map(n=>[n,n,n]),take,{multi:true});
 }
 
 /* ============================ 7 · the push back ============================ */
 /* The founder wanted this to argue a little, not just collect. One real probe. */
 const BIGNAMES=['Apple','Google','Microsoft','Netflix','Meta','Adobe','Salesforce','Amazon','Snowflake'];
 function probeStage(){
-  const big=P.company==='Big tech'||BIGNAMES.indexOf(P.dream)>=0;
+  const big=P.company==='Big tech'||dreamList().some(d=>BIGNAMES.indexOf(d)>=0);
   const {box}=turn({q:big?'Are you sure about the big names?':'Would you consider a big company?'});
   const opts=big
     ? [['target','Yes, only the big ones','set on the big names'],
@@ -2997,7 +3011,7 @@ function dbgFill(upTo){
   set(6,()=>P.doing='Final year design, Mumbai');
   set(7,()=>P.role=d.roleCards[0]);
   set(8,()=>P.company='Big tech');
-  set(9,()=>P.dream=(DREAMS[PKEY]||DREAMS.design)[0]);
+  set(9,()=>P.dream=(DREAMS[PKEY]||DREAMS.design).slice(0,2).join(', '));
   set(10,()=>{ P.openness='open to a smaller team'; P.probed=1; });
   set(11,()=>P.industry='Tech and AI');
   set(12,()=>P.problems=d.problemChips[0]);
