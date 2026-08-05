@@ -155,6 +155,7 @@ svg{ display:block; }
 .draw::before{ content:''; position:absolute; inset:0; pointer-events:none; z-index:1; opacity:.5;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.055'/%3E%3C/svg%3E"); }
 .dcenter{ text-align:center; pointer-events:none; position:relative; }
+/* an instruction, not a headline: sans, small, lowercase like the wordmark */
 .dh{ font-family:var(--f); font-weight:500; font-size:clamp(15px,1.15vw,19px);
   letter-spacing:-.01em; line-height:1.4; color:var(--tx-2); }
 
@@ -173,6 +174,25 @@ svg{ display:block; }
 @keyframes tdot{ 0%,72%,100%{ opacity:.2; transform:translateY(0); }
   36%{ opacity:1; transform:translateY(-.16em); } }
 .opts{ margin-top:46px; }
+/* a job, not a tag: the company, what the job is, where, and what it pays */
+.jobs{ display:grid; grid-template-columns:1fr 1fr; gap:12px; max-width:730px; margin:0 auto; }
+.job{ position:relative; display:grid; grid-template-columns:auto 1fr auto; gap:4px 10px;
+  align-items:center; text-align:left; padding:16px 18px; border-radius:14px;
+  background:var(--card); border:1px solid var(--line); transition:border-color .24s var(--e), transform .24s var(--e); }
+.job:hover{ transform:translateY(-1px); border-color:var(--tx-4); }
+.job.on{ border-color:var(--ink); }
+.job .jt{ grid-row:1; width:22px; height:22px; display:grid; place-items:center; }
+.job .jt svg{ width:100%; height:100%; }
+.job .jco{ grid-row:1; font-size:12.5px; font-weight:500; color:var(--tx); }
+.job .jtier{ grid-row:1; font-size:12.5px; color:var(--tx-2); white-space:nowrap; }
+.job.on .jtier{ color:var(--ink); font-weight:600; }
+.job .jrole{ grid-row:2; grid-column:2/4; font-size:19px; font-weight:500; letter-spacing:-.02em; color:var(--tx); }
+.job .jctx{ grid-row:3; grid-column:2/4; font-size:12.5px; color:var(--tx-2); }
+.job .jpay{ grid-row:4; grid-column:2/4; margin-top:4px; font-size:14.5px; font-weight:500;
+  font-variant-numeric:tabular-nums; color:var(--tx); }
+.jmore{ grid-column:1/3; height:46px; border-radius:14px; border:1px dashed var(--line);
+  font-size:13.5px; color:var(--tx-2); background:transparent; }
+.jmore:hover{ color:var(--tx); border-color:var(--tx-4); }
 
 .row{ display:flex; gap:10px; justify-content:center; }
 .row .box{ width:360px; height:58px; background:var(--field); border-radius:var(--pill); display:flex; align-items:center; padding:0 26px; }
@@ -1065,7 +1085,8 @@ function extractInto(text){
 /* Everything Zero learns, in the order the founder asks for it. */
 const P={ about:null, role:null, company:null, dream:null, openness:null,
   location:null, citynext:null, industry:null, problems:null, timeline:null, jobtype:null,
-  name:null, aim:null, level:null, linked:null, why:null, doing:null, workmode:null, probed:null };
+  name:null, aim:null, level:null, linked:null, why:null, doing:null, workmode:null, probed:null,
+  picks:[], aimTier:null };
 let locked=false, editReturn=null, gen=0;
 const $=id=>document.getElementById(id);
 const mk=(t,c,h2)=>{const n=document.createElement(t); if(c)n.className=c; if(h2!=null)n.innerHTML=h2; return n;};
@@ -1456,20 +1477,16 @@ function afterCommit(next){ if(editReturn){ editReturn=null; visionStage(true); 
 /* The nine things Zero wants, and how it asks for each. One answer often fills
    three of them, and the ones it filled are never asked. That is the whole
    trick behind "it actually listened". */
+/* The listings answer role, company and dream in one screen, so those questions
+   are gone. What is left is only what a job card cannot tell us. */
 const ALIGN=[
-  ['stage',    ()=>!!P.level,    ()=>stageStage()],
-  ['doing',    ()=>!!P.doing,    ()=>doingStage()],
-  ['role',     ()=>!!P.role,     ()=>roleStage()],
-  ['company',  ()=>!!P.company,  ()=>companyStage()],
-  ['dream',    ()=>!!P.dream,    ()=>dreamStage()],
-  ['probe',    ()=>!!P.probed,   ()=>probeStage()],
-  ['industry', ()=>!!P.industry, ()=>industryStage()],
-  ['problems', ()=>!!P.problems, ()=>problemsStage()],
-  ['city',     ()=>!!P.citynext, ()=>citiesStage()],
-  ['mode',     ()=>!!P.workmode, ()=>modeStage()],
-  ['timing',   ()=>!!P.timeline, ()=>timelineStage()],
-  ['shape',    ()=>!!P.jobtype,  ()=>jobtypeStage()],
-  ['why',      ()=>!!P.why,      ()=>motivationStage()]
+  ['stage',    ()=>!!P.level,     ()=>stageStage()],
+  ['doing',    ()=>!!P.doing,     ()=>doingStage()],
+  ['listings', ()=>P.picks.length,()=>listingsStage()],
+  ['industry', ()=>!!P.industry,  ()=>industryStage()],
+  ['problems', ()=>!!P.problems,  ()=>problemsStage()],
+  ['timing',   ()=>!!P.timeline,  ()=>timelineStage()],
+  ['why',      ()=>!!P.why,       ()=>motivationStage()]
 ];
 function nextAlign(){
   for(let i=0;i<ALIGN.length;i++){ if(!ALIGN[i][1]()) { ALIGN[i][2](); return; } }
@@ -1560,13 +1577,10 @@ function dreamList(){ return String(P.dream||'').split(', ').filter(Boolean); }
 const BOARD_SLOTS=[
   ['stage',    ()=>!!P.level],
   ['doing',    ()=>!!P.doing],
-  ['role',     ()=>!!P.role],
-  ['company',  ()=>!!P.company],
-  ['dream',    ()=>!!P.dream],
+  ['picks',    ()=>!!(P.picks&&P.picks.length)],
+  ['aim',      ()=>!!P.aimTier],
   ['industry', ()=>!!P.industry],
   ['problems', ()=>!!P.problems],
-  ['city',     ()=>!!P.citynext],
-  ['mode',     ()=>!!P.workmode],
   ['timing',   ()=>!!P.timeline]
 ];
 function boardDone(){ let n=0; BOARD_SLOTS.forEach(s2=>{ if(s2[1]()) n++; }); return n; }
@@ -1955,7 +1969,7 @@ function nameStage(){
 /* ============================ 4 · tell me about yourself ============================ */
 /* Open, on purpose. Whatever lands here gets mined. */
 function aboutStage(){
-  const {box}=turn({q:'What do you want to be doing?'});
+  const {box}=turn({q:'What job do you want, and at what companies?'});
   let answered=false, stall=null;
   const handle=async text=>{
     answered=true; clearTimeout(stall);
@@ -2020,6 +2034,128 @@ function modeStage(){
     async v=>{ P.workmode=v; renderBoard();
       await reflect(said(v.toLowerCase()));
       afterCommit(()=>go(nextAlign)); });
+}
+
+/* ═══════════ job listings, tiering, and the aim ═══════════
+   Atul's call: stop asking for an abstract role. Show the actual jobs, with the
+   company, the seniority and the money, and let them pick as many as they want.
+   Tier is per role family, never per company alone, so this reads as a map of
+   the work rather than a prestige leaderboard. */
+const TIERS={
+  design:{ Figma:'S', Apple:'S', Google:'S', Airbnb:'S', OpenAI:'S', Stripe:'S',
+    Linear:'A', Microsoft:'A', Adobe:'A', Spotify:'A', Notion:'A', Netflix:'A',
+    Shopify:'B', Vercel:'B', Atlassian:'B', Salesforce:'B', HubSpot:'B' },
+  swe:{ OpenAI:'S', Google:'S', Stripe:'S', Apple:'S', Netflix:'S',
+    Vercel:'A', Linear:'A', Microsoft:'A', Figma:'A', Airbnb:'A', Snowflake:'A', Datadog:'A',
+    Shopify:'B', Salesforce:'B', HubSpot:'B' },
+  ba:{ Stripe:'S', Google:'S', OpenAI:'S', Netflix:'S',
+    Salesforce:'A', Microsoft:'A', Snowflake:'A', Airbnb:'A', Spotify:'A',
+    Figma:'B', Shopify:'B', HubSpot:'B', Datadog:'B' }
+};
+const LISTINGS={
+  design:[
+    ['Figma','Product Designer','Mid-level · SF, hybrid','$155k - $205k'],
+    ['Airbnb','Product Designer','Mid-level · Remote, US','$150k - $195k'],
+    ['Apple','Interaction Designer','Mid-level · Cupertino','$160k - $210k'],
+    ['Linear','Product Designer','Mid-level · Remote','$140k - $180k'],
+    ['Spotify','Senior Product Designer','Senior · NYC, hybrid','$165k - $200k'],
+    ['Notion','Brand Designer','Mid-level · SF, hybrid','$135k - $175k'],
+    ['Shopify','Product Designer','Mid-level · Remote','$125k - $165k'],
+    ['Vercel','Design Engineer','Mid-level · Remote','$150k - $190k']],
+  swe:[
+    ['OpenAI','Member of Technical Staff','Mid-level · SF, onsite','$245k - $310k'],
+    ['Stripe','Full Stack Engineer','Mid-level · SF, hybrid','$180k - $230k'],
+    ['Google','Software Engineer','Mid-level · Remote, US','$170k - $220k'],
+    ['Vercel','Full Stack Engineer','Mid-level · Remote, US','$145k - $190k'],
+    ['Linear','Product Engineer','Mid-level · Remote','$150k - $195k'],
+    ['Netflix','Senior Engineer','Senior · Los Gatos','$230k - $300k'],
+    ['Datadog','Backend Engineer','Mid-level · NYC, hybrid','$150k - $190k'],
+    ['Shopify','Full Stack Engineer','Mid-level · Remote','$130k - $170k']],
+  ba:[
+    ['Stripe','Strategy and Ops Analyst','Mid-level · SF, hybrid','$125k - $160k'],
+    ['Google','Business Analyst','Mid-level · NYC, hybrid','$120k - $155k'],
+    ['Netflix','Data Analyst','Mid-level · Los Gatos','$140k - $180k'],
+    ['Salesforce','Senior Business Analyst','Senior · Chicago, hybrid','$110k - $145k'],
+    ['Snowflake','Analytics Engineer','Mid-level · Remote, US','$135k - $175k'],
+    ['Airbnb','Strategy Analyst','Mid-level · Remote, US','$130k - $170k'],
+    ['Spotify','Product Analyst','Mid-level · NYC, hybrid','$120k - $155k'],
+    ['HubSpot','Business Analyst','Mid-level · Boston','$95k - $125k']]
+};
+function tierOf(co){ return (TIERS[PKEY]||TIERS.design)[co]||null; }
+/* the ones they named in the first answer come first, already chosen */
+function listingDeck(){
+  const all=(LISTINGS[PKEY]||LISTINGS.design).slice();
+  const want=dreamList();
+  const pinned=all.filter(r=>want.indexOf(r[0])>=0);
+  const rest=all.filter(r=>want.indexOf(r[0])<0);
+  return pinned.concat(rest);
+}
+/* the aim is the tier holding most of the picks, ties resolve upward */
+function aimTier(){
+  const n={S:0,A:0,B:0};
+  P.picks.forEach(r=>{ const t=tierOf(r[0]); if(t) n[t]++; });
+  if(n.S>=n.A&&n.S>=n.B&&n.S) return 'S';
+  if(n.A>=n.B&&n.A) return 'A';
+  return n.B?'B':'A';
+}
+function listingsStage(){
+  const {box}=turn({q:'Which of these do you want to be ready for?'});
+  const deck=listingDeck();
+  let shownN=4;
+  const picks=[];
+  const w=mk('div','jobs');
+  const render=()=>{
+    w.innerHTML='';
+    deck.slice(0,shownN).forEach(r=>{
+      const [co,role,ctx,pay]=r;
+      const t=tierOf(co);
+      const c=mk('button','job'+(picks.indexOf(r)>=0?' on':''));
+      c.innerHTML='<span class="jt">'+(LOGO[co]||'')+'</span>'
+        +'<span class="jco">'+co+'</span>'
+        +(t?'<span class="jtier">'+t+' tier</span>':'')
+        +'<span class="jrole">'+role+'</span>'
+        +'<span class="jctx">'+ctx+'</span>'
+        +'<span class="jpay">'+pay+'</span>';
+      c.setAttribute('role','checkbox');
+      c.setAttribute('aria-checked',picks.indexOf(r)>=0?'true':'false');
+      c.onclick=()=>{ const i=picks.indexOf(r);
+        if(i>=0) picks.splice(i,1); else picks.push(r);
+        sfx('toggle'); render(); dock(); };
+      w.appendChild(c);
+    });
+    if(shownN<deck.length){ const m=mk('button','jmore','Show 4 more');
+      m.onclick=()=>{ shownN=Math.min(deck.length,shownN+4); sfx('tick'); render(); };
+      w.appendChild(m); }
+  };
+  const dock=()=>{
+    if(!picks.length){ dockHide(); return; }
+    dockAction('Continue with '+picks.length,async()=>{
+      P.picks=picks.slice();
+      P.dream=picks.map(r=>r[0]).filter((x,i,a)=>a.indexOf(x)===i).join(', ');
+      P.role=picks[0][1];
+      P.company=tierOf(picks[0][0])==='S'?'Big tech':'Startup';
+      renderBoard();
+      const t=aimTier(), n=picks.filter(r=>tierOf(r[0])===t).length;
+      await reflect(said(n+' of your '+picks.length+' are '+t+' tier'));
+      go(tierStage);
+    });
+  };
+  render(); box.appendChild(w);
+  enter(w.children,{y:26,blur:12,scale:.94,stagger:.05,duration:.7},2400);
+}
+function tierStage(){
+  const t=aimTier();
+  const q=t==='S'?"Looks like you're aiming for S tier. Right?"
+        :t==='A'?"So you're aiming for A tier. Is that right?"
+                :'Your picks sit at B tier. Is that right?';
+  const {box}=turn({q:q});
+  P.aimTier=t;
+  const up=t==='S'?['plus','Add a backup or two','back']:['spark','I want to aim higher','up'];
+  choices(box,[['check',"Yes, that's the aim",'yes'],up],async v=>{
+    if(v==='up'){ P.aimTier=t==='B'?'A':'S'; }
+    await reflect(said(P.aimTier+' tier it is'));
+    afterCommit(()=>go(nextAlign));
+  },{pill:true,nomorph:true});
 }
 
 /* ============================ 4 · the role ============================ */
@@ -2977,16 +3113,11 @@ const DBG_STEPS=[
   ['What you want',()=>aboutStage()],
   ['Stage',      ()=>stageStage()],
   ['Doing',      ()=>doingStage()],
-  ['Role',       ()=>roleStage()],
-  ['Company',    ()=>companyStage()],
-  ['Dream',      ()=>dreamStage()],
-  ['Push back',  ()=>probeStage()],
+  ['Listings',   ()=>listingsStage()],
+  ['Tier',       ()=>tierStage()],
   ['Industry',   ()=>industryStage()],
   ['Problems',   ()=>problemsStage()],
-  ['Cities',     ()=>citiesStage()],
-  ['Work mode',  ()=>modeStage()],
   ['Timing',     ()=>timelineStage()],
-  ['Shape',      ()=>jobtypeStage()],
   ['Why',        ()=>motivationStage()],
   ['Read back',  ()=>synthStage()],
   ['Vision',     ()=>visionStage(true)],
@@ -3004,25 +3135,21 @@ function dbgFill(upTo){
   const d=pack();
   /* the stepper has to be able to go backwards. Without this P only ever grows,
      so an earlier step shows a fuller board than it should. */
-  Object.keys(P).forEach(k=>{ P[k]=null; });
+  Object.keys(P).forEach(k=>{ P[k]= k==='picks' ? [] : null; });
   const set=(i,fn)=>{ if(upTo>i) fn(); };
   set(3,()=>P.name='Sanjay');
   set(4,()=>{ P.about='I want to be doing product design at a startup'; });
   set(5,()=>P.level='Student');
   set(6,()=>P.doing='Final year design, Mumbai');
-  set(7,()=>P.role=d.roleCards[0]);
-  set(8,()=>P.company='Big tech');
-  set(9,()=>P.dream=(DREAMS[PKEY]||DREAMS.design).slice(0,2).join(', '));
-  set(10,()=>{ P.openness='open to a smaller team'; P.probed=1; });
-  set(11,()=>P.industry='Tech and AI');
-  set(12,()=>P.problems=d.problemChips[0]);
-  set(13,()=>{ P.citynext='Mumbai, Dubai, London'; P.location='Mumbai'; });
-  set(14,()=>P.workmode='Hybrid');
-  set(15,()=>P.timeline='This year');
-  set(16,()=>P.jobtype='Full time');
-  set(17,()=>P.why='I want to prove I can do it');
-  set(21,()=>{ P.aim=d.roles[0][0]; P.role=P.aim; });
-  set(22,()=>P.linked='LinkedIn');
+  set(7,()=>{ P.picks=(LISTINGS[PKEY]||LISTINGS.design).slice(0,3);
+    P.dream=P.picks.map(r=>r[0]).join(', '); P.role=P.picks[0][1]; P.company='Big tech'; });
+  set(8,()=>P.aimTier=aimTier());
+  set(9,()=>P.industry='Tech and AI');
+  set(10,()=>P.problems=d.problemChips[0]);
+  set(11,()=>P.timeline='This year');
+  set(12,()=>P.why='I want to prove I can do it');
+  set(16,()=>{ P.aim=d.roles[0][0]; P.role=P.aim; });
+  set(17,()=>P.linked='LinkedIn');
 }
 let dbgAt=0;
 function dbgGoto(i){
@@ -3041,11 +3168,11 @@ function dbgGoto(i){
   $('aur').innerHTML=''; gsap.set('#aur',{opacity:0});
   gsap.set(['#logoPill','.tr'],{opacity:i>=2?1:0,y:0});
   if(i!==1) $('drawScreen').style.display='none';
-  document.body.classList.toggle('dark', i>=2&&i<=18);
+  document.body.classList.toggle('dark', i>=2&&i<=13);
   $('col').innerHTML='';
   dbgFill(i);
   /* the panel exists from the moment Zero starts writing things down */
-  const wide=i>=18;
+  const wide=i>=13;
   if(i>=5){
     panelBorn=true; boardLive=true;
     gsap.set('.right',{width:wide?'56%':'40%',opacity:1,x:0});
@@ -3054,13 +3181,13 @@ function dbgGoto(i){
     const sc=$('scroll'); sc.className='scroll ctr'; sc.innerHTML='';
     const vb=mk('div','vb'); vb.id='vb'; vb.innerHTML=boardHTML(); sc.appendChild(vb);
     SENTENCES().forEach(x=>{ if(x.ready){ shown[x.id]=1; keys[x.id]=x.key; } });
-    meterRetired=i>19; boardRewards=i>19;
+    meterRetired=i>14; boardRewards=i>14;
     renderMeter();
   } else {
     panelBorn=false; boardLive=false;
     gsap.set('.right',{width:0,opacity:0}); shiftLeft('0px');
   }
-  setPhase(i<19?0:(i<22?1:(i<24?2:(i<25?3:4))));
+  setPhase(i<14?0:(i<17?1:(i<19?2:(i<20?3:4))));
   const lbl=$('dbgStep'); if(lbl) lbl.textContent=(i+1)+'. '+DBG_STEPS[i][0];
   const pv=$('dbgPrev'), nx=$('dbgNext');
   if(pv) pv.disabled=i<=0;
