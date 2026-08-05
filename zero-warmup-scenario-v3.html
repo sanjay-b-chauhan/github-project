@@ -1269,9 +1269,16 @@ td.cell-active::after{border-color:var(--accent)}
    is what dragged the narrow layout 260px off-screen: the stylesheet said
    none, the inline style still said translate(-50%,-50%). Opacity is pinned
    for the same reason, so nothing is lost by overriding the tween here. */
-.wu-prog{position:absolute;left:50%;top:50%;
-  transform:translate(-50%,-50%)!important;
-  justify-self:auto;width:var(--maxw);max-width:none;margin:0!important;gap:14px}
+.wu-prog{position:absolute;top:50%;
+  /* The reading column is --maxw wide and centred, but the CHAT starts 50px
+     into it because the avatar sits in a gutter to the left. The bar tracks
+     the chat, so it starts where the bubbles start and ends where they end.
+     That puts it 25px right of the screen centre - the half-gutter - which is
+     the cost of aligning to the conversation rather than to the window. */
+  left:calc(50% - (var(--maxw) / 2) + 50px);
+  width:calc(var(--maxw) - 50px);
+  transform:translateY(-50%)!important;
+  justify-self:auto;max-width:none;margin:0!important;gap:14px}
 @media(max-width:1200px){
   .wu-prog{position:static;left:auto;top:auto;transform:none!important;
     justify-self:center;width:100%;max-width:520px}
