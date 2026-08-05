@@ -1273,15 +1273,25 @@ td.cell-active::after{border-color:var(--accent)}
 .app.serif .beat .btext{
   font-family:var(--serif)!important;
   font-size:clamp(19px,2.5vw,23px)!important;
-  line-height:1.5!important;font-weight:500!important;
+  line-height:1.5!important;font-weight:400!important;
   text-align:left;padding-top:4px!important;
   background:none!important;border:none!important;max-width:none;width:auto}
+
+/* THE SERIF HAS ONE CUT. The @font-face embeds a single static file - STK
+   Bureau Serif Medium - and declares it across 400-600. Anything in that band
+   renders the same book weight, and the <b> emphasis in the copy falls
+   OUTSIDE it, so the browser was faking bold: smeared stems, no real bold
+   cut. It is a book face, so it is set as one, and synthesis is off. */
+.app.serif{font-synthesis:none;-webkit-font-synthesis:none}
+.app.serif .beat .btext b,.app.serif .beat .btext strong,
+.app.serif .resp .r-text b,.app.serif .resp .r-text strong{
+  font-weight:400!important;font-synthesis:none}
 .app.serif .resp .r-text{font-family:var(--serif)!important;
   font-size:clamp(19px,2.5vw,23px)!important;line-height:1.5!important;
   background:none!important;border:none!important;padding:0!important}
 
 /* v9's options: 15px, 14px radius, 1.5px border, left-aligned, 540 cap */
-.app.serif .opts{max-width:540px;margin-left:0!important;margin-right:0}
+.app.serif .opts{max-width:540px}
 .app.serif .opt{border:1.5px solid var(--line)!important;border-radius:14px!important;
   padding:15px 18px!important;font-size:15px!important;font-weight:500!important;
   line-height:1.5!important;text-align:left!important;background:var(--soft)!important}
