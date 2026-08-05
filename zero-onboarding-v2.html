@@ -602,6 +602,19 @@ body.dark .tlrail{ background:rgba(255,255,255,.15); }
 
 /* ONE option component. Rectangle with the icon centred over the label by
    default; the same thing laid flat as a pill when the answer is just a yes. */
+/* the pace: two numbers that matter, and a slider that moves them */
+.pace{ width:100%; max-width:520px; margin:0 auto; background:var(--card); border:1px solid var(--line);
+  border-radius:26px; padding:24px 24px 18px;
+  box-shadow:0 1px 2px rgba(0,0,0,.04), 0 18px 40px rgba(0,0,0,.06); }
+.pacerow{ display:flex; align-items:center; gap:12px; }
+.pacev{ flex:1; min-width:0; text-align:center; }
+.pacen{ font-size:clamp(30px,3vw,42px); font-weight:600; letter-spacing:-.05em; line-height:1;
+  font-variant-numeric:tabular-nums; }
+.pacel{ margin-top:8px; font-size:12px; color:var(--tx-3); }
+.pacear{ width:20px; height:20px; flex-shrink:0; color:var(--tx-4); }
+.pacesl{ margin-top:22px; }
+.pacesl input[type=range]{ width:100%; height:24px; accent-color:var(--ink); cursor:pointer; }
+.paceends{ margin-top:2px; display:flex; justify-content:space-between; font-size:11.5px; color:var(--tx-4); }
 .opts2{ display:flex; flex-wrap:wrap; gap:12px; justify-content:center; max-width:730px; margin:0 auto; }
 .opt{ position:relative; flex:0 0 auto; min-width:154px; max-width:212px;
   padding:22px 20px 20px; border-radius:22px; background:var(--card); border:1px solid var(--line);
@@ -1450,6 +1463,8 @@ function bornPanel(){
 }
 /* the logo, the dock and the live transcript all move with the panel */
 function shiftLeft(v){
+  /* below 1180 the panel is display:none, so nothing should shift over for it */
+  if(innerWidth&&innerWidth<=1180) v='0px';
   $('top').style.paddingLeft='calc('+v+' + 26px)';
   $('dock').style.paddingLeft='calc('+v+' + 24px)';
   $('dtr').style.paddingLeft='calc('+v+' + 24px)';
