@@ -929,9 +929,15 @@ function playWelcome(){
   if(!welEl){ welEl=new Audio(WELCOME_SRC); welEl.preload='auto'; }
   const a=welEl;
   try{ a.pause(); a.currentTime=0; }catch(e){}
-  const pr=a.play(); if(pr&&pr.catch) pr.catch(()=>{});
+  let started=false;
+  const pr=a.play();
+  if(pr&&pr.then) pr.then(()=>{started=true;}).catch(()=>{});
   return new Promise(res=>{
     let i=0, done=false;
+    /* autoplay refused: fall back to the timed read so the welcome is never blank */
+    setTimeout(()=>{ if(done||started||a.currentTime>0) return;
+      (async()=>{ for(const w of WELCOME){ if(g!==gen||done) return; line(w.t); await wait(1700); }
+        if(!done){ done=true; res(); } })(); },420);
     const fin=()=>{ if(done)return; done=true; try{ a.pause(); }catch(e){} res(); };
     const tick=()=>{
       if(done) return;
@@ -2869,7 +2875,9 @@ function linkStage(kind){
 function calibrateStage(){
   setPhase(2);
   clearTurn();
+  const gC=gen;
   setTimeout(async()=>{
+    if(gC!==gen) return;            /* the stepper moved on; do not paint over it */
     line('Before I build this, one thing.');
     await wait(1900);
     const {box}=turn({q:'Share your LinkedIn or a resume?'});
@@ -3333,11 +3341,12 @@ function dbgGoto(i){
     const vb=mk('div','vb'); vb.id='vb'; vb.innerHTML=boardHTML(); sc.appendChild(vb);
     SENTENCES().forEach(x=>{ if(x.ready){ shown[x.id]=1; keys[x.id]=x.key; } });
     meterRetired=i>14; boardRewards=i>14;
-    renderMeter();
   } else {
     panelBorn=false; boardLive=false;
     gsap.set('.right',{width:0,opacity:0}); shiftLeft('0px');
   }
+  meterRetired=i>14; boardRewards=i>14;
+  renderMeter();                    /* every step, not only the ones with a panel */
   setPhase(i<14?0:(i<16?1:(i<18?2:(i<19?3:4))));
   const lbl=$('dbgStep'); if(lbl) lbl.textContent=(i+1)+'. '+DBG_STEPS[i][0];
   const pv=$('dbgPrev'), nx=$('dbgNext');
