@@ -638,6 +638,9 @@ body.dark .tlrail{ background:rgba(255,255,255,.15); }
 .tlc .ct{ font-size:15.5px; font-weight:600; letter-spacing:-.03em; }
 .tlc .cw{ margin-top:4px; font-size:11.5px; color:var(--tx-3); }
 .cwhy{ margin-top:8px; font-size:12px; line-height:1.45; color:var(--tx-3); text-align:left; }
+/* the receipt: what this week turns into. Nothing here is practice work. */
+.cinto{ margin-top:9px; padding-top:9px; border-top:1px solid var(--line-2);
+  font-size:12px; line-height:1.4; color:var(--tx-2); text-align:left; }
 .tls{ display:flex; align-items:flex-start; gap:10px; padding:9px 0; text-align:left;
   font-size:12.5px; line-height:1.5; color:var(--tx-2); }
 .tls + .tls{ border-top:1px solid var(--line-2); }
@@ -2926,6 +2929,7 @@ function curriculumCard(p,i){
   c2.appendChild(mk('div','ct',p.short));
   c2.appendChild(mk('div','cw',p.weeks+' weeks · '+p.steps.length+' scenarios'));
   if(WHY_POS[i]) c2.appendChild(mk('div','cwhy',WHY_POS[i]));
+  c2.appendChild(mk('div','cinto','\u2192 becomes &ldquo;'+p.short+'&rdquo; in your portfolio'));
   const body=mk('div'); body.style.marginTop='12px';
   p.steps.forEach(st=>{ const r=mk('div','tls');
     r.appendChild(mk('span','sq')); r.appendChild(mk('span','tx',st)); body.appendChild(r); });
@@ -2941,8 +2945,8 @@ function curriculumEnd(){
   const c2=mk('div','tlc end');
   c2.appendChild(mk('div','nd',I.check));
   const tr=mk('div','tro'); tr.innerHTML=CI.trophy||''; c2.appendChild(tr);
-  c2.appendChild(mk('div','ce','A portfolio that gets you the interview.'));
-  c2.appendChild(mk('div','cw','And the proof to back every line of it.'));
+  c2.appendChild(mk('div','ce','Every project above is now a portfolio piece.'));
+  c2.appendChild(mk('div','cw','Nothing you build here is practice work.'));
   return c2;
 }
 function buildCurriculum(s2){
@@ -3025,7 +3029,9 @@ async function roadmapStage(){
   const d=pack();
   const total=d.projects.reduce((a,p)=>a+p.weeks,0);
   line('Here is how you build it.');
-  await wait(1400);
+  await wait(1500);
+  line('Every project here becomes a portfolio piece.');
+  await wait(1100);
   await swapPanel('Your curriculum',buildCurriculum,false,true);
   await wait(700);
   await beat('You start by learning the job, not the theory.',()=>addCurriculumCard(0),2200);
