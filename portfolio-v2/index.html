@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sanjay Chauhan | Product Designer</title>
+<meta name="description" content="Sanjay Chauhan, senior product designer at ZERO. Designing the space between people and intelligent systems. Mumbai.">
+<meta property="og:title" content="Sanjay Chauhan | Product Designer">
+<meta property="og:description" content="Designing the space between people and machines.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ==============================================================
+   SANJAY CHAUHAN, DIRECTION TWO
+   Calm, premium, futuristic. The subject is the relationship
+   between a person and an intelligent system, so the page is
+   built around one living volumetric field that both share.
+
+   Dials: VARIANCE 7 / MOTION 7 / DENSITY 3
+   Colour rule: ONE ui accent, --warm. The cool teal exists only
+     inside the shader and the photography, never as interface.
+   Shape rule: surfaces and media are 20px. Buttons are pills.
+     Nothing else rounds. That is the whole system.
+   Theme rule: one theme, dark, page wide. No section inverts.
+   ============================================================== */
+
+:root{
+  --ink:    #060809;
+  --paper:  #E9EDEF;
+  --mute:   #949DA1;          /* passes AA on --ink */
+  --warm:   #EFC28F;          /* the one interface accent */
+  --line:   rgba(233,237,239,.13);
+  --line-2: rgba(233,237,239,.06);
+  --glass:  rgba(233,237,239,.035);
+
+  --display:'Sora', system-ui, sans-serif;
+  --body:   'Instrument Sans', system-ui, sans-serif;
+
+  --ease:   cubic-bezier(.16,1,.3,1);
+  --r:      20px;             /* the one surface radius */
+  --gutter: clamp(20px, 5vw, 96px);
+  --maxw:   1440px;
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--ink); color:var(--paper);
+  font-family:var(--body); line-height:1.65;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+img{ max-width:100%; display:block; }
+a{ color:inherit; text-decoration:none; }
+p{ margin:0; }
+h1,h2,h3,h4{ font-family:var(--display); margin:0; font-weight:500; letter-spacing:-.03em; line-height:1.06; }
+::selection{ background:var(--warm); color:var(--ink); }
+a:focus-visible,button:focus-visible{ outline:2px solid var(--warm); outline-offset:4px; }
+
+.wrap{ max-width:var(--maxw); margin:0 auto; padding-inline:var(--gutter); }
+
+/* ---------------- the field ---------------- */
+#field{
+  position:fixed; inset:0; width:100%; height:100%;
+  z-index:0; display:block; pointer-events:none;
+}
+/* fallback when WebGL2 is unavailable */
+.field-fallback{
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(70% 50% at 22% 38%, rgba(239,194,143,.13), transparent 62%),
+    radial-gradient(65% 55% at 82% 66%, rgba(76,138,128,.16), transparent 66%),
+    var(--ink);
+}
+html:not(.no-gl) .field-fallback{ display:none; }
+html.no-gl #field{ display:none; }
+main, .nav{ position:relative; z-index:1; }
+
+/* a soft scrim so type always wins over the field */
+.scrim{
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:linear-gradient(180deg, rgba(6,8,9,.34) 0%, rgba(6,8,9,.12) 26%, rgba(6,8,9,.46) 62%, rgba(6,8,9,.88) 100%);
+}
+
+/* ---------------- nav ---------------- */
+.nav{
+  position:fixed; inset:0 0 auto 0; z-index:60; height:72px;
+  display:flex; align-items:center;
+  transition:background .5s var(--ease), backdrop-filter .5s var(--ease), border-color .5s var(--ease);
+  border-bottom:1px solid transparent;
+}
+.nav.solid{
+  background:rgba(6,8,9,.55); backdrop-filter:blur(20px) saturate(150%);
+  border-bottom-color:var(--line-2);
+}
+.nav .wrap{ display:flex; align-items:center; justify-content:space-between; width:100%; gap:24px; }
+.brand{ display:flex; align-items:center; gap:11px; font-family:var(--display); font-weight:600; font-size:15.5px; letter-spacing:-.02em; white-space:nowrap; }
+.brand .orb{
+  width:15px; height:15px; border-radius:50%; flex:none;
+  background:radial-gradient(circle at 32% 28%, #FBE6CB, var(--warm) 45%, #7A5A34 100%);
+  box-shadow:0 0 18px rgba(239,194,143,.42);
+}
+.navlinks{ display:flex; align-items:center; gap:clamp(18px,2.4vw,36px); }
+.navlinks a{ font-size:14px; color:var(--mute); transition:color .3s var(--ease); white-space:nowrap; }
+.navlinks a:hover{ color:var(--paper); }
+.nav-cta{
+  font-size:14px; font-weight:500; color:var(--ink); background:var(--paper);
+  padding:10px 20px; border-radius:999px; white-space:nowrap;
+  transition:background .3s var(--ease), color .3s var(--ease);
+}
+.nav-cta:hover{ background:var(--warm); }
+@media (max-width:840px){ .navlinks .hide-sm{ display:none; } }
+
+/* ---------------- hero ---------------- */
+.hero{
+  min-height:100dvh; display:flex; align-items:center;
+  padding-top:104px; padding-bottom:clamp(48px,8vh,96px);
+}
+.hero h1{
+  font-size:clamp(2.4rem,6.1vw,5.9rem); font-weight:300;
+  letter-spacing:-.04em; line-height:1.03; max-width:17ch;
+}
+.hero h1 em{ font-style:normal; color:var(--warm); }
+.hero-lead{
+  margin-top:clamp(24px,3vw,36px); max-width:46ch;
+  font-size:clamp(15.5px,1.35vw,18.5px); color:var(--mute);
+}
+.hero-lead b{ color:var(--paper); font-weight:500; }
+.hero-cta{ display:flex; flex-wrap:wrap; gap:12px; margin-top:clamp(30px,4vw,46px); }
+.btn{
+  display:inline-flex; align-items:center; gap:10px; border-radius:999px;
+  font-family:var(--body); font-size:14.5px; font-weight:500;
+  padding:14px 26px; white-space:nowrap; cursor:pointer; border:1px solid transparent;
+  transition:background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease), transform .2s var(--ease);
+}
+.btn-primary{ background:var(--warm); color:#231A10; }
+.btn-primary:hover{ background:var(--paper); }
+.btn-ghost{ border-color:var(--line); color:var(--paper); }
+.btn-ghost:hover{ border-color:var(--paper); background:var(--paper); color:var(--ink); }
+.btn:active{ transform:scale(.975); }
+.btn svg{ width:15px; height:15px; flex:none; transition:transform .35s var(--ease); }
+.btn:hover svg{ transform:translate(3px,-3px); }
+
+/* ---------------- shared section furniture ---------------- */
+.sec{ padding:clamp(80px,11vw,170px) 0; }
+.tag{
+  font-family:var(--body); font-size:12.5px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--warm); font-weight:500;
+  margin-bottom:clamp(18px,2.2vw,28px);
+}
+.h2{ font-size:clamp(1.9rem,4.3vw,3.7rem); font-weight:400; letter-spacing:-.035em; max-width:20ch; }
+.lead{ color:var(--mute); font-size:clamp(15.5px,1.3vw,18px); max-width:56ch; margin-top:22px; }
+
+/* ---------------- ZERO case study ---------------- */
+.case{ border-top:1px solid var(--line-2); }
+.case-meta{
+  display:flex; flex-wrap:wrap; gap:10px 30px; align-items:baseline;
+  padding-bottom:clamp(24px,3vw,40px);
+}
+.case-name{ font-family:var(--display); font-weight:600; font-size:clamp(1.3rem,2.3vw,1.9rem); letter-spacing:-.03em; }
+.case-meta span{ color:var(--mute); font-size:14px; }
+.case h2{ font-size:clamp(2rem,4.9vw,4.3rem); font-weight:300; letter-spacing:-.04em; max-width:19ch; line-height:1.05; }
+.case h2 em{ font-style:normal; color:var(--warm); }
+.case-intro{ color:var(--mute); font-size:clamp(16px,1.4vw,19px); max-width:60ch; margin-top:clamp(24px,3vw,36px); }
+
+.media{
+  border-radius:var(--r); overflow:hidden; margin-top:clamp(36px,5vw,72px);
+  border:1px solid var(--line-2); background:var(--glass);
+}
+.media img{ width:100%; height:auto; }
+.media figcaption{
+  padding:16px 22px; color:var(--mute); font-size:13.5px;
+  border-top:1px solid var(--line-2);
+}
+
+.beat{ margin-top:clamp(52px,7vw,110px); display:grid; grid-template-columns:.72fr 1.28fr; gap:clamp(24px,4vw,72px); align-items:start; }
+.beat h3{ font-size:clamp(1.25rem,2.1vw,1.85rem); font-weight:500; letter-spacing:-.03em; }
+.beat-body{ display:grid; gap:18px; }
+.beat-body p{ color:var(--mute); font-size:clamp(15.5px,1.3vw,17.5px); max-width:58ch; }
+.beat-body p strong{ color:var(--paper); font-weight:500; }
+@media (max-width:900px){ .beat{ grid-template-columns:1fr; gap:16px; } }
+
+/* the nine steps, as a quiet rail rather than a numbered list */
+.steps{ display:flex; flex-wrap:wrap; gap:8px; margin-top:26px; }
+.steps span{
+  border:1px solid var(--line); border-radius:999px;
+  padding:8px 16px; font-size:13.5px; color:var(--paper);
+}
+.steps span:first-child{ border-color:var(--warm); color:var(--warm); }
+
+.surfaces{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line-2); border:1px solid var(--line-2); border-radius:var(--r); overflow:hidden; margin-top:clamp(30px,4vw,52px); }
+.surface{ background:var(--ink); padding:clamp(22px,2.6vw,34px); display:grid; gap:10px; align-content:start; min-height:170px; }
+.surface h4{ font-size:16.5px; font-weight:500; letter-spacing:-.02em; }
+.surface p{ color:var(--mute); font-size:14px; }
+@media (max-width:860px){ .surfaces{ grid-template-columns:1fr; } }
+
+/* ---------------- selected work ---------------- */
+.grid{ display:grid; grid-template-columns:1fr 1fr; gap:clamp(20px,3vw,52px); margin-top:clamp(40px,5vw,72px); }
+.proj{ display:grid; gap:18px; }
+.proj:nth-child(even){ margin-top:clamp(0px,5vw,88px); }  /* offset rhythm, not a flat grid */
+.proj-media{ border-radius:var(--r); overflow:hidden; border:1px solid var(--line-2); aspect-ratio:3/2; }
+.proj-media img{ width:100%; height:100%; object-fit:cover; transition:transform .9s var(--ease); }
+.proj:hover .proj-media img{ transform:scale(1.04); }
+.proj h3{ font-size:clamp(1.15rem,1.85vw,1.6rem); font-weight:500; letter-spacing:-.03em; }
+.proj .sector{ font-size:13px; color:var(--warm); letter-spacing:.05em; }
+.proj p{ color:var(--mute); font-size:15px; max-width:44ch; }
+.also{ margin-top:clamp(44px,5vw,72px); padding-top:26px; border-top:1px solid var(--line-2); color:var(--mute); font-size:15.5px; max-width:62ch; }
+.also b{ color:var(--paper); font-weight:500; }
+@media (max-width:860px){ .grid{ grid-template-columns:1fr; } .proj:nth-child(even){ margin-top:0; } }
+
+/* ---------------- practice ---------------- */
+.rows{ margin-top:clamp(36px,4.5vw,64px); }
+.row{
+  display:grid; grid-template-columns:.5fr 1.5fr; gap:clamp(20px,4vw,64px);
+  padding:clamp(24px,3vw,38px) 0; border-top:1px solid var(--line-2); align-items:baseline;
+}
+.row h3{ font-size:clamp(1.05rem,1.6vw,1.35rem); font-weight:500; letter-spacing:-.02em; color:var(--warm); }
+.row p{ color:var(--mute); font-size:clamp(15px,1.3vw,17px); max-width:58ch; }
+@media (max-width:860px){ .row{ grid-template-columns:1fr; gap:10px; } }
+
+.toolrow{ display:flex; flex-wrap:wrap; align-items:center; gap:clamp(24px,4vw,54px); margin-top:clamp(40px,5vw,64px); padding-top:34px; border-top:1px solid var(--line-2); }
+.tool{
+  width:26px; height:26px; background:var(--paper); opacity:.42;
+  -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+  -webkit-mask-position:center; mask-position:center;
+  -webkit-mask-size:contain; mask-size:contain;
+  transition:opacity .35s var(--ease), background .35s var(--ease), transform .35s var(--ease);
+}
+.tool:hover{ opacity:1; background:var(--warm); transform:translateY(-3px); }
+
+/* ---------------- about ---------------- */
+.about-grid{ display:grid; grid-template-columns:1fr 1fr; gap:clamp(30px,6vw,110px); align-items:start; }
+.about-copy{ display:grid; gap:20px; }
+.about-copy p{ color:var(--mute); font-size:clamp(15.5px,1.32vw,17.5px); max-width:54ch; }
+.about-copy p strong{ color:var(--paper); font-weight:500; }
+.cv{ margin-top:clamp(40px,5vw,70px); }
+.cv-row{ display:grid; grid-template-columns:1.3fr 1fr auto; gap:20px; align-items:baseline; padding:17px 0; border-bottom:1px solid var(--line-2); }
+.cv-row:first-child{ border-top:1px solid var(--line); }
+.cv-role{ font-family:var(--display); font-weight:500; font-size:clamp(15px,1.4vw,18px); letter-spacing:-.02em; }
+.cv-org{ color:var(--mute); font-size:14.5px; }
+.cv-yr{ color:var(--warm); font-size:13.5px; white-space:nowrap; }
+@media (max-width:860px){ .about-grid{ grid-template-columns:1fr; } .cv-row{ grid-template-columns:1fr auto; } .cv-org{ grid-column:1/-1; } }
+
+/* ---------------- contact ---------------- */
+.contact{ padding:clamp(90px,13vw,190px) 0 clamp(46px,6vw,80px); border-top:1px solid var(--line-2); }
+.contact h2{ font-size:clamp(2.2rem,6.4vw,5.6rem); font-weight:300; letter-spacing:-.04em; max-width:15ch; line-height:1.04; }
+.contact h2 em{ font-style:normal; color:var(--warm); }
+.mailto{
+  display:inline-block; margin-top:clamp(30px,4vw,48px);
+  font-family:var(--display); font-weight:500; letter-spacing:-.025em;
+  font-size:clamp(1.05rem,2.5vw,2.1rem); position:relative; padding-bottom:8px;
+}
+.mailto::after{
+  content:""; position:absolute; left:0; bottom:0; height:1.5px; width:100%;
+  background:var(--warm); transform:scaleX(0); transform-origin:left;
+  transition:transform .6s var(--ease);
+}
+.mailto:hover::after{ transform:scaleX(1); }
+.socials{ display:flex; flex-wrap:wrap; gap:clamp(20px,3vw,42px); margin-top:clamp(38px,5vw,60px); }
+.socials a{ color:var(--mute); font-size:15px; transition:color .3s var(--ease); }
+.socials a:hover{ color:var(--warm); }
+.foot{ margin-top:clamp(52px,7vw,96px); padding-top:24px; border-top:1px solid var(--line-2); display:flex; flex-wrap:wrap; gap:16px; justify-content:space-between; color:var(--mute); font-size:13px; }
+
+/* ---------------- reveals ----------------
+   Motion is opt in. Without .anim on the root every element sits
+   at its natural visible state, so a stalled ticker or a dead
+   script can never hide content. */
+.anim .rise{ opacity:0; transform:translateY(26px); transition:opacity .9s var(--ease), transform .9s var(--ease); }
+.anim .rise.is-in{ opacity:1; transform:none; }
+.anim .hero.ready .hero-lead{ transition-delay:.18s; }
+.anim .hero.ready .hero-cta{  transition-delay:.28s; }
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{ animation-duration:.001ms !important; transition-duration:.001ms !important; }
+  .rise{ opacity:1 !important; transform:none !important; }
+}
+</style>
+<script>
+  /* motion is opt in, see the reveals note above */
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches){
+    document.documentElement.classList.add('anim');
+  }
+</script>
+</head>
+<body>
+
+<canvas id="field" aria-hidden="true"></canvas>
+<div class="field-fallback" aria-hidden="true"></div>
+<div class="scrim" aria-hidden="true"></div>
+
+<nav class="nav" id="nav">
+  <div class="wrap">
+    <a href="#top" class="brand" aria-label="Sanjay Chauhan, home">
+      <span class="orb" aria-hidden="true"></span> Sanjay Chauhan
+    </a>
+    <div class="navlinks">
+      <a href="#zero">ZERO</a>
+      <a href="#work">Work</a>
+      <a href="#practice" class="hide-sm">Practice</a>
+      <a href="#about" class="hide-sm">About</a>
+      <a href="#contact" class="nav-cta">Get in touch</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <h1 class="rise">Designing the space between people and <em>machines</em>.</h1>
+    <p class="hero-lead rise">
+      <b>Sanjay Chauhan.</b> Senior product designer at ZERO, working in Mumbai.
+      Engineer turned designer, which mostly means I care whether the thing can be built.
+    </p>
+    <div class="hero-cta rise">
+      <a href="#zero" class="btn btn-primary">
+        See the work
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 12L12 4M12 4H5.5M12 4v6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </a>
+      <a href="#contact" class="btn btn-ghost">Get in touch</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============ ZERO, THE FLAGSHIP ============ -->
+<section class="sec case" id="zero" data-mix="0.15">
+  <div class="wrap">
+
+    <div class="case-meta rise">
+      <span class="case-name">ZERO</span>
+      <span>Senior Product Designer</span>
+      <span>18 months, ongoing</span>
+    </div>
+
+    <h2 class="rise">An AI coworker that sits <em>beside</em> you, not above you.</h2>
+    <p class="case-intro rise">
+      ZERO is an AI-native simulation platform. People do real work inside real job
+      scenarios with an AI coworker next to them, build a portfolio out of that work,
+      and get hired on the proof. Learners never pay. Recruiters pay only when they hire.
+    </p>
+
+    <figure class="media rise">
+      <img src="img/zero-hero.jpg" alt="A warm organic field and a cool structured lattice meeting as equals" width="1500" height="844" loading="lazy">
+      <figcaption>The whole product argues one thing: the person and the system are peers.</figcaption>
+    </figure>
+
+    <div class="beat rise">
+      <h3>The problem</h3>
+      <div class="beat-body">
+        <p>Hiring asks for experience. Education hands out certificates. Nothing in between lets someone prove they can actually do the job.</p>
+        <p>Every attempt to close that gap becomes a course, and a course produces a grade, and <strong>a grade proves nothing to a hiring manager</strong>. The output had to be evidence of real work, not a score.</p>
+      </div>
+    </div>
+
+    <div class="beat rise">
+      <h3>The thesis</h3>
+      <div class="beat-body">
+        <p>AI in most learning products sits above the learner and marks the work. Ours sits next to them. It pushes back while the work is still being made, not after it is handed in, and it assesses the final piece against the rubric a real hiring loop would use.</p>
+        <p><strong>That single decision set the rules for every screen.</strong> The coworker never takes the centre of the room. It never speaks in a modal. It never blocks the work. It shares the surface and waits its turn, the way a good colleague does.</p>
+      </div>
+    </div>
+
+    <div class="beat rise">
+      <h3>The loop</h3>
+      <div class="beat-body">
+        <p>Simulation, work, feedback, improvement, portfolio, interview, hired. Every scenario runs the same nine steps, so the shape becomes familiar and the difficulty can come from the work instead of the interface.</p>
+        <div class="steps">
+          <span>Brief</span><span>Goals</span><span>Audience</span><span>Strategy</span>
+          <span>Content</span><span>Build</span><span>Dashboard</span><span>Submission</span><span>Review</span>
+        </div>
+      </div>
+    </div>
+
+    <figure class="media rise">
+      <img src="img/zero-loop.jpg" alt="A continuous luminous loop of warm light tracing a dark form" width="1500" height="1000" loading="lazy">
+      <figcaption>One loop, repeated until the portfolio is the proof.</figcaption>
+    </figure>
+
+    <div class="beat rise">
+      <h3>What I designed</h3>
+      <div class="beat-body">
+        <p>I own the learner side end to end, from the first thirty seconds to the moment a scenario is signed off.</p>
+      </div>
+    </div>
+
+    <div class="surfaces rise">
+      <div class="surface"><h4>Onboarding</h4><p>Voice first. You talk or type, and the answers assemble a vision board as you go, so setup produces something instead of asking for something.</p></div>
+      <div class="surface"><h4>The warm up</h4><p>A short read of where you actually are before the real scenario starts. Green means verified, never encouragement.</p></div>
+      <div class="surface"><h4>The workspace</h4><p>Staged task flow with the brief on the left, your work in the middle and the coworker in conversation. The room does not rearrange itself under you.</p></div>
+      <div class="surface"><h4>The feedback loop</h4><p>Findings arrive one at a time, in the chat, tied to the requirement they came from. You read them the way you would read a colleague's comments.</p></div>
+      <div class="surface"><h4>Journey and XP</h4><p>Progress that names what earned it. Never a bare number, always "what you did, and what it was worth".</p></div>
+      <div class="surface"><h4>Review and portfolio</h4><p>The performance review at the end, and the portfolio the whole loop exists to produce.</p></div>
+    </div>
+
+    <div class="beat rise">
+      <h3>The hard parts</h3>
+      <div class="beat-body">
+        <p><strong>Feedback that teaches instead of scores.</strong> A list of misses is easy to build and useless to learn from. Findings surface one at a time, each tied to the requirement it belongs to, with the reasoning attached, so the next attempt is informed rather than guessed.</p>
+        <p><strong>Progress without a points game.</strong> The moment a number floats free of its cause, people optimise the number. Every award says what earned it, so the signal stays attached to the behaviour.</p>
+        <p><strong>Nine steps that do not read as a form.</strong> Structure has to be felt as support, not as bureaucracy. The stages carry state and context so the learner is never asked to remember what the interface already knows.</p>
+      </div>
+    </div>
+
+    <figure class="media rise">
+      <img src="img/zero-stages.jpg" alt="Nine soft luminous panels standing in a quiet row" width="1500" height="1000" loading="lazy">
+      <figcaption>Nine stages, one shape, repeated until it stops needing explanation.</figcaption>
+    </figure>
+
+  </div>
+</section>
+
+<!-- ============ SELECTED WORK ============ -->
+<section class="sec" id="work" data-mix="0.85">
+  <div class="wrap">
+    <p class="tag rise">mere kaam</p>
+    <h2 class="h2 rise">Before this, five years of shipping for other people.</h2>
+    <p class="lead rise">Luxury fashion, marketplaces at scale, cars and floor robots. Different rooms, same job: make the complicated thing feel obvious.</p>
+
+    <div class="grid">
+      <a class="proj rise" href="#contact">
+        <div class="proj-media"><img src="img/w-manishmalhotra.jpg" alt="Draped silk in deep shadow with a warm rim light" loading="lazy" width="1500" height="1000"></div>
+        <span class="sector">Luxury fashion</span>
+        <h3>Manish Malhotra</h3>
+        <p>Couture on a screen. Rebuilt the shopping path so the clothes lead and the interface gets out of the way.</p>
+      </a>
+      <a class="proj rise" href="#contact">
+        <div class="proj-media"><img src="img/w-limeroad.jpg" alt="Translucent planes layered in deep perspective" loading="lazy" width="1500" height="1000"></div>
+        <span class="sector">Commerce at scale</span>
+        <h3>LimeRoad</h3>
+        <p>A catalogue that never stops growing. Restructured discovery so scale stopped reading as clutter.</p>
+      </a>
+      <a class="proj rise" href="#contact">
+        <div class="proj-media"><img src="img/w-mgmotors.jpg" alt="A sculpted car body curve with a long warm reflection" loading="lazy" width="1500" height="1000"></div>
+        <span class="sector">Automotive</span>
+        <h3>MG Motors</h3>
+        <p>The showroom moved online. Rebuilt the digital experience around the decision people are actually making.</p>
+      </a>
+      <a class="proj rise" href="#contact">
+        <div class="proj-media"><img src="img/w-peppermint.jpg" alt="A precision machined autonomous machine with a warm sensor glow" loading="lazy" width="1500" height="1000"></div>
+        <span class="sector">Robotics</span>
+        <h3>Peppermint Robotics</h3>
+        <p>Industrial robots that people have to operate at 6am. Interfaces built for gloves, noise and no training.</p>
+      </a>
+    </div>
+
+    <p class="also rise">
+      Also <b>Unthread</b>, a commerce platform designed as a system rather than a set of screens,
+      <b>Okno Modhomes</b>, configurable housing made legible to buyers, and <b>Dohtakkeh</b>,
+      where the identity and the storefront were built as one piece. Full case studies on request.
+    </p>
+  </div>
+</section>
+
+<!-- ============ PRACTICE ============ -->
+<section class="sec" id="practice" data-mix="1">
+  <div class="wrap">
+    <h2 class="h2 rise">Working next to the machine.</h2>
+    <p class="lead rise">The same idea I design at ZERO is the one I work by. Not the tool list, which everybody has now. What changed is how much gets tested before anyone commits to it.</p>
+
+    <div class="rows">
+      <div class="row rise"><h3>Forty directions, not four</h3><p>Exploration used to be rationed by how fast I could draw. The bottleneck is taste now, which is the right bottleneck to have.</p></div>
+      <div class="row rise"><h3>A week of synthesis in a morning</h3><p>Reading, clustering, first pass themes. I still read the raw transcripts, because that is where the surprises are.</p></div>
+      <div class="row rise"><h3>Prototypes that run</h3><p>Working builds instead of clickable rectangles, so a usability test finds real problems rather than prototype problems.</p></div>
+      <div class="row rise"><h3>The judgment is still the job</h3><p>AI is fast at plausible. Knowing which plausible thing is right is the part you hire a designer for.</p></div>
+    </div>
+
+    <div class="toolrow rise" id="toolrow" role="list" aria-label="Tools"></div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section class="sec" id="about" data-mix="0.2">
+  <div class="wrap">
+    <div class="about-grid">
+      <div>
+        <p class="tag rise">mein kaun</p>
+        <h2 class="h2 rise">I got here sideways.</h2>
+      </div>
+      <div class="about-copy">
+        <p class="rise">I started as a graphic designer because I liked making things look right. My engineering degree kept interrupting with a different question: <strong>does it hold up?</strong></p>
+        <p class="rise">Those two arguments turned into a career. Five years in, over a hundred brands across commerce, fintech, luxury and robotics, and the pattern never changes. The work that lands is the work someone could actually build and ship.</p>
+        <p class="rise">Now I spend my days on the other side of that question, designing how a person and an intelligent system share a task without one of them taking over.</p>
+      </div>
+    </div>
+
+    <div class="cv">
+      <div class="cv-row rise"><div class="cv-role">Senior Product Designer</div><div class="cv-org">ZERO</div><div class="cv-yr">2025 to now</div></div>
+      <div class="cv-row rise"><div class="cv-role">Head of Design</div><div class="cv-org">Intent, formerly DesignAR</div><div class="cv-yr">2021 to 2025</div></div>
+      <div class="cv-row rise"><div class="cv-role">Founder and Creative Freelance</div><div class="cv-org">Vision Beyond Ordinary</div><div class="cv-yr">2020 to now</div></div>
+      <div class="cv-row rise"><div class="cv-role">Visual Designer</div><div class="cv-org">Peppermint Robotics</div><div class="cv-yr">2022 to 2024</div></div>
+      <div class="cv-row rise"><div class="cv-role">Graphic Designer</div><div class="cv-org">Monk-E</div><div class="cv-yr">2021</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="contact" id="contact" data-mix="0.1">
+  <div class="wrap">
+    <h2 class="rise">Let's build something <em>calm</em>.</h2>
+    <p class="lead rise">Open to senior product design roles and selected freelance work. If you have something that needs to ship, tell me about it.</p>
+    <a class="mailto rise" href="mailto:chauhansanjayofficial@gmail.com">chauhansanjayofficial@gmail.com</a>
+    <div class="socials rise">
+      <a href="https://www.linkedin.com/in/sanjaybchauhan/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://www.instagram.com/sanjay.b.chauhan/" target="_blank" rel="noopener">Instagram</a>
+      <a href="tel:+917738008886">+91 77380 08886</a>
+    </div>
+    <div class="foot">
+      <span>Sanjay Chauhan, Mumbai</span>
+      <span>Background rendered live in WebGL.</span>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script src="shader.js" defer></script>
+<script>
+(function(){
+  "use strict";
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* tools */
+  var TOOLS = [['Figma','figma'],['Claude','claude'],['Blender','blender'],['Framer','framer'],
+               ['Webflow','webflow'],['Rive','rive'],['Notion','notion'],['Shopify','shopify']];
+  var h = '';
+  for (var i=0;i<TOOLS.length;i++){
+    var u = 'img/logos/'+TOOLS[i][1]+'.svg';
+    h += '<span role="listitem" class="tool" title="'+TOOLS[i][0]+'" aria-label="'+TOOLS[i][0]+'" '+
+         'style="-webkit-mask-image:url('+u+');mask-image:url('+u+')"></span>';
+  }
+  document.getElementById('toolrow').innerHTML = h;
+
+  /* nav */
+  var nav = document.getElementById('nav');
+  new IntersectionObserver(function(e){
+    nav.classList.toggle('solid', !e[0].isIntersecting);
+  }, { rootMargin:'-64px 0px 0px 0px' }).observe(document.getElementById('top'));
+
+  /* reveals */
+  var risers = document.querySelectorAll('.rise');
+  function showAll(){ risers.forEach(function(el){ el.classList.add('is-in'); }); }
+
+  if (reduce || !('IntersectionObserver' in window)){
+    showAll();
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting){ e.target.classList.add('is-in'); io.unobserve(e.target); }
+      });
+    }, { rootMargin:'0px 0px -4% 0px', threshold:0 });
+    risers.forEach(function(el){ io.observe(el); });
+  }
+
+  var hero = document.querySelector('.hero');
+  function startHero(){
+    hero.classList.add('ready');
+    // the hero never waits on the observer, its CTA has to be there on load
+    hero.querySelectorAll('.rise').forEach(function(el){ el.classList.add('is-in'); });
+  }
+  requestAnimationFrame(function(){ requestAnimationFrame(startHero); });
+  setTimeout(startHero, 400);
+
+  /* if the reveal never resolved, this environment is not running
+     transitions. Drop out of motion rather than hide anything. */
+  var probe = document.querySelector('.hero-lead');
+  function health(){
+    if (document.visibilityState !== 'visible') return;
+    if (probe && parseFloat(getComputedStyle(probe).opacity) < .9){
+      document.documentElement.classList.remove('anim');
+    }
+    document.removeEventListener('visibilitychange', onVis);
+  }
+  function onVis(){ if (document.visibilityState === 'visible') setTimeout(health, 1600); }
+  document.addEventListener('visibilitychange', onVis);
+  setTimeout(health, 2000);
+
+  /* the field answers to where you are: organic in the human sections,
+     structured where the work and the machine are the subject */
+  var mixSections = document.querySelectorAll('[data-mix]');
+  if ('IntersectionObserver' in window && mixSections.length){
+    // a thin band across the middle of the viewport. Whichever section
+    // crosses it owns the field.
+    var mixIO = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting && typeof window.__fieldMix === 'function'){
+          window.__fieldMix(parseFloat(e.target.dataset.mix));
+        }
+      });
+    }, { rootMargin:'-45% 0px -45% 0px', threshold:0 });
+    mixSections.forEach(function(s){ mixIO.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>
