@@ -621,6 +621,10 @@ body.dark .rdy{ background:linear-gradient(140deg,rgba(74,222,128,.12),rgba(200,
   -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 30px,#000 calc(100% - 30px),transparent 100%);
   mask-image:linear-gradient(90deg,transparent 0,#000 30px,#000 calc(100% - 30px),transparent 100%); }
 .tlrail{ display:none; }
+/* the real portfolio, embedded whole */
+.pfreal{ position:absolute; inset:0; padding:0 0 34px; }
+.pfframe{ width:100%; height:100%; border:0; border-radius:20px; background:#fff;
+  box-shadow:0 0 0 6px rgba(255,255,255,.92), 0 0 0 7px rgba(0,0,0,.10), 0 26px 64px rgba(0,0,0,.20); }
 .tlrow{ display:flex; gap:16px; overflow-x:auto; padding:14px 40px 10px; scroll-snap-type:x mandatory;
   scroll-behavior:smooth; scroll-padding-inline:40px; }
 .tlrow::after{ content:''; flex:0 0 8px; }
@@ -3072,86 +3076,19 @@ function projectRow(p,i){
   return row;
 }
 function buildPortfolioShell(s){
-  const d=portf();
-  const boxP=mk('div','pfbox'); s.appendChild(boxP); s=boxP;
-  const hero=mk('div','pfhero');
-  hero.innerHTML='<div class="pav" style="'+avStyle(P.name||d.name)+'">'+
-    (P.name||d.name).charAt(0).toUpperCase()+'</div>'+
-    '<div class="pfid"><div class="pfn">'+(P.name||d.name)+'</div>'+
-    '<div class="pfsub"><span class="m">'+I.box+'<span>'+(P.aim||P.role||d.role)+'</span></span>'+
-    '<span class="m">'+I.pin+'<span>'+placeShort()+'</span></span></div>'+
-    '<div class="phz"><i class="on"></i><i></i><i></i><span>Phase '+d.phase+' of 3</span></div></div>'+
-    '<div class="lvl">'+I.spark+'<span>'+d.level+'</span></div>';
-  s.appendChild(hero);
-  s.appendChild(mk('p','pbio',d.about));
-  const body=mk('div'); body.id='pBody'; body.style.marginTop='4px'; s.appendChild(body);
+  /* Not a mock of the portfolio, the portfolio itself: Atul's approved v2
+     prototype served whole and embedded, so every visual, image, video and
+     spacing is the real artefact rather than my redrawing of it. */
+  const holder=mk('div','pfreal');
+  const f=document.createElement('iframe');
+  f.className='pfframe';
+  f.setAttribute('title','Your portfolio');
+  f.setAttribute('allow','autoplay');
+  f.src='zero-portfolio-v2/index.html';
+  holder.appendChild(f);
+  s.appendChild(holder);
 }
 /* what the profile already had, kept honest */
-async function addHave(){
-  const d=portf();
-  landIn(section('Experience'),true);
-  const box=mk('div'); landIn(box,true);
-  for(const e of d.exp){
-    const r=mk('div','xp');
-    r.appendChild(mk('div','xl',LOGO[e.co]||I.bld));
-    const b=mk('div','xb');
-    b.appendChild(mk('div','xt',e.title+' · '+e.co));
-    b.appendChild(mk('div','xw',e.when));
-    b.appendChild(mk('div','xd',e.desc));
-    r.appendChild(b); r.appendChild(mk('span','xk',e.kind));
-    await ghostIn(r,96,340,box);
-  }
-  landIn(section('Achievements and credentials'),true);
-  const cb=mk('div'); landIn(cb,true);
-  for(const [t,w] of d.creds){
-    const n=mk('div','todo'); const wr=mk('div','tn');
-    wr.appendChild(mk('div','tt',t)); wr.appendChild(mk('div','td',w));
-    n.appendChild(wr); n.appendChild(mk('span','srcpill',(LOGO.LinkedIn||I.link)+'<span>Verified</span>'));
-    await ghostIn(n,62,280,cb);
-  }
-  landIn(section('Academics'),true);
-  const eb=mk('div'); landIn(eb,true);
-  const n=mk('div','todo'); const wr=mk('div','tn');
-  wr.appendChild(mk('div','tt',d.edu.deg)); wr.appendChild(mk('div','td',d.edu.school));
-  n.appendChild(wr); n.appendChild(mk('span','xk',d.edu.gpa));
-  await ghostIn(n,62,300,eb);
-}
-async function addProject(i){
-  const d=portf();
-  if(i===0) landIn(section('Projects','pCount'),true);
-  await ghostIn(projectRow(d.projects[i],i),156,560);
-  const c2=$('pCount'); if(c2) c2.textContent=(i+1)+' shipped';
-}
-async function addTodo(){
-  const d=portf(); landIn(section('Still ahead'),true);
-  const boxT=mk('div'); landIn(boxT,true);
-  for(const [t,dd] of d.todo){
-    const n=mk('div','todo'); const w=mk('div','tn');
-    w.appendChild(mk('div','tt',t)); w.appendChild(mk('div','td',dd));
-    n.appendChild(w); n.appendChild(mk('span','tg','Yet to do'));
-    await ghostIn(n,62,240,boxT);
-  }
-}
-async function addReadiness(){
-  const d=portf();
-  landIn(section('Where this gets you'),true);
-  const r=mk('div','rdy');
-  const l=mk('div'); l.appendChild(mk('div','rn',d.ready+'%')); l.appendChild(mk('div','rl','ready'));
-  const b=mk('div','rb');
-  b.appendChild(mk('div','rt','Interview ready in '+d.eta));
-  b.appendChild(mk('div','rd2','for '+(P.aim||P.role||d.role)+' roles, at this pace'));
-  r.appendChild(l); r.appendChild(b);
-  await ghostIn(r,88,420);
-  landIn(section('What to fix first'),true);
-  const sb=mk('div'); landIn(sb,true);
-  for(const t of d.sugg){
-    const n=mk('div','sug');
-    n.appendChild(mk('div','st',t));
-    n.appendChild(mk('button','sb','Done'));
-    n.appendChild(mk('button','sb skip','Skip'));
-    await ghostIn(n,54,260,sb);
-  }
-}
 async function portfolioStage(){
   setPhase(3);
   clearTurn(); dockHide(); await wait(380);
@@ -3159,20 +3096,14 @@ async function portfolioStage(){
   await wait(2100);
   line('This is what they expect to see.');
   await wait(2000);
-  await swapPanel('Your portfolio, at the end of the road',buildPortfolioShell,false,true);
-  await wait(550);
-  await beat('You would start here.',()=>addProject(0),1500);
-  await beat('Then this one.',()=>addProject(1),1400);
-  await beat('And this is the one they ask about in interviews.',()=>addProject(2),1550);
-  await beat('5 of them by the end, every one reviewed.',
-    async()=>{ await addProject(3); await addProject(4); },1600);
-  if(P.linked) await beat('Everything you already had sits underneath it.',()=>addHave(),1700);
-  await beat('This is what is still ahead. That gap is the point.',()=>addTodo(),1600);
-  await beat('And this is what it adds up to.',()=>addReadiness(),1800);
-  line('This is what a hiring manager sees.');
-  await wait(2100);
-  line('Your proof of work, not a promise.');
-  await wait(2100);
+  await swapPanel('Your portfolio, at the end of the road',buildPortfolioShell,false,false);
+  await wait(1400);
+  /* the real thing is on screen now, so the voice points at it instead of building it */
+  await voLine('Five projects, every one reviewed by a manager.',2300);
+  await voLine('Real briefs, from companies you know.',2100);
+  await voLine('You can walk a hiring manager through any of them.',2400);
+  await voLine('This is what a hiring manager sees.',2100);
+  await voLine('Your proof of work, not a promise.',2200);
   cta('How do I build this?',roadmapStage);
 }
 
@@ -3406,12 +3337,7 @@ function dbgGoto(i){
       if(nm==='How it works'){
         for(let k=n('.zstep'); k<ZSTEPS.length && g===gen; k++) await addLoopStep(k);
       }
-      if(nm==='Portfolio'){
-        for(let k=n('.artifact'); k<5 && g===gen; k++) await addProject(k);
-        if(g===gen && P.linked && !n('.have')) await addHave();
-        if(g===gen && !n('.todo')) await addTodo();
-        if(g===gen && !n('.rdy')) await addReadiness();
-      }
+      /* Portfolio needs no fill: the panel embeds the real portfolio whole */
     }catch(e){}
   },1500);
   fastMode=true;
