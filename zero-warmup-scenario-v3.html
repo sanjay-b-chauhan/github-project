@@ -1127,11 +1127,20 @@ td.cell-active::after{border-color:var(--accent)}
 .ko2-top{position:relative}
 .ko2-scrub{top:50%;left:50%;transform:translate(-50%,-50%);width:min(420px,42%)}
 
-/* The kickoff CTA sat centre-bottom while the arrows sat bottom-right, so on
-   the last panel the control jumped across the screen. It now occupies the
-   arrows' position and stays put. */
-.ko2-cta{left:auto;right:26px;bottom:26px;transform:none}
-.ko2-cta:hover{transform:translateY(-2px)}
+/* The controls sit on the centre line. Earlier I moved the CTA out to the
+   arrows so it would stop jumping between panels - the jump was the real
+   problem, not the side - so the fix now is to centre BOTH: the arrows as a
+   pair straddling the middle, and the CTA on the same axis. Nothing moves
+   horizontally when the last panel swaps one for the other.
+
+   The transforms carry !important because the shell's reveal tween writes an
+   inline transform on these, and inline beats an ordinary rule - the same
+   trap that dragged the progress bar off-screen earlier. */
+.ko2-prev{left:auto;right:calc(50% + 5px);bottom:26px}
+.ko2-next{right:auto;left:calc(50% + 5px);bottom:26px}
+.ko2-cta{left:50%;right:auto;bottom:26px;
+  transform:translateX(-50%)!important}
+.ko2-cta:hover{transform:translateX(-50%) translateY(-2px)!important}
 
 
 /* The visual slot reserves 190px plus a 36px margin on every panel, but the
