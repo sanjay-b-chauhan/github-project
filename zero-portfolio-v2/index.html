@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;500&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script>if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add("embed");</script>
 <style>
   /* ── ZERO Design System — self-hosted fonts ── */
   @font-face { font-family:'STK Bureau Serif'; src:url('./fonts/STKBureau-SerifBook.otf') format('opentype'); font-weight:400; font-style:normal; font-display:swap; }
@@ -37,6 +38,7 @@
   }
   *{ margin:0; padding:0; box-sizing:border-box; }
   html{ scroll-behavior:smooth; }
+  html.embed, html.embed body{ background:transparent !important; }
   body{ background:var(--canvas); font-family:var(--f-body); color:var(--ink); letter-spacing:-0.02em; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
   ::-webkit-scrollbar{ width:8px; height:8px; }
   ::-webkit-scrollbar-thumb{ background:rgba(0,0,0,.14); border-radius:999px; }
@@ -2118,7 +2120,7 @@ function App(){
   const setPhaseCoupled=(n)=>{setPhase(n);if(n===1&&mIdx!==0)setMIdx(0);else if(n===2&&(mIdx<1||mIdx>5))setMIdx(4);else if(n===3&&mIdx<6)setMIdx(6);};
   return (
     <EditCtx.Provider value={{on:editOn,open:setEditSheet,hidden:hiddenSkills,toggleHide,recruiter:view!=="student"}}>
-    <div style={{minHeight:"100vh",background:c("--canvas")}}>
+    <div style={{minHeight:EMBED?0:"100vh",background:EMBED?"transparent":c("--canvas")}}>
       <div style={{position:"fixed",bottom:138,left:26,zIndex:400,display:EMBED?"none":"flex",gap:8,alignItems:"center"}}>
         <div style={{background:c("--paper"),borderRadius:999,padding:4,display:"flex",gap:3,alignItems:"center",border:`1px solid ${c("--line")}`}}>
           <span style={{padding:"0 2px 0 10px",fontSize:11.5,fontWeight:700,color:c("--ink-3")}}>Phase</span>
