@@ -3251,9 +3251,20 @@ async function finishStage(email){
     safeTL(gsap.timeline().fromTo(dlC,{opacity:0,y:16},{opacity:1,y:0,duration:.6}),1000);
     const s=$('scroll'); setTimeout(()=>{s.scrollTop=Math.max(0,s.scrollHeight-s.clientHeight);},300); }
   setCap('Ready when you are',false); await wait(600);
-  line('Sent to '+(email||'your inbox')+'. Your first scenario is already briefed.');
-  await wait(1600);
-  dockFinal('Download the app',()=>{ sfx('success'); });
+  await voLine('Sent to '+(email||'your inbox')+'.',1700);
+  /* the peak. Everything before this was a promise; this is the thing itself,
+     with their name on it and a date they can hold us to. */
+  const co=dreamList().slice(0,2).join(' and ')||'the companies you picked';
+  const wk=(P.timeline==='Now')?10:(P.timeline==='In 3 months')?12:(P.timeline==='No rush')?20:16;
+  const d=new Date(); d.setDate(d.getDate()+wk*7);
+  const when=d.toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+  await voLine('Look at what you are about to build.',2000);
+  await voLine((P.role||'Your role')+', at '+co+'.',2200);
+  await voLine('Ready by '+when+'.',1900);
+  await voLine("I can't promise you the job.",2000);
+  await voLine('I can promise the work is real.',2200);
+  await wait(400);
+  dockFinal('Start week one',()=>{ sfx('success'); });
   sfx('ready');
 }
 
@@ -3352,6 +3363,29 @@ function dbgGoto(i){
   const pv=$('dbgPrev'), nx=$('dbgNext');
   if(pv) pv.disabled=i<=0;
   if(nx) nx.disabled=i>=DBG_STEPS.length-1;
+  /* a jumped-to panel must show its content, not the empty frame it starts as */
+  clearTimeout(dbgGoto._f);
+  dbgGoto._f=setTimeout(async()=>{
+    const g=gen;
+    const n=sel=>document.querySelectorAll(sel).length;
+    try{
+      const nm=DBG_STEPS[i][0];
+      /* only top up what the stage's own sequence has not reached yet, or the
+         fill races the beats and doubles everything */
+      if(nm==='Curriculum'){
+        for(let k=n('.tlc'); k<4 && g===gen; k++) await addCurriculumCard(k);
+      }
+      if(nm==='How it works'){
+        for(let k=n('.zstep'); k<ZSTEPS.length && g===gen; k++) await addLoopStep(k);
+      }
+      if(nm==='Portfolio'){
+        for(let k=n('.artifact'); k<5 && g===gen; k++) await addProject(k);
+        if(g===gen && P.linked && !n('.have')) await addHave();
+        if(g===gen && !n('.todo')) await addTodo();
+        if(g===gen && !n('.rdy')) await addReadiness();
+      }
+    }catch(e){}
+  },1500);
   fastMode=true;
   try{ DBG_STEPS[i][1](); }catch(e){ console.warn('step',i,e); }
   /* long enough for the stage to paint, short enough that the narration still plays */
