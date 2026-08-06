@@ -2769,7 +2769,9 @@ function transformStage(){
       await wait(500);
       addRoleCards();
       await wait(1500);
-      aimStage();
+      /* the roles were already chosen in the listings. Asking again here was
+         the flow forgetting what it had just been told. */
+      calibrateStage();
     });
 }
 function aimStage(){
@@ -2844,9 +2846,9 @@ async function readProfile(kind){
   await wait(700);
   /* the import has to say what it understood, or it just feels like an upload */
   await reflect(linkedSummary(kind),2900);
-  line('2 people can want the same job and start miles apart.');
-  await wait(2100);
-  roadmapStage();
+  line('Now I know where you are starting from.');
+  await wait(2000);
+  portfolioStage();
 }
 function linkStage(kind){
   P.linked=kind;
@@ -2868,12 +2870,12 @@ function calibrateStage(){
   setPhase(2);
   clearTurn();
   setTimeout(async()=>{
-    line('Last thing before I build this.');
+    line('Before I build this, one thing.');
     await wait(1900);
     const {box}=turn({q:'Share your LinkedIn or a resume?'});
     choices(box,[['link','Connect LinkedIn','LinkedIn'],['doc','Share a resume','Resume'],
       ['arrow','Skip for now','Skip']],v=>{
-      if(v==='Skip'){ go(roadmapStage); return; }
+      if(v==='Skip'){ go(portfolioStage); return; }
       clearTurn(); dockHide();
       setTimeout(()=>{ locked=false; linkStage(v); },460);
     },{nomorph:true});
@@ -2994,7 +2996,7 @@ async function roadmapStage(){
   clearTurn(); dockHide(); await wait(380);
   const d=pack();
   const total=d.projects.reduce((a,p)=>a+p.weeks,0);
-  line('This is how you get there.');
+  line('Here is how you build it.');
   await wait(1400);
   await swapPanel('Your curriculum',buildCurriculum,false,true);
   await wait(700);
@@ -3004,7 +3006,7 @@ async function roadmapStage(){
   await beat('And '+total+' weeks in, this is what you hold.',()=>addCurriculumCard(3),2300);
   line('Read it across, or switch it down. Your call.');
   await wait(1800);
-  cta('So what do I end up with?',portfolioStage);
+  cta('Who runs all this?',zeroStage);
 }
 
 /* ============================ 20 · the portfolio ============================ */
@@ -3117,12 +3119,10 @@ async function addReadiness(){
 async function portfolioStage(){
   setPhase(3);
   clearTurn(); dockHide(); await wait(380);
-  line('This is what your portfolio could look like.');
-  await wait(1600);
-  line("Those roadmap projects aren't homework.");
-  await wait(1900);
-  line("They're the pieces in here.");
-  await wait(1900);
+  line('This is the portfolio that gets you there.');
+  await wait(2100);
+  line('This is what they expect to see.');
+  await wait(2000);
   await swapPanel('Your portfolio, at the end of the road',buildPortfolioShell,false,true);
   await wait(550);
   await beat('You would start here.',()=>addProject(0),1500);
@@ -3137,7 +3137,7 @@ async function portfolioStage(){
   await wait(2100);
   line('Your proof of work, not a promise.');
   await wait(2100);
-  cta('Who runs all this?',zeroStage);
+  cta('How do I build this?',roadmapStage);
 }
 
 /* ============================ 21 · how Zero works ============================ */
@@ -3274,10 +3274,9 @@ const DBG_STEPS=[
   ['Read back',  ()=>synthStage()],
   ['Vision',     ()=>visionStage(true)],
   ['Transform',  ()=>transformStage()],
-  ['Which role', ()=>aimStage()],
   ['Calibrate',  ()=>calibrateStage()],
-  ['Curriculum', ()=>roadmapStage()],
   ['Portfolio',  ()=>portfolioStage()],
+  ['Curriculum', ()=>roadmapStage()],
   ['How it works',()=>zeroStage()],
   ['Credits',    ()=>creditsStage()],
   ['Handoff',    ()=>finishStage('sanjay@z-ro.co')],
@@ -3339,7 +3338,7 @@ function dbgGoto(i){
     panelBorn=false; boardLive=false;
     gsap.set('.right',{width:0,opacity:0}); shiftLeft('0px');
   }
-  setPhase(i<14?0:(i<17?1:(i<19?2:(i<20?3:4))));
+  setPhase(i<14?0:(i<16?1:(i<18?2:(i<19?3:4))));
   const lbl=$('dbgStep'); if(lbl) lbl.textContent=(i+1)+'. '+DBG_STEPS[i][0];
   const pv=$('dbgPrev'), nx=$('dbgNext');
   if(pv) pv.disabled=i<=0;
