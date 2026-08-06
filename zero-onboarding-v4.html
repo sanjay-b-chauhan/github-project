@@ -186,42 +186,39 @@ svg{ display:block; }
   border:1px dashed var(--line); border-radius:999px; padding:7px 13px; text-align:left;
   transition:color .2s var(--e), border-color .2s var(--e); }
 .devp:hover{ color:var(--tx); border-color:var(--tx-4); }
-/* Six roles at a time, given room to breathe. Twenty-five tiny squares had no
-   hierarchy and nothing to look at; this has one hero number per card and a
-   clear second and third rank under it. */
+/* The role is the hero. Money sits at the bottom at the same size, because a
+   salary shouted at 22px reads as a listings site, not as a plan. Logos get a
+   white disc so Apple, Vercel and Linear are actually visible on dark. */
 .pool{ width:100%; max-width:760px; margin:0 auto; }
-.poolf{ display:flex; flex-wrap:wrap; gap:7px; justify-content:center; margin-bottom:20px; }
+.poolf{ display:flex; flex-wrap:wrap; gap:7px; justify-content:center; margin-bottom:16px; }
 .pf{ font-size:12px; padding:7px 15px; border-radius:999px; border:1px solid var(--line);
   background:transparent; color:var(--tx-3); transition:color .18s var(--e), border-color .18s var(--e); }
 .pf:hover{ color:var(--tx); border-color:var(--tx-4); }
 .pf.on{ background:var(--ink); color:var(--on-ink); border-color:transparent; }
-.poolw{ }
-.poolg{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+.poolw{ max-height:min(50vh,430px); overflow-y:auto; padding:3px 3px 6px; scrollbar-width:thin; }
+.poolg{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:13px; }
 .jtile{ position:relative; width:100%; min-width:0; overflow:hidden; text-align:left;
   display:flex; flex-direction:column; align-items:flex-start;
-  padding:20px 19px 18px; border-radius:18px; background:var(--card);
-  border:1px solid var(--line);
+  padding:16px 16px 15px; border-radius:16px; background:var(--card); border:1px solid var(--line);
   transition:border-color .22s var(--e), transform .22s var(--e), box-shadow .22s var(--e); }
-.jtile:hover{ transform:translateY(-3px); border-color:var(--tx-4);
-  box-shadow:0 14px 30px rgba(0,0,0,.18); }
+.jtile:hover{ transform:translateY(-3px); border-color:var(--tx-4); box-shadow:0 14px 30px rgba(0,0,0,.18); }
 .jtile.on{ border-color:var(--ink); box-shadow:0 0 0 1px var(--ink), 0 14px 30px rgba(0,0,0,.2); }
-.jtile .jh{ width:100%; display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
-.jtile .lg{ width:34px; height:34px; border-radius:11px; background:var(--wash);
-  display:grid; place-items:center; flex:0 0 34px; }
-.jtile .lg svg{ width:19px; height:19px; }
-.jtile .jt{ font-size:11px; letter-spacing:.05em; color:var(--tx-3); }
+.jtile .jh{ width:100%; display:flex; align-items:center; justify-content:space-between; margin-bottom:13px; }
+.jtile .lg{ width:26px; height:26px; border-radius:50%; background:#fff; flex:0 0 26px;
+  display:grid; place-items:center; box-shadow:0 1px 3px rgba(0,0,0,.22); }
+.jtile .lg svg{ width:15px; height:15px; display:block; }
+.jtile .jt{ font-size:10.5px; letter-spacing:.05em; color:var(--tx-3); }
 .jtile.on .jt{ color:var(--ink); font-weight:600; }
-.jtile .jp{ font-size:22px; font-weight:600; letter-spacing:-.045em; color:var(--tx);
-  font-variant-numeric:tabular-nums; line-height:1; }
-.jtile .jr{ margin-top:9px; font-size:15px; font-weight:500; line-height:1.25;
-  letter-spacing:-.02em; color:var(--tx); max-width:100%; overflow-wrap:anywhere; }
-.jtile .jc{ margin-top:5px; font-size:12.5px; color:var(--tx-2); max-width:100%;
+.jtile .jr{ font-size:15px; font-weight:500; line-height:1.25; letter-spacing:-.02em;
+  color:var(--tx); max-width:100%; overflow-wrap:anywhere; }
+.jtile .jc{ margin-top:4px; font-size:12.5px; color:var(--tx-2); max-width:100%;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.jmore{ margin:16px auto 0; display:block; height:44px; padding:0 22px; border-radius:999px;
-  border:1px solid var(--line); background:transparent; color:var(--tx-2); font-size:13px;
-  transition:color .18s var(--e), border-color .18s var(--e); }
+.jtile .jp{ margin-top:11px; font-size:15px; font-weight:500; letter-spacing:-.02em;
+  color:var(--tx); font-variant-numeric:tabular-nums; white-space:nowrap; }
+.jmore{ margin:14px auto 0; display:block; height:42px; padding:0 20px; border-radius:999px;
+  border:1px solid var(--line); background:transparent; color:var(--tx-2); font-size:12.5px; }
 .jmore:hover{ color:var(--tx); border-color:var(--tx-4); }
-.poolc{ margin-top:14px; font-size:12.5px; color:var(--tx-3); text-align:center; }
+.poolc{ margin-top:12px; font-size:12.5px; color:var(--tx-3); text-align:center; }
 /* a job, not a tag: the company, what the job is, where, and what it pays */
 .jobs{ display:grid; grid-template-columns:1fr 1fr; gap:12px; max-width:730px; margin:0 auto; }
 .job{ position:relative; display:grid; grid-template-columns:auto 1fr auto; gap:4px 10px;
@@ -1108,6 +1105,11 @@ function extractInto(text){
   const ind=grab(text,KW.industry); if(ind&&!P.industry){P.industry=ind;found.push('industry');}
   const lv=grab(text,KW.level); if(lv&&!P.level){P.level=lv;}
   for(const r of pack().roleCards) if(text.toLowerCase().includes(r.toLowerCase())&&!P.role){P.role=r;found.push('role');}
+  /* they already told us what they do. Asking "are you a student" after that is
+     the exact repetition the founder called out. */
+  if(!P.doing && (P.level||P.role||P.industry) && String(text).trim().split(/\s+/).length>=6){
+    P.doing=quoteOf(text); found.push('doing');
+  }
   const t=text.toLowerCase();
   /* a named company, so "more like Figma" lands without re-asking */
   if(!P.dream){
@@ -2196,12 +2198,21 @@ function rolePool(){
   fam.forEach((t,ti)=>{
     POOL_COS.forEach((co,ci)=>{
       const tier=tierOf(co); if(!tier) return;
-      if((ti+ci)%3!==0) return;                 /* a readable spread, not every pairing */
+      if((ti+ci)%3!==0) return;
       const b=BAND[tier][t[1]];
       out.push([co,t[0],SEN_LABEL[t[1]],'$'+b[0]+'k - $'+b[1]+'k',tier,t[1]]);
     });
   });
-  return out;
+  /* interleave the titles so the first screen is a spread, not one role six times */
+  const byTitle={};
+  out.forEach(r=>{ (byTitle[r[1]]=byTitle[r[1]]||[]).push(r); });
+  const names=Object.keys(byTitle), mixed=[];
+  let more=true;
+  for(let i=0; more; i++){
+    more=false;
+    names.forEach(n=>{ if(byTitle[n][i]){ mixed.push(byTitle[n][i]); more=true; } });
+  }
+  return mixed;
 }
 function listingsStage(){
   const {box}=turn({q:'Which of these roles do you want?'});
@@ -2234,9 +2245,9 @@ function listingsStage(){
       const b=mk('button','jtile'+(picks.indexOf(r)>=0?' on':''));
       b.innerHTML='<span class="jh"><span class="lg">'+(LOGO[co]||'')+'</span>'
         +'<span class="jt">'+tier+' tier</span></span>'
-        +'<span class="jp">'+pay+'</span>'
         +'<span class="jr">'+ro+'</span>'
-        +'<span class="jc">'+co+' &middot; '+sen+'</span>';
+        +'<span class="jc">'+co+' &middot; '+sen+'</span>'
+        +'<span class="jp">'+pay+'</span>';
       b.setAttribute('role','checkbox');
       b.setAttribute('aria-checked',picks.indexOf(r)>=0?'true':'false');
       b.setAttribute('aria-label',ro+' at '+co+', '+sen+', '+tier+' tier, '+pay);
