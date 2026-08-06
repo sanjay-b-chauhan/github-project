@@ -620,20 +620,22 @@ body.dark .rdy{ background:linear-gradient(140deg,rgba(74,222,128,.12),rgba(200,
 .tlwrap{ position:relative; margin-top:30px;
   -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 30px,#000 calc(100% - 30px),transparent 100%);
   mask-image:linear-gradient(90deg,transparent 0,#000 30px,#000 calc(100% - 30px),transparent 100%); }
-.tlrail{ position:absolute; left:0; right:0; top:16px; height:2px;
-  background:rgba(13,13,13,.13); border-radius:2px; }
-body.dark .tlrail{ background:rgba(255,255,255,.15); }
-.tlrow{ display:flex; gap:14px; overflow-x:auto; padding:40px 40px 10px; scroll-snap-type:x mandatory;
+.tlrail{ display:none; }
+.tlrow{ display:flex; gap:16px; overflow-x:auto; padding:14px 40px 10px; scroll-snap-type:x mandatory;
   scroll-behavior:smooth; scroll-padding-inline:40px; }
 .tlrow::after{ content:''; flex:0 0 8px; }
 .tlrow::-webkit-scrollbar{ height:0; }
 .tlc{ position:relative; flex:0 0 300px; scroll-snap-align:center; text-align:left;
   background:var(--card); border:1px solid var(--line); border-radius:20px; padding:24px; }
-/* the number sits on the line, not beside it */
-.tlc .nd{ position:absolute; top:-40px; left:50%; transform:translateX(-50%);
-  width:34px; height:34px; border-radius:var(--pill);
+/* the number lives in the card, and the line joins the cards rather than
+   floating above them */
+.tlc .nd{ position:static; margin-bottom:15px; width:30px; height:30px; border-radius:var(--pill);
   background:var(--ink); color:var(--on-ink); display:flex; align-items:center; justify-content:center;
-  font-size:13px; font-weight:600; box-shadow:0 0 0 6px var(--shell); }
+  font-size:12.5px; font-weight:600; flex:0 0 30px; }
+.tlc::before{ content:''; position:absolute; left:-16px; top:39px; width:16px; height:2px;
+  background:var(--line); }
+.tlc:first-child::before{ display:none; }
+.tlrow.vert .tlc::before{ left:14px; top:-34px; width:2px; height:34px; }
 .tlc .nd svg{ width:15px; height:15px; }
 .tlc .ct{ font-size:15.5px; font-weight:600; letter-spacing:-.03em; }
 .tlc .cw{ margin-top:4px; font-size:11.5px; color:var(--tx-3); }
@@ -662,7 +664,7 @@ body.dark .tlrail{ background:rgba(255,255,255,.15); }
 .tlrow.vert{ flex-direction:column; overflow-x:visible; padding:14px 4px 14px 34px; gap:34px; }
 .tlrow.vert::after{ display:none; }
 .tlrow.vert .tlc{ flex:1 1 auto; width:100%; }
-.tlrow.vert .tlc .nd{ top:50%; left:-26px; transform:translate(-50%,-50%); }
+.tlrow.vert .tlc .nd{ position:static; transform:none; }
 .tlwrap.vert{ padding-top:0; -webkit-mask-image:none; mask-image:none; }
 .tlwrap.vert .tlrail{ left:0; top:14px; bottom:14px; right:auto; width:2px; height:auto; }
 
