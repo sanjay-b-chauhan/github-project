@@ -1,9 +1,10 @@
 /* =============================================================
    Volumetric background field. Raw WebGL2, no libraries.
 
-   The thesis of the page rendered as light: a warm organic field
-   (the person) and a cool structured lattice (the system) sharing
-   one volume as equals. Scroll shifts the balance between them.
+   Light build. Nothing glows here. The volume behaves like ink
+   and sunlight in warm paper: density removes light instead of
+   adding it, and the structured lattice is a faint sienna rule
+   pressed into the sheet. Same thesis, opposite physics.
 
    Budget: the field renders at roughly half resolution and 30fps.
    It is a background, nobody can see the difference, and it keeps
@@ -42,9 +43,9 @@
   uniform float uMix;     // 0 organic .. 1 structured
   uniform int   uSteps;
 
-  const vec3 INK  = vec3(0.024, 0.035, 0.043);
-  const vec3 WARM = vec3(0.937, 0.760, 0.573);
-  const vec3 COOL = vec3(0.278, 0.529, 0.494);
+  const vec3 PAPER  = vec3(0.937, 0.906, 0.855);  // warm beige sheet
+  const vec3 SHADE  = vec3(0.400, 0.320, 0.235);  // the warm brown a shadow leaves
+  const vec3 SIENNA = vec3(0.659, 0.251, 0.122);  // the one accent
 
   float hash31(vec3 p){
     p = fract(p * 0.3183099 + vec3(0.71, 0.113, 0.419));
@@ -77,7 +78,8 @@
     vec3 rd = normalize(vec3(uv, 1.35));
 
     float t = 0.55;
-    vec3 acc = vec3(0.0);
+    float dens = 0.0;   // how much sheet the volume occupies
+    float warm = 0.0;   // how much of that is the organic half
 
     for (int i = 0; i < 24; i++){
       if (i >= uSteps) break;
@@ -87,31 +89,36 @@
       float d = fbm3(p * 0.85);
       d = smoothstep(0.44, 0.80, d);
 
-      // warmth rises, structure settles. The two share the volume.
+      // the organic half rises, the structured half settles
       float h = smoothstep(-0.55, 0.65, p.y + 0.18 * sin(uTime * 0.09));
-      vec3  c = mix(COOL, WARM, h);
 
-      acc += c * d * 0.085;
+      dens += d * 0.085;
+      warm += d * h * 0.085;
       t += 0.17;
     }
+    dens = clamp(dens, 0.0, 1.0);
+    warm = clamp(warm, 0.0, 1.0);
 
-    // the lattice: the system's handwriting, only where scroll asks for it
+    // start from the sheet and take light away
+    vec3 col = PAPER - SHADE * dens * 0.50;
+
+    // where the organic field is strongest the paper warms toward sienna
+    col = mix(col, mix(col, SIENNA, 0.30), warm);
+
+    // the lattice: pressed into the sheet, never floating on it
     vec2 g  = uv * 9.0 + vec2(0.0, uTime * 0.05);
     vec2 gd = abs(fract(g) - 0.5);
     float line = 1.0 - smoothstep(0.0, 0.055, min(gd.x, gd.y));
-    float latMask = smoothstep(0.15, 0.95, length(acc) * 2.4);
-    acc += COOL * line * latMask * 0.12 * uMix;
+    col -= SIENNA * line * smoothstep(0.10, 0.75, dens) * 0.21 * uMix;
 
-    vec3 col = INK + acc;
-
-    // a warm presence that follows the cursor. The human in the room.
+    // daylight falling where the cursor is. A lift, not a glow.
     float d0 = length(uv - uMouse * vec2(0.42, 0.26));
-    col += WARM * exp(-d0 * 2.7) * 0.10;
+    col += vec3(0.055, 0.045, 0.030) * exp(-d0 * 2.7);
 
-    col *= 1.0 - 0.42 * dot(uv, uv);                 // vignette
+    col *= 1.0 - 0.085 * dot(uv, uv);                // the faintest vignette
     col += (hash31(vec3(gl_FragCoord.xy, 1.0)) - 0.5) / 255.0;  // kill banding
 
-    O = vec4(col, 1.0);
+    O = vec4(clamp(col, 0.0, 1.0), 1.0);
   }`;
 
   function compile(type, src) {

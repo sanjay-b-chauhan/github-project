@@ -10,34 +10,42 @@
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Pinyon+Script&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
 /* ==============================================================
-   SANJAY CHAUHAN, DIRECTION TWO
-   Calm, premium, futuristic. The subject is the relationship
-   between a person and an intelligent system, so the page is
-   built around one living volumetric field that both share.
+   SANJAY CHAUHAN, DIRECTION TWO, LIGHT
+   Warm beige, heavy serif, one script word. The subject is still
+   the relationship between a person and an intelligent system,
+   so the page is still built around one shared volumetric field.
+   In this build the field behaves like ink and sun in paper.
 
-   Dials: VARIANCE 7 / MOTION 7 / DENSITY 3
-   Colour rule: ONE ui accent, --warm. The cool teal exists only
-     inside the shader and the photography, never as interface.
+   Dials: VARIANCE 7 / MOTION 6 / DENSITY 3
+   Colour rule: ONE ui accent, --sienna, and it clears WCAG AA on
+     the beige at body size. Beige was asked for by name, so it is
+     executed deliberately: terracotta, not brass, and the type
+     carries the weight rather than the palette.
    Shape rule: surfaces and media are 20px. Buttons are pills.
      Nothing else rounds. That is the whole system.
-   Theme rule: one theme, dark, page wide. No section inverts.
+   Theme rule: one theme, light, page wide. No section inverts.
    ============================================================== */
 
 :root{
-  --ink:    #060809;
-  --paper:  #E9EDEF;
-  --mute:   #949DA1;          /* passes AA on --ink */
-  --warm:   #EFC28F;          /* the one interface accent */
-  --line:   rgba(233,237,239,.13);
-  --line-2: rgba(233,237,239,.06);
-  --glass:  rgba(233,237,239,.035);
+  --paper:   #EFE7DA;         /* the sheet */
+  --paper-2: #F6F1E8;         /* raised surface, same family */
+  --ink:     #191410;         /* warm near black, never #000 */
+  --mute:    #64594C;         /* 5.5:1 on --paper, and still clears AA over
+                                 the darkest the field ever gets */
+  --sienna:  #A8401F;         /* the one accent, 5.1:1 on --paper */
+  --line:    rgba(25,20,16,.16);
+  --line-2:  rgba(25,20,16,.08);
+  --glass:   rgba(25,20,16,.03);
 
-  --display:'Sora', system-ui, sans-serif;
-  --body:   'Instrument Sans', system-ui, sans-serif;
+  --display: 'Young Serif', Georgia, serif;   /* heavy, warm, trending */
+  --script:  'Pinyon Script', 'Sloop Script Pro', cursive;
+  /* Sloop Script Pro is a licensed Font Bureau face. Drop the real
+     webfont in and it takes over from Pinyon with no other change. */
+  --body:    'Instrument Sans', system-ui, sans-serif;
 
   --ease:   cubic-bezier(.16,1,.3,1);
   --r:      20px;             /* the one surface radius */
@@ -48,18 +56,21 @@
 *,*::before,*::after{ box-sizing:border-box; }
 html{ -webkit-text-size-adjust:100%; }
 body{
-  margin:0; background:var(--ink); color:var(--paper);
+  margin:0; background:var(--paper); color:var(--ink);
   font-family:var(--body); line-height:1.65;
   -webkit-font-smoothing:antialiased; overflow-x:hidden;
 }
 img{ max-width:100%; display:block; }
 a{ color:inherit; text-decoration:none; }
 p{ margin:0; }
-h1,h2,h3,h4{ font-family:var(--display); margin:0; font-weight:500; letter-spacing:-.03em; line-height:1.06; }
-::selection{ background:var(--warm); color:var(--ink); }
-a:focus-visible,button:focus-visible{ outline:2px solid var(--warm); outline-offset:4px; }
+h1,h2,h3,h4{ font-family:var(--display); margin:0; font-weight:400; letter-spacing:-.03em; line-height:1.06; }
+::selection{ background:var(--sienna); color:var(--paper); }
+a:focus-visible,button:focus-visible{ outline:2px solid var(--sienna); outline-offset:4px; }
 
-.wrap{ max-width:var(--maxw); margin:0 auto; padding-inline:var(--gutter); }
+/* width:100% matters. .hero and .nav are flex containers, and without it
+   .wrap shrinks to its content and the auto margins centre it, so the hero
+   stops lining up with the nav and every other section. */
+.wrap{ width:100%; max-width:var(--maxw); margin:0 auto; padding-inline:var(--gutter); }
 
 /* ---------------- the field ---------------- */
 #field{
@@ -70,9 +81,9 @@ a:focus-visible,button:focus-visible{ outline:2px solid var(--warm); outline-off
 .field-fallback{
   position:fixed; inset:0; z-index:0; pointer-events:none;
   background:
-    radial-gradient(70% 50% at 22% 38%, rgba(239,194,143,.13), transparent 62%),
-    radial-gradient(65% 55% at 82% 66%, rgba(76,138,128,.16), transparent 66%),
-    var(--ink);
+    radial-gradient(70% 50% at 22% 38%, rgba(168,64,31,.10), transparent 62%),
+    radial-gradient(65% 55% at 82% 66%, rgba(25,20,16,.09), transparent 66%),
+    var(--paper);
 }
 html:not(.no-gl) .field-fallback{ display:none; }
 html.no-gl #field{ display:none; }
@@ -81,7 +92,7 @@ main, .nav{ position:relative; z-index:1; }
 /* a soft scrim so type always wins over the field */
 .scrim{
   position:fixed; inset:0; z-index:0; pointer-events:none;
-  background:linear-gradient(180deg, rgba(6,8,9,.34) 0%, rgba(6,8,9,.12) 26%, rgba(6,8,9,.46) 62%, rgba(6,8,9,.88) 100%);
+  background:linear-gradient(180deg, rgba(239,231,218,.52) 0%, rgba(239,231,218,.20) 26%, rgba(239,231,218,.55) 62%, rgba(239,231,218,.92) 100%);
 }
 
 /* ---------------- nav ---------------- */
@@ -92,25 +103,25 @@ main, .nav{ position:relative; z-index:1; }
   border-bottom:1px solid transparent;
 }
 .nav.solid{
-  background:rgba(6,8,9,.55); backdrop-filter:blur(20px) saturate(150%);
+  background:rgba(246,241,232,.72); backdrop-filter:blur(20px) saturate(140%);
   border-bottom-color:var(--line-2);
 }
 .nav .wrap{ display:flex; align-items:center; justify-content:space-between; width:100%; gap:24px; }
-.brand{ display:flex; align-items:center; gap:11px; font-family:var(--display); font-weight:600; font-size:15.5px; letter-spacing:-.02em; white-space:nowrap; }
+.brand{ display:flex; align-items:center; gap:11px; font-family:var(--display); font-weight:400; font-size:15.5px; letter-spacing:-.02em; white-space:nowrap; }
 .brand .orb{
   width:15px; height:15px; border-radius:50%; flex:none;
-  background:radial-gradient(circle at 32% 28%, #FBE6CB, var(--warm) 45%, #7A5A34 100%);
-  box-shadow:0 0 18px rgba(239,194,143,.42);
+  background:radial-gradient(circle at 32% 28%, #E9A177, var(--sienna) 52%, #6B2410 100%);
+  box-shadow:0 2px 10px rgba(168,64,31,.30);
 }
 .navlinks{ display:flex; align-items:center; gap:clamp(18px,2.4vw,36px); }
 .navlinks a{ font-size:14px; color:var(--mute); transition:color .3s var(--ease); white-space:nowrap; }
-.navlinks a:hover{ color:var(--paper); }
+.navlinks a:hover{ color:var(--ink); }
 .nav-cta{
-  font-size:14px; font-weight:500; color:var(--ink); background:var(--paper);
+  font-size:14px; font-weight:500; color:var(--paper); background:var(--ink);
   padding:10px 20px; border-radius:999px; white-space:nowrap;
   transition:background .3s var(--ease), color .3s var(--ease);
 }
-.nav-cta:hover{ background:var(--warm); }
+.nav-cta:hover{ background:var(--sienna); }
 @media (max-width:840px){ .navlinks .hide-sm{ display:none; } }
 
 /* ---------------- hero ---------------- */
@@ -119,15 +130,24 @@ main, .nav{ position:relative; z-index:1; }
   padding-top:104px; padding-bottom:clamp(48px,8vh,96px);
 }
 .hero h1{
-  font-size:clamp(2.4rem,6.1vw,5.9rem); font-weight:300;
+  font-size:clamp(2.3rem,5.6vw,5.3rem); font-weight:400;
   letter-spacing:-.04em; line-height:1.03; max-width:17ch;
 }
-.hero h1 em{ font-style:normal; color:var(--warm); }
+.hero h1 em{ font-style:normal; color:var(--sienna); }
+/* the script opener. Sits larger than the serif because a script's
+   x-height is tiny, and gets its own descender reserve so the g of
+   "Designing" is never clipped by the line box. */
+.script{
+  font-family:var(--script); font-weight:400; color:var(--sienna);
+  font-size:1.42em; line-height:.9; letter-spacing:0;
+  display:inline-block; padding-right:.06em; padding-bottom:.10em;
+  margin-bottom:-.10em; vertical-align:baseline;
+}
 .hero-lead{
   margin-top:clamp(24px,3vw,36px); max-width:46ch;
   font-size:clamp(15.5px,1.35vw,18.5px); color:var(--mute);
 }
-.hero-lead b{ color:var(--paper); font-weight:500; }
+.hero-lead b{ color:var(--ink); font-weight:500; }
 .hero-cta{ display:flex; flex-wrap:wrap; gap:12px; margin-top:clamp(30px,4vw,46px); }
 .btn{
   display:inline-flex; align-items:center; gap:10px; border-radius:999px;
@@ -135,10 +155,10 @@ main, .nav{ position:relative; z-index:1; }
   padding:14px 26px; white-space:nowrap; cursor:pointer; border:1px solid transparent;
   transition:background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease), transform .2s var(--ease);
 }
-.btn-primary{ background:var(--warm); color:#231A10; }
-.btn-primary:hover{ background:var(--paper); }
-.btn-ghost{ border-color:var(--line); color:var(--paper); }
-.btn-ghost:hover{ border-color:var(--paper); background:var(--paper); color:var(--ink); }
+.btn-primary{ background:var(--sienna); color:var(--paper); }
+.btn-primary:hover{ background:var(--ink); color:var(--paper); }
+.btn-ghost{ border-color:var(--line); color:var(--ink); }
+.btn-ghost:hover{ border-color:var(--ink); background:var(--ink); color:var(--paper); }
 .btn:active{ transform:scale(.975); }
 .btn svg{ width:15px; height:15px; flex:none; transition:transform .35s var(--ease); }
 .btn:hover svg{ transform:translate(3px,-3px); }
@@ -147,10 +167,10 @@ main, .nav{ position:relative; z-index:1; }
 .sec{ padding:clamp(80px,11vw,170px) 0; }
 .tag{
   font-family:var(--body); font-size:12.5px; letter-spacing:.16em;
-  text-transform:uppercase; color:var(--warm); font-weight:500;
+  text-transform:uppercase; color:var(--sienna); font-weight:500;
   margin-bottom:clamp(18px,2.2vw,28px);
 }
-.h2{ font-size:clamp(1.9rem,4.3vw,3.7rem); font-weight:400; letter-spacing:-.035em; max-width:20ch; }
+.h2{ font-size:clamp(1.8rem,4vw,3.4rem); font-weight:400; letter-spacing:-.035em; max-width:20ch; }
 .lead{ color:var(--mute); font-size:clamp(15.5px,1.3vw,18px); max-width:56ch; margin-top:22px; }
 
 /* ---------------- ZERO case study ---------------- */
@@ -159,10 +179,10 @@ main, .nav{ position:relative; z-index:1; }
   display:flex; flex-wrap:wrap; gap:10px 30px; align-items:baseline;
   padding-bottom:clamp(24px,3vw,40px);
 }
-.case-name{ font-family:var(--display); font-weight:600; font-size:clamp(1.3rem,2.3vw,1.9rem); letter-spacing:-.03em; }
+.case-name{ font-family:var(--display); font-weight:400; font-size:clamp(1.3rem,2.3vw,1.9rem); letter-spacing:-.03em; }
 .case-meta span{ color:var(--mute); font-size:14px; }
 .case h2{ font-size:clamp(2rem,4.9vw,4.3rem); font-weight:300; letter-spacing:-.04em; max-width:19ch; line-height:1.05; }
-.case h2 em{ font-style:normal; color:var(--warm); }
+.case h2 em{ font-style:normal; color:var(--sienna); }
 .case-intro{ color:var(--mute); font-size:clamp(16px,1.4vw,19px); max-width:60ch; margin-top:clamp(24px,3vw,36px); }
 
 .media{
@@ -176,23 +196,23 @@ main, .nav{ position:relative; z-index:1; }
 }
 
 .beat{ margin-top:clamp(52px,7vw,110px); display:grid; grid-template-columns:.72fr 1.28fr; gap:clamp(24px,4vw,72px); align-items:start; }
-.beat h3{ font-size:clamp(1.25rem,2.1vw,1.85rem); font-weight:500; letter-spacing:-.03em; }
+.beat h3{ font-size:clamp(1.25rem,2.1vw,1.85rem); font-weight:400; letter-spacing:-.03em; }
 .beat-body{ display:grid; gap:18px; }
 .beat-body p{ color:var(--mute); font-size:clamp(15.5px,1.3vw,17.5px); max-width:58ch; }
-.beat-body p strong{ color:var(--paper); font-weight:500; }
+.beat-body p strong{ color:var(--ink); font-weight:400; }
 @media (max-width:900px){ .beat{ grid-template-columns:1fr; gap:16px; } }
 
 /* the nine steps, as a quiet rail rather than a numbered list */
 .steps{ display:flex; flex-wrap:wrap; gap:8px; margin-top:26px; }
 .steps span{
   border:1px solid var(--line); border-radius:999px;
-  padding:8px 16px; font-size:13.5px; color:var(--paper);
+  padding:8px 16px; font-size:13.5px; color:var(--ink);
 }
-.steps span:first-child{ border-color:var(--warm); color:var(--warm); }
+.steps span:first-child{ border-color:var(--sienna); color:var(--sienna); }
 
 .surfaces{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line-2); border:1px solid var(--line-2); border-radius:var(--r); overflow:hidden; margin-top:clamp(30px,4vw,52px); }
-.surface{ background:var(--ink); padding:clamp(22px,2.6vw,34px); display:grid; gap:10px; align-content:start; min-height:170px; }
-.surface h4{ font-size:16.5px; font-weight:500; letter-spacing:-.02em; }
+.surface{ background:var(--paper); padding:clamp(22px,2.6vw,34px); display:grid; gap:10px; align-content:start; min-height:170px; }
+.surface h4{ font-size:16.5px; font-weight:400; letter-spacing:-.02em; }
 .surface p{ color:var(--mute); font-size:14px; }
 @media (max-width:860px){ .surfaces{ grid-template-columns:1fr; } }
 
@@ -203,11 +223,11 @@ main, .nav{ position:relative; z-index:1; }
 .proj-media{ border-radius:var(--r); overflow:hidden; border:1px solid var(--line-2); aspect-ratio:3/2; }
 .proj-media img{ width:100%; height:100%; object-fit:cover; transition:transform .9s var(--ease); }
 .proj:hover .proj-media img{ transform:scale(1.04); }
-.proj h3{ font-size:clamp(1.15rem,1.85vw,1.6rem); font-weight:500; letter-spacing:-.03em; }
-.proj .sector{ font-size:13px; color:var(--warm); letter-spacing:.05em; }
+.proj h3{ font-size:clamp(1.15rem,1.85vw,1.6rem); font-weight:400; letter-spacing:-.03em; }
+.proj .sector{ font-size:13px; color:var(--sienna); letter-spacing:.05em; }
 .proj p{ color:var(--mute); font-size:15px; max-width:44ch; }
 .also{ margin-top:clamp(44px,5vw,72px); padding-top:26px; border-top:1px solid var(--line-2); color:var(--mute); font-size:15.5px; max-width:62ch; }
-.also b{ color:var(--paper); font-weight:500; }
+.also b{ color:var(--ink); font-weight:500; }
 @media (max-width:860px){ .grid{ grid-template-columns:1fr; } .proj:nth-child(even){ margin-top:0; } }
 
 /* ---------------- practice ---------------- */
@@ -216,51 +236,51 @@ main, .nav{ position:relative; z-index:1; }
   display:grid; grid-template-columns:.5fr 1.5fr; gap:clamp(20px,4vw,64px);
   padding:clamp(24px,3vw,38px) 0; border-top:1px solid var(--line-2); align-items:baseline;
 }
-.row h3{ font-size:clamp(1.05rem,1.6vw,1.35rem); font-weight:500; letter-spacing:-.02em; color:var(--warm); }
+.row h3{ font-size:clamp(1.05rem,1.6vw,1.35rem); font-weight:400; letter-spacing:-.02em; color:var(--sienna); }
 .row p{ color:var(--mute); font-size:clamp(15px,1.3vw,17px); max-width:58ch; }
 @media (max-width:860px){ .row{ grid-template-columns:1fr; gap:10px; } }
 
 .toolrow{ display:flex; flex-wrap:wrap; align-items:center; gap:clamp(24px,4vw,54px); margin-top:clamp(40px,5vw,64px); padding-top:34px; border-top:1px solid var(--line-2); }
 .tool{
-  width:26px; height:26px; background:var(--paper); opacity:.42;
+  width:26px; height:26px; background:var(--ink); opacity:.42;
   -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
   -webkit-mask-position:center; mask-position:center;
   -webkit-mask-size:contain; mask-size:contain;
   transition:opacity .35s var(--ease), background .35s var(--ease), transform .35s var(--ease);
 }
-.tool:hover{ opacity:1; background:var(--warm); transform:translateY(-3px); }
+.tool:hover{ opacity:1; background:var(--sienna); transform:translateY(-3px); }
 
 /* ---------------- about ---------------- */
 .about-grid{ display:grid; grid-template-columns:1fr 1fr; gap:clamp(30px,6vw,110px); align-items:start; }
 .about-copy{ display:grid; gap:20px; }
 .about-copy p{ color:var(--mute); font-size:clamp(15.5px,1.32vw,17.5px); max-width:54ch; }
-.about-copy p strong{ color:var(--paper); font-weight:500; }
+.about-copy p strong{ color:var(--ink); font-weight:500; }
 .cv{ margin-top:clamp(40px,5vw,70px); }
 .cv-row{ display:grid; grid-template-columns:1.3fr 1fr auto; gap:20px; align-items:baseline; padding:17px 0; border-bottom:1px solid var(--line-2); }
 .cv-row:first-child{ border-top:1px solid var(--line); }
-.cv-role{ font-family:var(--display); font-weight:500; font-size:clamp(15px,1.4vw,18px); letter-spacing:-.02em; }
+.cv-role{ font-family:var(--display); font-weight:400; font-size:clamp(15px,1.4vw,18px); letter-spacing:-.02em; }
 .cv-org{ color:var(--mute); font-size:14.5px; }
-.cv-yr{ color:var(--warm); font-size:13.5px; white-space:nowrap; }
+.cv-yr{ color:var(--sienna); font-size:13.5px; white-space:nowrap; }
 @media (max-width:860px){ .about-grid{ grid-template-columns:1fr; } .cv-row{ grid-template-columns:1fr auto; } .cv-org{ grid-column:1/-1; } }
 
 /* ---------------- contact ---------------- */
 .contact{ padding:clamp(90px,13vw,190px) 0 clamp(46px,6vw,80px); border-top:1px solid var(--line-2); }
 .contact h2{ font-size:clamp(2.2rem,6.4vw,5.6rem); font-weight:300; letter-spacing:-.04em; max-width:15ch; line-height:1.04; }
-.contact h2 em{ font-style:normal; color:var(--warm); }
+.contact h2 em{ font-style:normal; color:var(--sienna); }
 .mailto{
   display:inline-block; margin-top:clamp(30px,4vw,48px);
-  font-family:var(--display); font-weight:500; letter-spacing:-.025em;
+  font-family:var(--display); font-weight:400; letter-spacing:-.025em;
   font-size:clamp(1.05rem,2.5vw,2.1rem); position:relative; padding-bottom:8px;
 }
 .mailto::after{
   content:""; position:absolute; left:0; bottom:0; height:1.5px; width:100%;
-  background:var(--warm); transform:scaleX(0); transform-origin:left;
+  background:var(--sienna); transform:scaleX(0); transform-origin:left;
   transition:transform .6s var(--ease);
 }
 .mailto:hover::after{ transform:scaleX(1); }
 .socials{ display:flex; flex-wrap:wrap; gap:clamp(20px,3vw,42px); margin-top:clamp(38px,5vw,60px); }
 .socials a{ color:var(--mute); font-size:15px; transition:color .3s var(--ease); }
-.socials a:hover{ color:var(--warm); }
+.socials a:hover{ color:var(--sienna); }
 .foot{ margin-top:clamp(52px,7vw,96px); padding-top:24px; border-top:1px solid var(--line-2); display:flex; flex-wrap:wrap; gap:16px; justify-content:space-between; color:var(--mute); font-size:13px; }
 
 /* ---------------- reveals ----------------
@@ -310,7 +330,7 @@ main, .nav{ position:relative; z-index:1; }
 <!-- ============ HERO ============ -->
 <header class="hero" id="top">
   <div class="wrap">
-    <h1 class="rise">Designing the space between people and <em>machines</em>.</h1>
+    <h1 class="rise"><span class="script">Designing</span> the space between people and <em>machines</em>.</h1>
     <p class="hero-lead rise">
       <b>Sanjay Chauhan.</b> Senior product designer at ZERO, working in Mumbai.
       Engineer turned designer, which mostly means I care whether the thing can be built.
