@@ -1537,6 +1537,7 @@ function setCap(text,listening){ const c=$('cap');
 /* Content area = Zero speaking. One title, never body text, never a button. */
 let qWide=false;
 function turn(o){
+  clearScripted();
   const myGen=gen;
   const t=mk('div','turn'); t.id='turn'; locked=false;
   const q=mk('div','q'+(qWide?' wide':'')); t.appendChild(q);
@@ -1554,6 +1555,8 @@ function turn(o){
   }, old?300:0);
   return {t,box};
 }
+/* a scripted line belongs to the screen that set it */
+function clearScripted(){ SCRIPTED=null; SCRIPTED_SAY=null; }
 function clearTurn(){ const t=$('turn');
   if(t){ gsap.to(t,{opacity:0,y:-30,scale:.97,filter:'blur(10px)',duration:.36,ease:'power2.in'});
     setTimeout(()=>{ if(t.isConnected) t.remove(); },460); } }
@@ -1709,6 +1712,10 @@ function voiceDock(onText,extra){
   kb.onclick=()=>{ if(locked)return; sfx('tick'); dockMode='type'; typeDock(onText,extra); };
   mic.onclick=async()=>{
     if(locked) return;
+    /* Until the recogniser is really wired, tapping the mic plays the scripted
+       answer as a live transcript. This replaces the dev pills, which sat where
+       a title and subtitle sit and coloured how the whole screen read. */
+    if(SCRIPTED&&sayScripted()) return;
     if(micState==='granted'){ startRecording(onText); return; }
     /* the tap is the intent, so this is the moment to ask */
     mic.classList.add('waiting');
@@ -1852,19 +1859,32 @@ function startRecording(onText){
 }
 /* Zero's own visuals live in the content area */
 /* what the user would have said, one click. Dev affordance only. */
+/* The pills sat where a title and subtitle sit, so they read as part of the
+   screen however quiet they were. The scripted answer moves onto the mic
+   instead: tapping it types the line out like a live transcript and sends it.
+   One path, not a menu - a menu of things you might say is still a form. */
 function devPills(box,lines,onSay){
-  const w=mk('div','dev');
-  w.appendChild(mk('div','devl','dev · what they would say'));
-  const r=mk('div','devr');
-  lines.forEach(t=>{ const b=mk('button','devp','\u201c'+t+'\u201d');
-    /* Must NOT set locked before calling onSay: every receiver guards with
-       `if(locked) return`, so locking here makes the pill cancel its own click.
-       Same trap the recorder's finish() carries a note about. */
-    b.onclick=()=>{ if(locked) return; sfx('tick'); onSay(t); };
-    r.appendChild(b); });
-  w.appendChild(r); box.appendChild(w);
-  enter([w],{y:14,blur:8,duration:.5},1200);
-  return w;
+  SCRIPTED=lines&&lines[0]?lines[0]:null;
+  SCRIPTED_SAY=onSay||null;
+  return null;
+}
+let SCRIPTED=null, SCRIPTED_SAY=null;
+/* types the scripted line into the field the way a transcript lands, then
+   sends it, so the mic behaves the way it will once it is really listening */
+function sayScripted(){
+  const text=SCRIPTED, fn=SCRIPTED_SAY;
+  if(!text||!fn||locked) return false;
+  const f=document.querySelector('.dfield input')||document.querySelector('.dfield textarea');
+  sfx('tick');
+  if(!f){ fn(text); return true; }
+  f.value=''; f.focus();
+  let i=0;
+  const t=setInterval(()=>{
+    f.value=text.slice(0,++i);
+    f.dispatchEvent(new Event('input',{bubbles:true}));
+    if(i>=text.length){ clearInterval(t); setTimeout(()=>{ if(!locked) fn(text); },340); }
+  },17);
+  return true;
 }
 function chipsRow(box,items,onPick){
   const ch=mk('div','chips');
@@ -2481,8 +2501,8 @@ async function lightsUp(){
 async function visionStage(fromEdit){
   atStep('Vision');
   await lightsUp();
-  /* here, and only here: the cards are played, the preferences confirmed, and
-     Zero finally has enough to synthesise rather than record */
+  /* the drawer opens again: the cards are played and confirmed, so there is
+     finally something worth adding that a single pick could not have told us */
   boardLive=true;
   if(fromEdit){ swapPanel('Your vision board',s2=>{ s2.classList.add('ctr');
     const vb=mk('div','vb'); vb.id='vb';
@@ -3724,9 +3744,10 @@ function reflectPivot(){
 }
 async function cardsIntroStage(){
   atStep('Cards intro');
-  /* The LinkedIn board stays. Zero is still working the user out through the
-     cards, and each pick lands on that board. The Zero vision board is not
-     built until Zero has the whole picture, which is the vision step. */
+  /* The board is a drawer and this is where it shuts. The cards are the whole
+     event and anything else on screen competes with them - and no single pick
+     is interpretable yet anyway, so there is nothing honest to add. */
+  boardLive=false;
   setPhase(1);
   clearTurn(); dockHide(); await wait(380);
   /* every other handoff restates what they just said; this was the only one
@@ -4974,9 +4995,14 @@ function dbgGoto(i){
   /* the panel exists from the moment Zero starts writing things down */
   /* panel opens at the read-back (2) and widens once the board is the subject (8) */
   const born=i>=3, wide=i>=9;
-  /* the Zero board only exists once Zero has the whole picture; before the
-     vision step the panel is the LinkedIn board */
-  const zeroBoard=i>=9;
+  /* One board. It is the user's, not LinkedIn's and not Zero's, so it holds
+     whatever has been learned by the step being shown. */
+  /* ...but it is a drawer, and the cards are where it shuts. Gate on the step
+     title, not its index, so inserting a step cannot silently reopen it. */
+  const title=(DBG_STEPS[i]||[''])[0]||'';
+  /* the cards, the read-out and the confirmation screens all want the whole
+     screen: "इसमें vision board होने की जरूरत नहीं है" */
+  const zeroBoard=!/^(Cards|Reflection|Preferences)/.test(title);
   if(born&&!zeroBoard){
     panelBorn=true; boardLive=false;
     gsap.set('.right',{width:panelPref?panelPref+'px':'40%',opacity:1,x:0});
