@@ -754,6 +754,24 @@ body.rszing iframe{ pointer-events:none; }   /* the drag must not fall into an e
 /* a pair the choices never actually compared should not pretend to a rank */
 .pftie{ border:1px dashed var(--line); border-radius:14px; padding:9px 14px;
   font-size:11.5px; color:var(--tx-4); }
+
+/* ---- asking before the browser asks ------------------------------------- */
+.mkask{ display:flex; flex-direction:column; align-items:center; gap:14px; margin-top:26px; }
+.mkline{ font-size:14.5px; color:var(--tx-2); letter-spacing:-.012em; text-align:center; }
+.mkrow{ display:flex; gap:9px; }
+.mkb{ cursor:pointer; border-radius:999px; padding:10px 20px; font-size:13.5px;
+  font-weight:500; letter-spacing:-.01em; border:1px solid var(--line);
+  background:var(--card); color:var(--tx); transition:transform .18s, box-shadow .2s; }
+.mkb:hover{ transform:translateY(-1px); box-shadow:0 8px 20px rgba(0,0,0,.10); }
+.mkb.ghost{ background:transparent; color:var(--tx-3); }
+/* a pointer to where the browser's own dialog will appear, so the real prompt
+   is the answer to a question rather than an ambush */
+.mkpoint{ position:fixed; left:26px; top:14px; z-index:120; display:flex; align-items:center;
+  gap:9px; pointer-events:none; opacity:0; }
+.mkpoint span{ font-size:12px; color:var(--tx-2); background:var(--card);
+  border:1px solid var(--line); border-radius:999px; padding:6px 12px;
+  box-shadow:0 10px 26px rgba(0,0,0,.16); }
+.mkarrow{ width:16px; height:16px; color:var(--tx-3); }
 /* ---- paired role cards, as a deck ---------------------------------------- */
 .rcwrap{ width:100%; max-width:760px; margin:0 auto; }
 /* A short perspective is what makes the rotation read as depth. At 1100 the
@@ -1507,6 +1525,103 @@ function dockFinal(label,fn){
   dockIn(wrap);
 }
 /* the conversation input: mic by default, keyboard optional, both always swappable */
+/* ------------------------------------------------------- microphone access --
+   The browser's permission dialog is the harshest interruption in the flow, so
+   Zero asks for it first, in its own voice. The native prompt then reads as the
+   answer to a question rather than as something that jumped the user.
+
+   Every branch has to be handled or the flow strands: denied must never
+   re-prompt in a loop, dismissed gets one more chance later, and a machine with
+   no microphone at all should simply never be offered one. */
+let micState='unknown';       /* unknown | granted | denied | dismissed | absent */
+let micAsked=false;
+
+async function micProbe(){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){ micState='absent'; return micState; }
+  try{
+    if(navigator.permissions&&navigator.permissions.query){
+      const st=await navigator.permissions.query({name:'microphone'});
+      if(st.state==='granted') micState='granted';
+      else if(st.state==='denied') micState='denied';
+      st.onchange=()=>{ micState=st.state==='granted'?'granted':st.state==='denied'?'denied':'unknown'; };
+    }
+  }catch(e){}
+  return micState;
+}
+function micPointer(show){
+  let el=document.querySelector('.mkpoint');
+  if(show){
+    if(!el){ el=mk('div','mkpoint');
+      el.innerHTML='<span>Your browser will ask up here</span>';
+      document.body.appendChild(el); }
+    safeTL(gsap.timeline().fromTo(el,{opacity:0,y:-8},{opacity:1,y:0,duration:.4}),800);
+  } else if(el){
+    safeTL(gsap.timeline({onComplete:()=>{ if(el.isConnected) el.remove(); }})
+      .to(el,{opacity:0,y:-8,duration:.3}),700);
+  }
+}
+/* Ask, then ask. Resolves true only if the microphone is actually usable. */
+async function micRequest(){
+  await micProbe();
+  if(micState==='granted') return true;
+  if(micState==='absent')  return false;
+  if(micState==='denied'){
+    /* never loop a denied permission: say so once and stay on the keyboard */
+    await reflect('Your browser is holding the mic back. I will read instead.',2200);
+    return false;
+  }
+  micPointer(true);
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    stream.getTracks().forEach(t=>t.stop());     /* we only needed the answer */
+    micState='granted'; micPointer(false);
+    return true;
+  }catch(e){
+    micPointer(false);
+    const name=String(e&&e.name||'');
+    micState=(name==='NotAllowedError')?'denied':(name==='NotFoundError'?'absent':'dismissed');
+    if(micState==='denied') await reflect('No problem. I will read instead.',1900);
+    return false;
+  }
+}
+/* Zero's own ask, shown before the browser's. Returns true if we may listen. */
+function micInvite(box,onReady){
+  const w=mk('div','mkask');
+  w.appendChild(mk('div','mkline','I can hear you better than I can read you.'));
+  const row=mk('div','mkrow');
+  const yes=mk('button','mkb','Turn on my mic');
+  const no=mk('button','mkb ghost','I will type');
+  row.appendChild(yes); row.appendChild(no);
+  w.appendChild(row);
+  box.appendChild(w);
+  enter([w],{y:12,blur:6,duration:.5},1100);
+  yes.onclick=async()=>{
+    if(locked) return;
+    yes.disabled=true; sfx('tick');
+    const ok=await micRequest();
+    micAsked=true;
+    safeTL(gsap.timeline({onComplete:()=>{ if(w.isConnected) w.remove(); }})
+      .to(w,{opacity:0,y:-8,duration:.3}),700);
+    onReady(ok);
+  };
+  no.onclick=()=>{ if(locked) return; sfx('tick'); micAsked=true;
+    safeTL(gsap.timeline({onComplete:()=>{ if(w.isConnected) w.remove(); }})
+      .to(w,{opacity:0,y:-8,duration:.3}),700);
+    onReady(false); };
+}
+/* The one entry point every open question should use: voice when we can have
+   it, keyboard when we cannot, and Zero asking before the browser does. */
+function askOpen(box,onText,opts){
+  opts=opts||{};
+  const start=ok=>{
+    dockMode = ok ? 'voice' : 'type';
+    if(ok) voiceDock(onText,opts.extra); else typeDock(onText,opts.extra);
+  };
+  if(micState==='granted'){ start(true); return; }
+  if(micState==='absent'||micState==='denied'||micAsked){ start(micState==='granted'); return; }
+  micInvite(box,start);
+}
+micProbe();
 function dockInput(onText,extra){
   if(dockMode==='voice') voiceDock(onText,extra); else typeDock(onText,extra);
 }
@@ -3286,7 +3401,7 @@ async function readbackStage(){
     "That feels right. I started in graphic design, did an internship there, but recently I've been looking more into product design.",
     "Mostly right, though I've moved away from graphics. Product design is the direction I want to explore."
   ],handleNote);
-  dockInput(handleNote);
+  askOpen(box,handleNote);
   function handleNote(text){
     if(locked) return; locked=true;
     P.about=text;
@@ -3329,7 +3444,7 @@ async function pivotStage(pv){
     "It feels like where things are moving. AI is changing everything and that makes me a little nervous too. I want to solve real problems and build a career I can grow in.",
     "I want to work on products people actually use, not just make things look good."
   ],handle);
-  dockInput(handle);
+  askOpen(box,handle);
   function handle(text){
     if(locked) return; locked=true;
     P.why=text;
