@@ -624,6 +624,94 @@ body.dark .rdy{ background:linear-gradient(140deg,rgba(74,222,128,.12),rgba(200,
 .rcite{ display:flex; flex-wrap:wrap; gap:8px; margin:20px 0 4px; }
 .rcite span{ font-size:11px; color:var(--tx-4); border:1px solid var(--line);
   border-radius:999px; padding:4px 10px; letter-spacing:.01em; }
+
+
+
+.rdo{ display:flex; flex-direction:column; gap:16px; margin-top:8px; max-width:640px; }
+.rdol p{ font-size:19px; line-height:1.5; color:var(--tx); letter-spacing:-.016em; }
+/* the citation is the proof, so it reads as a quiet aside, not debug output */
+.rdoc{ display:block; margin-top:6px; font-size:12px; color:var(--tx-4); letter-spacing:.002em; }
+/* ---- how Zero works ----------------------------------------------------- */
+.hz{ position:absolute; inset:0; padding:0 0 30px; }
+.hzframe{ width:100%; height:100%; border:0; background:transparent; border-radius:18px; }
+.hzhold{ position:absolute; inset:0; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:10px; text-align:center; padding:40px; }
+.hzhold b{ font-size:14px; font-weight:600; color:var(--tx-2); letter-spacing:-.01em; }
+.hzhold span{ font-size:12px; color:var(--tx-4); max-width:330px; line-height:1.5; }
+/* a pill is a live control inside a sentence, so it has to read as one without
+   shouting over the words around it */
+.hzp{ display:inline; cursor:pointer; border-bottom:1.5px solid var(--tx-4);
+  padding-bottom:1px; transition:color .2s, border-color .2s; }
+.hzp:hover{ color:var(--tx); border-color:var(--ink); }
+.hzp.on{ color:var(--tx); border-color:var(--ink); }
+.hzdots{ display:flex; gap:6px; margin-top:26px; }
+.hzdots i{ width:6px; height:6px; border-radius:50%; background:var(--tx-4); transition:all .3s; }
+.hzdots i.on{ width:18px; border-radius:3px; background:var(--ink); }
+/* ---- roles, with fit ---------------------------------------------------- */
+.jr{ display:flex; flex-direction:column; gap:12px; }
+.jrc{ position:relative; background:var(--card); border:1px solid var(--line);
+  border-radius:18px; padding:18px 20px; text-align:left; }
+.jrtier{ display:inline-flex; align-items:center; gap:7px; font-size:10.5px;
+  font-weight:600; letter-spacing:.05em; color:var(--tx-3); margin-bottom:11px; }
+.jrbar{ display:inline-flex; gap:3px; }
+.jrbar i{ width:13px; height:3px; border-radius:2px; background:var(--tx-4); }
+.jrbar i.on{ background:var(--ink); }
+.jrtier.top{ color:var(--tx); }
+.jrhead{ display:flex; align-items:center; gap:10px; margin-bottom:7px; }
+.jrlogo{ width:28px; height:28px; border-radius:8px; background:#fff; flex:0 0 28px;
+  border:1px solid var(--line); display:flex; align-items:center; justify-content:center; }
+.jrlogo svg{ width:16px; height:16px; }
+.jrt{ font-size:15px; font-weight:600; color:var(--tx); letter-spacing:-.018em; }
+.jrm{ font-size:12px; color:var(--tx-3); margin-bottom:9px; }
+.jrd{ font-size:13.5px; line-height:1.5; color:var(--tx-2); }
+/* the reason, set apart by space rather than a rule */
+.jrwhy{ margin-top:13px; font-size:12.5px; line-height:1.45; color:var(--tx-3); }
+.jrwhy b{ font-weight:600; color:var(--tx-2); }
+/* ---- preference screens ------------------------------------------------ */
+.pfx{ width:100%; max-width:760px; margin:0 auto; }
+.pfxtop{ display:flex; align-items:center; justify-content:space-between;
+  margin:0 2px 22px; font-size:12px; color:var(--tx-3); letter-spacing:.02em; }
+.pfxnum{ font-variant-numeric:tabular-nums; }
+.pfxwhy{ font-size:11.5px; color:var(--tx-4); margin-top:16px; letter-spacing:.005em; }
+/* bubbles: the centre is what the choices said, the rest are still reachable */
+.pfbub{ position:relative; height:330px; max-width:430px; margin:0 auto; }
+.pfb{ position:absolute; border-radius:50%; padding:0; box-sizing:border-box; flex:0 0 auto; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; text-align:center; cursor:pointer;
+  border:1px solid var(--line); background:var(--wash); color:var(--tx-2);
+  transition:transform .3s var(--e,cubic-bezier(.625,.05,0,1)), background .3s, color .3s, border-color .3s; }
+.pfb:hover{ transform:scale(1.05); }
+.pfb b{ font-size:13.5px; font-weight:600; letter-spacing:-.01em; }
+.pfb span{ font-size:10.5px; opacity:.62; margin-top:3px; padding:0 12px; line-height:1.35; }
+.pfb.pfmid{ background:var(--ink); color:var(--on-ink); border-color:var(--ink); }
+.pfb.pfmid b{ font-size:15px; }
+.pfb.pfmid span{ opacity:.7; }
+/* two-panel choices */
+.pftwo{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.pfp{ text-align:left; cursor:pointer; background:var(--card); border:1px solid var(--line);
+  border-radius:18px; padding:20px; transition:border-color .22s, transform .22s, box-shadow .22s; }
+.pfp:hover{ transform:translateY(-2px); box-shadow:0 10px 26px rgba(0,0,0,.07); }
+.pfp.on{ border-color:var(--ink); box-shadow:0 12px 30px rgba(0,0,0,.1); }
+.pfp h4{ font-size:17px; font-weight:600; color:var(--tx); letter-spacing:-.02em; }
+.pfp p{ font-size:13px; color:var(--tx-3); margin-top:6px; line-height:1.45; }
+/* an inference is not a verification, so it does not get the green */
+.pfsel{ display:inline-block; margin-top:12px; font-size:11.5px; font-weight:600;
+  color:var(--tx-2); letter-spacing:-.005em; }
+/* ranked, reorderable */
+.pfrank{ display:flex; flex-direction:column; gap:8px; }
+.pfr{ display:flex; align-items:center; gap:13px; background:var(--card);
+  border:1px solid var(--line); border-radius:14px; padding:13px 15px; cursor:grab; }
+.pfr.drag{ opacity:.45; }
+.pfr.over{ border-color:var(--ink); }
+.pfrn{ width:22px; height:22px; border-radius:50%; background:var(--wash); flex:0 0 22px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:600; color:var(--tx-2); }
+.pfrt{ flex:1; min-width:0; }
+.pfrt b{ display:block; font-size:14px; font-weight:600; color:var(--tx); letter-spacing:-.015em; }
+.pfrt span{ display:block; font-size:11.5px; color:var(--tx-3); margin-top:1px; }
+.pfgrip{ color:var(--tx-4); font-size:13px; letter-spacing:1px; }
+/* a pair the choices never actually compared should not pretend to a rank */
+.pftie{ border:1px dashed var(--line); border-radius:14px; padding:9px 14px;
+  font-size:11.5px; color:var(--tx-4); }
 /* ---- paired role cards ------------------------------------------------- */
 .rcwrap{ width:100%; max-width:900px; margin:0 auto; }
 .rcmeta{ display:flex; align-items:center; justify-content:space-between;
@@ -650,7 +738,8 @@ body.dark .rdy{ background:linear-gradient(140deg,rgba(74,222,128,.12),rgba(200,
 .rcrole{ font-size:12.5px; color:var(--tx-3); margin-top:1px; }
 .rcp{ font-size:15px; line-height:1.5; color:var(--tx-2); letter-spacing:-.012em;
   margin-bottom:auto; }
-.rcfoot{ margin-top:18px; padding-top:14px; border-top:1px solid var(--line-2);
+/* separated by space, not by a rule that carries no meaning */
+.rcfoot{ margin-top:20px; padding-top:2px;
   display:flex; align-items:flex-end; justify-content:space-between; gap:12px; }
 .rcloc{ font-size:12.5px; color:var(--tx-2); }
 .rcpay{ text-align:right; }
@@ -2039,7 +2128,7 @@ function visionStage(fromEdit){
   choices(box,[['spark','Reveal the perfect roles for me','ok'],['pen','Fix one thing','fix'],
     ['plus','Add more','more']],v=>{
     if(v==='ok'){ sfx('success'); retireMeter(); boardRewards=true;
-      clearTurn(); dockHide(); setTimeout(transformStage,520); }
+      clearTurn(); dockHide(); setTimeout(rolesStage,520); }
     else if(v==='fix'){ go(editStage); }
     else { go(addMoreStage); } },{pill:true,nomorph:true});
 }
@@ -2250,19 +2339,6 @@ async function addRoleCards(){
     wrapR.appendChild(c2);
   });
   await ghostIn(wrapR,236,640);
-}
-function transformStage(){
-  setPhase(1);
-  line(P.name?'Then here is where you land, '+P.name+'.':'Then here is where that lands.');
-  revealSequence(()=>{ swapPanel(P.name?P.name+', you belong here':'Where you belong',buildBelong,false,true); },
-    async ()=>{
-      await wait(500);
-      addRoleCards();
-      await wait(1500);
-      /* the roles were already chosen in the listings. Asking again here was
-         the flow forgetting what it had just been told. */
-      synthesisStage();
-    });
 }
 
 /* ============================ 18 · calibrate ============================ */
@@ -2837,10 +2913,21 @@ async function pivotStage(pv){
 }
 
 /* ---- 5 - handing over to the cards -------------------------------------- */
+/* say back the thing they actually told us, not a generic nod */
+function reflectPivot(){
+  const t=String(P.why||'').toLowerCase();
+  if(/real problem|actually use|people use/.test(t)) return 'Real problems, on things people actually use. Noted.';
+  if(/grow|career/.test(t))                          return 'Somewhere you can keep growing. Noted.';
+  if(/ai|nervous|uncertain|figur/.test(t))           return 'Still figuring out where AI lands. That is fair.';
+  return 'Got it. That helps more than you would think.';
+}
 async function cardsIntroStage(){
   atStep('Cards intro');
   setPhase(1);
   clearTurn(); dockHide(); await wait(380);
+  /* every other handoff restates what they just said; this was the only one
+     that did not, after the most personal answer in the flow */
+  if(P.why) await voLine(reflectPivot(),2400);
   await voLine('Okay, '+P.name+'. Two roles at a time.',1900);
   await voLine("Both close to where you're headed.",2000);
   await voLine("Each time, pick the one that feels more like you. There isn't a perfect answer.",3000);
@@ -2872,7 +2959,7 @@ const RCARD={
    city:'SF Bay Area',pay:'US$177K',band:'US$146-209K',
    t:{world:'b2c',shape:'individual',ethos:'established',type:'commerce',domain:'everyday_utility',city:'san_francisco',level:'mid',compPct:.55}},
  doordash_tor:{co:'DoorDash',role:'Product Designer',
-   problem:'Solve a visible consumer problem, in the city you keep choosing.',
+   problem:'Solve a visible consumer problem for people ordering dinner.',
    city:'Toronto',pay:'CA$80K',band:'CA$66-94K',
    t:{world:'b2c',shape:'individual',ethos:'established',type:'commerce',domain:'everyday_utility',city:'toronto',level:'mid',compPct:.55}},
  adobe_sf_assoc:{co:'Adobe',role:'Associate Product Designer',
@@ -2884,7 +2971,7 @@ const RCARD={
    city:'SF Bay Area',pay:'US$177K',band:'US$146-209K',
    t:{world:'b2c',shape:'individual',ethos:'established',type:'creator',domain:'creator_tools',city:'san_francisco',level:'mid',compPct:.55}},
  adobe_sf_rich:{co:'Adobe',role:'Product Designer',
-   problem:'Make creative work feel simple and expressive. Higher package.',
+   problem:'Make creative work feel simple and expressive.',
    city:'SF Bay Area',pay:'US$200K',band:'US$146-209K',
    t:{world:'b2c',shape:'individual',ethos:'established',type:'creator',domain:'creator_tools',city:'san_francisco',level:'mid',compPct:.86}},
  salesforce_sf:{co:'Salesforce',role:'Product Designer',
@@ -2896,7 +2983,7 @@ const RCARD={
    city:'SF Bay Area',pay:'US$186K',band:'US$146-209K',src:'Levels.fyi, Jul 2026',
    t:{world:'b2b',shape:'collaborative',ethos:'established',type:'saas',domain:'team_tools',city:'san_francisco',level:'mid',compPct:.63}},
  salesforce_sf_rich:{co:'Salesforce',role:'Product Designer',
-   problem:'Build systems that make business work easier. Higher package.',
+   problem:'Build systems that make business work easier.',
    city:'SF Bay Area',pay:'US$200K',band:'US$146-209K',
    t:{world:'b2b',shape:'collaborative',ethos:'established',type:'saas',domain:'team_tools',city:'san_francisco',level:'mid',compPct:.86}},
  figma_sf:{co:'Figma',role:'Product Designer',
@@ -2908,7 +2995,7 @@ const RCARD={
    city:'SF Bay Area',pay:'US$190K',band:'US$146-209K',src:'Levels.fyi, Jul 2026',
    t:{world:'b2b',shape:'collaborative',ethos:'frontier',type:'saas',domain:'team_tools',city:'san_francisco',level:'mid',compPct:.68}},
  figma_sf_lean:{co:'Figma',role:'Product Designer',
-   problem:'Build collaborative tools for teams. Lower package.',
+   problem:'Build collaborative tools for teams.',
    city:'SF Bay Area',pay:'US$155K',band:'US$146-209K',
    t:{world:'b2b',shape:'collaborative',ethos:'frontier',type:'saas',domain:'team_tools',city:'san_francisco',level:'mid',compPct:.24}},
  figma_tor:{co:'Figma',role:'Product Designer',
@@ -2916,7 +3003,7 @@ const RCARD={
    city:'Toronto',pay:'CA$80K',band:'CA$66-94K',
    t:{world:'b2b',shape:'collaborative',ethos:'frontier',type:'saas',domain:'team_tools',city:'toronto',level:'mid',compPct:.55}},
  figma_tor_rich:{co:'Figma',role:'Product Designer',
-   problem:'The same collaboration work, in your top Canadian city.',
+   problem:'Design tools that help teams turn ideas into work together.',
    city:'Toronto',pay:'CA$90K',band:'CA$66-94K',
    t:{world:'b2b',shape:'collaborative',ethos:'frontier',type:'saas',domain:'team_tools',city:'toronto',level:'mid',compPct:.86}},
  openai_sf:{co:'OpenAI',role:'Product Designer',
@@ -2924,11 +3011,11 @@ const RCARD={
    city:'SF Bay Area',pay:'US$177K',band:'US$146-209K',
    t:{world:'b2c',shape:'collaborative',ethos:'frontier',type:'ai_frontier',domain:'ai_interaction',city:'san_francisco',level:'mid',compPct:.55}},
  openai_sf_lean:{co:'OpenAI',role:'Product Designer',
-   problem:'Make frontier AI useful and trustworthy. Lower package.',
+   problem:'Make frontier AI useful and trustworthy.',
    city:'SF Bay Area',pay:'US$155K',band:'US$146-209K',
    t:{world:'b2c',shape:'collaborative',ethos:'frontier',type:'ai_frontier',domain:'ai_interaction',city:'san_francisco',level:'mid',compPct:.24}},
  openai_tor:{co:'OpenAI',role:'Product Designer',
-   problem:'Make frontier AI understandable, in your higher-ranked city.',
+   problem:'Make frontier AI understandable to the people using it.',
    city:'Toronto',pay:'CA$90K',band:'CA$66-94K',
    t:{world:'b2c',shape:'collaborative',ethos:'frontier',type:'ai_frontier',domain:'ai_interaction',city:'toronto',level:'mid',compPct:.86}},
  google_sf:{co:'Google',role:'Product Designer',
@@ -3174,7 +3261,7 @@ function rcard(id,side,keep){
   const d=RCARD[id];
   const b=mk('button','rcd'+(keep?' kept':''));
   b.dataset.side=side;
-  if(keep) b.appendChild(mk('span','rckeep','STILL HERE'));
+  if(keep) b.appendChild(mk('span','rckeep','Still here'));
   const h=mk('div','rchead');
   const lg=mk('span','rclogo',rlogo(d.co));
   const id2=mk('div');
@@ -3224,7 +3311,12 @@ async function cardsStage(){
   const keptSide=prev&&round.hold?round.hold:null;
   const A=rcard(round.a,'a',keptSide==='a'&&prev&&prev.a===round.a);
   const B=rcard(round.b,'b',keptSide==='b'&&prev&&prev.b===round.b);
-  row.appendChild(A); row.appendChild(B);
+  /* Every location round happens to carry its expected answer on side a, so
+     always drawing a on the left would let plain left-position bias produce
+     exactly the conclusion the read-out draws. Flip on odd rounds - stable per
+     round, so stepping back and forth does not reshuffle under the user. */
+  if(round.n%2===0){ row.appendChild(B); row.appendChild(A); }
+  else { row.appendChild(A); row.appendChild(B); }
   wrap.appendChild(row);
   box.appendChild(wrap);
   enter([meta],{y:10,blur:6,duration:.45},900);
@@ -3301,18 +3393,462 @@ async function reflectStage(){
   clearTurn(); dockHide(); await wait(420);
   if(myGen!==gen) return;
   const r=rreadout();
-  await voLine("Here's what I heard from your choices.",2100);
-  for(const l of r.lines){ if(myGen!==gen) return; await voLine(l,Math.max(2200,l.length*42)); }
+  await voLine("Here's what I heard from your choices.",2000);
   if(myGen!==gen) return;
-  const {box}=turn({q:"Anything you'd want to change?"});
-  /* the citation is the persuasive payload: they can see the rounds */
-  const cite=mk('div','rcite');
-  cite.innerHTML=r.cites.map(c=>'<span>'+c.c+' &middot; rounds '+c.rounds.join(', ')+'</span>').join('');
-  box.appendChild(cite);
+  /* The claims are the thing being agreed to, so they stay on screen together
+     instead of each one wiping the last. This also gets them out of the .q
+     headline, which is sized for a question, not for three sentences. */
+  const {box}=turn({q:"Here's what I heard."});
+  await wait(340);
+  if(myGen!==gen) return;
+  const list=mk('div','rdo');
+  r.lines.forEach((l,i)=>{
+    const row=mk('div','rdol');
+    row.appendChild(mk('p',null,l));
+    const c=r.cites[i];
+    if(c&&c.rounds&&c.rounds.length)
+      row.appendChild(mk('span','rdoc','you chose this in round'+(c.rounds.length>1?'s ':' ')+c.rounds.join(', ')));
+    list.appendChild(row);
+  });
+  box.appendChild(list);
+  enter(Array.from(list.children),{y:12,blur:6,stagger:.14,duration:.6},2000);
+  await wait(360+r.lines.length*160);
+  if(myGen!==gen) return;
+  /* two doors that actually go somewhere different */
   choices(box,[['check','That is me','ok'],['pen','Let me adjust it','edit']],v=>{
-    go(prefStage);
+    if(v==='ok'){ PFAT=0; psyncP(); go(()=>visionStage(false)); }
+    else go(prefStage);
   },{pill:true,nomorph:true});
-  enter([cite],{y:8,blur:5,duration:.5},900);
+}
+
+
+/* ------------------------------------------------------------ preferences --
+   Six screens, all pre-answered. Editing never touches the tallies: an
+   override is stored beside them, so a claim can still cite the rounds that
+   produced it - or say "you told me this" when it cannot. */
+const PFOVERRIDE={};
+function presolve(k){
+  if(PFOVERRIDE[k]!==undefined) return PFOVERRIDE[k];
+  if(k==='location') return rrank('location').map(r=>r.opt);
+  if(k==='priorities') return ppriority();
+  return rwinner(k);
+}
+function pedit(k,v){ PFOVERRIDE[k]=v; psyncP(); }
+function pstated(k){ return PFOVERRIDE[k]!==undefined; }
+
+const PFLABEL={
+  b2c:'B2C', b2b:'B2B', collaborative:'Collaborative', individual:'Individual craft',
+  frontier:'Frontier', established:'Established scale',
+  ai_frontier:'AI frontier', commerce:'Commerce', saas:'SaaS', creator:'Creator', impact:'Impact',
+  ai_interaction:'AI interaction', team_tools:'Team tools', everyday_utility:'Everyday utility',
+  learning:'Learning', creator_tools:'Creator tools',
+  toronto:'Toronto', new_york:'New York', san_francisco:'San Francisco'
+};
+const PFSUB={
+  ai_frontier:'OpenAI · Anthropic · Perplexity', commerce:'DoorDash · Shopify · Uber',
+  saas:'Figma · Stripe · Salesforce', creator:'Adobe · Spotify', impact:'Health · Climate · Civic',
+  b2c:'People using a product in their everyday lives.', b2b:'Teams and the systems they run on.',
+  collaborative:'Work that moves because a team moves with it.',
+  individual:'Work you can take from blank to finished yourself.',
+  toronto:'Canada', new_york:'United States', san_francisco:'United States'
+};
+/* order by how much weight each axis actually carried, not by confidence: the
+   thing you traded for most often is the thing that matters most */
+function ppriority(){
+  const pull=k=>{ const n=RSTATE[k]; if(!n) return 0;
+    return (n.ev||[]).reduce((a,e)=>a+e.w*(e.costly?1.4:1),0); };
+  const work=pull('ethos')+pull('world')+pull('shape');
+  const loc=pull('location');
+  const money=RSTATE.comp.trials.reduce((a,t)=>a+(t.tookRicher?t.w:0),0)*1.6;
+  const rows=[
+    {k:'work', t:'Work that feels right', s:pworkSub(), v:work},
+    {k:'location', t:'Location', s:(PFLABEL[presolveCity()]||'Your top city')+' first', v:loc},
+    {k:'comp', t:'Compensation', s:rmoneyPull()<.5?'important, not first':'came first more often', v:money}
+  ];
+  return rows.sort((a,b)=>b.v-a.v);
+}
+function presolveCity(){ const l=presolve('location'); return l&&l.length?l[0]:'toronto'; }
+function pworkSub(){
+  const a=PFLABEL[presolve('shape')]||'', b=PFLABEL[presolve('type')]||'';
+  return [a,b].filter(Boolean).join(' + ').toLowerCase()||'the work you kept choosing';
+}
+/* the board and the roles read from P, so mirror the resolved answers into it */
+function psyncP(){
+  const city=presolveCity();
+  P.location=PFLABEL[city]||P.location;
+  const t=presolve('type');
+  /* these must be keys IND_COS actually knows, or COS() silently falls back
+     to the persona defaults and the board shows companies nobody chose */
+  P.industry=t==='ai_frontier'?'Tech and AI':t==='commerce'?'Commerce':
+             t==='saas'?'Tech and AI':t==='creator'?'Media':P.industry;
+  const d=presolve('domain');
+  if(PFLABEL[d]) P.problems=PFLABEL[d];
+}
+
+const PFSCREENS=[
+ {id:'01',key:'type',    kind:'bubbles',title:'Companies that tend to attract you',
+  opts:['ai_frontier','commerce','saas','creator','impact']},
+ {id:'02',key:'shape',   kind:'two',    title:'How you like to work',
+  opts:['collaborative','individual']},
+ {id:'03',key:'world',   kind:'two',    title:'The userbase you would design for',
+  opts:['b2c','b2b']},
+ {id:'04',key:'domain',  kind:'bubbles',title:'The problems you want to spend time on',
+  opts:['ai_interaction','team_tools','everyday_utility','learning','creator_tools']},
+ {id:'05',key:'location',kind:'ranked', title:'Where can this future happen?'},
+ {id:'06',key:'priorities',kind:'order',title:'And this is the order you kept choosing'}
+];
+
+function pwhy(key){
+  if(pstated(key)) return 'You told me this.';
+  const r=rcites(key);
+  if(!r.length) return '';
+  return 'From your choices in round'+(r.length>1?'s ':' ')+r.join(', ')+'.';
+}
+
+function pbubbles(box,sc){
+  const win=presolve(sc.key);
+  const ranked=sc.opts.slice().sort((a,b)=>(a===win?-1:b===win?1:0));
+  const wrap=mk('div','pfbub');
+  /* the chosen one sits in the middle at full size; the rest orbit it, still
+     one tap away, because this screen exists to be disagreed with */
+  const ring=[[50,50,158],[20,24,92],[80,26,84],[17,74,80],[83,76,88]];
+  ranked.forEach((o,i)=>{
+    const [x,y,d]=ring[Math.min(i,ring.length-1)];
+    const b=mk('button','pfb'+(i===0?' pfmid':''));
+    b.style.cssText='width:'+d+'px;height:'+d+'px;left:calc('+x+'% - '+(d/2)+'px);top:calc('+y+'% - '+(d/2)+'px)';
+    b.appendChild(mk('b',null,PFLABEL[o]||o));
+    if(i===0&&PFSUB[o]) b.appendChild(mk('span',null,PFSUB[o]));
+    b.onclick=()=>{ if(locked) return; sfx('toggle'); pedit(sc.key,o); prender(sc); };
+    wrap.appendChild(b);
+  });
+  box.appendChild(wrap);
+  enter(Array.from(wrap.children),{y:14,blur:8,scale:.9,stagger:.05,duration:.55},1500);
+}
+function ptwo(box,sc){
+  const win=presolve(sc.key);
+  const row=mk('div','pftwo');
+  sc.opts.forEach(o=>{
+    const p=mk('button','pfp'+(o===win?' on':''));
+    p.appendChild(mk('h4',null,PFLABEL[o]||o));
+    if(PFSUB[o]) p.appendChild(mk('p',null,PFSUB[o]));
+    if(o===win) p.appendChild(mk('span','pfsel','This is what I read'));
+    p.onclick=()=>{ if(locked) return; sfx('toggle'); pedit(sc.key,o); prender(sc); };
+    row.appendChild(p);
+  });
+  box.appendChild(row);
+  enter(Array.from(row.children),{y:16,blur:8,stagger:.06,duration:.55},1400);
+}
+function pranked(box,sc){
+  const order=presolve('location').slice();
+  const list=mk('div','pfrank');
+  order.forEach((o,i)=>list.appendChild(prow(i+1,PFLABEL[o]||o,PFSUB[o]||'',o,order,sc)));
+  box.appendChild(list);
+  /* a pair the rounds never put head to head has no honest rank */
+  const c=rconf('location');
+  if(c<.45){
+    const tie=mk('div','pftie','These are close. You never compared them directly, so drag to set the order.');
+    tie.style.marginTop='10px'; box.appendChild(tie);
+  }
+  enter(Array.from(list.children),{y:12,blur:6,stagger:.06,duration:.5},1300);
+}
+function prow(n,title,sub,key,order,sc){
+  const r=mk('div','pfr'); r.draggable=true; r.dataset.k=key;
+  r.appendChild(mk('span','pfrn',String(n)));
+  const t=mk('div','pfrt'); t.appendChild(mk('b',null,title));
+  if(sub) t.appendChild(mk('span',null,sub));
+  r.appendChild(t);
+  r.appendChild(mk('span','pfgrip','⋮⋮'));
+  r.ondragstart=e=>{ r.classList.add('drag'); e.dataTransfer.setData('text/plain',key); };
+  r.ondragend=()=>r.classList.remove('drag');
+  r.ondragover=e=>{ e.preventDefault(); r.classList.add('over'); };
+  r.ondragleave=()=>r.classList.remove('over');
+  r.ondrop=e=>{ e.preventDefault(); r.classList.remove('over');
+    const from=e.dataTransfer.getData('text/plain');
+    if(!from||from===key) return;
+    const a=order.indexOf(from), b=order.indexOf(key);
+    order.splice(b,0,order.splice(a,1)[0]);
+    sfx('tick'); pedit('location',order.slice()); prender(sc);
+  };
+  return r;
+}
+function porder(box,sc){
+  const rows=presolve('priorities');
+  const list=mk('div','pfrank');
+  /* this screen states the most contestable thing Zero says - that money came
+     second - so of all six it is the one that has to be draggable */
+  rows.forEach((r,i)=>{
+    const el=mk('div','pfr'); el.draggable=true; el.dataset.k=r.k;
+    el.appendChild(mk('span','pfrn',String(i+1)));
+    const t=mk('div','pfrt'); t.appendChild(mk('b',null,r.t)); t.appendChild(mk('span',null,r.s));
+    el.appendChild(t);
+    el.appendChild(mk('span','pfgrip','\u22ee\u22ee'));
+    el.ondragstart=e=>{ el.classList.add('drag'); e.dataTransfer.setData('text/plain',r.k); };
+    el.ondragend=()=>el.classList.remove('drag');
+    el.ondragover=e=>{ e.preventDefault(); el.classList.add('over'); };
+    el.ondragleave=()=>el.classList.remove('over');
+    el.ondrop=e=>{ e.preventDefault(); el.classList.remove('over');
+      const from=e.dataTransfer.getData('text/plain'); if(!from||from===r.k) return;
+      const cur=presolve('priorities').slice();
+      const a=cur.findIndex(x=>x.k===from), b=cur.findIndex(x=>x.k===r.k);
+      cur.splice(b,0,cur.splice(a,1)[0]);
+      sfx('tick'); pedit('priorities',cur); prender(sc);
+    };
+    list.appendChild(el);
+  });
+  box.appendChild(list);
+  enter(Array.from(list.children),{y:12,blur:6,stagger:.07,duration:.5},1300);
+}
+
+let PFAT=0;
+function prender(sc){
+  const box=document.querySelector('#turn .opts');
+  if(!box) return;
+  box.innerHTML='';
+  pbuild(box,sc);
+}
+function pbuild(box,sc){
+  const wrap=mk('div','pfx');
+  const top=mk('div','pfxtop');
+  top.appendChild(mk('span',null,'What I read from your choices'));
+  top.appendChild(mk('span','pfxnum',sc.id+' / 06'));
+  wrap.appendChild(top);
+  const host=mk('div'); wrap.appendChild(host);
+  box.appendChild(wrap);
+  if(sc.kind==='bubbles') pbubbles(host,sc);
+  else if(sc.kind==='two') ptwo(host,sc);
+  else if(sc.kind==='ranked') pranked(host,sc);
+  else porder(host,sc);
+  const why=pwhy(sc.key);
+  if(why) wrap.appendChild(mk('div','pfxwhy',why));
+  dockAction(sc.id==='06'?'Create my vision board':'Continue',()=>{
+    PFAT++; locked=false;
+    if(PFAT>=PFSCREENS.length){ PFAT=0; psyncP(); go(()=>visionStage(false)); }
+    else prefStage();
+  });
+}
+async function prefStage(){
+  atStep('Preferences');
+  const myGen=gen;
+  const sc=PFSCREENS[Math.min(PFAT,PFSCREENS.length-1)];
+  clearTurn(); await wait(300);
+  if(myGen!==gen) return;
+  if(PFAT===0){ psyncP(); await voLine('Then let me show you what I think I know.',2100); }
+  if(myGen!==gen) return;
+  const {box}=turn({q:sc.title});
+  await wait(320);
+  if(myGen!==gen) return;
+  pbuild(box,sc);
+}
+
+
+/* ------------------------------------------------------------------ roles --
+   Every card states how close it is and why. The tier is computed from the
+   same evidence the read-out used, so a role cannot claim to be a direct fit
+   on an axis the user never actually settled. */
+const JTIERS=[[5,'DIRECT FIT'],[4,'STRONG FIT'],[3,'CLOSE'],[2,'ADJACENT'],[1,'A STRETCH']];
+const JPOOL=[
+ {co:'OpenAI',role:'Product Designer',where:'Remote Canada / US',yrs:'1-4 years',
+  d:'Make powerful AI clear and useful through thoughtful, trustworthy product experiences.',
+  t:{type:'ai_frontier',ethos:'frontier',world:'b2c',shape:'collaborative',domain:'ai_interaction',city:'toronto'}},
+ {co:'Anthropic',role:'Product Designer',where:'Remote Canada / US',yrs:'2-5 years',
+  d:'Design the surfaces where people and models actually meet, and keep them legible.',
+  t:{type:'ai_frontier',ethos:'frontier',world:'b2c',shape:'collaborative',domain:'ai_interaction',city:'toronto'}},
+ {co:'Figma',role:'Product Designer',where:'Toronto',yrs:'1-4 years',
+  d:'Design tools that let a whole team move through one file without stepping on each other.',
+  t:{type:'saas',ethos:'frontier',world:'b2b',shape:'collaborative',domain:'team_tools',city:'toronto'}},
+ {co:'Shopify',role:'Product Designer',where:'Toronto',yrs:'1-3 years',
+  d:'Help independent merchants run a business with confidence, not just a storefront.',
+  t:{type:'commerce',ethos:'established',world:'b2b',shape:'collaborative',domain:'team_tools',city:'toronto'}},
+ {co:'Notion',role:'Product Designer',where:'Remote',yrs:'2-4 years',
+  d:'Make a blank page feel like a starting point instead of a demand.',
+  t:{type:'saas',ethos:'frontier',world:'b2c',shape:'individual',domain:'creator_tools',city:'new_york'}},
+ {co:'Stripe',role:'Product Designer',where:'New York',yrs:'2-5 years',
+  d:'Show businesses what is happening to their money, plainly.',
+  t:{type:'saas',ethos:'frontier',world:'b2b',shape:'collaborative',domain:'team_tools',city:'new_york'}}
+];
+/* Reasons name the axis AND the evidence behind it, so a claim can be checked.
+   An axis the rounds never settled contributes nothing rather than a guess. */
+const JREASON={
+  type:{ai_frontier:'the AI-first companies you kept picking',commerce:'the consumer businesses you leaned to',
+        saas:'the tools-for-teams world you chose',creator:'the creative tools you chose',impact:'the mission work you chose'},
+  ethos:{frontier:'ambitious teams over established scale',established:'proven scale over frontier bets'},
+  world:{b2c:'products people use directly',b2b:'teams and the systems behind them'},
+  shape:{collaborative:'work that moves with a team',individual:'work you can finish yourself'},
+  domain:{ai_interaction:'AI interaction problems',team_tools:'team tooling problems',
+          everyday_utility:'everyday utility problems',learning:'learning problems',creator_tools:'creator tooling problems'}
+};
+function jscore(job){
+  let hit=0, tot=0; const why=[];
+  ['type','ethos','world','shape','domain'].forEach(k=>{
+    /* an axis the rounds never settled proves nothing - unless the user
+       went and set it themselves on screens 01-06, which is stronger */
+    if(rconf(k)<.25 && !pstated(k)) return;
+    tot++;
+    if(presolve(k)===job.t[k]){ hit++;
+      const r=JREASON[k]&&JREASON[k][job.t[k]]; if(r) why.push(r); }
+  });
+  const loc=presolve('location')||[];
+  const li=loc.indexOf(job.t.city);
+  if(loc.length){ tot++; if(li===0){ hit++; why.push('the city you ranked first'); }
+                  else if(li===1){ hit+=.5; why.push('your second city'); } }
+  const ratio=tot?hit/tot:.5;
+  const tier=ratio>=.85?5:ratio>=.68?4:ratio>=.5?3:ratio>=.3?2:1;
+  return {tier:tier, why:why.slice(0,3)};
+}
+function jcard(job){
+  const sc=jscore(job);
+  const label=(JTIERS.find(t=>t[0]===sc.tier)||JTIERS[2])[1];
+  const c=mk('div','jrc');
+  const tier=mk('div','jrtier'+(sc.tier>=4?' top':''));
+  const bar=mk('span','jrbar');
+  for(let i=1;i<=5;i++){ const b=mk('i'); if(i<=sc.tier) b.className='on'; bar.appendChild(b); }
+  tier.appendChild(bar);
+  tier.appendChild(mk('span',null,'0'+sc.tier+' · '+label));
+  c.appendChild(tier);
+  const h=mk('div','jrhead');
+  h.appendChild(mk('span','jrlogo',rlogo(job.co)));
+  h.appendChild(mk('div','jrt',job.co+' · '+job.role));
+  c.appendChild(h);
+  c.appendChild(mk('div','jrm',job.where+' · full-time · '+job.yrs));
+  c.appendChild(mk('div','jrd',job.d));
+  if(sc.why.length) c.appendChild(mk('div','jrwhy','<b>Why it fits:</b> '+sc.why.join(', ')+'.'));
+  return {el:c,tier:sc.tier};
+}
+function buildRoles(host){
+  const wrap=mk('div','jr'); wrap.id='jrList';
+  host.appendChild(wrap);
+}
+async function addRoles(){
+  const host=$('jrList'); if(!host) return;
+  const ranked=JPOOL.map(j=>jcard(j)).sort((a,b)=>b.tier-a.tier).slice(0,4);
+  for(const r of ranked){
+    if(!$('jrList')) return;
+    await ghostIn(r.el,150,420,host);
+  }
+}
+async function rolesStage(){
+  atStep('Roles');
+  const myGen=gen;
+  clearTurn(); dockHide(); await wait(380);
+  if(myGen!==gen) return;
+  await voLine("I'm pulling together roles that fit the kind of work you want to do.",2900);
+  if(myGen!==gen) return;
+  await voLine('The companies you are drawn to, the places you want to be, and the trade-offs that matter most.',3400);
+  if(myGen!==gen) return;
+  await swapPanel('Roles that fit your vision',buildRoles,false,true);
+  await addRoles();
+  if(myGen!==gen) return;
+  line('These are the roles I would point you at.');
+  await wait(2100);
+  if(myGen!==gen) return;
+  cta('This is the future I want',()=>go(synthesisStage));
+}
+
+
+/* -------------------------------------------------------- how Zero works --
+   Live embeds, not captures. Both prototypes allow framing, so the narrative
+   shows the product as it actually is today rather than a picture of how it
+   looked when someone last exported one. */
+const HZ_WORKSPACE='https://zero-presentation.vercel.app/';
+const HZ_TEAM='https://zero-independent-proto.vercel.app/';
+const HZBEATS=[
+ {say:'Good. You know the portfolio you want to build.',
+  then:'Now let me show you how Zero helps you build the proof inside it.',
+  screen:{kind:'world'}},
+ {say:'Every project in your portfolio has a place in your journey.',
+  then:'I have mapped the work into project categories built around the roles you want to grow into.',
+  screen:{kind:'todo',label:'Curriculum',note:'The scrollable curriculum, with the projects from your portfolio highlighted.'}},
+ {say:'You will not learn this by watching lessons.',
+  then:'You step into real company scenarios and build the projects yourself.',
+  screen:{kind:'url',src:HZ_WORKSPACE,label:'A real scenario'},
+  pills:[{t:'managers',screen:{kind:'url',src:HZ_WORKSPACE,label:'Working with your manager'}},
+         {t:'teammates',screen:{kind:'url',src:HZ_TEAM,label:'Working with your team'}}],
+  tail:'You work with $managers and collaborate with $teammates, on the tools these teams actually use.'},
+ {say:'And you will not have to figure it out alone.',
+  then:'Your coach reviews every submission and shows you what landed.',
+  screen:{kind:'url',src:HZ_WORKSPACE,label:'Coach review'}},
+ {say:'Making the work is only half the job.',
+  then:'You also learn to present it, defend your decisions, and answer the room.',
+  screen:{kind:'url',src:HZ_WORKSPACE+'#present',label:'Presenting your work'}},
+ {say:'Each scenario leaves you with something real.',
+  then:'Over time that proof unlocks aligned roles, and the Zero job portal.',
+  screen:{kind:'todo',label:'Your path',note:'Scenarios unlocking the portfolio, then the job portal.'}}
+];
+let HZAT=0;
+function hzscreen(host,sc){
+  host.innerHTML='';
+  const box=mk('div','hz');
+  if(sc.kind==='url'){
+    const f=document.createElement('iframe');
+    f.className='hzframe'; f.setAttribute('title',sc.label||'Zero'); f.setAttribute('loading','eager');
+    f.src=sc.src; box.appendChild(f);
+  } else if(sc.kind==='world'){
+    const f=mk('div','hzframe');
+    f.style.cssText+=';background:url(zero-world.jpg) center/cover no-repeat';
+    box.appendChild(f);
+  } else {
+    /* an honest gap beats an invented screen: these two exist only inside the
+       desktop app and have not been captured yet */
+    const h=mk('div','hzhold');
+    h.appendChild(mk('b',null,sc.label));
+    h.appendChild(mk('span',null,sc.note));
+    box.appendChild(h);
+  }
+  host.appendChild(box);
+  setCap(sc.label||'How Zero works',false);
+}
+function hzcopy(box,beat,host){
+  const wrap=mk('div');
+  if(beat.tail){
+    /* the pill is part of the sentence, so it is built inline rather than
+       parked in a row underneath where it would read as a control */
+    const p=mk('div','hzline');
+    p.style.cssText='font-size:19px;line-height:1.55;color:var(--tx-2);letter-spacing:-.015em';
+    const parts=beat.tail.split(/(\$\w+)/);
+    parts.forEach(seg=>{
+      const m=/^\$(\w+)$/.exec(seg);
+      if(!m){ p.appendChild(document.createTextNode(seg)); return; }
+      const pill=beat.pills.find(x=>x.t===m[1]);
+      const el=mk('span','hzp',pill?pill.t:m[1]);
+      el.onclick=()=>{ if(!pill) return; sfx('tick');
+        wrap.querySelectorAll('.hzp').forEach(x=>x.classList.remove('on'));
+        el.classList.add('on'); hzscreen(host,pill.screen); };
+      el.onmouseenter=()=>{ if(pill) hzscreen(host,pill.screen); };
+      p.appendChild(el);
+    });
+    wrap.appendChild(p);
+  }
+  const dots=mk('div','hzdots');
+  HZBEATS.forEach((_,i)=>{ const d=mk('i'); if(i<=HZAT) d.className='on'; dots.appendChild(d); });
+  wrap.appendChild(dots);
+  box.appendChild(wrap);
+  enter([wrap],{y:12,blur:7,duration:.55},1200);
+}
+async function worksStage(){
+  atStep('How it works');
+  const myGen=gen;
+  setPhase(3);
+  if(HZAT===0){
+    clearTurn(); dockHide(); await wait(360);
+    if(myGen!==gen) return;
+    await swapPanel('How Zero works',h=>{ const host=mk('div'); host.id='hzHost';
+      host.style.cssText='position:absolute;inset:0'; h.appendChild(host); },false,false);
+  }
+  const beat=HZBEATS[Math.min(HZAT,HZBEATS.length-1)];
+  const host=$('hzHost');
+  if(host) hzscreen(host,beat.screen);
+  if(myGen!==gen) return;
+  await voLine(beat.say,Math.max(2000,beat.say.length*44));
+  if(myGen!==gen) return;
+  const {box}=turn({q:beat.then});
+  await wait(300);
+  if(myGen!==gen) return;
+  hzcopy(box,beat,host);
+  const last=HZAT>=HZBEATS.length-1;
+  cta(last?'What do I start with?':'Keep going',()=>{
+    if(last){ HZAT=0; go(claimStage); }
+    else { HZAT++; locked=false; worksStage(); }
+  });
 }
 
 /* ---- 6..12 - built next ------------------------------------------------- */
@@ -3324,12 +3860,7 @@ function stub(label,next,note){
   box.appendChild(n);
   if(next) cta('Continue',next);
 }
-function prefStage(){
-  atStep('Preferences');     stub('Your preferences.',   visionStage,   'step 4 - six editable screens'); }
-function rolesStage(){
-  atStep('Roles'); transformStage(); }   /* the board converting into roles */
 function synthesisStage(){stub('The picture I have.', portfolioStage,'step 5 - synthesis monologue'); }
-function worksStage(){    stub('How Zero works.',     claimStage,    'step 7 - copy + real product screens'); }
 function claimStage(){    stub('10,000 credits.',     creditsStage,  'step 8 - slide to claim'); }
 
 /* ============================ boot ============================ */
