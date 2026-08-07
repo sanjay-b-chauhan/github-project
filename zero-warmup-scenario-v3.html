@@ -1362,6 +1362,15 @@ td.cell-active::after{border-color:var(--accent)}
 .oslot{min-height:44px!important}
 .ord-slots{gap:7px}
 
+/* The stage centres its content between its own paddings, so the asymmetry
+   is what positions the block. It was 76 top / 104 bottom, lifting the
+   visual only 14px above the true centre - which still read as bottom-heavy
+   with the arrows sitting below it. The paddings are viewport-relative so the
+   lift scales: on a tall window it works out near 52/152 and the block sits
+   ~50px above the midpoint, and on a short one it shrinks rather than pushing
+   the diagram off the top of the card, which a fixed 48/152 did. */
+.ko2-stage{padding:clamp(20px,4.5vh,52px) 48px clamp(56px,13.5vh,152px)!important}
+
 /* kickoff + story wear the workspace surface, and the shell is dark by default */
 .story,.kickoff{background:var(--bg)}
 .story .st-holder,.kickoff .ko-holder{inset:0!important;border:none;border-radius:0;background:var(--bg)}
