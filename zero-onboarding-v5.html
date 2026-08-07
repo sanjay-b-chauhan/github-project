@@ -755,6 +755,17 @@ body.rszing iframe{ pointer-events:none; }   /* the drag must not fall into an e
 .pftie{ border:1px dashed var(--line); border-radius:14px; padding:9px 14px;
   font-size:11.5px; color:var(--tx-4); }
 
+
+/* ---- the scan ----------------------------------------------------------- */
+.lkurl{ display:inline-flex; align-items:center; gap:8px; font-size:13px;
+  color:var(--tx-2); background:var(--card); border:1px solid var(--line);
+  border-radius:999px; padding:8px 15px; position:relative; overflow:hidden; }
+.lkurl svg{ width:14px; height:14px; }
+/* light travelling across the link while Zero reads it */
+.lkurl::after{ content:''; position:absolute; inset:0; transform:translateX(-100%);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent); }
+.lkurl.reading::after{ animation:lkshine 1.5s linear infinite; }
+@keyframes lkshine{ to{ transform:translateX(100%); } }
 /* ---- asking before the browser asks ------------------------------------- */
 .mkask{ display:flex; flex-direction:column; align-items:center; gap:14px; margin-top:26px; }
 .mkline{ font-size:14.5px; color:var(--tx-2); letter-spacing:-.012em; text-align:center; }
@@ -1959,10 +1970,14 @@ function mountResizer(){
     if(saved>=320) panelPref=saved; }catch(e){}
 }
 
-function bornPanel(){
+/* Two boards, and they are not the same object. The LinkedIn board is what
+   Zero read off the profile and the only thing the user corrects at that
+   point. The Zero vision board is synthesised later, after the cards, from
+   everything together. Opening the panel must not hand it to the second one. */
+function bornPanel(quiet){
   if(panelBorn) return; panelBorn=true;
   $('cap').innerHTML='<span class="live pulse"></span>Zero is listening';
-  boardLive=true; renderBoard();
+  if(!quiet){ boardLive=true; renderBoard(); }
   gsap.set('.right',{width:panelPref?panelPref+'px':'40%',opacity:0});
   shiftLeft(panelPref?panelPref+'px':'40vw');
   mountResizer();
@@ -2645,7 +2660,9 @@ function buildLinked(s){
   av.setAttribute('style',avStyle(P.name));
   me.appendChild(av);
   me.appendChild(mk('div','lkname',P.name||'You'));
-  const src=mk('div','lksrc');
+  /* the thing being read sits at the centre, lit, for as long as it is being
+     read - the scan should look like it is happening to something */
+  const src=mk('div','lkurl reading');
   src.innerHTML=(P.linked==='Resume'?I.doc:(LOGO.LinkedIn||I.link))+
     '<span>'+(P.linkedUrl||(P.linked==='Resume'?'Resume':'LinkedIn'))+'</span>';
   me.appendChild(src);
@@ -2701,10 +2718,23 @@ function lkFact(w,label,value,i,total){
     ln.style.width=Math.max(0,len-58-edge)+'px';
     ln.style.transform='rotate('+Math.atan2(dy,dx)+'rad)';
     w.insertBefore(ln,w.firstChild);
-    safeTL(gsap.timeline().fromTo(ln,{scaleX:0,opacity:0},
-      {scaleX:1,opacity:1,duration:.5,ease:'power2.out'}),900);
+    /* the line draws out to meet the block rather than fading in under it */
+    safeTL(gsap.timeline()
+      .fromTo(ln,{scaleX:0,opacity:.9},{scaleX:1,opacity:1,duration:.52,ease:'power2.out'})
+      .to(ln,{opacity:.55,duration:.5},'-=0.1'),1300);
   });
   return f;
+}
+/* A correction lands on the LinkedIn board as a new fact, next to the ones
+   Zero read, so the user can see their words sitting alongside the profile's. */
+function absorbNote(text){
+  const w=$('lkw'); if(!w||!String(text||'').trim()) return;
+  const n=w.querySelectorAll('.lkf').length;
+  const f=lkFact(w,'You told me',String(text).trim().slice(0,120),n,n+1);
+  f.style.borderColor='rgba(13,13,13,.22)';
+  safeTL(gsap.timeline().fromTo(f,{opacity:0,scale:.86,filter:'blur(7px)'},
+    {opacity:1,scale:1,filter:'blur(0px)',duration:.55,ease:'back.out(1.5)'}),1100);
+  sfx('tick');
 }
 async function readLinked(){
   const d=LINKEDIN[PKEY]||LINKEDIN.design;
@@ -2720,6 +2750,7 @@ async function readLinked(){
     .filter(f=>f[1]);
   const w=$('lkw'); if(!w) return;
   const g=gen;
+  const url=w.querySelector('.lkurl');
   for(let i=0;i<facts.length;i++){
     if(g!==gen||!$('lkw')) return;
     const f=lkFact(w,facts[i][0],facts[i][1],i,facts.length);
@@ -2728,6 +2759,7 @@ async function readLinked(){
     sfx('tick');
     await wait(360);
   }
+  if(url) url.classList.remove('reading');   /* done reading */
 }
 /* Zero reads eight things off the profile and then put almost none of them on
    the board, which made the board look like it had learned nothing. Everything
@@ -2768,14 +2800,15 @@ async function readProfile(kind){
   clearTurn(); dockHide(); await wait(380);
   line(kind==='Resume'?'Reading your resume.':'Reading your LinkedIn.');
   sfx('loading');
-  bornPanel();                 /* now there is something to show */
+  bornPanel(true);              /* open it, but the board stays the LinkedIn one */
   await wait(520);
   await swapPanel('Reading your profile',buildLinked,true,false);
   await wait(500);
   await readLinked();
-  /* the board fills from the same read, so the two halves of the screen agree */
+  /* absorb into state so the Zero board can be built from it later, but do
+     NOT render that board here: what belongs on screen now is the LinkedIn
+     board, which is the thing the user is being asked to correct */
   absorbLinked();
-  boardLive=true; renderBoard();
   setCap(P.name?'Got everything, '+P.name:'Got everything',false);
   sfx('success');
   await wait(700);
@@ -3406,7 +3439,9 @@ async function readbackStage(){
     if(locked) return; locked=true;
     P.about=text;
     if(typeof extractInto==='function') extractInto(text);
-    renderBoard();
+    /* a correction updates the LinkedIn board in place; the Zero board does
+       not exist yet and must not be conjured by an edit */
+    absorbNote(text);
     const pivot=detectPivot(text);
     if(pivot){ P.pivot=pivot; go(()=>pivotStage(pivot)); }
     else go(cardsIntroStage);
@@ -3449,7 +3484,6 @@ async function pivotStage(pv){
     if(locked) return; locked=true;
     P.why=text;
     if(typeof extractInto==='function') extractInto(text);
-    renderBoard();
     go(cardsIntroStage);
   }
 }
@@ -3465,6 +3499,9 @@ function reflectPivot(){
 }
 async function cardsIntroStage(){
   atStep('Cards intro');
+  /* from here the panel becomes the Zero board: the LinkedIn read is done and
+     what accumulates now is the synthesis */
+  boardLive=true;
   setPhase(1);
   clearTurn(); dockHide(); await wait(380);
   /* every other handoff restates what they just said; this was the only one
