@@ -752,54 +752,58 @@ body.rszing iframe{ pointer-events:none; }   /* the drag must not fall into an e
 .pftie{ border:1px dashed var(--line); border-radius:14px; padding:9px 14px;
   font-size:11.5px; color:var(--tx-4); }
 /* ---- paired role cards, as a deck ---------------------------------------- */
-.rcwrap{ width:100%; max-width:760px; margin:0 auto; }
-/* the stage holds its height so nothing below it jumps when a pair swaps */
-.rcstage{ position:relative; min-height:420px; perspective:1100px; }
-.rcrow{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:22px;
-  position:absolute; inset:0; align-items:start; }
-/* Two things held out to you are tilted, one per hand. The resting tilt lives
-   on the slot; the cursor tilt lives on the card. One transform cannot do both
-   without the card snapping back to its resting angle as soon as you move. */
-.rcslot{ transform-origin:50% 100%;
-  transition:transform .38s var(--e,cubic-bezier(.625,.05,0,1)); }
-.rcslot.tiltL{ transform:rotate(-2.4deg) translateY(8px); }
-.rcslot.tiltR{ transform:rotate(2.4deg) translateY(8px); }
-.rcslot:hover{ transform:rotate(0deg) translateY(-6px); z-index:3; }
+.rcwrap{ width:100%; max-width:730px; margin:0 auto; }
+/* A short perspective is what makes the rotation read as depth. At 1100 the
+   card was turning the same amount and looking almost flat. */
+.rcstage{ position:relative; min-height:430px; perspective:760px;
+  perspective-origin:50% 45%; }
+.rcrow{ position:absolute; inset:0; display:flex; justify-content:center;
+  align-items:flex-start; }
+/* Two cards fanned in one hand touch. The overlap is the point: they are one
+   offer with two sides, not two unrelated tiles. */
+.rcslot{ width:326px; transform-origin:50% 100%; will-change:transform;
+  transition:transform .42s var(--e,cubic-bezier(.625,.05,0,1)), z-index 0s; }
+.rcslot.tiltL{ transform:rotate(-5deg) translateX(26px) translateY(10px); z-index:1; }
+.rcslot.tiltR{ transform:rotate(5deg) translateX(-26px) translateY(10px); z-index:2; }
+.rcslot:hover{ z-index:9; }
+.rcslot.tiltL:hover{ transform:rotate(-1deg) translateX(14px) translateY(-10px) scale(1.035); }
+.rcslot.tiltR:hover{ transform:rotate(1deg) translateX(-14px) translateY(-10px) scale(1.035); }
 .rcd{ position:relative; width:100%; text-align:left; cursor:pointer;
-  background:var(--card); border:1px solid var(--line); border-radius:22px;
-  padding:24px 22px 20px; display:flex; flex-direction:column; min-height:396px;
-  transform-style:preserve-3d; will-change:transform;
-  transition:box-shadow .3s, border-color .24s, transform .5s var(--e,cubic-bezier(.625,.05,0,1));
-  box-shadow:0 10px 30px rgba(0,0,0,.07); overflow:hidden; }
-.rcslot:hover .rcd{ box-shadow:0 30px 66px rgba(0,0,0,.18); border-color:rgba(13,13,13,.16); }
+  background:var(--card); border:1px solid var(--line); border-radius:24px;
+  padding:26px 24px 20px; display:flex; flex-direction:column; min-height:406px;
+  transform-style:preserve-3d; will-change:transform; overflow:hidden;
+  transition:box-shadow .3s, border-color .24s, transform .55s var(--e,cubic-bezier(.625,.05,0,1));
+  box-shadow:0 14px 34px rgba(0,0,0,.10); }
+.rcslot:hover .rcd{ box-shadow:0 40px 80px rgba(0,0,0,.26); border-color:rgba(13,13,13,.18); }
 .rcd.on{ border-color:var(--ink); }
-/* the light moves with the cursor, which is what sells the surface as a plane
-   in space rather than a rectangle that happens to rotate */
-.rcglare{ position:absolute; inset:0; border-radius:22px; pointer-events:none;
-  opacity:0; transition:opacity .3s;
-  background:radial-gradient(320px circle at var(--gx,50%) var(--gy,50%),
-    rgba(255,255,255,.30), rgba(255,255,255,0) 62%); }
+/* the company's own colour, bled in from the top edge */
+.rctint{ position:absolute; left:0; right:0; top:0; height:180px; pointer-events:none;
+  opacity:.5; transition:opacity .35s;
+  background:radial-gradient(120% 100% at 50% -30%, var(--tint,#c9a227) 0%, transparent 70%); }
+.rcslot:hover .rctint{ opacity:.85; }
+.rcglare{ position:absolute; inset:0; pointer-events:none; opacity:0; transition:opacity .3s;
+  background:radial-gradient(300px circle at var(--gx,50%) var(--gy,50%),
+    rgba(255,255,255,.26), rgba(255,255,255,0) 60%); }
 .rcslot:hover .rcglare{ opacity:1; }
-body.dark .rcglare{ background:radial-gradient(320px circle at var(--gx,50%) var(--gy,50%),
-    rgba(255,255,255,.10), rgba(255,255,255,0) 62%); }
-.rchead{ display:flex; align-items:center; gap:11px; margin-bottom:18px; }
-.rclogo{ width:38px; height:38px; border-radius:11px; background:#fff; flex:0 0 38px;
+/* Role first. You are picking a piece of work; the company is the credit. */
+.rcrole{ position:relative; font-size:26px; font-weight:600; color:var(--tx);
+  letter-spacing:-.032em; line-height:1.14; margin-bottom:12px; }
+.rcbrand{ position:relative; display:flex; align-items:center; gap:8px; margin-bottom:20px; }
+.rclogo{ width:22px; height:22px; border-radius:6px; background:#fff; flex:0 0 22px;
   border:1px solid var(--line); display:flex; align-items:center; justify-content:center; }
-.rclogo svg{ width:21px; height:21px; }
-.rcco{ font-size:15.5px; font-weight:600; color:var(--tx); letter-spacing:-.018em; }
-.rcrole{ font-size:12.5px; color:var(--tx-3); margin-top:2px; }
-.rcp{ font-size:16px; line-height:1.5; color:var(--tx); letter-spacing:-.016em; }
-/* pay and place read as one block, left aligned like everything above them */
-.rcfoot{ margin-top:auto; padding-top:20px; }
-.rcamt{ font-size:20px; font-weight:600; color:var(--tx); letter-spacing:-.026em; }
-.rcloc{ font-size:13px; color:var(--tx-2); margin-top:3px; }
-.rcband{ font-size:11px; color:var(--tx-4); margin-top:5px; }
-.rcsrc{ font-size:10.5px; color:var(--tx-4); margin-top:8px; }
-.rckeep{ position:absolute; top:14px; right:16px; background:var(--ink); color:var(--on-ink);
-  font-size:10px; font-weight:600; padding:3px 9px; border-radius:999px; z-index:2; }
-/* progress belongs at the bottom, and the dots already say which round it is */
-.rcdots{ display:flex; gap:6px; align-items:center; justify-content:center;
-  margin-top:26px; }
+.rclogo svg{ width:13px; height:13px; }
+.rcco{ font-size:13px; font-weight:500; color:var(--tx-2); letter-spacing:-.01em; }
+.rcp{ position:relative; font-size:15px; line-height:1.52; color:var(--tx-2);
+  letter-spacing:-.012em; }
+.rcfoot{ position:relative; margin-top:auto; padding-top:22px; }
+.rcamt{ font-size:19px; font-weight:600; color:var(--tx); letter-spacing:-.024em; }
+.rcloc{ font-size:13px; color:var(--tx-3); margin-top:4px; }
+/* a footnote, sitting where footnotes sit */
+.rcsrc{ position:absolute; right:0; bottom:0; font-size:10px; color:var(--tx-4);
+  letter-spacing:.01em; }
+.rckeep{ position:absolute; top:16px; right:16px; background:var(--ink); color:var(--on-ink);
+  font-size:10px; font-weight:600; padding:3px 9px; border-radius:999px; z-index:3; }
+.rcdots{ display:flex; gap:6px; align-items:center; justify-content:center; margin-top:30px; }
 .rcdots i{ width:6px; height:6px; border-radius:50%; background:var(--tx-4);
   transition:background .3s, width .3s; }
 .rcdots i.on{ background:var(--tx-2); }
@@ -3638,34 +3642,39 @@ function rlogo(co){
   const k=Object.keys(LOGO).find(x=>x.toLowerCase()===String(co).toLowerCase());
   return k?LOGO[k]:I.bld;
 }
+/* Each company's own colour, so the tint means something. Gold is the fallback
+   rather than a default look nobody chose. */
+const RTINT={DoorDash:'#FF3008',Adobe:'#FA0F00',Salesforce:'#00A1E0',Figma:'#A259FF',
+  OpenAI:'#10A37F',Google:'#4285F4',Uber:'#0f0f0f',Stripe:'#635BFF',Shopify:'#95BF47',
+  Notion:'#0f0f0f',Anthropic:'#D4A27F'};
 function rcard(id,side,keep){
   const d=RCARD[id];
   const b=mk('button','rcd');
   b.dataset.side=side;
+  b.style.setProperty('--tint',RTINT[d.co]||'#c9a227');
+  b.appendChild(mk('span','rctint'));
   b.appendChild(mk('span','rcglare'));
   if(keep) b.appendChild(mk('span','rckeep','Still here'));
-  const h=mk('div','rchead');
-  h.appendChild(mk('span','rclogo',rlogo(d.co)));
-  const id2=mk('div');
-  id2.appendChild(mk('div','rcco',d.co));
-  id2.appendChild(mk('div','rcrole',d.role));
-  h.appendChild(id2);
-  b.appendChild(h);
+  /* the work, then who it is for */
+  b.appendChild(mk('div','rcrole',d.role));
+  const brand=mk('div','rcbrand');
+  brand.appendChild(mk('span','rclogo',rlogo(d.co)));
+  brand.appendChild(mk('span','rcco',d.co));
+  b.appendChild(brand);
   b.appendChild(mk('div','rcp',d.problem));
   const f=mk('div','rcfoot');
-  f.appendChild(mk('div','rcamt',d.pay));
+  /* a range, because nobody is ever offered a single number */
+  f.appendChild(mk('div','rcamt',d.band||d.pay));
   f.appendChild(mk('div','rcloc',d.city));
-  if(d.band) f.appendChild(mk('div','rcband','Market band '+d.band));
-  if(d.src)  f.appendChild(mk('div','rcsrc','Source: '+d.src));
+  if(d.src) f.appendChild(mk('div','rcsrc',d.src));
   b.appendChild(f);
   gyro(b);
   return b;
 }
-/* Cursor-driven tilt. Rotation is small on purpose: past about eight degrees
-   the text starts to shear and the card reads as a gimmick instead of an
-   object. The glare tracks the same point so the light agrees with the angle. */
+/* Cursor-driven tilt. With a 760px perspective this is a real turn rather than
+   a hint of one, but it still stops short of shearing the text. */
 function gyro(el){
-  const M=7;
+  const M=13;
   el.addEventListener('pointermove',e=>{
     const r=el.getBoundingClientRect();
     if(!r.width) return;
@@ -3677,8 +3686,7 @@ function gyro(el){
     el.style.setProperty('--gy',(py*100+50).toFixed(1)+'%');
   });
   el.addEventListener('pointerleave',()=>{
-    /* ease back rather than snap, or leaving the card feels like a glitch */
-    el.style.transition='box-shadow .3s, border-color .24s, transform .5s var(--e,cubic-bezier(.625,.05,0,1))';
+    el.style.transition='box-shadow .3s, border-color .24s, transform .55s var(--e,cubic-bezier(.625,.05,0,1))';
     el.style.transform='';
   });
 }
