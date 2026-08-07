@@ -686,6 +686,15 @@ body.rszing iframe{ pointer-events:none; }   /* the drag must not fall into an e
   border-radius:14px; padding:11px 14px 12px; max-width:198px;
   box-shadow:0 2px 4px rgba(0,0,0,.05), 0 14px 30px rgba(0,0,0,.14);
   transition:transform .28s var(--e,cubic-bezier(.625,.05,0,1)), box-shadow .28s; }
+/* their words, not the profile's: lighter, so the board shows at a glance
+   which of it Zero read and which of it it was told */
+.lkf.mine{ background:rgba(255,255,255,.94); border-color:rgba(255,255,255,.6);
+  box-shadow:0 2px 4px rgba(0,0,0,.08), 0 16px 34px rgba(0,0,0,.28); }
+.lkf.mine .lkft{ color:rgba(13,13,13,.5); }
+.lkf.mine .lkfv{ color:#111113; }
+.lkf.mine .lkfi{ opacity:.45; }
+.lkf.picked{ background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.20); }
+.lkf.picked .lkfv{ color:#fff; }
 .lkf:hover{ transform:translateY(-2px) scale(1.02);
   box-shadow:0 4px 8px rgba(0,0,0,.06), 0 22px 44px rgba(0,0,0,.2); }
 .lkft{ display:flex; align-items:center; gap:5px; font-size:10px; color:var(--tx-3);
@@ -781,6 +790,11 @@ body.rszing iframe{ pointer-events:none; }   /* the drag must not fall into an e
   background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent); }
 .lkurl.reading::after{ animation:lkshine 1.5s linear infinite; }
 @keyframes lkshine{ to{ transform:translateX(100%); } }
+.dmic.waiting{ opacity:.55; }
+.dmic.waiting::after{ content:''; position:absolute; inset:-4px; border-radius:50%;
+  border:1.5px solid var(--tx-4); border-top-color:transparent;
+  animation:dmicspin .8s linear infinite; }
+@keyframes dmicspin{ to{ transform:rotate(360deg); } }
 /* ---- asking before the browser asks ------------------------------------- */
 .mkask{ display:flex; flex-direction:column; align-items:center; gap:14px; margin-top:26px; }
 .mkline{ font-size:14.5px; color:var(--tx-2); letter-spacing:-.012em; text-align:center; }
@@ -1610,42 +1624,16 @@ async function micRequest(){
     return false;
   }
 }
-/* Zero's own ask, shown before the browser's. Returns true if we may listen. */
-function micInvite(box,onReady){
-  const w=mk('div','mkask');
-  w.appendChild(mk('div','mkline','I can hear you better than I can read you.'));
-  const row=mk('div','mkrow');
-  const yes=mk('button','mkb','Turn on my mic');
-  const no=mk('button','mkb ghost','I will type');
-  row.appendChild(yes); row.appendChild(no);
-  w.appendChild(row);
-  box.appendChild(w);
-  enter([w],{y:12,blur:6,duration:.5},1100);
-  yes.onclick=async()=>{
-    if(locked) return;
-    yes.disabled=true; sfx('tick');
-    const ok=await micRequest();
-    micAsked=true;
-    safeTL(gsap.timeline({onComplete:()=>{ if(w.isConnected) w.remove(); }})
-      .to(w,{opacity:0,y:-8,duration:.3}),700);
-    onReady(ok);
-  };
-  no.onclick=()=>{ if(locked) return; sfx('tick'); micAsked=true;
-    safeTL(gsap.timeline({onComplete:()=>{ if(w.isConnected) w.remove(); }})
-      .to(w,{opacity:0,y:-8,duration:.3}),700);
-    onReady(false); };
-}
 /* The one entry point every open question should use: voice when we can have
    it, keyboard when we cannot, and Zero asking before the browser does. */
 function askOpen(box,onText,opts){
   opts=opts||{};
-  const start=ok=>{
-    dockMode = ok ? 'voice' : 'type';
-    if(ok) voiceDock(onText,opts.extra); else typeDock(onText,opts.extra);
-  };
-  if(micState==='granted'){ start(true); return; }
-  if(micState==='absent'||micState==='denied'||micAsked){ start(micState==='granted'); return; }
-  micInvite(box,start);
+  /* No screen asking permission to ask for permission. The dock already shows
+     a mic and a keyboard; tapping the mic is the intent, and that is when the
+     browser gets asked. Only a machine with no microphone, or one that has
+     already refused, starts on the keyboard. */
+  if(micState==='absent'||micState==='denied'){ dockMode='type'; typeDock(onText,opts.extra); return; }
+  dockMode='voice'; voiceDock(onText,opts.extra);
 }
 micProbe();
 function dockInput(onText,extra){
@@ -1666,7 +1654,18 @@ function voiceDock(onText,extra){
   dockExtra(wrap,extra);
   dockIn(wrap);
   kb.onclick=()=>{ if(locked)return; sfx('tick'); dockMode='type'; typeDock(onText,extra); };
-  mic.onclick=()=>{ if(locked)return; startRecording(onText); };
+  mic.onclick=async()=>{
+    if(locked) return;
+    if(micState==='granted'){ startRecording(onText); return; }
+    /* the tap is the intent, so this is the moment to ask */
+    mic.classList.add('waiting');
+    const ok=await micRequest();
+    mic.classList.remove('waiting');
+    if(ok){ startRecording(onText); return; }
+    /* refused or unavailable: hand over to the keyboard rather than sit there
+       with a dead button */
+    dockMode='type'; typeDock(onText,extra);
+  };
 }
 function typeDock(onText,extra){
   const wrap=mk('div','dockin');
@@ -1972,6 +1971,7 @@ function mountResizer(){
     panelPref=Math.round(w);
     gsap.set('.right',{width:panelPref+'px'});
     shiftLeft(panelPref+'px');
+    try{ lkRelayout(); }catch(e){}
   };
   const up=()=>{ if(!live) return; live=false;
     h.classList.remove('on'); document.body.classList.remove('rszing');
@@ -2708,6 +2708,7 @@ function lkFact(w,label,value,i,total){
      as gathered rather than as a dial */
   const ang=(-Math.PI/2)+(i/Math.max(1,total))*Math.PI*2;
   const wob=1+((i%3)-1)*0.09;
+  f._ang=ang; f._wob=wob;      /* so a resize can put it back where it belongs */
   const rx=Math.min(wr.width*0.27,232)*wob;
   const ry=Math.min(wr.height*0.24,214)*wob;
   const x=wr.width/2+Math.cos(ang)*rx;
@@ -2720,6 +2721,9 @@ function lkFact(w,label,value,i,total){
      correct whatever the profile happens to say. */
   const hit=el=>{
     const a=f.getBoundingClientRect();
+    const me=w.querySelector('.lkme');
+    if(me){ const h=me.getBoundingClientRect();
+      if(a.left<h.right+14&&h.left-14<a.right&&a.top<h.bottom+14&&h.top-14<a.bottom) return true; }
     return [...w.querySelectorAll('.lkf')].some(o=>{ if(o===f) return false;
       const b=o.getBoundingClientRect();
       return a.left<b.right+10&&b.left<a.right+10&&a.top<b.bottom+10&&b.top<a.bottom+10; });
@@ -2782,11 +2786,27 @@ function lkFact(w,label,value,i,total){
 }
 /* A correction lands on the LinkedIn board as a new fact, next to the ones
    Zero read, so the user can see their words sitting alongside the profile's. */
+/* A company the user chose becomes a block on the board they are looking at,
+   carrying what the card said, and the whole set re-separates so it has space
+   of its own rather than landing on top of what is already there. */
+function absorbPick(card){
+  const w=$('lkw'); if(!w||!card) return;
+  const seen=w.querySelector('.lkf[data-co="'+card.co+'"]');
+  if(seen) return;
+  const n=w.querySelectorAll('.lkf').length;
+  Promise.resolve(lkFact(w,'You chose',card.co+' · '+card.role,n,n+1))
+    .then(f=>{ if(!f) return;
+      f.classList.add('picked');
+      f.dataset.co=card.co;
+      lkRelayout(); setTimeout(lkRelayout,60); });
+}
 function absorbNote(text){
   const w=$('lkw'); if(!w||!String(text||'').trim()) return;
   const n=w.querySelectorAll('.lkf').length;
   Promise.resolve(lkFact(w,'You told me',String(text).trim().slice(0,120),n,n+1))
-    .then(f=>{ if(f) f.style.borderColor='rgba(13,13,13,.22)'; lkRelayout(); });
+    .then(f=>{ if(f) f.classList.add('mine');
+      /* re-deal every slot for the new count so the newcomer has its own room */
+      lkRelayout(); setTimeout(lkRelayout,60); });
 }
 /* The panel is still tweening its width while the first facts land, so a line
    drawn then was measured against a centre that afterwards moved. Rather than
@@ -2797,6 +2817,55 @@ function lkRelayout(){
   const wr=w.getBoundingClientRect();
   if(!wr.width) return;
   const cx=wr.width/2, cy=wr.height/2, HUB=44;
+  /* The blocks are placed in pixels, so resizing the panel used to move only
+     the hub and leave them stranded - and on a narrower panel they landed on
+     top of it. Re-derive every position from the ring, then re-separate and
+     re-clamp, before the strokes are redrawn against them. */
+  const all=[...w.querySelectorAll('.lkf')];
+  /* Angles are re-dealt for the count as it is NOW. Keeping the original
+     angles meant a note added later landed on a slot that was already taken,
+     which is how three of them ended up stacked on each other. */
+  all.forEach((f,idx)=>{
+    f._ang=(-Math.PI/2)+(idx/Math.max(1,all.length))*Math.PI*2;
+    f._wob=1+((idx%3)-1)*0.09;
+  });
+  all.forEach(f=>{
+    if(f._ang===undefined) return;
+    const wob=f._wob||1;
+    const rx=Math.min(wr.width*0.27,232)*wob, ry=Math.min(wr.height*0.24,214)*wob;
+    f.style.left=(cx+Math.cos(f._ang)*rx)+'px';
+    f.style.top =(cy+Math.sin(f._ang)*ry)+'px';
+  });
+  const overlaps=(f)=>{ const a=f.getBoundingClientRect();
+    return all.some(o=>{ if(o===f) return false; const b=o.getBoundingClientRect();
+      return a.left<b.right+10&&b.left<a.right+10&&a.top<b.bottom+10&&b.top<a.bottom+10; }); };
+  /* the hub is an object on the board too, and nothing may sit on it */
+  const hubBox=()=>{ const h=w.querySelector('.lkme').getBoundingClientRect();
+    return {l:h.left-14,r:h.right+14,t:h.top-14,b:h.bottom+14}; };
+  all.forEach(f=>{
+    if(f._ang===undefined) return;
+    const x0=parseFloat(f.style.left), y0=parseFloat(f.style.top);
+    let push=0;
+    const onHub=()=>{ const a=f.getBoundingClientRect(), h=hubBox();
+      return a.left<h.r&&h.l<a.right&&a.top<h.b&&h.t<a.bottom; };
+    /* push outward along its own spoke, and if that is not enough, fan it
+       sideways: on a narrow panel pure radial pushing runs out of room */
+    while((overlaps(f)||onHub())&&push<26){
+      push++;
+      const out=Math.min(push,14)*15;
+      const fan=push>14 ? (push-14)*0.07*((push%2)?1:-1) : 0;
+      f.style.left=(x0+Math.cos(f._ang+fan)*out)+'px';
+      f.style.top =(y0+Math.sin(f._ang+fan)*out)+'px';
+    }
+    const PAD=16, fb=f.getBoundingClientRect();
+    let nx=parseFloat(f.style.left), ny=parseFloat(f.style.top);
+    const l=fb.left-wr.left, t=fb.top-wr.top, rr=fb.right-wr.left, b=fb.bottom-wr.top;
+    if(l<PAD) nx+=PAD-l;
+    if(rr>wr.width-PAD) nx-=rr-(wr.width-PAD);
+    if(t<PAD) ny+=PAD-t;
+    if(b>wr.height-PAD) ny-=b-(wr.height-PAD);
+    f.style.left=nx+'px'; f.style.top=ny+'px';
+  });
   w.querySelectorAll('.lkline').forEach(ln=>{
     const f=ln._for; if(!f||!f.isConnected) return;
     const fr=f.getBoundingClientRect();
@@ -3653,7 +3722,7 @@ const RCARD={
    t:{world:'b2c',shape:'individual',ethos:'established',type:'commerce',domain:'everyday_utility',city:'san_francisco',level:'mid',compPct:.62}},
  doordash_sf_eq:{co:'DoorDash',role:'Product Designer',
    problem:'Help people get food reliably, even when time is tight.',
-   city:'SF Bay Area',pay:'US$177K',band:'US$146-209K',
+   city:'SF Bay Area',pay:'US$182K',band:'US$152-214K',
    t:{world:'b2c',shape:'individual',ethos:'established',type:'commerce',domain:'everyday_utility',city:'san_francisco',level:'mid',compPct:.55}},
  doordash_tor:{co:'DoorDash',role:'Product Designer',
    problem:'Solve a visible consumer problem for people ordering dinner.',
@@ -3665,15 +3734,15 @@ const RCARD={
    t:{world:'b2c',shape:'individual',ethos:'established',type:'creator',domain:'creator_tools',city:'san_francisco',level:'associate',compPct:.50}},
  adobe_sf:{co:'Adobe',role:'Product Designer',
    problem:'Design tools that help one person make something polished.',
-   city:'SF Bay Area',pay:'US$177K',band:'US$146-209K',
+   city:'SF Bay Area',pay:'US$171K',band:'US$144-198K',
    t:{world:'b2c',shape:'individual',ethos:'established',type:'creator',domain:'creator_tools',city:'san_francisco',level:'mid',compPct:.55}},
  adobe_sf_rich:{co:'Adobe',role:'Product Designer',
    problem:'Make creative work feel simple and expressive.',
-   city:'SF Bay Area',pay:'US$200K',band:'US$146-209K',
+   city:'SF Bay Area',pay:'US$196K',band:'US$144-198K',
    t:{world:'b2c',shape:'individual',ethos:'established',type:'creator',domain:'creator_tools',city:'san_francisco',level:'mid',compPct:.86}},
  salesforce_sf:{co:'Salesforce',role:'Product Designer',
    problem:'Help sales and operations teams keep complicated work moving.',
-   city:'SF Bay Area',pay:'US$177K',band:'US$146-209K',
+   city:'SF Bay Area',pay:'US$176K',band:'US$149-203K',
    t:{world:'b2b',shape:'collaborative',ethos:'established',type:'saas',domain:'team_tools',city:'san_francisco',level:'mid',compPct:.55}},
  salesforce_sf_ref:{co:'Salesforce',role:'Product Designer',
    problem:'Simplify the systems that help sales and operations run complex work.',
@@ -3681,11 +3750,11 @@ const RCARD={
    t:{world:'b2b',shape:'collaborative',ethos:'established',type:'saas',domain:'team_tools',city:'san_francisco',level:'mid',compPct:.63}},
  salesforce_sf_rich:{co:'Salesforce',role:'Product Designer',
    problem:'Build systems that make business work easier.',
-   city:'SF Bay Area',pay:'US$200K',band:'US$146-209K',
+   city:'SF Bay Area',pay:'US$203K',band:'US$149-203K',
    t:{world:'b2b',shape:'collaborative',ethos:'established',type:'saas',domain:'team_tools',city:'san_francisco',level:'mid',compPct:.86}},
  figma_sf:{co:'Figma',role:'Product Designer',
    problem:'Design tools that help teams turn ideas into work together.',
-   city:'SF Bay Area',pay:'US$177K',band:'US$146-209K',
+   city:'SF Bay Area',pay:'US$189K',band:'US$161-218K',
    t:{world:'b2b',shape:'collaborative',ethos:'frontier',type:'saas',domain:'team_tools',city:'san_francisco',level:'mid',compPct:.55}},
  figma_sf_ref:{co:'Figma',role:'Product Designer',
    problem:'Make complex team collaboration feel clear, flexible and satisfying.',
@@ -3693,7 +3762,7 @@ const RCARD={
    t:{world:'b2b',shape:'collaborative',ethos:'frontier',type:'saas',domain:'team_tools',city:'san_francisco',level:'mid',compPct:.68}},
  figma_sf_lean:{co:'Figma',role:'Product Designer',
    problem:'Build collaborative tools for teams.',
-   city:'SF Bay Area',pay:'US$155K',band:'US$146-209K',
+   city:'SF Bay Area',pay:'US$158K',band:'US$161-218K',
    t:{world:'b2b',shape:'collaborative',ethos:'frontier',type:'saas',domain:'team_tools',city:'san_francisco',level:'mid',compPct:.24}},
  figma_tor:{co:'Figma',role:'Product Designer',
    problem:'Design tools that help teams turn ideas into work together.',
@@ -3705,11 +3774,11 @@ const RCARD={
    t:{world:'b2b',shape:'collaborative',ethos:'frontier',type:'saas',domain:'team_tools',city:'toronto',level:'mid',compPct:.86}},
  openai_sf:{co:'OpenAI',role:'Product Designer',
    problem:'Help people use powerful AI in ways that feel clear and trustworthy.',
-   city:'SF Bay Area',pay:'US$177K',band:'US$146-209K',
+   city:'SF Bay Area',pay:'US$205K',band:'US$174-238K',
    t:{world:'b2c',shape:'collaborative',ethos:'frontier',type:'ai_frontier',domain:'ai_interaction',city:'san_francisco',level:'mid',compPct:.55}},
  openai_sf_lean:{co:'OpenAI',role:'Product Designer',
    problem:'Make frontier AI useful and trustworthy.',
-   city:'SF Bay Area',pay:'US$155K',band:'US$146-209K',
+   city:'SF Bay Area',pay:'US$166K',band:'US$174-238K',
    t:{world:'b2c',shape:'collaborative',ethos:'frontier',type:'ai_frontier',domain:'ai_interaction',city:'san_francisco',level:'mid',compPct:.24}},
  openai_tor:{co:'OpenAI',role:'Product Designer',
    problem:'Make frontier AI understandable to the people using it.',
@@ -3717,19 +3786,19 @@ const RCARD={
    t:{world:'b2c',shape:'collaborative',ethos:'frontier',type:'ai_frontier',domain:'ai_interaction',city:'toronto',level:'mid',compPct:.86}},
  google_sf:{co:'Google',role:'Product Designer',
    problem:'Make a familiar product easier for many different people to use.',
-   city:'SF Bay Area',pay:'US$177K',band:'US$146-209K',
+   city:'SF Bay Area',pay:'US$193K',band:'US$165-222K',
    t:{world:'b2c',shape:'collaborative',ethos:'established',type:'saas',domain:'everyday_utility',city:'san_francisco',level:'mid',compPct:.55}},
  google_sf2:{co:'Google',role:'Product Designer',
    problem:'Improve a dependable product used at enormous scale every day.',
-   city:'SF Bay Area',pay:'US$177K',band:'US$146-209K',
+   city:'SF Bay Area',pay:'US$193K',band:'US$165-222K',
    t:{world:'b2c',shape:'collaborative',ethos:'established',type:'saas',domain:'everyday_utility',city:'san_francisco',level:'mid',compPct:.55}},
  uber_sf:{co:'Uber',role:'Product Designer',
    problem:'Make rides feel predictable for riders and drivers when timing and safety matter.',
-   city:'SF Bay Area',pay:'US$177K',band:'US$146-209K',
+   city:'SF Bay Area',pay:'US$179K',band:'US$151-207K',
    t:{world:'b2c',shape:'collaborative',ethos:'established',type:'commerce',domain:'everyday_utility',city:'san_francisco',level:'mid',compPct:.55}},
  stripe_sf:{co:'Stripe',role:'Product Designer',
    problem:'Help businesses move money and understand what is happening behind the scenes.',
-   city:'SF Bay Area',pay:'US$177K',band:'US$146-209K',
+   city:'SF Bay Area',pay:'US$198K',band:'US$168-229K',
    t:{world:'b2b',shape:'collaborative',ethos:'frontier',type:'saas',domain:'team_tools',city:'san_francisco',level:'mid',compPct:.55}},
  shopify_tor:{co:'Shopify',role:'Product Designer',
    problem:'Help independent merchants build and run businesses with confidence.',
@@ -4119,6 +4188,10 @@ function rcRound(myGen,first){
     RPICKED[chosen.co]={role:chosen.role,city:chosen.city,pay:money(chosen.band||chosen.pay)};
     const seen=dreamList();
     if(seen.indexOf(chosen.co)<0){ seen.push(chosen.co); P.dream=seen.join(', '); }
+    /* the pick lands on the board that is actually on screen - the LinkedIn
+       one - as its own block with its own room, rather than being filed into
+       a Zero board that does not exist yet */
+    absorbPick(chosen);
     const other=el===A?B:A;
     /* the pick flies into the board, so the choice visibly becomes the thing
        the board is made of, and the other card falls away */
