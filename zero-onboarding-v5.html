@@ -762,12 +762,14 @@ body.rszing iframe{ pointer-events:none; }   /* the drag must not fall into an e
 /* out to the edges: two options offered from opposite sides, not a stack in
    the middle of the screen */
 .rcrow{ position:absolute; inset:0; display:flex; justify-content:center;
-  gap:20px; align-items:flex-start; }
+  gap:0; align-items:flex-start; }
 /* Two cards fanned in one hand touch. The overlap is the point: they are one
    offer with two sides, not two unrelated tiles. */
 .rcslot{ width:352px; transform-origin:50% 100%; will-change:transform;
   transition:transform .42s var(--e,cubic-bezier(.625,.05,0,1)), z-index 0s; }
-.rcslot.tiltL{ transform:rotate(-5deg) translateY(10px); z-index:1; }
+/* they touch, so hovering genuinely changes which one is in front - the right
+   card rests on top, and reaching for the left one brings it over */
+.rcslot.tiltL{ transform:rotate(-5deg) translateY(10px); z-index:1; margin-right:-30px; }
 .rcslot.tiltR{ transform:rotate(5deg) translateY(10px); z-index:2; }
 .rcslot:hover{ z-index:9; }
 .rcslot.tiltL:hover{ transform:rotate(-1deg) translateY(-12px) scale(1.04); }
@@ -781,19 +783,22 @@ body.rszing iframe{ pointer-events:none; }   /* the drag must not fall into an e
 .rcslot:hover .rcd{ box-shadow:0 40px 80px rgba(0,0,0,.26); border-color:rgba(13,13,13,.18); }
 .rcd.on{ border-color:var(--ink); }
 /* the company's own colour, bled in from the top edge */
-.rctint{ position:absolute; inset:0; pointer-events:none; opacity:.5;
-  transition:opacity .35s; transform:translateZ(1px);
+/* Bled out rather than painted on. The layer overhangs the card so the blur
+   has room to fall off before the edge clips it, and the side glows are a
+   suggestion of colour rather than two stripes. */
+.rctint{ position:absolute; inset:-60px; pointer-events:none; opacity:.30;
+  transition:opacity .35s; transform:translateZ(1px); filter:blur(38px);
   background:
-    radial-gradient(130% 62% at 50% -14%, var(--tint,#c9a227) 0%, transparent 64%),
-    radial-gradient(48% 74% at -12% 34%, var(--tint,#c9a227) 0%, transparent 60%),
-    radial-gradient(48% 74% at 112% 34%, var(--tint,#c9a227) 0%, transparent 60%); }
-.rcslot:hover .rctint{ opacity:.92; }
+    radial-gradient(120% 54% at 50% 2%,  var(--tint,#c9a227) 0%, transparent 72%),
+    radial-gradient(38% 58% at -2% 40%,  var(--tint,#c9a227) 0%, transparent 78%),
+    radial-gradient(38% 58% at 102% 40%, var(--tint,#c9a227) 0%, transparent 78%); }
+.rcslot:hover .rctint{ opacity:.46; }
 /* the second shader: weight at the base, so the light above it has somewhere
    to fall from */
 .rcdepth{ position:absolute; inset:0; pointer-events:none; transform:translateZ(2px);
   background:
-    linear-gradient(180deg, rgba(0,0,0,0) 28%, rgba(0,0,0,.42) 78%, rgba(0,0,0,.62) 100%),
-    radial-gradient(120% 70% at 50% 116%, rgba(0,0,0,.55) 0%, transparent 62%); }
+    linear-gradient(180deg, rgba(0,0,0,0) 34%, rgba(0,0,0,.34) 80%, rgba(0,0,0,.52) 100%),
+    radial-gradient(130% 76% at 50% 120%, rgba(0,0,0,.44) 0%, transparent 68%); }
 /* Role first. You are picking a piece of work; the company is the credit. */
 /* Each layer sits at its own depth. Without this the card rotates but its
    contents stay painted flat on it, which is what made the tilt feel like a
@@ -815,7 +820,10 @@ body.rszing iframe{ pointer-events:none; }   /* the drag must not fall into an e
   letter-spacing:-.012em; }
 .rcfoot{ position:relative; margin-top:auto; padding-top:22px; }
 .rcamt{ font-size:19px; font-weight:600; color:var(--tx); letter-spacing:-.024em; }
-.rcloc{ font-size:13px; color:var(--tx-3); margin-top:4px; }
+.rcloc{ display:flex; align-items:center; gap:5px; font-size:13px; color:var(--tx-3);
+  margin-top:5px; }
+.rcpin{ display:inline-flex; }
+.rcpin svg{ width:13px; height:13px; opacity:.75; }
 /* a footnote, sitting where footnotes sit */
 .rcsrc{ position:absolute; right:0; bottom:0; font-size:10px; color:var(--tx-4);
   letter-spacing:.01em; }
@@ -1847,7 +1855,9 @@ function shiftLeft(v){
 function logoChip(names,show){
   if(!names||!names.length) return '';
   const n=show||4, head=names.slice(0,n), rest=names.length-head.length;
-  return '<span class="vbl">'+head.map(x=>'<span>'+(LOGO[x]||'')+'</span>').join('')+
+  const tip=x=>{ const d=RPICKED[x];
+    return d ? ' title="'+x+' \u00b7 '+d.role+' \u00b7 '+d.city+' \u00b7 '+d.pay+'"' : ' title="'+x+'"'; };
+  return '<span class="vbl">'+head.map(x=>'<span'+tip(x)+'>'+(LOGO[x]||'')+'</span>').join('')+
     (rest>0?'<span class="more">+'+rest+'</span>':'')+'</span>';
 }
 function chip(inner){ return '<span class="vbc">'+inner+'</span>'; }
@@ -3662,6 +3672,10 @@ function rlogo(co){
 }
 /* Each company's own colour, so the tint means something. Gold is the fallback
    rather than a default look nobody chose. */
+/* what the user actually chose, kept so a chip on the board can explain itself */
+const RPICKED={};
+/* the sign already says dollars; "US$" says it twice */
+function money(v){ return String(v||'').replace(/^(US|CA|AU|NZ|SG)\$/,'$'); }
 const RTINT={DoorDash:'#FF3008',Adobe:'#FA0F00',Salesforce:'#00A1E0',Figma:'#A259FF',
   OpenAI:'#10A37F',Google:'#4285F4',Uber:'#0f0f0f',Stripe:'#635BFF',Shopify:'#95BF47',
   Notion:'#0f0f0f',Anthropic:'#D4A27F'};
@@ -3681,8 +3695,10 @@ function rcard(id,side,keep){
   b.appendChild(mk('div','rcp',d.problem));
   const f=mk('div','rcfoot');
   /* a range, because nobody is ever offered a single number */
-  f.appendChild(mk('div','rcamt',d.band||d.pay));
-  f.appendChild(mk('div','rcloc',d.city));
+  f.appendChild(mk('div','rcamt',money(d.band||d.pay)));
+  const loc=mk('div','rcloc');
+  loc.innerHTML='<span class="rcpin">'+(I.pin||'')+'</span>'+d.city;
+  f.appendChild(loc);
   if(d.src) f.appendChild(mk('div','rcsrc',d.src));
   b.appendChild(f);
   gyro(b);
@@ -3770,6 +3786,13 @@ function rcRound(myGen,first){
     sfx('toggle');
     el.classList.add('on');
     rapply(round,el.dataset.side);
+    /* the card does not just fly toward the board, it joins it: the company
+       becomes one of the marks, carrying what was on the card so the board can
+       say why it is there */
+    const chosen=RCARD[el.dataset.side==='a'?round.a:round.b];
+    RPICKED[chosen.co]={role:chosen.role,city:chosen.city,pay:money(chosen.band||chosen.pay)};
+    const seen=dreamList();
+    if(seen.indexOf(chosen.co)<0){ seen.push(chosen.co); P.dream=seen.join(', '); }
     const other=el===A?B:A;
     /* the pick flies into the board, so the choice visibly becomes the thing
        the board is made of, and the other card falls away */
