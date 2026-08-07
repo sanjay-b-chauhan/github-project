@@ -647,6 +647,27 @@ body.dark .rdy{ background:linear-gradient(140deg,rgba(74,222,128,.12),rgba(200,
 .hzdots{ display:flex; gap:6px; margin-top:26px; }
 .hzdots i{ width:6px; height:6px; border-radius:50%; background:var(--tx-4); transition:all .3s; }
 .hzdots i.on{ width:18px; border-radius:3px; background:var(--ink); }
+
+/* ---- the profile, read as a constellation ------------------------------- */
+.lkw{ position:absolute; inset:0; }
+/* the person is the fixed point; everything Zero reads arranges around them */
+.lkme{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  display:flex; flex-direction:column; align-items:center; gap:10px; z-index:2; }
+.lkav{ width:74px; height:74px; border-radius:50%; display:flex; align-items:center;
+  justify-content:center; font-size:28px; font-weight:600; color:#fff; letter-spacing:-.02em; }
+.lkname{ font-size:21px; font-weight:600; color:var(--tx); letter-spacing:-.025em; }
+.lksrc{ display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color:var(--tx-3);
+  background:var(--card); border:1px solid var(--line); border-radius:999px; padding:4px 11px; }
+.lksrc svg{ width:13px; height:13px; }
+/* each fact is its own small object, tilted slightly so the group reads as
+   gathered rather than laid out */
+.lkf{ position:absolute; background:var(--card); border:1px solid var(--line);
+  border-radius:13px; padding:10px 13px; max-width:206px; box-shadow:0 8px 22px rgba(0,0,0,.06); }
+.lkft{ font-size:10px; color:var(--tx-3); letter-spacing:.03em; margin-bottom:3px; }
+.lkfv{ font-size:13px; font-weight:500; color:var(--tx); line-height:1.35; letter-spacing:-.012em; }
+/* a hairline from the person out to each fact, so the group has a centre */
+.lkline{ position:absolute; height:1px; background:var(--line); transform-origin:0 50%;
+  pointer-events:none; z-index:1; }
 /* ---- roles, with fit ---------------------------------------------------- */
 .jr{ display:flex; flex-direction:column; gap:12px; }
 .jrc{ position:relative; background:var(--card); border:1px solid var(--line);
@@ -2365,6 +2386,9 @@ const LINKEDIN={
   design:{ headline:'Senior Product Designer at ZERO', org:'ZERO',
     exp:'Design systems, prototypes, motion',
     skills:'Figma, prototyping, design systems, motion, product design',
+    city:'Mumbai, India', since:'5+ years', school:'NMIMS',
+    follows:'OpenAI, Figma, Notion, Linear',
+    into:'Interfaces that explain themselves',
     have:[['ZERO design system','Tokens, components and the motion language, in use'],
           ['Onboarding prototype','Voice-first flow, built and shipped end to end']] },
   ba:{ headline:'Final year, Business and Economics', org:'University of Manchester',
@@ -2377,33 +2401,94 @@ const LINKEDIN={
           ['Internship','Bug fixes on an internal tool for 3 months']] },
 };
 function buildLinked(s){
-  const d=LINKEDIN[PKEY]||LINKEDIN.design;
-  const h2=mk('div','ph');
-  h2.innerHTML='<div class="pav" style="'+avStyle(P.name)+'">'+(P.name||'Y').charAt(0).toUpperCase()+'</div>'+
-    '<div class="pid"><div class="pname">'+(P.name||'You')+'</div><div class="pmeta">'+
-    '<span class="m">'+(P.linkedUrl||d.headline)+'</span></div></div><div class="pbadge">'+(P.linked==='Resume'?I.doc:(LOGO.LinkedIn||I.link))+
-    '<span>'+(P.linked==='Resume'?'Resume':'LinkedIn')+'</span></div>';
-  s.appendChild(h2);
-  const body=mk('div'); body.id='pBody'; body.style.marginTop='20px'; s.appendChild(body);
+  const w=mk('div','lkw'); w.id='lkw';
+  const me=mk('div','lkme');
+  const av=mk('div','lkav',(P.name||'Y').charAt(0).toUpperCase());
+  av.setAttribute('style',avStyle(P.name));
+  me.appendChild(av);
+  me.appendChild(mk('div','lkname',P.name||'You'));
+  const src=mk('div','lksrc');
+  src.innerHTML=(P.linked==='Resume'?I.doc:(LOGO.LinkedIn||I.link))+
+    '<span>'+(P.linkedUrl||(P.linked==='Resume'?'Resume':'LinkedIn'))+'</span>';
+  me.appendChild(src);
+  w.appendChild(me);
+  s.appendChild(w);
+  const body=mk('div'); body.id='pBody'; s.appendChild(body);
 }
-function linRow(k,v){
-  const r=mk('div','linr');
-  const n=mk('div','lk'); n.appendChild(mk('div','lkt',k)); n.appendChild(mk('div','lkv',v));
-  r.appendChild(n); r.appendChild(mk('div','lc',I.check));
-  return r;
+/* Fixed spots collided as soon as a card ran to two lines, and they bunched to
+   one side because a left-anchored card cannot sit past ~60% without spilling.
+   Placing each fact on a ring around the person, anchored by its own centre,
+   spaces them by construction and uses the whole panel. */
+function lkFact(w,label,value,i,total){
+  const f=mk('div','lkf');
+  f.appendChild(mk('div','lkft',label));
+  f.appendChild(mk('div','lkfv',value));
+  w.appendChild(f);
+  const wr=w.getBoundingClientRect();
+  /* start at the top and go round; nudge the radius per item so the ring reads
+     as gathered rather than as a dial */
+  const ang=(-Math.PI/2)+(i/Math.max(1,total))*Math.PI*2;
+  const wob=1+((i%3)-1)*0.09;
+  const rx=Math.min(wr.width*0.34,300)*wob;
+  const ry=Math.min(wr.height*0.33,300)*wob;
+  const x=wr.width/2+Math.cos(ang)*rx;
+  const y=wr.height/2+Math.sin(ang)*ry;
+  f.style.left=x+'px'; f.style.top=y+'px';
+  f.style.transform='translate(-50%,-50%) rotate('+((i%2?1:-1)*(0.4+(i%3)*0.4)).toFixed(2)+'deg)';
+  /* A ring spaces evenly only if every card is the same size, and they are not
+     - a five-item skills list is three lines tall. Walk this one outward along
+     its own angle until it clears the ones already placed, so the layout stays
+     correct whatever the profile happens to say. */
+  const hit=el=>{
+    const a=f.getBoundingClientRect();
+    return [...w.querySelectorAll('.lkf')].some(o=>{ if(o===f) return false;
+      const b=o.getBoundingClientRect();
+      return a.left<b.right+10&&b.left<a.right+10&&a.top<b.bottom+10&&b.top<a.bottom+10; });
+  };
+  let push=0;
+  while(hit()&&push<9){
+    push++;
+    f.style.left=(x+Math.cos(ang)*push*22)+'px';
+    f.style.top =(y+Math.sin(ang)*push*22)+'px';
+  }
+  requestAnimationFrame(()=>{
+    const fr=f.getBoundingClientRect();
+    const cx=wr.width/2, cy=wr.height/2;
+    const fx=fr.left-wr.left+fr.width/2, fy=fr.top-wr.top+fr.height/2;
+    const dx=fx-cx, dy=fy-cy, len=Math.hypot(dx,dy);
+    /* stop the hairline at the card edge, not under it */
+    const edge=Math.min(fr.width,fr.height)/2+8;
+    const ln=mk('div','lkline');
+    ln.style.left=cx+'px'; ln.style.top=cy+'px';
+    ln.style.width=Math.max(0,len-58-edge)+'px';
+    ln.style.transform='rotate('+Math.atan2(dy,dx)+'rad)';
+    w.insertBefore(ln,w.firstChild);
+    safeTL(gsap.timeline().fromTo(ln,{scaleX:0,opacity:0},
+      {scaleX:1,opacity:1,duration:.5,ease:'power2.out'}),900);
+  });
+  return f;
 }
 async function readLinked(){
   const d=LINKEDIN[PKEY]||LINKEDIN.design;
   const studying=P.level==='Student';
-  const rows=[['Currently',d.headline],[studying?'Studying at':'Working at',d.org]]
-    .concat(P.location?[['Based in',P.location]]:[])
-    .concat([['Experience',d.exp],['Skills listed',d.skills]]);
-  const holder=mk('div','lin'); landIn(holder,true);
-  for(const [k,v] of rows){
-    const r=linRow(k,v); holder.appendChild(r);
-    safeTL(gsap.timeline().fromTo(r,{opacity:0,x:-14},{opacity:1,x:0,duration:.45}),800);
+  const facts=[['Currently',d.headline],
+    [studying?'Studying at':'Working at',d.org||'']]
+    .concat(d.city?[['Based in',d.city]]:[])
+    .concat([['Experience',d.exp||'']])
+    .concat(d.since?[['Doing this for',d.since]]:[])
+    .concat([['Skills listed',d.skills||'']])
+    .concat(d.follows?[['Following',d.follows]]:[])
+    .concat(d.into?[['Signals',d.into]]:[])
+    .filter(f=>f[1]);
+  const w=$('lkw'); if(!w) return;
+  const g=gen;
+  for(let i=0;i<facts.length;i++){
+    if(g!==gen||!$('lkw')) return;
+    const f=lkFact(w,facts[i][0],facts[i][1],i,facts.length);
+    safeTL(gsap.timeline().fromTo(f,{opacity:0,scale:.86,filter:'blur(7px)'},
+      {opacity:1,scale:1,filter:'blur(0px)',duration:.52,ease:'back.out(1.5)'}),1100);
     sfx('tick');
-    await wait(430);
+    await wait(360);
   }
 }
 function linkedSummary(kind){
@@ -2417,7 +2502,9 @@ async function readProfile(kind){
   clearTurn(); dockHide(); await wait(380);
   line(kind==='Resume'?'Reading your resume.':'Reading your LinkedIn.');
   sfx('loading');
-  await swapPanel('Reading your profile',buildLinked,true,true);
+  bornPanel();                 /* now there is something to show */
+  await wait(520);
+  await swapPanel('Reading your profile',buildLinked,true,false);
   await wait(500);
   await readLinked();
   setCap(P.name?'Got everything, '+P.name:'Got everything',false);
@@ -2992,9 +3079,12 @@ async function linkedinStage(){
   const {box}=turn({q:'Share it and I can make the rest of this more personal.'});
   choices(box,[['link','Connect LinkedIn','LinkedIn'],['doc','Share a resume','Resume'],
     ['user','Tell you myself','Self']],v=>{
+    /* the panel stays shut while Zero is still asking. Rearranging the screen
+       around an empty container before there is anything to put in it is the
+       part that feels like a fetch. */
     if(v==='Self'){ bornPanel(); go(readbackStage); return; }
     clearTurn(); dockHide();
-    setTimeout(()=>{ locked=false; bornPanel(); linkStage(v); },460);
+    setTimeout(()=>{ locked=false; linkStage(v); },460);
   },{nomorph:true});
 }
 
