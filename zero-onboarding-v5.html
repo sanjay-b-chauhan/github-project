@@ -683,12 +683,21 @@ body.rszing iframe{ pointer-events:none; }   /* the drag must not fall into an e
 /* each fact is its own small object, tilted slightly so the group reads as
    gathered rather than laid out */
 .lkf{ position:absolute; background:var(--card); border:1px solid var(--line);
-  border-radius:13px; padding:10px 13px; max-width:206px; box-shadow:0 8px 22px rgba(0,0,0,.06); }
-.lkft{ font-size:10px; color:var(--tx-3); letter-spacing:.03em; margin-bottom:3px; }
+  border-radius:14px; padding:11px 14px 12px; max-width:198px;
+  box-shadow:0 2px 4px rgba(0,0,0,.05), 0 14px 30px rgba(0,0,0,.14);
+  transition:transform .28s var(--e,cubic-bezier(.625,.05,0,1)), box-shadow .28s; }
+.lkf:hover{ transform:translateY(-2px) scale(1.02);
+  box-shadow:0 4px 8px rgba(0,0,0,.06), 0 22px 44px rgba(0,0,0,.2); }
+.lkft{ display:flex; align-items:center; gap:5px; font-size:10px; color:var(--tx-3);
+  letter-spacing:.03em; margin-bottom:4px; }
+.lkfi{ display:inline-flex; opacity:.6; }
+.lkfi svg{ width:11px; height:11px; }
 .lkfv{ font-size:13px; font-weight:500; color:var(--tx); line-height:1.35; letter-spacing:-.012em; }
 /* a hairline from the person out to each fact, so the group has a centre */
-.lkline{ position:absolute; height:1px; background:var(--line); transform-origin:0 50%;
-  pointer-events:none; z-index:1; }
+/* brighter at the hub, fading as it reaches, so it reads as coming FROM Zero */
+.lkline{ position:absolute; height:1.5px; transform-origin:0 50%;
+  background:linear-gradient(90deg, rgba(255,255,255,.34), rgba(255,255,255,.10));
+  pointer-events:none; z-index:1; border-radius:1px; }
 /* ---- roles, with fit ---------------------------------------------------- */
 .jr{ display:flex; flex-direction:column; gap:12px; }
 .jrc{ position:relative; background:var(--card); border:1px solid var(--line);
@@ -756,6 +765,11 @@ body.rszing iframe{ pointer-events:none; }   /* the drag must not fall into an e
   font-size:11.5px; color:var(--tx-4); }
 
 
+
+/* ---- the reading -------------------------------------------------------- */
+/* what it has found so far, counted honestly */
+.lkcount{ position:absolute; left:50%; top:calc(50% + 92px); transform:translateX(-50%);
+  font-size:11px; color:var(--tx-3); letter-spacing:.02em; white-space:nowrap; opacity:0; }
 /* ---- the scan ----------------------------------------------------------- */
 .lkurl{ display:inline-flex; align-items:center; gap:8px; font-size:13px;
   color:var(--tx-2); background:var(--card); border:1px solid var(--line);
@@ -2666,6 +2680,8 @@ function buildLinked(s){
   src.innerHTML=(P.linked==='Resume'?I.doc:(LOGO.LinkedIn||I.link))+
     '<span>'+(P.linkedUrl||(P.linked==='Resume'?'Resume':'LinkedIn'))+'</span>';
   me.appendChild(src);
+  const cnt=mk('div','lkcount'); cnt.id='lkCount'; cnt.textContent='Reading';
+  w.appendChild(cnt);
   w.appendChild(me);
   s.appendChild(w);
   const body=mk('div'); body.id='pBody'; s.appendChild(body);
@@ -2674,9 +2690,16 @@ function buildLinked(s){
    one side because a left-anchored card cannot sit past ~60% without spilling.
    Placing each fact on a ring around the person, anchored by its own centre,
    spaces them by construction and uses the whole panel. */
+/* one mark per kind of fact, so a glance reads the shape of what Zero found */
+const LKICON={'Currently':I.target,'Working at':I.bld,'Studying at':I.bld,
+  'Based in':I.pin,'Experience':I.pen,'Doing this for':I.clock,'Skills listed':I.spark,
+  'Following':I.heart,'Signals':I.compass,'You told me':I.user};
 function lkFact(w,label,value,i,total){
   const f=mk('div','lkf');
-  f.appendChild(mk('div','lkft',label));
+  const head=mk('div','lkft');
+  const ic=LKICON[label]||I.spark;
+  head.innerHTML='<span class="lkfi">'+ic+'</span>'+label;
+  f.appendChild(head);
   f.appendChild(mk('div','lkfv',value));
   w.appendChild(f);
   const wr=w.getBoundingClientRect();
@@ -2684,8 +2707,8 @@ function lkFact(w,label,value,i,total){
      as gathered rather than as a dial */
   const ang=(-Math.PI/2)+(i/Math.max(1,total))*Math.PI*2;
   const wob=1+((i%3)-1)*0.09;
-  const rx=Math.min(wr.width*0.34,300)*wob;
-  const ry=Math.min(wr.height*0.33,300)*wob;
+  const rx=Math.min(wr.width*0.27,232)*wob;
+  const ry=Math.min(wr.height*0.24,214)*wob;
   const x=wr.width/2+Math.cos(ang)*rx;
   const y=wr.height/2+Math.sin(ang)*ry;
   f.style.left=x+'px'; f.style.top=y+'px';
@@ -2706,35 +2729,52 @@ function lkFact(w,label,value,i,total){
     f.style.left=(x+Math.cos(ang)*push*22)+'px';
     f.style.top =(y+Math.sin(ang)*push*22)+'px';
   }
-  requestAnimationFrame(()=>{
-    const fr=f.getBoundingClientRect();
-    const cx=wr.width/2, cy=wr.height/2;
-    const fx=fr.left-wr.left+fr.width/2, fy=fr.top-wr.top+fr.height/2;
-    const dx=fx-cx, dy=fy-cy, len=Math.hypot(dx,dy);
-    /* stop the hairline at the card edge, not under it */
-    const edge=Math.min(fr.width,fr.height)/2+8;
-    const ln=mk('div','lkline');
-    ln.style.left=cx+'px'; ln.style.top=cy+'px';
-    ln.style.width=Math.max(0,len-58-edge)+'px';
-    ln.style.transform='rotate('+Math.atan2(dy,dx)+'rad)';
-    w.insertBefore(ln,w.firstChild);
-    /* the line draws out to meet the block rather than fading in under it */
-    safeTL(gsap.timeline()
-      .fromTo(ln,{scaleX:0,opacity:.9},{scaleX:1,opacity:1,duration:.52,ease:'power2.out'})
-      .to(ln,{opacity:.55,duration:.5},'-=0.1'),1300);
+  /* The stroke is not decoration drawn under a card that has already arrived.
+     It reaches out from Zero and the fact lands on the end of it, which is the
+     difference between a diagram and something being handed to you. */
+  f.style.opacity='0';
+  return new Promise(resolve=>{
+    requestAnimationFrame(()=>{
+      /* the panel is still tweening its width while the first facts land, so a
+         box measured at entry is already wrong by the time the line is drawn */
+      const wr2=w.getBoundingClientRect();
+      const fr=f.getBoundingClientRect();
+      const cx=wr2.width/2, cy=wr2.height/2;
+      const fx=fr.left-wr2.left+fr.width/2, fy=fr.top-wr2.top+fr.height/2;
+      const dx=fx-cx, dy=fy-cy, len=Math.hypot(dx,dy)||1;
+      const ux=dx/len, uy=dy/len;
+      const half=Math.min(
+        Math.abs(ux)>1e-3 ? Math.abs((fr.width/2+1)/ux) : 1e9,
+        Math.abs(uy)>1e-3 ? Math.abs((fr.height/2+1)/uy) : 1e9);
+      const HUB=44;
+      const ln=mk('div','lkline');
+      ln.style.left=(cx+ux*HUB)+'px'; ln.style.top=(cy+uy*HUB)+'px';
+      /* run the stroke a little under the block rather than stopping at a
+         computed edge: the card paints over it, so overshoot is invisible and
+         a short line is not. Cards can still shift by a few px after relax. */
+      ln.style.width=Math.max(0,len-HUB-half+14)+'px';
+      ln.style.transform='rotate('+Math.atan2(dy,dx)+'rad)';
+      w.insertBefore(ln,w.firstChild);
+      sfx('whisper');                                   /* the reach */
+      safeTL(gsap.timeline({onComplete:()=>{
+          f.style.opacity='';
+          sfx(i%2 ? 'droplet' : 'tick');                /* the arrival */
+          safeTL(gsap.timeline().fromTo(f,{opacity:0,scale:.9,filter:'blur(6px)'},
+            {opacity:1,scale:1,filter:'blur(0px)',duration:.42,ease:'back.out(1.6)'}),900);
+          resolve(f);
+        }})
+        .fromTo(ln,{scaleX:0,opacity:.95},{scaleX:1,opacity:1,duration:.34,ease:'power2.out'})
+        .to(ln,{opacity:.5,duration:.6},'+=0.05'),1400);
+    });
   });
-  return f;
 }
 /* A correction lands on the LinkedIn board as a new fact, next to the ones
    Zero read, so the user can see their words sitting alongside the profile's. */
 function absorbNote(text){
   const w=$('lkw'); if(!w||!String(text||'').trim()) return;
   const n=w.querySelectorAll('.lkf').length;
-  const f=lkFact(w,'You told me',String(text).trim().slice(0,120),n,n+1);
-  f.style.borderColor='rgba(13,13,13,.22)';
-  safeTL(gsap.timeline().fromTo(f,{opacity:0,scale:.86,filter:'blur(7px)'},
-    {opacity:1,scale:1,filter:'blur(0px)',duration:.55,ease:'back.out(1.5)'}),1100);
-  sfx('tick');
+  Promise.resolve(lkFact(w,'You told me',String(text).trim().slice(0,120),n,n+1))
+    .then(f=>{ if(f) f.style.borderColor='rgba(13,13,13,.22)'; });
 }
 async function readLinked(){
   const d=LINKEDIN[PKEY]||LINKEDIN.design;
@@ -2751,15 +2791,17 @@ async function readLinked(){
   const w=$('lkw'); if(!w) return;
   const g=gen;
   const url=w.querySelector('.lkurl');
+  const cnt=$('lkCount');
+  if(cnt) safeTL(gsap.timeline().to(cnt,{opacity:1,duration:.4}),800);
   for(let i=0;i<facts.length;i++){
     if(g!==gen||!$('lkw')) return;
-    const f=lkFact(w,facts[i][0],facts[i][1],i,facts.length);
-    safeTL(gsap.timeline().fromTo(f,{opacity:0,scale:.86,filter:'blur(7px)'},
-      {opacity:1,scale:1,filter:'blur(0px)',duration:.52,ease:'back.out(1.5)'}),1100);
-    sfx('tick');
-    await wait(360);
+    await lkFact(w,facts[i][0],facts[i][1],i,facts.length);
+    if(cnt) cnt.textContent=(i+1)+' of '+facts.length+' found';
+    await wait(230);
   }
   if(url) url.classList.remove('reading');   /* done reading */
+  if(cnt){ cnt.textContent='Got '+facts.length+' things about you';
+    safeTL(gsap.timeline().to(cnt,{opacity:0,duration:.5,delay:1.1}),1900); }
 }
 /* Zero reads eight things off the profile and then put almost none of them on
    the board, which made the board look like it had learned nothing. Everything
