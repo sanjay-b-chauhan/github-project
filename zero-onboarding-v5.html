@@ -708,26 +708,61 @@ body.rszing iframe{ pointer-events:none; }   /* the drag must not fall into an e
 .lkline{ position:absolute; height:1.5px; transform-origin:0 50%; z-index:0;
   background:linear-gradient(90deg, rgba(255,255,255,.32), rgba(255,255,255,.09));
   pointer-events:none; border-radius:1px; }
-/* ---- roles, with fit ---------------------------------------------------- */
-.jr{ display:flex; flex-direction:column; gap:12px; }
-.jrc{ position:relative; background:var(--card); border:1px solid var(--line);
-  border-radius:18px; padding:18px 20px; text-align:left; }
-.jrtier{ display:inline-flex; align-items:center; gap:7px; font-size:10.5px;
-  font-weight:600; letter-spacing:.05em; color:var(--tx-3); margin-bottom:11px; }
-.jrbar{ display:inline-flex; gap:3px; }
-.jrbar i{ width:13px; height:3px; border-radius:2px; background:var(--tx-4); }
-.jrbar i.on{ background:var(--ink); }
-.jrtier.top{ color:var(--tx); }
-.jrhead{ display:flex; align-items:center; gap:10px; margin-bottom:7px; }
-.jrlogo{ width:28px; height:28px; border-radius:8px; background:#fff; flex:0 0 28px;
-  border:1px solid var(--line); display:flex; align-items:center; justify-content:center; }
-.jrlogo svg{ width:16px; height:16px; }
-.jrt{ font-size:15px; font-weight:600; color:var(--tx); letter-spacing:-.018em; }
-.jrm{ font-size:12px; color:var(--tx-3); margin-bottom:9px; }
-.jrd{ font-size:13.5px; line-height:1.5; color:var(--tx-2); }
+/* ---- roles, as tiles ---------------------------------------------------- */
+/* Square tiles, centred. A role is a place you could be, not a row in a list,
+   and a wide bar reads as a search result no matter what is inside it. */
+.doc:has(> .jr){ max-width:880px; }
+.jr{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px; width:100%; max-width:880px; margin:0 auto; align-items:stretch; }
+.jrc{ position:relative; display:flex; flex-direction:column; text-align:left;
+  background:var(--card); border:1px solid var(--line); border-radius:26px;
+  padding:24px 24px 22px; min-height:300px; overflow:hidden;
+  box-shadow:0 2px 4px rgba(0,0,0,.03), 0 14px 34px rgba(0,0,0,.08),
+             0 40px 80px rgba(0,0,0,.05);
+  transition:transform .42s var(--e,cubic-bezier(.625,.05,0,1)), box-shadow .42s,
+             border-color .28s; }
+.jrc:hover{ transform:translateY(-6px);
+  box-shadow:0 4px 8px rgba(0,0,0,.04), 0 24px 54px rgba(0,0,0,.14),
+             0 60px 110px rgba(0,0,0,.08);
+  border-color:rgba(13,13,13,.14); }
+/* the company's own colour bleeding down from the top edge, same device as
+   the cards, so the two screens read as one system */
+.jrtint{ position:absolute; left:0; right:0; top:0; height:170px; pointer-events:none;
+  opacity:.42; transition:opacity .42s;
+  background:radial-gradient(130% 100% at 50% -34%, var(--tint,#c9a227) 0%, transparent 72%); }
+.jrc:hover .jrtint{ opacity:.72; }
+/* the logo at a size you can recognise without leaning in */
+.jrlogo{ position:relative; width:62px; height:62px; border-radius:18px; background:#fff;
+  border:1px solid var(--line); display:flex; align-items:center; justify-content:center;
+  box-shadow:0 6px 16px rgba(0,0,0,.10); flex:0 0 62px; }
+.jrlogo svg{ width:34px; height:34px; }
+.jrco{ position:relative; font-size:27px; font-weight:600; color:var(--tx);
+  letter-spacing:-.036em; line-height:1.04; }
+.jrrole{ position:relative; font-size:18px; font-weight:500; color:var(--tx-2);
+  letter-spacing:-.024em; margin-top:5px; }
+.jrm{ position:relative; font-size:12.5px; color:var(--tx-3); margin-top:9px;
+  letter-spacing:-.006em; }
+/* what you would actually make, in the heaviest type on the tile */
+.jrmake{ position:relative; margin-top:18px; }
+.jrml{ font-size:10.5px; font-weight:600; letter-spacing:.09em; color:var(--tx-4);
+  text-transform:uppercase; margin-bottom:8px; }
+.jrd{ font-size:16.5px; font-weight:600; line-height:1.34; color:var(--tx);
+  letter-spacing:-.024em; }
 /* the reason, set apart by space rather than a rule */
-.jrwhy{ margin-top:13px; font-size:12.5px; line-height:1.45; color:var(--tx-3); }
-.jrwhy b{ font-weight:600; color:var(--tx-2); }
+.jrwhy{ position:relative; margin-top:auto; padding-top:20px; font-size:12.5px;
+  line-height:1.48; color:var(--tx-2); letter-spacing:-.008em; }
+.jrwhy b{ font-weight:600; color:var(--tx); }
+/* fit gets its own corner and its own space, so it can never sit on a title */
+.jrtop{ position:relative; display:flex; align-items:center;
+  justify-content:space-between; gap:14px; margin-bottom:16px; }
+.jrfit{ display:flex; flex-direction:column; align-items:flex-end; gap:7px; }
+.jrfl{ font-size:10px; font-weight:600; letter-spacing:.075em; color:var(--tx-3);
+  text-transform:uppercase; }
+.jrfit.jrbest .jrfl{ color:var(--tx); }
+.jrbar{ display:flex; gap:3px; }
+.jrbar i{ width:11px; height:3px; border-radius:2px; background:var(--tx-4);
+  transition:background .3s; }
+.jrbar i.on{ background:var(--ink); }
 /* ---- preference screens ------------------------------------------------ */
 .pfx{ width:100%; max-width:760px; margin:0 auto; }
 .pfxtop{ display:flex; align-items:center; justify-content:space-between;
@@ -776,6 +811,24 @@ body.rszing iframe{ pointer-events:none; }   /* the drag must not fall into an e
 
 
 
+
+/* ---- Zero thinking, on the narration side ------------------------------- */
+.think{ display:flex; align-items:center; gap:10px; margin-top:30px; }
+.thinkd{ display:flex; gap:6px; }
+.thinkd i{ width:7px; height:7px; border-radius:50%; background:var(--tx-4);
+  animation:thinkp 1.25s ease-in-out infinite; }
+.thinkd i:nth-child(2){ animation-delay:.16s; }
+.thinkd i:nth-child(3){ animation-delay:.32s; }
+@keyframes thinkp{ 0%,100%{ opacity:.28; transform:translateY(0); }
+                   50%{ opacity:1; transform:translateY(-3px); } }
+/* the same green that means verified, travelling while the work is unfinished */
+.thinkb{ position:relative; width:150px; height:2px; border-radius:2px;
+  background:rgba(255,255,255,.07); overflow:hidden; }
+.thinkb::after{ content:''; position:absolute; inset:0; transform:translateX(-100%);
+  background:linear-gradient(90deg,transparent,var(--ok),transparent);
+  animation:thinksh 1.35s linear infinite; }
+@keyframes thinksh{ to{ transform:translateX(100%); } }
+.thinkt{ font-size:12px; color:var(--tx-4); letter-spacing:.01em; }
 /* ---- the reading -------------------------------------------------------- */
 /* what it has found so far, counted honestly */
 .lkcount{ position:absolute; z-index:2; left:50%; top:calc(50% + 92px); transform:translateX(-50%);
@@ -2428,6 +2481,9 @@ async function lightsUp(){
 async function visionStage(fromEdit){
   atStep('Vision');
   await lightsUp();
+  /* here, and only here: the cards are played, the preferences confirmed, and
+     Zero finally has enough to synthesise rather than record */
+  boardLive=true;
   if(fromEdit){ swapPanel('Your vision board',s2=>{ s2.classList.add('ctr');
     const vb=mk('div','vb'); vb.id='vb';
     vb.innerHTML=boardHTML(); s2.appendChild(vb); boardLive=true; $('paper').classList.add('canvas'); },false); }
@@ -2879,6 +2935,25 @@ function lkRelayout(){
   });
 }
 addEventListener('resize',()=>{ try{ lkRelayout(); }catch(e){} });
+/* Both halves are working, so both halves should look like it. Without this
+   the right side is a finished sentence sitting still while the left side
+   builds, and the pause reads as the app having stalled. */
+function thinking(on,label){
+  const col=$('col');
+  let t=document.querySelector('.think');
+  if(!on){ if(t) safeTL(gsap.timeline({onComplete:()=>{ if(t.isConnected) t.remove(); }})
+      .to(t,{opacity:0,y:-6,duration:.35}),800); return; }
+  if(!t){
+    t=mk('div','think');
+    t.innerHTML='<span class="thinkd"><i></i><i></i><i></i></span>'+
+                '<span class="thinkb"></span><span class="thinkt"></span>';
+    const turn=document.querySelector('#turn .opts')||col;
+    turn.appendChild(t);
+    enter([t],{y:8,blur:4,duration:.45},900);
+  }
+  const lab=t.querySelector('.thinkt');
+  if(lab&&label!==undefined) lab.textContent=label;
+}
 async function readLinked(){
   const d=LINKEDIN[PKEY]||LINKEDIN.design;
   const studying=P.level==='Student';
@@ -2896,13 +2971,16 @@ async function readLinked(){
   const url=w.querySelector('.lkurl');
   const cnt=$('lkCount');
   if(cnt) safeTL(gsap.timeline().to(cnt,{opacity:1,duration:.4}),800);
+  thinking(true,'Reading your profile');
   for(let i=0;i<facts.length;i++){
     if(g!==gen||!$('lkw')) return;
     await lkFact(w,facts[i][0],facts[i][1],i,facts.length);
     if(cnt) cnt.textContent=(i+1)+' of '+facts.length+' found';
+    thinking(true,'Found '+(i+1)+' of '+facts.length);
     await wait(230);
   }
   if(url) url.classList.remove('reading');   /* done reading */
+  thinking(false);
   /* everything has landed and the panel has finished moving: true them up */
   requestAnimationFrame(()=>{ lkRelayout(); setTimeout(lkRelayout,400); });
   if(cnt){ cnt.textContent='Got '+facts.length+' things about you';
@@ -3646,9 +3724,9 @@ function reflectPivot(){
 }
 async function cardsIntroStage(){
   atStep('Cards intro');
-  /* from here the panel becomes the Zero board: the LinkedIn read is done and
-     what accumulates now is the synthesis */
-  boardLive=true;
+  /* The LinkedIn board stays. Zero is still working the user out through the
+     cards, and each pick lands on that board. The Zero vision board is not
+     built until Zero has the whole picture, which is the vision step. */
   setPhase(1);
   clearTurn(); dockHide(); await wait(380);
   /* every other handoff restates what they just said; this was the only one
@@ -3952,7 +4030,10 @@ function rconf(k){
 /* Bradley-Terry: two cities may never meet directly, so a win count cannot
    rank them. This lets the unseen pair be inferred through the ones that did. */
 function rrank(k){
-  const n=RSTATE[k], W=n.W, opts=[...new Set(Object.keys(W).concat(
+  /* rconf already guards this; rrank did not, so jumping straight to the roles
+     screen threw before a single tile could render */
+  const n=RSTATE[k]; if(!n||!n.W) return [];
+  const W=n.W, opts=[...new Set(Object.keys(W).concat(
     ...Object.values(W).map(o=>Object.keys(o))))];
   if(!opts.length) return [];
   const p={}; opts.forEach(o=>p[o]=1);
@@ -4524,21 +4605,27 @@ async function prefStage(){
 const JTIERS=[[5,'DIRECT FIT'],[4,'STRONG FIT'],[3,'CLOSE'],[2,'ADJACENT'],[1,'A STRETCH']];
 const JPOOL=[
  {co:'OpenAI',role:'Product Designer',where:'Remote Canada / US',yrs:'1-4 years',
+  edge:'you said AI was the thing pulling you, and this is the room where that gets decided',
   d:'Make powerful AI clear and useful through thoughtful, trustworthy product experiences.',
   t:{type:'ai_frontier',ethos:'frontier',world:'b2c',shape:'collaborative',domain:'ai_interaction',city:'toronto'}},
  {co:'Anthropic',role:'Product Designer',where:'Remote Canada / US',yrs:'2-5 years',
+  edge:'you want to solve real problems, and making a model legible to a person is about as real as it gets',
   d:'Design the surfaces where people and models actually meet, and keep them legible.',
   t:{type:'ai_frontier',ethos:'frontier',world:'b2c',shape:'collaborative',domain:'ai_interaction',city:'toronto'}},
  {co:'Figma',role:'Product Designer',where:'Toronto',yrs:'1-4 years',
+  edge:'you already work in this tool every day, and here you would be designing the thing itself',
   d:'Design tools that let a whole team move through one file without stepping on each other.',
   t:{type:'saas',ethos:'frontier',world:'b2b',shape:'collaborative',domain:'team_tools',city:'toronto'}},
  {co:'Shopify',role:'Product Designer',where:'Toronto',yrs:'1-3 years',
+  edge:'you wanted work people actually use, and every merchant on it is a real business',
   d:'Help independent merchants run a business with confidence, not just a storefront.',
   t:{type:'commerce',ethos:'established',world:'b2b',shape:'collaborative',domain:'team_tools',city:'toronto'}},
  {co:'Notion',role:'Product Designer',where:'Remote',yrs:'2-4 years',
+  edge:'you came from graphic design, and this is where craft still shows on the surface',
   d:'Make a blank page feel like a starting point instead of a demand.',
   t:{type:'saas',ethos:'frontier',world:'b2c',shape:'individual',domain:'creator_tools',city:'new_york'}},
  {co:'Stripe',role:'Product Designer',where:'New York',yrs:'2-5 years',
+  edge:'you like problems with a right answer, and money is the least forgiving of them',
   d:'Show businesses what is happening to their money, plainly.',
   t:{type:'saas',ethos:'frontier',world:'b2b',shape:'collaborative',domain:'team_tools',city:'new_york'}}
 ];
@@ -4555,7 +4642,7 @@ const JREASON={
 };
 function jscore(job){
   let hit=0, tot=0; const why=[];
-  ['type','ethos','world','shape','domain'].forEach(k=>{
+  JORDER.forEach(k=>{
     /* an axis the rounds never settled proves nothing - unless the user
        went and set it themselves on screens 01-06, which is stronger */
     if(rconf(k)<.25 && !pstated(k)) return;
@@ -4571,23 +4658,48 @@ function jscore(job){
   const tier=ratio>=.85?5:ratio>=.68?4:ratio>=.5?3:ratio>=.3?2:1;
   return {tier:tier, why:why.slice(0,3)};
 }
+/* Reasons are ordered most specific first. Ethos and world are true of half
+   the pool, so leading with them made every tile say the same sentence - the
+   thing that killed the screen. Domain and company type actually separate. */
+const JORDER=['domain','type','world','shape','ethos'];
 function jcard(job){
   const sc=jscore(job);
   const label=(JTIERS.find(t=>t[0]===sc.tier)||JTIERS[2])[1];
   const c=mk('div','jrc');
-  const tier=mk('div','jrtier'+(sc.tier>=4?' top':''));
+  c.style.setProperty('--tint',(typeof RTINT!=='undefined'&&RTINT[job.co])||'#c9a227');
+  c.appendChild(mk('span','jrtint'));
+
+  /* logo and fit share a row, so the badge can never land on the name */
+  const top=mk('div','jrtop');
+  const fit=mk('div','jrfit'+(sc.tier>=4?' jrbest':''));
   const bar=mk('span','jrbar');
   for(let i=1;i<=5;i++){ const b=mk('i'); if(i<=sc.tier) b.className='on'; bar.appendChild(b); }
-  tier.appendChild(bar);
-  tier.appendChild(mk('span',null,'0'+sc.tier+' · '+label));
-  c.appendChild(tier);
-  const h=mk('div','jrhead');
-  h.appendChild(mk('span','jrlogo',rlogo(job.co)));
-  h.appendChild(mk('div','jrt',job.co+' · '+job.role));
-  c.appendChild(h);
-  c.appendChild(mk('div','jrm',job.where+' · full-time · '+job.yrs));
-  c.appendChild(mk('div','jrd',job.d));
-  if(sc.why.length) c.appendChild(mk('div','jrwhy','<b>Why it fits:</b> '+sc.why.join(', ')+'.'));
+  fit.appendChild(bar);
+  fit.appendChild(mk('span','jrfl',label));
+  top.appendChild(mk('span','jrlogo',rlogo(job.co)));
+  top.appendChild(fit);
+  c.appendChild(top);
+  c.appendChild(mk('div','jrco',job.co));
+  c.appendChild(mk('div','jrrole',job.role));
+  c.appendChild(mk('div','jrm',job.where+' · '+job.yrs));
+
+  const make=mk('div','jrmake');
+  make.appendChild(mk('div','jrml','What you would make'));
+  make.appendChild(mk('div','jrd',job.d));
+  c.appendChild(make);
+
+  /* Addressed to the person, and different on every tile. The job's own edge
+     comes first because it is the only part that could not be said about any
+     other company here; the evidence follows so the claim stays checkable. */
+  const who=P.name||'you';
+  const up=t=>t?t.charAt(0).toUpperCase()+t.slice(1):t;
+  const bits=[];
+  /* two sentences, not one run-on. The first is the thing only this company
+     could claim; the second is the evidence, so the claim stays checkable. */
+  if(job.edge) bits.push(up(job.edge)+'.');
+  if(sc.why.length) bits.push('It lands on '+sc.why.slice(0,2).join(' and ')+'.');
+  if(bits.length) c.appendChild(mk('div','jrwhy',
+    '<b>Why this is you, '+who+'.</b> '+bits.join(' ')));
   return {el:c,tier:sc.tier};
 }
 function buildRoles(host){
@@ -4788,7 +4900,43 @@ function dbgFill(upTo){
     P.problems=d.problemChips?d.problemChips[0]:'Confusing tools';
     P.location='Toronto';
     P.timeline='This year'; });
+  /* the cards are behind every screen from the reflection on. Replaying the
+     deck here is what the real flow would have left behind, so a jumped-to
+     screen scores on the same evidence a walked-to one does. */
+  set(6,()=>{ try{ rreset(); rdeck().forEach(r=>rapply(r, r.n%3===0?'b':'a')); }catch(e){} });
   set(9,()=>{ P.aim=d.roles&&d.roles[0]?d.roles[0][0]:'Product Designer'; });
+}
+/* The stepper was rebuilding the Zero board on every jump, so steps that should
+   show the LinkedIn board showed the synthesised one - the exact confusion the
+   two boards exist to avoid. This lays the LinkedIn board out instantly, no
+   animation, for any step before Zero has the whole picture. */
+function lkSeed(){
+  const sc=$('scroll'); if(!sc) return;
+  sc.className='scroll'; sc.innerHTML='';
+  buildLinked(sc);
+  const w=$('lkw'); if(!w) return;
+  const d=LINKEDIN[PKEY]||LINKEDIN.design;
+  const facts=[['Currently',d.headline],['Working at',d.org]]
+    .concat(d.city?[['Based in',d.city]]:[])
+    .concat([['Experience',d.exp]])
+    .concat(d.since?[['Doing this for',d.since]]:[])
+    .concat([['Skills listed',d.skills]])
+    .concat(d.follows?[['Following',d.follows]]:[])
+    .concat(d.into?[['Signals',d.into]]:[])
+    .filter(f=>f[1]);
+  /* whatever they have already chosen belongs here too */
+  Object.keys(RPICKED).forEach(co=>facts.push(['You chose',co+' · '+RPICKED[co].role]));
+  facts.forEach((f,i)=>{
+    const el=mk('div','lkf'+(f[0]==='You chose'?' picked':''));
+    const head=mk('div','lkft');
+    head.innerHTML='<span class="lkfi">'+(LKICON[f[0]]||I.spark)+'</span>'+f[0];
+    el.appendChild(head); el.appendChild(mk('div','lkfv',f[1]));
+    if(f[0]==='You chose') el.dataset.co=f[1].split(' · ')[0];
+    w.appendChild(el);
+    const ln=mk('div','lkline'); ln._for=el; w.insertBefore(ln,w.firstChild);
+  });
+  const url=w.querySelector('.lkurl'); if(url) url.classList.remove('reading');
+  lkRelayout(); setTimeout(lkRelayout,50);
 }
 let dbgAt=0;
 /* The pill used to move only when its own arrows were pressed, so walking the
@@ -4826,7 +4974,18 @@ function dbgGoto(i){
   /* the panel exists from the moment Zero starts writing things down */
   /* panel opens at the read-back (2) and widens once the board is the subject (8) */
   const born=i>=3, wide=i>=9;
-  if(born){
+  /* the Zero board only exists once Zero has the whole picture; before the
+     vision step the panel is the LinkedIn board */
+  const zeroBoard=i>=9;
+  if(born&&!zeroBoard){
+    panelBorn=true; boardLive=false;
+    gsap.set('.right',{width:panelPref?panelPref+'px':'40%',opacity:1,x:0});
+    shiftLeft(panelPref?panelPref+'px':'40vw');
+    mountResizer();
+    $('cap').innerHTML='<span class="live pulse"></span>'+(P.name?'Got everything, '+P.name:'Zero is listening');
+    try{ lkSeed(); }catch(e){}
+  }
+  else if(born){
     panelBorn=true; boardLive=true;
     gsap.set('.right',{width:panelPref?panelPref+'px':(wide?'56%':'40%'),opacity:1,x:0});
     shiftLeft(panelPref?panelPref+'px':(wide?'56vw':'40vw'));
