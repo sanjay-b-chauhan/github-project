@@ -1324,6 +1324,19 @@ td.cell-active::after{border-color:var(--accent)}
 /* the interaction keeps the chat's left edge. 34px avatar + 14px gap = 48. */
 .app.serif .segment > *:not(.beats){margin-left:48px}
 
+/* Her closing line is her VOICE, so it takes the narrative face like every
+   other thing she says. It is not a .beat - renderEnd writes it as .fin-note
+   with an inline style - so it needs !important to beat that inline rule. */
+.app.serif .fin-note{
+  font-family:var(--serif)!important;
+  font-size:30px!important;
+  line-height:1.24!important;
+  letter-spacing:-.006em!important;
+  font-weight:400!important}
+@media(max-width:700px){
+  .app.serif .fin-note{font-size:clamp(21px,4vw,30px)!important;line-height:1.3!important}
+}
+
 /* no highlight - it belongs to the old design system, not this one */
 .app.serif .hl,.app.serif .hl.on,
 .app.serif .beat .btext .hl,.app.serif .beat .btext .hl.on,
