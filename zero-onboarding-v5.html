@@ -648,6 +648,24 @@ body.dark .rdy{ background:linear-gradient(140deg,rgba(74,222,128,.12),rgba(200,
 .hzdots i{ width:6px; height:6px; border-radius:50%; background:var(--tx-4); transition:all .3s; }
 .hzdots i.on{ width:18px; border-radius:3px; background:var(--ink); }
 
+
+/* ---- panel resize ------------------------------------------------------- */
+.rsz{ position:absolute; top:0; bottom:0; right:-7px; width:14px; z-index:40;
+  cursor:col-resize; display:flex; align-items:center; justify-content:center; }
+.rsz::after{ content:''; width:2px; height:38px; border-radius:2px;
+  background:var(--tx-4); opacity:0; transition:opacity .2s; }
+.rsz:hover::after, .rsz.on::after{ opacity:.55; }
+body.rszing{ cursor:col-resize; user-select:none; }
+body.rszing iframe{ pointer-events:none; }   /* the drag must not fall into an embed */
+
+/* ---- the quiet alternatives above an input ------------------------------ */
+.alt{ display:flex; gap:8px; margin-bottom:22px; }
+.altb{ display:inline-flex; align-items:center; gap:7px; cursor:pointer;
+  background:transparent; border:1px solid var(--line); border-radius:999px;
+  padding:7px 14px; font-size:12.5px; color:var(--tx-2); letter-spacing:-.008em;
+  transition:border-color .2s, color .2s, background .2s; }
+.altb:hover{ border-color:var(--tx-3); color:var(--tx); background:var(--wash); }
+.altb svg{ width:14px; height:14px; }
 /* ---- the profile, read as a constellation ------------------------------- */
 .lkw{ position:absolute; inset:0; }
 /* the person is the fixed point; everything Zero reads arranges around them */
@@ -733,43 +751,49 @@ body.dark .rdy{ background:linear-gradient(140deg,rgba(74,222,128,.12),rgba(200,
 /* a pair the choices never actually compared should not pretend to a rank */
 .pftie{ border:1px dashed var(--line); border-radius:14px; padding:9px 14px;
   font-size:11.5px; color:var(--tx-4); }
-/* ---- paired role cards ------------------------------------------------- */
-.rcwrap{ width:100%; max-width:900px; margin:0 auto; }
+/* ---- paired role cards, as a deck ---------------------------------------- */
+.rcwrap{ width:100%; max-width:940px; margin:0 auto; }
 .rcmeta{ display:flex; align-items:center; justify-content:space-between;
-  margin:0 6px 16px; font-size:12.5px; color:var(--tx-3); letter-spacing:-.01em; }
+  margin:0 8px 20px; font-size:12.5px; color:var(--tx-3); letter-spacing:-.01em; }
 .rcdots{ display:flex; gap:5px; align-items:center; }
 .rcdots i{ width:5px; height:5px; border-radius:50%; background:var(--tx-4);
   transition:background .3s, width .3s; }
 .rcdots i.on{ background:var(--tx-2); }
 .rcdots i.now{ width:16px; border-radius:3px; background:var(--ink); }
-.rcrow{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:18px; }
+/* the stage holds its height so nothing below it jumps when a pair swaps */
+.rcstage{ position:relative; min-height:430px; perspective:1400px; }
+.rcrow{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:26px;
+  position:absolute; inset:0; align-items:start; }
+/* Two things held out to you are tilted, one per hand. Straightening on hover
+   is the whole gesture: the one you are considering turns to face you. */
 .rcd{ position:relative; text-align:left; cursor:pointer; background:var(--card);
-  border:1px solid var(--line); border-radius:20px; padding:22px 22px 18px;
-  display:flex; flex-direction:column; gap:0; min-height:250px;
-  transition:transform .22s, box-shadow .22s, border-color .22s; }
-.rcd:hover{ transform:translateY(-3px); border-color:rgba(13,13,13,.16);
-  box-shadow:0 14px 34px rgba(0,0,0,.09); }
-.rcd.on{ border-color:var(--ink); box-shadow:0 16px 40px rgba(0,0,0,.14); }
-.rcd.out{ opacity:.32; }
-.rchead{ display:flex; align-items:center; gap:10px; margin-bottom:14px; }
-.rclogo{ width:34px; height:34px; border-radius:9px; background:#fff; flex:0 0 34px;
+  border:1px solid var(--line); border-radius:22px; padding:26px 24px 22px;
+  display:flex; flex-direction:column; min-height:404px;
+  transform-origin:50% 100%;
+  transition:transform .34s var(--e,cubic-bezier(.625,.05,0,1)), box-shadow .34s, border-color .24s;
+  box-shadow:0 10px 30px rgba(0,0,0,.07); }
+.rcd.tiltL{ transform:rotate(-2.6deg) translateY(8px); }
+.rcd.tiltR{ transform:rotate(2.6deg) translateY(8px); }
+.rcd:hover{ transform:rotate(0deg) translateY(-8px); box-shadow:0 26px 60px rgba(0,0,0,.16);
+  border-color:rgba(13,13,13,.16); z-index:3; }
+.rcd.on{ border-color:var(--ink); }
+.rchead{ display:flex; align-items:center; gap:11px; margin-bottom:20px; }
+.rclogo{ width:40px; height:40px; border-radius:11px; background:#fff; flex:0 0 40px;
   border:1px solid var(--line); display:flex; align-items:center; justify-content:center; }
-.rclogo svg{ width:19px; height:19px; }
-.rcco{ font-size:14.5px; font-weight:600; color:var(--tx); letter-spacing:-.015em; }
-.rcrole{ font-size:12.5px; color:var(--tx-3); margin-top:1px; }
-.rcp{ font-size:15px; line-height:1.5; color:var(--tx-2); letter-spacing:-.012em;
-  margin-bottom:auto; }
-/* separated by space, not by a rule that carries no meaning */
-.rcfoot{ margin-top:20px; padding-top:2px;
-  display:flex; align-items:flex-end; justify-content:space-between; gap:12px; }
-.rcloc{ font-size:12.5px; color:var(--tx-2); }
+.rclogo svg{ width:22px; height:22px; }
+.rcco{ font-size:16px; font-weight:600; color:var(--tx); letter-spacing:-.018em; }
+.rcrole{ font-size:12.5px; color:var(--tx-3); margin-top:2px; }
+.rcp{ font-size:17px; line-height:1.5; color:var(--tx); letter-spacing:-.016em; }
+.rcfoot{ margin-top:auto; padding-top:22px; display:flex; align-items:flex-end;
+  justify-content:space-between; gap:12px; }
+.rcloc{ font-size:13px; color:var(--tx-2); }
 .rcpay{ text-align:right; }
-.rcamt{ font-size:16px; font-weight:600; color:var(--tx); letter-spacing:-.02em; }
-.rcband{ font-size:11px; color:var(--tx-4); margin-top:2px; }
-.rcsrc{ font-size:10.5px; color:var(--tx-4); margin-top:8px; }
-/* a card that carries over is doing real work: it is the control */
-.rckeep{ position:absolute; top:-9px; left:20px; background:var(--ink); color:var(--on-ink);
-  font-size:10px; font-weight:600; letter-spacing:.02em; padding:3px 9px; border-radius:999px; }
+.rcamt{ font-size:19px; font-weight:600; color:var(--tx); letter-spacing:-.024em; }
+.rcband{ font-size:11px; color:var(--tx-4); margin-top:3px; }
+.rcsrc{ font-size:10.5px; color:var(--tx-4); margin-top:10px; }
+.rckeep{ position:absolute; top:-10px; left:24px; background:var(--ink); color:var(--on-ink);
+  font-size:10.5px; font-weight:600; padding:4px 10px; border-radius:999px; }
+
 
 /* the real portfolio, embedded whole */
 .pfreal{ position:absolute; inset:0; padding:0 0 34px; }
@@ -1589,7 +1613,10 @@ function devPills(box,lines,onSay){
   w.appendChild(mk('div','devl','dev · what they would say'));
   const r=mk('div','devr');
   lines.forEach(t=>{ const b=mk('button','devp','\u201c'+t+'\u201d');
-    b.onclick=()=>{ if(locked) return; locked=true; sfx('tick'); onSay(t); };
+    /* Must NOT set locked before calling onSay: every receiver guards with
+       `if(locked) return`, so locking here makes the pill cancel its own click.
+       Same trap the recorder's finish() carries a note about. */
+    b.onclick=()=>{ if(locked) return; sfx('tick'); onSay(t); };
     r.appendChild(b); });
   w.appendChild(r); box.appendChild(w);
   enter([w],{y:14,blur:8,duration:.5},1200);
@@ -1724,12 +1751,55 @@ function COS(n){
   return out.slice(0,n||8);
 }
 let panelBorn=false;
+
+/* The scripted 40/56% widths are a default, not a rule. Once someone drags the
+   edge, their width wins for the rest of the session - otherwise the next
+   panel swap would snatch it back and the handle would feel broken. */
+let panelPref=null;
+function setPanelWidth(pct,animate){
+  const px=panelPref||null;
+  const val=px?px+'px':pct;
+  if(animate) gsap.to('.right',{width:val,duration:.9,ease:EIO});
+  else gsap.set('.right',{width:val});
+  shiftLeft(px?px+'px':pct.replace('%','vw'));
+}
+function mountResizer(){
+  const host=document.querySelector('.right');
+  if(!host||host.querySelector('.rsz')) return;
+  const h=mk('div','rsz'); host.appendChild(h);
+  let startX=0, startW=0, live=false;
+  const down=e=>{
+    live=true; h.classList.add('on'); document.body.classList.add('rszing');
+    startX=e.clientX; startW=host.getBoundingClientRect().width;
+    h.setPointerCapture&&h.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  };
+  const move=e=>{
+    if(!live) return;
+    const w=Math.max(320,Math.min(innerWidth-420,startW+(e.clientX-startX)));
+    panelPref=Math.round(w);
+    gsap.set('.right',{width:panelPref+'px'});
+    shiftLeft(panelPref+'px');
+  };
+  const up=()=>{ if(!live) return; live=false;
+    h.classList.remove('on'); document.body.classList.remove('rszing');
+    try{ localStorage.setItem('panelW',String(panelPref)); }catch(e){}
+  };
+  h.addEventListener('pointerdown',down);
+  addEventListener('pointermove',move);
+  addEventListener('pointerup',up);
+  addEventListener('pointercancel',up);
+  try{ const saved=parseInt(localStorage.getItem('panelW')||'',10);
+    if(saved>=320) panelPref=saved; }catch(e){}
+}
+
 function bornPanel(){
   if(panelBorn) return; panelBorn=true;
   $('cap').innerHTML='<span class="live pulse"></span>Zero is listening';
   boardLive=true; renderBoard();
-  gsap.set('.right',{width:'40%',opacity:0});
-  shiftLeft('40vw');
+  gsap.set('.right',{width:panelPref?panelPref+'px':'40%',opacity:0});
+  shiftLeft(panelPref?panelPref+'px':'40vw');
+  mountResizer();
   safeTL(gsap.timeline().fromTo('.right',{opacity:0,x:-60},{opacity:1,x:0,duration:.9,ease:EIO}),2200);
   sfx('bloom');
 }
@@ -2491,6 +2561,34 @@ async function readLinked(){
     await wait(360);
   }
 }
+/* Zero reads eight things off the profile and then put almost none of them on
+   the board, which made the board look like it had learned nothing. Everything
+   the profile states goes straight on. What it cannot know yet - the target
+   companies, the trade-offs - is left for the cards. */
+function absorbLinked(){
+  const d=LINKEDIN[PKEY]||LINKEDIN.design;
+  if(!d) return [];
+  const filled=[];
+  const put=(k,v)=>{ if(v&&!P[k]){ P[k]=v; filled.push(k); } };
+  const head=String(d.headline||'');
+  const roleM=/^(.*?)(?:\s+at\s+.+)?$/.exec(head);
+  if(roleM) put('role',roleM[1].replace(/^(Senior|Lead|Staff|Principal|Junior)\s+/i,'').trim());
+  put('company',d.org);
+  put('location',(d.city||'').split(',')[0].trim());
+  if(/final year|student|studying/i.test(head)) put('level','Student');
+  else if(d.since||/\sat\s/i.test(head))        put('level','Working');
+  put('doing',d.exp);
+  /* the companies they follow are the ones they already look up to, so they
+     seed the board now; the cards confirm or replace them */
+  if(d.follows) put('dream',d.follows.split(/,\s*/).filter(Boolean).slice(0,4).join(', '));
+  const blob=((d.follows||'')+' '+(d.skills||'')+' '+head).toLowerCase();
+  if(/openai|anthropic|\bai\b|\bml\b/.test(blob))            put('industry','Tech and AI');
+  else if(/shopify|commerce|retail/.test(blob))              put('industry','Commerce');
+  else if(/health|clinic|patient/.test(blob))                put('industry','Health');
+  else if(/figma|notion|linear|design|product/.test(blob))   put('industry','Tech and AI');
+  if(d.into) put('problems',d.into);
+  return filled;
+}
 function linkedSummary(kind){
   const d=LINKEDIN[PKEY]||LINKEDIN.design;
   const sk=(d.skills||'').split(',').map(x=>x.trim()).filter(Boolean).slice(0,2);
@@ -2507,6 +2605,9 @@ async function readProfile(kind){
   await swapPanel('Reading your profile',buildLinked,true,false);
   await wait(500);
   await readLinked();
+  /* the board fills from the same read, so the two halves of the screen agree */
+  absorbLinked();
+  boardLive=true; renderBoard();
   setCap(P.name?'Got everything, '+P.name:'Got everything',false);
   sfx('success');
   await wait(700);
@@ -3076,16 +3177,33 @@ async function linkedinStage(){
   await voLine("Well enough to find the roles where you'll thrive.",2400);
   await voLine("The quickest way to see where you're starting from?",2300);
   await voLine('Your LinkedIn.',1500);
-  const {box}=turn({q:'Share it and I can make the rest of this more personal.'});
-  choices(box,[['link','Connect LinkedIn','LinkedIn'],['doc','Share a resume','Resume'],
-    ['user','Tell you myself','Self']],v=>{
-    /* the panel stays shut while Zero is still asking. Rearranging the screen
-       around an empty container before there is anything to put in it is the
-       part that feels like a fetch. */
-    if(v==='Self'){ bornPanel(); go(readbackStage); return; }
+  /* A URL has to be exact, so the field is the action and the keyboard is the
+     only input that makes sense here. The mic belongs on the next screen,
+     where the answer is long and subjective. */
+  const {box}=turn({q:'Drop your LinkedIn and I will read it.'});
+  const alt=mk('div','alt');
+  const altb=(icon,label,fn)=>{
+    const b=mk('button','altb');
+    b.innerHTML=(I[icon]||'')+'<span>'+label+'</span>';
+    b.onclick=()=>{ if(locked) return; locked=true; sfx('tick'); fn(); };
+    alt.appendChild(b);
+  };
+  altb('doc','Upload a resume',()=>{ clearTurn(); dockHide();
+    setTimeout(()=>{ locked=false; linkStage('Resume'); },420); });
+  altb('user','Tell me about yourself',()=>{ bornPanel(); go(readbackStage); });
+  box.appendChild(alt);
+  enter([alt],{y:10,blur:6,duration:.5},1000);
+
+  dockMode='type';
+  linkDock(v=>{
+    if(String(v).trim().length<4){ sfx('error'); locked=false;
+      gsap.fromTo('.dfield',{x:0},{x:7,duration:.07,yoyo:true,repeat:5}); return; }
+    locked=true;
+    P.linked='LinkedIn';
+    P.linkedUrl=String(v).trim().replace(/^https?:\/\//,'').replace(/\/$/,'');
     clearTurn(); dockHide();
-    setTimeout(()=>{ locked=false; linkStage(v); },460);
-  },{nomorph:true});
+    setTimeout(()=>{ locked=false; readProfile('LinkedIn'); },420);
+  },'linkedin.com/in/yourname');
 }
 
 /* ---- 3 - what the profile said, and the invitation to correct it --------
@@ -3511,15 +3629,15 @@ function rlogo(co){
 }
 function rcard(id,side,keep){
   const d=RCARD[id];
-  const b=mk('button','rcd'+(keep?' kept':''));
+  const b=mk('button','rcd');
   b.dataset.side=side;
   if(keep) b.appendChild(mk('span','rckeep','Still here'));
   const h=mk('div','rchead');
-  const lg=mk('span','rclogo',rlogo(d.co));
+  h.appendChild(mk('span','rclogo',rlogo(d.co)));
   const id2=mk('div');
   id2.appendChild(mk('div','rcco',d.co));
   id2.appendChild(mk('div','rcrole',d.role));
-  h.appendChild(lg); h.appendChild(id2);
+  h.appendChild(id2);
   b.appendChild(h);
   b.appendChild(mk('div','rcp',d.problem));
   const f=mk('div','rcfoot');
@@ -3532,57 +3650,87 @@ function rcard(id,side,keep){
   if(d.src) b.appendChild(mk('div','rcsrc','Source: '+d.src));
   return b;
 }
+/* The frame is mounted once. Re-running turn() every round re-typed the
+   question ten times and made the page feel like it was reloading; only the
+   pair should ever move. */
 async function cardsStage(){
   atStep('Cards');
+  const myGen=gen;
   if(RN===0) rreset();
   const deck=rdeck();
-  const total=deck.length;
-  if(RN>=total){ go(reflectStage); return; }
-  const round=deck[RN];
-  const prev=RN>0?deck[RN-1]:null;
-  const myGen=gen;
-  clearTurn(); dockHide(); await wait(RN===0?200:340);
-  if(myGen!==gen) return;
+  if(RN>=deck.length){ go(reflectStage); return; }
 
+  clearTurn(); dockHide(); await wait(240);
+  if(myGen!==gen) return;
   const {box}=turn({q:'Which of these feels more like you?'});
-  await wait(RN===0?520:380);
+  await wait(420);
   if(myGen!==gen) return;
 
   const wrap=mk('div','rcwrap');
   const meta=mk('div','rcmeta');
-  meta.appendChild(mk('span',null,'Round '+(RN+1)+' of '+total));
-  const dots=mk('div','rcdots');
-  for(let i=0;i<total;i++){ const d=mk('i'); if(i<RN) d.className='on';
-    if(i===RN) d.className='now'; dots.appendChild(d); }
-  meta.appendChild(dots);
+  const lbl=mk('span',null,''); lbl.id='rcLbl';
+  const dots=mk('div','rcdots'); dots.id='rcDots';
+  meta.appendChild(lbl); meta.appendChild(dots);
   wrap.appendChild(meta);
+  const stage=mk('div','rcstage'); stage.id='rcStage';
+  wrap.appendChild(stage);
+  box.appendChild(wrap);
+  enter([meta],{y:10,blur:6,duration:.45},900);
+  rcRound(myGen,true);
+}
+function rcMeta(deck){
+  const lbl=$('rcLbl'), dots=$('rcDots');
+  if(lbl) lbl.textContent='Round '+(RN+1)+' of '+deck.length;
+  if(!dots) return;
+  dots.innerHTML='';
+  for(let i=0;i<deck.length;i++){ const d=mk('i');
+    if(i<RN) d.className='on'; if(i===RN) d.className='now'; dots.appendChild(d); }
+}
+function rcRound(myGen,first){
+  if(myGen!==gen) return;
+  const stage=$('rcStage'); if(!stage) return;
+  const deck=rdeck();
+  if(RN>=deck.length){ go(reflectStage); return; }
+  const round=deck[RN], prev=RN>0?deck[RN-1]:null;
+  rcMeta(deck);
 
   const row=mk('div','rcrow');
-  /* a card that carried over is the control, and saying so out loud is the
-     difference between a quiz and an experiment the user can feel */
   const keptSide=prev&&round.hold?round.hold:null;
   const A=rcard(round.a,'a',keptSide==='a'&&prev&&prev.a===round.a);
   const B=rcard(round.b,'b',keptSide==='b'&&prev&&prev.b===round.b);
-  /* Every location round happens to carry its expected answer on side a, so
-     always drawing a on the left would let plain left-position bias produce
-     exactly the conclusion the read-out draws. Flip on odd rounds - stable per
-     round, so stepping back and forth does not reshuffle under the user. */
-  if(round.n%2===0){ row.appendChild(B); row.appendChild(A); }
-  else { row.appendChild(A); row.appendChild(B); }
-  wrap.appendChild(row);
-  box.appendChild(wrap);
-  enter([meta],{y:10,blur:6,duration:.45},900);
-  enter([A,B],{y:22,blur:10,scale:.98,stagger:.07,duration:.6},1500);
+  /* every location round carries its expected answer on side a, so a fixed
+     left/right would let position bias produce the finding by itself */
+  const left=round.n%2===0?B:A, right=round.n%2===0?A:B;
+  left.classList.add('tiltL'); right.classList.add('tiltR');
+  row.appendChild(left); row.appendChild(right);
+  stage.appendChild(row);
+
+  safeTL(gsap.timeline()
+    .fromTo([left,right],{opacity:0,y:46,scale:.94,filter:'blur(8px)'},
+      {opacity:1,y:0,scale:1,filter:'blur(0px)',duration:.62,stagger:.08,ease:'power3.out',
+       clearProps:'filter'},first?.1:0),1800);
 
   let done=false;
   [A,B].forEach(el=>{ el.onclick=()=>{
-    if(done||locked) return; done=true; locked=true;
+    if(done||locked||myGen!==gen) return;
+    done=true; locked=true;
     sfx('toggle');
     el.classList.add('on');
-    (el===A?B:A).classList.add('out');
     rapply(round,el.dataset.side);
-    gsap.to(el,{scale:1.015,duration:.16,yoyo:true,repeat:1});
-    setTimeout(()=>{ RN++; locked=false; cardsStage(); },560);
+    const other=el===A?B:A;
+    /* the pick flies into the board, so the choice visibly becomes the thing
+       the board is made of, and the other card falls away */
+    morphToBoard(el);
+    safeTL(gsap.timeline()
+      .to(el,{opacity:0,scale:.97,duration:.34,ease:'power2.in'},0)
+      .to(other,{opacity:0,y:26,rotate:other.classList.contains('tiltL')?-7:7,
+        duration:.4,ease:'power2.in'},0)
+      .add(()=>{ if(row.isConnected) row.remove(); }),1200);
+    renderBoard();
+    setTimeout(()=>{
+      if(myGen!==gen) return;
+      RN++; locked=false; rcRound(myGen,false);
+    },620);
   };});
 }
 
@@ -4204,8 +4352,9 @@ function dbgGoto(i){
   const born=i>=3, wide=i>=9;
   if(born){
     panelBorn=true; boardLive=true;
-    gsap.set('.right',{width:wide?'56%':'40%',opacity:1,x:0});
-    shiftLeft(wide?'56vw':'40vw');
+    gsap.set('.right',{width:panelPref?panelPref+'px':(wide?'56%':'40%'),opacity:1,x:0});
+    shiftLeft(panelPref?panelPref+'px':(wide?'56vw':'40vw'));
+    mountResizer();
     $('cap').innerHTML='<span class="live pulse"></span>'+(wide?'Your vision board':'Zero is listening');
     const sc=$('scroll'); sc.className='scroll ctr'; sc.innerHTML='';
     const vb=mk('div','vb'); vb.id='vb'; vb.innerHTML=boardHTML(); sc.appendChild(vb);
