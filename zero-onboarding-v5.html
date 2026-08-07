@@ -752,47 +752,58 @@ body.rszing iframe{ pointer-events:none; }   /* the drag must not fall into an e
 .pftie{ border:1px dashed var(--line); border-radius:14px; padding:9px 14px;
   font-size:11.5px; color:var(--tx-4); }
 /* ---- paired role cards, as a deck ---------------------------------------- */
-.rcwrap{ width:100%; max-width:940px; margin:0 auto; }
-.rcmeta{ display:flex; align-items:center; justify-content:space-between;
-  margin:0 8px 20px; font-size:12.5px; color:var(--tx-3); letter-spacing:-.01em; }
-.rcdots{ display:flex; gap:5px; align-items:center; }
-.rcdots i{ width:5px; height:5px; border-radius:50%; background:var(--tx-4);
+.rcwrap{ width:100%; max-width:760px; margin:0 auto; }
+/* the stage holds its height so nothing below it jumps when a pair swaps */
+.rcstage{ position:relative; min-height:420px; perspective:1100px; }
+.rcrow{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:22px;
+  position:absolute; inset:0; align-items:start; }
+/* Two things held out to you are tilted, one per hand. The resting tilt lives
+   on the slot; the cursor tilt lives on the card. One transform cannot do both
+   without the card snapping back to its resting angle as soon as you move. */
+.rcslot{ transform-origin:50% 100%;
+  transition:transform .38s var(--e,cubic-bezier(.625,.05,0,1)); }
+.rcslot.tiltL{ transform:rotate(-2.4deg) translateY(8px); }
+.rcslot.tiltR{ transform:rotate(2.4deg) translateY(8px); }
+.rcslot:hover{ transform:rotate(0deg) translateY(-6px); z-index:3; }
+.rcd{ position:relative; width:100%; text-align:left; cursor:pointer;
+  background:var(--card); border:1px solid var(--line); border-radius:22px;
+  padding:24px 22px 20px; display:flex; flex-direction:column; min-height:396px;
+  transform-style:preserve-3d; will-change:transform;
+  transition:box-shadow .3s, border-color .24s, transform .5s var(--e,cubic-bezier(.625,.05,0,1));
+  box-shadow:0 10px 30px rgba(0,0,0,.07); overflow:hidden; }
+.rcslot:hover .rcd{ box-shadow:0 30px 66px rgba(0,0,0,.18); border-color:rgba(13,13,13,.16); }
+.rcd.on{ border-color:var(--ink); }
+/* the light moves with the cursor, which is what sells the surface as a plane
+   in space rather than a rectangle that happens to rotate */
+.rcglare{ position:absolute; inset:0; border-radius:22px; pointer-events:none;
+  opacity:0; transition:opacity .3s;
+  background:radial-gradient(320px circle at var(--gx,50%) var(--gy,50%),
+    rgba(255,255,255,.30), rgba(255,255,255,0) 62%); }
+.rcslot:hover .rcglare{ opacity:1; }
+body.dark .rcglare{ background:radial-gradient(320px circle at var(--gx,50%) var(--gy,50%),
+    rgba(255,255,255,.10), rgba(255,255,255,0) 62%); }
+.rchead{ display:flex; align-items:center; gap:11px; margin-bottom:18px; }
+.rclogo{ width:38px; height:38px; border-radius:11px; background:#fff; flex:0 0 38px;
+  border:1px solid var(--line); display:flex; align-items:center; justify-content:center; }
+.rclogo svg{ width:21px; height:21px; }
+.rcco{ font-size:15.5px; font-weight:600; color:var(--tx); letter-spacing:-.018em; }
+.rcrole{ font-size:12.5px; color:var(--tx-3); margin-top:2px; }
+.rcp{ font-size:16px; line-height:1.5; color:var(--tx); letter-spacing:-.016em; }
+/* pay and place read as one block, left aligned like everything above them */
+.rcfoot{ margin-top:auto; padding-top:20px; }
+.rcamt{ font-size:20px; font-weight:600; color:var(--tx); letter-spacing:-.026em; }
+.rcloc{ font-size:13px; color:var(--tx-2); margin-top:3px; }
+.rcband{ font-size:11px; color:var(--tx-4); margin-top:5px; }
+.rcsrc{ font-size:10.5px; color:var(--tx-4); margin-top:8px; }
+.rckeep{ position:absolute; top:14px; right:16px; background:var(--ink); color:var(--on-ink);
+  font-size:10px; font-weight:600; padding:3px 9px; border-radius:999px; z-index:2; }
+/* progress belongs at the bottom, and the dots already say which round it is */
+.rcdots{ display:flex; gap:6px; align-items:center; justify-content:center;
+  margin-top:26px; }
+.rcdots i{ width:6px; height:6px; border-radius:50%; background:var(--tx-4);
   transition:background .3s, width .3s; }
 .rcdots i.on{ background:var(--tx-2); }
-.rcdots i.now{ width:16px; border-radius:3px; background:var(--ink); }
-/* the stage holds its height so nothing below it jumps when a pair swaps */
-.rcstage{ position:relative; min-height:430px; perspective:1400px; }
-.rcrow{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:26px;
-  position:absolute; inset:0; align-items:start; }
-/* Two things held out to you are tilted, one per hand. Straightening on hover
-   is the whole gesture: the one you are considering turns to face you. */
-.rcd{ position:relative; text-align:left; cursor:pointer; background:var(--card);
-  border:1px solid var(--line); border-radius:22px; padding:26px 24px 22px;
-  display:flex; flex-direction:column; min-height:404px;
-  transform-origin:50% 100%;
-  transition:transform .34s var(--e,cubic-bezier(.625,.05,0,1)), box-shadow .34s, border-color .24s;
-  box-shadow:0 10px 30px rgba(0,0,0,.07); }
-.rcd.tiltL{ transform:rotate(-2.6deg) translateY(8px); }
-.rcd.tiltR{ transform:rotate(2.6deg) translateY(8px); }
-.rcd:hover{ transform:rotate(0deg) translateY(-8px); box-shadow:0 26px 60px rgba(0,0,0,.16);
-  border-color:rgba(13,13,13,.16); z-index:3; }
-.rcd.on{ border-color:var(--ink); }
-.rchead{ display:flex; align-items:center; gap:11px; margin-bottom:20px; }
-.rclogo{ width:40px; height:40px; border-radius:11px; background:#fff; flex:0 0 40px;
-  border:1px solid var(--line); display:flex; align-items:center; justify-content:center; }
-.rclogo svg{ width:22px; height:22px; }
-.rcco{ font-size:16px; font-weight:600; color:var(--tx); letter-spacing:-.018em; }
-.rcrole{ font-size:12.5px; color:var(--tx-3); margin-top:2px; }
-.rcp{ font-size:17px; line-height:1.5; color:var(--tx); letter-spacing:-.016em; }
-.rcfoot{ margin-top:auto; padding-top:22px; display:flex; align-items:flex-end;
-  justify-content:space-between; gap:12px; }
-.rcloc{ font-size:13px; color:var(--tx-2); }
-.rcpay{ text-align:right; }
-.rcamt{ font-size:19px; font-weight:600; color:var(--tx); letter-spacing:-.024em; }
-.rcband{ font-size:11px; color:var(--tx-4); margin-top:3px; }
-.rcsrc{ font-size:10.5px; color:var(--tx-4); margin-top:10px; }
-.rckeep{ position:absolute; top:-10px; left:24px; background:var(--ink); color:var(--on-ink);
-  font-size:10.5px; font-weight:600; padding:4px 10px; border-radius:999px; }
+.rcdots i.now{ width:20px; border-radius:3px; background:var(--ink); }
 
 
 /* the real portfolio, embedded whole */
@@ -3631,6 +3642,7 @@ function rcard(id,side,keep){
   const d=RCARD[id];
   const b=mk('button','rcd');
   b.dataset.side=side;
+  b.appendChild(mk('span','rcglare'));
   if(keep) b.appendChild(mk('span','rckeep','Still here'));
   const h=mk('div','rchead');
   h.appendChild(mk('span','rclogo',rlogo(d.co)));
@@ -3641,14 +3653,34 @@ function rcard(id,side,keep){
   b.appendChild(h);
   b.appendChild(mk('div','rcp',d.problem));
   const f=mk('div','rcfoot');
+  f.appendChild(mk('div','rcamt',d.pay));
   f.appendChild(mk('div','rcloc',d.city));
-  const pay=mk('div','rcpay');
-  pay.appendChild(mk('div','rcamt',d.pay));
-  if(d.band) pay.appendChild(mk('div','rcband','Market band '+d.band));
-  f.appendChild(pay);
+  if(d.band) f.appendChild(mk('div','rcband','Market band '+d.band));
+  if(d.src)  f.appendChild(mk('div','rcsrc','Source: '+d.src));
   b.appendChild(f);
-  if(d.src) b.appendChild(mk('div','rcsrc','Source: '+d.src));
+  gyro(b);
   return b;
+}
+/* Cursor-driven tilt. Rotation is small on purpose: past about eight degrees
+   the text starts to shear and the card reads as a gimmick instead of an
+   object. The glare tracks the same point so the light agrees with the angle. */
+function gyro(el){
+  const M=7;
+  el.addEventListener('pointermove',e=>{
+    const r=el.getBoundingClientRect();
+    if(!r.width) return;
+    const px=(e.clientX-r.left)/r.width-.5;
+    const py=(e.clientY-r.top)/r.height-.5;
+    el.style.transition='box-shadow .3s, border-color .24s';
+    el.style.transform='rotateY('+(px*M*2).toFixed(2)+'deg) rotateX('+(-py*M*2).toFixed(2)+'deg)';
+    el.style.setProperty('--gx',(px*100+50).toFixed(1)+'%');
+    el.style.setProperty('--gy',(py*100+50).toFixed(1)+'%');
+  });
+  el.addEventListener('pointerleave',()=>{
+    /* ease back rather than snap, or leaving the card feels like a glitch */
+    el.style.transition='box-shadow .3s, border-color .24s, transform .5s var(--e,cubic-bezier(.625,.05,0,1))';
+    el.style.transform='';
+  });
 }
 /* The frame is mounted once. Re-running turn() every round re-typed the
    question ten times and made the page feel like it was reloading; only the
@@ -3667,20 +3699,17 @@ async function cardsStage(){
   if(myGen!==gen) return;
 
   const wrap=mk('div','rcwrap');
-  const meta=mk('div','rcmeta');
-  const lbl=mk('span',null,''); lbl.id='rcLbl';
-  const dots=mk('div','rcdots'); dots.id='rcDots';
-  meta.appendChild(lbl); meta.appendChild(dots);
-  wrap.appendChild(meta);
   const stage=mk('div','rcstage'); stage.id='rcStage';
   wrap.appendChild(stage);
+  /* the dots are the whole progress story now, and they sit under the cards */
+  const dots=mk('div','rcdots'); dots.id='rcDots';
+  wrap.appendChild(dots);
   box.appendChild(wrap);
-  enter([meta],{y:10,blur:6,duration:.45},900);
+  enter([dots],{y:8,blur:5,duration:.45},900);
   rcRound(myGen,true);
 }
 function rcMeta(deck){
-  const lbl=$('rcLbl'), dots=$('rcDots');
-  if(lbl) lbl.textContent='Round '+(RN+1)+' of '+deck.length;
+  const dots=$('rcDots');
   if(!dots) return;
   dots.innerHTML='';
   for(let i=0;i<deck.length;i++){ const d=mk('i');
@@ -3701,12 +3730,13 @@ function rcRound(myGen,first){
   /* every location round carries its expected answer on side a, so a fixed
      left/right would let position bias produce the finding by itself */
   const left=round.n%2===0?B:A, right=round.n%2===0?A:B;
-  left.classList.add('tiltL'); right.classList.add('tiltR');
-  row.appendChild(left); row.appendChild(right);
+  const slotL=mk('div','rcslot tiltL'), slotR=mk('div','rcslot tiltR');
+  slotL.appendChild(left); slotR.appendChild(right);
+  row.appendChild(slotL); row.appendChild(slotR);
   stage.appendChild(row);
 
   safeTL(gsap.timeline()
-    .fromTo([left,right],{opacity:0,y:46,scale:.94,filter:'blur(8px)'},
+    .fromTo([slotL,slotR],{opacity:0,y:46,scale:.94,filter:'blur(8px)'},
       {opacity:1,y:0,scale:1,filter:'blur(0px)',duration:.62,stagger:.08,ease:'power3.out',
        clearProps:'filter'},first?.1:0),1800);
 
@@ -3723,7 +3753,8 @@ function rcRound(myGen,first){
     morphToBoard(el);
     safeTL(gsap.timeline()
       .to(el,{opacity:0,scale:.97,duration:.34,ease:'power2.in'},0)
-      .to(other,{opacity:0,y:26,rotate:other.classList.contains('tiltL')?-7:7,
+      .to(other.parentElement||other,{opacity:0,y:26,
+        rotate:(other.parentElement||other).classList.contains('tiltL')?-7:7,
         duration:.4,ease:'power2.in'},0)
       .add(()=>{ if(row.isConnected) row.remove(); }),1200);
     renderBoard();
