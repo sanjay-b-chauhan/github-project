@@ -752,22 +752,25 @@ body.rszing iframe{ pointer-events:none; }   /* the drag must not fall into an e
 .pftie{ border:1px dashed var(--line); border-radius:14px; padding:9px 14px;
   font-size:11.5px; color:var(--tx-4); }
 /* ---- paired role cards, as a deck ---------------------------------------- */
-.rcwrap{ width:100%; max-width:730px; margin:0 auto; }
+.rcwrap{ width:100%; max-width:880px; margin:0 auto; }
 /* A short perspective is what makes the rotation read as depth. At 1100 the
    card was turning the same amount and looking almost flat. */
-.rcstage{ position:relative; min-height:430px; perspective:760px;
-  perspective-origin:50% 45%; }
-.rcrow{ position:absolute; inset:0; display:flex; justify-content:center;
+/* the headline needs air before the cards start */
+.rcstage{ position:relative; min-height:436px; margin-top:46px;
+  perspective:760px; perspective-origin:50% 45%; }
+/* out to the edges: two options offered from opposite sides, not a stack in
+   the middle of the screen */
+.rcrow{ position:absolute; inset:0; display:flex; justify-content:space-between;
   align-items:flex-start; }
 /* Two cards fanned in one hand touch. The overlap is the point: they are one
    offer with two sides, not two unrelated tiles. */
 .rcslot{ width:326px; transform-origin:50% 100%; will-change:transform;
   transition:transform .42s var(--e,cubic-bezier(.625,.05,0,1)), z-index 0s; }
-.rcslot.tiltL{ transform:rotate(-5deg) translateX(26px) translateY(10px); z-index:1; }
-.rcslot.tiltR{ transform:rotate(5deg) translateX(-26px) translateY(10px); z-index:2; }
+.rcslot.tiltL{ transform:rotate(-5deg) translateY(10px); z-index:1; }
+.rcslot.tiltR{ transform:rotate(5deg) translateY(10px); z-index:2; }
 .rcslot:hover{ z-index:9; }
-.rcslot.tiltL:hover{ transform:rotate(-1deg) translateX(14px) translateY(-10px) scale(1.035); }
-.rcslot.tiltR:hover{ transform:rotate(1deg) translateX(-14px) translateY(-10px) scale(1.035); }
+.rcslot.tiltL:hover{ transform:rotate(-1deg) translateY(-12px) scale(1.04); }
+.rcslot.tiltR:hover{ transform:rotate(1deg) translateY(-12px) scale(1.04); }
 .rcd{ position:relative; width:100%; text-align:left; cursor:pointer;
   background:var(--card); border:1px solid var(--line); border-radius:24px;
   padding:26px 24px 20px; display:flex; flex-direction:column; min-height:406px;
@@ -781,18 +784,15 @@ body.rszing iframe{ pointer-events:none; }   /* the drag must not fall into an e
   opacity:.5; transition:opacity .35s;
   background:radial-gradient(120% 100% at 50% -30%, var(--tint,#c9a227) 0%, transparent 70%); }
 .rcslot:hover .rctint{ opacity:.85; }
-.rcglare{ position:absolute; inset:0; pointer-events:none; opacity:0; transition:opacity .3s;
-  background:radial-gradient(300px circle at var(--gx,50%) var(--gy,50%),
-    rgba(255,255,255,.26), rgba(255,255,255,0) 60%); }
-.rcslot:hover .rcglare{ opacity:1; }
 /* Role first. You are picking a piece of work; the company is the credit. */
-.rcrole{ position:relative; font-size:26px; font-weight:600; color:var(--tx);
-  letter-spacing:-.032em; line-height:1.14; margin-bottom:12px; }
-.rcbrand{ position:relative; display:flex; align-items:center; gap:8px; margin-bottom:20px; }
-.rclogo{ width:22px; height:22px; border-radius:6px; background:#fff; flex:0 0 22px;
-  border:1px solid var(--line); display:flex; align-items:center; justify-content:center; }
-.rclogo svg{ width:13px; height:13px; }
-.rcco{ font-size:13px; font-weight:500; color:var(--tx-2); letter-spacing:-.01em; }
+.rcrole{ position:relative; font-size:25px; font-weight:600; color:var(--tx);
+  letter-spacing:-.03em; line-height:1.16; margin-bottom:5px; }
+.rclogo{ position:relative; width:38px; height:38px; border-radius:11px; background:#fff;
+  border:1px solid var(--line); display:flex; align-items:center; justify-content:center;
+  margin-bottom:20px; }
+.rclogo svg{ width:21px; height:21px; }
+.rcco{ position:relative; font-size:13px; font-weight:500; color:var(--tx-3);
+  letter-spacing:-.008em; margin-bottom:20px; }
 .rcp{ position:relative; font-size:15px; line-height:1.52; color:var(--tx-2);
   letter-spacing:-.012em; }
 .rcfoot{ position:relative; margin-top:auto; padding-top:22px; }
@@ -803,7 +803,7 @@ body.rszing iframe{ pointer-events:none; }   /* the drag must not fall into an e
   letter-spacing:.01em; }
 .rckeep{ position:absolute; top:16px; right:16px; background:var(--ink); color:var(--on-ink);
   font-size:10px; font-weight:600; padding:3px 9px; border-radius:999px; z-index:3; }
-.rcdots{ display:flex; gap:6px; align-items:center; justify-content:center; margin-top:30px; }
+.rcdots{ display:flex; gap:6px; align-items:center; justify-content:center; margin-top:52px; }
 .rcdots i{ width:6px; height:6px; border-radius:50%; background:var(--tx-4);
   transition:background .3s, width .3s; }
 .rcdots i.on{ background:var(--tx-2); }
@@ -3653,14 +3653,12 @@ function rcard(id,side,keep){
   b.dataset.side=side;
   b.style.setProperty('--tint',RTINT[d.co]||'#c9a227');
   b.appendChild(mk('span','rctint'));
-  b.appendChild(mk('span','rcglare'));
   if(keep) b.appendChild(mk('span','rckeep','Still here'));
   /* the work, then who it is for */
+  /* the mark first, then the work, then who it is for */
+  b.appendChild(mk('div','rclogo',rlogo(d.co)));
   b.appendChild(mk('div','rcrole',d.role));
-  const brand=mk('div','rcbrand');
-  brand.appendChild(mk('span','rclogo',rlogo(d.co)));
-  brand.appendChild(mk('span','rcco',d.co));
-  b.appendChild(brand);
+  b.appendChild(mk('div','rcco',d.co));
   b.appendChild(mk('div','rcp',d.problem));
   const f=mk('div','rcfoot');
   /* a range, because nobody is ever offered a single number */
@@ -3682,8 +3680,6 @@ function gyro(el){
     const py=(e.clientY-r.top)/r.height-.5;
     el.style.transition='box-shadow .3s, border-color .24s';
     el.style.transform='rotateY('+(px*M*2).toFixed(2)+'deg) rotateX('+(-py*M*2).toFixed(2)+'deg)';
-    el.style.setProperty('--gx',(px*100+50).toFixed(1)+'%');
-    el.style.setProperty('--gy',(py*100+50).toFixed(1)+'%');
   });
   el.addEventListener('pointerleave',()=>{
     el.style.transition='box-shadow .3s, border-color .24s, transform .55s var(--e,cubic-bezier(.625,.05,0,1))';
