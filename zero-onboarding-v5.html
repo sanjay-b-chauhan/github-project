@@ -3377,6 +3377,46 @@ async function cardsIntroStage(){
    load-bearing one: it is position inside THAT city's band for THAT level, so
    two cards can be "paid the same" across currencies. */
 const RCARD={
+
+ /* Beyond the nine tech names. Real local bands, three seniorities, and
+    categories the old pool could not express at all - fintech, health, media -
+    so category, level and city are each readable instead of nominal. */
+ anthropic_nyc:{co:'Anthropic',role:'Senior Product Designer',
+   problem:'Design the surfaces where people and models meet, and keep them legible.',
+   city:'New York',pay:'US$210K',band:'US$180-245K',src:'Levels.fyi, Jul 2026',
+   t:{world:'b2c',shape:'collaborative',ethos:'frontier',type:'ai_frontier',domain:'ai_interaction',city:'new_york',level:'senior',compPct:.62}},
+ anthropic_nyc_assoc:{co:'Anthropic',role:'Associate Product Designer',
+   problem:'Design the surfaces where people and models meet, and keep them legible.',
+   city:'New York',pay:'US$150K',band:'US$128-172K',
+   t:{world:'b2c',shape:'collaborative',ethos:'frontier',type:'ai_frontier',domain:'ai_interaction',city:'new_york',level:'associate',compPct:.62}},
+ ramp_nyc:{co:'Ramp',role:'Product Designer',
+   problem:'Show a finance team where the money went before they have to ask.',
+   city:'New York',pay:'US$185K',band:'US$158-212K',
+   t:{world:'b2b',shape:'collaborative',ethos:'frontier',type:'fintech',domain:'team_tools',city:'new_york',level:'mid',compPct:.55}},
+ oscar_nyc:{co:'Oscar Health',role:'Product Designer',
+   problem:'Make a health plan understandable on the day someone actually needs it.',
+   city:'New York',pay:'US$182K',band:'US$155-208K',
+   t:{world:'b2c',shape:'collaborative',ethos:'established',type:'health',domain:'everyday_utility',city:'new_york',level:'mid',compPct:.55}},
+ spotify_nyc:{co:'Spotify',role:'Product Designer',
+   problem:'Help someone find the thing they did not know they wanted to hear.',
+   city:'New York',pay:'US$183K',band:'US$156-210K',
+   t:{world:'b2c',shape:'individual',ethos:'established',type:'media',domain:'creator_tools',city:'new_york',level:'mid',compPct:.55}},
+ figma_sea:{co:'Figma',role:'Product Designer',
+   problem:'Design tools that help teams turn ideas into work together.',
+   city:'Seattle',pay:'US$178K',band:'US$150-205K',
+   t:{world:'b2b',shape:'collaborative',ethos:'frontier',type:'saas',domain:'team_tools',city:'seattle',level:'mid',compPct:.55}},
+ shopify_van:{co:'Shopify',role:'Product Designer',
+   problem:'Help independent merchants build and run businesses with confidence.',
+   city:'Vancouver',pay:'CA$118K',band:'CA$98-140K',
+   t:{world:'b2b',shape:'collaborative',ethos:'established',type:'commerce',domain:'team_tools',city:'vancouver',level:'mid',compPct:.55}},
+ stripe_sf_snr:{co:'Stripe',role:'Senior Product Designer',
+   problem:'Help businesses move money and understand what is happening behind the scenes.',
+   city:'SF Bay Area',pay:'US$232K',band:'US$198-268K',
+   t:{world:'b2b',shape:'collaborative',ethos:'frontier',type:'fintech',domain:'team_tools',city:'san_francisco',level:'senior',compPct:.55}},
+ stripe_sf_assoc:{co:'Stripe',role:'Associate Product Designer',
+   problem:'Help businesses move money and understand what is happening behind the scenes.',
+   city:'SF Bay Area',pay:'US$148K',band:'US$126-170K',
+   t:{world:'b2b',shape:'collaborative',ethos:'frontier',type:'fintech',domain:'team_tools',city:'san_francisco',level:'associate',compPct:.55}},
  doordash_sf:{co:'DoorDash',role:'Product Designer',
    problem:'Make food delivery feel clear when people are hungry, short on time, or deciding what to order.',
    city:'SF Bay Area',pay:'US$185K',band:'US$146-209K',src:'Levels.fyi, Jul 2026',
@@ -3494,8 +3534,7 @@ const RROUNDS=[
   claims:[{dim:'location',role:'primary',a:'san_francisco',b:'toronto'}],
   note:'Same company, same work. Only the place moves.'},
  {n:6,phase:'isolate',a:'figma_sf_ref',b:'salesforce_sf_ref',holds:['city'],
-  claims:[{dim:'ethos',role:'primary',a:'frontier',b:'established'},
-          {dim:'world',role:'secondary',a:'b2b',b:'b2b'}],
+  claims:[{dim:'ethos',role:'primary',a:'frontier',b:'established'}],
   compTrial:true,
   note:'A natural choice with a small real pay gap. Evidence, not proof.'},
  {n:7,phase:'isolate',a:'uber_sf',b:'stripe_sf',holds:['city','compPct'],
@@ -3513,8 +3552,7 @@ const RROUNDS=[
   compTrial:true,
   note:'Second natural choice with a real reported pay gap.'},
  {n:11,phase:'tradeoff',a:'figma_sf_lean',b:'salesforce_sf_rich',holds:['city'],
-  claims:[{dim:'ethos',role:'primary',a:'frontier',b:'established'},
-          {dim:'shape',role:'secondary',a:'collaborative',b:'collaborative'}],
+  claims:[{dim:'ethos',role:'primary',a:'frontier',b:'established'}],
   compTrial:true,opposes:'ethos',
   note:'The work you keep choosing, now costing you money.'},
  {n:12,phase:'tradeoff',a:'openai_sf_lean',b:'adobe_sf_rich',holds:['city'],
@@ -3532,10 +3570,21 @@ const RROUNDS=[
   compTrial:true,opposes:'location',
   note:'Consumer work in your city, against business systems and more money.'},
  {n:15,phase:'tradeoff',a:'openai_tor',b:'figma_sf',
-  claims:[{dim:'ethos',role:'primary',a:'frontier',b:'frontier'},
-          {dim:'location',role:'primary',a:'toronto',b:'san_francisco'}],
+  claims:[{dim:'location',role:'primary',a:'toronto',b:'san_francisco'},
+          {dim:'type',role:'secondary',a:'ai_frontier',b:'saas'}],
   compTrial:true,opposes:'location',
-  note:'The last uncertainty, resolved.'}
+  note:'The last uncertainty, resolved.'},
+ {n:16,phase:'isolate',a:'stripe_sf_snr',b:'stripe_sf_assoc',
+  holds:['company','city','shape','ethos','domain','compPct'],
+  claims:[{dim:'level',role:'primary',a:'senior',b:'associate'}],
+  note:'Same company, same work, same local position. Only the seniority moves.'},
+ {n:17,phase:'explore',a:'ramp_nyc',b:'oscar_nyc',holds:['city','compPct','level'],
+  claims:[{dim:'type',role:'primary',a:'fintech',b:'health'},
+          {dim:'world',role:'secondary',a:'b2b',b:'b2c'}],
+  note:'Two industries the old pool could not even express.'},
+ {n:18,phase:'isolate',a:'figma_sea',b:'shopify_van',holds:['shape','domain','compPct','level'],
+  claims:[{dim:'location',role:'primary',a:'seattle',b:'vancouver'}],
+  note:'A third and fourth city, so the ranking is not just Toronto against SF.'}
 ];
 
 
@@ -3546,9 +3595,42 @@ const RROUNDS=[
    Together they make the one guarantee that matters: Zero cannot say something
    confident that the choices do not support. */
 const RSTATE={};
+/* A round claims to isolate one axis by holding the others equal. Nothing was
+   checking that the cards actually do hold them, so a pool edit could quietly
+   turn an isolate round into a confounded one and the read-out would keep
+   citing it as clean evidence. This verifies every claim at boot: a hold that
+   does not hold is demoted to `varies` and the round is flagged confounded,
+   which drops its weight rather than silently lying. */
+function auditRounds(){
+  const problems=[];
+  RROUNDS.forEach(r=>{
+    const A=RCARD[r.a], B=RCARD[r.b];
+    if(!A||!B){ problems.push({round:r.n,issue:'missing card'}); return; }
+    (r.holds||[]).slice().forEach(h=>{
+      let ok=true;
+      if(h==='compPct')      ok=Math.abs(A.t.compPct-B.t.compPct)<=0.08;
+      else if(h==='company') ok=A.co===B.co;
+      else if(h==='city')    ok=A.t.city===B.t.city;
+      else                   ok=A.t[h]===B.t[h];
+      if(!ok){
+        problems.push({round:r.n,hold:h,a:A.t[h]!==undefined?A.t[h]:A.co,b:B.t[h]!==undefined?B.t[h]:B.co});
+        r.holds=r.holds.filter(x=>x!==h);
+        r.varies=(r.varies||[]).concat(h);
+        r.confounded=true;
+      }
+    });
+    /* a claim on an axis that does not actually differ teaches nothing */
+    (r.claims||[]).forEach(c=>{
+      if(c.a===c.b) problems.push({round:r.n,claim:c.dim,issue:'both sides identical'});
+    });
+  });
+  if(problems.length&&/[?&]debug=1/.test(location.search)) console.table(problems);
+  return problems;
+}
+const RAUDIT=auditRounds();
 function rreset(){
   ['world','shape','ethos'].forEach(k=>RSTATE[k]={kind:'beta',a:1,b:1,ev:[]});
-  ['location','type','domain'].forEach(k=>RSTATE[k]={kind:'pair',W:{},ev:[]});
+  ['location','type','domain','level'].forEach(k=>RSTATE[k]={kind:'pair',W:{},ev:[]});
   RSTATE.comp={trials:[],forgone:0};
   RPICKS.length=0;
 }
