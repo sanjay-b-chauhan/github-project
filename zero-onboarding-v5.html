@@ -2119,7 +2119,24 @@ function summaryBeats(){
   if(P.timeline&&TIME_PHRASE[P.timeline]) out.push(TIME_PHRASE[P.timeline]);
   return out.filter(x=>x&&x.length<=58);
 }
-function visionStage(fromEdit){
+/* Dark is the intake. Zero is reading the profile, hearing the note, watching
+   the choices - the room stays low while it is still gathering. The board is
+   the first thing Zero gives back rather than takes, so that is where the
+   lights come up. */
+async function lightsUp(){
+  if(!document.body.classList.contains('dark')) return;
+  const v=mk('div','veil'); document.body.appendChild(v);
+  safeTL(gsap.timeline()
+    .fromTo(v,{opacity:0},{opacity:1,duration:.42,ease:'power2.out'})
+    .add(()=>{ document.body.classList.remove('dark'); })
+    .to(v,{opacity:0,duration:.72,ease:'power2.inOut'},'+=0.05')
+    .add(()=>{ if(v.isConnected) v.remove(); }),2400);
+  sfx('bloom');
+  await wait(600);
+}
+async function visionStage(fromEdit){
+  atStep('Vision');
+  await lightsUp();
   if(fromEdit){ swapPanel('Your vision board',s2=>{ s2.classList.add('ctr');
     const vb=mk('div','vb'); vb.id='vb';
     vb.innerHTML=boardHTML(); s2.appendChild(vb); boardLive=true; $('paper').classList.add('canvas'); },false); }
@@ -2794,6 +2811,129 @@ async function timedOpen(g){
   }
 }
 
+
+/* ============================ 0 - draw zero to enter ==================
+   The ritual before the promise. Drawing the mark is what turns the
+   lights down: from here until the board exists, Zero is taking things
+   in, and the dark is what that phase looks like. */
+function showDraw(){
+  const d=$('drawScreen'); d.style.display='flex';
+  safeTL(gsap.timeline()
+    .fromTo(d,{opacity:0},{opacity:1,duration:.55},0)
+    .fromTo('.dcenter',{scale:.94,opacity:0},{scale:1,opacity:1,duration:.7,ease:EIO},.1),1400);
+  if(drawInit) return; drawInit=true;
+  const cv=$('drawCanvas'), ctx=cv.getContext('2d');
+  let pts=[], down=false, len=0, W=11;
+  function size(){ const dpr=devicePixelRatio||1;
+    if(!innerWidth||!innerHeight) return; /* hidden or prerendered, try again later */
+    cv.width=innerWidth*dpr; cv.height=innerHeight*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.lineCap='round'; ctx.lineJoin='round'; }
+  size(); addEventListener('resize',size);
+  /* A real brush: the stroke is a filled ribbon whose width breathes with speed.
+     Slow hand means the nib dwells and ink pools. Fast hand starves it. */
+  function ribbon(a,b,wa,wb){
+    const ang=Math.atan2(b.y-a.y,b.x-a.x);
+    const n1=ang+Math.PI/2, n2=ang-Math.PI/2;
+    ctx.beginPath();
+    ctx.moveTo(a.x+Math.cos(n1)*wa/2, a.y+Math.sin(n1)*wa/2);
+    ctx.lineTo(b.x+Math.cos(n1)*wb/2, b.y+Math.sin(n1)*wb/2);
+    ctx.lineTo(b.x+Math.cos(n2)*wb/2, b.y+Math.sin(n2)*wb/2);
+    ctx.lineTo(a.x+Math.cos(n2)*wa/2, a.y+Math.sin(n2)*wa/2);
+    ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.arc(b.x,b.y,wb/2,0,7); ctx.fill();
+  }
+  function inkSeg(){
+    const n=pts.length; if(n<2) return;
+    const a=pts[n-2], b=pts[n-1];
+    const d2=Math.hypot(b.x-a.x,b.y-a.y), dt=Math.max(1,b.t-a.t);
+    const speed=d2/dt;
+    const target=Math.max(INK.min,Math.min(INK.max,INK.max-speed*INK.sens));
+    const prev=W;
+    W+=(target-W)*.22;
+    ctx.fillStyle=INK.color;
+    ctx.globalAlpha=1;
+    ribbon(a,b,prev,W);
+    /* wetness: a slow nib bleeds. Stamp sparsely, or overlapping alphas moire. */
+    if(INK.wet>0 && speed<0.3 && n%4===0){
+      ctx.globalAlpha=INK.wet;
+      ctx.beginPath(); ctx.arc(b.x,b.y,W*0.58,0,7); ctx.fill();
+      ctx.globalAlpha=1;
+    }
+  }
+  function clearInk(){ ctx.save(); ctx.setTransform(1,0,0,1,0,0);
+    ctx.clearRect(0,0,cv.width,cv.height); ctx.restore(); }
+  cv.addEventListener('pointerdown',e=>{ down=true; len=0; W=INK.max*0.5; AUD.penStart();
+    if(!cv.width) size();
+    pts=[{x:e.clientX,y:e.clientY,t:performance.now()}];
+    ctx.fillStyle=INK.color;
+    ctx.beginPath(); ctx.arc(e.clientX,e.clientY,W/2,0,7); ctx.fill(); });
+  cv.addEventListener('pointermove',e=>{ if(!down)return;
+    const p={x:e.clientX,y:e.clientY,t:performance.now()}, q2=pts[pts.length-1];
+    const d2=Math.hypot(p.x-q2.x,p.y-q2.y);
+    if(d2<2.5) return;
+    AUD.penMove(d2/Math.max(1,p.t-q2.t));
+    len+=d2; pts.push(p); inkSeg(); });
+  const fin=()=>{ if(!down)return; down=false; AUD.penStop();
+    /* the zero must close: start and end land near each other */
+    const a=pts[0], b=pts[pts.length-1];
+    let minx=1e9,miny=1e9,maxx=-1e9,maxy=-1e9;
+    pts.forEach(pp=>{ minx=Math.min(minx,pp.x); miny=Math.min(miny,pp.y);
+      maxx=Math.max(maxx,pp.x); maxy=Math.max(maxy,pp.y); });
+    const diag=Math.hypot(maxx-minx,maxy-miny);
+    const closed=len>250 && Math.hypot(b.x-a.x,b.y-a.y)<Math.max(80,diag*INK.tol);
+    if(closed) accept();
+    else { sfx('tick');
+      gsap.to(cv,{opacity:0,duration:.4});
+      setTimeout(()=>{ clearInk(); gsap.set(cv,{opacity:1}); },450); } };
+  cv.addEventListener('pointerup',fin); cv.addEventListener('pointercancel',fin);
+  cv.addEventListener('dblclick',()=>accept(true));
+  addEventListener('keydown',e=>{ if(e.key==='Enter'&&$('drawScreen').style.display!=='none') accept(true); });
+  let accepted=false;
+  window.__acceptDraw=()=>accept(true);
+  function accept(skip){
+    if(accepted) return; accepted=true;
+    AUD.penStop(); AUD.whoosh();
+    /* the ink swells until it floods the whole screen, then the world goes dark */
+    gsap.to('#dH',{opacity:0,y:-10,duration:.35});
+    if(!skip&&pts.length>2){
+      const obj={w:W};
+      const cover=Math.hypot(innerWidth,innerHeight)*2.2;
+      const redraw=()=>{ ctx.fillStyle=INK.color; ctx.globalAlpha=1;
+        for(let i=1;i<pts.length;i++) ribbon(pts[i-1],pts[i],obj.w,obj.w);
+        ribbon(pts[pts.length-1],pts[0],obj.w,obj.w); };
+      safeTL(gsap.timeline().to(obj,{w:cover,duration:1.15,ease:'power3.in',onUpdate:redraw}),1900);
+    }
+    /* the charge rides out with the ink as it sweeps itself shut: a soft
+       anticipation ahead of the dark, never a hard ring */
+    const d=$('drawScreen');
+    let flipped=false;
+    const flip=()=>{
+      if(flipped) return; flipped=true;
+      document.body.classList.add('dark');
+      d.style.background='#0E0E10';
+    };
+    setTimeout(()=>{
+      const en=mk('div','energ'); document.body.appendChild(en);
+      const o={p:0};
+      const paint=()=>{
+        const r1=o.p*150;
+        const r2=Math.max(0,(o.p-.38)/.62)*150;
+        en.style.setProperty('--r1',r1.toFixed(1)+'%');
+        en.style.setProperty('--r2',r2.toFixed(1)+'%');
+      };
+      en.style.setProperty('--r1','0%'); en.style.setProperty('--r2','0%');
+      safeTL(gsap.timeline()
+        .to(en,{opacity:.5,duration:.34,ease:'power2.out'},0)
+        .to(o,{p:1,duration:1.5,ease:'power2.out',onUpdate:paint},0)
+        .to(en,{opacity:0,duration:.5,ease:'power2.in'},1.05),2600);
+      setTimeout(()=>{ if(en.isConnected) en.remove(); },2300);
+    }, skip?120:300);
+    setTimeout(flip, skip?420:1180);
+    setTimeout(()=>{ gsap.to(d,{opacity:0,duration:.6}); }, skip?520:1320);
+    setTimeout(()=>{ d.style.display='none'; openStage(); }, skip?900:1780);
+  }
+}
 /* ---- 1 - the promise, then the name ------------------------------------- */
 async function openStage(){
   atStep('Open');
@@ -3866,11 +4006,13 @@ function claimStage(){    stub('10,000 credits.',     creditsStage,  'step 8 - s
 /* ============================ boot ============================ */
 gsap.set(['#logoPill','.tr'],{opacity:0,y:-9});
 setPhase(0);
-openStage();
+showDraw();
 
 /* ============================ step-through (prototype only) ============================ */
 /* Walk the whole flow with sensible answers already filled in, no clicking. */
 const DBG_STEPS=[
+  ['Draw',        ()=>{ $('drawScreen').style.display='flex';
+                        gsap.set('#drawScreen',{opacity:1}); gsap.set('#dH',{opacity:1,y:0}); }],
   ['Open',        ()=>openStage()],
   ['LinkedIn',    ()=>linkedinStage()],
   ['Read back',   ()=>readbackStage()],
@@ -3897,20 +4039,20 @@ function dbgFill(upTo){
   const set=(i,fn)=>{ if(upTo>i) fn(); };
   /* indices track DBG_STEPS: 0 Open, 1 LinkedIn, 2 Read back, 3 Pivot,
      4 Cards intro, 5 Cards, 6 Reflection, 7 Preferences, 8 Vision, ... */
-  set(0,()=>P.name='Sanjay');
-  set(1,()=>{ P.linked='LinkedIn'; P.linkedUrl='linkedin.com/in/sanjaybchauhan'; });
-  set(2,()=>{ P.level='Student';
+  set(1,()=>P.name='Sanjay');
+  set(2,()=>{ P.linked='LinkedIn'; P.linkedUrl='linkedin.com/in/sanjaybchauhan'; });
+  set(3,()=>{ P.level='Student';
     P.about='I started in graphic design but recently I have been looking more into product design.';
     P.pivot=['graphic design','product design']; });
-  set(3,()=>{ P.why='I want to work on products people actually use and build a career I can grow in.'; });
-  set(5,()=>{ /* the cards have been played: their read-out is the preference state */
+  set(4,()=>{ P.why='I want to work on products people actually use and build a career I can grow in.'; });
+  set(6,()=>{ /* the cards have been played: their read-out is the preference state */
     P.role=d.roles&&d.roles[0]?d.roles[0][0]:'Product Designer';
     P.dream='OpenAI, Figma, Anthropic';
     P.industry='Tech and AI';
     P.problems=d.problemChips?d.problemChips[0]:'Confusing tools';
     P.location='Toronto';
     P.timeline='This year'; });
-  set(8,()=>{ P.aim=d.roles&&d.roles[0]?d.roles[0][0]:'Product Designer'; });
+  set(9,()=>{ P.aim=d.roles&&d.roles[0]?d.roles[0][0]:'Product Designer'; });
 }
 let dbgAt=0;
 /* The pill used to move only when its own arrows were pressed, so walking the
@@ -3939,13 +4081,15 @@ function dbgGoto(i){
   $('rip').style.display='none'; $('rip').innerHTML='';
   $('aur').innerHTML=''; gsap.set('#aur',{opacity:0});
   gsap.set(['#logoPill','.tr'],{opacity:i>=1?1:0,y:0});
-  if(i!==1) $('drawScreen').style.display='none';
-  document.body.classList.remove('dark');
+  if(i!==0) $('drawScreen').style.display='none';
+  /* the stepper must reproduce the same boundary, or a jump lands in the
+     wrong light and the device stops reading as intentional */
+  document.body.classList.toggle('dark', i<=8);
   $('col').innerHTML='';
   dbgFill(i);
   /* the panel exists from the moment Zero starts writing things down */
   /* panel opens at the read-back (2) and widens once the board is the subject (8) */
-  const born=i>=2, wide=i>=8;
+  const born=i>=3, wide=i>=9;
   if(born){
     panelBorn=true; boardLive=true;
     gsap.set('.right',{width:wide?'56%':'40%',opacity:1,x:0});
@@ -3954,7 +4098,7 @@ function dbgGoto(i){
     const sc=$('scroll'); sc.className='scroll ctr'; sc.innerHTML='';
     const vb=mk('div','vb'); vb.id='vb'; vb.innerHTML=boardHTML(); sc.appendChild(vb);
     SENTENCES().forEach(x=>{ if(x.ready){ shown[x.id]=1; keys[x.id]=x.key; } });
-    meterRetired=i>=8; boardRewards=i>=8;
+    meterRetired=i>=9; boardRewards=i>=9;
   } else {
     panelBorn=false; boardLive=false;
     gsap.set('.right',{width:0,opacity:0}); shiftLeft('0px');
