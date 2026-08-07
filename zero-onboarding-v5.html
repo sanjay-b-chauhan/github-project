@@ -662,7 +662,7 @@ body.rszing{ cursor:col-resize; user-select:none; }
 body.rszing iframe{ pointer-events:none; }   /* the drag must not fall into an embed */
 
 /* ---- the quiet alternatives above an input ------------------------------ */
-.alt{ display:flex; gap:8px; margin-bottom:22px; }
+.alt{ display:flex; gap:8px; margin:4px 0 22px; justify-content:center; }
 .altb{ display:inline-flex; align-items:center; gap:7px; cursor:pointer;
   background:transparent; border:1px solid var(--line); border-radius:999px;
   padding:7px 14px; font-size:12.5px; color:var(--tx-2); letter-spacing:-.008em;
@@ -1406,7 +1406,13 @@ function setPhase(i){ $('stepLbl').textContent=PHASES[i];
   [...$('steps').querySelectorAll('i')].forEach((d,k)=>{
     gsap.to(d,{width:k===i?20:4, backgroundColor:k<i?'#9a9aa0':(k===i?'#111113':'#c4c4ca'), duration:.5, ease:EIO}); }); }
 (function(){ const b=$('sndBtn'); b.innerHTML=I.vol;
-  b.onclick=()=>{ sndOn=!sndOn; voOn=sndOn; if(!sndOn) voStop(); b.innerHTML=sndOn?I.vol:I.mute; b.classList.toggle('off',!sndOn);
+  b.onclick=()=>{ sndOn=!sndOn; voOn=sndOn;
+    /* voStop() only knew about the per-line clips. The opening take is its own
+       element, so muting mid-sentence left Navid talking over a muted UI. */
+    if(!sndOn){ try{ voStop(); }catch(e){}
+      try{ if(openEl){ openEl.pause(); openEl.muted=true; } }catch(e){} }
+    else { try{ if(openEl) openEl.muted=false; }catch(e){} }
+    b.innerHTML=sndOn?I.vol:I.mute; b.classList.toggle('off',!sndOn);
     try{window.CUE&&window.CUE.setEnabled(sndOn);}catch(e){} if(sndOn) sfx('toggle'); }; })();
 function words(el,text){ el.innerHTML=''; const p=text.split(' ');
   p.forEach((w,i)=>{ el.appendChild(mk('span','w',w)); if(i<p.length-1) el.appendChild(document.createTextNode(' ')); });
@@ -3206,13 +3212,15 @@ async function openStage(){
   /* the last cue already wrote this line; repeating it re-runs the word
      stagger and reads as a stutter */
   if(!/call you/.test(($('col').innerText||''))) line("Let's get started. What should I call you?");
+  /* a name has one correct spelling and it is theirs, so this is the keyboard.
+     linkDock is the field without the mic. */
   dockMode='type';
-  dockInput(async v=>{
+  linkDock(async v=>{
     const nm=v.trim().split(/\s+/)[0].replace(/[^A-Za-z'-]/g,'');
     P.name=(nm||'You').charAt(0).toUpperCase()+(nm||'ou').slice(1).toLowerCase();
     dockMode='voice';
     go(linkedinStage);
-  });
+  },'Type your name');
 }
 
 /* ---- 2 - LinkedIn, at step two ------------------------------------------
@@ -3230,6 +3238,7 @@ async function linkedinStage(){
      only input that makes sense here. The mic belongs on the next screen,
      where the answer is long and subjective. */
   const {box}=turn({q:'Drop your LinkedIn and I will read it.'});
+  qWide=false;
   const alt=mk('div','alt');
   const altb=(icon,label,fn)=>{
     const b=mk('button','altb');
@@ -3252,7 +3261,7 @@ async function linkedinStage(){
     P.linkedUrl=String(v).trim().replace(/^https?:\/\//,'').replace(/\/$/,'');
     clearTurn(); dockHide();
     setTimeout(()=>{ locked=false; readProfile('LinkedIn'); },420);
-  },'linkedin.com/in/yourname');
+  },'linkedin.com/in/your-id');
 }
 
 /* ---- 3 - what the profile said, and the invitation to correct it --------
@@ -3271,9 +3280,8 @@ async function readbackStage(){
     if(d.skills) await voLine('I can see signals around '+firstFew(d.skills,3)+'.',2500);
     await voLine("That's the story I'm seeing. I could be wrong.",2300);
   }
-  await voLine('Send me a voice note.',1700);
-  await voLine('What feels right, what feels off, what did I miss?',2600);
-  const {box}=turn({q:P.linked?'What feels right, and what did I miss?':'Tell me where you are starting from.'});
+  await voLine('Tell me what I got wrong, or what I missed.',2600);
+  const {box}=turn({q:P.linked?'Have I missed anything?':'Tell me where you are starting from.'});
   devPills(box,[
     "That feels right. I started in graphic design, did an internship there, but recently I've been looking more into product design.",
     "Mostly right, though I've moved away from graphics. Product design is the direction I want to explore."
