@@ -823,7 +823,7 @@ body:not(.dark) .vc.on{ background:rgba(17,17,19,.92); color:#fff; }
 body:not(.dark) .venn.union .vc{ mix-blend-mode:multiply; }
 .poolb{ position:absolute; left:0; top:0; border-radius:50%; background:#fff;
   border:1px solid var(--line); display:flex; align-items:center; justify-content:center;
-  cursor:pointer; padding:0; opacity:.34; will-change:transform;
+  cursor:pointer; padding:0; opacity:.55; will-change:transform;
   transition:opacity .45s, box-shadow .45s; }
 .poolb svg{ width:52%; height:52%; }
 .poolb.on{ opacity:1; box-shadow:0 6px 22px rgba(0,0,0,.28); }
@@ -835,18 +835,19 @@ body:not(.dark) .venn.union .vc{ mix-blend-mode:multiply; }
   font-family:var(--f); letter-spacing:-.006em; white-space:nowrap;
   opacity:0; pointer-events:none; transition:opacity .18s, transform .18s; }
 .poolb:hover::after{ opacity:1; transform:translateX(-50%) translateY(0); }
-.poolt{ position:absolute; left:0; top:0; font-size:12.5px; color:var(--tx-3);
-  letter-spacing:-.006em; cursor:pointer; white-space:nowrap; will-change:transform;
-  transition:color .4s; }
-.poolt.on{ color:var(--tx); font-weight:600; }
+.poolt{ position:absolute; left:0; top:0; font-size:12px; font-weight:500;
+  color:var(--tx-2); letter-spacing:-.006em; cursor:pointer; white-space:nowrap;
+  will-change:transform; transition:color .4s, background .4s, border-color .4s;
+  padding:6px 12px; border-radius:999px; background:var(--wash); border:1px solid var(--line); }
+.poolt.on{ color:var(--tx); font-weight:600; border-color:var(--tx-4); }
 /* ---- the map ------------------------------------------------------------ */
 .geo{ display:flex; align-items:center; justify-content:center; gap:44px;
   width:min(1000px,94%); margin:6px auto 26px; }
 .geomap{ flex:0 0 auto; }
 .gmap{ width:min(640px,54vw); height:auto; display:block; }
-.gdot{ fill:var(--tx-4); }
-.gdot.gfocus{ opacity:.55; }
-.gdot.gfar{ opacity:.14; }
+.gland{ fill:rgba(244,244,243,.05); stroke:var(--tx-4); stroke-width:1.1;
+  stroke-linejoin:round; }
+body:not(.dark) .gland{ fill:rgba(17,17,19,.04); stroke:var(--tx-4); }
 .gpt{ fill:var(--tx-3); }
 .gcity.listed .gpt{ fill:var(--tx); }
 .glab{ fill:var(--tx-4); font-size:11px; font-family:var(--f); letter-spacing:.01em; }
@@ -5676,44 +5677,48 @@ function pranked(box,sc){
   wrap.appendChild(mapbox); wrap.appendChild(list);
   box.appendChild(wrap);
 
-  /* the whole world, drawn in dots, with North America in focus and the rest
-     faded far back. The first-ranked city carries a real pin and the rings. */
-  const MW=640, MH=320;
-  const CONT={
-    na:[[6,22],[4,34],[8,44],[14,48],[18,58],[24,60],[28,52],[34,50],[38,42],[36,32],[30,26],[22,22],[14,20]],
-    sa:[[26,62],[24,72],[28,84],[32,88],[36,80],[36,68],[32,62]],
-    eu:[[46,22],[44,32],[48,38],[54,36],[58,28],[54,22]],
-    af:[[46,42],[44,54],[50,68],[56,70],[60,58],[58,44],[52,40]],
-    as:[[58,20],[56,32],[62,42],[70,48],[80,44],[88,36],[90,26],[82,18],[70,16]],
-    au:[[78,64],[76,72],[82,78],[88,74],[88,66]]
-  };
-  function insidePoly(P2,x,y){
-    let inn=false;
-    for(let i=0,j=P2.length-1;i<P2.length;j=i++){
-      const xi=P2[i][0],yi=P2[i][1],xj=P2[j][0],yj=P2[j][1];
-      if(((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi)) inn=true;
-    }
-    return inn;
-  }
-  const dots=[];
-  for(let gy=2;gy<100;gy+=2.6) for(let gx=1;gx<100;gx+=1.6){
-    let hit=null;
-    for(const k in CONT){ if(insidePoly(CONT[k],gx,gy)){ hit=k; break; } }
-    if(hit) dots.push('<circle cx="'+(gx/100*MW).toFixed(1)+'" cy="'+(gy/100*MH).toFixed(1)+
-      '" r="1.7" class="gdot '+(hit==='na'?'gfocus':'gfar')+'"/>');
-  }
-  const CITY={ vancouver:[11.5,26], seattle:[12,31], san_francisco:[8.5,42],
-               new_york:[33.5,33], toronto:[29,28] };
+  /* Real geography: the lower forty-eight as one closed outline from genuine
+     border coordinates, faint fill, hairline coast, vignette fade. Toronto and
+     Vancouver sit just across the border, where they truly are. */
+  const MW=680, MH=400;
+  const LON0=-125.5, LON1=-66.5, LAT0=50.8, LAT1=24.3;
+  const px=(lat,lon)=>[(lon-LON0)/(LON1-LON0)*MW,(LAT0-lat)/(LAT0-LAT1)*MH];
+  const US=[[48.4,-124.7],[46.2,-124.1],[42.0,-124.4],[40.4,-124.4],[37.8,-122.5],
+    [36.3,-121.9],[34.4,-120.5],[33.7,-118.3],[32.5,-117.1],[32.5,-114.8],[31.3,-111.0],
+    [31.8,-108.2],[31.8,-106.5],[29.6,-104.4],[29.2,-102.9],[29.4,-101.0],[27.5,-99.5],
+    [25.9,-97.1],[27.8,-97.0],[29.3,-94.7],[29.6,-92.2],[29.2,-89.2],[30.2,-88.0],
+    [29.7,-85.4],[27.9,-82.6],[25.2,-81.1],[25.1,-80.4],[26.7,-80.0],[28.5,-80.5],
+    [30.3,-81.4],[32.0,-80.8],[33.9,-77.9],[35.2,-75.5],[36.9,-76.0],[38.3,-75.1],
+    [39.4,-74.3],[40.6,-73.9],[41.3,-71.9],[42.3,-70.9],[43.7,-70.2],[44.8,-66.9],
+    [45.3,-67.2],[47.1,-67.9],[45.3,-71.1],[45.0,-74.7],[44.1,-76.5],[43.2,-79.0],
+    [42.5,-79.8],[42.3,-83.0],[43.0,-82.4],[44.5,-82.7],[45.8,-84.7],[46.5,-84.3],
+    [47.5,-87.5],[46.8,-92.0],[48.0,-89.5],[48.2,-92.3],[49.0,-95.2],[49.0,-123.0],
+    [48.2,-123.2]];
+  const pts=US.map(p=>px(p[0],p[1]));
+  const path='M'+pts.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join('L')+'Z';
+  const CITY={ san_francisco:{ll:[37.77,-122.42],dx:0,dy:-20,anchor:'middle'},
+               seattle:{ll:[47.60,-122.33],dx:14,dy:4,anchor:'start'},
+               vancouver:{ll:[49.28,-123.12],dx:14,dy:4,anchor:'start'},
+               new_york:{ll:[40.71,-74.00],dx:14,dy:-8,anchor:'start'},
+               toronto:{ll:[43.65,-79.38],dx:0,dy:-18,anchor:'middle'} };
   const PIN='M0 -15 C -5.2 -15 -8.4 -11.4 -8.4 -7.4 C -8.4 -2 0 6 0 6 C 0 6 8.4 -2 8.4 -7.4 C 8.4 -11.4 5.2 -15 0 -15 Z';
-  const svg=['<svg viewBox="0 0 '+MW+' '+MH+'" class="gmap">',dots.join('')];
+  const svg=['<svg viewBox="0 0 '+MW+' '+MH+'" class="gmap">',
+    '<defs><radialGradient id="gfade" cx="42%" cy="45%" r="72%">',
+    '<stop offset="62%" stop-color="#fff" stop-opacity="1"/>',
+    '<stop offset="100%" stop-color="#fff" stop-opacity="0"/></radialGradient>',
+    '<mask id="gmask"><rect width="'+MW+'" height="'+MH+'" fill="url(#gfade)"/></mask></defs>',
+    '<g mask="url(#gmask)">',
+    '<path class="gland" d="'+path+'"/>',
+    '</g>'];
   Object.keys(CITY).forEach(k=>{
-    const x=CITY[k][0]/100*MW, y=CITY[k][1]/100*MH;
-    svg.push('<g class="gcity" data-city="'+k+'" transform="translate('+x+','+y+')">'+
+    const c=CITY[k];
+    const [x,y]=px(c.ll[0],c.ll[1]);
+    svg.push('<g class="gcity" data-city="'+k+'" transform="translate('+x.toFixed(1)+','+y.toFixed(1)+')">'+
       '<circle class="gring gr1" r="15"/>'+
       '<circle class="gring gr2" r="27"/>'+
       '<circle class="gpt" r="4"/>'+
       '<g class="gpin"><path d="'+PIN+'" /><circle r="3.2" cy="-7.4" class="gpinhole"/></g>'+
-      '<text class="glab" y="-22" text-anchor="middle">'+(PFLABEL[k]||k)+'</text></g>');
+      '<text class="glab" x="'+c.dx+'" y="'+c.dy+'" text-anchor="'+c.anchor+'">'+(PFLABEL[k]||k)+'</text></g>');
   });
   svg.push('</svg>');
   mapbox.innerHTML=svg.join('');
@@ -6398,7 +6403,7 @@ function dbgGoto(i){
       removeEventListener('click',away); } }; addEventListener('click',away); },0);
   };
   st.textContent='1. '+DBG_STEPS[0][0];
-  const bv=mk('span','bldv','v40'); gr.parentElement&&gr.parentElement.appendChild(bv);
+  const bv=mk('span','bldv','v41'); gr.parentElement&&gr.parentElement.appendChild(bv);
   addEventListener('keydown',e=>{
     if(document.activeElement&&document.activeElement.tagName==='INPUT') return;
     if(e.key==='ArrowRight'){ paceAdvance(); }
