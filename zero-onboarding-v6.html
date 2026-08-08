@@ -165,7 +165,8 @@ svg{ display:block; }
 /* the opening speaks in whole thoughts, so it needs a wider column than a
    one-line question does */
 .q.wide{ max-width:min(41ch,100%); }
-.q{ font-family:var(--serif); font-weight:400; font-size:clamp(26px,2.15vw,40px); line-height:1.14;
+.q{ font-family:var(--qfont,var(--serif)); font-weight:400;
+  font-size:var(--qfs,clamp(26px,2.15vw,40px)); line-height:1.14;
   letter-spacing:-.03em; text-align:center; text-wrap:balance; max-width:min(27ch,100%); margin:0 auto; }
 .q .w{ display:inline-block; }
 .qs{ margin-top:12px; font-size:14px; color:var(--tx-3); text-align:center; text-wrap:balance; }
@@ -352,9 +353,17 @@ body.dark .paper::before{ background-image:radial-gradient(rgba(255,255,255,.07)
 /* the vision board: one living sentence, visuals inside the type */
 /* the board is ONE paragraph that wraps, never a stack of segments */
 /* three zones: who you are, where this goes, and who is hiring for it */
-.vb{ font-size:var(--vbfs,22px); line-height:2.35; letter-spacing:-.022em; font-weight:500;
+.vb{ font-family:var(--vbfont,inherit); font-size:var(--vbfs,22px);
+  line-height:var(--vblh,2.35); letter-spacing:-.022em; font-weight:500;
   max-width:min(38ch,100%); margin:0 auto; text-align:center; word-spacing:.04em; }
-.vbs{ display:inline; }
+.vbs{ display:inline; transition:opacity .5s var(--e,cubic-bezier(.625,.05,0,1)), filter .5s; }
+/* while Zero validates, the row it is talking about is the bright thing and
+   the rest of the story steps back */
+.vb.spotting .vbs:not(.spot){ opacity:.3; filter:saturate(.55); }
+.vb.spotting .vbpins .vbpin{ opacity:.3; }
+.vbs.spot .vbc{ box-shadow:0 0 0 1.5px rgba(255,255,255,.34), 0 8px 30px rgba(255,255,255,.10);
+  transition:box-shadow .45s; }
+body:not(.dark) .vbs.spot .vbc{ box-shadow:0 0 0 1.5px rgba(13,13,13,.28), 0 8px 30px rgba(13,13,13,.10); }
 .vbs::after{ content:' '; }
 .vbg:empty{ display:none; }
 /* the pins live beside the story, never inside it */
@@ -2213,8 +2222,8 @@ function mountResizer(){
   addEventListener('pointermove',move);
   addEventListener('pointerup',up);
   addEventListener('pointercancel',up);
-  try{ const saved=parseInt(localStorage.getItem('panelW')||'',10);
-    if(saved>=320) panelPref=saved; }catch(e){}
+  /* a dragged width holds for the session but is not remembered: a stale
+     preference is why the panel kept opening at half the screen */
 }
 
 /* Two boards, and they are not the same object. The LinkedIn board is what
@@ -3957,6 +3966,17 @@ function cvModal(){
 /* ---- 3 - what the profile said, and the invitation to correct it --------
    Zero offers a reading and asks to be corrected. No role question here:
    roles are inferred later, from choices rather than claims. */
+/* point at the rows being talked about; everything else steps back */
+function spotRows(ids){
+  const vb=$('vb'); if(!vb) return;
+  vb.classList.add('spotting');
+  vb.querySelectorAll('.vbs').forEach(r=>r.classList.toggle('spot',ids.indexOf(r.dataset.id)>=0));
+}
+function unspot(){
+  const vb=$('vb'); if(!vb) return;
+  vb.classList.remove('spotting');
+  vb.querySelectorAll('.vbs.spot').forEach(r=>r.classList.remove('spot'));
+}
 async function readbackStage(){
   atStep('Read back');
   setPhase(0);
@@ -3964,13 +3984,18 @@ async function readbackStage(){
   clearTurn(); dockHide(); await wait(360);
   const d=(typeof LINKEDIN!=='undefined'&&(LINKEDIN[PKEY]||LINKEDIN.design))||{};
   if(P.linked){
+    spotRows(['s1']);
     await voLine('Okay, '+P.name+". I've read your LinkedIn.",2100);
     await voLine((d.headline||'Early in your career')+'.',2000);
+    spotRows(['p1','p2']);
     if(d.exp&&/year/i.test(d.exp)) await voLine("You're in your "+lower1(d.exp)+(d.since?', with '+lower1(d.since)+' behind you':'')+'.',2500);
     else if(d.exp) await voLine('You have done '+lower1(d.exp)+'.',2300);
+    spotRows(['p2']);
     if(d.skills) await voLine('I can see signals around '+firstFew(d.skills,3)+'.',2500);
+    spotRows(['s1','p1','p2','p3']);
     await voLine("That's the story I'm seeing. I could be wrong.",2300);
   }
+  unspot();
   await voLine('Tell me what I got wrong, or what I missed.',2600);
   const {box}=turn({q:P.linked?'Have I missed anything?':'Tell me where you are starting from.'});
   devPills(box,[
@@ -5334,8 +5359,8 @@ function dbgGoto(i){
   }
   else if(born){
     panelBorn=true; boardLive=true;
-    gsap.set('.right',{width:panelPref?panelPref+'px':(wide?'56%':'40%'),opacity:1,x:0});
-    shiftLeft(panelPref?panelPref+'px':(wide?'56vw':'40vw'));
+    gsap.set('.right',{width:panelPref?panelPref+'px':'40%',opacity:1,x:0});
+    shiftLeft(panelPref?panelPref+'px':'40vw');
     mountResizer();
     $('cap').innerHTML='<span class="live pulse"></span>'+(wide?'Your vision board':'Zero is listening');
     const sc=$('scroll'); sc.className='scroll ctr'; sc.innerHTML='';
@@ -5449,6 +5474,42 @@ function dbgGoto(i){
   range(draw,'Wetness',0,.5,.02,()=>INK.wet,v=>INK.wet=v);
   range(draw,'Close tolerance',.1,.7,.05,()=>INK.tol,v=>INK.tol=v);
   swatch(draw,'Ink colour',()=>INK.color,v=>INK.color=v);
+
+  /* every colour the screen is built from, writable live. Vars land on body
+     inline, which outranks both the light defaults and the body.dark set. */
+  function cssVar(name){ 
+    const v=getComputedStyle(document.body).getPropertyValue(name).trim();
+    if(/^#/.test(v)) return v.length===4?'#'+v[1]+v[1]+v[2]+v[2]+v[3]+v[3]:v.slice(0,7);
+    const m=v.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+    if(!m) return '#888888';
+    return '#'+[m[1],m[2],m[3]].map(x=>(+x).toString(16).padStart(2,'0')).join('');
+  }
+  function pick(body,label,options,get,set){
+    const r=mk('div','dbgrow flat');
+    const lb=mk('div','lb'); lb.appendChild(mk('span',null,label)); r.appendChild(lb);
+    const sel=document.createElement('select');
+    options.forEach(o=>{ const op=document.createElement('option');
+      op.value=o[1]; op.textContent=o[0]; sel.appendChild(op); });
+    sel.value=get(); sel.onchange=()=>set(sel.value);
+    r.appendChild(sel); body.appendChild(r);
+  }
+  const FONTS=[['Serif (STK Bureau)',"var(--serif)"],['Sans (system)',"var(--f)"],['Georgia',"Georgia,serif"],['Mono',"ui-monospace,Menlo,monospace"]];
+  const setB=(n,v)=>document.body.style.setProperty(n,v);
+
+  const type=section('Typography');
+  range(type,'Question size',18,48,1,()=>parseInt(getComputedStyle(document.querySelector('.q')||document.body).fontSize)||30,
+    v=>setB('--qfs',v+'px'));
+  pick(type,'Question font',FONTS,()=>"var(--serif)",v=>setB('--qfont',v));
+  range(type,'Board size',14,34,1,()=>parseInt(getComputedStyle(document.body).getPropertyValue('--vbfs'))||22,
+    v=>setB('--vbfs',v+'px'));
+  range(type,'Board line height',1.4,3.2,.05,()=>2.35,v=>setB('--vblh',v));
+  pick(type,'Board font',FONTS,()=>"var(--f)",v=>setB('--vbfont',v));
+
+  const col2=section('Colours');
+  [['Background','--page'],['Shell','--shell'],['Card','--card'],['Wash','--wash'],
+   ['Text','--tx'],['Text 2','--tx-2'],['Text 3','--tx-3'],['Text 4','--tx-4'],
+   ['Ink (buttons)','--ink'],['On ink','--on-ink'],['Green','--ok'],['Commit green','--commit']
+  ].forEach(([label,vn])=>swatch(col2,label,()=>cssVar(vn),v=>setB(vn,v)));
 
   const board=section('Vision board');
   range(board,'Text size',14,34,1,
