@@ -1022,8 +1022,10 @@ body.dark .jsat.jbest{ border-color:rgba(255,255,255,.2); }
    font-size transition that reads as a snap */
 .q.qtag{ font-size:21px !important; letter-spacing:-.02em; color:var(--tx-2); }
 /* what this round is testing, said plainly under the tag */
-.rcsay{ font-family:var(--f); text-align:center; font-size:14px; font-weight:450;
-  color:var(--tx-3); letter-spacing:-.008em; min-height:20px; margin:10px 0 20px; }
+/* the same family as the question it sits under, so the head of the screen
+   reads as one voice rather than two typefaces arguing */
+.rcsay{ font-family:var(--serif); text-align:center; font-size:16.5px;
+  color:var(--tx-3); letter-spacing:-.016em; min-height:22px; margin:12px 0 22px; }
 /* ---- paired role cards, as a deck ---------------------------------------- */
 .rcwrap{ width:100%; max-width:760px; margin:0 auto; }
 /* A short perspective is what makes the rotation read as depth. At 1100 the
@@ -2074,9 +2076,26 @@ function typeDock(onText,extra){
 /* your own words, printed above the dock as you say them */
 function showTranscript(final,interim){
   const d=$('dtr');
-  if(!final&&!interim){ gsap.to(d,{opacity:0,duration:.25}); setTimeout(()=>{d.innerHTML='';},260); return; }
-  d.innerHTML='<span><b>'+final+'</b> '+interim+'</span>';
-  gsap.to(d,{opacity:1,duration:.3});
+  if(!final&&!interim){
+    gsap.to(d,{opacity:0,duration:.25});
+    setTimeout(()=>{ d.innerHTML=''; d._f=d._i=null; },260);
+    return;
+  }
+  /* the nodes are made once and only their text changes after that. Rebuilding
+     innerHTML per word tore the line and restarted the fade every time, which
+     is the flicker in the middle of the screen. */
+  if(!d._f){
+    d.innerHTML='';
+    const sp=mk('span');
+    d._f=document.createElement('b');
+    d._i=document.createTextNode('');
+    sp.appendChild(d._f); sp.appendChild(document.createTextNode(' ')); sp.appendChild(d._i);
+    d.appendChild(sp);
+    gsap.killTweensOf(d);
+    gsap.fromTo(d,{opacity:0},{opacity:1,duration:.3});
+  }
+  d._f.textContent=final||'';
+  d._i.nodeValue=interim||'';
 }
 /* the bars follow the actual voice when the mic is open, and breathe when it is not */
 function levelMeter(bars,idleTL){
@@ -4907,16 +4926,18 @@ async function cardsStage(){
   /* the question docks up into a tag and makes the stage the cards' room */
   const q0=document.querySelector('.turn .q');
   if(q0){
-    /* measure, then move: shrink and lift as one motion on the house ease so
-       the question settles into a label instead of jumping to the top */
+    /* One move, measured first: the question travels to where it will live and
+       shrinks on the way, rather than snapping size while the stage grows
+       under it. The distance is measured, so it lands in the same place
+       whatever the wrap. */
+    const r0=q0.getBoundingClientRect();
     const from=parseFloat(getComputedStyle(q0).fontSize)||30;
-    gsap.set(q0,{fontSize:from});
     q0.classList.add('qtag');
-    gsap.fromTo(q0,{fontSize:from,y:0,opacity:1},
-      {fontSize:21,y:-10,opacity:.9,duration:.72,ease:EIO,
-       clearProps:'fontSize,y'});
+    const r1=q0.getBoundingClientRect();
+    gsap.set(q0,{fontSize:from,y:r0.top-r1.top,transformOrigin:'50% 50%'});
+    gsap.to(q0,{fontSize:21,y:0,duration:.85,ease:EIO,clearProps:'fontSize,y,transformOrigin'});
   }
-  await wait(560);
+  await wait(720);
   if(myGen!==gen) return;
 
   const wrap=mk('div','rcwrap');
@@ -4986,14 +5007,24 @@ function rcRound(myGen,first){
   slotL.appendChild(left); slotR.appendChild(right);
   row.appendChild(slotL); row.appendChild(slotR);
   stage.appendChild(row);
-  rcSay(rcSayFor(round));
+  /* the cards land first and the line explains them a beat later - saying it
+     at the same moment made both feel like one crowded event */
+  setTimeout(()=>{ if(myGen===gen) rcSay(rcSayFor(round)); },first?900:620);
 
   /* dealt from the bottom of the screen, not faded in place */
+  /* dealt: they rise from below, overshoot a hair, and settle into their
+     resting tilt - the tilt is restored at the end rather than fought during
+     the flight, which is what made the old version look like it was fighting
+     itself */
+  const t0=first?.12:0;
   safeTL(gsap.timeline()
-    .fromTo(slotL,{opacity:0,y:innerHeight*.22,rotation:-9,scale:.9,filter:'blur(10px)'},
-      {opacity:1,y:0,rotation:0,scale:1,filter:'blur(0px)',duration:.8,ease:'power4.out',clearProps:'filter,rotation'},first?.1:0)
-    .fromTo(slotR,{opacity:0,y:innerHeight*.26,rotation:9,scale:.9,filter:'blur(10px)'},
-      {opacity:1,y:0,rotation:0,scale:1,filter:'blur(0px)',duration:.85,ease:'power4.out',clearProps:'filter,rotation'},(first?.1:0)+.09),2000);
+    .fromTo(slotL,{opacity:0,y:innerHeight*.24,rotation:-11,scale:.88,filter:'blur(12px)'},
+      {opacity:1,y:0,rotation:0,scale:1,filter:'blur(0px)',duration:.95,
+       ease:'expo.out',clearProps:'filter'},t0)
+    .fromTo(slotR,{opacity:0,y:innerHeight*.28,rotation:11,scale:.88,filter:'blur(12px)'},
+      {opacity:1,y:0,rotation:0,scale:1,filter:'blur(0px)',duration:1.0,
+       ease:'expo.out',clearProps:'filter'},t0+.1)
+    .to([slotL,slotR],{clearProps:'transform',duration:.01},'>-.05'),2400);
 
   let done=false;
   [A,B].forEach(el=>{ el.onclick=()=>{
