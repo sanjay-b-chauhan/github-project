@@ -876,14 +876,21 @@ body.rszing iframe{ pointer-events:none; }   /* the drag must not fall into an e
 .dsay{ position:absolute; left:50%; bottom:calc(100% + 16px); transform:translateX(-50%);
   max-width:600px; width:max-content; text-align:center; font-size:16.5px; line-height:1.5;
   color:var(--tx-2); letter-spacing:-.01em; pointer-events:none; }
-/* One static line in the same serif as every other question, with a light
-   band looping across it. Nothing else changes about the text - the board on
-   the left is where the new things happen; this line just glows. */
-.q.qshine{ background:linear-gradient(100deg, rgba(255,255,255,.34) 42%, rgba(255,255,255,.95) 50%, rgba(255,255,255,.34) 58%);
+/* The loading line, shine-proofed. The words themselves are never made
+   transparent: they sit at low ink, always readable, and the moving band is a
+   text-clipped overlay clone. Painting the gradient into the line itself broke
+   in Chrome when GSAP left a filter on the element - clip-to-text silently
+   stops painting and the whole line vanishes on the dark phase. Worst case
+   now is a dim readable line, never a blank screen. */
+.q.qshine{ position:relative; color:rgba(255,255,255,.38); }
+body:not(.dark) .q.qshine{ color:rgba(13,13,13,.34); }
+.q.qshine::after{ content:attr(data-shine); position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(100deg, rgba(255,255,255,0) 40%, rgba(255,255,255,.95) 50%, rgba(255,255,255,0) 60%);
   background-size:250% 100%; -webkit-background-clip:text; background-clip:text;
-  -webkit-text-fill-color:transparent; animation:qsweep 1.8s linear infinite; }
-body:not(.dark) .q.qshine{
-  background:linear-gradient(100deg, rgba(13,13,13,.3) 42%, rgba(13,13,13,.92) 50%, rgba(13,13,13,.3) 58%);
+  color:transparent; -webkit-text-fill-color:transparent;
+  animation:qsweep 1.8s linear infinite; }
+body:not(.dark) .q.qshine::after{
+  background:linear-gradient(100deg, rgba(13,13,13,0) 40%, rgba(13,13,13,.9) 50%, rgba(13,13,13,0) 60%);
   background-size:250% 100%; -webkit-background-clip:text; background-clip:text; }
 @keyframes qsweep{ 0%{ background-position:130% 0; } 100%{ background-position:-130% 0; } }
 /* the OAuth sheet */
@@ -1654,22 +1661,26 @@ function shineLine(text){
   setTimeout(()=>{
     if(!live) return;
     const q=document.querySelector('.turn .q'); if(!q) return;
+    /* plain text, no word spans, no leftover gsap filter: the overlay clone
+       must line up glyph for glyph, and a filter is what killed the paint */
+    q.textContent=text;
+    q.dataset.shine=text;
+    gsap.set(q,{clearProps:'filter,transform,opacity'});
     q.classList.add('qshine');
   },540);
-  /* the line can change what it is saying without the screen remounting -
-     a soft dip, new words, same shimmer, same dots */
   const set=t2=>{
     if(!live) return;
     const q=document.querySelector('.turn .q'); if(!q) return;
     safeTL(gsap.timeline()
-      .to(q,{opacity:0,y:-7,filter:'blur(5px)',duration:.26,ease:'power2.in'})
-      .add(()=>{ q.textContent=t2; })
-      .to(q,{opacity:1,y:0,filter:'blur(0px)',duration:.42,ease:'power2.out'}),1400);
+      .to(q,{opacity:0,y:-7,duration:.26,ease:'power2.in'})
+      .add(()=>{ q.textContent=t2; q.dataset.shine=t2; })
+      .to(q,{opacity:1,y:0,duration:.42,ease:'power2.out'}),1400);
   };
   const stop=()=>{
     live=false;
     const q=document.querySelector('.turn .q'); if(!q) return;
     q.classList.remove('qshine');
+    delete q.dataset.shine;
   };
   return {set:set,stop:stop};
 }
