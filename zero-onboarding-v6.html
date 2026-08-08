@@ -803,6 +803,22 @@ body.rszing iframe{ pointer-events:none; }   /* the drag must not fall into an e
 .pfb.pfmid{ background:var(--ink); color:var(--on-ink); border-color:var(--ink); }
 /* A pool nobody picked is not switched off - it is the thing that gives the
    picked one its meaning, so it stays legible at half strength. */
+/* the read-out: one claim, one nod */
+.rfw{ display:flex; flex-direction:column; align-items:center; gap:30px; }
+.rfdots{ display:flex; gap:6px; }
+.rfdots i{ width:6px; height:6px; border-radius:50%; background:var(--tx-4); transition:all .3s; }
+.rfdots i.on{ background:var(--tx-2); }
+.rfdots i.now{ width:20px; border-radius:3px; background:var(--ink); }
+.rfc{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:20px;
+  max-width:660px; }
+.rfi{ width:58px; height:58px; border-radius:50%; background:var(--wash);
+  border:1px solid var(--line); display:flex; align-items:center; justify-content:center;
+  color:var(--tx); transition:background .4s, color .4s, border-color .4s; }
+.rfi svg{ width:25px; height:25px; }
+.rfc.okd .rfi{ background:rgba(74,222,128,.16); color:#4ade80; border-color:rgba(74,222,128,.3); }
+.rft{ font-family:var(--qfont,var(--serif)); font-size:clamp(24px,1.9vw,34px); line-height:1.22;
+  letter-spacing:-.028em; color:var(--tx); text-wrap:balance; }
+.rfa{ margin-top:6px; }
 /* the read-out, spoken */
 .rsay{ max-width:640px; }
 .rsayl{ font-size:27px; line-height:1.34; letter-spacing:-.03em; color:var(--tx);
@@ -933,12 +949,12 @@ body.dark .jsat.jbest{ border-color:rgba(255,255,255,.2); }
 .jcta:hover{ animation-play-state:paused; transform:translateX(-50%) translateY(-3px); }
 @keyframes jfloat{ 0%,100%{ transform:translateX(-50%) translateY(0); }
   50%{ transform:translateX(-50%) translateY(-5px); } }
-/* the board toggle: quiet, top left, always reachable once the board exists */
-.pnlt{ position:fixed; top:18px; left:18px; z-index:120; width:38px; height:38px;
-  display:flex; align-items:center; justify-content:center; cursor:pointer;
-  background:var(--wash); border:1px solid var(--line); border-radius:12px;
-  color:var(--tx-3); transition:color .2s, border-color .2s, background .2s; }
-.pnlt:hover{ color:var(--tx); border-color:var(--tx-4); }
+/* the board toggle: beside the zero pill, one family */
+.topl{ display:flex; align-items:center; gap:9px; pointer-events:auto; }
+.pnlt{ width:40px; height:40px; display:flex; align-items:center; justify-content:center;
+  cursor:pointer; background:var(--field); border:none; border-radius:var(--pill);
+  color:var(--tx-2); transition:color .2s; }
+.pnlt:hover{ color:var(--tx); }
 .pnlt svg{ width:18px; height:18px; }
 .pnlt.closed{ color:var(--tx-4); }
 .pnlt.closed:hover{ color:var(--tx-2); }
@@ -4049,9 +4065,14 @@ function unspot(){
 let panelHidden=false;
 function panelToggleBtn(){
   if($('pnlT')) return;
+  /* lives in the top bar beside the zero pill, in the same family - floating
+     it over the logo is what made it feel bolted on */
+  const top=$('top'), lp=$('logoPill'); if(!top||!lp) return;
+  let cl=top.querySelector('.topl');
+  if(!cl){ cl=mk('div','topl'); top.insertBefore(cl,lp); cl.appendChild(lp); }
   const b=mk('button','pnlt'); b.id='pnlT'; b.setAttribute('aria-label','Show or hide your board');
   b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="3"/><line x1="9.5" y1="4" x2="9.5" y2="20"/></svg>';
-  document.body.appendChild(b);
+  cl.insertBefore(b,lp);
   b.onclick=()=>{ sfx('tick'); if(panelHidden) drawerOpen(); else drawerShut(); };
   safeTL(gsap.timeline().fromTo(b,{opacity:0,y:-8},{opacity:1,y:0,duration:.4}),800);
 }
@@ -4801,28 +4822,54 @@ async function reflectStage(){
   clearTurn(); dockHide(); await wait(420);
   if(myGen!==gen) return;
   const r=rreadout();
-  /* This is Zero talking, not a report to audit. One thought at a time, the
-     last receding as the next arrives - the citations were turning agreement
-     into proofreading. Nothing else is on screen; the board is shut. */
   await voLine("Here's what I heard from your choices.",2200);
   if(myGen!==gen) return;
+  /* One claim at a time, each with its own agreement. A stack of claims with
+     one blanket yes at the end is a form again; this is a conversation where
+     every sentence gets its nod before the next one is said. */
   const {box}=turn({q:''});
-  const say=mk('div','rsay'); box.appendChild(say);
+  const host=mk('div','rfw'); box.appendChild(host);
+  const dots=mk('div','rfdots'); r.lines.forEach(()=>dots.appendChild(mk('i')));
+  host.appendChild(dots);
+  const stage=mk('div','rfstage'); host.appendChild(stage);
+  const ICONS=[[/location|city|place/i,'pin'],[/compensation|package|money|pay/i,'coin'],
+               [/team|work|people|craft|ambitio|real/i,'users']];
+  const PFJUMP=[[/location|city|place/i,4],[/compensation|package|money|pay/i,5],[/.*/,0]];
   for(let i=0;i<r.lines.length;i++){
     if(myGen!==gen) return;
-    const p=mk('p','rsayl',r.lines[i]);
-    say.appendChild(p);
-    /* what came before does not vanish, it just stops being the live one */
-    Array.from(say.children).forEach(el=>{ if(el!==p) el.classList.add('past'); });
-    enter([p],{y:14,blur:7,duration:.62},1400);
-    await wait(2000+r.lines[i].length*12);
+    Array.from(dots.children).forEach((d,k)=>{ d.className=k<i?'on':(k===i?'now':''); });
+    const line2=r.lines[i];
+    const icon=(ICONS.find(m=>m[0].test(line2))||[0,'spark'])[1];
+    const card=mk('div','rfc');
+    card.appendChild(mk('span','rfi',I[icon]||I.spark));
+    card.appendChild(mk('div','rft',line2));
+    stage.innerHTML=''; stage.appendChild(card);
+    enter([card],{y:18,blur:8,scale:.97,duration:.55},1200);
+    sfx('tick');
+    await wait(500);
+    if(myGen!==gen) return;
+    const ans=await new Promise(res=>{
+      const row=mk('div','rfa'); card.appendChild(row);
+      locked=false;
+      choices(row,[['check','That is right','ok'],['pen','Not quite','edit']],v=>res(v),
+        {pill:true,nomorph:true});
+    });
+    if(myGen!==gen) return;
+    locked=false;
+    if(ans==='edit'){
+      /* straight to the screen where THIS dimension can be corrected */
+      PFAT=(PFJUMP.find(m=>m[0].test(line2))||[0,0])[1];
+      go(prefStage); return;
+    }
+    /* green only at the moment the user themselves verifies the claim */
+    card.classList.add('okd');
+    const ic=card.querySelector('.rfi'); if(ic) ic.innerHTML=I.check;
+    sfx('success');
+    await wait(520);
   }
-  if(myGen!==gen) return;
-  await wait(300);
-  choices(box,[['check','That is me','ok'],['pen','Let me adjust it','edit']],v=>{
-    if(v==='ok'){ PFAT=0; psyncP(); go(()=>visionStage(false)); }
-    else go(prefStage);
-  },{pill:true,nomorph:true});
+  Array.from(dots.children).forEach(d=>d.className='on');
+  await wait(260);
+  PFAT=0; psyncP(); go(()=>visionStage(false));
 }
 
 
