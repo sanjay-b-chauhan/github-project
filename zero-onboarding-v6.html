@@ -952,6 +952,16 @@ body.dark .jsat.jbest{ border-color:rgba(255,255,255,.2); }
 .jcta:hover{ animation-play-state:paused; transform:translateX(-50%) translateY(-3px); }
 @keyframes jfloat{ 0%,100%{ transform:translateX(-50%) translateY(0); }
   50%{ transform:translateX(-50%) translateY(-5px); } }
+/* jump straight to a screen */
+.dbgjump{ position:fixed; right:22px; bottom:78px; z-index:200; width:210px;
+  max-height:62vh; overflow:auto; padding:6px; border-radius:16px;
+  background:var(--card); border:1px solid var(--line);
+  box-shadow:0 24px 60px rgba(0,0,0,.4); display:flex; flex-direction:column; gap:2px; }
+.dbgji{ text-align:left; cursor:pointer; background:transparent; border:none;
+  color:var(--tx-2); font-size:12.5px; padding:8px 10px; border-radius:10px;
+  font-family:var(--f); }
+.dbgji:hover{ background:var(--wash); color:var(--tx); }
+.dbgji.on{ background:var(--ink); color:var(--on-ink); }
 /* the board toggle: beside the zero pill, one family */
 .topl{ display:flex; align-items:center; gap:9px; pointer-events:auto; }
 .pnlt{ width:40px; height:40px; display:flex; align-items:center; justify-content:center;
@@ -1010,8 +1020,7 @@ body.dark .jsat.jbest{ border-color:rgba(255,255,255,.2); }
 /* the question becomes a label, so it takes the interface font like every
    other label on the screen, and it gets there by a tween rather than a
    font-size transition that reads as a snap */
-.q.qtag{ font-family:var(--f) !important; font-size:17px !important;
-  font-weight:500; letter-spacing:-.008em; color:var(--tx-2); }
+.q.qtag{ font-size:21px !important; letter-spacing:-.02em; color:var(--tx-2); }
 /* what this round is testing, said plainly under the tag */
 .rcsay{ font-family:var(--f); text-align:center; font-size:14px; font-weight:450;
   color:var(--tx-3); letter-spacing:-.008em; min-height:20px; margin:10px 0 20px; }
@@ -1496,8 +1505,13 @@ function paceGate(){
   return new Promise(res=>paceQueue.push(res));
 }
 function paceRelease(){ const r=paceQueue.shift(); if(r) r(); }
+/* set while a scripted transcript is typing, so the arrow can cancel it */
+let sayCancel=null;
 function paceAdvance(){
   PACE=true;
+  /* Nothing may outrank a press. A transcript mid-type used to keep writing
+     over whatever came next, which is why the centre kept flickering. */
+  if(sayCancel){ try{ sayCancel(); }catch(e){} sayCancel=null; return; }
   /* Zero is mid-sentence. Pressing next means skip this line, not skip the
      whole screen - falling through to a section jump here is what left a stale
      line sitting under a new step label and made the arrow look broken. */
@@ -2208,8 +2222,10 @@ function sayScripted(){
   bars.forEach((b,k)=>wav.to(b,{height:6+Math.random()*26,duration:.32,yoyo:true,repeat:-1,
     ease:'sine.inOut',delay:k*.012},0));
   const tick=setInterval(()=>{ time.textContent='0:'+String(Math.floor((Date.now()-t0)/1000)).padStart(2,'0'); },500);
-  const teardown=()=>{ live=false; wav.kill(); clearInterval(tick); clearTimeout(timer); showTranscript('',''); };
+  const teardown=()=>{ live=false; sayCancel=null; wav.kill(); clearInterval(tick);
+    clearTimeout(timer); showTranscript('',''); dockClear&&dockClear(); };
   const finish=()=>{ if(!live) return; teardown(); sfx('release'); if(!locked) fn(text); };
+  sayCancel=()=>{ if(!live) return; teardown(); if(!locked) fn(text); };
   const step=()=>{
     if(!live) return;
     if(i>=words.length){ showTranscript(text,''); timer=setTimeout(finish,650); return; }
@@ -4241,9 +4257,13 @@ async function readbackStage(){
   unspot();
   /* a beat of quiet after the compliment, then the ask - it was landing on
      top of the last word */
-  await wait(900);
+  /* let the previous line finish, then speak. The ask was being started while
+     the compliment was still in the air. */
+  await wait(700);
+  try{ voStop(); }catch(e){}
+  await wait(260);
   const {box}=turn({q:P.linked?"Other than this, have I missed anything?":'Tell me where you are starting from.'});
-  voPlay("Other than this, have I missed anything?");
+  if(P.linked) voPlay("Other than this, have I missed anything?");
   devPills(box,[
     "That feels right. I started in graphic design, did an internship there, but recently I've been looking more into product design.",
     "Mostly right, though I've moved away from graphics. Product design is the direction I want to explore."
@@ -4893,7 +4913,7 @@ async function cardsStage(){
     gsap.set(q0,{fontSize:from});
     q0.classList.add('qtag');
     gsap.fromTo(q0,{fontSize:from,y:0,opacity:1},
-      {fontSize:17,y:-10,opacity:.85,duration:.72,ease:EIO,
+      {fontSize:21,y:-10,opacity:.9,duration:.72,ease:EIO,
        clearProps:'fontSize,y'});
   }
   await wait(560);
@@ -5873,7 +5893,23 @@ function dbgGoto(i){
   gr.innerHTML=I.gear;
   pv.onclick=()=>{ sfx('tick'); dbgGoto(dbgAt-1); };
   nx.onclick=()=>{ sfx('tick'); paceAdvance(); };
-  st.onclick=()=>{ sfx('tick'); dbgGoto(0); };
+  /* the label opens the list, so a screen is one click away when walking it
+     beat by beat is not what you want */
+  st.onclick=()=>{
+    sfx('tick');
+    let m=document.getElementById('dbgJump');
+    if(m){ m.remove(); return; }
+    m=mk('div','dbgjump'); m.id='dbgJump';
+    DBG_STEPS.forEach((sp,i)=>{
+      const b=mk('button','dbgji'+(i===dbgAt?' on':''),(i+1)+'. '+sp[0]);
+      b.onclick=e=>{ e.stopPropagation(); m.remove(); sfx('tick'); dbgGoto(i); };
+      m.appendChild(b);
+    });
+    document.body.appendChild(m);
+    enter(Array.from(m.children),{y:6,blur:4,stagger:.012,duration:.3},700);
+    setTimeout(()=>{ const away=ev=>{ if(!m.contains(ev.target)){ m.remove();
+      removeEventListener('click',away); } }; addEventListener('click',away); },0);
+  };
   st.textContent='1. '+DBG_STEPS[0][0];
   addEventListener('keydown',e=>{
     if(document.activeElement&&document.activeElement.tagName==='INPUT') return;
