@@ -933,6 +933,15 @@ body.dark .jsat.jbest{ border-color:rgba(255,255,255,.2); }
 .jcta:hover{ animation-play-state:paused; transform:translateX(-50%) translateY(-3px); }
 @keyframes jfloat{ 0%,100%{ transform:translateX(-50%) translateY(0); }
   50%{ transform:translateX(-50%) translateY(-5px); } }
+/* the board toggle: quiet, top left, always reachable once the board exists */
+.pnlt{ position:fixed; top:18px; left:18px; z-index:120; width:38px; height:38px;
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+  background:var(--wash); border:1px solid var(--line); border-radius:12px;
+  color:var(--tx-3); transition:color .2s, border-color .2s, background .2s; }
+.pnlt:hover{ color:var(--tx); border-color:var(--tx-4); }
+.pnlt svg{ width:18px; height:18px; }
+.pnlt.closed{ color:var(--tx-4); }
+.pnlt.closed:hover{ color:var(--tx-2); }
 /* the OAuth sheet */
 .ozv{ position:fixed; inset:0; z-index:200; display:flex; align-items:center;
   justify-content:center; background:rgba(0,0,0,.45); backdrop-filter:blur(10px); }
@@ -2055,34 +2064,40 @@ let SCRIPTED=null, SCRIPTED_SAY=null;
 function sayScripted(){
   const text=SCRIPTED, fn=SCRIPTED_SAY;
   if(!text||!fn||locked) return false;
-  /* No real microphone. The mic goes live and the happy-path answer arrives
-     word by word above the dock, the way a live transcript lands, then sends
-     itself. The same gesture works on every screen that has a mic. */
-  const mic=document.querySelector('.dmic');
-  if(mic) mic.classList.add('rec');
-  sfx('tick');
-  const dock=$('dock');
-  let cap=document.querySelector('.dsay');
-  if(!cap&&dock){ cap=mk('div','dsay'); dock.appendChild(cap);
-    enter([cap],{y:8,blur:4,duration:.4},800); }
-  const words=text.split(' ');
-  let i=0;
+  /* The SAME recorder the real mic opens - cancel, waveform, timer, send -
+     just driven by the scripted answer instead of a live microphone. One
+     component for a voice note everywhere; the words stream through the same
+     transcript line real speech uses, interim grey then final bold. */
+  const wrap=mk('div','dockin');
+  const cancel=mk('button','dghostbtn',I.x); cancel.setAttribute('aria-label','Cancel');
+  const r=mk('div','drec');
+  const wave=mk('div','wave');
+  const bars=[]; for(let i2=0;i2<26;i2++){ const b=mk('span'); wave.appendChild(b); bars.push(b); }
+  const time=mk('div','dtime','0:00');
+  const send=mk('button','dsend on',I.arrow); send.setAttribute('aria-label','Send');
+  r.appendChild(wave); r.appendChild(time); r.appendChild(send);
+  wrap.appendChild(cancel); wrap.appendChild(r);
+  dockIn(wrap);
+  sfx('press');
+  const t0=Date.now(); const words=text.split(' ');
+  let live=true, i=0, timer=null;
+  const wav=gsap.timeline({repeat:-1});
+  bars.forEach((b,k)=>wav.to(b,{height:6+Math.random()*26,duration:.32,yoyo:true,repeat:-1,
+    ease:'sine.inOut',delay:k*.012},0));
+  const tick=setInterval(()=>{ time.textContent='0:'+String(Math.floor((Date.now()-t0)/1000)).padStart(2,'0'); },500);
+  const teardown=()=>{ live=false; wav.kill(); clearInterval(tick); clearTimeout(timer); showTranscript('',''); };
+  const finish=()=>{ if(!live) return; teardown(); sfx('release'); if(!locked) fn(text); };
   const step=()=>{
-    if(i>=words.length){
-      setTimeout(()=>{
-        if(mic&&mic.isConnected) mic.classList.remove('rec');
-        if(cap&&cap.isConnected) safeTL(gsap.timeline({onComplete:()=>{ if(cap.isConnected) cap.remove(); }})
-          .to(cap,{opacity:0,y:-6,duration:.3}),700);
-        if(!locked) fn(text);
-      },460);
-      return;
-    }
-    if(cap) cap.textContent=words.slice(0,++i).join(' ');
-    /* speech is not a metronome: short words tumble, clauses breathe */
+    if(!live) return;
+    if(i>=words.length){ showTranscript(text,''); timer=setTimeout(finish,650); return; }
+    i++;
+    showTranscript(words.slice(0,Math.max(0,i-2)).join(' '), words.slice(Math.max(0,i-2),i).join(' '));
     const w=words[i-1]||'';
-    setTimeout(step, 90+Math.min(220,w.length*22)+(/[,.]$/.test(w)?260:0));
+    timer=setTimeout(step, 100+Math.min(240,w.length*24)+(/[,.]$/.test(w)?240:0));
   };
-  setTimeout(step,650);
+  timer=setTimeout(step,620);
+  cancel.onclick=()=>{ if(!live) return; teardown(); sfx('tick'); dockInput(fn); };
+  send.onclick=finish;
   return true;
 }
 function chipsRow(box,items,onPick){
@@ -2265,6 +2280,8 @@ function bornPanel(quiet){
   if(panelBorn) return; panelBorn=true;
   $('cap').innerHTML='<span class="live pulse"></span>Zero is listening';
   if(!quiet){ boardLive=true; renderBoard(); }
+  panelToggleBtn(); panelHidden=false;
+  const _pt=$('pnlT'); if(_pt) _pt.classList.remove('closed');
   gsap.set('.right',{width:panelPref?panelPref+'px':'40%',opacity:0});
   shiftLeft(panelPref?panelPref+'px':'40vw');
   mountResizer();
@@ -2460,8 +2477,8 @@ function morphRow(x){
      fall off the board, and the replacements pop up where they stood */
   const nextHtml=x.html();
   /* compare against the RENDERED text, not the html source: a chip's visible
-     text spans markup ("S"+"Sanjay"), so matching the source string made
-     unchanged chips fall too */
+     text spans markup, so matching the source string made unchanged chips
+     fall too */
   const scratch=document.createElement('div'); scratch.innerHTML=nextHtml;
   const nextText=scratch.textContent||'';
   row.querySelectorAll('.vbc').forEach(ch=>{
@@ -4029,13 +4046,27 @@ function unspot(){
 }
 /* the drawer, played physically: the cards want the whole stage, so the
    panel slides away and comes back only when there is something to add */
+let panelHidden=false;
+function panelToggleBtn(){
+  if($('pnlT')) return;
+  const b=mk('button','pnlt'); b.id='pnlT'; b.setAttribute('aria-label','Show or hide your board');
+  b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="3"/><line x1="9.5" y1="4" x2="9.5" y2="20"/></svg>';
+  document.body.appendChild(b);
+  b.onclick=()=>{ sfx('tick'); if(panelHidden) drawerOpen(); else drawerShut(); };
+  safeTL(gsap.timeline().fromTo(b,{opacity:0,y:-8},{opacity:1,y:0,duration:.4}),800);
+}
 function drawerShut(){
+  panelHidden=true;
+  const b=$('pnlT'); if(b) b.classList.add('closed');
   boardLive=false;
   gsap.to('.right',{width:0,opacity:0,duration:.8,ease:EIO});
   shiftLeft('0vw');
 }
 function drawerOpen(){
+  panelHidden=false;
+  const b=$('pnlT'); if(b) b.classList.remove('closed');
   panelBorn=true;
+  panelToggleBtn();
   gsap.to('.right',{width:panelPref?panelPref+'px':'40%',opacity:1,duration:.9,ease:EIO});
   shiftLeft(panelPref?panelPref+'px':'40vw');
   boardLive=true;
@@ -4135,6 +4166,7 @@ function reflectPivot(){
 }
 async function cardsIntroStage(){
   atStep('Cards intro');
+  const myGen=gen;
   /* The board is a drawer and this is where it shuts. The cards are the whole
      event and anything else on screen competes with them - and no single pick
      is interpretable yet anyway, so there is nothing honest to add. */
@@ -4143,10 +4175,12 @@ async function cardsIntroStage(){
   clearTurn(); dockHide(); await wait(380);
   /* every other handoff restates what they just said; this was the only one
      that did not, after the most personal answer in the flow */
-  if(P.why) /* A person hearing "I am changing direction" says "I get why" before they
+  /* A person hearing "I am changing direction" says "I get why" before they
      say "now do this". Skipping it is what made the flow feel like a form. */
-  await voLine('I get why you moved. Product design is where a lot of this is heading.',3000);
-  if(myGen!==gen) return;
+  if(P.why){
+    await voLine('I get why you moved. Product design is where a lot of this is heading.',3000);
+    if(myGen!==gen) return;
+  }
   await voLine(reflectPivot(),2400);
   await voLine('Okay, '+P.name+'. Two roles at a time.',1900);
   await voLine("Both close to where you're headed.",2000);
@@ -5455,7 +5489,8 @@ function dbgGoto(i){
   $('col').innerHTML=''; $('dockIn').innerHTML='';
   gsap.set('#dock',{opacity:0}); gsap.set('#dtr',{opacity:0}); $('dtr').innerHTML='';
   stopRec();
-  document.querySelectorAll('.zook,.conf,.core,.veil,.sheen,.gh,.jcta').forEach(n=>n.remove());
+  document.querySelectorAll('.zook,.conf,.core,.veil,.sheen,.gh,.jcta,.pnlt').forEach(n=>n.remove());
+  panelHidden=false;
   $('rip').style.display='none'; $('rip').innerHTML='';
   $('aur').innerHTML=''; gsap.set('#aur',{opacity:0});
   gsap.set(['#logoPill','.tr'],{opacity:i>=1?1:0,y:0});
@@ -5482,9 +5517,12 @@ function dbgGoto(i){
     panelBorn=true; boardLive=false;
     gsap.set('.right',{width:0,opacity:0});
     shiftLeft('0vw');
+    panelToggleBtn(); panelHidden=true;
+    const _c=$('pnlT'); if(_c) _c.classList.add('closed');
   }
   else if(born){
     panelBorn=true; boardLive=true;
+    panelToggleBtn();
     gsap.set('.right',{width:panelPref?panelPref+'px':'40%',opacity:1,x:0});
     shiftLeft(panelPref?panelPref+'px':'40vw');
     mountResizer();
