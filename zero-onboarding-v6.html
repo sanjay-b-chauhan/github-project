@@ -367,6 +367,14 @@ body.dark .paper::before{ background-image:radial-gradient(rgba(255,255,255,.07)
 body:not(.dark) .vbs.spot .vbc{ box-shadow:0 0 0 1.5px rgba(13,13,13,.28), 0 8px 30px rgba(13,13,13,.10); }
 .vbs::after{ content:' '; }
 .vbg:empty{ display:none; }
+/* the pick stack: small marks overlapping, riding inside the sentence */
+.vstack{ display:inline-flex; align-items:center; vertical-align:middle; margin:0 .1em; }
+.vsl{ width:1.5em; height:1.5em; border-radius:50%; background:#fff; border:2px solid var(--page);
+  display:inline-flex; align-items:center; justify-content:center; margin-left:-.45em; }
+.vsl:first-child{ margin-left:0; }
+.vsl svg{ width:60%; height:60%; }
+.vslmore{ background:var(--wash); color:var(--tx-2); font-size:.55em; font-weight:600;
+  border:2px solid var(--page); }
 /* the pins live beside the story, never inside it */
 .vbpins{ display:flex; flex-wrap:wrap; gap:10px; margin-top:2em; }
 .vbpin{ display:inline-flex; align-items:center; gap:8px; padding:8px 14px 8px 11px;
@@ -1033,6 +1041,12 @@ body:not(.dark) .q.qshine::after{
   padding:18px 18px 14px; text-align:center; cursor:default; overflow:hidden;
   box-shadow:0 3px 6px rgba(0,0,0,.05), 0 18px 44px rgba(0,0,0,.14); z-index:2; }
 .jsat.jbest{ border-color:rgba(13,13,13,.16); }
+/* outside the inner circle: close, not quite you */
+.jsat.jfar{ opacity:.55; transform-origin:50% 50%; }
+.jsat.jfar .jsatco{ font-size:14.5px; }
+.jring{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  border:1px solid var(--line); border-radius:50%; pointer-events:none; }
+.jring2{ opacity:.6; }
 body.dark .jsat.jbest{ border-color:rgba(255,255,255,.2); }
 .jsattint{ position:absolute; left:0; right:0; top:0; height:96px; pointer-events:none; opacity:.4;
   background:radial-gradient(130% 100% at 50% -36%, var(--tint,#c9a227) 0%, transparent 72%); }
@@ -2700,6 +2714,17 @@ function SENTENCES(){
        +G_(', ')+chip(cico(TIME_ICON[P.timeline]||'cal')+T_(low(P.timeline)))+G_('.') },
    { id:'s7', g:1, ready:!!P.why, key:[P.why].join('|'),
      html:()=>G_('Doing it because ')+'<span class="vbq">“'+P.why+'”</span>' },
+   /* the rooms chosen in the card game, as a stack of small marks riding in
+      the sentence - synthesised, never listed */
+   { id:'s8', g:2, ready:!!Object.keys(RPICKED||{}).length,
+     key:Object.keys(RPICKED||{}).sort().join('|'),
+     html:()=>{
+       const cos=Object.keys(RPICKED);
+       const top=(presolve('location')||[])[0];
+       const where=top?PFLABEL[top]||'':'';
+       return (where?G_('Set on ')+chip(cico('pin')+T_(where))+G_(', chasing rooms like ')
+                    :G_('Chasing rooms like '))
+         +logoStack(cos)+G_('.'); } },
    { id:'s6', g:2, ready:!!(boardRewards&&P.role&&P.industry), key:COS().join('|'),
      html:()=>G_('The best opportunities open to you right now: ')+logoChip(COS(12),6) },
   ];
@@ -2842,6 +2867,13 @@ const PINWORDS=[
 function harvestPins(text){
   if(!text) return;
   PINWORDS.forEach(([re,glyph,label])=>{ if(re.test(text)) pin(label,glyph); });
+}
+/* small marks, overlapped like a hand of chips */
+function logoStack(cos){
+  const show=cos.slice(0,5);
+  const more=cos.length-show.length;
+  return '<span class="vstack">'+show.map(c=>'<span class="vsl">'+(LOGO[c]||I.spark)+'</span>').join('')
+    +(more>0?'<span class="vsl vslmore">+'+more+'</span>':'')+'</span>';
 }
 function renderBoard(){
   if(!boardLive) return;
@@ -3121,29 +3153,12 @@ async function visionStage(fromEdit){
     vb.innerHTML=boardHTML(); s2.appendChild(vb); boardLive=true; $('paper').classList.add('canvas'); },false); }
   dockHide();
   const {box}=turn({q:'Did I get this right?'});
-  /* what the cards actually banked, as its own quiet container - company,
-     role, city - with air above and below rather than everything stacked
-     under the question */
-  const picks=Object.keys(RPICKED||{}).slice(0,4);
-  if(picks.length){
-    const sum=mk('div','vsum');
-    picks.forEach(co=>{
-      const p=RPICKED[co];
-      const row=mk('div','vsumr');
-      row.appendChild(mk('span','vsuml',rlogo(co)));
-      const t=mk('div','vsumt');
-      t.appendChild(mk('b',null,co));
-      t.appendChild(mk('span',null,(p.role||'')+(p.city?' · '+p.city:'')));
-      row.appendChild(t);
-      sum.appendChild(row);
-    });
-    box.appendChild(sum);
-    enter(Array.from(sum.children),{y:10,blur:5,stagger:.06,duration:.5},1200);
-  }
+  /* the picks live on the board itself, as their own chunk, not as cards
+     beside the question */
   choices(box,[['spark','Reveal the perfect roles for me','ok'],['pen','Fix one thing','fix'],
     ['plus','Add more','more']],v=>{
     if(v==='ok'){ sfx('success'); retireMeter(); boardRewards=true;
-      clearTurn(); dockHide(); setTimeout(rolesStage,520); }
+      clearTurn(); dockHide(); boardBurst(()=>rolesStage()); }
     else if(v==='fix'){ go(editStage); }
     else { go(addMoreStage); } },{pill:true,nomorph:true});
 }
@@ -5930,6 +5945,27 @@ async function addRoles(){
     await ghostIn(r.el,150,420,host);
   }
 }
+/* the agreed board fills the screen, then everything it is made of flies to
+   the centre as particles - the roles are assembled from exactly that point */
+function boardBurst(done){
+  const vb=$('vb');
+  gsap.to('.right',{width:'100%',duration:.7,ease:EIO});
+  const cx=innerWidth/2, cy=innerHeight/2;
+  const bits=vb?[...vb.querySelectorAll('.vbc,.vsl,.vbpin')]:[];
+  bits.forEach((c,i)=>{
+    const r=c.getBoundingClientRect(); if(!r.width) return;
+    const g=c.cloneNode(true);
+    g.style.cssText='position:fixed;left:'+r.left+'px;top:'+r.top+'px;width:'+r.width+'px;margin:0;z-index:130;pointer-events:none;';
+    document.body.appendChild(g);
+    gsap.to(g,{x:cx-r.left-r.width/2, y:cy-r.top-r.height/2, scale:.12, opacity:0,
+      duration:.75+((i*7)%10)/25, ease:'power3.in', delay:.55+i*.025,
+      onComplete:()=>{ if(g.isConnected) g.remove(); }});
+  });
+  sfx('sparkle');
+  gsap.to('.right',{opacity:0,duration:.5,delay:1.25,onComplete:()=>{
+    gsap.set('.right',{width:0,opacity:1}); shiftLeft('0vw'); boardLive=false;
+    if(done) done(); }});
+}
 async function rolesStage(){
   atStep('Roles');
   const myGen=gen;
@@ -5950,7 +5986,17 @@ async function rolesStage(){
   orb.appendChild(me);
   box.appendChild(orb);
 
+  /* the two circles are drawn and mean something: inside the inner ring is
+     where we think you belong; the outer band holds the rooms that are close
+     but not quite you */
   const ranked=JPOOL.map(j=>({j:j,sc:jscore(j)})).sort((a,b)=>b.sc.tier-a.sc.tier);
+  const R1=Math.min(innerWidth,innerHeight*1.6)*.21, R2=R1*1.85;
+  ['jring1','jring2'].forEach((cls,k)=>{
+    const ring=mk('div','jring '+cls);
+    const R=k?R2:R1;
+    ring.style.width=ring.style.height=(R*2+120)+'px';
+    orb.appendChild(ring);
+  });
   const sats=[];
   ranked.forEach((it,i)=>{
     const d=it.j;
@@ -5970,17 +6016,16 @@ async function rolesStage(){
   /* measured at draw time, never at entry: the stage needs a settled size */
   await wait(60);
   const lay=()=>{
-    const W=orb.clientWidth||900, H=orb.clientHeight||560;
-    const R1=Math.min(W,H*1.7)*.21, R2=Math.min(W,H*1.7)*.36;
-    sats.forEach((s2,i)=>{
-      const inner=i<3;
-      const count=inner?Math.min(3,sats.length):Math.max(1,sats.length-3);
-      const k=inner?i:i-3;
-      const base=inner?-90:-62;
-      const a=(base+k*(360/count))*Math.PI/180;
-      const r=inner?R1:R2;
-      s2.tx=Math.cos(a)*r*1.55; s2.ty=Math.sin(a)*(inner?r:r*.92);
-      s2.tilt=(i%2?1:-1)*(2+(i%3));
+    const fits=sats.filter(s2=>s2.tier>=4), rest=sats.filter(s2=>s2.tier<4);
+    fits.forEach((s2,k)=>{
+      const a=(-90+k*(360/Math.max(1,fits.length)))*Math.PI/180;
+      s2.tx=Math.cos(a)*R1*1.5; s2.ty=Math.sin(a)*R1*.9;
+      s2.tilt=(k%2?1:-1)*2; s2.el.classList.remove('jfar');
+    });
+    rest.forEach((s2,k)=>{
+      const a=(-58+k*(360/Math.max(1,rest.length)))*Math.PI/180;
+      s2.tx=Math.cos(a)*R2*1.35; s2.ty=Math.sin(a)*R2*.85;
+      s2.tilt=(k%2?1:-1)*3; s2.el.classList.add('jfar');
     });
   };
   lay();
@@ -6353,7 +6398,7 @@ function dbgGoto(i){
       removeEventListener('click',away); } }; addEventListener('click',away); },0);
   };
   st.textContent='1. '+DBG_STEPS[0][0];
-  const bv=mk('span','bldv','v39'); gr.parentElement&&gr.parentElement.appendChild(bv);
+  const bv=mk('span','bldv','v40'); gr.parentElement&&gr.parentElement.appendChild(bv);
   addEventListener('keydown',e=>{
     if(document.activeElement&&document.activeElement.tagName==='INPUT') return;
     if(e.key==='ArrowRight'){ paceAdvance(); }
