@@ -1654,17 +1654,32 @@ function line(text){ turn({q:text}); }
    after it on the same clock - no second component doing the loading. */
 function shineLine(text){
   turn({q:text});
+  let live=true;
   setTimeout(()=>{
+    if(!live) return;
     const q=document.querySelector('.turn .q'); if(!q) return;
     q.classList.add('qshine');
-    const d=mk('span','qdots','<i></i><i></i><i></i>');
-    q.appendChild(d);
+    if(!q.querySelector('.qdots')){
+      const d=mk('span','qdots','<i></i><i></i><i></i>'); q.appendChild(d); }
   },540);
-  return ()=>{
+  /* the line can change what it is saying without the screen remounting -
+     a soft dip, new words, same shimmer, same dots */
+  const set=t2=>{
+    if(!live) return;
+    const q=document.querySelector('.turn .q'); if(!q) return;
+    const d=q.querySelector('.qdots');
+    safeTL(gsap.timeline()
+      .to(q,{opacity:0,y:-7,filter:'blur(5px)',duration:.26,ease:'power2.in'})
+      .add(()=>{ q.textContent=t2+' '; if(d) q.appendChild(d); })
+      .to(q,{opacity:1,y:0,filter:'blur(0px)',duration:.42,ease:'power2.out'}),1400);
+  };
+  const stop=()=>{
+    live=false;
     const q=document.querySelector('.turn .q'); if(!q) return;
     q.classList.remove('qshine');
     const d=q.querySelector('.qdots'); if(d) d.remove();
   };
+  return {set:set,stop:stop};
 }
 function lineDots(text){
   turn({q:text});
@@ -3210,7 +3225,7 @@ function linkedSummary(kind){
 }
 async function readProfile(kind){
   clearTurn(); dockHide(); await wait(380);
-  const stopShine=shineLine(kind==='Resume'?'Reading your resume':'Reading your LinkedIn');
+  const shine=shineLine(kind==='Resume'?'Getting your data from your resume':'Getting your data from LinkedIn');
   sfx('loading');
   /* There is no LinkedIn board. The user's board is born here and the facts
      land on it one at a time, each through the skeleton shimmer, so the story
@@ -3218,19 +3233,28 @@ async function readProfile(kind){
   bornPanel();
   await wait(700);
   const d=LINKEDIN[PKEY]||LINKEDIN.design;
+  const first=x=>String(x||'').split(',')[0].trim();
+  /* the loader reacts to what it finds, so reading feels like being read.
+     Each beat is built from the data, not canned - a different profile says
+     different things here. */
   const facts=[
-    ()=>{ P.year=d.exp||'Third year'; P.college=d.org||d.school; },
-    ()=>{ P.interned=d.since||'2 internships'; },
-    ()=>{ P.tools=d.skills; },
-    ()=>{ P.follows=d.follows; }
+    { put:()=>{ P.year=d.exp||'Third year'; P.college=d.org||d.school; },
+      say:()=>{ const y=low(P.year||''); return y.charAt(0).toUpperCase()+y.slice(1)+' at '+(P.college||'college')+'. Noted'; } },
+    { put:()=>{ P.interned=d.since||'2 internships'; },
+      say:()=>first(P.interned)+' already. Nice' },
+    { put:()=>{ P.tools=d.skills; },
+      say:()=>'You work in '+first(P.tools)+'. A designer, then' },
+    { put:()=>{ P.follows=d.follows; },
+      say:()=>'And you keep an eye on '+first(P.follows)+'. Same' }
   ];
   for(let i=0;i<facts.length;i++){
-    facts[i]();
+    facts[i].put();
     renderBoard();
     sfx('tick');
-    await wait(1150);
+    shine.set(facts[i].say());
+    await wait(1500);
   }
-  stopShine();
+  shine.stop();
   absorbLinked();
   setCap(P.name?'Got everything, '+P.name:'Got everything',false);
   sfx('success');
