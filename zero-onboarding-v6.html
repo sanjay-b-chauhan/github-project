@@ -1440,6 +1440,8 @@ function voFind(text){
   for(let i=0;i<VO_FB.length;i++) if(VO_FB[i][0].test(k)) return VO_CLIPS[VO_FB[i][1]]||null;
   return null;
 }
+/* the resolver of the clip currently playing, so next can end it early */
+let voSkip=null;
 function voStop(){ if(voNow){ try{ voNow.pause(); voNow.currentTime=0; }catch(e){} voNow=null; } }
 /* resolves when the clip has finished, or immediately when we have no take */
 function voPlay(text){
@@ -1456,7 +1458,8 @@ function voPlay(text){
     let done=false;
     const fin=()=>{ if(done)return; done=true;
       a.removeEventListener('ended',fin); a.removeEventListener('error',fin);
-      if(voNow===a) voNow=null; res(); };
+      if(voNow===a) voNow=null; if(voSkip===fin) voSkip=null; res(); };
+    voSkip=fin;
     a.addEventListener('ended',fin);
     a.addEventListener('error',fin);
     /* a throttled tab still lands */
@@ -1468,13 +1471,29 @@ function voPlay(text){
    press of the next arrow releases exactly one. Off by default, so the flow
    auto-plays until the person reaches for the wheel. */
 let PACE=false; const paceQueue=[];
+/* Cutting a line short and letting the next one through are two separate
+   waits, so a skip used to cost two presses. A skip now leaves one credit
+   behind, which the next beat spends on its way through the gate: one press,
+   one line. */
+let paceCredit=0;
 function paceGate(){
   if(!PACE) return Promise.resolve();
+  if(paceCredit>0){ paceCredit--; return Promise.resolve(); }
   return new Promise(res=>paceQueue.push(res));
 }
 function paceRelease(){ const r=paceQueue.shift(); if(r) r(); }
 function paceAdvance(){
   PACE=true;
+  /* Zero is mid-sentence. Pressing next means skip this line, not skip the
+     whole screen - falling through to a section jump here is what left a stale
+     line sitting under a new step label and made the arrow look broken. */
+  if(beatLive){
+    try{ voStop(); }catch(e){}
+    /* and settle the beat, or it hangs on its watchdog and the press looks
+       like it did nothing */
+    try{ if(voSkip){ const f=voSkip; voSkip=null; f(); } }catch(e){}
+    paceCredit=1;
+    return; }
   /* a Zero line is waiting: let it speak */
   if(paceQueue.length){ paceRelease(); return; }
   /* otherwise it is YOUR move */
@@ -1493,8 +1512,13 @@ function paceAdvance(){
   /* nothing left on this screen: the old section jump is the right fallback */
   dbgGoto(dbgAt+1);
 }
+let beatLive=false;
 async function voLine(text,fallback){
   { const g0=gen; await paceGate(); if(g0!==gen) return; }
+  beatLive=true;
+  try{ return await voLineBody(text,fallback); } finally { beatLive=false; }
+}
+async function voLineBody(text,fallback){
   /* audio outlives a screen change: without this a stale line resumes when its
      clip ends and paints over whatever is now on screen. */
   const g=gen;
@@ -5641,18 +5665,22 @@ function dbgFill(upTo){
      so an earlier step shows a fuller board than it should. */
   Object.keys(P).forEach(k=>{ P[k]= k==='picks' ? [] : null; });
   const set=(i,fn)=>{ if(upTo>i) fn(); };
-  /* indices track DBG_STEPS: 0 Open, 1 LinkedIn, 2 Read back, 3 Pivot,
-     4 Cards intro, 5 Cards, 6 Reflection, 7 Preferences, 8 Vision, ... */
+  /* DBG_STEPS actually starts at Draw, so every index here was one short and
+     the read-back - the screen whose whole job is to validate the profile -
+     arrived before the profile existed. That is why the board showed only
+     "Sanjay starts here." and the validation had nothing to light.
+     0 Draw, 1 Open, 2 LinkedIn, 3 Read back, 4 Pivot, 5 Cards intro,
+     6 Cards, 7 Reflection, 8 Preferences, 9 Vision, 10 Roles ... */
   set(1,()=>P.name='Sanjay');
   set(2,()=>{ P.linked='LinkedIn'; P.linkedUrl='linkedin.com/in/sanjaybchauhan'; });
-  set(3,()=>{ P.level='Student';
+  set(2,()=>{ P.level='Student';
     P.year='Third year'; P.college='Yale University';
     P.interned='2 internships'; P.tools='Figma, Illustrator, prototyping';
     P.follows='OpenAI, Figma, Notion';
     P.about='I started in graphic design but recently I have been looking more into product design.';
     P.pivot=['graphic design','product design']; });
-  set(4,()=>{ P.why='I want to work on products people actually use and build a career I can grow in.'; });
-  set(6,()=>{ /* the cards have been played: their read-out is the preference state */
+  set(5,()=>{ P.why='I want to work on products people actually use and build a career I can grow in.'; });
+  set(7,()=>{ /* the cards have been played: their read-out is the preference state */
     P.role=d.roles&&d.roles[0]?d.roles[0][0]:'Product Designer';
     P.dream='OpenAI, Figma, Anthropic';
     P.industry='Tech and AI';
@@ -5662,8 +5690,8 @@ function dbgFill(upTo){
   /* the cards are behind every screen from the reflection on. Replaying the
      deck here is what the real flow would have left behind, so a jumped-to
      screen scores on the same evidence a walked-to one does. */
-  set(6,()=>{ try{ rreset(); rdeck().forEach(r=>rapply(r, r.n%3===0?'b':'a')); }catch(e){} });
-  set(9,()=>{ P.aim=d.roles&&d.roles[0]?d.roles[0][0]:'Product Designer'; });
+  set(7,()=>{ try{ rreset(); rdeck().forEach(r=>rapply(r, r.n%3===0?'b':'a')); }catch(e){} });
+  set(10,()=>{ P.aim=d.roles&&d.roles[0]?d.roles[0][0]:'Product Designer'; });
 }
 /* The stepper was rebuilding the Zero board on every jump, so steps that should
    show the LinkedIn board showed the synthesised one - the exact confusion the
@@ -5716,7 +5744,7 @@ function dbgGoto(i){
   gen++;
   try{ gsap.killTweensOf(['#col','#scroll','.right','#dock','#dtr','#top','#aur','#paper','#turn']); }catch(e){}
   locked=false; editReturn=null; scanning=false; queue.length=0; shown={}; keys={}; tlMode='h';
-  PACE=false; paceQueue.length=0;
+  PACE=false; paceQueue.length=0; paceCredit=0;
   const t0=$('turn'); if(t0) t0.remove();
   $('col').innerHTML=''; $('dockIn').innerHTML='';
   gsap.set('#dock',{opacity:0}); gsap.set('#dtr',{opacity:0}); $('dtr').innerHTML='';
