@@ -817,10 +817,13 @@ body.rszing iframe{ pointer-events:none; }   /* the drag must not fall into an e
 .pfb.pfmid{ background:var(--ink); color:var(--on-ink); border-color:var(--ink); }
 /* A pool nobody picked is not switched off - it is the thing that gives the
    picked one its meaning, so it stays legible at half strength. */
-/* the reflection in the board's own voice */
-.rfvb{ width:min(640px,90%); margin:4px auto 36px; text-align:center; }
-.rfline{ display:block; margin-bottom:1.1em; }
-.rfline:last-child{ margin-bottom:0; }
+/* the reflection as one spoken read: serif, dim base, lit claims */
+.rfser{ font-family:var(--qfont,var(--serif)); font-size:clamp(24px,1.9vw,33px);
+  line-height:1.42; letter-spacing:-.028em; color:var(--tx-3); text-align:center;
+  text-wrap:balance; width:min(760px,92%); margin:2px auto 36px; }
+.rfser em{ font-style:normal; color:var(--tx); }
+.rfs{ display:inline; }
+.rfs::after{ content:' '; }
 /* the read-out: one claim, one nod */
 .rfw{ display:flex; flex-direction:column; align-items:center; gap:30px; }
 .rfdots{ display:flex; gap:6px; }
@@ -5201,30 +5204,22 @@ async function reflectStage(){
   const r=rreadout();
   await voLine("Here's what I heard from your choices.",2200);
   if(myGen!==gen) return;
-  /* The reflection is written in the board's own language - grey sentence,
-     white chips on the words that carry weight - because it IS a piece of the
-     board being proposed, not a report about one. */
-  const ic=k=>'<span class="cico">'+(I[k]||I.spark)+'</span>';
-  const CHIPS=[
-    [/^Location/, ()=>chip(ic('pin')+T_('Location'))],
-    [/^Compensation/, ()=>chip(ic('coin')+T_('Compensation'))],
-    [/[Aa]mbitious teams/, ()=>chip(ic('users')+T_('ambitious teams'))],
-    [/right work and place/, ()=>chip(ic('bag')+T_('right work'))+G_(' and ')+chip(ic('pin')+T_('place'))],
-    [/stronger package/, ()=>chip(ic('coin')+T_('stronger package'))],
-    [/something real done/, ()=>chip(ic('target')+T_('something real done'))]
-  ];
+  /* The reflection reads as Zero talking - the same serif voice as every
+     question, one flowing read, all at once. The words that carry the claim
+     are lit white; the rest of the sentence sits back. Chips were right for
+     the board and wrong for a spoken thought. */
+  const HI=[/Location/,/ambitious teams/i,/right work and place/,/stronger package/,
+            /Compensation/,/something real done/];
   const {box}=turn({q:''});
-  const host=mk('div','vb rfvb'); box.appendChild(host);
-  r.lines.forEach(line2=>{
-    let html=line2;
-    CHIPS.forEach(([re,fn])=>{ html=html.replace(re,fn()); });
-    const row=mk('div','rfline');
-    row.innerHTML=G_(html);
-    host.appendChild(row);
-  });
-  enter(Array.from(host.children),{y:16,blur:7,stagger:.16,duration:.62},2000);
-  sfx('sparkle');
-  await wait(600+r.lines.length*300);
+  const p=mk('div','rfser');
+  p.innerHTML=r.lines.map(l=>{
+    let h=l;
+    HI.forEach(re=>{ h=h.replace(re,m=>'<em>'+m+'</em>'); });
+    return '<span class="rfs">'+h+'</span>';
+  }).join(' ');
+  box.appendChild(p);
+  enter(p.querySelectorAll('.rfs'),{y:14,blur:6,stagger:.22,duration:.7},2200);
+  await wait(700+r.lines.length*340);
   if(myGen!==gen) return;
   choices(box,[['check',"Yes, that's me",'ok'],['pen','I want to adjust','edit']],v=>{
     if(v==='ok'){ PFAT=0; psyncP(); go(()=>visionStage(false)); }
@@ -6124,7 +6119,7 @@ function dbgGoto(i){
       removeEventListener('click',away); } }; addEventListener('click',away); },0);
   };
   st.textContent='1. '+DBG_STEPS[0][0];
-  const bv=mk('span','bldv','v35'); gr.parentElement&&gr.parentElement.appendChild(bv);
+  const bv=mk('span','bldv','v36'); gr.parentElement&&gr.parentElement.appendChild(bv);
   addEventListener('keydown',e=>{
     if(document.activeElement&&document.activeElement.tagName==='INPUT') return;
     if(e.key==='ArrowRight'){ paceAdvance(); }
