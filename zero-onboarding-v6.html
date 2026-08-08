@@ -1479,6 +1479,7 @@ function voStop(){ if(voNow){ try{ voNow.pause(); voNow.currentTime=0; }catch(e)
 function voPlay(text){
   if(!voOn||!sndOn) return null;
   const src=voFind(text); if(!src) return null;
+  /* whatever is still speaking stops before anything new begins */
   voStop();
   let a=voCache[text];
   if(!a){ a=new Audio(src); a.preload='auto'; voCache[text]=a; }
@@ -1494,8 +1495,19 @@ function voPlay(text){
     voSkip=fin;
     a.addEventListener('ended',fin);
     a.addEventListener('error',fin);
-    /* a throttled tab still lands */
-    setTimeout(fin, ((a.duration||4)*1000)/voRate + 900);
+    /* THE OVERLAP. a.duration is NaN until the clip's metadata has loaded, so
+       this fell back to four seconds and cut every longer line loose while it
+       was still speaking - the flow walked on, the next line started, and two
+       voices ran together. The watchdog now waits for the real duration and
+       re-arms itself when it arrives; it exists to save a throttled tab, not
+       to end lines early. */
+    let wd=null;
+    const arm=()=>{ clearTimeout(wd);
+      const d=(isFinite(a.duration)&&a.duration>0)?a.duration:12;
+      wd=setTimeout(fin,(d*1000)/voRate+1200); };
+    a.addEventListener('loadedmetadata',arm);
+    a.addEventListener('durationchange',arm);
+    arm();
   });
 }
 /* say it and show it together, and fall back to the old timing when there is no take */
@@ -3936,7 +3948,14 @@ function playOpen(){
     const stop=()=>{ clearInterval(iv); a.removeEventListener('timeupdate',tick); };
     stopClock=stop;
     a.addEventListener('ended',()=>{ tick(); stop(); fin(); },{once:true});
-    setTimeout(()=>{ stop(); fin(); },(a.duration||15)*1000+1500);
+    /* same story on the opening take: wait for the real length */
+    let owd=null;
+    const oarm=()=>{ clearTimeout(owd);
+      const d=(isFinite(a.duration)&&a.duration>0)?a.duration:20;
+      owd=setTimeout(()=>{ stop(); fin(); },d*1000+1500); };
+    a.addEventListener('loadedmetadata',oarm);
+    a.addEventListener('durationchange',oarm);
+    oarm();
   });
 }
 async function timedOpen(g){
