@@ -4302,7 +4302,7 @@ const RCARD={
    t:{world:'b2b',shape:'collaborative',ethos:'frontier',type:'saas',domain:'team_tools',city:'seattle',level:'mid',compPct:.55}},
  shopify_van:{co:'Shopify',role:'Product Designer',
    problem:'Help independent merchants build and run businesses with confidence.',
-   city:'Vancouver',pay:'CA$118K',band:'CA$98-140K',
+   city:'Vancouver',pay:'US$104K',band:'US$90-122K',
    t:{world:'b2b',shape:'collaborative',ethos:'established',type:'commerce',domain:'team_tools',city:'vancouver',level:'mid',compPct:.55}},
  stripe_sf_snr:{co:'Stripe',role:'Senior Product Designer',
    problem:'Help businesses move money and understand what is happening behind the scenes.',
@@ -4322,7 +4322,7 @@ const RCARD={
    t:{world:'b2c',shape:'individual',ethos:'established',type:'commerce',domain:'everyday_utility',city:'san_francisco',level:'mid',compPct:.55}},
  doordash_tor:{co:'DoorDash',role:'Product Designer',
    problem:'Solve a visible consumer problem for people ordering dinner.',
-   city:'Toronto',pay:'CA$80K',band:'CA$66-94K',
+   city:'Toronto',pay:'US$106K',band:'US$92-126K',
    t:{world:'b2c',shape:'individual',ethos:'established',type:'commerce',domain:'everyday_utility',city:'toronto',level:'mid',compPct:.55}},
  adobe_sf_assoc:{co:'Adobe',role:'Associate Product Designer',
    problem:'Help creative people make, edit and share work they are proud of.',
@@ -4362,11 +4362,11 @@ const RCARD={
    t:{world:'b2b',shape:'collaborative',ethos:'frontier',type:'saas',domain:'team_tools',city:'san_francisco',level:'mid',compPct:.24}},
  figma_tor:{co:'Figma',role:'Product Designer',
    problem:'Design tools that help teams turn ideas into work together.',
-   city:'Toronto',pay:'CA$80K',band:'CA$66-94K',
+   city:'Toronto',pay:'US$112K',band:'US$95-130K',
    t:{world:'b2b',shape:'collaborative',ethos:'frontier',type:'saas',domain:'team_tools',city:'toronto',level:'mid',compPct:.55}},
  figma_tor_rich:{co:'Figma',role:'Product Designer',
    problem:'Design tools that help teams turn ideas into work together.',
-   city:'Toronto',pay:'CA$90K',band:'CA$66-94K',
+   city:'Toronto',pay:'US$128K',band:'US$95-130K',
    t:{world:'b2b',shape:'collaborative',ethos:'frontier',type:'saas',domain:'team_tools',city:'toronto',level:'mid',compPct:.86}},
  openai_sf:{co:'OpenAI',role:'Product Designer',
    problem:'Help people use powerful AI in ways that feel clear and trustworthy.',
@@ -4378,7 +4378,7 @@ const RCARD={
    t:{world:'b2c',shape:'collaborative',ethos:'frontier',type:'ai_frontier',domain:'ai_interaction',city:'san_francisco',level:'mid',compPct:.24}},
  openai_tor:{co:'OpenAI',role:'Product Designer',
    problem:'Make frontier AI understandable to the people using it.',
-   city:'Toronto',pay:'CA$90K',band:'CA$66-94K',
+   city:'Toronto',pay:'US$126K',band:'US$95-130K',
    t:{world:'b2c',shape:'collaborative',ethos:'frontier',type:'ai_frontier',domain:'ai_interaction',city:'toronto',level:'mid',compPct:.86}},
  google_sf:{co:'Google',role:'Product Designer',
    problem:'Make a familiar product easier for many different people to use.',
@@ -4398,7 +4398,7 @@ const RCARD={
    t:{world:'b2b',shape:'collaborative',ethos:'frontier',type:'saas',domain:'team_tools',city:'san_francisco',level:'mid',compPct:.55}},
  shopify_tor:{co:'Shopify',role:'Product Designer',
    problem:'Help independent merchants build and run businesses with confidence.',
-   city:'Toronto',pay:'CA$80K',band:'CA$66-94K',
+   city:'Toronto',pay:'US$108K',band:'US$92-126K',
    t:{world:'b2b',shape:'collaborative',ethos:'established',type:'commerce',domain:'team_tools',city:'toronto',level:'mid',compPct:.55}},
  shopify_nyc:{co:'Shopify',role:'Product Designer',
    problem:'Help independent merchants build and run businesses with confidence.',
@@ -4410,6 +4410,27 @@ const RCARD={
    `hold` means one card carries over from the previous round - Atul's "when we
    need more conviction we keep one card and see if you still choose it". */
 const RROUNDS=[
+ /* The starved dimensions. Company type had one clean round in the table and
+    shape and domain had none, so a person's most legible preference - the kind
+    of company they want - was being read off the confounded opener. These four
+    hold city, package and level steady so a pick means one thing. */
+ {n:19,phase:'isolate',a:'openai_sf',b:'google_sf',holds:['city','compPct','level','world','shape'],
+  claims:[{dim:'type',role:'primary',a:'ai_frontier',b:'saas'},
+          {dim:'ethos',role:'secondary',a:'frontier',b:'established'},
+          {dim:'domain',role:'secondary',a:'ai_interaction',b:'everyday_utility'}],
+  note:'The frontier against the giant, same city and same package. Atul\'s Google versus Anthropic.'},
+ {n:20,phase:'isolate',a:'google_sf2',b:'doordash_sf_eq',holds:['city','compPct','level','world','ethos','domain'],
+  claims:[{dim:'shape',role:'primary',a:'collaborative',b:'individual'},
+          {dim:'type',role:'secondary',a:'saas',b:'commerce'}],
+  note:'Moving with a team against owning it yourself. Everything else level.'},
+ {n:21,phase:'isolate',a:'adobe_sf',b:'doordash_sf_eq',holds:['city','compPct','level','world','shape','ethos'],
+  claims:[{dim:'domain',role:'primary',a:'creator_tools',b:'everyday_utility'},
+          {dim:'type',role:'secondary',a:'creator',b:'commerce'}],
+  note:'Tools for makers against the everyday errand. The problem is the only thing moving.'},
+ {n:22,phase:'isolate',a:'figma_tor',b:'shopify_tor',holds:['city','compPct','level','world','shape','domain'],
+  claims:[{dim:'type',role:'primary',a:'saas',b:'commerce'},
+          {dim:'ethos',role:'secondary',a:'frontier',b:'established'}],
+  note:'A second read on company type, in a different city than the first.'},
  {n:1,phase:'explore',a:'doordash_sf',b:'adobe_sf_assoc',confounded:true,
   claims:[{dim:'domain',role:'bundle',a:'everyday_utility',b:'creator_tools'},
           {dim:'type',role:'bundle',a:'commerce',b:'creator'}],
@@ -4497,30 +4518,43 @@ const RSTATE={};
    does not hold is demoted to `varies` and the round is flagged confounded,
    which drops its weight rather than silently lying. */
 function auditRounds(){
-  const problems=[];
+  const out=[];
+  const num=c=>parseInt(String(c.pay||c.band||'0').replace(/[^0-9]/g,''))||0;
   RROUNDS.forEach(r=>{
     const A=RCARD[r.a], B=RCARD[r.b];
-    if(!A||!B){ problems.push({round:r.n,issue:'missing card'}); return; }
-    (r.holds||[]).slice().forEach(h=>{
-      let ok=true;
-      if(h==='compPct')      ok=Math.abs(A.t.compPct-B.t.compPct)<=0.08;
-      else if(h==='company') ok=A.co===B.co;
-      else if(h==='city')    ok=A.t.city===B.t.city;
-      else                   ok=A.t[h]===B.t[h];
-      if(!ok){
-        problems.push({round:r.n,hold:h,a:A.t[h]!==undefined?A.t[h]:A.co,b:B.t[h]!==undefined?B.t[h]:B.co});
-        r.holds=r.holds.filter(x=>x!==h);
-        r.varies=(r.varies||[]).concat(h);
+    if(!A||!B){ out.push('R'+r.n+': missing card'); return; }
+    /* a declared hold that does not actually hold is a round claiming to
+       isolate an axis it does not */
+    (r.holds||[]).forEach(h=>{
+      if(A.t[h]!==B.t[h]){
+        out.push('R'+r.n+': declares '+h+' held but cards differ ('+A.t[h]+' vs '+B.t[h]+')');
         r.confounded=true;
       }
     });
-    /* a claim on an axis that does not actually differ teaches nothing */
+    /* and a claim must be backed by the card data, not just declared */
     (r.claims||[]).forEach(c=>{
-      if(c.a===c.b) problems.push({round:r.n,claim:c.dim,issue:'both sides identical'});
+      const av=c.dim==='location'?A.t.city:A.t[c.dim];
+      const bv=c.dim==='location'?B.t.city:B.t[c.dim];
+      if(av===bv){
+        out.push('R'+r.n+': claims '+c.dim+' differs but both cards are '+av);
+        r.confounded=true;
+      }
     });
+    /* THE ONE THAT WAS MISSING. compPct being level says the offer is level
+       for its own market; it says nothing about the figure on the card. People
+       choose on the figure. A round that shows a real gap while claiming the
+       package is held is measuring money and calling it something else. */
+    if((r.holds||[]).indexOf('compPct')>=0){
+      const a=num(A), b=num(B), hi=Math.max(a,b);
+      const gap=hi?Math.abs(a-b)/hi:0;
+      if(gap>0.06){
+        out.push('R'+r.n+': package declared level but the cards read '+A.pay+' vs '+B.pay+
+                 ' ('+Math.round(gap*100)+'% apart) - demoted, money is doing the choosing');
+        r.confounded=true;
+      }
+    }
   });
-  if(problems.length&&/[?&]debug=1/.test(location.search)) console.table(problems);
-  return problems;
+  return out;
 }
 const RAUDIT=auditRounds();
 function rreset(){
@@ -4581,14 +4615,26 @@ function rapply(round,pick){
   const chose=pick==='a'?round.a:round.b;
   RPICKS.push({n:round.n,pick:pick,card:chose});
   const phaseW={explore:1.0,isolate:1.25,tradeoff:1.15}[round.phase]||1;
-  /* costly signal: in a trade-off round, taking the cheaper card means money
-     was on the table and lost, so the attribute claim is worth more. Taking the
-     richer one leaves money as an unexcluded explanation, so it is worth less. */
+  /* Costly signal, driven by the number on the card rather than the round's
+     phase label or its compPct. Whenever the two offers visibly differ on
+     money, money is a live explanation for the pick: taking the CHEAPER card
+     means it was on the table and lost, which makes the attribute claim worth
+     more, and taking the richer one teaches almost nothing about the attribute.
+     This used to fire only on rounds labelled trade-off, and it read compPct,
+     which is level-for-its-own-market and not what anyone sees. The result was
+     a money chaser being told location mattered a lot to them, purely because
+     the better-paying card kept being in San Francisco. */
+  const vis=c=>parseInt(String(c.pay||c.band||'0').replace(/[^0-9]/g,''))||0;
   let costly=1;
-  if(round.phase==='tradeoff'){
-    const A=RCARD[round.a].t.compPct, B=RCARD[round.b].t.compPct;
-    const tookCheaper=(pick==='a'?A:B)<(pick==='a'?B:A);
-    costly=tookCheaper?1.4:0.3;
+  {
+    const a=vis(RCARD[round.a]), b=vis(RCARD[round.b]);
+    const hi=Math.max(a,b), gap=hi?Math.abs(a-b)/hi:0;
+    if(gap>0.06){
+      const tookCheaper=(pick==='a'?a:b)<(pick==='a'?b:a);
+      /* the bigger the gap, the more it explains, in both directions */
+      const force=Math.min(1,gap/0.35);
+      costly=tookCheaper?(1+.5*force):(1-.85*force);
+    }
   }
   (round.claims||[]).forEach(c=>{
     if(c.a===c.b) return;                       /* nothing to learn from a tie */
@@ -4621,9 +4667,9 @@ function rtradeoffs(){ return RSTATE.comp.trials.filter(x=>x.w>=1).length; }
 
 /* ---------------------------------------------------------------- screen ---- */
 let RN=0;
-const RCOUNT_KEY='rcount';
+const RCOUNT_KEY='rcount2';   /* new key: a stored 10 from the old default would keep the game hollow */
 function rroundsToPlay(){
-  const n=parseInt(localStorage.getItem(RCOUNT_KEY)||'10',10);
+  const n=parseInt(localStorage.getItem(RCOUNT_KEY)||'15',10);
   return Math.max(3,Math.min(RROUNDS.length,isNaN(n)?10:n));
 }
 /* The three phases each do a different job: explore reads you, isolate repeats
@@ -4631,33 +4677,60 @@ function rroundsToPlay(){
    Cutting the deck to 10 by truncation would drop every trade-off round, so
    the read-out would claim money came second with nothing behind it. Sample
    proportionally instead. */
+/* Confidence is lean x evidence, and evidence from one observation caps at
+   .60 - so a deck that covers each dimension exactly once guarantees that
+   nothing can ever be claimed. This picks for DECIDABILITY instead: every
+   dimension it means to read gets at least two clean rounds, no dimension is
+   left standing on a confounded round, and the trade-offs survive because they
+   are what price the preferred thing against money. */
+const RWANT=2;                 /* clean rounds needed before a dimension counts */
+function rprimaries(r){ return (r.claims||[]).filter(c=>c.role==='primary').map(c=>c.dim); }
 function rdeck(){
   const total=rroundsToPlay();
   if(total>=RROUNDS.length) return RROUNDS.slice();
-  const byPhase={explore:[],isolate:[],tradeoff:[]};
-  RROUNDS.forEach(r=>byPhase[r.phase].push(r));
-  const order=['explore','isolate','tradeoff'];
-  const want={}; let left=total;
-  order.forEach((ph,i)=>{
-    const n=i===order.length-1?left:Math.max(1,Math.round(total*byPhase[ph].length/RROUNDS.length));
-    want[ph]=Math.min(n,byPhase[ph].length); left-=want[ph];
-  });
-  /* within a phase, take rounds that cover a dimension not yet seen before
-     taking a second round on the same axis. Trimming by position quietly drops
-     round 9, the only clean two-city comparison, and the ranking loses the one
-     piece of evidence that was not confounded by the work. */
-  const out=[], seen={};
-  order.forEach(ph=>{
-    const pool=byPhase[ph].slice(); let n=want[ph];
-    const dims=r=>(r.claims||[]).filter(c=>c.role!=='secondary').map(c=>c.dim);
-    while(n>0&&pool.length){
-      let idx=pool.findIndex(r=>dims(r).some(d=>!seen[d]));
-      if(idx<0) idx=0;
-      const r=pool.splice(idx,1)[0];
-      dims(r).forEach(d=>seen[d]=1);
-      out.push(r); n--;
+  const byN=n=>RROUNDS.find(r=>r.n===n);
+  const taken=new Set();
+  const take=r=>{ if(r&&!taken.has(r.n)) taken.add(r.n); };
+
+  /* the opener stays: it is deliberately confounded and it is how the game
+     introduces itself. It just no longer counts as evidence for anything. */
+  RROUNDS.filter(r=>r.confounded).slice(0,1).forEach(take);
+  /* the trade-offs stay: without them nothing is ever priced against money */
+  const trades=RROUNDS.filter(r=>r.phase==='tradeoff');
+  trades.slice(0,Math.max(2,Math.round(total*.27))).forEach(take);
+
+  /* then buy decidability, cheapest dimension first, so a dimension with only
+     two clean rounds in the table is served before one with six */
+  const clean=RROUNDS.filter(r=>!r.confounded);
+  const supply={};
+  clean.forEach(r=>rprimaries(r).forEach(d=>(supply[d]=supply[d]||[]).push(r)));
+  Object.keys(supply)
+    .sort((x,y)=>supply[x].length-supply[y].length)
+    .forEach(d=>{
+      const have=()=>[...taken].filter(n=>rprimaries(byN(n)).indexOf(d)>=0).length;
+      for(const r of supply[d]){ if(have()>=RWANT) break; take(r); }
+    });
+
+  /* whatever room is left goes to the widest-supply dimensions for extra
+     agreement, then to anything unused */
+  if(taken.size<total){
+    clean.forEach(r=>{ if(taken.size<total) take(r); });
+    RROUNDS.forEach(r=>{ if(taken.size<total) take(r); });
+  }
+  /* over budget only ever by trimming the most redundant clean round */
+  let out=[...taken].map(byN);
+  while(out.length>total){
+    let drop=-1;
+    for(let i=out.length-1;i>=0;i--){
+      const r=out[i];
+      if(r.confounded||r.phase==='tradeoff') continue;
+      const dims=rprimaries(r);
+      const spare=dims.every(d=>out.filter(x=>rprimaries(x).indexOf(d)>=0).length>RWANT);
+      if(spare){ drop=i; break; }
     }
-  });
+    if(drop<0) drop=out.length-1;
+    out.splice(drop,1);
+  }
   return out.sort((x,y)=>x.n-y.n);
 }
 function rlogo(co){
