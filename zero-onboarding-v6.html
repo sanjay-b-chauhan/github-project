@@ -952,6 +952,17 @@ body.dark .jsat.jbest{ border-color:rgba(255,255,255,.2); }
 .jcta:hover{ animation-play-state:paused; transform:translateX(-50%) translateY(-3px); }
 @keyframes jfloat{ 0%,100%{ transform:translateX(-50%) translateY(0); }
   50%{ transform:translateX(-50%) translateY(-5px); } }
+/* what the cards banked, shown once, with air */
+.vsum{ display:flex; flex-direction:column; gap:10px; margin:34px auto 38px;
+  width:min(400px,86%); }
+.vsumr{ display:flex; align-items:center; gap:12px; padding:12px 16px;
+  background:var(--card); border:1px solid var(--line); border-radius:16px; }
+.vsuml{ width:32px; height:32px; border-radius:9px; background:#fff; flex:0 0 32px;
+  border:1px solid var(--line); display:flex; align-items:center; justify-content:center; }
+.vsuml svg{ width:17px; height:17px; }
+.vsumt{ display:flex; flex-direction:column; gap:1px; text-align:left; }
+.vsumt b{ font-size:14px; font-weight:600; color:var(--tx); letter-spacing:-.014em; }
+.vsumt span{ font-size:12px; color:var(--tx-3); }
 /* the moment of choosing: a ring of light on the card that was taken */
 .rcd.rcpick{ box-shadow:0 0 0 2px var(--ink), 0 30px 70px rgba(0,0,0,.4) !important; }
 /* the jump grid inside the settings drawer */
@@ -1093,6 +1104,12 @@ body.dark .jsat.jbest{ border-color:rgba(255,255,255,.2); }
    contents stay painted flat on it, which is what made the tilt feel like a
    picture of a card rather than a card. */
 .rclogo{ transform:translateZ(46px); }
+/* the box the logo lives in. This rule was lost in a block replacement and the
+   raw svg painted at full card size. */
+.rclogo{ position:relative; width:46px; height:46px; border-radius:13px; background:#fff;
+  flex:0 0 46px; border:1px solid var(--line); display:flex; align-items:center;
+  justify-content:center; box-shadow:0 4px 12px rgba(0,0,0,.12); margin-bottom:18px; }
+.rclogo svg{ width:24px; height:24px; }
 .rcrole{ transform:translateZ(34px); }
 .rcco{ transform:translateZ(26px); }
 
@@ -2459,8 +2476,8 @@ function bornPanel(quiet){
   if(!quiet){ boardLive=true; renderBoard(); }
   panelToggleBtn(); panelHidden=false;
   const _pt=$('pnlT'); if(_pt) _pt.classList.remove('closed');
-  gsap.set('.right',{width:panelPref?panelPref+'px':'40%',opacity:0});
-  shiftLeft(panelPref?panelPref+'px':'40vw');
+  gsap.set('.right',{width:panelPref?panelPref+'px':'50%',opacity:0});
+  shiftLeft(panelPref?panelPref+'px':'50vw');
   mountResizer();
   safeTL(gsap.timeline().fromTo('.right',{opacity:0,x:-60},{opacity:1,x:0,duration:.9,ease:EIO}),2200);
   sfx('bloom');
@@ -2992,6 +3009,25 @@ async function visionStage(fromEdit){
     vb.innerHTML=boardHTML(); s2.appendChild(vb); boardLive=true; $('paper').classList.add('canvas'); },false); }
   dockHide();
   const {box}=turn({q:'Did I get this right?'});
+  /* what the cards actually banked, as its own quiet container - company,
+     role, city - with air above and below rather than everything stacked
+     under the question */
+  const picks=Object.keys(RPICKED||{}).slice(0,4);
+  if(picks.length){
+    const sum=mk('div','vsum');
+    picks.forEach(co=>{
+      const p=RPICKED[co];
+      const row=mk('div','vsumr');
+      row.appendChild(mk('span','vsuml',rlogo(co)));
+      const t=mk('div','vsumt');
+      t.appendChild(mk('b',null,co));
+      t.appendChild(mk('span',null,(p.role||'')+(p.city?' · '+p.city:'')));
+      row.appendChild(t);
+      sum.appendChild(row);
+    });
+    box.appendChild(sum);
+    enter(Array.from(sum.children),{y:10,blur:5,stagger:.06,duration:.5},1200);
+  }
   choices(box,[['spark','Reveal the perfect roles for me','ok'],['pen','Fix one thing','fix'],
     ['plus','Add more','more']],v=>{
     if(v==='ok'){ sfx('success'); retireMeter(); boardRewards=true;
@@ -4258,8 +4294,8 @@ function drawerOpen(){
   const b=$('pnlT'); if(b) b.classList.remove('closed');
   panelBorn=true;
   panelToggleBtn();
-  gsap.to('.right',{width:panelPref?panelPref+'px':'40%',opacity:1,duration:.9,ease:EIO});
-  shiftLeft(panelPref?panelPref+'px':'40vw');
+  gsap.to('.right',{width:panelPref?panelPref+'px':'50%',opacity:1,duration:.9,ease:EIO});
+  shiftLeft(panelPref?panelPref+'px':'50vw');
   boardLive=true;
   renderBoard();
 }
@@ -5078,13 +5114,15 @@ function rcRound(myGen,first){
     const win=el.parentElement||el, lose=other.parentElement||other;
     el.classList.add('rcpick');
     sfx('press');
+    /* a clean slide: a small press so the click registers, then straight up
+       and out. No bounce, no overshoot. */
     safeTL(gsap.timeline()
-      .to(el,{scale:.965,duration:.09,ease:'power3.out'},0)
-      .to(el,{scale:1.045,duration:.2,ease:'back.out(3)'},.09)
-      .to(lose,{y:innerHeight*.22,rotation:lose.classList.contains('tiltL')?-16:16,
-        opacity:0,scale:.94,duration:.5,ease:'power2.in'},.02)
-      .to(win,{y:-innerHeight*.72,scale:.94,opacity:0,duration:.72,ease:'power2.in'},.3)
-      .add(()=>{ if(row.isConnected) row.remove(); }),2200);
+      .to(el,{scale:.97,duration:.08,ease:'power2.out'},0)
+      .to(el,{scale:1,duration:.12,ease:'power2.out'},.08)
+      .to(lose,{y:innerHeight*.2,rotation:lose.classList.contains('tiltL')?-12:12,
+        opacity:0,duration:.4,ease:'power1.in'},.04)
+      .to(win,{y:-innerHeight*.85,opacity:0,duration:.5,ease:'power1.in'},.18)
+      .add(()=>{ if(row.isConnected) row.remove(); }),1800);
 
     renderBoard();
     setTimeout(()=>{
@@ -5810,7 +5848,12 @@ function dbgFill(upTo){
   /* the cards are behind every screen from the reflection on. Replaying the
      deck here is what the real flow would have left behind, so a jumped-to
      screen scores on the same evidence a walked-to one does. */
-  set(7,()=>{ try{ rreset(); rdeck().forEach(r=>rapply(r, r.n%3===0?'b':'a')); }catch(e){} });
+  set(7,()=>{ try{ rreset(); rdeck().forEach(r=>rapply(r, r.n%3===0?'b':'a')); }catch(e){}
+    /* picks live in the click handler, not rapply, so a jumped-to screen needs
+       them seeded or the vision summary shows nothing */
+    RPICKED['OpenAI']={role:'Product Designer',city:'SF Bay Area',pay:'$174-238K'};
+    RPICKED['Figma']={role:'Product Designer',city:'Toronto',pay:'$95-130K'};
+    RPICKED['Anthropic']={role:'Product Designer',city:'New York',pay:'$150-205K'}; });
   set(10,()=>{ P.aim=d.roles&&d.roles[0]?d.roles[0][0]:'Product Designer'; });
 }
 /* The stepper was rebuilding the Zero board on every jump, so steps that should
@@ -5904,8 +5947,8 @@ function dbgGoto(i){
   else if(born){
     panelBorn=true; boardLive=true;
     panelToggleBtn();
-    gsap.set('.right',{width:panelPref?panelPref+'px':'40%',opacity:1,x:0});
-    shiftLeft(panelPref?panelPref+'px':'40vw');
+    gsap.set('.right',{width:panelPref?panelPref+'px':'50%',opacity:1,x:0});
+    shiftLeft(panelPref?panelPref+'px':'50vw');
     mountResizer();
     $('cap').innerHTML='<span class="live pulse"></span>'+(wide?'Your vision board':'Zero is listening');
     const sc=$('scroll'); sc.className='scroll ctr'; sc.innerHTML='';
