@@ -4155,10 +4155,34 @@ async function readbackStage(){
   clearTurn(); dockHide(); await wait(360);
   const d=(typeof LINKEDIN!=='undefined'&&(LINKEDIN[PKEY]||LINKEDIN.design))||{};
   if(P.linked){
-    /* the board already shows everything that was read - narrating it again
-       is five lines of recap. One phrase, the whole board lit, hand over. */
+    /* I cut this to one phrase and cut too far: Zero announced it had read the
+       profile and then said nothing about it, which is an announcement, not
+       validation. Two beats now name what it actually found, each lighting the
+       rows it is talking about, before it asks to be corrected. Built from the
+       data, so a different profile is validated differently. */
     spotRows(['s1','p1','p2','p3']);
     await voLine('Okay, '+P.name+". Here's what I got from your LinkedIn.",2400);
+    /* joined by hand, not by joinList: a prepositional phrase and a noun
+       phrase do not take the same conjunction, and three ands in a row is
+       exactly the copy that reads as machine-written */
+    spotRows(['p1','p2']);
+    let l1='';
+    if(d.exp&&/year/i.test(d.exp)) l1="You're in your "+lower1(d.exp)+' at '+(P.college||d.org||'college');
+    else if(d.exp) l1='You have '+lower1(d.exp);
+    if(l1){
+      if(d.since) l1+=', with '+lower1(d.since)+' behind you';
+      await voLine(l1+'.',2700);
+    }
+    spotRows(['p2','p3']);
+    /* one clause, two ands at most, and the follows are deduped against the
+       skills - Figma was being named twice in the same sentence */
+    const sk=String(d.skills||'').split(',').map(x=>x.trim()).filter(Boolean);
+    const fl=String(d.follows||'').split(',').map(x=>x.trim())
+      .filter(x=>x&&sk.every(y=>y.toLowerCase()!==x.toLowerCase()));
+    let l2='';
+    if(sk.length) l2='Strongest on '+joinList(sk.slice(0,2));
+    if(fl.length) l2=(l2?l2+', with ':'You follow ')+joinList(fl.slice(0,2))+(l2?' in your feed':'');
+    if(l2) await voLine(l2+'.',2700);
   }
   unspot();
   await voLine('Tell me what I got wrong, or what I missed.',2600);
