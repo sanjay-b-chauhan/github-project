@@ -786,9 +786,30 @@ body.rszing iframe{ pointer-events:none; }   /* the drag must not fall into an e
 .jrbar i{ width:11px; height:3px; border-radius:2px; background:var(--tx-4);
   transition:background .3s; }
 .jrbar i.on{ background:var(--ink); }
-/* ---- the pool: one big circle, four families of real marks -------------- */
-.pool{ position:relative; margin:8px auto 20px; border-radius:50%;
-  border:1px solid var(--line); }
+/* ---- the fields: no fence, the centre is the selection ------------------ */
+.pfield{ position:relative; margin:2px auto 16px; }
+.pfcap{ position:absolute; left:0; top:0; font-size:15px; font-weight:600;
+  color:var(--tx); letter-spacing:-.012em; white-space:nowrap; will-change:transform;
+  pointer-events:none; }
+.pfball{ position:absolute; left:0; top:0; border-radius:50%; cursor:pointer;
+  background:var(--card); border:1px solid var(--line); color:var(--tx-3);
+  display:flex; align-items:center; justify-content:center; text-align:center;
+  padding:10px; opacity:.5; will-change:transform;
+  font-size:13.5px; line-height:1.25; letter-spacing:-.012em;
+  transition:opacity .45s, background .45s, color .45s, width .5s, height .5s; }
+.pfball.on{ opacity:1; background:#fff; color:#111113; font-weight:600;
+  box-shadow:0 10px 32px rgba(0,0,0,.32); }
+.venn{ position:relative; margin:10px auto 22px; }
+.vc{ position:absolute; left:0; top:0; border-radius:50%; cursor:pointer;
+  background:transparent; border:1.5px solid var(--tx-4); color:var(--tx-3);
+  display:flex; align-items:center; justify-content:center;
+  font-size:17px; letter-spacing:-.016em; will-change:transform;
+  transition:background .5s, color .5s, border-color .5s; }
+.vc.on{ background:rgba(244,244,243,.92); color:#111113; border-color:transparent;
+  font-weight:600; }
+body:not(.dark) .vc.on{ background:rgba(17,17,19,.92); color:#fff; }
+.venn.union .vc{ mix-blend-mode:screen; }
+body:not(.dark) .venn.union .vc{ mix-blend-mode:multiply; }
 .poolb{ position:absolute; left:0; top:0; border-radius:50%; background:#fff;
   border:1px solid var(--line); display:flex; align-items:center; justify-content:center;
   cursor:pointer; padding:0; opacity:.34; will-change:transform;
@@ -5313,92 +5334,21 @@ function pwhy(key){
 
 /* pools the user added on top of the one Zero read, per screen */
 const PFALSO={};
-/* the four pools and the real marks that live in them */
-const POOLS=[
- {key:'ai_frontier',label:'AI frontier',cos:['OpenAI','Vercel','Linear']},
- {key:'saas',label:'Big tech',cos:['Google','Apple','Microsoft','Netflix','Meta']},
- {key:'commerce',label:'Consumer',cos:['Uber','DoorDash','Airbnb','Spotify']},
- {key:'creator',label:'Creative tools',cos:['Figma','Adobe','Notion']}
-];
-function ppool(box,sc){
+/* One physics core for every field: springs to a group anchor, full collision
+   correction after integration, rectangle containment, a slow breath, and a
+   cursor the balls shy away from. */
+function physField(wrap,W,H,balls,anchorOf){
   const myGen=gen;
-  const D=Math.min(innerHeight*.62,600);
-  const wrap=mk('div','pool');
-  wrap.style.width=wrap.style.height=D+'px';
-  box.appendChild(wrap);
-
-  const sel=new Set();
-  const read=presolve(sc.key);
-  sel.add((POOLS.find(p=>p.key===read)||POOLS[0]).key);
-
-  /* anchors: the chosen pool(s) share the centre, the rest sit on a ring */
-  const anchors={};
-  function layoutAnchors(){
-    const on=POOLS.filter(p=>sel.has(p.key)), off=POOLS.filter(p=>!sel.has(p.key));
-    on.forEach((p,i)=>{
-      const a=(i/Math.max(1,on.length))*Math.PI*2-Math.PI/2;
-      const r=on.length>1?D*.16:0;
-      anchors[p.key]=[D/2+Math.cos(a)*r, D/2+Math.sin(a)*r];
-    });
-    off.forEach((p,i)=>{
-      const a=(i/off.length)*Math.PI*2-Math.PI/2+.5;
-      anchors[p.key]=[D/2+Math.cos(a)*D*.36, D/2+Math.sin(a)*D*.36];
-    });
-  }
-  layoutAnchors();
-
-  const balls=[]; const labels={};
-  POOLS.forEach(p=>{
-    const lb=mk('div','poolt',p.label);
-    lb.onclick=()=>togglePool(p.key);
-    wrap.appendChild(lb); labels[p.key]=lb;
-    p.cos.forEach((co,i)=>{
-      const r=25+(i%3)*3;
-      const el=mk('button','poolb');
-      el.style.width=el.style.height=r*2+'px';
-      el.innerHTML=LOGO[co]||I.spark;
-      el.setAttribute('aria-label',co+' - '+p.label);
-      el.onclick=()=>togglePool(p.key);
-      wrap.appendChild(el);
-      const [ax,ay]=anchors[p.key];
-      balls.push({el:el,pool:p.key,r:r,
-        x:ax+(Math.sin(i*3.7)*40),y:ay+(Math.cos(i*2.9)*40),vx:0,vy:0});
-    });
-  });
-
-  function paintSel(){
-    balls.forEach(b=>{ const on=sel.has(b.pool);
-      b.el.classList.toggle('on',on); });
-    POOLS.forEach(p=>labels[p.key].classList.toggle('on',sel.has(p.key)));
-  }
-  function togglePool(k){
-    if(locked) return;
-    if(sel.has(k)){ if(sel.size===1) return; sel.delete(k); }
-    else sel.add(k);
-    sfx('toggle');
-    layoutAnchors(); paintSel();
-    /* write the read: first selection is the claim, the rest ride along */
-    const list=[...sel];
-    pedit(sc.key,list[0]);
-    PFALSO[sc.key]=list.slice(1);
-  }
-  paintSel();
-
-  /* the physics: springs, collisions, containment, and a shy cursor */
-  let px=-9999,py=-9999;
+  let px=-9999,py=-9999,t=0;
   wrap.addEventListener('pointermove',e=>{ const r0=wrap.getBoundingClientRect();
     px=e.clientX-r0.left; py=e.clientY-r0.top; });
   wrap.addEventListener('pointerleave',()=>{ px=py=-9999; });
-  let t=0;
   const step=()=>{
     if(myGen!==gen||!wrap.isConnected){ gsap.ticker.remove(step); return; }
     t+=.016;
     balls.forEach((b,i)=>{
-      const [ax,ay]=anchors[b.pool];
-      /* a slow breath on the anchor keeps the pool alive when settled */
+      const [ax,ay]=anchorOf(b);
       const wob=Math.sin(t*.8+i)*2;
-      /* the spring eases off near the anchor, or a packed cluster keeps
-         squeezing itself into overlap forever */
       const adx=(ax+wob)-b.x, ady=(ay-wob)-b.y;
       const ad=Math.hypot(adx,ady), k=.012*Math.min(1,ad/46);
       b.vx+=adx*k; b.vy+=ady*k;
@@ -5407,32 +5357,185 @@ function ppool(box,sc){
       b.vx*=.86; b.vy*=.86;
     });
     balls.forEach(b=>{ b.x+=b.vx; b.y+=b.vy; });
-    /* touching, never overlapping: full positional correction, twice, so the
-       springs can never hold a steady-state penetration */
     for(let it=0;it<2;it++)
       for(let i=0;i<balls.length;i++) for(let j=i+1;j<balls.length;j++){
         const a=balls[i],c=balls[j];
         const dx=c.x-a.x, dy=c.y-a.y; let d=Math.hypot(dx,dy)||.01;
-        const min=a.r+c.r+2;
+        /* a selected ball is drawn 12% larger, so it collides at that size too */
+        const min=a.r*(a.big?1.12:1)+c.r*(c.big?1.12:1)+2;
         if(d<min){ const push=(min-d)/d;
           a.x-=dx*push*.5; a.y-=dy*push*.5; c.x+=dx*push*.5; c.y+=dy*push*.5; }
       }
     balls.forEach(b=>{
-      const dx=b.x-D/2, dy=b.y-D/2, d=Math.hypot(dx,dy);
-      const max=D/2-b.r-6;
-      if(d>max){ b.x=D/2+dx/d*max; b.y=D/2+dy/d*max; }
-      b.el.style.transform='translate('+(b.x-b.r)+'px,'+(b.y-b.r)+'px)';
+      b.x=Math.max(b.r+4,Math.min(W-b.r-4,b.x));
+      b.y=Math.max(b.r+4,Math.min(H-b.r-4,b.y));
+      const sc2=b.big?1.12:1;
+      b.el.style.transform='translate('+(b.x-b.r)+'px,'+(b.y-b.r)+'px) scale('+sc2+')';
     });
-    POOLS.forEach(p=>{
-      const mine=balls.filter(b=>b.pool===p.key);
-      const cy=Math.max(...mine.map(b=>b.y+b.r));
-      const cx=mine.reduce((s2,b)=>s2+b.x,0)/mine.length;
-      const lb=labels[p.key];
-      lb.style.transform='translate('+(cx-lb.offsetWidth/2)+'px,'+(cy+10)+'px)';
-    });
+    if(wrap._after) wrap._after(balls,t);
   };
   gsap.ticker.add(step);
-  enter([wrap],{scale:.94,blur:8,duration:.7},1400);
+}
+
+/* five families, twenty real marks. No fence around them. */
+const POOLS=[
+ {key:'ai_frontier',label:'AI frontier',cos:['OpenAI','Vercel','Linear','GitHub']},
+ {key:'saas',label:'FAANG',cos:['Google','Apple','Meta','Microsoft','Netflix']},
+ {key:'media',label:'Social',cos:['LinkedIn','Spotify','Slack']},
+ {key:'commerce',label:'Consumer',cos:['Uber','DoorDash','Airbnb']},
+ {key:'creator',label:'Creative tools',cos:['Figma','Adobe','Notion','Stripe','Shopify']}
+];
+function ppool(box,sc){
+  const W=Math.min(innerWidth*.6,940), H=Math.min(innerHeight*.56,540);
+  const wrap=mk('div','pfield');
+  wrap.style.width=W+'px'; wrap.style.height=H+'px';
+  box.appendChild(wrap);
+
+  const sel=new Set();
+  const read=presolve(sc.key);
+  sel.add((POOLS.find(p=>p.key===read)||POOLS[0]).key);
+
+  /* chosen families merge at the centre; the rest wait at the compass */
+  const COMPASS=[[.5,.13],[.9,.5],[.5,.88],[.1,.5],[.16,.14]];
+  function anchorOf(b){
+    if(sel.has(b.pool)) return [W/2,H/2];
+    const off=POOLS.filter(p=>!sel.has(p.key)).map(p=>p.key);
+    const i=off.indexOf(b.pool);
+    const c=COMPASS[i%COMPASS.length];
+    return [c[0]*W,c[1]*H];
+  }
+
+  const balls=[]; const labels={};
+  POOLS.forEach(p=>{
+    const lb=mk('div','poolt',p.label);
+    lb.onclick=()=>toggle(p.key);
+    wrap.appendChild(lb); labels[p.key]=lb;
+    p.cos.forEach((co,i)=>{
+      const r=24+(i%3)*3;
+      const el=mk('button','poolb');
+      el.style.width=el.style.height=r*2+'px';
+      el.innerHTML=LOGO[co]||I.spark;
+      el.setAttribute('aria-label',co+' - '+p.label);
+      el.onclick=()=>toggle(p.key);
+      wrap.appendChild(el);
+      const [ax,ay]=anchorOf({pool:p.key});
+      balls.push({el:el,pool:p.key,r:r,x:ax+Math.sin(i*3.7)*46,y:ay+Math.cos(i*2.9)*46,vx:0,vy:0});
+    });
+  });
+
+  /* the selection names itself, and the name changes as you tap */
+  const cap=mk('div','pfcap');
+  wrap.appendChild(cap);
+  function paint(){
+    balls.forEach(b=>{ b.el.classList.toggle('on',sel.has(b.pool)); b.big=sel.has(b.pool); });
+    POOLS.forEach(p=>labels[p.key].classList.toggle('on',sel.has(p.key)));
+    cap.textContent=POOLS.filter(p=>sel.has(p.key)).map(p=>p.label).join(' + ');
+  }
+  function toggle(k){
+    if(locked) return;
+    if(sel.has(k)){ if(sel.size===1) return; sel.delete(k); }
+    else sel.add(k);
+    sfx('toggle'); paint();
+    const list=[...sel];
+    pedit(sc.key,list[0]); PFALSO[sc.key]=list.slice(1);
+  }
+  paint();
+  wrap._after=bs=>{
+    const mine=bs.filter(b=>sel.has(b.pool));
+    if(!mine.length) return;
+    const cy=Math.max(...mine.map(b=>b.y+b.r));
+    cap.style.transform='translate('+(W/2-cap.offsetWidth/2)+'px,'+Math.min(H-26,cy+16)+'px)';
+    POOLS.forEach(p=>{
+      if(sel.has(p.key)){ labels[p.key].style.opacity=0; return; }
+      labels[p.key].style.opacity=1;
+      const fam=bs.filter(b=>b.pool===p.key);
+      const cx=fam.reduce((s2,b)=>s2+b.x,0)/fam.length;
+      const fy=Math.max(...fam.map(b=>b.y+b.r));
+      labels[p.key].style.transform='translate('+(cx-labels[p.key].offsetWidth/2)+'px,'+(fy+8)+'px)';
+    });
+  };
+  physField(wrap,W,H,balls,anchorOf);
+  enter([wrap],{scale:.96,blur:8,duration:.7},1400);
+}
+
+/* the two-sided questions: a live Venn. One circle takes the ink, both slide
+   together and the union glows. */
+function pvenn(box,sc){
+  const W=Math.min(innerWidth*.5,640), H=300, R=118;
+  const wrap=mk('div','venn');
+  wrap.style.width=W+'px'; wrap.style.height=H+'px';
+  box.appendChild(wrap);
+  const names={b2c:'People',b2b:'Teams',collaborative:'With a team',individual:'On your own'};
+  const sel=new Set([presolve(sc.key)||sc.opts[0]]);
+  const cs=sc.opts.map((o,i)=>{
+    const c=mk('button','vc');
+    c.style.width=c.style.height=R*2+'px';
+    c.appendChild(mk('span',null,names[o]||PFLABEL[o]||o));
+    c.onclick=()=>{
+      if(locked) return;
+      if(sel.has(o)){ if(sel.size===1) return; sel.delete(o); }
+      else sel.add(o);
+      sfx('toggle'); place();
+      const list=[...sel];
+      pedit(sc.key,list[0]); PFALSO[sc.key]=list.slice(1);
+    };
+    wrap.appendChild(c);
+    return c;
+  });
+  function place(){
+    const both=sel.size===2;
+    const gap=both?R*1.1:R*2.5;
+    cs.forEach((c,i)=>{
+      c.classList.toggle('on',sel.has(sc.opts[i]));
+      gsap.to(c,{x:W/2+(i?1:-1)*gap/2-R, y:H/2-R, duration:.75, ease:EIO});
+    });
+    wrap.classList.toggle('union',both);
+  }
+  cs.forEach((c,i)=>gsap.set(c,{x:W/2+(i?1:-1)*R*1.25-R+(i?60:-60), y:H/2-R, opacity:0}));
+  place();
+  gsap.to(cs,{opacity:1,duration:.6,stagger:.1,ease:EIO});
+}
+
+/* the problems, in the same physics: chosen ones gather and grow at the
+   centre, the rest orbit dimmed */
+function pdomain(box,sc){
+  const W=Math.min(innerWidth*.56,880), H=Math.min(innerHeight*.5,480);
+  const wrap=mk('div','pfield');
+  wrap.style.width=W+'px'; wrap.style.height=H+'px';
+  box.appendChild(wrap);
+  const sel=new Set([presolve(sc.key)||sc.opts[0]]);
+  const RING=[[.5,.14],[.88,.42],[.72,.86],[.26,.86],[.1,.4]];
+  function anchorOf(b){
+    if(sel.has(b.key)) return [W/2,H/2];
+    const off=sc.opts.filter(o=>!sel.has(o));
+    const c=RING[off.indexOf(b.key)%RING.length];
+    return [c[0]*W,c[1]*H];
+  }
+  const balls=sc.opts.map((o,i)=>{
+    const r=sel.has(o)?64:52;
+    const el=mk('button','pfball');
+    el.style.width=el.style.height=r*2+'px';
+    el.appendChild(mk('span',null,PFLABEL[o]||o));
+    el.onclick=()=>{
+      if(locked) return;
+      if(sel.has(o)){ if(sel.size===1) return; sel.delete(o); }
+      else sel.add(o);
+      sfx('toggle'); paint();
+      const list=[...sel];
+      pedit(sc.key,list[0]); PFALSO[sc.key]=list.slice(1);
+    };
+    wrap.appendChild(el);
+    const [ax,ay]=anchorOf({key:o});
+    return {el:el,key:o,r:r,x:ax+Math.sin(i*4.1)*30,y:ay+Math.cos(i*2.3)*30,vx:0,vy:0};
+  });
+  function paint(){
+    balls.forEach(b=>{ const on=sel.has(b.key);
+      b.el.classList.toggle('on',on); b.big=on; b.r=on?64:52;
+      b.el.style.width=b.el.style.height=b.r*2+'px'; });
+  }
+  paint();
+  physField(wrap,W,H,balls,anchorOf);
+  enter([wrap],{scale:.96,blur:8,duration:.7},1400);
 }
 function pbubbles(box,sc){
   const win=presolve(sc.key);
@@ -5483,7 +5586,7 @@ function ptwo(box,sc){
 function pranked(box,sc){
   const order=presolve('location').slice();
   const list=mk('div','pfrank');
-  order.forEach((o,i)=>list.appendChild(prow(i+1,PFLABEL[o]||o,PFSUB[o]||'',o,order,sc)));
+  order.forEach((o,i)=>list.appendChild(prow(i+1,PFLABEL[o]||o,'',o,order,sc)));
   box.appendChild(list);
   /* a pair the rounds never put head to head has no honest rank */
   const c=rconf('location');
@@ -5555,8 +5658,8 @@ function pbuild(box,sc){
   const host=mk('div'); wrap.appendChild(host);
   box.appendChild(wrap);
   if(sc.key==='type') ppool(host,sc);
-  else if(sc.kind==='bubbles') pbubbles(host,sc);
-  else if(sc.kind==='two') ptwo(host,sc);
+  else if(sc.key==='domain') pdomain(host,sc);
+  else if(sc.kind==='two') pvenn(host,sc);
   else if(sc.kind==='ranked') pranked(host,sc);
   else porder(host,sc);
   dockAction(sc.id==='06'?'Create my vision board':'Continue',()=>{
@@ -6119,7 +6222,7 @@ function dbgGoto(i){
       removeEventListener('click',away); } }; addEventListener('click',away); },0);
   };
   st.textContent='1. '+DBG_STEPS[0][0];
-  const bv=mk('span','bldv','v36'); gr.parentElement&&gr.parentElement.appendChild(bv);
+  const bv=mk('span','bldv','v37'); gr.parentElement&&gr.parentElement.appendChild(bv);
   addEventListener('keydown',e=>{
     if(document.activeElement&&document.activeElement.tagName==='INPUT') return;
     if(e.key==='ArrowRight'){ paceAdvance(); }
