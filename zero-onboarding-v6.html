@@ -868,6 +868,52 @@ body.rszing iframe{ pointer-events:none; }   /* the drag must not fall into an e
 .lkurl.reading::after{ animation:lkshine 1.5s linear infinite; }
 @keyframes lkshine{ to{ transform:translateX(100%); } }
 .dmic.waiting{ opacity:.55; }
+/* live: the mic breathes rings while the transcript lands */
+.dmic.rec{ transform:scale(1.04); }
+.dmic.rec::after{ content:''; position:absolute; inset:-7px; border-radius:50%;
+  border:2px solid var(--ink); opacity:.4; animation:recring 1.15s ease-out infinite; }
+@keyframes recring{ 0%{ transform:scale(.88); opacity:.45; } 100%{ transform:scale(1.4); opacity:0; } }
+.dsay{ position:absolute; left:50%; bottom:calc(100% + 16px); transform:translateX(-50%);
+  max-width:600px; width:max-content; text-align:center; font-size:16.5px; line-height:1.5;
+  color:var(--tx-2); letter-spacing:-.01em; pointer-events:none; }
+/* the loading line shimmers itself; the dots breathe on the same clock */
+.q.qshine{ background:linear-gradient(100deg, currentColor 38%, rgba(255,255,255,.35) 50%, currentColor 62%);
+  background-size:230% 100%; -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent; animation:qsweep 2s linear infinite; }
+body:not(.dark) .q.qshine{ background:linear-gradient(100deg, currentColor 38%, rgba(13,13,13,.28) 50%, currentColor 62%);
+  background-size:230% 100%; -webkit-background-clip:text; background-clip:text; }
+@keyframes qsweep{ 0%{ background-position:125% 0; } 100%{ background-position:-125% 0; } }
+.qdots{ display:inline-flex; gap:7px; margin-left:16px; vertical-align:baseline; }
+.qdots i{ width:7px; height:7px; border-radius:50%; background:var(--tx); opacity:.22;
+  animation:qdot 2s infinite; }
+.qdots i:nth-child(2){ animation-delay:.22s; }
+.qdots i:nth-child(3){ animation-delay:.44s; }
+@keyframes qdot{ 0%,60%,100%{ opacity:.22; transform:translateY(0); }
+  30%{ opacity:.9; transform:translateY(-3px); } }
+/* the OAuth sheet */
+.ozv{ position:fixed; inset:0; z-index:200; display:flex; align-items:center;
+  justify-content:center; background:rgba(0,0,0,.45); backdrop-filter:blur(10px); }
+.ozc{ background:var(--card); border:1px solid var(--line); border-radius:26px;
+  padding:38px 40px 34px; width:min(420px,86vw); text-align:center;
+  box-shadow:0 30px 90px rgba(0,0,0,.35); }
+.ozlg{ width:58px; height:58px; border-radius:16px; background:#fff; margin:0 auto 18px;
+  display:flex; align-items:center; justify-content:center; border:1px solid var(--line); }
+.ozlg svg{ width:30px; height:30px; }
+.ozh{ font-size:21px; font-weight:600; letter-spacing:-.026em; color:var(--tx); margin:0 0 10px; }
+.ozp{ font-size:13.5px; line-height:1.55; color:var(--tx-2); margin:0 0 24px; }
+.ozb{ display:inline-flex; align-items:center; justify-content:center; cursor:pointer;
+  background:var(--ink); color:var(--on-ink); border:none; border-radius:999px;
+  padding:13px 34px; font-size:14.5px; font-weight:600; letter-spacing:-.01em;
+  transition:opacity .2s, transform .2s; }
+.ozb:hover{ opacity:.9; transform:translateY(-1px); }
+.ozdrop{ display:flex; flex-direction:column; align-items:center; gap:9px; cursor:pointer;
+  width:100%; padding:38px 24px; border-radius:18px; background:transparent;
+  border:1.5px dashed var(--tx-4); color:var(--tx); transition:border-color .25s, background .25s; }
+.ozdrop:hover{ border-color:var(--tx-2); background:var(--wash); }
+.ozdrop.up{ border-style:solid; border-color:var(--tx-2); }
+.ozdi svg{ width:26px; height:26px; opacity:.8; }
+.ozdt{ font-size:15.5px; font-weight:600; letter-spacing:-.016em; }
+.ozds{ font-size:12px; color:var(--tx-3); }
 .dmic.waiting::after{ content:''; position:absolute; inset:-4px; border-radius:50%;
   border:1.5px solid var(--tx-4); border-top-color:transparent;
   animation:dmicspin .8s linear infinite; }
@@ -1604,6 +1650,22 @@ function reflectAbout(){
 }
 function line(text){ turn({q:text}); }
 /* it is thinking, and it says so */
+/* The loader IS the text. The question line shimmers and three dots breathe
+   after it on the same clock - no second component doing the loading. */
+function shineLine(text){
+  turn({q:text});
+  setTimeout(()=>{
+    const q=document.querySelector('.turn .q'); if(!q) return;
+    q.classList.add('qshine');
+    const d=mk('span','qdots','<i></i><i></i><i></i>');
+    q.appendChild(d);
+  },540);
+  return ()=>{
+    const q=document.querySelector('.turn .q'); if(!q) return;
+    q.classList.remove('qshine');
+    const d=q.querySelector('.qdots'); if(d) d.remove();
+  };
+}
 function lineDots(text){
   turn({q:text});
   setTimeout(()=>{ const q=document.querySelector('.turn .q'); if(!q) return;
@@ -1712,7 +1774,10 @@ function askOpen(box,onText,opts){
      a mic and a keyboard; tapping the mic is the intent, and that is when the
      browser gets asked. Only a machine with no microphone, or one that has
      already refused, starts on the keyboard. */
-  if(micState==='absent'||micState==='denied'){ dockMode='type'; typeDock(onText,opts.extra); return; }
+  /* The simulated answer never touches the device, so a screen with a
+     scripted line always gets the mic - a denied or missing microphone must
+     not hide the primary gesture of the prototype. */
+  if(!SCRIPTED&&(micState==='absent'||micState==='denied')){ dockMode='type'; typeDock(onText,opts.extra); return; }
   dockMode='voice'; voiceDock(onText,opts.extra);
 }
 micProbe();
@@ -1898,16 +1963,34 @@ let SCRIPTED=null, SCRIPTED_SAY=null;
 function sayScripted(){
   const text=SCRIPTED, fn=SCRIPTED_SAY;
   if(!text||!fn||locked) return false;
-  const f=document.querySelector('.dfield input')||document.querySelector('.dfield textarea');
+  /* No real microphone. The mic goes live and the happy-path answer arrives
+     word by word above the dock, the way a live transcript lands, then sends
+     itself. The same gesture works on every screen that has a mic. */
+  const mic=document.querySelector('.dmic');
+  if(mic) mic.classList.add('rec');
   sfx('tick');
-  if(!f){ fn(text); return true; }
-  f.value=''; f.focus();
+  const dock=$('dock');
+  let cap=document.querySelector('.dsay');
+  if(!cap&&dock){ cap=mk('div','dsay'); dock.appendChild(cap);
+    enter([cap],{y:8,blur:4,duration:.4},800); }
+  const words=text.split(' ');
   let i=0;
-  const t=setInterval(()=>{
-    f.value=text.slice(0,++i);
-    f.dispatchEvent(new Event('input',{bubbles:true}));
-    if(i>=text.length){ clearInterval(t); setTimeout(()=>{ if(!locked) fn(text); },340); }
-  },17);
+  const step=()=>{
+    if(i>=words.length){
+      setTimeout(()=>{
+        if(mic&&mic.isConnected) mic.classList.remove('rec');
+        if(cap&&cap.isConnected) safeTL(gsap.timeline({onComplete:()=>{ if(cap.isConnected) cap.remove(); }})
+          .to(cap,{opacity:0,y:-6,duration:.3}),700);
+        if(!locked) fn(text);
+      },460);
+      return;
+    }
+    if(cap) cap.textContent=words.slice(0,++i).join(' ');
+    /* speech is not a metronome: short words tumble, clauses breathe */
+    const w=words[i-1]||'';
+    setTimeout(step, 90+Math.min(220,w.length*22)+(/[,.]$/.test(w)?260:0));
+  };
+  setTimeout(step,650);
   return true;
 }
 function chipsRow(box,items,onPick){
@@ -3127,13 +3210,12 @@ function linkedSummary(kind){
 }
 async function readProfile(kind){
   clearTurn(); dockHide(); await wait(380);
-  line(kind==='Resume'?'Reading your resume.':'Reading your LinkedIn.');
+  const stopShine=shineLine(kind==='Resume'?'Reading your resume':'Reading your LinkedIn');
   sfx('loading');
   /* There is no LinkedIn board. The user's board is born here and the facts
      land on it one at a time, each through the skeleton shimmer, so the story
      is visibly being written rather than fetched. */
   bornPanel();
-  thinking(true,'Reading your profile');
   await wait(700);
   const d=LINKEDIN[PKEY]||LINKEDIN.design;
   const facts=[
@@ -3145,11 +3227,10 @@ async function readProfile(kind){
   for(let i=0;i<facts.length;i++){
     facts[i]();
     renderBoard();
-    thinking(true,'Found '+(i+1)+' of '+facts.length);
     sfx('tick');
     await wait(1150);
   }
-  thinking(false);
+  stopShine();
   absorbLinked();
   setCap(P.name?'Got everything, '+P.name:'Got everything',false);
   sfx('success');
@@ -3742,35 +3823,68 @@ async function linkedinStage(){
      survives underneath for the few who do know. Three ways in, always. */
   const {box}=turn({q:'Connect your LinkedIn, drop a resume, or just tell me.'});
   qWide=false;
-  const alt=mk('div','alt alt3');
-  const altb=(icon,label,cls,fn)=>{
-    const b=mk('button','altb'+(cls?' '+cls:''));
-    b.innerHTML=(I[icon]||'')+'<span>'+label+'</span>';
-    b.onclick=()=>{ if(locked) return; locked=true; sfx('tick'); fn(); };
-    alt.appendChild(b);
-  };
-  altb('link','Connect my LinkedIn','altpri',()=>{
-    /* stands in for the OAuth hop: the point is that the user never types */
-    P.linked='LinkedIn'; P.linkedUrl='linkedin.com/in/'+String(P.name||'you').toLowerCase().replace(/[^a-z]/g,'');
-    clearTurn(); dockHide();
-    setTimeout(()=>{ locked=false; readProfile('LinkedIn'); },420);
-  });
-  altb('doc','Drop a resume','',()=>{ clearTurn(); dockHide();
-    setTimeout(()=>{ locked=false; linkStage('Resume'); },420); });
-  altb('user','Tell me about yourself','',()=>{ bornPanel(); go(readbackStage); });
-  box.appendChild(alt);
-  enter(Array.from(alt.children),{y:12,blur:7,stagger:.07,duration:.55},1000);
+  dockHide();
+  /* the squircle option boxes the rest of the flow already uses - three real
+     ways in, no URL field underneath */
+  choices(box,[
+    ['link','Connect my LinkedIn','lk'],
+    ['doc','Drop a resume','cv'],
+    ['user','Tell me about yourself','self']
+  ],v=>{
+    if(v==='lk'){ lkModal(); }
+    else if(v==='cv'){ cvModal(); }
+    else { bornPanel(); go(readbackStage); }
+  },{nomorph:true});
+}
 
-  dockMode='type';
-  linkDock(v=>{
-    if(String(v).trim().length<4){ sfx('error'); locked=false;
-      gsap.fromTo('.dfield',{x:0},{x:7,duration:.07,yoyo:true,repeat:5}); return; }
-    locked=true;
-    P.linked='LinkedIn';
-    P.linkedUrl=String(v).trim().replace(/^https?:\/\//,'').replace(/\/$/,'');
-    clearTurn(); dockHide();
-    setTimeout(()=>{ locked=false; readProfile('LinkedIn'); },420);
-  },'linkedin.com/in/your-id');
+/* The OAuth hop, played straight enough to be believable and light enough to
+   admit it is a prototype. One Connect button, then the read begins. */
+function ozSheet(build){
+  const ov=mk('div','ozv');
+  const c=mk('div','ozc');
+  ov.appendChild(c); document.body.appendChild(ov);
+  const close=()=>{ safeTL(gsap.timeline({onComplete:()=>{ if(ov.isConnected) ov.remove(); }})
+    .to(c,{y:14,opacity:0,scale:.97,duration:.28},0)
+    .to(ov,{opacity:0,duration:.3},0),700); };
+  build(c,close);
+  safeTL(gsap.timeline()
+    .fromTo(ov,{opacity:0},{opacity:1,duration:.3},0)
+    .fromTo(c,{y:22,opacity:0,scale:.96},{y:0,opacity:1,scale:1,duration:.5,ease:EIO},.05),1100);
+  return close;
+}
+function lkModal(){
+  ozSheet((c,close)=>{
+    const lg=mk('div','ozlg',(LOGO['LinkedIn']||I.link||''));
+    c.appendChild(lg);
+    c.appendChild(mk('h3','ozh','Connect your LinkedIn with Zero'));
+    c.appendChild(mk('p','ozp','LinkedIn connected. Kidding — hit Connect and I’ll read it for real.'));
+    const b=mk('button','ozb','Connect');
+    b.onclick=()=>{
+      if(b.dataset.done) return; b.dataset.done='1';
+      sfx('success');
+      b.textContent='Connected';
+      P.linked='LinkedIn';
+      P.linkedUrl='linkedin.com/in/'+String(P.name||'you').toLowerCase().replace(/[^a-z]/g,'');
+      setTimeout(()=>{ close(); clearTurn();
+        setTimeout(()=>{ locked=false; readProfile('LinkedIn'); },380); },520);
+    };
+    c.appendChild(b);
+  });
+}
+function cvModal(){
+  ozSheet((c,close)=>{
+    const z=mk('button','ozdrop');
+    z.innerHTML='<span class="ozdi">'+(I.doc||'')+'</span><span class="ozdt">Upload your resume here</span><span class="ozds">PDF or a link, either works</span>';
+    z.onclick=()=>{
+      if(z.dataset.done) return; z.dataset.done='1';
+      sfx('tick');
+      z.classList.add('up');
+      z.querySelector('.ozdt').textContent='Reading resume.pdf';
+      setTimeout(()=>{ sfx('success'); close(); clearTurn();
+        setTimeout(()=>{ locked=false; P.linked='Resume'; readProfile('Resume'); },380); },1250);
+    };
+    c.appendChild(z);
+  });
 }
 
 /* ---- 3 - what the profile said, and the invitation to correct it --------
