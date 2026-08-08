@@ -552,6 +552,18 @@ LOGO['Perplexity'] = '<svg viewBox="0 0 24 24" fill="#20808D"><path d="M22.398 7
 const $ = s => document.querySelector(s);
 function mk(tag, cls, html){ const e = document.createElement(tag); if(cls) e.className = cls; if(html != null) e.innerHTML = html; return e; }
 const wait = ms => new Promise(r => setTimeout(r, ms));
+/* paced mode: the first arrow press stops the clock — every press then
+   releases exactly ONE beat (a line, a fact, a reply, a pick) */
+let paced = false, gateRes = null, gateTmr = null, beatCount = 0;
+function gateClear(){ if(gateTmr){ clearTimeout(gateTmr); gateTmr = null; } gateRes = null; }
+function gate(ms){
+  return new Promise(res => {
+    gateClear();
+    gateRes = () => { gateClear(); res(); };
+    if(!paced) gateTmr = setTimeout(() => { gateClear(); res(); }, ms);
+  });
+}
+function advance(){ if(gateRes){ beatCount++; gateRes(); return true; } return false; }
 let gen = 0;
 const stamp = () => gen;
 const alive = g => g === gen;
@@ -939,7 +951,7 @@ async function speak(host, lines, { gap = 1500, keepLast = true, dimPast = true 
     if(!alive(g)) return box;
     ln.classList.add('on');
     if(dimPast) [...box.children].forEach(k => { if(k !== ln) k.classList.add('dim'); });
-    await wait(gap + Math.min(1400, lines[i].length * 13));
+    await gate(gap + Math.min(1400, lines[i].length * 13));
   }
   if(!keepLast && alive(g)){ box.style.opacity = 0; }
   return box;
@@ -955,7 +967,7 @@ async function think(host, lines, { hold = 2100, keepLast = true } = {}){
     box.innerHTML = ''; box.appendChild(th);
     await wait(40); if(!alive(g)) return;
     th.classList.add('on');
-    await wait(hold + Math.min(1400, lines[i].length * 12));
+    await gate(hold + Math.min(1400, lines[i].length * 12));
     if(i < lines.length - 1 || !keepLast){ th.classList.add('out'); await wait(420); }
   }
 }
@@ -974,6 +986,7 @@ function chipRow(host, defs){
 /* ── steps ────────────────────────────────────────── */
 function clearStage(){
   gen++;
+  gateClear(); beatCount = 0;
   stage.innerHTML = '';
   dockHide();
   ctas.classList.remove('on'); ctas.innerHTML = '';
@@ -1092,10 +1105,10 @@ async function stRead(){
     () => { Board.pin('💃', f.pinDance); bump(1); },
     () => { Board.pin('📷', f.pinShoots); bump(1); },
   ];
-  for(const fn of seq){ if(!alive(g)) return; fn(); await wait(1750); }
+  for(const fn of seq){ if(!alive(g)) return; fn(); await gate(1750); }
   if(!alive(g)) return;
   meta.innerHTML = `<span>${I.check}</span><span>${signals} signals · read</span>`;
-  await wait(600); if(!alive(g)) return;
+  await gate(600); if(!alive(g)) return;
   goto(4);
 }
 
@@ -1119,7 +1132,7 @@ async function stMissed(){
     if(!alive(g)) return;
     dockHide();
     pivotIntoBoard(false);
-    await wait(2100); if(!alive(g)) return;
+    await gate(2100); if(!alive(g)) return;
     goto(5);
   }
 }
@@ -1154,7 +1167,7 @@ async function stPivot(){
       sfx(S_PICK);
       await wait(560);
     }
-    await wait(900); if(!alive(g)) return;
+    await gate(900); if(!alive(g)) return;
     goto(6);
   }
 }
@@ -1165,7 +1178,7 @@ async function stAck(){
   const sc = scene();
   const g = stamp();
   await speak(sc, ACK, { gap: 1300 });
-  await wait(300); if(!alive(g)) return;
+  await gate(300); if(!alive(g)) return;
   sc.innerHTML = '';
   await speak(sc, SETUP.map(l => l.replace('%N', S.name)), { gap: 1350 });
   if(!alive(g)) return;
@@ -1439,9 +1452,9 @@ async function stBoardFill(){
   seedBoard(2);
   Board.mount(sc);
   veil.classList.remove('on');
-  await wait(900); if(!alive(g)) return;
+  await gate(900); if(!alive(g)) return;
   prioritiesIntoBoard();
-  await wait(1900); if(!alive(g)) return;
+  await gate(1900); if(!alive(g)) return;
   Board.settleAll();
   chipRow(sc, [
     { label: 'This looks like me', prim: true, icon: I.check, on: () => goto(15) },
@@ -1716,6 +1729,36 @@ function goto(i){
 }
 window.dbgGoto = goto;
 
+/* the arrow plays the user's side: reply, pick, continue — one turn per press */
+function userTurn(){
+  if(stepAt === STEPS.length - 1) return false;
+  if(dock.querySelector('.dmic.rec') || scriptEl.classList.contains('on')) return true;
+  const cta = document.querySelector('#ctas.on .cta.prim'); if(cta){ beatCount++; cta.click(); return true; }
+  const mic = dock.querySelector('.dmic'); if(mic){ beatCount++; mic.click(); return true; }
+  const inp = dock.querySelector('.dfield input');
+  if(inp){
+    if(!inp.value.trim()){
+      inp.value = stepAt >= 19 ? 'sanjay@z-ro.co' : (stepAt <= 1 ? 'Sanjay' : 'linkedin.com/in/sanjay-chauhan');
+      inp.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    const send = dock.querySelector('.dsend'); if(send){ beatCount++; send.click(); return true; }
+  }
+  if(stage.querySelector('.rcards .rc')){
+    if(stage.querySelector('.rc.gone')) return true;
+    const cards = stage.querySelectorAll('.rcards .rc');
+    const side = ILLUSTRATIVE[S.picks.length] || 'a';
+    beatCount++; (side === 'a' ? cards[0] : cards[cards.length - 1]).click();
+    return true;
+  }
+  const prim = stage.querySelector('.chip.prim'); if(prim){ beatCount++; prim.click(); return true; }
+  const cont = stage.querySelector('.cbtn'); if(cont){ beatCount++; cont.click(); return true; }
+  const sticky = $('#stickycta'); if(sticky.classList.contains('on')){ beatCount++; sticky.click(); return true; }
+  const hz = stage.querySelector('.hznav button:last-child'); if(hz){ beatCount++; hz.click(); return true; }
+  return false;
+}
+function stepFwd(){ paced = true; if(advance()) return; if(!userTurn()) goto(stepAt + 1); }
+function stepBack(){ paced = true; if(beatCount > 0){ goto(stepAt); } else { goto(stepAt - 1); } }
+
 /* ── stepper ──────────────────────────────────────── */
 function buildDbg(){
   const bar = $('#dbg');
@@ -1731,8 +1774,8 @@ function buildDbg(){
     b.addEventListener('click', () => { panel.classList.remove('open'); goto(i); });
     panel.appendChild(b);
   });
-  $('#dbgprev').addEventListener('click', () => goto(stepAt - 1));
-  $('#dbgnext').addEventListener('click', () => goto(stepAt + 1));
+  $('#dbgprev').addEventListener('click', stepBack);
+  $('#dbgnext').addEventListener('click', stepFwd);
   $('#dbgcur').addEventListener('click', () => panel.classList.toggle('open'));
 }
 function syncDbg(){
@@ -1745,6 +1788,13 @@ function syncDbg(){
 $('#snd').addEventListener('click', () => {
   sndOn = !sndOn;
   $('#snd').innerHTML = sndOn ? I.vol : I.mute;
+});
+
+document.addEventListener('keydown', e => {
+  const t = e.target;
+  if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
+  if(e.key === 'ArrowRight'){ e.preventDefault(); stepFwd(); }
+  else if(e.key === 'ArrowLeft'){ e.preventDefault(); stepBack(); }
 });
 
 /* ── boot ─────────────────────────────────────────── */
