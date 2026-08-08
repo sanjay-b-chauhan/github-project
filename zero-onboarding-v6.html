@@ -1366,7 +1366,37 @@ function voPlay(text){
   });
 }
 /* say it and show it together, and fall back to the old timing when there is no take */
+/* Drive mode: while on, every conversational beat waits at this gate and one
+   press of the next arrow releases exactly one. Off by default, so the flow
+   auto-plays until the person reaches for the wheel. */
+let PACE=false; const paceQueue=[];
+function paceGate(){
+  if(!PACE) return Promise.resolve();
+  return new Promise(res=>paceQueue.push(res));
+}
+function paceRelease(){ const r=paceQueue.shift(); if(r) r(); }
+function paceAdvance(){
+  PACE=true;
+  /* a Zero line is waiting: let it speak */
+  if(paceQueue.length){ paceRelease(); return; }
+  /* otherwise it is YOUR move */
+  if(SCRIPTED&&!locked&&sayScripted()) return;
+  const f=document.querySelector('.dfield input,.dfield textarea');
+  if(f&&!locked){
+    const ph=(f.placeholder||'').toLowerCase();
+    f.value=/linkedin|resume|drive|\.com/.test(ph)
+      ? 'linkedin.com/in/sanjaybchauhan'
+      : /name/.test(ph) ? 'Sanjay' : 'Yes, that works';
+    f.dispatchEvent(new Event('input',{bubbles:true}));
+    const send=document.querySelector('.dsend'); if(send){ send.click(); return; }
+  }
+  const act=document.querySelector('.ozb, .ozdrop, .dbig, .opt, .rcd, .chip2, .pfb');
+  if(act&&!locked){ act.click(); return; }
+  /* nothing left on this screen: the old section jump is the right fallback */
+  dbgGoto(dbgAt+1);
+}
 async function voLine(text,fallback){
+  { const g0=gen; await paceGate(); if(g0!==gen) return; }
   /* audio outlives a screen change: without this a stale line resumes when its
      clip ends and paints over whatever is now on screen. */
   const g=gen;
@@ -1637,7 +1667,9 @@ async function go(next){ const g=gen; clearTurn(); dockHide(); await wait(400); 
 /* Zero says back what it just heard before it moves on. This is not decoration:
    it is the beat where the answer lands on the board, so the two feel connected. */
 async function reflect(text,hold){
-  if(!text) return; const g=gen; line(text); await wait(hold||1700); if(g!==gen) return;
+  if(!text) return; const g=gen;
+  await paceGate(); if(g!==gen) return;
+  line(text); await wait(hold||1700); if(g!==gen) return;
 }
 function joinList(a){ if(a.length<2) return a[0]||''; return a.slice(0,-1).join(', ')+' and '+a[a.length-1]; }
 function reflectAbout(){
@@ -1690,7 +1722,9 @@ function lineDots(text){
     const d=mk('span','tdots','<i></i><i></i><i></i>'); q.appendChild(d);
     safeTL(gsap.timeline().fromTo(d,{opacity:0},{opacity:1,duration:.4}),800); },520);
 }
-async function beat(text,add,hold){ line(text); await wait(800); if(add) await add(); await wait(hold||1300); }
+async function beat(text,add,hold){
+  const g=gen; await paceGate(); if(g!==gen) return;
+  line(text); await wait(800); if(add) await add(); await wait(hold||1300); }
 
 /* ============================ the dock ============================ */
 let dockMode='voice', rec=null, listening=false;
@@ -5265,6 +5299,7 @@ function dbgGoto(i){
   gen++;
   try{ gsap.killTweensOf(['#col','#scroll','.right','#dock','#dtr','#top','#aur','#paper','#turn']); }catch(e){}
   locked=false; editReturn=null; scanning=false; queue.length=0; shown={}; keys={}; tlMode='h';
+  PACE=false; paceQueue.length=0;
   const t0=$('turn'); if(t0) t0.remove();
   $('col').innerHTML=''; $('dockIn').innerHTML='';
   gsap.set('#dock',{opacity:0}); gsap.set('#dtr',{opacity:0}); $('dtr').innerHTML='';
@@ -5348,12 +5383,12 @@ function dbgGoto(i){
   nx.className='dbgnav'; nx.innerHTML=I.arrow;
   gr.innerHTML=I.gear;
   pv.onclick=()=>{ sfx('tick'); dbgGoto(dbgAt-1); };
-  nx.onclick=()=>{ sfx('tick'); dbgGoto(dbgAt+1); };
+  nx.onclick=()=>{ sfx('tick'); paceAdvance(); };
   st.onclick=()=>{ sfx('tick'); dbgGoto(0); };
   st.textContent='1. '+DBG_STEPS[0][0];
   addEventListener('keydown',e=>{
     if(document.activeElement&&document.activeElement.tagName==='INPUT') return;
-    if(e.key==='ArrowRight'){ dbgGoto(dbgAt+1); }
+    if(e.key==='ArrowRight'){ paceAdvance(); }
     if(e.key==='ArrowLeft'){ dbgGoto(dbgAt-1); }
   });
 })();
