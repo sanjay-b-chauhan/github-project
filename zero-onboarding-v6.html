@@ -28,6 +28,7 @@
 *{ margin:0; padding:0; box-sizing:border-box; }
 html,body{ height:100%; }
 body{ background:var(--page); color:var(--tx); font-family:var(--f); font-size:14px;
+  font-synthesis:none;
   letter-spacing:-.018em; overflow:hidden; -webkit-font-smoothing:antialiased;
   transition:background-color .6s ease, color .6s ease; }
 body.dark{
@@ -972,6 +973,8 @@ body.dark .jsat.jbest{ border-color:rgba(255,255,255,.2); }
   font-family:var(--f); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .dbgjb:hover{ color:var(--tx); border-color:var(--tx-4); }
 .dbgjb.on{ background:var(--ink); color:var(--on-ink); border-color:var(--ink); }
+.bldv{ font-size:10px; color:var(--tx-4); align-self:center; margin-left:6px;
+  letter-spacing:.04em; }
 /* jump straight to a screen */
 .dbgjump{ position:fixed; right:22px; bottom:78px; z-index:200; width:210px;
   max-height:62vh; overflow:auto; padding:6px; border-radius:16px;
@@ -6009,6 +6012,7 @@ function dbgGoto(i){
       removeEventListener('click',away); } }; addEventListener('click',away); },0);
   };
   st.textContent='1. '+DBG_STEPS[0][0];
+  const bv=mk('span','bldv','v31'); gr.parentElement&&gr.parentElement.appendChild(bv);
   addEventListener('keydown',e=>{
     if(document.activeElement&&document.activeElement.tagName==='INPUT') return;
     if(e.key==='ArrowRight'){ paceAdvance(); }
