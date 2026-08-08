@@ -373,10 +373,11 @@ body:not(.dark) .vbs.spot .vbc{ box-shadow:0 0 0 1.5px rgba(13,13,13,.28), 0 8px
 .vbg:empty{ display:none; }
 /* the pick stack: small marks overlapping, riding inside the sentence */
 .vstack{ display:inline-flex; align-items:center; vertical-align:middle; margin:0 .1em; }
-.vsl{ width:1.5em; height:1.5em; border-radius:50%; background:#fff; border:2px solid var(--page);
-  display:inline-flex; align-items:center; justify-content:center; margin-left:-.45em; }
+.vsl{ width:2.05em; height:2.05em; border-radius:50%; background:#fff; border:2.5px solid var(--page);
+  display:inline-flex; align-items:center; justify-content:center; margin-left:-.6em;
+  box-shadow:0 2px 8px rgba(0,0,0,.07); }
 .vsl:first-child{ margin-left:0; }
-.vsl svg{ width:60%; height:60%; }
+.vsl svg{ width:56%; height:56%; }
 .vslmore{ background:var(--wash); color:var(--tx-2); font-size:.55em; font-weight:600;
   border:2px solid var(--page); }
 /* the pins live beside the story, never inside it */
@@ -2911,7 +2912,7 @@ function harvestPins(text){
 }
 /* small marks, overlapped like a hand of chips */
 function logoStack(cos){
-  const show=cos.slice(0,5);
+  const show=cos.slice(0,8);
   const more=cos.length-show.length;
   return '<span class="vstack">'+show.map(c=>'<span class="vsl">'+(LOGO[c]||I.spark)+'</span>').join('')
     +(more>0?'<span class="vsl vslmore">+'+more+'</span>':'')+'</span>';
@@ -6328,7 +6329,54 @@ function stub(label,next,note){
   box.appendChild(n);
   if(next) cta('Continue',next);
 }
-function synthesisStage(){stub('The picture I have.', portfolioStage,'step 5 - synthesis monologue'); }
+async function synthesisStage(){
+  atStep('Synthesis');
+  setPhase(1);
+  const g=gen;
+  clearTurn(); dockHide(); await wait(500); if(g!==gen) return;
+  /* the board is the evidence, so the review happens on the board itself -
+     and it must be whole before the spotlight moves: a row still pumping in
+     cannot be lit, so everything ready paints at once */
+  SENTENCES().forEach(x=>{ if(x.ready) shown[x.id]=1; });
+  drawerOpen();
+  await wait(1000); if(g!==gen) return;
+  /* a stepper jump rides in on fastMode to collapse the set-up above; the
+     review itself is the content, so it always runs at human speed */
+  fastMode=false;
+  const beat=async(ids,text,hold)=>{
+    await paceGate(); if(g!==gen) return false;
+    if(ids&&ids.length){ spotRows(ids);
+      const r=document.querySelector('.vbs[data-id="'+ids[0]+'"]');
+      if(r&&r.scrollIntoView) r.scrollIntoView({behavior:'smooth',block:'center'});
+    } else unspot();
+    line(text); await wait(hold||3200);
+    return g===gen;
+  };
+  /* everything below is the user's own data, never stock copy */
+  const fits=JPOOL.map(j=>({co:j.co,t:jscore(j).tier})).sort((a,b)=>b.t-a.t);
+  const top3=joinList(fits.slice(0,3).map(x=>x.co));
+  const city=PFLABEL[(typeof presolveCity==='function'&&presolveCity())||'']||P.location||'the city you chose';
+  const pk=(((typeof presolve==='function'&&presolve('priorities'))||[])[0]||{}).k||'work';
+  const prWhy=pk==='location'?'place kept winning your picks'
+            :pk==='comp'?'you weighed the package every time and still chose them'
+            :'the work itself kept winning your picks';
+  const tools=(P.tools||'').split(',').map(t=>t.trim()).filter(Boolean);
+  const b1=(P.year&&P.college)
+    ? P.year+' at '+P.college+(P.interned?', with '+wordNum(low(P.interned))+' already banked':'')+'.'
+    : 'Look at what is already true about you.';
+  const b2=tools.length>=2
+    ? tools[0]+' and '+tools[1]+' are the exact tools these rooms run on.'
+    : 'The craft you bring is the craft these rooms run on.';
+  if(!await beat(['s1','p1'], b1, 3400)) return;
+  if(!await beat(['p2'], b2, 3200)) return;
+  if(!await beat(['p3','s2'], 'The rooms you watch became the rooms that fit: '+top3+'.', 3600)) return;
+  if(!await beat(['p3','s2'], 'They came out on top because '+prWhy+'.', 3200)) return;
+  if(!await beat(['s3','s8'], city+' is where your choices kept landing, so that is where we aim.', 3400)) return;
+  if(!await beat(null, 'Interest alone will not open these doors. Proof will.', 3000)) return;
+  await paceGate(); if(g!==gen) return;
+  line('That proof is a portfolio, and I have already pictured yours.');
+  cta('Show me my portfolio',()=>{ unspot(); portfolioStage(); });
+}
 function claimStage(){    stub('10,000 credits.',     creditsStage,  'step 8 - slide to claim'); }
 
 /* ============================ boot ============================ */
@@ -6382,7 +6430,7 @@ function dbgFill(upTo){
   set(5,()=>{ P.why='I want to work on products people actually use and build a career I can grow in.'; });
   set(7,()=>{ /* the cards have been played: their read-out is the preference state */
     P.role=d.roles&&d.roles[0]?d.roles[0][0]:'Product Designer';
-    P.dream='OpenAI, Figma, Anthropic';
+    P.dream='OpenAI, Figma, Anthropic, Google, Salesforce, Adobe, DoorDash, Shopify';
     P.industry='Tech and AI';
     P.problems=d.problemChips?d.problemChips[0]:'Confusing tools';
     P.location='Toronto';
@@ -6557,7 +6605,7 @@ function dbgGoto(i){
       removeEventListener('click',away); } }; addEventListener('click',away); },0);
   };
   st.textContent='1. '+DBG_STEPS[0][0];
-  const bv=mk('span','bldv','v43'); gr.parentElement&&gr.parentElement.appendChild(bv);
+  const bv=mk('span','bldv','v44'); gr.parentElement&&gr.parentElement.appendChild(bv);
   addEventListener('keydown',e=>{
     if(document.activeElement&&document.activeElement.tagName==='INPUT') return;
     if(e.key==='ArrowRight'){ paceAdvance(); }
