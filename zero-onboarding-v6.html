@@ -952,6 +952,13 @@ body.dark .jsat.jbest{ border-color:rgba(255,255,255,.2); }
 .jcta:hover{ animation-play-state:paused; transform:translateX(-50%) translateY(-3px); }
 @keyframes jfloat{ 0%,100%{ transform:translateX(-50%) translateY(0); }
   50%{ transform:translateX(-50%) translateY(-5px); } }
+/* the jump grid inside the settings drawer */
+.dbgjg{ display:grid; grid-template-columns:1fr 1fr; gap:4px; }
+.dbgjb{ text-align:left; cursor:pointer; background:var(--wash); border:1px solid var(--line);
+  color:var(--tx-2); font-size:11.5px; padding:7px 8px; border-radius:9px;
+  font-family:var(--f); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.dbgjb:hover{ color:var(--tx); border-color:var(--tx-4); }
+.dbgjb.on{ background:var(--ink); color:var(--on-ink); border-color:var(--ink); }
 /* jump straight to a screen */
 .dbgjump{ position:fixed; right:22px; bottom:78px; z-index:200; width:210px;
   max-height:62vh; overflow:auto; padding:6px; border-radius:16px;
@@ -5824,6 +5831,7 @@ function atStep(label){
   if(i<0) return;
   dbgAt=i;
   const lbl=$('dbgStep'); if(lbl) lbl.textContent=(i+1)+'. '+label;
+  try{ window.markJump&&window.markJump(); }catch(e){}
   const pv=$('dbgPrev'), nx=$('dbgNext');
   if(pv) pv.style.opacity=i<=0?.3:1;
   if(nx) nx.style.opacity=i>=DBG_STEPS.length-1?.3:1;
@@ -5997,6 +6005,23 @@ function dbgGoto(i){
     inp.onchange=()=>set(inp.checked);
     r.appendChild(inp); body.appendChild(r);
   }
+
+  /* Jump to screen, first in the drawer, because when you are checking one
+     screen you should not have to walk the flow to reach it. */
+  const jump=section('Jump to screen');
+  (function(){
+    const grid=mk('div','dbgjg');
+    DBG_STEPS.forEach((sp,i)=>{
+      const b=mk('button','dbgjb',(i+1)+'. '+sp[0]);
+      b.dataset.i=String(i);
+      b.onclick=()=>{ sfx('tick'); dbgGoto(i); markJump(); };
+      grid.appendChild(b);
+    });
+    jump.appendChild(grid);
+    window.markJump=()=>{ grid.querySelectorAll('.dbgjb').forEach(b=>
+      b.classList.toggle('on',+b.dataset.i===dbgAt)); };
+    markJump();
+  })();
 
   const draw=section('Draw ZERO');
   range(draw,'Ink max',20,180,2,()=>INK.max,v=>INK.max=v);
