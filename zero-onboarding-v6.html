@@ -952,6 +952,8 @@ body.dark .jsat.jbest{ border-color:rgba(255,255,255,.2); }
 .jcta:hover{ animation-play-state:paused; transform:translateX(-50%) translateY(-3px); }
 @keyframes jfloat{ 0%,100%{ transform:translateX(-50%) translateY(0); }
   50%{ transform:translateX(-50%) translateY(-5px); } }
+/* the moment of choosing: a ring of light on the card that was taken */
+.rcd.rcpick{ box-shadow:0 0 0 2px var(--ink), 0 30px 70px rgba(0,0,0,.4) !important; }
 /* the jump grid inside the settings drawer */
 .dbgjg{ display:grid; grid-template-columns:1fr 1fr; gap:4px; }
 .dbgjb{ text-align:left; cursor:pointer; background:var(--wash); border:1px solid var(--line);
@@ -1093,18 +1095,16 @@ body.dark .jsat.jbest{ border-color:rgba(255,255,255,.2); }
 .rclogo{ transform:translateZ(46px); }
 .rcrole{ transform:translateZ(34px); }
 .rcco{ transform:translateZ(26px); }
-.rcp{ transform:translateZ(18px); }
+
 .rcfoot{ transform:translateZ(24px); }
-.rcrole{ position:relative; font-size:25px; font-weight:600; color:var(--tx);
-  letter-spacing:-.03em; line-height:1.16; margin-bottom:5px; }
-.rclogo{ position:relative; width:38px; height:38px; border-radius:11px; background:#fff;
-  border:1px solid var(--line); display:flex; align-items:center; justify-content:center;
-  margin-bottom:20px; }
-.rclogo svg{ width:21px; height:21px; }
-.rcco{ position:relative; font-size:13px; font-weight:500; color:var(--tx-3);
-  letter-spacing:-.008em; margin-bottom:20px; }
-.rcp{ position:relative; font-size:15px; line-height:1.52; color:var(--tx-2);
-  letter-spacing:-.012em; }
+/* The same serif as every other title in the product. This was the interface
+   font from the day the card was built, while I kept fixing the screen around
+   it instead of opening the component. */
+.rcrole{ position:relative; font-family:var(--serif); font-size:31px; font-weight:400;
+  color:var(--tx); letter-spacing:-.026em; line-height:1.08; margin-bottom:9px; }
+.rcbrand{ position:relative; display:flex; align-items:center; gap:8px; }
+.rcco{ position:relative; font-size:14px; font-weight:450; color:var(--tx-3);
+  letter-spacing:-.006em; }
 .rcfoot{ position:relative; margin-top:auto; padding-top:22px; }
 .rcamt{ font-size:19px; font-weight:600; color:var(--tx); letter-spacing:-.024em; }
 .rcloc{ display:flex; align-items:center; gap:5px; font-size:13px; color:var(--tx-3);
@@ -4905,7 +4905,8 @@ function rcard(id,side,keep){
   b.appendChild(mk('div','rclogo',rlogo(d.co)));
   b.appendChild(mk('div','rcrole',d.role));
   b.appendChild(mk('div','rcco',d.co));
-  b.appendChild(mk('div','rcp',d.problem));
+  /* the body copy is gone: the role, the company and the offer are the
+     choice. A paragraph is something to read, not something to weigh. */
   const f=mk('div','rcfoot');
   /* a range, because nobody is ever offered a single number */
   f.appendChild(mk('div','rcamt',money(d.band||d.pay)));
@@ -5038,19 +5039,16 @@ function rcRound(myGen,first){
   setTimeout(()=>{ if(myGen===gen) rcSay(rcSayFor(round)); },first?900:620);
 
   /* dealt from the bottom of the screen, not faded in place */
-  /* dealt: they rise from below, overshoot a hair, and settle into their
-     resting tilt - the tilt is restored at the end rather than fought during
-     the flight, which is what made the old version look like it was fighting
-     itself */
+  /* The loop, as asked: the pair rises from the bottom into the centre, and
+     when one is chosen it leaves through the top while the next pair is
+     already coming up from below. Nothing crossfades in place. */
   const t0=first?.12:0;
   safeTL(gsap.timeline()
-    .fromTo(slotL,{opacity:0,y:innerHeight*.24,rotation:-11,scale:.88,filter:'blur(12px)'},
-      {opacity:1,y:0,rotation:0,scale:1,filter:'blur(0px)',duration:.95,
-       ease:'expo.out',clearProps:'filter'},t0)
-    .fromTo(slotR,{opacity:0,y:innerHeight*.28,rotation:11,scale:.88,filter:'blur(12px)'},
-      {opacity:1,y:0,rotation:0,scale:1,filter:'blur(0px)',duration:1.0,
-       ease:'expo.out',clearProps:'filter'},t0+.1)
-    .to([slotL,slotR],{clearProps:'transform',duration:.01},'>-.05'),2400);
+    .fromTo(slotL,{opacity:0,y:innerHeight*.62,rotation:-10,scale:.9},
+      {opacity:1,y:0,rotation:0,scale:1,duration:.95,ease:'expo.out'},t0)
+    .fromTo(slotR,{opacity:0,y:innerHeight*.68,rotation:10,scale:.9},
+      {opacity:1,y:0,rotation:0,scale:1,duration:1.0,ease:'expo.out'},t0+.08)
+    .to([slotL,slotR],{clearProps:'transform',duration:.01},'>-.04'),2600);
 
   let done=false;
   [A,B].forEach(el=>{ el.onclick=()=>{
@@ -5075,19 +5073,24 @@ function rcRound(myGen,first){
        Google-in-US over Zomato-in-India could be the company or the country,
        and only the full set separates them. The board gets it after the
        confirmation screens, or it is guessing in public. */
-    /* the chosen card is ACCEPTED - it lifts, brightens and leaves upward;
-       the one not chosen loses its light and falls off the bottom */
+    /* the choice has to land before it leaves: the card takes a hit, the
+       other one drops out of the way, then it is carried up through the top */
     const win=el.parentElement||el, lose=other.parentElement||other;
+    el.classList.add('rcpick');
+    sfx('press');
     safeTL(gsap.timeline()
-      .to(win,{y:-innerHeight*.16,scale:1.05,opacity:0,duration:.55,ease:'power2.in'},.05)
-      .to(lose,{y:innerHeight*.14,rotation:lose.classList.contains('tiltL')?-13:13,
-        opacity:0,duration:.5,ease:'power2.in'},0)
-      .add(()=>{ if(row.isConnected) row.remove(); }),1400);
+      .to(el,{scale:.965,duration:.09,ease:'power3.out'},0)
+      .to(el,{scale:1.045,duration:.2,ease:'back.out(3)'},.09)
+      .to(lose,{y:innerHeight*.22,rotation:lose.classList.contains('tiltL')?-16:16,
+        opacity:0,scale:.94,duration:.5,ease:'power2.in'},.02)
+      .to(win,{y:-innerHeight*.72,scale:.94,opacity:0,duration:.72,ease:'power2.in'},.3)
+      .add(()=>{ if(row.isConnected) row.remove(); }),2200);
+
     renderBoard();
     setTimeout(()=>{
       if(myGen!==gen) return;
       RN++; locked=false; rcRound(myGen,false);
-    },660);
+    },520);
   };});
 }
 
