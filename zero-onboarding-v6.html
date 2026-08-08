@@ -357,7 +357,10 @@ body.dark .paper::before{ background-image:radial-gradient(rgba(255,255,255,.07)
 .vb{ font-family:var(--vbfont,inherit); font-size:var(--vbfs,22px);
   line-height:var(--vblh,2.35); letter-spacing:-.022em; font-weight:500;
   max-width:min(38ch,100%); margin:0 auto; text-align:center; word-spacing:.04em; }
-.vbs{ display:inline; transition:opacity .5s var(--e,cubic-bezier(.625,.05,0,1)), filter .5s; }
+/* one sentence per line, air between them: the story reads in stanzas */
+.vbs{ display:block; margin-bottom:.6em;
+  transition:opacity .5s var(--e,cubic-bezier(.625,.05,0,1)), filter .5s; }
+.vbs:last-child{ margin-bottom:0; }
 /* while Zero validates, the row it is talking about is the bright thing and
    the rest of the story steps back */
 .vb.spotting .vbs:not(.spot){ opacity:.3; filter:saturate(.55); }
@@ -796,9 +799,9 @@ body.rszing iframe{ pointer-events:none; }   /* the drag must not fall into an e
 .jrbar i.on{ background:var(--ink); }
 /* ---- the fields: no fence, the centre is the selection ------------------ */
 .pfield{ position:relative; margin:2px auto 16px; max-width:100%; }
-.pfcap{ position:absolute; left:0; top:0; font-size:15px; font-weight:600;
-  color:var(--tx); letter-spacing:-.012em; white-space:nowrap; will-change:transform;
-  pointer-events:none; }
+.pfcap{ position:absolute; left:0; top:0; font-size:11px; font-weight:600;
+  color:var(--tx-2); letter-spacing:.09em; text-transform:uppercase; white-space:nowrap;
+  will-change:transform; pointer-events:none; }
 .pfball{ position:absolute; left:0; top:0; border-radius:50%; cursor:pointer;
   background:var(--card); border:1px solid var(--line); color:var(--tx-3);
   display:flex; align-items:center; justify-content:center; text-align:center;
@@ -835,9 +838,9 @@ body:not(.dark) .venn.union .vc{ mix-blend-mode:multiply; }
   font-family:var(--f); letter-spacing:-.006em; white-space:nowrap;
   opacity:0; pointer-events:none; transition:opacity .18s, transform .18s; }
 .poolb:hover::after{ opacity:1; transform:translateX(-50%) translateY(0); }
-.poolt{ position:absolute; left:0; top:0; font-size:12px; font-weight:500;
-  color:var(--tx-2); letter-spacing:-.006em; cursor:pointer; white-space:nowrap;
-  will-change:transform; transition:color .4s, background .4s, border-color .4s;
+.poolt{ position:absolute; left:0; top:0; font-size:10px; font-weight:600;
+  color:var(--tx-2); letter-spacing:.08em; text-transform:uppercase; cursor:pointer;
+  white-space:nowrap; will-change:transform; transition:color .4s, border-color .4s;
   padding:6px 12px; border-radius:999px; background:var(--wash); border:1px solid var(--line); }
 .poolt.on{ color:var(--tx); font-weight:600; border-color:var(--tx-4); }
 /* ---- the map ------------------------------------------------------------ */
@@ -888,8 +891,8 @@ body:not(.dark) .gland{ fill:rgba(17,17,19,.04); stroke:var(--tx-4); }
   line-height:1.42; letter-spacing:-.028em; color:var(--tx-3); text-align:center;
   text-wrap:balance; width:min(760px,92%); margin:2px auto 36px; }
 .rfser em{ font-style:normal; color:var(--tx); }
-.rfs{ display:inline; }
-.rfs::after{ content:' '; }
+.rfs{ display:inline-block; }
+.rfs::after{ content:' '; white-space:pre; }
 /* the read-out: one claim, one nod */
 .rfw{ display:flex; flex-direction:column; align-items:center; gap:30px; }
 .rfdots{ display:flex; gap:6px; }
@@ -1077,6 +1080,20 @@ body.dark .jsat.jbest{ border-color:rgba(255,255,255,.2); }
 .vsumt{ display:flex; flex-direction:column; gap:1px; text-align:left; }
 .vsumt b{ font-size:14px; font-weight:600; color:var(--tx); letter-spacing:-.014em; }
 .vsumt span{ font-size:12px; color:var(--tx-3); }
+/* the problems, as big pills that wrap sideways */
+.pillrow{ display:flex; flex-wrap:wrap; justify-content:center; gap:14px;
+  width:min(860px,94%); margin:10px auto 26px; }
+.pilld{ cursor:pointer; padding:16px 26px; border-radius:999px; font-size:16px;
+  font-weight:500; letter-spacing:-.014em; background:var(--card);
+  border:1px solid var(--line); color:var(--tx-2);
+  transition:background .3s, color .3s, border-color .3s, transform .3s; }
+.pilld:hover{ border-color:var(--tx-4); transform:translateY(-2px); }
+.pilld.on{ background:var(--ink); color:var(--on-ink); border-color:var(--ink); font-weight:600; }
+/* the flash the roles are born from */
+.jbloom{ position:absolute; left:50%; top:50%; width:340px; height:340px;
+  transform:translate(-50%,-50%); border-radius:50%; pointer-events:none;
+  background:radial-gradient(circle, rgba(255,255,255,.5) 0%, rgba(255,255,255,.12) 45%, transparent 70%); }
+body:not(.dark) .jbloom{ background:radial-gradient(circle, rgba(17,17,19,.18) 0%, rgba(17,17,19,.05) 45%, transparent 70%); }
 /* the moment of choosing: a ring of light on the card that was taken */
 .rcd.rcpick{ box-shadow:0 0 0 2px var(--ink), 0 30px 70px rgba(0,0,0,.4) !important; }
 /* the jump grid inside the settings drawer */
@@ -1660,6 +1677,10 @@ let paceCredit=0;
 function paceGate(){
   if(!PACE) return Promise.resolve();
   if(paceCredit>0){ paceCredit--; return Promise.resolve(); }
+  /* a freshly cleared stage has nothing on screen; holding its first beat
+     shows the user a black screen waiting for a press nobody knows to make */
+  const t=$('turn');
+  if(!t||!t.children.length) return Promise.resolve();
   return new Promise(res=>paceQueue.push(res));
 }
 function paceRelease(){ const r=paceQueue.shift(); if(r) r(); }
@@ -2700,7 +2721,7 @@ function SENTENCES(){
      html:()=>G_('Keeps an eye on ')+P.follows.split(',').map(f2=>chip((LOGO[f2.trim()]||I.spark)+T_(f2.trim()))).join(G_(' '))+G_('.') },
    { id:'s2', g:0, ready:!!P.dream, key:[P.dream,P.openness].join('|'),
      html:()=>G_(dreamList().length>1?'The dreams are ':'The dream is ')
-       +dreamList().map(d=>chip((LOGO[d]||I.spark)+T_(d))).join(G_(' '))
+       +logoStack(dreamList())
        +(P.openness?G_(', '+P.openness):'')+G_('.') },
    { id:'s3', g:1, ready:!!(P.location||P.citynext), key:[P.location,P.citynext].join('|'),
      html:()=>{ const nxt=cityList(P.citynext).filter(c2=>c2!==P.location);
@@ -5391,7 +5412,7 @@ const PFSCREENS=[
  {id:'03',key:'world',   kind:'two',    title:'The userbase you would design for',
   opts:['b2c','b2b']},
  {id:'04',key:'domain',  kind:'bubbles',title:'The problems you want to spend time on',
-  opts:['ai_interaction','team_tools','everyday_utility','learning','creator_tools']},
+  opts:['ai_interaction','ai_workflows','creative_solving','everyday_utility','team_tools','learning','creator_tools']},
  {id:'05',key:'location',kind:'ranked', title:'Where can this future happen?'},
  {id:'06',key:'priorities',kind:'order',title:'And this is the order you kept choosing'}
 ];
@@ -5460,7 +5481,7 @@ function ppool(box,sc){
      container overflows to the right in LTR, which is exactly the lean that
      was on screen */
   const colW=(box.clientWidth||box.parentElement&&box.parentElement.clientWidth||innerWidth*.66);
-  const W=Math.min(colW-8,980), H=Math.min(innerHeight*.6,580);
+  const W=Math.min(colW-8,1040), H=Math.min(innerHeight*.5,470);
   const wrap=mk('div','pfield');
   wrap.style.width=W+'px'; wrap.style.height=H+'px';
   box.appendChild(wrap);
@@ -5472,12 +5493,14 @@ function ppool(box,sc){
   /* chosen families merge at the centre; the rest wait on a wide ellipse,
      spaced evenly and computed, so they sit far from the selection and
      equally far from each other */
+  /* the room is on the left and right, so that is where the unchosen wait:
+     a wide flat ellipse, first anchors due west and east */
   function anchorOf(b){
     if(sel.has(b.pool)) return [W/2,H/2];
     const off=POOLS.filter(p=>!sel.has(p.key)).map(p=>p.key);
     const i=off.indexOf(b.pool), n=Math.max(1,off.length);
-    const a=(-Math.PI/2)+i*(Math.PI*2/n);
-    return [W/2+Math.cos(a)*W*.42, H/2+Math.sin(a)*H*.44];
+    const a=Math.PI+i*(Math.PI*2/n);
+    return [W/2+Math.cos(a)*W*.45, H/2+Math.sin(a)*H*.30];
   }
 
   const balls=[]; const labels={};
@@ -5580,7 +5603,35 @@ function pvenn(box,sc){
 
 /* the problems, in the same physics: chosen ones gather and grow at the
    centre, the rest orbit dimmed */
+/* names sharp enough to want */
+const DOMLABEL={ ai_interaction:'AI interaction', ai_workflows:'AI workflows',
+  creative_solving:'Creative problem solving', everyday_utility:'Everyday utility',
+  team_tools:'Team tools', learning:'Learning', creator_tools:'Creator tools' };
 function pdomain(box,sc){
+  /* pills, big and horizontal: the room is sideways, and a pill reads faster
+     than a floating ball */
+  const sel=new Set([presolve(sc.key)||sc.opts[0]]);
+  const row=mk('div','pillrow');
+  box.appendChild(row);
+  const paint=()=>row.querySelectorAll('.pilld').forEach(p=>p.classList.toggle('on',sel.has(p.dataset.k)));
+  sc.opts.forEach(o=>{
+    const p=mk('button','pilld',DOMLABEL[o]||PFLABEL[o]||o);
+    p.dataset.k=o;
+    p.onclick=()=>{
+      if(locked) return;
+      if(sel.has(o)){ if(sel.size===1) return; sel.delete(o); }
+      else sel.add(o);
+      sfx('toggle'); paint();
+      const list=[...sel];
+      pedit(sc.key,list[0]); PFALSO[sc.key]=list.slice(1);
+    };
+    row.appendChild(p);
+  });
+  paint();
+  enter(Array.from(row.children),{y:14,blur:6,scale:.95,stagger:.05,duration:.5},1400);
+  return;
+}
+function pdomainBalls(box,sc){
   const colW=(box.clientWidth||box.parentElement&&box.parentElement.clientWidth||innerWidth*.56);
   const W=Math.min(colW-8,880), H=Math.min(innerHeight*.5,480);
   const wrap=mk('div','pfield');
@@ -5671,6 +5722,8 @@ function pranked(box,sc){
      beside it. The city ranked first carries the radius rings; drag the list
      and the map follows. */
   const order=presolve('location').slice();
+  /* the shortlist carries the three rooms of the story: SF, Toronto, New York */
+  if(order.indexOf('new_york')<0) order.push('new_york');
   const wrap=mk('div','geo');
   const mapbox=mk('div','geomap');
   const list=mk('div','pfrank geolist');
@@ -5860,6 +5913,30 @@ const JPOOL=[
   edge:'you came from graphic design, and this is where craft still shows on the surface',
   d:'Make a blank page feel like a starting point instead of a demand.',
   t:{type:'saas',ethos:'frontier',world:'b2c',shape:'individual',domain:'creator_tools',city:'new_york'}},
+ {co:'Google',role:'Product Designer',where:'SF Bay Area',yrs:'1-4 years',
+  edge:'the biggest room there is, and design still decides how a billion people meet it',
+  d:'Make a familiar product easier for many different people to use.',
+  t:{type:'saas',ethos:'established',world:'b2c',shape:'collaborative',domain:'everyday_utility',city:'san_francisco'}},
+ {co:'Apple',role:'Product Designer',where:'SF Bay Area',yrs:'2-5 years',
+  edge:'the house that made craft the product',
+  d:'Sweat the details of things people hold every day.',
+  t:{type:'saas',ethos:'established',world:'b2c',shape:'collaborative',domain:'everyday_utility',city:'san_francisco'}},
+ {co:'Meta',role:'Product Designer',where:'New York',yrs:'1-4 years',
+  edge:'reach, at a scale nowhere else can offer',
+  d:'Shape how a third of the planet talks to each other.',
+  t:{type:'saas',ethos:'established',world:'b2c',shape:'collaborative',domain:'everyday_utility',city:'new_york'}},
+ {co:'Airbnb',role:'Product Designer',where:'SF Bay Area',yrs:'2-5 years',
+  edge:'the company that made design the business',
+  d:'Make a stranger\'s home feel bookable.',
+  t:{type:'commerce',ethos:'established',world:'b2c',shape:'collaborative',domain:'everyday_utility',city:'san_francisco'}},
+ {co:'Vercel',role:'Product Designer',where:'Remote',yrs:'1-4 years',
+  edge:'frontier tooling with taste',
+  d:'Make shipping to the web feel instant.',
+  t:{type:'ai_frontier',ethos:'frontier',world:'b2b',shape:'collaborative',domain:'team_tools',city:'san_francisco'}},
+ {co:'Linear',role:'Product Designer',where:'Remote',yrs:'2-5 years',
+  edge:'the quality bar half the industry points at',
+  d:'Keep the fastest tool in the room feeling weightless.',
+  t:{type:'ai_frontier',ethos:'frontier',world:'b2b',shape:'collaborative',domain:'team_tools',city:'san_francisco'}},
  {co:'Stripe',role:'Product Designer',where:'New York',yrs:'2-5 years',
   edge:'you like problems with a right answer, and money is the least forgiving of them',
   d:'Show businesses what is happening to their money, plainly.',
@@ -5996,12 +6073,22 @@ async function rolesStage(){
      but not quite you */
   const ranked=JPOOL.map(j=>({j:j,sc:jscore(j)})).sort((a,b)=>b.sc.tier-a.sc.tier);
   const R1=Math.min(innerWidth,innerHeight*1.6)*.21, R2=R1*1.85;
+  /* the bloom: the point every particle converged on flashes once, and the
+     future is assembled out of that light */
+  const bloom=mk('div','jbloom'); orb.appendChild(bloom);
+  safeTL(gsap.timeline()
+    .fromTo(bloom,{scale:.2,opacity:0},{scale:1.15,opacity:.9,duration:.5,ease:'power2.out'})
+    .to(bloom,{scale:2.4,opacity:0,duration:.9,ease:'power2.out'},.4),2000);
+  const rings=[];
   ['jring1','jring2'].forEach((cls,k)=>{
     const ring=mk('div','jring '+cls);
     const R=k?R2:R1;
     ring.style.width=ring.style.height=(R*2+120)+'px';
-    orb.appendChild(ring);
+    orb.appendChild(ring); rings.push(ring);
   });
+  safeTL(gsap.timeline()
+    .fromTo(rings[0],{scale:.4,opacity:0},{scale:1,opacity:1,duration:.8,ease:EIO},.35)
+    .fromTo(rings[1],{scale:.5,opacity:0},{scale:1,opacity:.6,duration:.9,ease:EIO},.5),2400);
   const sats=[];
   ranked.forEach((it,i)=>{
     const d=it.j;
@@ -6034,10 +6121,13 @@ async function rolesStage(){
     });
   };
   lay();
-  sats.forEach((s2,i)=>{
-    gsap.fromTo(s2.el,{x:0,y:0,scale:.25,opacity:0},
-      {x:s2.tx,y:s2.ty,scale:1,opacity:1,rotation:s2.tilt,
-       duration:.85,delay:.12+i*.09,ease:'back.out(1.5)'});
+  /* assembled in order of fit: the inner circle first, then the outer band,
+     each arriving through a blur like the board's own reveals */
+  const ordered=[...sats].sort((a,b)=>b.tier-a.tier);
+  ordered.forEach((s2,i)=>{
+    gsap.fromTo(s2.el,{x:0,y:0,scale:.2,opacity:0,filter:'blur(8px)'},
+      {x:s2.tx,y:s2.ty,scale:1,opacity:1,rotation:s2.tilt,filter:'blur(0px)',
+       duration:.8,delay:.55+i*.12,ease:'back.out(1.4)',clearProps:'filter'});
     s2.el.onmouseenter=()=>gsap.to(s2.el,{scale:1.08,rotation:0,zIndex:9,duration:.32,ease:EIO});
     s2.el.onmouseleave=()=>gsap.to(s2.el,{scale:1,rotation:s2.tilt,duration:.4,ease:EIO});
   });
@@ -6403,7 +6493,7 @@ function dbgGoto(i){
       removeEventListener('click',away); } }; addEventListener('click',away); },0);
   };
   st.textContent='1. '+DBG_STEPS[0][0];
-  const bv=mk('span','bldv','v41'); gr.parentElement&&gr.parentElement.appendChild(bv);
+  const bv=mk('span','bldv','v42'); gr.parentElement&&gr.parentElement.appendChild(bv);
   addEventListener('keydown',e=>{
     if(document.activeElement&&document.activeElement.tagName==='INPUT') return;
     if(e.key==='ArrowRight'){ paceAdvance(); }
