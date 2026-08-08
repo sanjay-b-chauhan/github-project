@@ -902,6 +902,37 @@ body:not(.dark) .q.qshine::after{
   background:linear-gradient(100deg, rgba(13,13,13,0) 40%, rgba(13,13,13,.9) 50%, rgba(13,13,13,0) 60%);
   background-size:250% 100%; -webkit-background-clip:text; background-clip:text; }
 @keyframes qsweep{ 0%{ background-position:130% 0; } 100%{ background-position:-130% 0; } }
+/* ---- roles, orbiting the user ------------------------------------------- */
+.jorb{ position:relative; width:min(960px,92vw); height:min(600px,66vh); margin:0 auto; }
+.jme{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  display:flex; flex-direction:column; align-items:center; gap:10px; z-index:3; }
+.jmea{ width:86px; height:86px; border-radius:50%; background:var(--ink); color:var(--on-ink);
+  display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:600;
+  box-shadow:0 14px 44px rgba(0,0,0,.28); }
+.jmen{ font-size:15px; font-weight:600; color:var(--tx); letter-spacing:-.014em; }
+.jsat{ position:absolute; left:50%; top:50%; margin:-86px 0 0 -104px; width:208px;
+  background:var(--card); border:1px solid var(--line); border-radius:20px;
+  padding:18px 18px 14px; text-align:center; cursor:default; overflow:hidden;
+  box-shadow:0 3px 6px rgba(0,0,0,.05), 0 18px 44px rgba(0,0,0,.14); z-index:2; }
+.jsat.jbest{ border-color:rgba(13,13,13,.16); }
+body.dark .jsat.jbest{ border-color:rgba(255,255,255,.2); }
+.jsattint{ position:absolute; left:0; right:0; top:0; height:96px; pointer-events:none; opacity:.4;
+  background:radial-gradient(130% 100% at 50% -36%, var(--tint,#c9a227) 0%, transparent 72%); }
+.jsatlogo{ position:relative; display:flex; width:44px; height:44px; border-radius:13px;
+  background:#fff; border:1px solid var(--line); align-items:center; justify-content:center;
+  margin:0 auto 10px; box-shadow:0 4px 12px rgba(0,0,0,.10); }
+.jsatlogo svg{ width:24px; height:24px; }
+.jsatco{ position:relative; font-size:16.5px; font-weight:600; color:var(--tx); letter-spacing:-.02em; }
+.jsatrole{ position:relative; font-size:12.5px; color:var(--tx-2); margin:2px 0 10px; }
+.jsat .jrbar{ position:relative; display:inline-flex; }
+.jcta{ position:fixed; left:50%; bottom:36px; transform:translateX(-50%); z-index:90;
+  background:var(--ink); color:var(--on-ink); border:none; cursor:pointer;
+  border-radius:999px; padding:16px 34px; font-size:15.5px; font-weight:600;
+  letter-spacing:-.012em; box-shadow:0 16px 44px rgba(0,0,0,.3);
+  animation:jfloat 3.2s ease-in-out infinite; }
+.jcta:hover{ animation-play-state:paused; transform:translateX(-50%) translateY(-3px); }
+@keyframes jfloat{ 0%,100%{ transform:translateX(-50%) translateY(0); }
+  50%{ transform:translateX(-50%) translateY(-5px); } }
 /* the OAuth sheet */
 .ozv{ position:fixed; inset:0; z-index:200; display:flex; align-items:center;
   justify-content:center; background:rgba(0,0,0,.45); backdrop-filter:blur(10px); }
@@ -2425,9 +2456,28 @@ function morphRow(x){
     const inFlight=pumping&&pumping.id===x.id;
     if(!inFlight&&!queue.some(q2=>q2.id===x.id)) shown[x.id]=0;
     return; }
+  /* chips the new sentence no longer contains do not crossfade away - they
+     fall off the board, and the replacements pop up where they stood */
+  const nextHtml=x.html();
+  /* compare against the RENDERED text, not the html source: a chip's visible
+     text spans markup ("S"+"Sanjay"), so matching the source string made
+     unchanged chips fall too */
+  const scratch=document.createElement('div'); scratch.innerHTML=nextHtml;
+  const nextText=scratch.textContent||'';
+  row.querySelectorAll('.vbc').forEach(ch=>{
+    const t=(ch.textContent||'').trim();
+    if(t&&nextText.indexOf(t)>=0) return;
+    const r0=ch.getBoundingClientRect();
+    const ghost=ch.cloneNode(true);
+    ghost.style.cssText='position:fixed;left:'+r0.left+'px;top:'+r0.top+'px;margin:0;z-index:60;pointer-events:none;';
+    document.body.appendChild(ghost);
+    safeTL(gsap.timeline({onComplete:()=>{ if(ghost.isConnected) ghost.remove(); }})
+      .to(ghost,{y:110,rotation:(Math.random()<.5?-1:1)*(10+Math.random()*8),
+        opacity:0,duration:.7,ease:'power2.in'}),1500);
+  });
   safeTL(gsap.timeline().to(row,{opacity:.25,duration:.22}),400);
   setTimeout(()=>{
-    row.innerHTML=x.html(); gsap.set(row,{opacity:1});
+    row.innerHTML=nextHtml; gsap.set(row,{opacity:1});
     const bits=row.querySelectorAll('.vbc, .vbl, .vbq');
     safeTL(gsap.timeline().fromTo(bits,{scale:.7,opacity:0},
       {scale:1,opacity:1,duration:.5,stagger:.07,ease:'back.out(1.8)'}),1400);
@@ -2742,7 +2792,7 @@ async function visionStage(fromEdit){
   await lightsUp();
   /* the drawer opens again: the cards are played and confirmed, so there is
      finally something worth adding that a single pick could not have told us */
-  boardLive=true;
+  drawerOpen();
   if(fromEdit){ swapPanel('Your vision board',s2=>{ s2.classList.add('ctr');
     const vb=mk('div','vb'); vb.id='vb';
     vb.innerHTML=boardHTML(); s2.appendChild(vb); boardLive=true; $('paper').classList.add('canvas'); },false); }
@@ -3977,6 +4027,20 @@ function unspot(){
   vb.classList.remove('spotting');
   vb.querySelectorAll('.vbs.spot').forEach(r=>r.classList.remove('spot'));
 }
+/* the drawer, played physically: the cards want the whole stage, so the
+   panel slides away and comes back only when there is something to add */
+function drawerShut(){
+  boardLive=false;
+  gsap.to('.right',{width:0,opacity:0,duration:.8,ease:EIO});
+  shiftLeft('0vw');
+}
+function drawerOpen(){
+  panelBorn=true;
+  gsap.to('.right',{width:panelPref?panelPref+'px':'40%',opacity:1,duration:.9,ease:EIO});
+  shiftLeft(panelPref?panelPref+'px':'40vw');
+  boardLive=true;
+  renderBoard();
+}
 async function readbackStage(){
   atStep('Read back');
   setPhase(0);
@@ -4074,7 +4138,7 @@ async function cardsIntroStage(){
   /* The board is a drawer and this is where it shuts. The cards are the whole
      event and anything else on screen competes with them - and no single pick
      is interpretable yet anyway, so there is nothing honest to add. */
-  boardLive=false;
+  drawerShut();
   setPhase(1);
   clearTurn(); dockHide(); await wait(380);
   /* every other handoff restates what they just said; this was the only one
@@ -5081,19 +5145,81 @@ async function addRoles(){
 async function rolesStage(){
   atStep('Roles');
   const myGen=gen;
-  clearTurn(); dockHide(); await wait(380);
+  clearTurn(); dockHide(); drawerShut(); await wait(500);
   if(myGen!==gen) return;
   await voLine("I'm pulling together roles that fit the kind of work you want to do.",2900);
   if(myGen!==gen) return;
   await voLine('The companies you are drawn to, the places you want to be, and the trade-offs that matter most.',3400);
   if(myGen!==gen) return;
-  await swapPanel('Roles that fit your vision',buildRoles,false,true);
-  await addRoles();
+  /* Not four, and not a list. The user sits at the centre and the futures
+     arrange themselves around them, strongest fits closest. The board just
+     agreed to is what these came out of, so they are born from the middle. */
+  clearTurn(); await wait(300);
   if(myGen!==gen) return;
-  line('These are the roles I would point you at.');
-  await wait(2100);
+  const {box}=turn({q:''});
+  const orb=mk('div','jorb');
+  const me=mk('div','jme');
+  me.appendChild(mk('span','jmea',(P.name||'You').charAt(0)));
+  me.appendChild(mk('span','jmen',P.name||'You'));
+  orb.appendChild(me);
+  box.appendChild(orb);
+
+  const ranked=JPOOL.map(j=>({j:j,sc:jscore(j)})).sort((a,b)=>b.sc.tier-a.sc.tier);
+  const sats=[];
+  ranked.forEach((it,i)=>{
+    const d=it.j;
+    const el=mk('div','jsat'+(it.sc.tier>=4?' jbest':''));
+    el.style.setProperty('--tint',(typeof RTINT!=='undefined'&&RTINT[d.co])||'#c9a227');
+    el.appendChild(mk('span','jsattint'));
+    el.appendChild(mk('span','jsatlogo',rlogo(d.co)));
+    el.appendChild(mk('div','jsatco',d.co));
+    el.appendChild(mk('div','jsatrole',d.role));
+    const bar=mk('span','jrbar');
+    for(let k=1;k<=5;k++){ const b=mk('i'); if(k<=it.sc.tier) b.className='on'; bar.appendChild(b); }
+    el.appendChild(bar);
+    orb.appendChild(el);
+    sats.push({el:el,i:i,tier:it.sc.tier,job:d});
+  });
+
+  /* measured at draw time, never at entry: the stage needs a settled size */
+  await wait(60);
+  const lay=()=>{
+    const W=orb.clientWidth||900, H=orb.clientHeight||560;
+    const R1=Math.min(W,H*1.7)*.21, R2=Math.min(W,H*1.7)*.36;
+    sats.forEach((s2,i)=>{
+      const inner=i<3;
+      const count=inner?Math.min(3,sats.length):Math.max(1,sats.length-3);
+      const k=inner?i:i-3;
+      const base=inner?-90:-62;
+      const a=(base+k*(360/count))*Math.PI/180;
+      const r=inner?R1:R2;
+      s2.tx=Math.cos(a)*r*1.55; s2.ty=Math.sin(a)*(inner?r:r*.92);
+      s2.tilt=(i%2?1:-1)*(2+(i%3));
+    });
+  };
+  lay();
+  sats.forEach((s2,i)=>{
+    gsap.fromTo(s2.el,{x:0,y:0,scale:.25,opacity:0},
+      {x:s2.tx,y:s2.ty,scale:1,opacity:1,rotation:s2.tilt,
+       duration:.85,delay:.12+i*.09,ease:'back.out(1.5)'});
+    s2.el.onmouseenter=()=>gsap.to(s2.el,{scale:1.08,rotation:0,zIndex:9,duration:.32,ease:EIO});
+    s2.el.onmouseleave=()=>gsap.to(s2.el,{scale:1,rotation:s2.tilt,duration:.4,ease:EIO});
+  });
+  safeTL(gsap.timeline().fromTo(me,{scale:.6,opacity:0},{scale:1,opacity:1,duration:.7,ease:'back.out(1.6)'},.05),1400);
+  sfx('sparkle');
+
+  await wait(1400);
   if(myGen!==gen) return;
-  cta('This is the future I want',()=>go(synthesisStage));
+  /* the sticky CTA: always there, floating under the picture */
+  const c2=mk('button','jcta','This is the future I want');
+  document.body.appendChild(c2);
+  safeTL(gsap.timeline().fromTo(c2,{y:26,opacity:0},{y:0,opacity:1,duration:.6,ease:EIO}),1200);
+  c2.onclick=()=>{
+    if(locked) return; locked=true; sfx('press');
+    safeTL(gsap.timeline({onComplete:()=>{ if(c2.isConnected) c2.remove(); }})
+      .to(c2,{y:18,opacity:0,duration:.3}),700);
+    locked=false; go(synthesisStage);
+  };
 }
 
 
@@ -5329,7 +5455,7 @@ function dbgGoto(i){
   $('col').innerHTML=''; $('dockIn').innerHTML='';
   gsap.set('#dock',{opacity:0}); gsap.set('#dtr',{opacity:0}); $('dtr').innerHTML='';
   stopRec();
-  document.querySelectorAll('.zook,.conf,.core,.veil,.sheen,.gh').forEach(n=>n.remove());
+  document.querySelectorAll('.zook,.conf,.core,.veil,.sheen,.gh,.jcta').forEach(n=>n.remove());
   $('rip').style.display='none'; $('rip').innerHTML='';
   $('aur').innerHTML=''; gsap.set('#aur',{opacity:0});
   gsap.set(['#logoPill','.tr'],{opacity:i>=1?1:0,y:0});
@@ -5349,7 +5475,7 @@ function dbgGoto(i){
   const title=(DBG_STEPS[i]||[''])[0]||'';
   /* the cards, the read-out and the confirmation screens all want the whole
      screen: "इसमें vision board होने की जरूरत नहीं है" */
-  const zeroBoard=!/^(Cards|Reflection|Preferences)/.test(title);
+  const zeroBoard=!/^(Cards|Reflection|Preferences|Roles)/.test(title);
   /* one board everywhere; where the drawer is shut, the panel is simply not
      on stage - nothing seeds a second board anymore */
   if(born&&!zeroBoard){
