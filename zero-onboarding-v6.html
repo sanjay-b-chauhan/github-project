@@ -1112,6 +1112,7 @@ body.dark .jsat.jbest{ border-color:rgba(255,255,255,.2); }
 .rclogo svg{ width:24px; height:24px; }
 .rcrole{ transform:translateZ(34px); }
 .rcco{ transform:translateZ(26px); }
+.rcp{ transform:translateZ(18px); }
 
 .rcfoot{ transform:translateZ(24px); }
 /* The same serif as every other title in the product. This was the interface
@@ -1122,6 +1123,8 @@ body.dark .jsat.jbest{ border-color:rgba(255,255,255,.2); }
 .rcbrand{ position:relative; display:flex; align-items:center; gap:8px; }
 .rcco{ position:relative; font-size:14px; font-weight:450; color:var(--tx-3);
   letter-spacing:-.006em; }
+.rcp{ position:relative; font-size:15px; line-height:1.5; color:var(--tx-2);
+  letter-spacing:-.012em; margin-top:14px; }
 .rcfoot{ position:relative; margin-top:auto; padding-top:22px; }
 .rcamt{ font-size:19px; font-weight:600; color:var(--tx); letter-spacing:-.024em; }
 .rcloc{ display:flex; align-items:center; gap:5px; font-size:13px; color:var(--tx-3);
@@ -4941,8 +4944,7 @@ function rcard(id,side,keep){
   b.appendChild(mk('div','rclogo',rlogo(d.co)));
   b.appendChild(mk('div','rcrole',d.role));
   b.appendChild(mk('div','rcco',d.co));
-  /* the body copy is gone: the role, the company and the offer are the
-     choice. A paragraph is something to read, not something to weigh. */
+  b.appendChild(mk('div','rcp',d.problem));
   const f=mk('div','rcfoot');
   /* a range, because nobody is ever offered a single number */
   f.appendChild(mk('div','rcamt',money(d.band||d.pay)));
@@ -5075,16 +5077,14 @@ function rcRound(myGen,first){
   setTimeout(()=>{ if(myGen===gen) rcSay(rcSayFor(round)); },first?900:620);
 
   /* dealt from the bottom of the screen, not faded in place */
-  /* The loop, as asked: the pair rises from the bottom into the centre, and
-     when one is chosen it leaves through the top while the next pair is
-     already coming up from below. Nothing crossfades in place. */
-  const t0=first?.12:0;
+  /* Two straight slides, nothing else. No blur, no rotation, no scale in
+     flight - those are what made it stutter. Transform and opacity only, which
+     stay on the compositor. */
+  const t0=first?.1:0;
   safeTL(gsap.timeline()
-    .fromTo(slotL,{opacity:0,y:innerHeight*.62,rotation:-10,scale:.9},
-      {opacity:1,y:0,rotation:0,scale:1,duration:.95,ease:'expo.out'},t0)
-    .fromTo(slotR,{opacity:0,y:innerHeight*.68,rotation:10,scale:.9},
-      {opacity:1,y:0,rotation:0,scale:1,duration:1.0,ease:'expo.out'},t0+.08)
-    .to([slotL,slotR],{clearProps:'transform',duration:.01},'>-.04'),2600);
+    .fromTo(slotL,{opacity:0,y:140},{opacity:1,y:0,duration:.55,ease:'power3.out'},t0)
+    .fromTo(slotR,{opacity:0,y:140},{opacity:1,y:0,duration:.55,ease:'power3.out'},t0+.07)
+    .to([slotL,slotR],{clearProps:'transform',duration:.01},'>-.02'),1600);
 
   let done=false;
   [A,B].forEach(el=>{ el.onclick=()=>{
@@ -5114,21 +5114,17 @@ function rcRound(myGen,first){
     const win=el.parentElement||el, lose=other.parentElement||other;
     el.classList.add('rcpick');
     sfx('press');
-    /* a clean slide: a small press so the click registers, then straight up
-       and out. No bounce, no overshoot. */
+    /* slide out, simple as that: the pick goes up, the other fades down */
     safeTL(gsap.timeline()
-      .to(el,{scale:.97,duration:.08,ease:'power2.out'},0)
-      .to(el,{scale:1,duration:.12,ease:'power2.out'},.08)
-      .to(lose,{y:innerHeight*.2,rotation:lose.classList.contains('tiltL')?-12:12,
-        opacity:0,duration:.4,ease:'power1.in'},.04)
-      .to(win,{y:-innerHeight*.85,opacity:0,duration:.5,ease:'power1.in'},.18)
-      .add(()=>{ if(row.isConnected) row.remove(); }),1800);
+      .to(win,{y:-160,opacity:0,duration:.4,ease:'power2.in'},.06)
+      .to(lose,{y:60,opacity:0,duration:.32,ease:'power2.in'},0)
+      .add(()=>{ if(row.isConnected) row.remove(); }),1400);
 
     renderBoard();
     setTimeout(()=>{
       if(myGen!==gen) return;
       RN++; locked=false; rcRound(myGen,false);
-    },520);
+    },420);
   };});
 }
 
