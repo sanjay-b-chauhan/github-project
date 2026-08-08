@@ -1003,6 +1003,12 @@ body.dark .jsat.jbest{ border-color:rgba(255,255,255,.2); }
   border:1px solid var(--line); border-radius:999px; padding:6px 12px;
   box-shadow:0 10px 26px rgba(0,0,0,.16); }
 .mkarrow{ width:16px; height:16px; color:var(--tx-3); }
+/* the question, docked up into a tag while the cards hold the room */
+.q.qtag{ font-size:19px !important; letter-spacing:-.014em; opacity:.72;
+  transition:font-size .55s var(--e,cubic-bezier(.625,.05,0,1)), opacity .55s; }
+/* what this round is testing, said plainly under the tag */
+.rcsay{ text-align:center; font-size:14px; color:var(--tx-3); letter-spacing:-.008em;
+  min-height:20px; margin:2px 0 14px; }
 /* ---- paired role cards, as a deck ---------------------------------------- */
 .rcwrap{ width:100%; max-width:760px; margin:0 auto; }
 /* A short perspective is what makes the rotation read as depth. At 1100 the
@@ -4098,16 +4104,10 @@ async function readbackStage(){
   clearTurn(); dockHide(); await wait(360);
   const d=(typeof LINKEDIN!=='undefined'&&(LINKEDIN[PKEY]||LINKEDIN.design))||{};
   if(P.linked){
-    spotRows(['s1']);
-    await voLine('Okay, '+P.name+". I've read your LinkedIn.",2100);
-    await voLine((d.headline||'Early in your career')+'.',2000);
-    spotRows(['p1','p2']);
-    if(d.exp&&/year/i.test(d.exp)) await voLine("You're in your "+lower1(d.exp)+(d.since?', with '+lower1(d.since)+' behind you':'')+'.',2500);
-    else if(d.exp) await voLine('You have done '+lower1(d.exp)+'.',2300);
-    spotRows(['p2']);
-    if(d.skills) await voLine('I can see signals around '+firstFew(d.skills,3)+'.',2500);
+    /* the board already shows everything that was read - narrating it again
+       is five lines of recap. One phrase, the whole board lit, hand over. */
     spotRows(['s1','p1','p2','p3']);
-    await voLine("That's the story I'm seeing. I could be wrong.",2300);
+    await voLine('Okay, '+P.name+". Here's what I got from your LinkedIn.",2400);
   }
   unspot();
   await voLine('Tell me what I got wrong, or what I missed.',2600);
@@ -4677,10 +4677,18 @@ async function cardsStage(){
   clearTurn(); dockHide(); await wait(240);
   if(myGen!==gen) return;
   const {box}=turn({q:'Which of these feels more like you?'});
-  await wait(420);
+  await wait(760);
+  if(myGen!==gen) return;
+  /* the question docks up into a tag and makes the stage the cards' room */
+  const q0=document.querySelector('.turn .q');
+  if(q0){ q0.classList.add('qtag'); }
+  await wait(300);
   if(myGen!==gen) return;
 
   const wrap=mk('div','rcwrap');
+  /* Zero thinking out loud: what this round is actually testing */
+  const say=mk('div','rcsay'); say.id='rcSay';
+  wrap.appendChild(say);
   const stage=mk('div','rcstage'); stage.id='rcStage';
   wrap.appendChild(stage);
   /* the dots are the whole progress story now, and they sit under the cards */
@@ -4696,6 +4704,34 @@ function rcMeta(deck){
   dots.innerHTML='';
   for(let i=0;i<deck.length;i++){ const d=mk('i');
     if(i<RN) d.className='on'; if(i===RN) d.className='now'; dots.appendChild(d); }
+}
+/* The Atul dialogue, generated from what each round isolates. The engine
+   holds everything but one dimension level; saying so is what turns fifteen
+   taps into someone visibly closing in on you. */
+const RCSAYS={
+  location:'Same company, same work. Only the city changes.',
+  city:'Same company, same work. Only the city changes.',
+  ethos:'Same package this time. A different kind of company.',
+  world:'Same level. Different people you would build for.',
+  shape:'Same world. A different way of working.',
+  type:'Same city. A different world of company.',
+  domain:'Same shape of job. Different problems to live in.',
+  comp:'Almost the same job. One pays more.'
+};
+function rcSayFor(round){
+  if(!round) return '';
+  if(round.n===1||round.confounded) return '';
+  if(round.phase==='trade') return RCSAYS.comp;
+  const dim=round.claims&&round.claims[0]&&round.claims[0].dim;
+  return RCSAYS[dim]||'';
+}
+function rcSay(text){
+  const el=$('rcSay'); if(!el) return;
+  if(!text){ gsap.to(el,{opacity:0,duration:.25}); return; }
+  safeTL(gsap.timeline()
+    .to(el,{opacity:0,y:-6,duration:.22,ease:'power2.in'})
+    .add(()=>{ el.textContent=text; })
+    .to(el,{opacity:1,y:0,duration:.4,ease:'power2.out'}),1100);
 }
 function rcRound(myGen,first){
   if(myGen!==gen) return;
@@ -4716,11 +4752,14 @@ function rcRound(myGen,first){
   slotL.appendChild(left); slotR.appendChild(right);
   row.appendChild(slotL); row.appendChild(slotR);
   stage.appendChild(row);
+  rcSay(rcSayFor(round));
 
+  /* dealt from the bottom of the screen, not faded in place */
   safeTL(gsap.timeline()
-    .fromTo([slotL,slotR],{opacity:0,y:46,scale:.94,filter:'blur(8px)'},
-      {opacity:1,y:0,scale:1,filter:'blur(0px)',duration:.62,stagger:.08,ease:'power3.out',
-       clearProps:'filter'},first?.1:0),1800);
+    .fromTo(slotL,{opacity:0,y:innerHeight*.22,rotation:-9,scale:.9,filter:'blur(10px)'},
+      {opacity:1,y:0,rotation:0,scale:1,filter:'blur(0px)',duration:.8,ease:'power4.out',clearProps:'filter,rotation'},first?.1:0)
+    .fromTo(slotR,{opacity:0,y:innerHeight*.26,rotation:9,scale:.9,filter:'blur(10px)'},
+      {opacity:1,y:0,rotation:0,scale:1,filter:'blur(0px)',duration:.85,ease:'power4.out',clearProps:'filter,rotation'},(first?.1:0)+.09),2000);
 
   let done=false;
   [A,B].forEach(el=>{ el.onclick=()=>{
@@ -4745,17 +4784,19 @@ function rcRound(myGen,first){
        Google-in-US over Zomato-in-India could be the company or the country,
        and only the full set separates them. The board gets it after the
        confirmation screens, or it is guessing in public. */
+    /* the chosen card is ACCEPTED - it lifts, brightens and leaves upward;
+       the one not chosen loses its light and falls off the bottom */
+    const win=el.parentElement||el, lose=other.parentElement||other;
     safeTL(gsap.timeline()
-      .to(el,{opacity:0,scale:.97,duration:.34,ease:'power2.in'},0)
-      .to(other.parentElement||other,{opacity:0,y:26,
-        rotate:(other.parentElement||other).classList.contains('tiltL')?-7:7,
-        duration:.4,ease:'power2.in'},0)
-      .add(()=>{ if(row.isConnected) row.remove(); }),1200);
+      .to(win,{y:-innerHeight*.16,scale:1.05,opacity:0,duration:.55,ease:'power2.in'},.05)
+      .to(lose,{y:innerHeight*.14,rotation:lose.classList.contains('tiltL')?-13:13,
+        opacity:0,duration:.5,ease:'power2.in'},0)
+      .add(()=>{ if(row.isConnected) row.remove(); }),1400);
     renderBoard();
     setTimeout(()=>{
       if(myGen!==gen) return;
       RN++; locked=false; rcRound(myGen,false);
-    },620);
+    },660);
   };});
 }
 
