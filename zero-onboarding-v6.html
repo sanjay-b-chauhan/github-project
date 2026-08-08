@@ -820,6 +820,24 @@ body:not(.dark) .venn.union .vc{ mix-blend-mode:multiply; }
   letter-spacing:-.006em; cursor:pointer; white-space:nowrap; will-change:transform;
   transition:color .4s; }
 .poolt.on{ color:var(--tx); font-weight:600; }
+/* ---- the map ------------------------------------------------------------ */
+.geo{ display:flex; align-items:center; justify-content:center; gap:44px;
+  width:min(1000px,94%); margin:6px auto 26px; }
+.geomap{ flex:0 0 auto; }
+.gmap{ width:min(520px,50vw); height:auto; display:block; }
+.gdot{ fill:var(--tx-4); opacity:.5; }
+.gpt{ fill:var(--tx-3); }
+.gcity.listed .gpt{ fill:var(--tx); }
+.glab{ fill:var(--tx-4); font-size:11px; font-family:var(--f); letter-spacing:.01em; }
+.gcity.listed .glab{ fill:var(--tx-2); }
+.gcity.first .glab{ fill:var(--tx); font-weight:600; }
+.gring{ fill:none; stroke:var(--tx); stroke-width:1; opacity:0; }
+.gcity.first .gpt{ fill:var(--tx); }
+.gcity.first .gr1{ opacity:.5; animation:gpulse 2.4s ease-out infinite; }
+.gcity.first .gr2{ opacity:.25; animation:gpulse 2.4s ease-out infinite 1.2s; }
+@keyframes gpulse{ 0%{ transform:scale(.6); opacity:.55; } 100%{ transform:scale(1.5); opacity:0; } }
+.gcity .gring{ transform-origin:center; transform-box:fill-box; }
+.geolist{ flex:0 0 300px; }
 /* ---- preference screens ------------------------------------------------ */
 .pfx{ width:100%; max-width:760px; margin:0 auto; }
 .pfxtop{ display:flex; align-items:center; justify-content:space-between;
@@ -884,7 +902,24 @@ body:not(.dark) .venn.union .vc{ mix-blend-mode:multiply; }
 .pfsel{ display:inline-block; margin-top:12px; font-size:11.5px; font-weight:600;
   color:var(--tx-2); letter-spacing:-.005em; }
 /* ranked, reorderable */
-.pfrank{ display:flex; flex-direction:column; gap:8px; }
+/* chunky, narrow, icon-led */
+.pfrank{ display:flex; flex-direction:column; gap:12px; width:min(440px,90%); margin:0 auto; }
+.pfr{ display:flex; align-items:center; gap:14px; padding:18px 18px; cursor:grab;
+  background:var(--card); border:1px solid var(--line); border-radius:18px;
+  transition:border-color .25s, transform .25s, box-shadow .25s; }
+.pfr:hover{ border-color:var(--tx-4); transform:translateY(-1px);
+  box-shadow:0 10px 30px rgba(0,0,0,.22); }
+.pfr.drag{ opacity:.5; }
+.pfr.over{ border-color:var(--ink); }
+.pfri{ width:40px; height:40px; flex:0 0 40px; border-radius:12px; background:var(--wash);
+  border:1px solid var(--line); display:flex; align-items:center; justify-content:center;
+  color:var(--tx-2); }
+.pfri svg{ width:18px; height:18px; }
+.pfrn{ font-size:11px; font-weight:600; color:var(--tx-4); width:12px; }
+.pfrt{ display:flex; flex-direction:column; gap:2px; text-align:left; flex:1; min-width:0; }
+.pfrt b{ font-size:15.5px; font-weight:600; color:var(--tx); letter-spacing:-.016em; }
+.pfrt span{ font-size:12px; color:var(--tx-3); }
+.pfgrip{ color:var(--tx-4); font-size:13px; letter-spacing:-2px; cursor:grab; }
 .pfr{ display:flex; align-items:center; gap:13px; background:var(--card);
   border:1px solid var(--line); border-radius:14px; padding:13px 15px; cursor:grab; }
 .pfr.drag{ opacity:.45; }
@@ -5381,12 +5416,13 @@ function physField(wrap,W,H,balls,anchorOf){
 const POOLS=[
  {key:'ai_frontier',label:'AI frontier',cos:['OpenAI','Vercel','Linear','GitHub']},
  {key:'saas',label:'FAANG',cos:['Google','Apple','Meta','Microsoft','Netflix']},
- {key:'media',label:'Social',cos:['LinkedIn','Spotify','Slack']},
- {key:'commerce',label:'Consumer',cos:['Uber','DoorDash','Airbnb']},
- {key:'creator',label:'Creative tools',cos:['Figma','Adobe','Notion','Stripe','Shopify']}
+ {key:'media',label:'Social',cos:['LinkedIn','Spotify','Slack','Intercom']},
+ {key:'commerce',label:'Consumer',cos:['Uber','DoorDash','Airbnb','Shopify']},
+ {key:'creator',label:'Creative tools',cos:['Figma','Adobe','Notion','Amplitude']},
+ {key:'fintech',label:'B2B & enterprise',cos:['Salesforce','Stripe','Atlassian','HubSpot','Snowflake','Datadog']}
 ];
 function ppool(box,sc){
-  const W=Math.min(innerWidth*.6,940), H=Math.min(innerHeight*.56,540);
+  const W=Math.min(innerWidth*.66,1040), H=Math.min(innerHeight*.6,580);
   const wrap=mk('div','pfield');
   wrap.style.width=W+'px'; wrap.style.height=H+'px';
   box.appendChild(wrap);
@@ -5395,14 +5431,15 @@ function ppool(box,sc){
   const read=presolve(sc.key);
   sel.add((POOLS.find(p=>p.key===read)||POOLS[0]).key);
 
-  /* chosen families merge at the centre; the rest wait at the compass */
-  const COMPASS=[[.5,.13],[.9,.5],[.5,.88],[.1,.5],[.16,.14]];
+  /* chosen families merge at the centre; the rest wait on a wide ellipse,
+     spaced evenly and computed, so they sit far from the selection and
+     equally far from each other */
   function anchorOf(b){
     if(sel.has(b.pool)) return [W/2,H/2];
     const off=POOLS.filter(p=>!sel.has(p.key)).map(p=>p.key);
-    const i=off.indexOf(b.pool);
-    const c=COMPASS[i%COMPASS.length];
-    return [c[0]*W,c[1]*H];
+    const i=off.indexOf(b.pool), n=Math.max(1,off.length);
+    const a=(-Math.PI/2)+i*(Math.PI*2/n);
+    return [W/2+Math.cos(a)*W*.42, H/2+Math.sin(a)*H*.44];
   }
 
   const balls=[]; const labels={};
@@ -5465,7 +5502,7 @@ function pvenn(box,sc){
   const wrap=mk('div','venn');
   wrap.style.width=W+'px'; wrap.style.height=H+'px';
   box.appendChild(wrap);
-  const names={b2c:'People',b2b:'Teams',collaborative:'With a team',individual:'On your own'};
+  const names={b2c:'B2C',b2b:'B2B',collaborative:'With a team',individual:'On your own'};
   const sel=new Set([presolve(sc.key)||sc.opts[0]]);
   const cs=sc.opts.map((o,i)=>{
     const c=mk('button','vc');
@@ -5504,12 +5541,12 @@ function pdomain(box,sc){
   wrap.style.width=W+'px'; wrap.style.height=H+'px';
   box.appendChild(wrap);
   const sel=new Set([presolve(sc.key)||sc.opts[0]]);
-  const RING=[[.5,.14],[.88,.42],[.72,.86],[.26,.86],[.1,.4]];
   function anchorOf(b){
     if(sel.has(b.key)) return [W/2,H/2];
     const off=sc.opts.filter(o=>!sel.has(o));
-    const c=RING[off.indexOf(b.key)%RING.length];
-    return [c[0]*W,c[1]*H];
+    const i=off.indexOf(b.key), n=Math.max(1,off.length);
+    const a=(-Math.PI/2)+i*(Math.PI*2/n);
+    return [W/2+Math.cos(a)*W*.4, H/2+Math.sin(a)*H*.42];
   }
   const balls=sc.opts.map((o,i)=>{
     const r=sel.has(o)?64:52;
@@ -5584,20 +5621,71 @@ function ptwo(box,sc){
   enter(Array.from(row.children),{y:16,blur:8,stagger:.06,duration:.55},1400);
 }
 function pranked(box,sc){
+  /* Geography, not a list alone: the dotted continent with the shortlist
+     beside it. The city ranked first carries the radius rings; drag the list
+     and the map follows. */
   const order=presolve('location').slice();
-  const list=mk('div','pfrank');
-  order.forEach((o,i)=>list.appendChild(prow(i+1,PFLABEL[o]||o,'',o,order,sc)));
-  box.appendChild(list);
-  /* a pair the rounds never put head to head has no honest rank */
-  const c=rconf('location');
-  if(c<.45){
-    const tie=mk('div','pftie','These are close. You never compared them directly, so drag to set the order.');
-    tie.style.marginTop='10px'; box.appendChild(tie);
+  const wrap=mk('div','geo');
+  const mapbox=mk('div','geomap');
+  const list=mk('div','pfrank geolist');
+  wrap.appendChild(mapbox); wrap.appendChild(list);
+  box.appendChild(wrap);
+
+  /* a stylised US with the southern strip of Canada, drawn as the dot matrix
+     the workspace prototypes use */
+  const MW=520, MH=340;
+  const POLY=[[8,40],[6,52],[10,64],[18,68],[24,80],[34,86],[42,83],[50,88],[58,85],[63,90],[68,97],[71,86],[77,79],[85,70],[91,58],[89,47],[82,42],[74,37],[66,33],[58,31],[50,28],[40,26],[30,25],[18,28],[10,33]];
+  function inside(x,y){
+    let inn=false;
+    for(let i=0,j=POLY.length-1;i<POLY.length;j=i++){
+      const xi=POLY[i][0],yi=POLY[i][1],xj=POLY[j][0],yj=POLY[j][1];
+      if(((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi)) inn=true;
+    }
+    return inn;
   }
-  enter(Array.from(list.children),{y:12,blur:6,stagger:.06,duration:.5},1300);
+  const svgDots=[];
+  for(let gy=4;gy<100;gy+=3.4) for(let gx=3;gx<100;gx+=2.6)
+    if(inside(gx,gy)) svgDots.push('<circle cx="'+(gx/100*MW).toFixed(1)+'" cy="'+(gy/100*MH).toFixed(1)+'" r="1.6" class="gdot"/>');
+  const CITY={ san_francisco:[10,56], seattle:[14,36], vancouver:[13,27],
+               new_york:[83,44], toronto:[72,33] };
+  const svg=['<svg viewBox="0 0 '+MW+' '+MH+'" class="gmap">',svgDots.join('')];
+  Object.keys(CITY).forEach(k=>{
+    const [cx,cy]=CITY[k];
+    const x=cx/100*MW, y=cy/100*MH;
+    svg.push('<g class="gcity" data-city="'+k+'">'+
+      '<circle class="gring gr1" cx="'+x+'" cy="'+y+'" r="16"/>'+
+      '<circle class="gring gr2" cx="'+x+'" cy="'+y+'" r="30"/>'+
+      '<circle class="gpt" cx="'+x+'" cy="'+y+'" r="4.5"/>'+
+      '<text class="glab" x="'+x+'" y="'+(y-14)+'" text-anchor="middle">'+(PFLABEL[k]||k)+'</text></g>');
+  });
+  svg.push('</svg>');
+  mapbox.innerHTML=svg.join('');
+
+  function highlight(){
+    const first=order[0];
+    mapbox.querySelectorAll('.gcity').forEach(g=>{
+      const k=g.getAttribute('data-city');
+      g.classList.toggle('first',k===first);
+      g.classList.toggle('listed',order.indexOf(k)>=0);
+    });
+  }
+  function rebuild(){
+    list.innerHTML='';
+    order.forEach((o,i)=>list.appendChild(prow(i+1,PFLABEL[o]||o,'',o,order,sc)));
+    highlight();
+  }
+  /* prow reorders `order` in place and re-calls sc._rebuild */
+  sc._rebuild=rebuild;
+  rebuild();
+  enter([mapbox,list],{y:14,blur:7,stagger:.1,duration:.6},1400);
 }
+/* which mark leads each row */
+const PFICON={ work:'bag', location:'pin', comp:'coin', priorities:'bag',
+  toronto:'pin', san_francisco:'pin', new_york:'pin', seattle:'pin', vancouver:'pin' };
 function prow(n,title,sub,key,order,sc){
   const r=mk('div','pfr'); r.draggable=true; r.dataset.k=key;
+  const ic=mk('span','pfri',I[PFICON[key]||(/locat|city/i.test(title)?'pin':/compens|pay/i.test(title)?'coin':'bag')]||I.spark);
+  r.appendChild(ic);
   r.appendChild(mk('span','pfrn',String(n)));
   const t=mk('div','pfrt'); t.appendChild(mk('b',null,title));
   if(sub) t.appendChild(mk('span',null,sub));
@@ -5612,7 +5700,8 @@ function prow(n,title,sub,key,order,sc){
     if(!from||from===key) return;
     const a=order.indexOf(from), b=order.indexOf(key);
     order.splice(b,0,order.splice(a,1)[0]);
-    sfx('tick'); pedit('location',order.slice()); prender(sc);
+    sfx('tick'); pedit('location',order.slice());
+    if(sc._rebuild){ sc._rebuild(); return; } prender(sc);
   };
   return r;
 }
@@ -5623,6 +5712,7 @@ function porder(box,sc){
      second - so of all six it is the one that has to be draggable */
   rows.forEach((r,i)=>{
     const el=mk('div','pfr'); el.draggable=true; el.dataset.k=r.k;
+    el.appendChild(mk('span','pfri',I[PFICON[r.k]||(/locat/i.test(r.t)?'pin':/compens/i.test(r.t)?'coin':'bag')]||I.spark));
     el.appendChild(mk('span','pfrn',String(i+1)));
     const t=mk('div','pfrt'); t.appendChild(mk('b',null,r.t)); t.appendChild(mk('span',null,r.s));
     el.appendChild(t);
@@ -6222,7 +6312,7 @@ function dbgGoto(i){
       removeEventListener('click',away); } }; addEventListener('click',away); },0);
   };
   st.textContent='1. '+DBG_STEPS[0][0];
-  const bv=mk('span','bldv','v37'); gr.parentElement&&gr.parentElement.appendChild(bv);
+  const bv=mk('span','bldv','v38'); gr.parentElement&&gr.parentElement.appendChild(bv);
   addEventListener('keydown',e=>{
     if(document.activeElement&&document.activeElement.tagName==='INPUT') return;
     if(e.key==='ArrowRight'){ paceAdvance(); }
