@@ -357,8 +357,14 @@ body.dark .paper::before{ background-image:radial-gradient(rgba(255,255,255,.07)
 .vbs{ display:inline; }
 .vbs::after{ content:' '; }
 .vbg:empty{ display:none; }
-.vbg.g1{ margin-top:1.75em; }
-.vbg.g2{ margin-top:2.5em; }
+/* the pins live beside the story, never inside it */
+.vbpins{ display:flex; flex-wrap:wrap; gap:10px; margin-top:2em; }
+.vbpin{ display:inline-flex; align-items:center; gap:8px; padding:8px 14px 8px 11px;
+  border-radius:12px; background:var(--wash); border:1px solid var(--line);
+  font-size:13px; line-height:1.3; color:var(--tx-2); letter-spacing:-.008em;
+  max-width:280px; }
+.vbpg{ font-size:15px; line-height:1; }
+.vbpt{ }
 .vblab{ display:block; margin-bottom:.85em; color:var(--tx-3); }
 .vbg.g2 .vbl{ gap:.28em; }
 .vbg.g2 .vbl span{ width:2.15em; height:2.15em; border-radius:.56em; margin-left:-.42em; }
@@ -2197,10 +2203,12 @@ function SENTENCES(){
   ];
 }
 function boardHTML(){
+  /* One paragraph. The three zones were structure, and there is none - the
+     story just grows and new sentences land wherever their order puts them. */
   const on=SENTENCES().filter(x=>x.ready);
-  return [0,1,2].map(g=>'<div class="vbg g'+g+'" id="vbg'+g+'">'+
-    on.filter(x=>x.g===g).map(x=>'<div class="vbs" data-id="'+x.id+'">'+x.html()+'</div>').join('')+
-    '</div>').join('');
+  return '<div class="vbg" id="vbg0">'+
+    on.map(x=>'<div class="vbs" data-id="'+x.id+'">'+x.html()+'</div>').join('')+
+    '</div><div class="vbpins" id="vbPins"></div>';
 }
 let shown={}, keys={}, queue=[], scanning=false, boardLive=false;
 /* Each sentence loads itself: a skeleton with a green shine, then it resolves.
@@ -2226,7 +2234,7 @@ function pump(){
   scanning=true;
   queue.sort((a,b)=>a.o-b.o);
   const item=queue.shift();
-  const host=$('vbg'+(item.g||0)); if(!host){ scanning=false; return; }
+  const host=$('vbg0'); if(!host){ scanning=false; return; }
   const sk=skeleton(item.o);
   placeRow(host,sk,item.o);
   safeTL(gsap.timeline().fromTo(sk,{opacity:0,y:10},{opacity:1,y:0,duration:.35}),700);
@@ -2258,6 +2266,49 @@ function morphRow(x){
     sfx('sparkle');
   },240);
 }
+/* Things that are true but do not belong in the sentence. Someone says they
+   dance and that is not nothing - it just is not part of "Sanjay is going
+   after product design". It gets pinned beside the paragraph so the person can
+   see their own words landed somewhere. */
+const PINS=[];
+function pin(text,glyph){
+  if(!text) return;
+  if(PINS.some(p=>p.text===text)) return;
+  PINS.push({text:text,glyph:glyph||'\u2726'});
+  renderPins();
+}
+function renderPins(){
+  const host=$('vbPins'); if(!host) return;
+  PINS.forEach((p,i)=>{
+    if(host.querySelector('[data-pin="'+i+'"]')) return;
+    const el=mk('div','vbpin'); el.dataset.pin=String(i);
+    el.appendChild(mk('span','vbpg',p.glyph));
+    el.appendChild(mk('span','vbpt',p.text));
+    /* a pin is not part of the sentence, so it never sits in line with it */
+    el.style.transform='rotate('+((i%2?1:-1)*(1.5+i*.6)).toFixed(1)+'deg)';
+    host.appendChild(el);
+    enter([el],{y:10,blur:6,duration:.5},900);
+  });
+}
+/* Reads a spoken answer for the things the story cannot hold - an interest, a
+   side of someone that is real but is not their career sentence. Deliberately
+   narrow: a pin is only worth making when we are fairly sure. */
+const PINWORDS=[
+  [/\b(danc\w+)\b/i,'\uD83D\uDC83','enjoys dancing'],
+  [/\b(act(?:ing|or)|theatre|theater)\b/i,'\uD83C\uDFAD','into acting and theatre'],
+  [/\b(music|sing\w*|guitar|piano|produc\w* music)\b/i,'\uD83C\uDFB5','makes music'],
+  [/\b(photograph\w+)\b/i,'\uD83D\uDCF7','shoots photographs'],
+  [/\b(writ\w+|poetry|blog\w*)\b/i,'\u270D\uFE0F','writes'],
+  [/\b(sport|footbal\w*|cricket|basketball|run(?:ning)?|gym)\b/i,'\u26BD','plays sport'],
+  [/\b(travel\w*)\b/i,'\u2708\uFE0F','travels'],
+  [/\b(gam(?:e|ing|er)s?)\b/i,'\uD83C\uDFAE','games'],
+  [/\b(volunteer\w*|ngo|nonprofit)\b/i,'\uD83E\uDD1D','volunteers'],
+  [/\b(cook\w*|bak\w*)\b/i,'\uD83C\uDF73','cooks']
+];
+function harvestPins(text){
+  if(!text) return;
+  PINWORDS.forEach(([re,glyph,label])=>{ if(re.test(text)) pin(label,glyph); });
+}
 function renderBoard(){
   if(!boardLive) return;
   renderMeter();
@@ -2266,8 +2317,10 @@ function renderBoard(){
   $('paper').classList.add('canvas');
   let vb=$('vb');
   if(!vb){ s2.innerHTML=''; vb=mk('div','vb'); vb.id='vb';
-    [0,1,2].forEach(g=>{ const d=mk('div','vbg g'+g); d.id='vbg'+g; vb.appendChild(d); });
+    const d=mk('div','vbg'); d.id='vbg0'; vb.appendChild(d);
+    const pins=mk('div','vbpins'); pins.id='vbPins'; vb.appendChild(pins);
     s2.appendChild(vb); }
+  renderPins();
   SENTENCES().forEach((x,i)=>{
     if(!x.ready) return;
     x.o=i;
@@ -3708,6 +3761,10 @@ async function readbackStage(){
   function handleNote(text){
     if(locked) return; locked=true;
     P.about=text;
+    /* Whatever they said that the sentence has no room for still gets kept.
+       This is the "someone who enjoys creative spaces" case: not part of the
+       story, but not thrown away either. */
+    harvestPins(text);
     if(typeof extractInto==='function') extractInto(text);
     /* a correction updates the LinkedIn board in place; the Zero board does
        not exist yet and must not be conjured by an edit */
