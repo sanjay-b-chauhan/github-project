@@ -1257,6 +1257,32 @@ body.dark .lit{ animation-name:litd; }
 .ghost{ box-shadow:0 16px 36px rgba(0,0,0,.16); }
 @media (max-width:1180px){ .right{ display:none!important; } }
 @media (prefers-reduced-motion:reduce){ *,*::before,*::after{ animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+
+/* ══ v8 · one type family ══════════════════════════════════
+   Title visuals and one small indicator. Eyebrows, body text and
+   invisible micro text are gone, not shrunk. Everything the settings
+   panel controls routes through the --q*/--ind/--vb* variables. */
+.q{ font-size:var(--qfs,clamp(23px,1.85vw,34px)); line-height:var(--qlh,1.18);
+  letter-spacing:var(--qls,-.03em); font-weight:var(--qfw,400); }
+.opts{ margin-top:58px; }
+.vb{ font-weight:var(--vbfw,400); }
+/* one indicator voice, sentence case, everywhere */
+.steps .sl,.cap,.capn,.pfxnum,.poolc,.phz span{
+  font-size:var(--inds,12.5px); font-weight:500; letter-spacing:-.01em;
+  color:var(--tx-3); text-transform:none; }
+/* former eyebrows, folded into the family */
+.jrml{ font-size:12.5px; letter-spacing:-.01em; text-transform:none; font-weight:500; color:var(--tx-3); }
+.jrfl{ font-size:12px; letter-spacing:-.01em; text-transform:none; font-weight:500; color:var(--tx-3); }
+.devl{ font-size:11.5px; letter-spacing:0; text-transform:none; }
+/* micro text is deleted, not smaller */
+.rcsrc,.pfxwhy,.rewsub{ display:none; }
+/* thumbnail footers become texture, not fake words */
+.ptf,.pth .f{ font-size:0; height:3px; width:38%; background:var(--line); border-radius:2px;
+  letter-spacing:0; }
+.pfxtop{ justify-content:flex-end; }
+/* card meta reads quietly in one colour */
+.rcco,.rcloc{ color:var(--tx-2); }
+.jrwhy{ font-size:13px; }
 </style>
 </head>
 <body>
@@ -4994,7 +5020,6 @@ function prender(sc){
 function pbuild(box,sc){
   const wrap=mk('div','pfx');
   const top=mk('div','pfxtop');
-  top.appendChild(mk('span',null,'What I read from your choices'));
   top.appendChild(mk('span','pfxnum',sc.id+' / 06'));
   wrap.appendChild(top);
   const host=mk('div'); wrap.appendChild(host);
@@ -5030,7 +5055,7 @@ async function prefStage(){
    Every card states how close it is and why. The tier is computed from the
    same evidence the read-out used, so a role cannot claim to be a direct fit
    on an axis the user never actually settled. */
-const JTIERS=[[5,'DIRECT FIT'],[4,'STRONG FIT'],[3,'CLOSE'],[2,'ADJACENT'],[1,'A STRETCH']];
+const JTIERS=[[5,'Direct fit'],[4,'Strong fit'],[3,'Close'],[2,'Adjacent'],[1,'A stretch']];
 const JPOOL=[
  {co:'OpenAI',role:'Product Designer',where:'Remote Canada / US',yrs:'1-4 years',
   edge:'you said AI was the thing pulling you, and this is the room where that gets decided',
@@ -5619,17 +5644,46 @@ function dbgGoto(i){
     sel.value=get(); sel.onchange=()=>set(sel.value);
     r.appendChild(sel); body.appendChild(r);
   }
-  const FONTS=[['Serif (STK Bureau)',"var(--serif)"],['Sans (system)',"var(--f)"],['Georgia',"Georgia,serif"],['Mono',"ui-monospace,Menlo,monospace"]];
-  const setB=(n,v)=>document.body.style.setProperty(n,v);
+  const GF={'Fraunces':'Fraunces:opsz,wght@9..144,300..600',
+    'Newsreader':'Newsreader:opsz,wght@6..72,300..600',
+    'Source Serif 4':'Source+Serif+4:opsz,wght@8..60,300..600',
+    'Inter':'Inter:wght@300..700'};
+  function ensureFont(stack){
+    const m=String(stack).match(/'([^']+)'/); if(!m) return;
+    const g=GF[m[1]]; if(!g||document.getElementById('gf-'+m[1])) return;
+    const l=document.createElement('link'); l.id='gf-'+m[1]; l.rel='stylesheet';
+    l.href='https://fonts.googleapis.com/css2?family='+g+'&display=swap';
+    document.head.appendChild(l);
+  }
+  const FONTS=[['Serif (STK Bureau)',"var(--serif)"],
+    ['Fraunces',"'Fraunces',Georgia,serif"],
+    ['Newsreader',"'Newsreader',Georgia,serif"],
+    ['Source Serif',"'Source Serif 4',Georgia,serif"],
+    ['Georgia',"Georgia,serif"],
+    ['Sans (Google Sans)',"var(--f)"],
+    ['Inter',"'Inter',system-ui,sans-serif"],
+    ['Mono',"ui-monospace,Menlo,monospace"]];
+  /* every styling write is remembered, and comes back on reload */
+  const PREF=(()=>{ try{ return JSON.parse(localStorage.getItem('v6style')||'{}'); }catch(e){ return {}; } })();
+  const setB=(n,v)=>{ document.body.style.setProperty(n,v); PREF[n]=v;
+    try{ localStorage.setItem('v6style',JSON.stringify(PREF)); }catch(e){} };
+  Object.entries(PREF).forEach(([n,v])=>{ if(String(n).startsWith('--')){
+    if(/font/.test(n)) ensureFont(v);
+    document.body.style.setProperty(n,v); } });
 
   const type=section('Typography');
-  range(type,'Question size',18,48,1,()=>parseInt(getComputedStyle(document.querySelector('.q')||document.body).fontSize)||30,
+  range(type,'Question size',18,48,1,()=>parseInt(PREF['--qfs'])||30,
     v=>setB('--qfs',v+'px'));
-  pick(type,'Question font',FONTS,()=>"var(--serif)",v=>setB('--qfont',v));
-  range(type,'Board size',14,34,1,()=>parseInt(getComputedStyle(document.body).getPropertyValue('--vbfs'))||22,
+  pick(type,'Question font',FONTS,()=>PREF['--qfont']||"var(--serif)",v=>{ ensureFont(v); setB('--qfont',v); });
+  range(type,'Question weight',340,600,10,()=>parseInt(PREF['--qfw'])||400,v=>setB('--qfw',v));
+  range(type,'Question spacing',-0.06,0.02,.005,()=>parseFloat(PREF['--qls'])||-0.03,v=>setB('--qls',v+'em'));
+  range(type,'Question line height',1.02,1.5,.02,()=>parseFloat(PREF['--qlh'])||1.18,v=>setB('--qlh',v));
+  range(type,'Indicator size',11,14.5,.5,()=>parseFloat(PREF['--inds'])||12.5,v=>setB('--inds',v+'px'));
+  range(type,'Board size',14,34,1,()=>parseInt(PREF['--vbfs'])||22,
     v=>setB('--vbfs',v+'px'));
   range(type,'Board line height',1.4,3.2,.05,()=>2.35,v=>setB('--vblh',v));
-  pick(type,'Board font',FONTS,()=>"var(--f)",v=>setB('--vbfont',v));
+  pick(type,'Board font',FONTS,()=>PREF['--vbfont']||"var(--f)",v=>{ ensureFont(v); setB('--vbfont',v); });
+  range(type,'Board weight',340,600,10,()=>parseInt(PREF['--vbfw'])||400,v=>setB('--vbfw',v));
 
   const col2=section('Colours');
   [['Background','--page'],['Shell','--shell'],['Card','--card'],['Wash','--wash'],
@@ -5644,6 +5698,14 @@ function dbgGoto(i){
 
   const motion=section('Motion');
   range(motion,'Speed',.25,2,.05,()=>1,v=>gsap.globalTimeline.timeScale(v));
+
+  const mem=section('Style memory');
+  (()=>{ const r=mk('div','dbgrow flat');
+    const b=document.createElement('button');
+    b.textContent='Reset to shipped style';
+    b.style.cssText='height:32px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--tx-2);font-size:12.5px;cursor:pointer;';
+    b.onclick=()=>{ try{ localStorage.removeItem('v6style'); }catch(e){} location.reload(); };
+    r.appendChild(b); mem.appendChild(r); })();
 
   const theme=section('Theme');
   toggle(theme,'Dark mode',()=>document.body.classList.contains('dark'),
