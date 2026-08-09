@@ -1063,9 +1063,6 @@ body.dark .jsat.jbest{ border-color:rgba(255,255,255,.2); }
 .jsatlogo svg{ width:24px; height:24px; }
 .jsatco{ position:relative; font-size:16.5px; font-weight:600; color:var(--tx); letter-spacing:-.02em; }
 .jsatrole{ position:relative; font-size:12.5px; color:var(--tx-2); margin:2px 0 10px; }
-.jsatwhy{ position:relative; display:flex; align-items:center; justify-content:center;
-  gap:6px; font-size:12px; font-weight:500; color:var(--tx-2); margin:-6px 0 10px; }
-.jsatwhy svg{ width:13px; height:13px; opacity:.75; }
 .jsat .jrbar{ position:relative; display:inline-flex; }
 .jfit{ position:relative; display:inline-flex; align-items:center; gap:7px;
   padding:5px 12px; border-radius:999px; font-size:11.5px; font-weight:600;
@@ -5974,16 +5971,6 @@ const JPOOL=[
   d:'Get dinner across a city without the person ever feeling the machinery.',
   t:{type:'commerce',ethos:'established',world:'b2c',shape:'collaborative',domain:'everyday_utility',city:'new_york'}}
 ];
-/* the one extra field: it speaks in the user's own top priority, so the card
-   reads as proof of listening rather than a listing */
-const JWHY_TYPE={ai_frontier:'Frontier AI work',saas:'Craft at scale',
-  commerce:'Products people touch daily',creator:'Creative tooling'};
-function jwhy(job){
-  const top=(((typeof presolve==='function'&&presolve('priorities'))||[])[0]||{}).k;
-  if(top==='location') return {ic:'pin',tx:PFLABEL[job.t.city]||job.where};
-  if(top==='comp') return {ic:'coin',tx:job.pay||''};
-  return {ic:'spark',tx:JWHY_TYPE[job.t.type]||'The work you kept choosing'};
-}
 /* Reasons name the axis AND the evidence behind it, so a claim can be checked.
    An axis the rounds never settled contributes nothing rather than a guess. */
 const JREASON={
@@ -6148,9 +6135,6 @@ async function rolesStage(){
     el.appendChild(mk('span','jsatlogo',rlogo(d.co)));
     el.appendChild(mk('div','jsatco',d.co));
     el.appendChild(mk('div','jsatrole',d.role));
-    const wh=jwhy(d);
-    if(wh&&wh.tx){ const w=mk('div','jsatwhy');
-      w.innerHTML=cico(wh.ic)+'<span>'+wh.tx+'</span>'; el.appendChild(w); }
     const ft=it.sc.tier>=4?['jfx','Excellent fit']:it.sc.tier>=3?['jfs','Strong fit']:['jfg','Good fit'];
     const bar=mk('span','jfit '+ft[0]);
     bar.appendChild(mk('i')); bar.appendChild(mk('span',null,ft[1]));
@@ -6165,23 +6149,23 @@ async function rolesStage(){
     /* the frame is the law: nothing past it, CTA and top bar kept clear */
     const hx=Math.max(300,innerWidth/2-104-26);
     const hy=Math.max(200,Math.min(innerHeight/2-90-88,innerHeight/2-146-88));
-    const ox=Math.min(R2*1.35,hx), oy=Math.min(R2*.85,hy);
-    const ix=ox*.56, iy=oy*.62;
-    rings[0].style.width=(ix*2+150)+'px'; rings[0].style.height=(iy*2+150)+'px';
-    rings[1].style.width=(ox*2+150)+'px'; rings[1].style.height=(oy*2+150)+'px';
-    sun.style.width=(ix*2+150)+'px'; sun.style.height=(iy*2+150)+'px';
+    /* true circles: one radius each, taken from the tighter axis */
+    const Ro=Math.max(300,Math.min(hx,hy)), Ri=Ro*.62;
+    rings[0].style.width=rings[0].style.height=(Ri*2+150)+'px';
+    rings[1].style.width=rings[1].style.height=(Ro*2+150)+'px';
+    sun.style.width=sun.style.height=(Ri*2+150)+'px';
     const fits=sats.filter(s2=>s2.tier>=3), rest=sats.filter(s2=>s2.tier<3);
     /* the inner ring flanks the sun instead of sitting on the name */
     fits.forEach((s2,k)=>{
       const a=(180+k*(360/Math.max(1,fits.length)))*Math.PI/180;
-      s2.tx=Math.cos(a)*ix; s2.ty=Math.sin(a)*iy;
+      s2.tx=Math.cos(a)*Ri; s2.ty=Math.sin(a)*Ri;
       s2.tilt=(k%2?1:-1)*2; s2.el.classList.remove('jfar');
     });
     /* half a step off vertical, so no card sits on the name or the CTA, and
        the left half mirrors the right */
     rest.forEach((s2,k)=>{
       const a=(-90+(k+.5)*(360/Math.max(1,rest.length)))*Math.PI/180;
-      s2.tx=Math.cos(a)*ox; s2.ty=Math.sin(a)*oy;
+      s2.tx=Math.cos(a)*Ro; s2.ty=Math.sin(a)*Ro;
       s2.tilt=(k%2?1:-1)*3; s2.el.classList.add('jfar');
     });
   };
@@ -6605,7 +6589,7 @@ function dbgGoto(i){
       removeEventListener('click',away); } }; addEventListener('click',away); },0);
   };
   st.textContent='1. '+DBG_STEPS[0][0];
-  const bv=mk('span','bldv','v44'); gr.parentElement&&gr.parentElement.appendChild(bv);
+  const bv=mk('span','bldv','v45'); gr.parentElement&&gr.parentElement.appendChild(bv);
   addEventListener('keydown',e=>{
     if(document.activeElement&&document.activeElement.tagName==='INPUT') return;
     if(e.key==='ArrowRight'){ paceAdvance(); }
