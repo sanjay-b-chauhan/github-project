@@ -1562,6 +1562,13 @@ body.dark .lit{ animation-name:litd; }
 .vpr b{ font-weight:600; font-size:14px; letter-spacing:-.015em; flex:1; }
 .vpr .vnow{ font-size:var(--inds,12.5px); font-weight:500; color:var(--tx-3); }
 .vpr.on b{ color:var(--tx); }
+/* the tile, while Zero is creating */
+.vtb .vskb{ display:block; height:12px; border-radius:6px; margin-bottom:9px;
+  background:linear-gradient(90deg,var(--field) 20%,color-mix(in srgb,var(--commit) 22%, var(--field)) 50%,var(--field) 80%);
+  background-size:220% 100%; animation:vskm 1.15s linear infinite; }
+@keyframes vskm{ from{ background-position:200% 0; } to{ background-position:-20% 0; } }
+.vt.vbuild{ box-shadow:0 0 0 1.5px color-mix(in srgb, var(--commit) 40%, transparent),
+  0 10px 28px rgba(0,0,0,.10); }
 /* quotes stay soft */
 .vq{ font-family:var(--serif); font-size:15.5px; line-height:1.55; font-style:italic; color:var(--tx-2); }
 .vq.sm{ font-size:13.5px; margin-top:10px; }
@@ -7023,6 +7030,7 @@ async function mvpAlign(){
   const st=ALIGN[ALAT];
   atStep(st.label);
   const myGen=gen;
+  vzCam();
   clearTurn(); await wait(300); if(myGen!==gen) return;
   if(st.pre){ await voLine(st.pre(),1900); if(myGen!==gen) return; }
   qWide=!!st.wide;
@@ -7048,6 +7056,8 @@ async function mvpAlign(){
     locked=false;
     dockHide();
     st.set(text);
+    await mvpBuilding(st.focus||'hero',840);
+    if(myGen!==gen) return;
     renderBoard();
     if(st.focus) mvpFocus(st.focus);
     await reflect(st.ack,1650);
@@ -7531,18 +7541,54 @@ function renderMeter(){
   el.textContent='Vision board '+Math.round(n/VTILES.length*100)+'%';
 }
 function retireMeter(){ const el=document.querySelector('.capn'); if(el) el.textContent=''; }
-/* the camera: lean toward the tile that is filling */
+/* the camera: a lean, never a crop */
+function vzCam(){
+  const vz=$('vz'); if(!vz) return;
+  document.querySelectorAll('.vt').forEach(c=>c.classList.remove('dim'));
+  gsap.to(vz,{scale:1,x:0,y:0,duration:.7,ease:EIO});
+}
 function mvpFocus(key){
   VFOCUS=key;
   const vz=$('vz'), sec=$('vt_'+key), host=$('scroll');
   if(!vz||!sec||!host) return;
   document.querySelectorAll('.vt').forEach(c=>c.classList.toggle('dim',c.id!=='vt_'+key));
   sec.classList.remove('dim');
-  const S=1.26;
+  const S=1.08;
   const hw=host.clientWidth, hh=host.clientHeight;
-  const tx=hw/2-S*(sec.offsetLeft+sec.offsetWidth/2);
-  const ty=hh/2-S*(sec.offsetTop+sec.offsetHeight/2);
-  gsap.to(vz,{scale:S,x:Math.min(0,tx),y:Math.min(0,ty),duration:.9,ease:EIO});
+  let tx=hw/2-S*(sec.offsetLeft+sec.offsetWidth/2);
+  let ty=hh/2-S*(sec.offsetTop+sec.offsetHeight/2);
+  tx=Math.max(-hw*.14,Math.min(0,tx));
+  ty=Math.max(-hh*.22,Math.min(0,ty));
+  gsap.to(vz,{scale:S,x:tx,y:ty,duration:.85,ease:EIO});
+  const r=sec.offsetTop;
+  gsap.to(host,{scrollTop:Math.max(0,r-60),duration:.7,ease:EIO});
+}
+/* analyzing, then creating: the tile thinks before it resolves */
+async function mvpBuilding(key,ms){
+  const cap=$('cap');
+  if(cap) cap.innerHTML='<span class="live pulse"></span>Putting it on your board';
+  const tl=VTILES.find(x=>x.key===key);
+  const gr=$('vgrid');
+  if(tl&&gr){
+    let el=$('vt_'+key);
+    const sk='<span class="vskb" style="width:64%"></span><span class="vskb" style="width:42%"></span>';
+    if(!el){
+      el=mk('div','vt '+tl.span+' vbuild'); el.id='vt_'+key;
+      el.style.setProperty('--tt','var(--tt-'+key+',transparent)');
+      el.innerHTML=(tl.label?'<div class="vth"><span class="vte">'+tl.emoji+'</span><span class="vtl">'+tl.label+'</span></div>':'')
+        +'<div class="vtb">'+sk+'</div>';
+      gr.appendChild(el);
+      gsap.fromTo(el,{scale:.7,opacity:0},{scale:1,opacity:1,duration:.5,ease:'back.out(1.6)'});
+    } else {
+      const b=el.querySelector('.vtb');
+      if(b){ b.dataset.k='__building__'; b.innerHTML=sk; }
+      el.classList.add('vbuild');
+    }
+    mvpFocus(key);
+  }
+  await wait(ms||820);
+  const el2=$('vt_'+key); if(el2) el2.classList.remove('vbuild');
+  if(cap) cap.innerHTML='<span class="live pulse"></span>Zero is listening';
 }
 /* the pull-back: the whole board, named, in one look */
 function mvpZoomOut(){
@@ -7559,8 +7605,10 @@ DBG_STEPS.length=0;
     gsap.set('#drawScreen',{opacity:1}); gsap.set('#dH',{opacity:1,y:0}); }],
  ['Open', ()=>mvpOpen()]]
  .forEach(s2=>DBG_STEPS.push(s2));
-ALIGN.forEach((st,i2)=>DBG_STEPS.push([st.label,()=>{ ALAT=i2; bornPanel(); mvpAlign(); }]));
-[['Vision',  ()=>{ bornPanel(); mvpVision(); }],
+ALIGN.forEach((st,i2)=>DBG_STEPS.push([st.label,()=>{ ALAT=i2; bornPanel();
+  const vz=$('vz'); if(vz) vz.remove();
+  renderBoard(); mvpAlign(); }]));
+[['Vision',  ()=>{ bornPanel(); const vz=$('vz'); if(vz) vz.remove(); renderBoard(); mvpVision(); }],
  ['Plan',    ()=>{ if(panelBorn) drawerShut(); mvpPlan(); }],
  ['Roadmap', ()=>mvpRoadmap()],
  ['Outcome', ()=>mvpOutcome()],
