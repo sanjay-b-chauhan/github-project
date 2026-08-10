@@ -3911,7 +3911,7 @@ async function roadmapStage(){
   addCurriculumCard(1); await wait(700);
   addCurriculumCard(2); await wait(700);
   addCurriculumCard(3); await wait(900);
-  cta('Show me the portfolio',portfolioStage);
+  cta('How do I build it?',zeroStage);
 }
 
 /* ============================ 20 · the portfolio ============================ */
@@ -3958,8 +3958,11 @@ async function portfolioStage(){
   atStep('Portfolio');
   setPhase(3);
   clearTurn(); dockHide(); await wait(380);
+  const wks=(()=>{ try{ return pack().projects.reduce((a,p)=>a+p.weeks,0); }catch(e){ return 7; } })();
   line('This is your portfolio at the end of the road, '+P.name+'.');
   await wait(2600);
+  line('This is what you will have built after '+wks+' weeks at Zero.');
+  await wait(2800);
   line('Real projects, real deliverables.');
   await wait(2100);
   await swapPanel('Your portfolio, at the end of the road',buildPortfolioShell,false,false);
@@ -3971,7 +3974,7 @@ async function portfolioStage(){
   line('I cannot hand you the job. I can get you the portfolio that wins it.');
   qWide=false;
   await wait(2600);
-  cta('How do I get there?',zeroStage);
+  cta('How do I get there?',roadmapStage);
 }
 
 /* ============================ 21 · how Zero works ============================ */
@@ -4568,6 +4571,9 @@ function mvGoal(){
 async function mvVisionStage(){
   atStep('Vision');
   const g=gen;
+  /* dark was the listening half. The board is the seeing half, so the lights
+     come up here and stay up for the rest of the flow. */
+  await lightsUp();
   drawerOpen();
   await wait(500); if(g!==gen) return;
   const {box}=turn({q:"Okay, "+P.name+". Here's what I've got. This is you, "+mvGoal()+". Tell me if I've got it right."});
@@ -4600,7 +4606,7 @@ async function mvPlanStage(){
     async v=>{
       if(v==='no') await voLine("No profile, no problem. I'll pace this on what you told me.",2400);
       else await voLine("Got it. Reading where you're starting from.",2200);
-      go(mvRoadmapStage);
+      go(portfolioStage);
     },{pill:true});
 }
 
@@ -6644,8 +6650,8 @@ const DBG_STEPS=[
   ['Align',       ()=>alignStage()],
   ['Vision',      ()=>mvVisionStage()],
   ['Plan',        ()=>mvPlanStage()],
-  ['Roadmap',     ()=>roadmapStage()],
   ['Portfolio',   ()=>portfolioStage()],
+  ['Roadmap',     ()=>roadmapStage()],
   ['How Zero works',()=>zeroStage()],
   ['Credits',     ()=>creditsStage()],
   ['Handoff',     ()=>finishStage('sanjay@z-ro.co')],
@@ -6742,12 +6748,16 @@ function dbgGoto(i){
   if(i!==0) $('drawScreen').style.display='none';
   /* the stepper must reproduce the same boundary, or a jump lands in the
      wrong light and the device stops reading as intentional */
-  document.body.classList.toggle('dark', i<=8);
+  /* 0 Draw · 1 Open · 2 Align are the listening half and stay dark.
+     From the vision board on, everything is light. */
+  document.body.classList.toggle('dark', i<=2);
   $('col').innerHTML='';
   dbgFill(i);
   /* the panel exists from the moment Zero starts writing things down */
   /* panel opens at the read-back (2) and widens once the board is the subject (8) */
-  const born=i>=3, wide=i>=9;
+  /* the board exists from Align (2) on, and takes half the stage from the
+     vision board (3) on, which is where it becomes the subject */
+  const born=i>=2, wide=i>=3;
   /* One board. It is the user's, not LinkedIn's and not Zero's, so it holds
      whatever has been learned by the step being shown. */
   /* ...but it is a drawer, and the cards are where it shuts. Gate on the step
