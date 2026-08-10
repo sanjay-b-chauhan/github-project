@@ -1598,41 +1598,107 @@ body.dark .lit{ animation-name:litd; }
 .mvunlock .mus{ font-weight:400; opacity:.65; margin-left:auto; font-size:12.5px; }
 /* the outcome line, big */
 .q.qhero{ font-size:clamp(30px,2.6vw,46px); max-width:24ch; }
+/* ── the road: a titled, top-to-bottom timeline ── */
+.rmwrap{ text-align:left; }
+.rmtitle{ font-family:var(--serif); font-size:clamp(23px,1.9vw,31px); letter-spacing:-.02em;
+  text-align:center; margin:2px 0 24px; }
+.rmrows{ position:relative; }
+.rmrow{ display:flex; gap:14px; position:relative; padding-bottom:14px; }
+.rmrow::before{ content:''; position:absolute; left:9px; top:22px; bottom:-2px; width:2px;
+  background:var(--line); border-radius:1px; opacity:0; transition:opacity .6s ease .2s; }
+.rmrow.on::before{ opacity:1; }
+.rmrow:last-child::before{ display:none; }
+.rmrail{ width:76px; flex-shrink:0; display:flex; flex-direction:column; align-items:flex-start;
+  padding-top:14px; position:relative; }
+.rmnode{ width:20px; height:20px; border-radius:50%; background:var(--card); border:2px solid var(--tx-3);
+  box-shadow:0 0 0 4px color-mix(in srgb, var(--tx-3) 12%, transparent); position:relative; z-index:2;
+  display:flex; align-items:center; justify-content:center; }
+.rmnode.spark{ border-color:var(--tx); background:var(--ink); color:var(--on-ink); }
+.rmnode.spark svg{ width:10px; height:10px; }
+.rmwk{ margin-top:9px; font-size:var(--inds,12.5px); font-weight:500; letter-spacing:-.01em;
+  color:var(--tx-3); white-space:nowrap; }
+.rmslot{ flex:1; min-width:0; }
+.rmrow .mwk{ display:none; }
+.rmrow.mile{ padding-bottom:14px; }
+.rmtime{ display:flex; align-items:center; gap:13px; margin:10px 0 6px 90px; padding:18px 22px;
+  border-radius:18px; background:var(--ink); color:var(--on-ink);
+  box-shadow:0 14px 36px rgba(0,0,0,.2); }
+.rmtime .rte{ font-size:21px; }
+.rmtime .rtl{ font-size:13.5px; opacity:.65; flex:1; }
+.rmtime .rtn{ font-family:var(--serif); font-size:27px; letter-spacing:-.02em; }
 /* highlight: the one being spoken about */
 .mvlit{ box-shadow:0 0 0 2px var(--tx), 0 18px 44px rgba(0,0,0,.14) !important; }
 .mvstack.pan{ margin:0; width:100%; }
 /* ── the portfolio, as approved ── */
 .pfv2{ text-align:left; }
-.pfhd{ display:flex; align-items:center; gap:13px; margin-bottom:20px; }
-.pfava{ width:44px; height:44px; border-radius:50%; color:#fff; font-family:var(--serif);
-  font-size:19px; display:flex; align-items:center; justify-content:center;
-  box-shadow:0 5px 15px rgba(0,0,0,.16); }
-.pfnm{ font-family:var(--serif); font-size:24px; letter-spacing:-.02em; }
-.pfrl{ font-size:12.5px; color:var(--tx-2); margin-top:3px; }
-.pfgrid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-.pfc{ border:1px solid var(--line); border-radius:16px; background:var(--card); overflow:hidden;
-  box-shadow:0 1px 3px rgba(0,0,0,.05), 0 10px 26px rgba(0,0,0,.07);
-  transition:transform .3s cubic-bezier(.2,.8,.3,1), box-shadow .3s ease; }
-.pfc:hover{ transform:translateY(-3px); }
-.pfc .pfvz{ background:color-mix(in srgb, var(--bt) 8%, var(--card)); border-bottom:1px solid var(--line-2); }
-.pfc .pfchrome{ display:flex; align-items:center; gap:9px; padding:8px 11px;
-  background:color-mix(in srgb, var(--bt) 4%, var(--card)); border-bottom:1px solid var(--line-2); }
-.pfc .pfdots{ display:flex; gap:4px; }
-.pfc .pfdots i{ width:7px; height:7px; border-radius:50%; background:var(--tx-4); opacity:.55; }
-.pfc .pfco{ display:flex; align-items:center; gap:6px; font-size:11.5px; font-weight:600; color:var(--tx-2); }
-.pfc .pfco svg{ width:13px; height:13px; }
-.pfc .pfcanvas{ position:relative; height:86px; display:flex; align-items:flex-end; gap:9px;
-  padding:12px 16px 12px; }
-.pfc .pfbar{ flex:1; border-radius:4px 4px 2px 2px; background:color-mix(in srgb, var(--bt) 30%, var(--card)); }
-.pfc .pfbar.hot{ background:var(--bt); }
-.pfc .pfline{ position:absolute; left:14px; right:14px; bottom:11px; height:1px; background:var(--line); }
-.pfc .pft{ font-size:14.5px; font-weight:600; letter-spacing:-.02em; padding:11px 13px 8px; }
-.pfc .pfpills{ display:flex; flex-wrap:wrap; gap:6px; padding:0 13px 13px; }
-.pfc .pfp2{ display:inline-flex; align-items:center; gap:6px; height:24px; padding:0 10px;
+.pfhd{ display:flex; align-items:center; gap:14px; margin-bottom:16px; }
+.pfava{ width:50px; height:50px; border-radius:50%; color:#fff; font-family:var(--serif);
+  font-size:21px; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 5px 15px rgba(0,0,0,.16); flex-shrink:0; }
+.pfava.ring{ outline:2.5px solid color-mix(in srgb, var(--ok) 55%, transparent); outline-offset:2.5px; }
+.pfhh{ flex:1; min-width:0; }
+.pfnm{ font-size:27px; font-weight:700; letter-spacing:-.03em; }
+.pfmast{ display:inline-flex; align-items:center; gap:7px; height:38px; padding:0 17px;
+  border-radius:999px; background:var(--card); border:1px solid var(--line);
+  font-size:14px; font-weight:600; box-shadow:0 4px 12px rgba(0,0,0,.06); }
+.pfabout{ font-size:14px; line-height:1.6; color:var(--tx-2); margin-bottom:14px; }
+.pfhl{ display:flex; flex-wrap:wrap; gap:9px; margin-bottom:8px; }
+.pfhlp{ display:inline-flex; align-items:center; gap:7px; height:34px; padding:0 15px;
+  border-radius:999px; background:var(--card); border:1px solid var(--line);
+  font-size:13px; font-weight:600; }
+.pfhlp i{ font-style:normal; color:var(--tx-4); }
+.pfhlp b{ color:#15803d; font-weight:600; }
+.pfhlp em{ font-style:normal; color:var(--tx-3); font-weight:600; }
+.pfsech{ font-size:15px; color:var(--tx-3); margin:22px 0 11px; letter-spacing:-.01em; }
+.pflist{ display:flex; flex-direction:column; gap:12px; }
+.pfr{ display:flex; gap:16px; padding:14px; border-radius:18px; background:var(--card);
+  border:1px solid var(--line-2); box-shadow:0 1px 3px rgba(0,0,0,.04), 0 10px 26px rgba(0,0,0,.06);
+  align-items:center; }
+.pfwell{ width:172px; flex-shrink:0; border-radius:13px; padding:12px;
+  background:color-mix(in srgb, var(--bt) 8%, var(--card)); }
+.pfmini{ position:relative; border-radius:10px; background:var(--card); padding:11px 12px 10px;
+  box-shadow:0 2px 8px rgba(0,0,0,.07); }
+.pfmc{ display:flex; align-items:center; gap:6px; font-size:11px; font-weight:600; color:var(--tx-2); }
+.pfmc svg{ width:13px; height:13px; }
+.pfms{ font-size:14.5px; font-weight:700; letter-spacing:-.02em; line-height:1.22; margin-top:7px; }
+.pfrule{ display:block; width:22px; height:2.5px; background:var(--tx); border-radius:2px; margin:8px 0; }
+.pfmz{ font-size:8.5px; letter-spacing:.08em; color:var(--tx-3); }
+.pfface{ position:absolute; right:7px; bottom:7px; width:34px; height:34px; border-radius:10px;
+  color:#fff; font-family:var(--serif); display:flex; align-items:center; justify-content:center;
+  border:2px solid var(--card); box-shadow:0 3px 9px rgba(0,0,0,.18); }
+.pfbody{ flex:1; min-width:0; }
+.pfbt{ font-size:15.5px; font-weight:700; letter-spacing:-.02em; line-height:1.3; }
+.pfbd{ margin-top:6px; font-size:13px; line-height:1.55; color:var(--tx-2); }
+.pfpills{ display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
+.pfp2{ display:inline-flex; align-items:center; gap:7px; height:28px; padding:0 12px;
   border-radius:999px; background:var(--wash); border:1px solid var(--line-2);
-  font-size:11.5px; color:var(--tx-2); }
-.pfc .pfp2 svg{ width:10px; height:10px; }
-.pfc .pfp2.f{ font-variant-ligatures:none; }
+  font-size:12px; color:var(--tx-2); }
+.pfp2 svg{ width:11px; height:11px; }
+.pfmore{ display:flex; align-items:center; justify-content:center; gap:11px; width:100%;
+  height:52px; margin-top:12px; border-radius:999px; background:var(--card);
+  border:1px solid var(--line); font-size:14px; font-weight:600; cursor:pointer;
+  box-shadow:0 4px 14px rgba(0,0,0,.05); }
+.pfmore:hover{ background:var(--field); }
+.pfmf{ display:flex; }
+.pfmf i{ width:26px; height:26px; border-radius:50%; border:2px solid var(--card);
+  margin-left:-8px; display:flex; align-items:center; justify-content:center;
+  font-style:normal; color:#fff; font-size:12px; font-weight:700; overflow:hidden; }
+.pfmf i:first-child{ margin-left:0; }
+.pfmf .pfmfl{ width:100%; height:100%; background:#fff; display:flex; align-items:center; justify-content:center; }
+.pfmf .pfmfl svg{ width:13px; height:13px; }
+.pfx{ display:flex; gap:13px; padding:12px 2px; }
+.pfx + .pfx{ border-top:1px solid var(--line-2); }
+.pfxl{ width:40px; height:40px; flex-shrink:0; border-radius:11px; background:var(--card);
+  border:1px solid var(--line-2); display:flex; align-items:center; justify-content:center;
+  color:var(--tx-2); }
+.pfxl svg{ width:17px; height:17px; }
+.pfxb{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+.pfxo{ font-size:14.5px; font-weight:700; letter-spacing:-.02em; display:flex; align-items:center; gap:8px; }
+.pfxtag{ font-style:normal; font-weight:500; font-size:11.5px; color:var(--tx-3);
+  border:1px solid var(--line); border-radius:999px; padding:2.5px 9px; }
+.pfxr{ font-size:13px; font-weight:500; }
+.pfxm{ font-size:12.5px; color:var(--tx-3); }
+.pfxd{ font-size:13px; line-height:1.5; color:var(--tx-2); margin-top:3px; }
 /* ── the mac desktop ── */
 .apl2{ width:min(680px,88vw); margin:26px auto 0; }
 .macdesk{ border-radius:24px; padding:34px 38px 38px; position:relative; overflow:hidden;
@@ -7211,7 +7277,10 @@ async function mvpRoadmap(){
   if(myGen!==gen) return;
   panelBack();
   await swapPanel('Your road to '+(P.role||'the role'),h=>{
-    const st=mk('div','mvstack pan'); st.id='mvCur'; h.appendChild(st);
+    const w=mk('div','rmwrap');
+    w.innerHTML='<div class="rmtitle">Your road to '+(P.role||'the role')+'</div>';
+    const st=mk('div','rmrows'); st.id='mvCur'; w.appendChild(st);
+    h.appendChild(w);
   },false,true);
   if(myGen!==gen) return;
   await voLine('Calibrated to you, paced for '+low(P.timeline||'your timeline')+'.',2300);
@@ -7219,20 +7288,32 @@ async function mvpRoadmap(){
   clearTurn(); await wait(240); if(myGen!==gen) return;
   const {box}=turn({q:'You do one, then you do it again, harder, on a real brief.'});
   const host=$('mvCur');
+  let wkAt=1;
   for(const c of CURRICULUM){
     if(myGen!==gen) return;
     await paceGate(); if(myGen!==gen) return;
+    const w0=wkAt, w1=wkAt+c.weeks-1; wkAt+=c.weeks;
+    const row=mk('div','rmrow');
+    row.innerHTML='<div class="rmrail"><span class="rmnode"></span>'
+      +'<span class="rmwk">'+(w0===w1?('Week '+w0):('Weeks '+w0+'\u2013'+w1))+'</span></div>';
+    const slot=mk('div','rmslot'); row.appendChild(slot);
+    host.appendChild(row);
     const card=mvpScCard(c);
-    await ghostIn(card,128,430,host);
+    await ghostIn(card,128,430,slot);
+    row.classList.add('on');
     /* the one being spoken about shines; the rest settle back */
     host.querySelectorAll('.mvsc,.mvunlock').forEach(x=>x.classList.remove('mvlit'));
     card.classList.add('mvlit');
     if(typeof sheen==='function'){ try{ sheen(card,.8); }catch(e){} }
     if(c.unlock){
       await wait(260); if(myGen!==gen) return;
+      const ur=mk('div','rmrow mile on');
+      ur.innerHTML='<div class="rmrail"><span class="rmnode spark">'+(I.spark||'')+'</span></div>';
+      const us=mk('div','rmslot'); ur.appendChild(us);
       const u=mk('div','mvunlock');
       u.innerHTML=(I.spark||'')+'<span>'+c.unlock[0]+'</span><span class="mus">'+c.unlock[1]+'</span>';
-      host.appendChild(u);
+      us.appendChild(u);
+      host.appendChild(ur);
       enter([u],{y:12,blur:6,duration:.5},1000);
       const sc2=$('scroll'); if(sc2) gsap.to(sc2,{scrollTop:sc2.scrollHeight,duration:.5,ease:EIO});
       sfx('sparkle');
@@ -7240,6 +7321,17 @@ async function mvpRoadmap(){
   }
   await wait(450); if(myGen!==gen) return;
   const hostAll=$('mvCur'); if(hostAll) hostAll.querySelectorAll('.mvlit').forEach(x=>x.classList.remove('mvlit'));
+  /* the time block closes the road: the main number, as a card */
+  {
+    const tot2=CURRICULUM.reduce((a,c)=>a+c.weeks,0);
+    const tc=mk('div','rmtime');
+    tc.innerHTML='<span class="rte">⏳</span><span class="rtl">Time to build</span>'
+      +'<span class="rtn">'+tot2+' weeks</span>';
+    if(hostAll) hostAll.appendChild(tc);
+    enter([tc],{y:16,blur:8,scale:.96,duration:.6},1200);
+    const sc3=$('scroll'); if(sc3) gsap.to(sc3,{scrollTop:sc3.scrollHeight,duration:.6,ease:EIO});
+    sfx('sparkle');
+  }
   const tot=CURRICULUM.reduce((a,c)=>a+c.weeks,0);
   const q=document.querySelector('#turn .q');
   if(q){ await new Promise(res=>{ gsap.to(q,{opacity:0,y:-8,duration:.3,onComplete:()=>{
@@ -7251,36 +7343,85 @@ async function mvpRoadmap(){
 
 /* ---- outcome: the portfolio, then the one line that matters ---- */
 const PFV2=[
- {co:'Stripe',    tint:'#635BFF', title:'Why churn moved',    file:'churn-recovery.pdf',    dur:'4:12'},
- {co:'DoorDash',  tint:'#FF3008', title:'The next city',      file:'launch-case.pdf',       dur:'3:48'},
- {co:'Notion',    tint:'#0f0f0f', title:'First invite',       file:'activation-experiment.pdf', dur:'4:05'},
- {co:'Salesforce',tint:'#00A1E0', title:'The renewal brief',  file:'renewal-brief.pdf',     dur:'3:30'},
- {co:'Shopify',   tint:'#008060', title:'Month-two leak',     file:'retention-story.pdf',   dur:'4:21'},
+ {co:'Stripe', tint:'#635BFF', short:'Churn Diagnosis',
+  title:'Churn diagnosis and retention recovery plan for Stripe',
+  desc:'Broke retention into cohorts, pinned the 4% move against benchmark, and named the three fixes that recover the most accounts.',
+  file:'churn-recovery.pdf', dur:'4:12'},
+ {co:'DoorDash', tint:'#FF3008', short:'Launch Case',
+  title:'Market entry case and launch recommendation for DoorDash',
+  desc:'Sized three candidate cities, built the unit economics for each, and opened with the one worth launching.',
+  file:'launch-case.pdf', dur:'3:48'},
+ {co:'Notion', tint:'#0f0f0f', short:'Activation Experiment',
+  title:'Activation experiment design and readout for Notion',
+  desc:'Found the invite moment that converts free teams, designed the test, and read the result to a clean decision.',
+  file:'activation-experiment.pdf', dur:'4:05'},
+ {co:'Salesforce', tint:'#00A1E0', short:'Renewal Brief',
+  title:'At-risk renewal analysis and executive brief for Salesforce',
+  desc:'Read the account end to end, isolated the risk driver, and wrote the one page that kept the room aligned.',
+  file:'renewal-brief.pdf', dur:'3:30'},
+ {co:'Shopify', tint:'#008060', short:'Retention Story',
+  title:'Month-two churn analysis and retention fix for Shopify',
+  desc:'Found the month-two leak, isolated the merchants most at risk, and flagged the moment that loses them.',
+  file:'retention-story.pdf', dur:'4:21'},
 ];
-function pfv2Card(p,i2){
-  const c=mk('div','pfc');
-  c.style.setProperty('--bt',p.tint);
-  c.innerHTML=
-    '<div class="pfvz">'
-    +'<div class="pfchrome"><span class="pfdots"><i></i><i></i><i></i></span>'
-    +'<span class="pfco">'+(LOGO[p.co]||'')+'<b>'+p.co+'</b></span></div>'
-    +'<div class="pfcanvas"><span class="pfbar" style="height:34%"></span><span class="pfbar" style="height:58%"></span>'
-    +'<span class="pfbar hot" style="height:82%"></span><span class="pfbar" style="height:46%"></span>'
-    +'<span class="pfline"></span></div>'
-    +'</div>'
-    +'<div class="pft">'+p.title+'</div>'
-    +'<div class="pfpills"><span class="pfp2">'+(I.play||'')+'Presentation · '+p.dur+'</span>'
-    +'<span class="pfp2 f">'+p.file+'</span></div>';
-  return c;
+function pfv2Row(p){
+  const r=mk('div','pfr');
+  r.style.setProperty('--bt',p.tint);
+  r.innerHTML=
+    '<div class="pfwell"><div class="pfmini">'
+      +'<div class="pfmc">'+(LOGO[p.co]||'')+'<span>'+p.co+'</span></div>'
+      +'<div class="pfms">'+p.short+'</div>'
+      +'<span class="pfrule"></span>'
+      +'<div class="pfmz">ZERO · CASE STUDY</div>'
+      +'<span class="pfface" style="'+avStyle(P.name||'You')+'">'+(P.name||'Y').charAt(0)+'</span>'
+    +'</div></div>'
+    +'<div class="pfbody">'
+      +'<div class="pfbt">'+p.title+'</div>'
+      +'<div class="pfbd">'+p.desc+'</div>'
+      +'<div class="pfpills"><span class="pfp2">'+(I.play||'')+'<span>Presentation · '+p.dur+'</span></span>'
+      +'<span class="pfp2 f">'+(I.doc||'')+'<span>'+p.file+'</span></span></div>'
+    +'</div>';
+  return r;
 }
 function buildMvpPortfolio(h){
   const w=mk('div','pfv2');
-  w.innerHTML='<div class="pfhd"><span class="pfava" style="'+avStyle(P.name||'You')+'">'+(P.name||'Y').charAt(0)+'</span>'
-    +'<span><div class="pfnm">'+(P.name||'You')+'</div>'
-    +'<div class="pfrl">'+(P.role||'Business Analyst')+' · portfolio, visualized by Zero</div></span></div>';
-  const grid=mk('div','pfgrid'); grid.id='pfGrid';
-  PFV2.forEach((p,i2)=>grid.appendChild(pfv2Card(p,i2)));
-  w.appendChild(grid);
+  w.innerHTML='<div class="pfhd">'
+    +'<span class="pfava ring" style="'+avStyle(P.name||'You')+'">'+(P.name||'Y').charAt(0)+'</span>'
+    +'<span class="pfhh"><span class="pfnm">'+(P.name||'You')+'</span></span>'
+    +'<span class="pfmast">🌿 Proficient</span></div>'
+    +'<div class="pfabout">I work best when someone hands me a messy problem with data in hand. '
+    +'I look for '+(P.pull||'the why behind the numbers')+', size what matters, and open the write-up with the recommendation.</div>'
+    +'<div class="pfhl"><span class="pfhlp">Communication <i>·</i> <b>Proficient</b></span>'
+    +'<span class="pfhlp">Problem framing <i>·</i> <em>Developing</em></span></div>'
+    +'<div class="pfsech">Projects</div>';
+  const list=mk('div','pflist'); list.id='pfList';
+  PFV2.slice(0,3).forEach(p=>list.appendChild(pfv2Row(p)));
+  const more=mk('button','pfmore');
+  more.innerHTML='<span class="pfmf">'+PFV2.slice(3).map(p=>'<i style="'+avStyle(p.co)+'">'+(LOGO[p.co]?'<span class="pfmfl">'+LOGO[p.co]+'</span>':p.co.charAt(0))+'</i>').join('')+'</span>'
+    +'<span>See '+(PFV2.length-3)+' more projects</span>';
+  more.onclick=()=>{ if(more.dataset.open) return; more.dataset.open='1';
+    PFV2.slice(3).forEach(p=>{ const row=pfv2Row(p); list.appendChild(row);
+      gsap.fromTo(row,{y:16,opacity:0},{y:0,opacity:1,duration:.5,ease:'power3.out'}); });
+    more.style.display='none'; sfx('open'); };
+  w.appendChild(list);
+  w.appendChild(more);
+  const xp=mk('div');
+  xp.innerHTML='<div class="pfsech">Experience</div>'
+    +'<div class="pfx"><span class="pfxl">'+(I.bld||I.spark)+'</span>'
+    +'<span class="pfxb"><span class="pfxo">Campus startup <i class="pfxtag">Part-time</i></span>'
+    +'<span class="pfxr">Operations</span>'
+    +'<span class="pfxm">Toronto, Canada · '+(P.workmode||'Hybrid')+'</span>'
+    +'<span class="pfxd">Runs the weekly ops reporting and keeps the numbers honest for a four-person team.</span></span></div>'
+    +'<div class="pfx"><span class="pfxl">'+(I.users||I.spark)+'</span>'
+    +'<span class="pfxb"><span class="pfxo">Business school case team <i class="pfxtag">Lead</i></span>'
+    +'<span class="pfxr">Quantitative lead</span>'
+    +'<span class="pfxm">Toronto, Canada</span>'
+    +'<span class="pfxd">Owns the modeling sections of every submission.</span></span></div>'
+    +'<div class="pfsech">Academics</div>'
+    +'<div class="pfx"><span class="pfxl">'+(I.cap||I.spark)+'</span>'
+    +'<span class="pfxb"><span class="pfxo">Business school, Toronto <i class="pfxtag">Final year</i></span>'
+    +'<span class="pfxm">Bachelor of Commerce · graduating '+(P.timeline?'in '+low(P.timeline):'soon')+'</span></span></div>';
+  w.appendChild(xp);
   h.appendChild(w);
 }
 async function mvpOutcome(){
@@ -7293,21 +7434,23 @@ async function mvpOutcome(){
   panelBack();
   await swapPanel('Your portfolio, at the end of the road',buildMvpPortfolio,false,true);
   if(myGen!==gen) return;
-  const cards=[...document.querySelectorAll('.pfc')];
-  cards.forEach((c,i2)=>gsap.fromTo(c,{y:22,opacity:0,scale:.96},
-    {y:0,opacity:1,scale:1,duration:.6,delay:.15+i2*.12,ease:'power3.out'}));
+  const rows0=[...document.querySelectorAll('.pfr')];
+  rows0.forEach((c,i2)=>gsap.fromTo(c,{y:22,opacity:0},{y:0,opacity:1,duration:.6,delay:.15+i2*.12,ease:'power3.out'}));
   await wait(900); if(myGen!==gen) return;
   await voLine('Real projects, real deliverables.',2000);
   if(myGen!==gen) return;
-  /* each one gets its moment: shine, in the same order the road runs */
-  for(const c of cards){
+  const more=document.querySelector('.pfmore'); if(more) more.click();
+  await wait(500); if(myGen!==gen) return;
+  const rows=[...document.querySelectorAll('.pfr')];
+  for(const c of rows){
     if(myGen!==gen) return;
-    cards.forEach(x=>x.classList.remove('mvlit'));
+    rows.forEach(x=>x.classList.remove('mvlit'));
     c.classList.add('mvlit');
     if(typeof sheen==='function'){ try{ sheen(c,.75); }catch(e){} }
-    await wait(620);
+    const sc2=$('scroll'); if(sc2) gsap.to(sc2,{scrollTop:Math.max(0,c.offsetTop-90),duration:.5,ease:EIO});
+    await wait(640);
   }
-  cards.forEach(x=>x.classList.remove('mvlit'));
+  rows.forEach(x=>x.classList.remove('mvlit'));
   if(myGen!==gen) return;
   await voLine("This is what a hiring manager or a recruiter sees when they're deciding on you.",2900);
   if(myGen!==gen) return;
