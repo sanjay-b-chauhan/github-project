@@ -1490,31 +1490,81 @@ body.dark .lit{ animation-name:litd; }
 @media (prefers-reduced-motion:reduce){ *,*::before,*::after{ animation-duration:.01ms!important; transition-duration:.01ms!important; } }
 
 /* ═══ MVP layer ═══ */
-/* the structured board */
+/* the living bento board */
 .vz{ transform-origin:0 0; will-change:transform; padding:8px 6px 30px; }
-.vtitle{ font-family:var(--serif); font-size:clamp(21px,1.8vw,30px); text-align:center;
+.vtitle{ font-family:var(--serif); font-size:clamp(22px,1.9vw,31px); text-align:center;
   margin:2px 0 18px; opacity:0; transform:translateY(-6px);
-  transition:opacity .8s ease, transform .8s var(--eio,ease); }
+  transition:opacity .8s ease, transform .8s ease; letter-spacing:-.015em; }
 .vtitle.on{ opacity:1; transform:none; }
-.vgrid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-.vsec{ border:1px solid var(--line); border-radius:18px; background:var(--card);
-  padding:14px 16px 15px; min-height:104px; opacity:.9;
-  transition:opacity .5s ease, box-shadow .5s ease, border-color .5s ease; }
-.vsec.dim{ opacity:.38; }
-.vsec.on{ box-shadow:0 10px 30px rgba(0,0,0,.07); }
-.vsec .vslab{ font-size:var(--inds,12.5px); font-weight:500; letter-spacing:-.01em;
-  color:var(--tx-3); margin-bottom:10px; }
-.vsec .vsb{ font-family:var(--serif); font-size:17px; line-height:1.7; }
-.vsec .vsb:empty::after{ content:''; display:block; height:3px; width:42%;
-  background:var(--line); border-radius:2px; margin-top:16px; }
-.vsec .vsrow{ margin-top:8px; }
-.vsec .vsq{ margin-top:9px; font-size:13.5px; line-height:1.5; color:var(--tx-2); font-style:italic; }
-.vsec .vslogos{ display:flex; }
-.vsec .vslogos i{ width:34px; height:34px; border-radius:50%; background:#fff;
-  border:2px solid var(--card); display:flex; align-items:center; justify-content:center;
-  margin-left:-9px; font-style:normal; box-shadow:0 2px 8px rgba(0,0,0,.10); }
-.vsec .vslogos i:first-child{ margin-left:0; }
-.vsec .vslogos i svg{ width:18px; height:18px; }
+.vgrid{ display:grid; grid-template-columns:repeat(4,1fr); grid-auto-flow:dense; gap:12px; }
+.vt{ position:relative; border:1px solid var(--line); border-radius:20px;
+  background:linear-gradient(160deg, color-mix(in srgb, var(--tt) 9%, var(--card)) 0%, var(--card) 62%);
+  padding:15px 16px 16px; min-height:96px; overflow:hidden;
+  box-shadow:0 1px 2px rgba(0,0,0,.05), 0 10px 28px rgba(0,0,0,.08), 0 24px 54px rgba(0,0,0,.05);
+  transition:box-shadow .5s ease; }
+.vt.dim{ opacity:.35; transition:opacity .45s ease; }
+.vt.s2{ grid-column:span 2; }
+.vt.s4{ grid-column:span 4; }
+.vt.r2{ grid-row:span 2; }
+.vt .vth{ display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+.vt .vte{ width:30px; height:30px; border-radius:10px; background:var(--card);
+  border:1px solid var(--line-2); display:flex; align-items:center; justify-content:center;
+  font-size:16px; box-shadow:0 2px 7px rgba(0,0,0,.09); }
+.vt .vtl{ font-size:var(--inds,12.5px); font-weight:500; letter-spacing:-.01em; color:var(--tx-3); }
+.vt .vtb:empty::after{ content:''; display:block; height:3px; width:42%;
+  background:var(--line); border-radius:2px; margin-top:14px; }
+/* tile tints, from the family: quiet washes, never paint */
+#vt_hero{ --tt-hero:#c9a227; }
+#vt_dreams{ --tt-dreams:#5D87FF; }
+#vt_domain{ --tt-domain:#3fb968; }
+#vt_location{ --tt-location:#ff6a4d; }
+#vt_pull{ --tt-pull:#a78bfa; }
+#vt_plan{ --tt-plan:#0084CE; }
+/* the hero: the name, written properly */
+.vhero{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+.vhava{ width:46px; height:46px; border-radius:50%; color:#fff; font-family:var(--serif);
+  font-size:21px; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 6px 18px rgba(0,0,0,.18); }
+.vhname{ font-family:var(--serif); font-size:29px; letter-spacing:-.02em; }
+.vherole{ display:inline-flex; align-items:center; gap:8px; height:38px; padding:0 16px;
+  border-radius:999px; background:var(--ink); color:var(--on-ink); font-size:14.5px; font-weight:600; }
+.vherole svg{ width:15px; height:15px; }
+.vhsub{ flex-basis:100%; font-size:13.5px; color:var(--tx-2); margin-top:2px; }
+/* pills: the language, with weight */
+.vpill{ display:inline-flex; align-items:center; gap:9px; padding:9px 15px; border-radius:999px;
+  background:var(--card); border:1px solid var(--line); font-size:14px;
+  box-shadow:0 1px 2px rgba(0,0,0,.06), 0 7px 18px rgba(0,0,0,.09); }
+.vpill b{ font-weight:600; letter-spacing:-.015em; }
+.vpill svg{ width:15px; height:15px; }
+.vpill.big{ padding:11px 18px; font-size:15.5px; }
+.vpill.sm{ padding:7px 13px; font-size:13px; }
+.vpills{ display:flex; flex-wrap:wrap; gap:8px; }
+/* the fan: one tile, many things, stacked like a pile worth keeping */
+.vfan{ display:flex; flex-direction:column; gap:0; padding-top:4px; }
+.vfw{ position:relative; z-index:calc(4 - var(--i)); margin-top:6px; }
+.vfc{ display:flex; align-items:center; gap:11px; padding:11px 14px; border-radius:15px;
+  background:var(--card); border:1px solid var(--line);
+  box-shadow:0 2px 5px rgba(0,0,0,.06), 0 12px 26px rgba(0,0,0,.10);
+  transform:rotate(calc((var(--i) - 1) * 2.2deg)) translateY(calc(var(--i) * -4px));
+  transition:transform .35s cubic-bezier(.2,.8,.3,1); }
+.vfw:hover .vfc{ transform:rotate(0deg) translateY(calc(var(--i) * -4px)) scale(1.04); }
+.vfw:hover{ z-index:9; }
+.vfc .vfl{ width:30px; height:30px; border-radius:50%; background:#fff; border:1px solid var(--line-2);
+  display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,.12); }
+.vfc .vfl svg{ width:16px; height:16px; }
+.vfc b{ font-weight:600; font-size:14px; letter-spacing:-.015em; }
+/* the pile: rows that sit on each other */
+.vpile{ display:flex; flex-direction:column; gap:7px; }
+.vpr{ display:flex; align-items:center; gap:10px; padding:9px 13px; border-radius:13px;
+  background:var(--card); border:1px solid var(--line-2);
+  box-shadow:0 1px 3px rgba(0,0,0,.05), 0 8px 20px rgba(0,0,0,.07); }
+.vpr .vem{ font-size:16px; }
+.vpr b{ font-weight:600; font-size:14px; letter-spacing:-.015em; flex:1; }
+.vpr .vnow{ font-size:var(--inds,12.5px); font-weight:500; color:var(--tx-3); }
+.vpr.on b{ color:var(--tx); }
+/* quotes stay soft */
+.vq{ font-family:var(--serif); font-size:15.5px; line-height:1.55; font-style:italic; color:var(--tx-2); }
+.vq.sm{ font-size:13.5px; margin-top:10px; }
 /* curriculum: one scenario, one card */
 .mvstack{ margin:34px auto 0; display:flex; flex-direction:column; gap:12px; width:min(620px,86vw); }
 .mvsc{ background:var(--card); border:1px solid var(--line); border-radius:20px; padding:20px 22px 18px;
@@ -1541,40 +1591,86 @@ body.dark .lit{ animation-name:litd; }
 .mvunlock .mus{ font-weight:400; opacity:.65; margin-left:auto; font-size:12.5px; }
 /* the outcome line, big */
 .q.qhero{ font-size:clamp(30px,2.6vw,46px); max-width:24ch; }
-/* why Zero: one container at a time, text at the bottom, like a feature page */
-.apl{ width:min(640px,86vw); margin:30px auto 0; border-radius:26px; background:var(--card);
-  border:1px solid var(--line); overflow:hidden; box-shadow:0 18px 50px rgba(0,0,0,.08); }
-.apl .aplv{ height:min(300px,34vh); background:var(--wash); display:flex; align-items:center;
-  justify-content:center; position:relative; }
-.apl .aplv .big{ width:88px; height:88px; border-radius:26px; background:var(--card);
-  border:1px solid var(--line); display:flex; align-items:center; justify-content:center;
-  color:var(--tx); box-shadow:0 14px 34px rgba(0,0,0,.10); }
-.apl .aplv .big svg{ width:38px; height:38px; }
-.apl .aplv .sat{ position:absolute; display:flex; align-items:center; justify-content:center;
-  width:44px; height:44px; border-radius:14px; background:var(--card); border:1px solid var(--line);
-  color:var(--tx-2); }
-.apl .aplv .sat svg{ width:19px; height:19px; }
-.apl .aplt{ padding:22px 26px 24px; font-size:15px; line-height:1.6; color:var(--tx-2);
+/* highlight: the one being spoken about */
+.mvlit{ box-shadow:0 0 0 2px var(--tx), 0 18px 44px rgba(0,0,0,.14) !important; }
+.mvstack.pan{ margin:0; width:100%; }
+/* ── the portfolio, as approved ── */
+.pfv2{ text-align:left; }
+.pfhd{ display:flex; align-items:center; gap:13px; margin-bottom:20px; }
+.pfava{ width:44px; height:44px; border-radius:50%; color:#fff; font-family:var(--serif);
+  font-size:19px; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 5px 15px rgba(0,0,0,.16); }
+.pfnm{ font-family:var(--serif); font-size:24px; letter-spacing:-.02em; }
+.pfrl{ font-size:12.5px; color:var(--tx-2); margin-top:3px; }
+.pfgrid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.pfc{ border:1px solid var(--line); border-radius:16px; background:var(--card); overflow:hidden;
+  box-shadow:0 1px 3px rgba(0,0,0,.05), 0 10px 26px rgba(0,0,0,.07);
+  transition:transform .3s cubic-bezier(.2,.8,.3,1), box-shadow .3s ease; }
+.pfc:hover{ transform:translateY(-3px); }
+.pfc .pfvz{ background:color-mix(in srgb, var(--bt) 8%, var(--card)); border-bottom:1px solid var(--line-2); }
+.pfc .pfchrome{ display:flex; align-items:center; gap:9px; padding:8px 11px;
+  background:color-mix(in srgb, var(--bt) 4%, var(--card)); border-bottom:1px solid var(--line-2); }
+.pfc .pfdots{ display:flex; gap:4px; }
+.pfc .pfdots i{ width:7px; height:7px; border-radius:50%; background:var(--tx-4); opacity:.55; }
+.pfc .pfco{ display:flex; align-items:center; gap:6px; font-size:11.5px; font-weight:600; color:var(--tx-2); }
+.pfc .pfco svg{ width:13px; height:13px; }
+.pfc .pfcanvas{ position:relative; height:86px; display:flex; align-items:flex-end; gap:9px;
+  padding:12px 16px 12px; }
+.pfc .pfbar{ flex:1; border-radius:4px 4px 2px 2px; background:color-mix(in srgb, var(--bt) 30%, var(--card)); }
+.pfc .pfbar.hot{ background:var(--bt); }
+.pfc .pfline{ position:absolute; left:14px; right:14px; bottom:11px; height:1px; background:var(--line); }
+.pfc .pft{ font-size:14.5px; font-weight:600; letter-spacing:-.02em; padding:11px 13px 8px; }
+.pfc .pfpills{ display:flex; flex-wrap:wrap; gap:6px; padding:0 13px 13px; }
+.pfc .pfp2{ display:inline-flex; align-items:center; gap:6px; height:24px; padding:0 10px;
+  border-radius:999px; background:var(--wash); border:1px solid var(--line-2);
+  font-size:11.5px; color:var(--tx-2); }
+.pfc .pfp2 svg{ width:10px; height:10px; }
+.pfc .pfp2.f{ font-variant-ligatures:none; }
+/* ── the mac desktop ── */
+.apl2{ width:min(680px,88vw); margin:26px auto 0; }
+.macdesk{ border-radius:24px; padding:34px 38px 38px; position:relative; overflow:hidden;
+  background:linear-gradient(150deg,#e8e4f5 0%,#f3e9e2 46%,#e4eef0 100%);
+  box-shadow:inset 0 0 0 1px rgba(13,13,13,.05); }
+body.dark .macdesk{ background:linear-gradient(150deg,#232134 0%,#2e2431 46%,#1f2b2e 100%); }
+.macwin{ border-radius:13px; background:var(--card); overflow:hidden;
+  box-shadow:0 2px 6px rgba(0,0,0,.08), 0 24px 60px rgba(0,0,0,.22), 0 60px 120px rgba(0,0,0,.16); }
+.macbar{ display:flex; align-items:center; height:38px; padding:0 13px; gap:12px;
+  background:var(--wash); border-bottom:1px solid var(--line-2); }
+.mtl{ display:flex; gap:6px; }
+.mtl i{ width:11px; height:11px; border-radius:50%; }
+.mtl .r{ background:#FF5F57; } .mtl .y{ background:#FEBC2E; } .mtl .g{ background:#28C840; }
+.mttl{ display:flex; align-items:center; margin:0 auto; transform:translateX(-18px); }
+.mttl svg{ height:11px; width:auto; color:var(--tx-2); }
+.macbody{ display:flex; min-height:220px; }
+.macside{ width:52px; border-right:1px solid var(--line-2); padding:13px 0; display:flex;
+  flex-direction:column; align-items:center; gap:9px; background:var(--wash); }
+.macside i{ width:26px; height:26px; border-radius:8px; background:var(--field); display:block; }
+.macside i:first-child{ background:var(--ink); }
+.maccnv{ flex:1; padding:20px 22px; }
+.maccnv .mrow{ height:11px; border-radius:6px; background:var(--field); margin-bottom:10px; }
+.maccnv .mrow.big{ height:17px; width:56%; }
+.maccnv .mrow.w80{ width:80%; } .maccnv .mrow.w70{ width:70%; }
+.maccnv .mrow.w60{ width:60%; } .maccnv .mrow.w50{ width:50%; } .maccnv .mrow.w40{ width:40%; }
+.maccnv .mrow.c{ margin:10px auto 0; }
+.maccnv .mcard{ height:78px; border-radius:11px; background:var(--wash); border:1px solid var(--line-2); margin-top:14px; }
+.maccnv .mcols{ display:flex; gap:14px; } .maccnv .mcols > div:last-child{ flex:1; }
+.maccnv .mcard.tall{ width:44%; height:120px; margin-top:0; }
+.maccnv .mchat{ height:30px; border-radius:12px 12px 12px 4px; background:var(--field); width:58%; margin-bottom:9px; }
+.maccnv .mchat.r{ border-radius:12px 12px 4px 12px; background:var(--ink); opacity:.85; margin-left:auto; }
+.maccnv .mchat.sm{ width:38%; height:24px; }
+.maccnv .mmeter{ height:9px; border-radius:5px; background:var(--field); margin-bottom:12px; overflow:hidden; }
+.maccnv .mmeter i{ display:block; height:100%; border-radius:5px; background:var(--tx-2); }
+.maccnv .mmeter.c{ width:60%; margin:12px auto 0; }
+.maccnv .mxp{ font-family:var(--serif); font-size:34px; text-align:center; margin:26px 0 6px; }
+.maccnv .mxp.gold{ color:var(--gold,#8a6d00); font-variant-numeric:tabular-nums; }
+.maccnv .mloop{ display:flex; gap:12px; justify-content:center; margin-top:44px; }
+.maccnv .mloop span{ width:44px; height:44px; border-radius:12px; border:1.5px dashed var(--line);
+  animation:mloopp 2.4s calc(var(--d) * .3s) infinite ease-in-out; }
+@keyframes mloopp{ 0%,100%{ transform:translateY(0); opacity:.5; } 50%{ transform:translateY(-7px); opacity:1; } }
+.aplt{ padding:20px 8px 0; font-size:15px; line-height:1.6; color:var(--tx-2);
   text-align:left; letter-spacing:-.012em; }
-.apl .aplt b{ color:var(--tx); font-weight:600; }
-/* the MVP portfolio */
-.mvout{ width:min(640px,88vw); margin:30px auto 0; background:var(--card); border:1px solid var(--line);
-  border-radius:24px; padding:26px 26px 20px; box-shadow:0 18px 50px rgba(0,0,0,.08); }
-.mvpf{ text-align:left; }
-.mvpf .ph{ display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:22px; }
-.mvpf .ph .pn{ font-family:var(--serif); font-size:27px; }
-.mvpf .ph .pr{ font-size:13px; color:var(--tx-2); margin-top:4px; }
-.mvpf .pj{ display:flex; gap:14px; padding:15px 16px; border-radius:14px; background:var(--wash);
-  border:1px solid var(--line-2); margin-bottom:9px; align-items:center; }
-.mvpf .pj .jl{ width:36px; height:36px; border-radius:11px; background:#fff; border:1px solid var(--line);
-  display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.mvpf .pj .jl svg{ width:18px; height:18px; }
-.mvpf .pj .jb{ flex:1; min-width:0; }
-.mvpf .pj .jt{ font-size:14.5px; font-weight:600; letter-spacing:-.02em; }
-.mvpf .pj .jd{ font-size:12.5px; color:var(--tx-2); margin-top:2px; }
-.mvpf .pj .jr{ display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--tx-2); white-space:nowrap; }
-.mvpf .pj .jr svg{ width:13px; height:13px; color:var(--ok); }
-</style>
+.aplt b{ color:var(--tx); font-weight:600; }
+/* the MVP portfolio */</style>
 </head>
 <body>
 
@@ -6816,9 +6912,14 @@ function dbgGoto(i){
 /* ═══════════════════════ ZERO Onboarding MVP ═══════════════════════
    Six phases, copy word for word. Components from the chassis; flow new. */
 
-/* a hidden tab freezes rAF and strands every tween the flow awaits on.
-   intervals still run when hidden, so the ticker is pumped by the clock */
-setInterval(()=>{ if(document.hidden){ try{ gsap.ticker.tick(); }catch(e){} } },400);
+/* a hidden or occluded surface freezes rAF and strands every tween the flow
+   awaits on, sometimes while visibilityState still says visible. The clock
+   pumps the ticker whenever it stops advancing on its own. */
+let _lastTick=-1;
+setInterval(()=>{ try{
+  if(gsap.ticker.time===_lastTick) gsap.ticker.tick();
+  _lastTick=gsap.ticker.time;
+}catch(e){} },500);
 
 /* ---- persona: the promise, then the name ---- */
 async function mvpOpen(){
@@ -6861,14 +6962,14 @@ const ALIGN=[
   deeper:'Say a bit more, what pulls you toward that?',
   script:'Honestly, I like the why behind the numbers. I want to be the person who figures out what is actually going on in a business and what to do next. Somewhere that moves fast.',
   ack:'Love that, the why-behind-the-numbers work.',
-  focus:'domain', set:()=>{ P.pull='the why behind the numbers'; }},
+  focus:'pull', set:()=>{ P.pull='the why behind the numbers'; }},
  {label:'Where you are',
   q:()=>'Where are you now, still studying, working, figuring it out?',
   deeper:'What are you studying, or what do you do day to day?',
   stuck:['Studying','Graduated','Working','Between things'],
   script:'I am in my final year of business school in Toronto. Case comps, spreadsheets, and a part time ops gig at a campus startup.',
   ack:'Right, final year, hands already dirty.',
-  focus:'role', set:()=>{ P.level='Student'; P.status='final year of business school'; P.location='Toronto'; }},
+  focus:'hero', set:()=>{ P.level='Student'; P.status='final year of business school'; P.location='Toronto'; }},
  {label:'The role',
   q:()=>"What do you actually want to be doing? If it went perfectly, what's the job?",
   deeper:'What is it about that work that you like?',
@@ -6954,6 +7055,17 @@ async function mvpAlign(){
     ALAT++;
     mvpAlign();
   }
+}
+
+/* the panel returns for a preview, without repainting the board */
+function panelBack(cap){
+  panelBorn=true; panelHidden=false;
+  panelToggleBtn();
+  const b=$('pnlT'); if(b) b.classList.remove('closed');
+  gsap.set('.right',{width:panelPref?panelPref+'px':'50%'});
+  gsap.fromTo('.right',{opacity:0,x:-60},{opacity:1,x:0,duration:.85,ease:EIO});
+  shiftLeft(panelPref?panelPref+'px':'50vw');
+  if(cap) setCap(cap,false);
 }
 
 /* ---- vision: this is you. yes or fix ---- */
@@ -7087,28 +7199,37 @@ async function mvpRoadmap(){
   clearTurn(); dockHide(); await wait(320); if(myGen!==gen) return;
   await voLine("Here's your road to "+(P.role||'the role')+', '+P.name+'.',2400);
   if(myGen!==gen) return;
+  panelBack();
+  await swapPanel('Your road to '+(P.role||'the role'),h=>{
+    const st=mk('div','mvstack pan'); st.id='mvCur'; h.appendChild(st);
+  },false,true);
+  if(myGen!==gen) return;
   await voLine('Calibrated to you, paced for '+low(P.timeline||'your timeline')+'.',2300);
   if(myGen!==gen) return;
-  clearTurn(); await wait(260); if(myGen!==gen) return;
+  clearTurn(); await wait(240); if(myGen!==gen) return;
   const {box}=turn({q:'You do one, then you do it again, harder, on a real brief.'});
-  const stack=mk('div','mvstack');
-  box.appendChild(stack);
+  const host=$('mvCur');
   for(const c of CURRICULUM){
     if(myGen!==gen) return;
     await paceGate(); if(myGen!==gen) return;
-    await ghostIn(mvpScCard(c),128,430,stack);
+    const card=mvpScCard(c);
+    await ghostIn(card,128,430,host);
+    /* the one being spoken about shines; the rest settle back */
+    host.querySelectorAll('.mvsc,.mvunlock').forEach(x=>x.classList.remove('mvlit'));
+    card.classList.add('mvlit');
+    if(typeof sheen==='function'){ try{ sheen(card,.8); }catch(e){} }
     if(c.unlock){
-      await wait(240); if(myGen!==gen) return;
+      await wait(260); if(myGen!==gen) return;
       const u=mk('div','mvunlock');
       u.innerHTML=(I.spark||'')+'<span>'+c.unlock[0]+'</span><span class="mus">'+c.unlock[1]+'</span>';
-      stack.appendChild(u);
+      host.appendChild(u);
       enter([u],{y:12,blur:6,duration:.5},1000);
+      const sc2=$('scroll'); if(sc2) gsap.to(sc2,{scrollTop:sc2.scrollHeight,duration:.5,ease:EIO});
       sfx('sparkle');
     }
   }
-  await wait(500); if(myGen!==gen) return;
-  /* the total lands IN PLACE: clearing the turn here would throw away the
-     curriculum the user is reading */
+  await wait(450); if(myGen!==gen) return;
+  const hostAll=$('mvCur'); if(hostAll) hostAll.querySelectorAll('.mvlit').forEach(x=>x.classList.remove('mvlit'));
   const tot=CURRICULUM.reduce((a,c)=>a+c.weeks,0);
   const q=document.querySelector('#turn .q');
   if(q){ await new Promise(res=>{ gsap.to(q,{opacity:0,y:-8,duration:.3,onComplete:()=>{
@@ -7119,26 +7240,38 @@ async function mvpRoadmap(){
 }
 
 /* ---- outcome: the portfolio, then the one line that matters ---- */
-function buildMvpPortfolio(s2){
-  const w=mk('div','mvpf');
-  const h=mk('div','ph');
-  h.innerHTML='<div><div class="pn">'+(P.name||'You')+'</div>'+
-    '<div class="pr">'+(P.role||'Business Analyst')+' · portfolio, visualized by Zero</div></div>';
-  w.appendChild(h);
-  [
-   ['Stripe','Why churn moved','The 4% answered: cohorts, causes, and the fix that held.'],
-   ['DoorDash','The next city','A launch case a strategy team could take to the room.'],
-   ['Notion','First invite','The activation experiment that turned free teams into paying ones.'],
-   ['Salesforce','The renewal brief','One page that read an account and kept it.'],
-   ['Shopify','Month-two leak','Retention, found and fixed, with the story to prove it.'],
-  ].forEach(([co,t,d])=>{
-    const r=mk('div','pj');
-    r.innerHTML='<span class="jl">'+(LOGO[co]||'')+'</span>'+
-      '<span class="jb"><div class="jt">'+t+'</div><div class="jd">'+d+'</div></span>'+
-      '<span class="jr">'+I.check+'<span>Manager reviewed</span></span>';
-    w.appendChild(r);
-  });
-  s2.appendChild(w);
+const PFV2=[
+ {co:'Stripe',    tint:'#635BFF', title:'Why churn moved',    file:'churn-recovery.pdf',    dur:'4:12'},
+ {co:'DoorDash',  tint:'#FF3008', title:'The next city',      file:'launch-case.pdf',       dur:'3:48'},
+ {co:'Notion',    tint:'#0f0f0f', title:'First invite',       file:'activation-experiment.pdf', dur:'4:05'},
+ {co:'Salesforce',tint:'#00A1E0', title:'The renewal brief',  file:'renewal-brief.pdf',     dur:'3:30'},
+ {co:'Shopify',   tint:'#008060', title:'Month-two leak',     file:'retention-story.pdf',   dur:'4:21'},
+];
+function pfv2Card(p,i2){
+  const c=mk('div','pfc');
+  c.style.setProperty('--bt',p.tint);
+  c.innerHTML=
+    '<div class="pfvz">'
+    +'<div class="pfchrome"><span class="pfdots"><i></i><i></i><i></i></span>'
+    +'<span class="pfco">'+(LOGO[p.co]||'')+'<b>'+p.co+'</b></span></div>'
+    +'<div class="pfcanvas"><span class="pfbar" style="height:34%"></span><span class="pfbar" style="height:58%"></span>'
+    +'<span class="pfbar hot" style="height:82%"></span><span class="pfbar" style="height:46%"></span>'
+    +'<span class="pfline"></span></div>'
+    +'</div>'
+    +'<div class="pft">'+p.title+'</div>'
+    +'<div class="pfpills"><span class="pfp2">'+(I.play||'')+'Presentation · '+p.dur+'</span>'
+    +'<span class="pfp2 f">'+p.file+'</span></div>';
+  return c;
+}
+function buildMvpPortfolio(h){
+  const w=mk('div','pfv2');
+  w.innerHTML='<div class="pfhd"><span class="pfava" style="'+avStyle(P.name||'You')+'">'+(P.name||'Y').charAt(0)+'</span>'
+    +'<span><div class="pfnm">'+(P.name||'You')+'</div>'
+    +'<div class="pfrl">'+(P.role||'Business Analyst')+' · portfolio, visualized by Zero</div></span></div>';
+  const grid=mk('div','pfgrid'); grid.id='pfGrid';
+  PFV2.forEach((p,i2)=>grid.appendChild(pfv2Card(p,i2)));
+  w.appendChild(grid);
+  h.appendChild(w);
 }
 async function mvpOutcome(){
   atStep('Outcome');
@@ -7147,14 +7280,25 @@ async function mvpOutcome(){
   clearTurn(); dockHide(); await wait(320); if(myGen!==gen) return;
   await voLine('This is your portfolio at the end of the road, '+P.name+'.',2600);
   if(myGen!==gen) return;
-  clearTurn(); await wait(260); if(myGen!==gen) return;
-  const {box:pbox}=turn({q:'Real projects, real deliverables.'});
-  const holder=mk('div','mvout');
-  buildMvpPortfolio(holder);
-  pbox.appendChild(holder);
-  enter([holder],{y:22,blur:10,scale:.97,duration:.7},1400);
-  await wait(1500); if(myGen!==gen) return;
-  await paceGate(); if(myGen!==gen) return;
+  panelBack();
+  await swapPanel('Your portfolio, at the end of the road',buildMvpPortfolio,false,true);
+  if(myGen!==gen) return;
+  const cards=[...document.querySelectorAll('.pfc')];
+  cards.forEach((c,i2)=>gsap.fromTo(c,{y:22,opacity:0,scale:.96},
+    {y:0,opacity:1,scale:1,duration:.6,delay:.15+i2*.12,ease:'power3.out'}));
+  await wait(900); if(myGen!==gen) return;
+  await voLine('Real projects, real deliverables.',2000);
+  if(myGen!==gen) return;
+  /* each one gets its moment: shine, in the same order the road runs */
+  for(const c of cards){
+    if(myGen!==gen) return;
+    cards.forEach(x=>x.classList.remove('mvlit'));
+    c.classList.add('mvlit');
+    if(typeof sheen==='function'){ try{ sheen(c,.75); }catch(e){} }
+    await wait(620);
+  }
+  cards.forEach(x=>x.classList.remove('mvlit'));
+  if(myGen!==gen) return;
   await voLine("This is what a hiring manager or a recruiter sees when they're deciding on you.",2900);
   if(myGen!==gen) return;
   await voLine('Your proof of work, not a promise.',2300);
@@ -7162,26 +7306,44 @@ async function mvpOutcome(){
   clearTurn(); await wait(300); if(myGen!==gen) return;
   const {box}=turn({q:'I cannot hand you the job. I can get you the portfolio that wins it.'});
   const q=box.parentElement.querySelector('.q'); if(q) q.classList.add('qhero');
-  cta('How do I get there?',()=>go(mvpWhy));
+  cta('How do I get there?',()=>{ drawerShut(); go(mvpWhy); });
 }
 
-/* ---- launch: why Zero, one container at a time, text at the bottom ---- */
+/* ---- launch: why Zero, one container at a time, text at the bottom ---- *//* ---- launch: why Zero, one container at a time, text at the bottom ---- */
 const WHY=[
- {icons:['folder','target'], main:'doc',
+ {mock:'brief',
   t:'<b>Simple. You learn the job by doing it, before you have it.</b>'},
- {icons:['pen','bars'], main:'briefcase',
+ {mock:'work',
   t:'<b>Everything here is a real project.</b> The same kind of brief a company hands its own analysts. You get the problem, you do the work, you turn it into something you can show.'},
- {icons:['users','play'], main:'chat',
+ {mock:'manager',
   t:"<b>You're not on your own. You've got a manager the whole way through.</b> They review what you build, push back, make you sharpen it. At the end of each one, you present what you made to your team, like you would in the actual job."},
- {icons:['bars','doc'], main:'gauge',
+ {mock:'review',
   t:'<b>And the whole time, your manager is watching how you work.</b> Your quality, your independence, your speed, and your communication. That becomes a performance review, and it sits on your portfolio next to the work.'},
- {icons:['spark','flag'], main:'trophy',
+ {mock:'xp',
   t:'<b>Do it well and you earn XP.</b> The stronger you perform, the faster you climb.'},
- {icons:['route','target'], main:'loop',
+ {mock:'loop',
   t:'<b>Then you do it again and again</b>, across different problems, different situations, different expectations. Every round leaves you more ready than the last.'},
- {icons:['gift','spark'], main:'coin',
+ {mock:'credits',
   t:"<b>That's it. And to get you started, your first credits are on me.</b>"},
 ];
+/* the app, on a desktop: sidebar + canvas, content per beat. clean, no noise */
+function macMock(kind){
+  const rows={
+   brief:   '<div class="mrow big"></div><div class="mrow w70"></div><div class="mrow w40"></div><div class="mcard"></div>',
+   work:    '<div class="mcols"><div class="mcard tall"></div><div><div class="mrow w80"></div><div class="mrow w60"></div><div class="mrow w70"></div></div></div>',
+   manager: '<div class="mchat r"></div><div class="mchat"></div><div class="mchat r sm"></div><div class="mchat sm"></div>',
+   review:  '<div class="mmeter"><i style="width:78%"></i></div><div class="mmeter"><i style="width:64%"></i></div><div class="mmeter"><i style="width:86%"></i></div><div class="mrow w50"></div>',
+   xp:      '<div class="mxp">✦</div><div class="mrow w40 c"></div><div class="mmeter c"><i style="width:70%"></i></div>',
+   loop:    '<div class="mloop">'+['◻','◻','◻','◻'].map((x,i2)=>'<span style="--d:'+i2+'"></span>').join('')+'</div>',
+   credits: '<div class="mxp gold">10,000</div><div class="mrow w40 c"></div>',
+  };
+  return '<div class="macdesk"><div class="macwin">'
+    +'<div class="macbar"><span class="mtl"><i class="r"></i><i class="y"></i><i class="g"></i></span>'
+    +'<span class="mttl">'+ZSVG+'</span></div>'
+    +'<div class="macbody"><div class="macside"><i></i><i></i><i></i><i></i></div>'
+    +'<div class="maccnv">'+(rows[kind]||rows.brief)+'</div></div>'
+    +'</div></div>';
+}
 let WHYAT=0;
 async function mvpWhy(){
   atStep('Why Zero');
@@ -7191,16 +7353,12 @@ async function mvpWhy(){
   const b=WHY[Math.min(WHYAT,WHY.length-1)];
   clearTurn(); await wait(240); if(myGen!==gen) return;
   const {box}=turn({q:''});
-  const card=mk('div','apl');
-  const vis=mk('div','aplv');
-  const big=mk('div','big'); big.innerHTML=I[b.main]||I.spark; vis.appendChild(big);
-  const pos=[[18,22],[76,64]];
-  (b.icons||[]).forEach((ic,i2)=>{ const s2=mk('span','sat'); s2.innerHTML=I[ic]||I.spark;
-    s2.style.left=pos[i2%2][0]+'%'; s2.style.top=pos[i2%2][1]+'%'; vis.appendChild(s2); });
-  card.appendChild(vis);
-  const txt=mk('div','aplt'); txt.innerHTML=b.t; card.appendChild(txt);
+  const card=mk('div','apl2');
+  card.innerHTML=macMock(b.mock)+'<div class="aplt">'+b.t+'</div>';
   box.appendChild(card);
   enter([card],{y:22,blur:10,scale:.97,duration:.7},1400);
+  const win=card.querySelector('.macwin');
+  if(win) gsap.fromTo(win,{y:26,scale:.94,opacity:0},{y:0,scale:1,opacity:1,duration:.85,delay:.2,ease:'power3.out'});
   const last=WHYAT>=WHY.length-1;
   cta(last?'Claim your credits':'Keep going',()=>{
     if(last){ WHYAT=0; go(mvpClaim); }
@@ -7208,7 +7366,7 @@ async function mvpWhy(){
   });
 }
 
-/* ---- the close: 10,000 credits, email, see you inside ---- */
+/* ---- the close: 10,000 credits, email, see you inside ---- *//* ---- the close: 10,000 credits, email, see you inside ---- */
 async function mvpClaim(){
   atStep('Claim');
   const myGen=gen;
@@ -7260,35 +7418,52 @@ async function mvpFinish(email){
   enter([dl],{y:16,blur:8,duration:.6},1200);
 }
 
-/* ---- the board: structured areas, populated live, a camera that cares ----
-   Dhruv's structure: labeled areas (role, domain, companies, location...)
-   filled as the conversation lands, each answer pulling focus to its area,
-   and at the end the camera pulls back: "Sanjay's vision board." */
-const VSEC=[
- {key:'role', label:'The role',
+/* ---- the board: a living bento grid ----------------------------------
+   Tiles of different weights arrive one by one as the conversation lands,
+   the grid reflows around them (FLIP), and anything that holds more than
+   one thing stacks: fanned cards, piled pills. Apple emoji lead each tile. */
+function vflag(city){ return {'Toronto':'🇨🇦','New York':'🇺🇸','San Francisco':'🇺🇸','London':'🇬🇧','Berlin':'🇩🇪','Mumbai':'🇮🇳','Bangalore':'🇮🇳','Singapore':'🇸🇬','Dubai':'🇦🇪'}[city]||'📍'; }
+const VTILES=[
+ {key:'hero', span:'s4', emoji:'', label:'',
+  ready:()=>!!P.name,
+  html:()=>'<div class="vhero">'
+    +'<span class="vhava" style="'+avStyle(P.name||'You')+'">'+(P.name||'Y').charAt(0)+'</span>'
+    +'<span class="vhname">'+(P.name||'You')+'</span>'
+    +(P.role?'<span class="vherole">'+I.target+'<b>'+P.role+'</b></span>':'')
+    +(P.status?'<span class="vhsub">🎓 '+P.status.replace('final year of ','final year, ')+(P.location?' · '+P.location:'')+'</span>':'<span class="vhsub">starts here.</span>')
+    +'</div>'},
+ {key:'pull', span:'s2', emoji:'💭', label:'The pull',
+  ready:()=>!!P.pull,
+  html:()=>'<div class="vq">“'+P.pull+'”</div>'},
+ {key:'role', span:'s2', emoji:'🎯', label:'The role',
   ready:()=>!!P.role,
-  html:()=>chip(I.target+T_(P.role))
-    +(P.status?'<div class="vsrow">'+chip(cico('cap')+T_(P.status.replace('final year of ','final year, ')))+'</div>':'')},
- {key:'company', label:'The company',
+  html:()=>'<span class="vpill big">'+I.target+'<b>'+P.role+'</b></span>'},
+ {key:'company', span:'s2', emoji:'🏢', label:'The company',
   ready:()=>!!P.companyKind,
-  html:()=>chip(cico('bldg')+T_(P.companyKind))},
- {key:'dreams', label:'Dream companies',
+  html:()=>'<span class="vpill">'+'<b>'+P.companyKind+'</b></span>'},
+ {key:'dreams', span:'s2 r2', emoji:'✨', label:'Dream companies',
   ready:()=>!!P.dream,
-  html:()=>'<span class="vslogos">'+P.dream.split(',').map(c2=>{
-    const co=c2.trim(); return '<i title="'+co+'">'+(LOGO[co]||I.spark)+'</i>'; }).join('')+'</span>'},
- {key:'domain', label:'The domain',
-  ready:()=>!!(P.industry||P.pull),
-  html:()=>(P.industry?chip(cico('spark')+T_(P.industry)):'')
-    +(P.problems?'<div class="vsq">&ldquo;'+P.problems+'&rdquo;</div>'
-      :(P.pull?'<div class="vsq">&ldquo;'+P.pull+'&rdquo;</div>':''))},
- {key:'location', label:'Location',
+  html:()=>'<div class="vfan">'+P.dream.split(',').map((c2,i2)=>{
+     const co=c2.trim();
+     return '<div class="vfw" style="--i:'+i2+'"><div class="vfc"><span class="vfl">'+(LOGO[co]||I.spark)+'</span><b>'+co+'</b></div></div>';
+   }).join('')+'</div>'},
+ {key:'domain', span:'s2', emoji:'📊', label:'The domain',
+  ready:()=>!!P.industry,
+  html:()=>'<span class="vpill">'+'<b>'+P.industry+'</b></span>'
+    +(P.problems?'<div class="vq sm">“'+P.problems+'”</div>':'')},
+ {key:'location', span:'s2', emoji:'📍', label:'Location',
   ready:()=>!!P.location,
-  html:()=>cityChip(P.location)+(P.citynext?G_(' then ')+cityChip(P.citynext):'')},
- {key:'plan', label:'The plan',
+  html:()=>'<div class="vpile">'
+    +'<div class="vpr on"><span class="vem">'+vflag(P.location)+'</span><b>'+P.location+'</b><span class="vnow">now</span></div>'
+    +(P.citynext?'<div class="vpr"><span class="vem">'+vflag(P.citynext)+'</span><b>'+P.citynext+'</b><span class="vnow">next</span></div>':'')
+    +'</div>'},
+ {key:'plan', span:'s2', emoji:'🗓️', label:'The plan',
   ready:()=>!!(P.timeline||P.workmode),
-  html:()=>[P.jobtype&&chip(cico('bag')+T_(low(P.jobtype))),
-            P.workmode&&chip(cico('globe')+T_(low(P.workmode))),
-            P.timeline&&chip(cico('cal')+T_('in '+low(P.timeline)))].filter(Boolean).join(' ')},
+  html:()=>'<div class="vpills">'
+    +[P.jobtype&&'<span class="vpill sm">💼 <b>'+low(P.jobtype)+'</b></span>',
+      P.workmode&&'<span class="vpill sm">🌍 <b>'+low(P.workmode)+'</b></span>',
+      P.timeline&&'<span class="vpill sm">⏳ <b>in '+low(P.timeline)+'</b></span>'].filter(Boolean).join('')
+    +'</div>'},
 ];
 let VFOCUS=null, VREVEALED=false;
 function renderBoard(){
@@ -7300,57 +7475,81 @@ function renderBoard(){
   if(!vz){
     s2.innerHTML='';
     vz=mk('div','vz'); vz.id='vz';
-    const tt=mk('div','vtitle'); tt.id='vtitle';
-    tt.textContent=(P.name||'Your')+(P.name?"'s":'')+' vision board';
-    vz.appendChild(tt);
+    const tt=mk('div','vtitle'); tt.id='vtitle'; vz.appendChild(tt);
     const gr=mk('div','vgrid'); gr.id='vgrid'; vz.appendChild(gr);
     s2.appendChild(vz);
-    VSEC.forEach(sec=>{
-      const c=mk('div','vsec'); c.id='vs_'+sec.key;
-      c.appendChild(mk('div','vslab',sec.label));
-      c.appendChild(mk('div','vsb'));
-      gr.appendChild(c);
-    });
   }
   $('vtitle').textContent=(P.name||'Your')+(P.name?"'s":'')+' vision board';
-  VSEC.forEach(sec=>{
-    const c=$('vs_'+sec.key); if(!c) return;
-    const on=sec.ready();
-    c.classList.toggle('on',on);
-    const body=c.querySelector('.vsb');
-    const html=on?sec.html():'';
-    if(body.dataset.k!==html){ body.dataset.k=html; body.innerHTML=html;
-      if(on){ const bits=body.querySelectorAll('.vbc,.vslogos i,.vsq');
-        if(bits.length) safeTL(gsap.timeline().fromTo(bits,{scale:.75,opacity:0},
-          {scale:1,opacity:1,duration:.45,stagger:.07,ease:'back.out(1.7)'}),1200); } }
+  const gr=$('vgrid');
+  /* FLIP: where everyone was, before the new arrival moves them */
+  const first={};
+  [...gr.children].forEach(t2=>{ first[t2.id]=t2.getBoundingClientRect(); });
+  const fresh=[];
+  VTILES.forEach(tl=>{
+    let el=$('vt_'+tl.key);
+    const on=tl.ready();
+    if(!on){ if(el) el.remove(); return; }
+    if(!el){
+      el=mk('div','vt '+tl.span); el.id='vt_'+tl.key;
+      el.style.setProperty('--tt','var(--tt-'+tl.key+',transparent)');
+      if(tl.label) el.innerHTML='<div class="vth"><span class="vte">'+tl.emoji+'</span><span class="vtl">'+tl.label+'</span></div><div class="vtb"></div>';
+      else el.innerHTML='<div class="vtb"></div>';
+      gr.appendChild(el);
+      fresh.push(el);
+    }
+    const body=el.querySelector('.vtb');
+    const html=tl.html();
+    if(body.dataset.k!==html){
+      body.dataset.k=html;
+      const had=!!body.innerHTML;
+      body.innerHTML=html;
+      if(had&&fresh.indexOf(el)<0){
+        safeTL(gsap.timeline().fromTo(body,{opacity:.2,y:6},{opacity:1,y:0,duration:.45,ease:'power2.out'}),900);
+      }
+    }
+  });
+  /* everyone who moved glides; everyone new springs */
+  [...gr.children].forEach(t2=>{
+    const f=first[t2.id]; if(!f) return;
+    const n=t2.getBoundingClientRect();
+    const dx=f.left-n.left, dy=f.top-n.top;
+    if(dx||dy) gsap.fromTo(t2,{x:dx,y:dy},{x:0,y:0,duration:.65,ease:EIO});
+  });
+  fresh.forEach((el,i2)=>{
+    gsap.fromTo(el,{scale:.55,opacity:0,y:22},
+      {scale:1,opacity:1,y:0,duration:.7,delay:i2*.1,ease:'back.out(1.5)'});
+    if(typeof sheen==='function') setTimeout(()=>{ try{ sheen(el,.85); }catch(e){} },350+i2*100);
+    const bits=el.querySelectorAll('.vpill,.vfw,.vpr,.vq');
+    if(bits.length) safeTL(gsap.timeline().fromTo(bits,{scale:.7,opacity:0},
+      {scale:1,opacity:1,duration:.5,delay:.2+i2*.1,stagger:.09,ease:'back.out(1.8)'}),1600);
   });
   renderMeter();
 }
 function renderMeter(){
   const el=document.querySelector('.capn'); if(!el) return;
-  const n=VSEC.filter(x=>x.ready()).length;
-  el.textContent='Vision board '+Math.round(n/VSEC.length*100)+'%';
+  const n=VTILES.filter(x=>x.ready()).length;
+  el.textContent='Vision board '+Math.round(n/VTILES.length*100)+'%';
 }
 function retireMeter(){ const el=document.querySelector('.capn'); if(el) el.textContent=''; }
-/* the camera: focus one area while it fills, everyone else waits quietly */
+/* the camera: lean toward the tile that is filling */
 function mvpFocus(key){
   VFOCUS=key;
-  const vz=$('vz'), sec=$('vs_'+key), host=$('scroll');
+  const vz=$('vz'), sec=$('vt_'+key), host=$('scroll');
   if(!vz||!sec||!host) return;
-  document.querySelectorAll('.vsec').forEach(c=>c.classList.toggle('dim',c.id!=='vs_'+key));
+  document.querySelectorAll('.vt').forEach(c=>c.classList.toggle('dim',c.id!=='vt_'+key));
   sec.classList.remove('dim');
-  const S=1.32;
+  const S=1.26;
   const hw=host.clientWidth, hh=host.clientHeight;
   const tx=hw/2-S*(sec.offsetLeft+sec.offsetWidth/2);
   const ty=hh/2-S*(sec.offsetTop+sec.offsetHeight/2);
-  gsap.to(vz,{scale:S,x:tx,y:Math.min(0,ty),duration:.9,ease:EIO});
+  gsap.to(vz,{scale:S,x:Math.min(0,tx),y:Math.min(0,ty),duration:.9,ease:EIO});
 }
 /* the pull-back: the whole board, named, in one look */
 function mvpZoomOut(){
   VFOCUS=null; VREVEALED=true;
   const vz=$('vz'); if(!vz) return;
-  document.querySelectorAll('.vsec').forEach(c=>c.classList.remove('dim'));
-  document.getElementById('vtitle').classList.add('on');
+  document.querySelectorAll('.vt').forEach(c=>c.classList.remove('dim'));
+  const tt=document.getElementById('vtitle'); if(tt) tt.classList.add('on');
   gsap.to(vz,{scale:1,x:0,y:0,duration:1.1,ease:EIO});
   sfx('sparkle');
 }
@@ -7363,8 +7562,8 @@ DBG_STEPS.length=0;
 ALIGN.forEach((st,i2)=>DBG_STEPS.push([st.label,()=>{ ALAT=i2; bornPanel(); mvpAlign(); }]));
 [['Vision',  ()=>{ bornPanel(); mvpVision(); }],
  ['Plan',    ()=>{ if(panelBorn) drawerShut(); mvpPlan(); }],
- ['Roadmap', ()=>{ if(panelBorn) drawerShut(); mvpRoadmap(); }],
- ['Outcome', ()=>{ if(panelBorn) drawerShut(); mvpOutcome(); }],
+ ['Roadmap', ()=>mvpRoadmap()],
+ ['Outcome', ()=>mvpOutcome()],
  ['Why Zero',()=>{ if(panelBorn) drawerShut(); WHYAT=0; mvpWhy(); }],
  ['Claim',   ()=>{ if(panelBorn) drawerShut(); mvpClaim(); }],
  ['Handoff', ()=>{ if(panelBorn) drawerShut(); mvpFinish('sanjay@z-ro.co'); }]]
