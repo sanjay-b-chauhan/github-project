@@ -3911,11 +3911,10 @@ async function roadmapStage(){
   await wait(1600);
   await swapPanel('Your curriculum',buildCurriculum,false,true);
   await wait(700);
-  await beat('You start by learning the job, not the theory.',()=>addCurriculumCard(0),2200);
-  await beat('Then you do it again, harder, on a real brief.',()=>addCurriculumCard(1),2200);
-  await beat('The third one is the one they ask about.',()=>addCurriculumCard(2),2300);
-  await beat('And '+total+' weeks in, this is what you hold.',()=>addCurriculumCard(3),2300);
-  await voLine('You do one, then you do it again, harder, on a real brief.',2600);
+  await beat('You do one, then you do it again, harder, on a real brief.',()=>addCurriculumCard(0),2600);
+  addCurriculumCard(1); await wait(700);
+  addCurriculumCard(2); await wait(700);
+  addCurriculumCard(3); await wait(900);
   cta('Show me the portfolio',portfolioStage);
 }
 
@@ -3964,14 +3963,14 @@ async function portfolioStage(){
   setPhase(3);
   clearTurn(); dockHide(); await wait(380);
   line('This is your portfolio at the end of the road, '+P.name+'.');
-  await wait(2400);
+  await wait(2600);
   line('Real projects, real deliverables.');
-  await wait(1900);
+  await wait(2100);
   await swapPanel('Your portfolio, at the end of the road',buildPortfolioShell,false,false);
   await wait(1400);
   /* the real thing is on screen now, so the voice points at it instead of building it */
-  await voLine("This is what a hiring manager or a recruiter sees when they're deciding on you.",3200);
-  await voLine('Your proof of work, not a promise.',2200);
+  await voLine("This is what a hiring manager or a recruiter sees when they're deciding on you.",4000);
+  await voLine('Your proof of work, not a promise.',2400);
   qWide=true;
   line('I cannot hand you the job. I can get you the portfolio that wins it.');
   qWide=false;
@@ -4012,21 +4011,21 @@ async function addLoopStep(i){
 async function zeroStage(){
   setPhase(4);
   clearTurn(); dockHide(); await wait(380);
-  line('You learn the job by doing it, before you have it.');
-  await wait(1400);
+  line('Simple. You learn the job by doing it, before you have it.');
+  await wait(2400);
   await swapPanel('How Zero works',buildLoop,false,true);
   await wait(600);
-  await beat('Everything here is a real project.',()=>addLoopStep(0),1500);
-  await beat('The same brief a company hands its own team.',()=>addLoopStep(1),1700);
-  await beat('You do the work, properly.',()=>addLoopStep(2),1500);
-  await beat("You're not on your own. You get a manager.",()=>addLoopStep(3),1700);
-  await beat('They push back until it is sharp.',()=>addLoopStep(4),1600);
-  await beat('Then you present it, like you would on the job.',()=>addLoopStep(5),1700);
-  await beat('And they watch how you work, not just what you made.',()=>addLoopStep(6),1900);
-  await beat('Do it well and you climb faster.',()=>addLoopStep(7),1700);
-  line('Every round leaves you readier than the last.');
-  await wait(2100);
-  cta('What do I start with?',creditsStage);
+  await beat('Everything here is a real project. The same kind of brief a company hands its own analysts. You get the problem, you do the work, you turn it into something you can show.',()=>addLoopStep(0),6400);
+  addLoopStep(1);
+  await beat("You're not on your own. You've got a manager the whole way through. They review what you build, push back, make you sharpen it. At the end of each one, you present what you made to your team, like you would in the actual job.",()=>addLoopStep(2),7600);
+  addLoopStep(3);
+  await beat('And the whole time, your manager is watching how you work. Your quality, your independence, your speed, and your communication. That becomes a performance review, and it sits on your portfolio next to the work.',()=>addLoopStep(4),7400);
+  await beat('Do it well and you earn XP. The stronger you perform, the faster you climb.',()=>addLoopStep(5),3600);
+  await beat('Then you do it again and again, across different problems, different situations, different expectations. Every round leaves you more ready than the last.',()=>addLoopStep(6),6200);
+  addLoopStep(7);
+  line("That's it. And to get you started, your first credits are on me.");
+  await wait(3000);
+  cta('How do I start?',creditsStage);
 }
 function buildReward(s){
   const boxR=mk('div','rew');
@@ -4051,8 +4050,8 @@ function buildReward(s){
 async function creditsStage(){
   atStep('Credits');
   clearTurn(); dockHide(); await wait(380);
-  line('To get started, here is 10,000 credits.');
-  await wait(1500);
+  line('10,000 credits, yours to claim.');
+  await wait(2200);
   await swapPanel('What you start with',buildReward,false,true);
   $('scroll').classList.add('ctr');
   await wait(450);
@@ -4067,8 +4066,10 @@ async function creditsStage(){
     safeTL(gsap.timeline().fromTo(e,{scale:.94},{scale:1,duration:.6,ease:'back.out(2.4)'}),1200);
     sfx('success'); },1900);
   await wait(2200); sfx('chime');
-  line('Enter your email and they are yours.');
-  await wait(1200);
+  await voLine('Credits are what scenarios and reviews cost inside Zero. 10,000 covers your first 2 months in full.',4800);
+  await voLine('After that, finished work keeps paying for the next scenario.',3200);
+  line("Enter your email and they're yours.");
+  await wait(1300);
   emailDock(v=>{
     const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
     if(!ok){ sfx('error'); locked=false;
@@ -4323,12 +4324,16 @@ async function openStage(){
   /* the wordmark and phase dots arrive with Zero's first words */
   safeTL(gsap.timeline().to(['#logoPill','.tr'],{opacity:1,y:0,duration:.55,stagger:.07}),1400);
   qWide=true;
-  await playOpen();
-  qWide=false;
+  await voLine("Hey, I'm Navid. I started Zero.",2600);
   if(gen!==myGen) return;
-  /* the last cue already wrote this line; repeating it re-runs the word
-     stagger and reads as a stutter */
-  if(!/call you/.test(($('col').innerText||''))) line("Let's get started. What should I call you?");
+  await voLine("Before we do anything, I want to understand you properly: the role you're really after, the companies you want to be in, the problems you like solving.",6200);
+  if(gen!==myGen) return;
+  await voLine("The more I understand, the more precise your path becomes, and the closer your final portfolio gets to what actually lands the job.",5600);
+  if(gen!==myGen) return;
+  await voLine("Stay with me a few minutes. At the end, we'll give you some credits so you can start for free.",4600);
+  if(gen!==myGen) return;
+  qWide=false;
+  line('So, what should I call you?');
   /* a name has one correct spelling and it is theirs, so this is the keyboard.
      linkDock is the field without the mic. */
   dockMode='type';
@@ -4366,6 +4371,7 @@ const MV_KIND=[['a startup','startup','start up','small','scrappy','early stage'
   ['an agency','agency','studio','consultancy']];
 const MV_PROB=[['Health','health','healthcare','medical','wellness'],
   ['Finance','fintech','finance','banking','payments'],
+  ['Commerce','retail'],
   ['Commerce','retail','commerce','ecommerce','shopping'],
   ['Climate','climate','sustainability','energy','environment'],
   ['Consumer','consumer','social','everyday'],
@@ -4459,7 +4465,7 @@ const MV_TOPICS=[
   stuck:['Studying','Graduated','Working','Between things']},
  {k:'role', q:"What do you actually want to be doing? If it went perfectly, what's the job?",
   deeper:'What is it about that work that you like?',
-  stuck:['Strategy','Analysis','Marketing','Not sure yet']},
+  stuck:['Strategy','Analysis','Marketing','Ops','Not sure yet']},
  {k:'company', q:'Big name, or somewhere smaller and scrappier?',
   deeper:'What draws you to that kind of place?',
   stuck:['Startup','Scale-up','Big tech','An agency']},
@@ -4467,7 +4473,7 @@ const MV_TOPICS=[
   deeper:'What is it about them?'},
  {k:'industry', q:"What kind of problems do you actually like solving? Any industry you're drawn to?",
   deeper:"Anything you'd love to fix if you could?",
-  stuck:['Health','Finance','Commerce','Climate']},
+  stuck:['Health','Fintech','Retail','Climate','Consumer']},
  {k:'location', q:'Where in the world do you want to be?',
   deeper:'Set on there, or open to a few places?',
   stuck:['London','New York','San Francisco','Remote']},
@@ -4483,10 +4489,7 @@ async function alignStage(){
   const g=gen;
   /* the board is born here and fills as he learns, exactly as v6 does it */
   bornPanel();
-  await voLine('Good to meet you, '+P.name+'.',1800);
-  if(g!==gen) return;
-
-  const first=await mvAsk("So tell me, what do you actually want to be doing? The work, the kind of place, the dream version of it.");
+  const first=await mvAsk('Good to meet you, '+P.name+". So tell me, what do you actually want to be doing? The work, the kind of place, the dream version of it.");
   if(g!==gen) return;
   let got=mvAbsorb(first);
   if(mvThin(first)){
@@ -4554,10 +4557,12 @@ async function mvPlanStage(){
   atStep('Plan');
   const g=gen;
   clearTurn(); await wait(320); if(g!==gen) return;
-  await voLine('Last thing before I build this.',1700); if(g!==gen) return;
-  await voLine("Share your LinkedIn, or a resume, and I'll see exactly where you're starting from.",3400);
+  await voLine('Last thing before I build this.',1900); if(g!==gen) return;
+  await voLine("Share your LinkedIn, or a resume, and I'll see exactly where you're starting from.",3600);
   if(g!==gen) return;
-  const {box}=turn({q:'Where should I read you from?'});
+  await voLine("That's what lets me make this roadmap yours: the right projects, the real problems you'll work on, the skills you'll actually build.",5600);
+  if(g!==gen) return;
+  const {box}=turn({q:"Skip it if you'd rather, I'll just paint in broader strokes."});
   dockHide();
   choices(box,[['link','Connect LinkedIn','li'],['file','Share a resume','cv'],['skip','Skip for now','no']],
     async v=>{
