@@ -1503,6 +1503,10 @@ body.dark .lit{ animation-name:litd; }
   box-shadow:0 1px 2px rgba(0,0,0,.05), 0 10px 28px rgba(0,0,0,.08), 0 24px 54px rgba(0,0,0,.05);
   transition:box-shadow .5s ease; }
 .vt.dim{ opacity:.35; transition:opacity .45s ease; }
+/* waiting sections: the shape of what Zero wants to know */
+.vt.ghost{ opacity:.5; box-shadow:none; background:var(--card); }
+.vt.ghost .vte{ filter:grayscale(1); opacity:.55; }
+.vt.ghost .vtl{ color:var(--tx-4); }
 .vt.s2{ grid-column:span 2; }
 .vt.s4{ grid-column:span 4; }
 .vt.r2{ grid-row:span 2; }
@@ -2693,7 +2697,7 @@ function startRecording(onText){
   bars.forEach((b,i)=>wav.to(b,{height:6+Math.random()*26,duration:.34,yoyo:true,repeat:-1,
     ease:'sine.inOut',delay:i*0.012},0));
   const tick=setInterval(()=>{ const s2=Math.floor((Date.now()-t0)/1000);
-    time.textContent='0:'+String(s2).padStart(2,'0'); },500);
+    time.textContent=Math.floor(s2/60)+':'+String(s2%60).padStart(2,'0'); },500);
   const stopMeter=levelMeter(bars,wav);
   const stopAll=()=>{ live=false; wav.kill(); clearInterval(tick); clearInterval(idle);
     stopMeter(); stopRec(); showTranscript('',''); };
@@ -2765,7 +2769,7 @@ function sayScripted(){
   const wav=gsap.timeline({repeat:-1});
   bars.forEach((b,k)=>wav.to(b,{height:6+Math.random()*26,duration:.32,yoyo:true,repeat:-1,
     ease:'sine.inOut',delay:k*.012},0));
-  const tick=setInterval(()=>{ time.textContent='0:'+String(Math.floor((Date.now()-t0)/1000)).padStart(2,'0'); },500);
+  const tick=setInterval(()=>{ time.textContent=Math.floor((Date.now()-t0)/60000)+':'+String(Math.floor((Date.now()-t0)/1000)%60).padStart(2,'0'); },500);
   const teardown=()=>{ live=false; sayCancel=null; wav.kill(); clearInterval(tick);
     clearTimeout(timer); showTranscript('',''); dockClear&&dockClear(); };
   const finish=()=>{ if(!live) return; teardown(); sfx('release'); if(!locked) fn(text); };
@@ -7196,12 +7200,14 @@ const ALIGN=[
   q:()=>'Big name, or somewhere smaller and scrappier?',
   deeper:'What draws you to that kind of place?',
   stuck:['Startup','Scale-up','Big tech','An agency'],
+  vague:'Honestly, I have not thought about it that much.',
   script:'Smaller. I want my work to actually change what the company does next month, not disappear into a deck.',
   ack:'Right, smaller and faster.',
   focus:'company', set:()=>{ P.companyKind='smaller and faster'; }},
  {label:'Dreams',
   q:()=>"Any names you'd kill to work at, even a dream one?",
   deeper:'What is it about them?',
+  vague:'I do not know. A few of the big names, I guess.',
   script:'Stripe for sure. Notion. And honestly Salesforce, my cousin works there and the problems sound massive.',
   ack:'Salesforce, Notion, solid.',
   focus:'dreams', set:()=>{ P.dream='Stripe, Notion, Salesforce'; }},
@@ -7245,7 +7251,7 @@ async function mvpAlign(){
   qWide=!!st.wide;
   const {box}=turn({q:st.q()});
   qWide=false;
-  devPills(box,[st.script],t=>take(t));
+  devPills(box,[st.vague||st.script],t=>take(t));
   dockInput(t=>take(t));
   if(st.stuck){ const g2=gen; setTimeout(()=>{
     if(g2!==gen||locked) return;
@@ -7254,9 +7260,12 @@ async function mvpAlign(){
   async function take(text){
     if(myGen!==gen) return;
     flowCredit();
-    /* thin answer: ONE follow-up, then move on. the copy's own rule */
-    if(!deepened && st.deeper && String(text||'').trim().length<16){
+    /* a vague answer earns ONE follow-up, then he moves on. the copy's rule */
+    const vagueNow=!deepened && st.deeper &&
+      ((st.vague && text===st.vague) || String(text||'').trim().length<16);
+    if(vagueNow){
       deepened=true; locked=false;
+      dockHide();
       clearTurn(); await wait(260); if(myGen!==gen) return;
       const {box:b2}=turn({q:st.deeper});
       devPills(b2,[st.script],t2=>take(t2));
@@ -7971,15 +7980,21 @@ function renderBoard(){
   VTILES.forEach(tl=>{
     let el=$('vt_'+tl.key);
     const on=tl.ready();
-    if(!on){ if(el) el.remove(); return; }
     if(!el){
-      el=mk('div','vt '+tl.span); el.id='vt_'+tl.key;
+      el=mk('div','vt '+tl.span+(on?'':' ghost')); el.id='vt_'+tl.key;
       el.style.setProperty('--tt','var(--tt-'+tl.key+',transparent)');
       if(tl.label) el.innerHTML='<div class="vth"><span class="vte">'+tl.emoji+'</span><span class="vtl">'+tl.label+'</span></div><div class="vtb"></div>';
       else el.innerHTML='<div class="vtb"></div>';
       gr.appendChild(el);
       fresh.push(el);
     }
+    const wasGhost=el.classList.contains('ghost');
+    el.classList.toggle('ghost',!on);
+    if(wasGhost&&on){
+      gsap.fromTo(el,{scale:.96},{scale:1,duration:.5,ease:'back.out(1.6)'});
+      if(typeof sheen==='function'){ try{ sheen(el,.8); }catch(e){} }
+    }
+    if(!on){ const b0=el.querySelector('.vtb'); if(b0&&b0.dataset.k){ b0.dataset.k=''; b0.innerHTML=''; } return; }
     const body=el.querySelector('.vtb');
     const html=tl.html();
     if(body.dataset.k!==html){
