@@ -1491,7 +1491,8 @@ body.dark .lit{ animation-name:litd; }
 
 /* ═══ MVP layer ═══ */
 .inzero{ position:absolute; z-index:5; text-align:center; font-family:var(--serif);
-  font-size:clamp(19px,1.6vw,26px); line-height:1.3; color:var(--tx); pointer-events:none; }
+  font-size:clamp(16px,1.45vw,22px); line-height:1.4; color:var(--tx); pointer-events:none;
+  text-wrap:balance; }
 /* curriculum: one scenario, one card */
 .mvstack{ margin-top:34px; display:flex; flex-direction:column; gap:12px; width:min(620px,86vw); }
 .mvsc{ background:var(--card); border:1px solid var(--line); border-radius:20px; padding:20px 22px 18px;
@@ -4334,14 +4335,15 @@ function showDraw(){
     if(accepted) return; accepted=true;
     AUD.penStop(); AUD.whoosh();
     /* the first words appear inside the zero that was just drawn */
-    const HOLD=(!skip&&pts.length>2)?1900:0;
+    const HOLD=(!skip&&pts.length>2)?2100:0;
+    gsap.to('#dH',{opacity:0,y:-10,duration:.28});
     if(HOLD){
       const xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]);
       const cx=(Math.min(...xs)+Math.max(...xs))/2, cy=(Math.min(...ys)+Math.max(...ys))/2;
-      const t=mk('div','inzero',"Hey, I'm Navid. I started Zero.");
+      const t=mk('div','inzero',"Hey, I'm Navid.<br>I started Zero.");
       $('drawScreen').appendChild(t);
-      const tw=Math.max(150,(Math.max(...xs)-Math.min(...xs))*.62);
-      t.style.cssText+=';left:'+(cx-tw/2)+'px;top:'+(cy-30)+'px;width:'+tw+'px';
+      const tw=Math.max(140,(Math.max(...xs)-Math.min(...xs))*.55);
+      t.style.cssText+=';left:'+(cx-tw/2)+'px;top:'+(cy-34)+'px;width:'+tw+'px';
       gsap.fromTo(t,{opacity:0,scale:.94},{opacity:1,scale:1,duration:.55,ease:'power2.out',delay:.15});
       gsap.to(t,{opacity:0,duration:.4,delay:(HOLD-420)/1000});
     }
@@ -6809,11 +6811,17 @@ async function mvpOpen(){
   dockHide();
   safeTL(gsap.timeline().to(['#logoPill','.tr'],{opacity:1,y:0,duration:.55,stagger:.07}),1400);
   qWide=true;
-  await voLine("Before we do anything, I want to understand you properly: the role you're really after, the companies you want to be in, the problems you like solving.",4300);
+  await voLine('Before we do anything, I want to understand you properly.',2500);
   if(gen!==myGen) return;
-  await voLine("The more I understand, the more precise your path becomes, and the closer your final portfolio gets to what actually lands the job.",3900);
+  await voLine("The role you're really after, the companies you want to be in, the problems you like solving.",3300);
   if(gen!==myGen) return;
-  await voLine("Stay with me a few minutes. At the end, we'll give you some credits so you can start for free.",3300);
+  await voLine('The more I understand, the more precise your path becomes.',2500);
+  if(gen!==myGen) return;
+  await voLine('And the closer your final portfolio gets to what actually lands the job.',2700);
+  if(gen!==myGen) return;
+  await voLine('Stay with me a few minutes.',1900);
+  if(gen!==myGen) return;
+  await voLine("At the end, we'll give you some credits so you can start for free.",2700);
   if(gen!==myGen) return;
   qWide=false;
   line('So, what should I call you?');
@@ -6829,8 +6837,8 @@ async function mvpOpen(){
 
 /* ---- align: he asks, listens, repeats one thing back ---- */
 const ALIGN=[
- {label:'The opener',
-  q:()=>'Good to meet you, '+P.name+'. So tell me, what do you actually want to be doing? The work, the kind of place, the dream version of it.',
+ {label:'The opener', wide:true, pre:()=>'Good to meet you, '+P.name+'.',
+  q:()=>'So tell me, what do you actually want to be doing? The work, the kind of place, the dream version of it.',
   deeper:'Say a bit more, what pulls you toward that?',
   script:'Honestly, I like the why behind the numbers. I want to be the person who figures out what is actually going on in a business and what to do next. Somewhere that moves fast.',
   ack:'Love that, the why-behind-the-numbers work.',
@@ -6862,7 +6870,7 @@ const ALIGN=[
   script:'Stripe for sure. Notion. And honestly Salesforce, my cousin works there and the problems sound massive.',
   ack:'Salesforce, Notion, solid.',
   set:()=>{ P.dream='Stripe, Notion, Salesforce'; }},
- {label:'Problems',
+ {label:'Problems', wide:true,
   q:()=>"What kind of problems do you actually like solving? Any industry you're drawn to?",
   deeper:"Anything you'd love to fix if you could?",
   stuck:['Health','Fintech','Retail','Climate','Consumer'],
@@ -6881,7 +6889,7 @@ const ALIGN=[
   script:'Hybrid. I like a desk I can leave.',
   ack:'Got it, hybrid.',
   set:()=>{ P.workmode='Hybrid'; }},
- {label:'Timeline',
+ {label:'Timeline', wide:true,
   q:()=>'When do you want to be in the role, and full or part time?',
   deeper:'Is that a hard deadline or a rough aim?',
   stuck:['Three months','Six months','Sometime this year'],
@@ -6896,7 +6904,10 @@ async function mvpAlign(){
   atStep(st.label);
   const myGen=gen;
   clearTurn(); await wait(300); if(myGen!==gen) return;
+  if(st.pre){ await voLine(st.pre(),1900); if(myGen!==gen) return; }
+  qWide=!!st.wide;
   const {box}=turn({q:st.q()});
+  qWide=false;
   devPills(box,[st.script],t=>take(t));
   dockInput(t=>take(t));
   if(st.stuck){ const g2=gen; setTimeout(()=>{
@@ -6943,9 +6954,13 @@ async function mvpVision(){
   await voLine('Alright, '+P.name+", let me show you what I've got.",2400);
   if(myGen!==gen) return;
   P.goal=mvpGoal(); renderBoard();
+  await voLine('Okay, '+P.name+". Here's what I've got.",2300);
+  if(myGen!==gen) return;
   qWide=true;
-  const {box}=turn({q:'Okay, '+P.name+". Here's what I've got. This is you, "+P.goal+". Tell me if I've got it right."});
+  await voLine('This is you, '+P.goal+'.',3600);
+  if(myGen!==gen) return;
   qWide=false;
+  const {box}=turn({q:"Tell me if I've got it right."});
   choices(box,[['check','That is me','ok'],['pen','Change something','fix']],v=>{
     if(v==='ok'){ sfx('success');
       go(async()=>{ await voLine("Good. Let's build your path.",2100); mvpPlan(); }); }
@@ -6978,10 +6993,12 @@ async function mvpPlan(){
   atStep('Plan');
   const myGen=gen;
   clearTurn(); dockHide(); await wait(300); if(myGen!==gen) return;
-  qWide=true;
-  await voLine("Last thing before I build this. Share your LinkedIn, or a resume, and I'll see exactly where you're starting from.",3400);
+  await voLine('Last thing before I build this.',1900);
   if(myGen!==gen) return;
-  await voLine("That's what lets me make this roadmap yours: the right projects, the real problems you'll work on, the skills you'll actually build.",3600);
+  qWide=true;
+  await voLine("Share your LinkedIn, or a resume, and I'll see exactly where you're starting from.",3000);
+  if(myGen!==gen) return;
+  await voLine("That's what lets me make this roadmap yours: the right projects, the real problems you'll work on, the skills you'll actually build.",3700);
   if(myGen!==gen) return;
   qWide=false;
   const {box}=turn({q:"Skip it if you'd rather, I'll just paint in broader strokes."});
@@ -7095,7 +7112,9 @@ async function mvpOutcome(){
   clearTurn(); dockHide(); await wait(320); if(myGen!==gen) return;
   await swapPanel('Your portfolio, at the end of the road',buildMvpPortfolio,false,true);
   await wait(900); if(myGen!==gen) return;
-  await voLine('This is your portfolio at the end of the road, '+P.name+'. Real projects, real deliverables.',3100);
+  await voLine('This is your portfolio at the end of the road, '+P.name+'.',2600);
+  if(myGen!==gen) return;
+  await voLine('Real projects, real deliverables.',2000);
   if(myGen!==gen) return;
   await voLine("This is what a hiring manager or a recruiter sees when they're deciding on you.",2900);
   if(myGen!==gen) return;
@@ -7169,9 +7188,11 @@ async function mvpClaim(){
     confetti(r.left+r.width/2, r.top+r.height*.6);
     sfx('success'); },1700);
   await wait(2300); if(myGen!==gen) return;
-  await voLine('Credits are what scenarios and reviews cost inside Zero. 10,000 covers your first 2 months in full.',3300);
+  await voLine('Credits are what scenarios and reviews cost inside Zero.',2400);
   if(myGen!==gen) return;
-  await voLine('After that, finished work keeps paying for the next scenario.',2600);
+  await voLine('10,000 covers your first 2 months in full.',2200);
+  if(myGen!==gen) return;
+  await voLine('After that, finished work keeps paying for the next scenario.',2500);
   if(myGen!==gen) return;
   line("Enter your email and they're yours.");
   emailDock(v=>{
