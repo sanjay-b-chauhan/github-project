@@ -2216,7 +2216,7 @@ function askOpen(box,onText,opts){
   /* The simulated answer never touches the device, so a screen with a
      scripted line always gets the mic - a denied or missing microphone must
      not hide the primary gesture of the prototype. */
-  if(!SCRIPTED&&(micState==='absent'||micState==='denied')){ dockMode='type'; typeDock(onText,opts.extra); return; }
+  if(false&&(micState==='absent'||micState==='denied')){ dockMode='type'; typeDock(onText,opts.extra); return; }
   dockMode='voice'; voiceDock(onText,opts.extra);
 }
 micProbe();
@@ -2243,15 +2243,11 @@ function voiceDock(onText,extra){
     /* Until the recogniser is really wired, tapping the mic plays the scripted
        answer as a live transcript. This replaces the dev pills, which sat where
        a title and subtitle sit and coloured how the whole screen read. */
+    /* Always simulated. This prototype never opens a microphone: the answer
+       is the best-case one a strong candidate would give, played back through
+       the same recorder UI so the moment reads exactly as it will when the
+       recogniser is real. */
     if(SCRIPTED&&sayScripted()) return;
-    if(micState==='granted'){ startRecording(onText); return; }
-    /* the tap is the intent, so this is the moment to ask */
-    mic.classList.add('waiting');
-    const ok=await micRequest();
-    mic.classList.remove('waiting');
-    if(ok){ startRecording(onText); return; }
-    /* refused or unavailable: hand over to the keyboard rather than sit there
-       with a dead button */
     dockMode='type'; typeDock(onText,extra);
   };
 }
@@ -3969,7 +3965,7 @@ async function portfolioStage(){
   await swapPanel('Your portfolio, at the end of the road',buildPortfolioShell,false,false);
   await wait(1400);
   /* the real thing is on screen now, so the voice points at it instead of building it */
-  await voLine("This is what a hiring manager or a recruiter sees when they're deciding on you.",4000);
+  await voLine("This is what a hiring manager or a recruiter sees when they're deciding on you.",3800);
   await voLine('Your proof of work, not a promise.',2400);
   qWide=true;
   line('I cannot hand you the job. I can get you the portfolio that wins it.');
@@ -4015,16 +4011,24 @@ async function zeroStage(){
   await wait(2400);
   await swapPanel('How Zero works',buildLoop,false,true);
   await wait(600);
-  await beat('Everything here is a real project. The same kind of brief a company hands its own analysts. You get the problem, you do the work, you turn it into something you can show.',()=>addLoopStep(0),6400);
-  addLoopStep(1);
-  await beat("You're not on your own. You've got a manager the whole way through. They review what you build, push back, make you sharpen it. At the end of each one, you present what you made to your team, like you would in the actual job.",()=>addLoopStep(2),7600);
-  addLoopStep(3);
-  await beat('And the whole time, your manager is watching how you work. Your quality, your independence, your speed, and your communication. That becomes a performance review, and it sits on your portfolio next to the work.',()=>addLoopStep(4),7400);
-  await beat('Do it well and you earn XP. The stronger you perform, the faster you climb.',()=>addLoopStep(5),3600);
-  await beat('Then you do it again and again, across different problems, different situations, different expectations. Every round leaves you more ready than the last.',()=>addLoopStep(6),6200);
-  addLoopStep(7);
-  line("That's it. And to get you started, your first credits are on me.");
-  await wait(3000);
+  await beat('Everything here is a real project.',()=>addLoopStep(0),2200);
+  await beat('The same kind of brief a company hands its own analysts.',null,2800);
+  await beat('You get the problem, you do the work, you turn it into something you can show.',()=>addLoopStep(1),3600);
+  await beat("You're not on your own.",null,1900);
+  await beat("You've got a manager the whole way through.",()=>addLoopStep(2),2600);
+  await beat('They review what you build, push back, make you sharpen it.',null,3000);
+  await beat('At the end of each one, you present what you made to your team, like you would in the actual job.',()=>addLoopStep(3),4200);
+  await beat('And the whole time, your manager is watching how you work.',()=>addLoopStep(4),3000);
+  await beat('Your quality, your independence, your speed, and your communication.',null,3200);
+  await beat('That becomes a performance review, and it sits on your portfolio next to the work.',null,3800);
+  await beat('Do it well and you earn XP.',()=>addLoopStep(5),2000);
+  await beat('The stronger you perform, the faster you climb.',null,2400);
+  await beat('Then you do it again and again, across different problems, different situations, different expectations.',()=>addLoopStep(6),4400);
+  await beat('Every round leaves you more ready than the last.',()=>addLoopStep(7),2800);
+  line("That's it.");
+  await wait(1700);
+  line('And to get you started, your first credits are on me.');
+  await wait(2800);
   cta('How do I start?',creditsStage);
 }
 function buildReward(s){
@@ -4066,7 +4070,8 @@ async function creditsStage(){
     safeTL(gsap.timeline().fromTo(e,{scale:.94},{scale:1,duration:.6,ease:'back.out(2.4)'}),1200);
     sfx('success'); },1900);
   await wait(2200); sfx('chime');
-  await voLine('Credits are what scenarios and reviews cost inside Zero. 10,000 covers your first 2 months in full.',4800);
+  await voLine('Credits are what scenarios and reviews cost inside Zero.',2800);
+  await voLine('10,000 covers your first 2 months in full.',2600);
   await voLine('After that, finished work keeps paying for the next scenario.',3200);
   line("Enter your email and they're yours.");
   await wait(1300);
@@ -4326,11 +4331,17 @@ async function openStage(){
   qWide=true;
   await voLine("Hey, I'm Navid. I started Zero.",2600);
   if(gen!==myGen) return;
-  await voLine("Before we do anything, I want to understand you properly: the role you're really after, the companies you want to be in, the problems you like solving.",6200);
+  await voLine('Before we do anything, I want to understand you properly.',2600);
   if(gen!==myGen) return;
-  await voLine("The more I understand, the more precise your path becomes, and the closer your final portfolio gets to what actually lands the job.",5600);
+  await voLine("The role you're really after, the companies you want to be in, the problems you like solving.",4000);
   if(gen!==myGen) return;
-  await voLine("Stay with me a few minutes. At the end, we'll give you some credits so you can start for free.",4600);
+  await voLine('The more I understand, the more precise your path becomes.',3000);
+  if(gen!==myGen) return;
+  await voLine('And the closer your final portfolio gets to what actually lands the job.',3400);
+  if(gen!==myGen) return;
+  await voLine('Stay with me a few minutes.',2000);
+  if(gen!==myGen) return;
+  await voLine("At the end, we'll give you some credits so you can start for free.",3400);
   if(gen!==myGen) return;
   qWide=false;
   line('So, what should I call you?');
@@ -4442,12 +4453,14 @@ function mvEcho(got,raw){
 const mvThin = raw => String(raw||'').trim().split(/\s+/).length < 7;
 
 /* one open answer through v6's own dock, voice first, keyboard underneath */
-function mvAsk(question, stuck){
+function mvAsk(question, stuck, scripted){
   return new Promise(resolve=>{
     const {box}=turn({q:question});
     voPlay(question);
     let done=false;
-    const settle=v=>{ if(done) return; done=true; dockHide(); resolve(v); };
+    const settle=v=>{ if(done) return; done=true; clearScripted(); dockHide(); resolve(v); };
+    /* arm the simulated recorder with what a strong candidate would say */
+    devPills(box,[scripted||MV_SCRIPT.deeper],settle);
     dockInput(settle);
     /* if they are stuck the follow-up just offers the choices instead */
     if(stuck&&stuck.length){
@@ -4459,6 +4472,20 @@ function mvAsk(question, stuck){
 }
 
 /* ---- 2 - Align ---------------------------------------------------------- */
+/* The best-case answers. Assume a candidate who knows what they want and says
+   it well: this is the vision board the flow exists to produce. */
+const MV_SCRIPT={
+  opener:"I want to be a product designer. The messy problems, where you have to work out what people actually need before you draw anything.",
+  level:"I'm in my final year at university, studying design.",
+  role:"Product design. Owning a real surface end to end, not just pushing pixels.",
+  company:"Somewhere smaller and scrappier. I want to own things, not wait in a queue.",
+  dream:"Figma, Notion and Linear. That level of craft.",
+  industry:"AI. How people actually talk to these tools, because right now it is mostly guesswork.",
+  location:"London, ideally.",
+  workmode:"Hybrid.",
+  timeline:"In six months, full time.",
+  deeper:"It is the part where you get to decide what is worth building, and then you have to live with the decision."
+};
 const MV_TOPICS=[
  {k:'level', q:'Where are you now, still studying, working, figuring it out?',
   deeper:'What are you studying, or what do you do day to day?',
@@ -4489,11 +4516,15 @@ async function alignStage(){
   const g=gen;
   /* the board is born here and fills as he learns, exactly as v6 does it */
   bornPanel();
-  const first=await mvAsk('Good to meet you, '+P.name+". So tell me, what do you actually want to be doing? The work, the kind of place, the dream version of it.");
+  await voLine('Good to meet you, '+P.name+'.',1700);
+  if(g!==gen) return;
+  await voLine('So tell me, what do you actually want to be doing?',2400);
+  if(g!==gen) return;
+  const first=await mvAsk('The work, the kind of place, the dream version of it.',null,MV_SCRIPT.opener);
   if(g!==gen) return;
   let got=mvAbsorb(first);
   if(mvThin(first)){
-    const more=await mvAsk('Say a bit more, what pulls you toward that?');
+    const more=await mvAsk('Say a bit more, what pulls you toward that?',null,MV_SCRIPT.deeper);
     if(g!==gen) return;
     got=got.concat(mvAbsorb(more));
   }
@@ -4502,7 +4533,7 @@ async function alignStage(){
 
   for(const T of MV_TOPICS){
     if(P[T.k]) continue;
-    const a=await mvAsk(T.q,T.stuck);
+    const a=await mvAsk(T.q,T.stuck,MV_SCRIPT[T.k]);
     if(g!==gen) return;
     let gg=mvAbsorb(a);
     /* the hours ride in with the timeline question */
@@ -4510,7 +4541,7 @@ async function alignStage(){
     /* a value the vocabulary missed is still their answer: keep their words */
     if(!P[T.k]&&T.k!=='dream'){ P[T.k]=mvTidy(a); renderBoard(); }
     if(mvThin(a)&&T.deeper){
-      const more=await mvAsk(T.deeper);
+      const more=await mvAsk(T.deeper,null,MV_SCRIPT.deeper);
       if(g!==gen) return;
       gg=gg.concat(mvAbsorb(more));
     }
@@ -4543,7 +4574,7 @@ async function mvVisionStage(){
   dockHide();
   choices(box,[['spark','That is me','ok'],['pen','Change something','fix']],async v=>{
     if(v==='fix'){
-      const what=await mvAsk("What doesn't line up?");
+      const what=await mvAsk("What doesn't line up?",null,'Actually make it hybrid rather than fully remote.');
       mvAbsorb(what);
       return go(mvVisionStage);
     }
@@ -4560,7 +4591,9 @@ async function mvPlanStage(){
   await voLine('Last thing before I build this.',1900); if(g!==gen) return;
   await voLine("Share your LinkedIn, or a resume, and I'll see exactly where you're starting from.",3600);
   if(g!==gen) return;
-  await voLine("That's what lets me make this roadmap yours: the right projects, the real problems you'll work on, the skills you'll actually build.",5600);
+  await voLine("That's what lets me make this roadmap yours.",2400);
+  if(g!==gen) return;
+  await voLine("The right projects, the real problems you'll work on, the skills you'll actually build.",4200);
   if(g!==gen) return;
   const {box}=turn({q:"Skip it if you'd rather, I'll just paint in broader strokes."});
   dockHide();
