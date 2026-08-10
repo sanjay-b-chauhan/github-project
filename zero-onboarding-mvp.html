@@ -1699,6 +1699,38 @@ body.dark .lit{ animation-name:litd; }
 .pfxr{ font-size:13px; font-weight:500; }
 .pfxm{ font-size:12.5px; color:var(--tx-3); }
 .pfxd{ font-size:13px; line-height:1.5; color:var(--tx-2); margin-top:3px; }
+/* ── the finale: a 16:9 window on the stream ── */
+.finframe{ position:relative; aspect-ratio:16/9; border-radius:24px; overflow:hidden;
+  background:linear-gradient(150deg,#e8e4f5 0%,#f3e9e2 46%,#e4eef0 100%);
+  box-shadow:inset 0 0 0 1px rgba(13,13,13,.05), 0 24px 60px rgba(0,0,0,.14);
+  display:flex; align-items:center; }
+body.dark .finframe{ background:linear-gradient(150deg,#232134 0%,#2e2431 46%,#1f2b2e 100%); }
+.fintrack{ position:absolute; inset:0; cursor:grab; touch-action:pan-y; }
+.fintrack.grab{ cursor:grabbing; }
+.finc{ position:absolute; top:50%; left:0; margin-top:-92px; width:150px; height:184px;
+  border-radius:17px; background:var(--card); border:1px solid var(--line);
+  box-shadow:0 3px 8px rgba(0,0,0,.07), 0 16px 36px rgba(0,0,0,.13);
+  padding:15px 15px 13px; display:flex; flex-direction:column; pointer-events:none;
+  will-change:transform; }
+.finc .fnl{ width:34px; height:34px; border-radius:11px; background:#fff; border:1px solid var(--line-2);
+  display:flex; align-items:center; justify-content:center; margin-bottom:11px;
+  box-shadow:0 2px 7px rgba(0,0,0,.09); }
+.finc .fnl svg{ width:18px; height:18px; }
+.finc .fne{ font-size:27px; margin-bottom:8px; }
+.finc b{ font-size:15px; font-weight:700; letter-spacing:-.02em; line-height:1.25; }
+.finc .fns{ margin-top:4px; font-size:11.5px; color:var(--tx-3); }
+.finc .fnz{ margin-top:auto; font-size:8px; letter-spacing:.08em; color:var(--tx-3); }
+.finc::before{ content:''; position:absolute; inset:0; border-radius:17px;
+  background:linear-gradient(160deg, color-mix(in srgb, var(--bt,transparent) 10%, transparent), transparent 55%);
+  pointer-events:none; }
+.finc.ink{ background:var(--ink); color:var(--on-ink); border-color:var(--ink); }
+.finc.ink .fns{ color:color-mix(in srgb, var(--on-ink) 55%, transparent); }
+.finc.gold b{ color:#15803d; }
+.finfade{ position:absolute; top:0; bottom:0; width:70px; z-index:3; pointer-events:none; }
+.finfade.l{ left:0; background:linear-gradient(90deg, rgba(232,228,245,.9), transparent); }
+.finfade.r{ right:0; background:linear-gradient(-90deg, rgba(228,238,240,.9), transparent); }
+body.dark .finfade.l{ background:linear-gradient(90deg, rgba(35,33,52,.9), transparent); }
+body.dark .finfade.r{ background:linear-gradient(-90deg, rgba(31,43,46,.9), transparent); }
 /* ── the mac desktop ── */
 .apl2{ width:min(680px,88vw); margin:26px auto 0; }
 .macdesk{ border-radius:24px; padding:34px 38px 38px; position:relative; overflow:hidden;
@@ -7476,7 +7508,7 @@ const WHY=[
   t:'<b>Do it well and you earn XP.</b> The stronger you perform, the faster you climb.'},
  {mock:'loop',
   t:'<b>Then you do it again and again</b>, across different problems, different situations, different expectations. Every round leaves you more ready than the last.'},
- {mock:'credits',
+ {mock:'finale',
   t:"<b>That's it. And to get you started, your first credits are on me.</b>"},
 ];
 /* the app, on a desktop: sidebar + canvas, content per beat. clean, no noise */
@@ -7507,11 +7539,20 @@ async function mvpWhy(){
   clearTurn(); await wait(240); if(myGen!==gen) return;
   const {box}=turn({q:''});
   const card=mk('div','apl2');
-  card.innerHTML=macMock(b.mock)+'<div class="aplt">'+b.t+'</div>';
-  box.appendChild(card);
-  enter([card],{y:22,blur:10,scale:.97,duration:.7},1400);
-  const win=card.querySelector('.macwin');
-  if(win) gsap.fromTo(win,{y:26,scale:.94,opacity:0},{y:0,scale:1,opacity:1,duration:.85,delay:.2,ease:'power3.out'});
+  if(b.mock==='finale'){
+    card.innerHTML='<div class="finframe"><div class="fintrack" id="finTrack"></div>'
+      +'<div class="finfade l"></div><div class="finfade r"></div></div>'
+      +'<div class="aplt">'+b.t+'</div>';
+    box.appendChild(card);
+    enter([card],{y:22,blur:10,scale:.97,duration:.7},1400);
+    mvpFinale(card.querySelector('#finTrack'));
+  } else {
+    card.innerHTML=macMock(b.mock)+'<div class="aplt">'+b.t+'</div>';
+    box.appendChild(card);
+    enter([card],{y:22,blur:10,scale:.97,duration:.7},1400);
+    const win=card.querySelector('.macwin');
+    if(win) gsap.fromTo(win,{y:26,scale:.94,opacity:0},{y:0,scale:1,opacity:1,duration:.85,delay:.2,ease:'power3.out'});
+  }
   const last=WHYAT>=WHY.length-1;
   cta(last?'Claim your credits':'Keep going',()=>{
     if(last){ WHYAT=0; go(mvpClaim); }
@@ -7519,7 +7560,123 @@ async function mvpWhy(){
   });
 }
 
-/* ---- the close: 10,000 credits, email, see you inside ---- *//* ---- the close: 10,000 credits, email, see you inside ---- */
+/* the finale: everything you will build, drifting by. drag it, it snaps. */
+function mvpFinale(track){
+  if(!track) return;
+  const myGen=gen;
+  const items=PFV2.map(p=>({k:'p',p:p}))
+    .concat([{k:'m'},{k:'c'}]);
+  const doubled=items.concat(items);
+  doubled.forEach(it=>{
+    const c=mk('div','finc');
+    if(it.k==='p'){
+      c.style.setProperty('--bt',it.p.tint);
+      c.innerHTML='<span class="fnl">'+(LOGO[it.p.co]||'')+'</span><b>'+it.p.short+'</b>'
+        +'<span class="fns">'+it.p.co+'</span><span class="fnz">ZERO · CASE STUDY</span>';
+    } else if(it.k==='m'){
+      c.classList.add('gold');
+      c.innerHTML='<span class="fne">🌿</span><b>Proficient</b><span class="fns">the ladder, climbed</span>';
+    } else {
+      c.classList.add('ink');
+      c.innerHTML='<span class="fne">⏳</span><b>10,000</b><span class="fns">credits, on Navid</span>';
+    }
+    track.appendChild(c);
+  });
+  const cards=[...track.children];
+  /* the card is a fixed 150px + 14 gap: no measuring, no mount race */
+  const W=164;
+  let off=0, vel=0, dragging=false, lastX=0, lastT=Date.now();
+  const TOTAL=()=>W*cards.length;
+  const place=()=>{
+    cards.forEach((c,i)=>{
+      let x=(i*W+off)%TOTAL(); if(x<0) x+=TOTAL();
+      c.style.transform='translate3d('+(x-W)+'px,0,0)';
+    });
+  };
+  let mounted=false;
+  const tick=()=>{
+    if(myGen!==gen){ gsap.ticker.remove(tick); return; }
+    /* the turn mounts a beat later than it is built: wait, never quit */
+    if(!track.isConnected){ if(mounted){ gsap.ticker.remove(tick); } return; }
+    mounted=true;
+    const now=Date.now(), dt=Math.min(.1,(now-lastT)/1000); lastT=now;
+    if(!dragging){ off-=34*dt; off+=vel; vel*=.94; }
+    place();
+  };
+  gsap.ticker.add(tick);
+  track.addEventListener('pointerdown',e=>{ dragging=true; vel=0; lastX=e.clientX;
+    track.setPointerCapture(e.pointerId); track.classList.add('grab'); });
+  track.addEventListener('pointermove',e=>{ if(!dragging) return;
+    const dx=e.clientX-lastX; lastX=e.clientX; off+=dx; vel=dx; });
+  const drop=()=>{ if(!dragging) return; dragging=false; track.classList.remove('grab');
+    /* snap: settle on the nearest card seam once the momentum dies down */
+    const target=Math.round((off+vel*8)/W)*W;
+    gsap.to({v:off},{v:target,duration:.9,ease:'power3.out',
+      onUpdate:function(){ off=this.targets()[0].v; vel=0; }});
+  };
+  track.addEventListener('pointerup',drop);
+  track.addEventListener('pointercancel',drop);
+}
+
+/* ---- the close: 10,000 credits, email, see you inside ---- *//* the finale: everything you will build, drifting by. drag it, it snaps. */
+function mvpFinale(track){
+  if(!track) return;
+  const myGen=gen;
+  const items=PFV2.map(p=>({k:'p',p:p}))
+    .concat([{k:'m'},{k:'c'}]);
+  const doubled=items.concat(items);
+  doubled.forEach(it=>{
+    const c=mk('div','finc');
+    if(it.k==='p'){
+      c.style.setProperty('--bt',it.p.tint);
+      c.innerHTML='<span class="fnl">'+(LOGO[it.p.co]||'')+'</span><b>'+it.p.short+'</b>'
+        +'<span class="fns">'+it.p.co+'</span><span class="fnz">ZERO · CASE STUDY</span>';
+    } else if(it.k==='m'){
+      c.classList.add('gold');
+      c.innerHTML='<span class="fne">🌿</span><b>Proficient</b><span class="fns">the ladder, climbed</span>';
+    } else {
+      c.classList.add('ink');
+      c.innerHTML='<span class="fne">⏳</span><b>10,000</b><span class="fns">credits, on Navid</span>';
+    }
+    track.appendChild(c);
+  });
+  const cards=[...track.children];
+  /* the card is a fixed 150px + 14 gap: no measuring, no mount race */
+  const W=164;
+  let off=0, vel=0, dragging=false, lastX=0, lastT=Date.now();
+  const TOTAL=()=>W*cards.length;
+  const place=()=>{
+    cards.forEach((c,i)=>{
+      let x=(i*W+off)%TOTAL(); if(x<0) x+=TOTAL();
+      c.style.transform='translate3d('+(x-W)+'px,0,0)';
+    });
+  };
+  let mounted=false;
+  const tick=()=>{
+    if(myGen!==gen){ gsap.ticker.remove(tick); return; }
+    /* the turn mounts a beat later than it is built: wait, never quit */
+    if(!track.isConnected){ if(mounted){ gsap.ticker.remove(tick); } return; }
+    mounted=true;
+    const now=Date.now(), dt=Math.min(.1,(now-lastT)/1000); lastT=now;
+    if(!dragging){ off-=34*dt; off+=vel; vel*=.94; }
+    place();
+  };
+  gsap.ticker.add(tick);
+  track.addEventListener('pointerdown',e=>{ dragging=true; vel=0; lastX=e.clientX;
+    track.setPointerCapture(e.pointerId); track.classList.add('grab'); });
+  track.addEventListener('pointermove',e=>{ if(!dragging) return;
+    const dx=e.clientX-lastX; lastX=e.clientX; off+=dx; vel=dx; });
+  const drop=()=>{ if(!dragging) return; dragging=false; track.classList.remove('grab');
+    /* snap: settle on the nearest card seam once the momentum dies down */
+    const target=Math.round((off+vel*8)/W)*W;
+    gsap.to({v:off},{v:target,duration:.9,ease:'power3.out',
+      onUpdate:function(){ off=this.targets()[0].v; vel=0; }});
+  };
+  track.addEventListener('pointerup',drop);
+  track.addEventListener('pointercancel',drop);
+}
+
+/* ---- the close: 10,000 credits, email, see you inside ---- */
 async function mvpClaim(){
   atStep('Claim');
   const myGen=gen;
