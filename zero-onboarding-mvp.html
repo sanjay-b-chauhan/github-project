@@ -1490,9 +1490,6 @@ body.dark .lit{ animation-name:litd; }
 @media (prefers-reduced-motion:reduce){ *,*::before,*::after{ animation-duration:.01ms!important; transition-duration:.01ms!important; } }
 
 /* ═══ MVP layer ═══ */
-.inzero{ position:absolute; z-index:5; text-align:center; font-family:var(--serif);
-  font-size:clamp(16px,1.45vw,22px); line-height:1.4; color:var(--tx); pointer-events:none;
-  text-wrap:balance; }
 /* curriculum: one scenario, one card */
 .mvstack{ margin-top:34px; display:flex; flex-direction:column; gap:12px; width:min(620px,86vw); }
 .mvsc{ background:var(--card); border:1px solid var(--line); border-radius:20px; padding:20px 22px 18px;
@@ -4334,20 +4331,9 @@ function showDraw(){
   function accept(skip){
     if(accepted) return; accepted=true;
     AUD.penStop(); AUD.whoosh();
-    /* the first words appear inside the zero that was just drawn */
-    const HOLD=(!skip&&pts.length>2)?2100:0;
+    /* the hint leaves at once; the transition itself carries no words */
     gsap.to('#dH',{opacity:0,y:-10,duration:.28});
-    if(HOLD){
-      const xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]);
-      const cx=(Math.min(...xs)+Math.max(...xs))/2, cy=(Math.min(...ys)+Math.max(...ys))/2;
-      const t=mk('div','inzero',"Hey, I'm Navid.<br>I started Zero.");
-      $('drawScreen').appendChild(t);
-      const tw=Math.max(140,(Math.max(...xs)-Math.min(...xs))*.55);
-      t.style.cssText+=';left:'+(cx-tw/2)+'px;top:'+(cy-34)+'px;width:'+tw+'px';
-      gsap.fromTo(t,{opacity:0,scale:.94},{opacity:1,scale:1,duration:.55,ease:'power2.out',delay:.15});
-      gsap.to(t,{opacity:0,duration:.4,delay:(HOLD-420)/1000});
-    }
-    setTimeout(()=>{ acceptGo(skip); },HOLD);
+    acceptGo(skip);
   }
   function acceptGo(skip){
     /* the ink swells until it floods the whole screen, then the world goes dark */
@@ -6811,6 +6797,8 @@ async function mvpOpen(){
   dockHide();
   safeTL(gsap.timeline().to(['#logoPill','.tr'],{opacity:1,y:0,duration:.55,stagger:.07}),1400);
   qWide=true;
+  await voLine("Hey, I'm Navid. I started Zero.",2400);
+  if(gen!==myGen) return;
   await voLine('Before we do anything, I want to understand you properly.',2500);
   if(gen!==myGen) return;
   await voLine("The role you're really after, the companies you want to be in, the problems you like solving.",3300);
