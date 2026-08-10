@@ -1491,7 +1491,8 @@ body.dark .lit{ animation-name:litd; }
 
 /* ═══ MVP layer ═══ */
 /* the living bento board */
-.vz{ transform-origin:0 0; will-change:transform; padding:8px 6px 30px; }
+.vz{ transform-origin:0 0; will-change:transform; padding:4px 6px 30px; }
+.captitle{ font-family:var(--serif); font-size:16px; letter-spacing:-.015em; color:var(--tx-2); }
 .vtitle{ font-family:var(--serif); font-size:clamp(22px,1.9vw,31px); text-align:center;
   margin:2px 0 18px; opacity:0; transform:translateY(-6px);
   transition:opacity .8s ease, transform .8s ease; letter-spacing:-.015em; }
@@ -1602,7 +1603,15 @@ body.dark .lit{ animation-name:litd; }
 .mvunlock{ display:flex; align-items:center; gap:12px; padding:15px 20px; border-radius:16px;
   background:var(--ink); color:var(--on-ink); font-size:14.5px; font-weight:600;
   box-shadow:0 14px 34px rgba(0,0,0,.18); }
-.mvunlock svg{ width:17px; height:17px; }
+.mvunlock .mue{ font-size:17px; }
+.mvsc .ma{ position:relative; overflow:hidden; }
+.mvsc .ma img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.mvsc .ma i{ font-style:normal; }
+.mteam{ display:inline-flex; align-items:center; margin-left:auto; }
+.mteam img{ width:22px; height:22px; border-radius:50%; border:2px solid var(--card);
+  margin-left:-7px; object-fit:cover; }
+.mteam img:first-child{ margin-left:0; }
+.mteam b{ margin-left:7px; font-size:12px; font-weight:500; color:var(--tx-3); }
 .mvunlock .mus{ font-weight:400; opacity:.65; margin-left:auto; font-size:12.5px; }
 /* the outcome line, big */
 .q.qhero{ font-size:clamp(30px,2.6vw,46px); max-width:24ch; }
@@ -1610,12 +1619,16 @@ body.dark .lit{ animation-name:litd; }
 .rmwrap{ text-align:left; }
 .rmhead{ display:flex; align-items:center; justify-content:space-between; gap:14px;
   margin:2px 0 24px; }
+.rmhead.sticky{ position:sticky; top:0; z-index:5; padding:14px 4px 18px; margin:0 0 10px;
+  background:var(--shell); }
+.rmhead.sticky .rmfade{ position:absolute; left:0; right:0; bottom:-26px; height:26px;
+  background:linear-gradient(var(--shell), transparent); pointer-events:none; }
 .rmtitle{ font-family:var(--serif); font-size:clamp(23px,1.9vw,31px); letter-spacing:-.02em; }
 .rmweeks{ display:inline-flex; align-items:center; gap:8px; height:38px; padding:0 16px;
   border-radius:999px; background:var(--ink); color:var(--on-ink); font-size:13.5px; font-weight:600;
   box-shadow:0 8px 22px rgba(0,0,0,.16); white-space:nowrap; }
 .rmrows{ position:relative; }
-.rmrow{ display:flex; gap:14px; position:relative; padding-bottom:14px; }
+.rmrow{ display:flex; flex-wrap:nowrap; align-items:flex-start; gap:14px; position:relative; padding-bottom:14px; }
 .rmrow::before{ content:''; position:absolute; left:9px; top:22px; bottom:-2px; width:2px;
   background:var(--line); border-radius:1px; opacity:0; transition:opacity .6s ease .2s; }
 .rmrow.on::before{ opacity:1; }
@@ -1632,12 +1645,7 @@ body.dark .lit{ animation-name:litd; }
 .rmslot{ flex:1; min-width:0; }
 .rmrow .mwk{ display:none; }
 .rmrow.mile{ padding-bottom:14px; }
-.rmtime{ display:flex; align-items:center; gap:13px; margin:10px 0 6px 90px; padding:18px 22px;
-  border-radius:18px; background:var(--ink); color:var(--on-ink);
-  box-shadow:0 14px 36px rgba(0,0,0,.2); }
-.rmtime .rte{ font-size:21px; }
-.rmtime .rtl{ font-size:13.5px; opacity:.65; flex:1; }
-.rmtime .rtn{ font-family:var(--serif); font-size:27px; letter-spacing:-.02em; }
+
 /* highlight: the one being spoken about */
 .mvlit{ box-shadow:0 0 0 2px var(--tx), 0 18px 44px rgba(0,0,0,.14) !important; }
 .mvstack.pan{ margin:0; width:100%; }
@@ -1712,10 +1720,10 @@ body.dark .lit{ animation-name:litd; }
 .pfxm{ font-size:12.5px; color:var(--tx-3); }
 .pfxd{ font-size:13px; line-height:1.5; color:var(--tx-2); margin-top:3px; }
 /* ── why Zero: a deck of screens, dragged like the pen ── */
-.wdeck{ width:min(860px,88vw); margin:0 auto; cursor:grab; touch-action:pan-y; overflow:visible; }
+.wdeck{ width:min(1000px,92vw); margin:0 auto; cursor:grab; touch-action:pan-y; overflow:visible; }
 .wdeck.grab{ cursor:grabbing; }
 .wtrack{ display:flex; gap:28px; will-change:transform; }
-.wcard{ flex:0 0 100%; min-width:0; opacity:.3; }
+.wcard{ flex:0 0 86%; min-width:0; opacity:.28; }
 .wcard .wscreen{ position:relative; aspect-ratio:16/9; border-radius:24px; overflow:hidden;
   background:linear-gradient(150deg,#e8e4f5 0%,#f3e9e2 46%,#e4eef0 100%);
   box-shadow:0 3px 8px rgba(0,0,0,.06), 0 26px 64px rgba(0,0,0,.16);
@@ -1724,12 +1732,13 @@ body.dark .wcard .wscreen{ background:linear-gradient(150deg,#232134 0%,#2e2431 
 .macfill{ height:100%; }
 .macfill .macwin{ height:100%; border-radius:13px 13px 0 0;
   box-shadow:0 2px 6px rgba(0,0,0,.08), 0 24px 60px rgba(0,0,0,.22); overflow:hidden; }
-.wfade{ position:absolute; left:0; right:0; bottom:0; height:32%; pointer-events:none;
-  background:linear-gradient(to bottom, transparent, var(--page)); }
-.wtitle{ font-family:var(--serif); font-size:clamp(21px,1.8vw,28px); letter-spacing:-.02em;
-  margin:22px 0 8px; text-align:left; }
-.wbody{ font-size:15px; line-height:1.6; color:var(--tx-2); letter-spacing:-.012em;
-  text-align:left; max-width:62ch; }
+.wfade{ position:absolute; left:0; right:0; bottom:0; height:46%; pointer-events:none;
+  background:linear-gradient(to bottom, transparent, color-mix(in srgb, var(--page) 96%, transparent)); }
+.winfo{ position:absolute; left:36px; right:36px; bottom:24px; z-index:3; text-align:left; }
+.wtitle{ font-family:var(--serif); font-size:clamp(23px,2vw,31px); letter-spacing:-.02em;
+  margin:0 0 7px; }
+.wbody{ font-size:14.5px; line-height:1.55; color:var(--tx-2); letter-spacing:-.012em;
+  max-width:58ch; }
 .wbody b{ color:var(--tx); font-weight:600; }
 .wcard .fintrack{ position:absolute; inset:0; cursor:grab; }
 /* the screens live: quiet loops */
@@ -7137,7 +7146,7 @@ async function reflect(text,hold){
 
 /* an answer or a decision carries the flow through its own consequence:
    the ack and the next question arrive without demanding more presses */
-function flowCredit(){ if(PACE) paceCredit=Math.max(paceCredit,3); }
+function flowCredit(){ if(PACE) paceCredit=Math.max(paceCredit,8); }
 
 /* ---- persona: the promise, then the name ---- */
 async function mvpOpen(){
@@ -7384,38 +7393,50 @@ async function mvpPlan(){
   await voLine('Last thing before I build this.',1900);
   if(myGen!==gen) return;
   qWide=true;
-  await voLine("Share your LinkedIn, or a resume, and I'll see exactly where you're starting from.",3000);
-  if(myGen!==gen) return;
-  await voLine("That's what lets me make this roadmap yours: the right projects, the real problems you'll work on, the skills you'll actually build.",3700);
-  if(myGen!==gen) return;
+  const {box}=turn({q:"Share your LinkedIn, or a resume, and I'll see exactly where you're starting from."});
   qWide=false;
-  const {box}=turn({q:"Skip it if you'd rather, I'll just paint in broader strokes."});
   choices(box,[['LinkedIn','Connect LinkedIn','li'],['doc','Share a resume','cv'],['skip','Skip for now','skip']],async v=>{
     flowCredit();
     if(v==='skip'){ await voLine('No profile, no problem. I\'ll pace this on what you told me.',2500); }
     else {
       sfx('success');
-      const cap=$('cap');
-      if(cap) cap.innerHTML='<span class="live pulse"></span>Connecting to LinkedIn';
-      await voLine('Connecting to your LinkedIn.',1900);
-      if(cap) cap.innerHTML='<span class="live pulse"></span>Reading your profile';
-      await voLine('Reading your profile.',1700);
-      /* what the profile confirms lands on the board, live */
+      /* the read: a loading line that shines through its own text */
+      const sh=shineLine('Connecting to LinkedIn');
+      await wait(1600); if(myGen!==gen) return;
+      sh.set('Reading your profile');
+      await wait(1500); if(myGen!==gen) return;
+      sh.set('Fetching your experience');
       P.school='Rotman, University of Toronto';
       await mvpBuilding('hero',700);
       renderBoard();
       P.interned='2 internships'; P.expcampus='ops at a campus startup';
       await mvpBuilding('exp',760);
       renderBoard(); mvpFocus('exp');
-      await voLine('Two internships, and the campus work. All on the board.',2600);
-      if(cap) cap.innerHTML='<span class="live pulse"></span>Zero is listening';
-      vzCam();
+      await wait(900); if(myGen!==gen) return;
+      sh.stop();
+      capTitle(); vzCam();
+      /* the pause that lets it land */
+      await voLine('I got your vision board updated.',2100);
+      if(myGen!==gen) return;
+      const {box:b3}=turn({q:'Is this you?'});
+      choices(b3,[['check','Yes, this is me','yes']],()=>{
+        flowCredit(); sfx('success'); go(mvpRoadmap);
+      },{pill:true,nomorph:true});
+      return;
     }
     mvpRoadmap();
   },{pill:true,nomorph:true});
 }
 
 /* ---- the roadmap: the curriculum, one scenario at a time ---- */
+const MFACE={'Maya Chen':'https://randomuser.me/api/portraits/women/68.jpg',
+ 'Andre Silva':'https://randomuser.me/api/portraits/men/32.jpg',
+ 'Priya Nair':'https://randomuser.me/api/portraits/women/44.jpg',
+ 'Tom Okafor':'https://randomuser.me/api/portraits/men/85.jpg',
+ 'Dana Roy':'https://randomuser.me/api/portraits/women/21.jpg'};
+const TFACES=['https://randomuser.me/api/portraits/men/45.jpg',
+ 'https://randomuser.me/api/portraits/women/33.jpg',
+ 'https://randomuser.me/api/portraits/men/71.jpg'];
 const CURRICULUM=[
  {co:'Stripe', weeks:1, prob:'Churn is up 4% and nobody knows why. Find out.',
   mgr:['Maya Chen','Analytics Lead'], tools:['SQL','Metabase','Sheets'], skills:['Funnel analysis','Cohort thinking']},
@@ -7423,12 +7444,12 @@ const CURRICULUM=[
   mgr:['Andre Silva','Strategy Manager'], tools:['Sheets','Looker'], skills:['Market sizing','Unit economics']},
  {co:'Notion', weeks:2, prob:'Free users who never invite a teammate rarely convert. Change that.',
   mgr:['Priya Nair','Growth PM'], tools:['Amplitude','SQL'], skills:['Activation metrics','Experiment design'],
-  unlock:['Portfolio unlocked','three scenarios in']},
- {co:'Salesforce', weeks:1, prob:'A renewal is at risk. Read the account, brief the room.',
+  unlock:['📁','Your portfolio goes live','three scenarios in, recruiters can see it']},
+ {co:'Salesforce', weeks:1, team:true, prob:'A renewal is at risk. Read the account, brief the room.',
   mgr:['Tom Okafor','RevOps Director'], tools:['Salesforce','Slides'], skills:['Account analysis','Exec communication']},
- {co:'Shopify', weeks:2, prob:'Merchants are churning in month two. Find the leak, propose the fix.',
+ {co:'Shopify', weeks:2, team:true, prob:'Merchants are churning in month two. Find the leak, propose the fix.',
   mgr:['Dana Roy','Retention Lead'], tools:['SQL','Tableau'], skills:['Retention analysis','Storytelling'],
-  unlock:['Job portal unlocked','the work speaks for you now']},
+  unlock:['🔑','The job portal opens','the work speaks for you now']},
 ];
 function mvpScCard(c){
   const el=mk('div','mvsc');
@@ -7439,10 +7460,18 @@ function mvpScCard(c){
   el.appendChild(top);
   el.appendChild(mk('div','mprob',c.prob));
   const mg=mk('div','mmgr');
-  const ma=mk('span','ma',c.mgr[0].charAt(0));
+  const ma=mk('span','ma');
   ma.style.cssText+=';'+avStyle(c.mgr[0]);
+  ma.innerHTML='<img src="'+(MFACE[c.mgr[0]]||'')+'" alt="" onerror="this.remove()">'
+    +'<i>'+c.mgr[0].charAt(0)+'</i>';
   mg.appendChild(ma);
   mg.appendChild(mk('span',null,'with '+c.mgr[0]+' · '+c.mgr[1]));
+  if(c.team){
+    const fp=mk('span','mteam');
+    fp.innerHTML=TFACES.map(u2=>'<img src="'+u2+'" alt="" onerror="this.remove()">').join('')
+      +'<b>+ your team</b>';
+    mg.appendChild(fp);
+  }
   el.appendChild(mg);
   const row=mk('div','mrow2');
   c.tools.forEach(t=>{ const g2=mk('span','mtag');
@@ -7463,8 +7492,8 @@ async function mvpRoadmap(){
   sfx('sparkle');
   swapPanel('Your curriculum',h=>{
     const w=mk('div','rmwrap');
-    w.innerHTML='<div class="rmhead"><span class="rmtitle">Your road to '+(P.role||'the role')+'</span>'
-      +'<span class="rmweeks">⏳ '+totW+' weeks to build</span></div>';
+    w.innerHTML='<div class="rmhead sticky"><span class="rmtitle">Your road to '+(P.role||'the role')+'</span>'
+      +'<span class="rmweeks">⏳ '+totW+' weeks to build</span><span class="rmfade"></span></div>';
     const st=mk('div','rmrows'); st.id='mvCur'; w.appendChild(st);
     h.appendChild(w);
   },false,true);
@@ -7499,7 +7528,7 @@ async function mvpRoadmap(){
         +'<span class="rmwk">Unlock</span></div>';
       const us=mk('div','rmslot'); ur.appendChild(us);
       const u=mk('div','mvunlock');
-      u.innerHTML=(I.spark||'')+'<span>'+c.unlock[0]+'</span><span class="mus">'+c.unlock[1]+'</span>';
+      u.innerHTML='<span class="mue">'+c.unlock[0]+'</span><span>'+c.unlock[1]+'</span><span class="mus">'+c.unlock[2]+'</span>';
       us.appendChild(u);
       host.appendChild(ur);
       enter([u],{y:12,blur:6,duration:.5},1000);
@@ -7509,17 +7538,7 @@ async function mvpRoadmap(){
   }
   await wait(450); if(myGen!==gen) return;
   const hostAll=$('mvCur'); if(hostAll) hostAll.querySelectorAll('.mvlit').forEach(x=>x.classList.remove('mvlit'));
-  /* the time block closes the road: the main number, as a card */
-  {
-    const tot2=CURRICULUM.reduce((a,c)=>a+c.weeks,0);
-    const tc=mk('div','rmtime');
-    tc.innerHTML='<span class="rte">⏳</span><span class="rtl">Time to build</span>'
-      +'<span class="rtn">'+tot2+' weeks</span>';
-    if(hostAll) hostAll.appendChild(tc);
-    enter([tc],{y:16,blur:8,scale:.96,duration:.6},1200);
-    const sc3=$('scroll'); if(sc3) gsap.to(sc3,{scrollTop:sc3.scrollHeight,duration:.6,ease:EIO});
-    sfx('sparkle');
-  }
+
   const tot=CURRICULUM.reduce((a,c)=>a+c.weeks,0);
   const q=document.querySelector('#turn .q');
   if(q){ await new Promise(res=>{ gsap.to(q,{opacity:0,y:-8,duration:.3,onComplete:()=>{
@@ -7624,10 +7643,11 @@ async function mvpOutcome(){
     const fr=mk('div','pfembed');
     const ifr=document.createElement('iframe');
     ifr.className='pfif'; ifr.title='Your portfolio';
-    ifr.src='zero-portfolio-student/index.html';
+    ifr.src='zero-portfolio-student/index.html?v='+Date.now();
+    ifr.setAttribute('allowtransparency','true');
     fr.appendChild(ifr); h.appendChild(fr);
     /* the page is a desktop layout: embed it at desktop width, scaled to fit */
-    const DW=1180;
+    const DW=1000;
     const fit=()=>{ const r=fr.getBoundingClientRect(); if(!r.width) return;
       const k=r.width/DW;
       ifr.style.width=DW+'px';
@@ -7657,15 +7677,15 @@ const WHY=[
  {mock:'work',
   t:'<b>Everything here is a real project.</b> The same kind of brief a company hands its own analysts. You get the problem, you do the work, you turn it into something you can show.'},
  {mock:'manager',
-  t:"<b>You're not on your own. You've got a manager the whole way through.</b> They review what you build, push back, make you sharpen it. At the end of each one, you present what you made to your team, like you would in the actual job."},
+  t:"<b>You've got a manager the whole way through.</b> They review what you build, push back, make you sharpen it."},
  {mock:'review',
-  t:'<b>And the whole time, your manager is watching how you work.</b> Your quality, your independence, your speed, and your communication. That becomes a performance review, and it sits on your portfolio next to the work.'},
+  t:'<b>Your manager watches how you work.</b> Quality, independence, speed, communication. It becomes a review that sits on your portfolio.'},
  {mock:'xp',
   t:'<b>Do it well and you earn XP.</b> The stronger you perform, the faster you climb.'},
  {mock:'loop',
   t:'<b>Then you do it again and again</b>, across different problems, different situations, different expectations. Every round leaves you more ready than the last.'},
  {mock:'finale',
-  t:"<b>That's it. And to get you started, your first credits are on me.</b>"},
+  t:"<b>That's it. Your head start is waiting.</b>"},
 ];
 /* the app, on a desktop: sidebar + canvas, content per beat. clean, no noise */
 function macMock(kind){
@@ -7700,20 +7720,22 @@ async function mvpWhy(){
   box.appendChild(deck);
   WHY.forEach((b,i)=>{
     const c=mk('div','wcard');
-    const scr=(b.mock==='finale')
-      ? '<div class="wscreen"><div class="fintrack" id="finTrack"></div><div class="wfade"></div></div>'
-      : '<div class="wscreen">'+macMock(b.mock).replace('class="macdesk"','class="macfill"')+'<div class="wfade"></div></div>';
-    c.innerHTML=scr+'<div class="wtitle">'+WHYT[i]+'</div><div class="wbody">'+b.t+'</div>';
+    const inner=(b.mock==='finale')
+      ? '<div class="fintrack" id="finTrack"></div>'
+      : macMock(b.mock).replace('class="macdesk"','class="macfill"');
+    c.innerHTML='<div class="wscreen">'+inner+'<div class="wfade"></div>'
+      +'<div class="winfo"><div class="wtitle">'+WHYT[i]+'</div><div class="wbody">'+b.t+'</div></div></div>';
     track.appendChild(c);
   });
   mvpFinale(deck.querySelector('#finTrack'));
   let at=0;
   const W=()=>{ const r=track.children[0].getBoundingClientRect(); return r.width+28; };
   const paint=anim=>{
-    gsap.to(track,{x:-at*W(),duration:anim===false?0:.85,ease:EIO});
+    const off=(deck.clientWidth-track.children[0].getBoundingClientRect().width)/2;
+    gsap.to(track,{x:-at*W()+off,duration:anim===false?0:.85,ease:EIO});
     [...track.children].forEach((c,i)=>{
       c.classList.toggle('on',i===at);
-      gsap.to(c,{opacity:i===at?1:.3,scale:i===at?1:.94,duration:.6,ease:EIO});
+      gsap.to(c,{opacity:i===at?1:.28,scale:i===at?1:.88,duration:.6,ease:EIO});
     });
     cta(at>=WHY.length-1?'Claim your credits':'Keep going',()=>{
       if(at>=WHY.length-1){ flowCredit(); go(mvpClaim); }
@@ -7727,7 +7749,8 @@ async function mvpWhy(){
   deck.addEventListener('pointermove',e=>{ if(!drag) return;
     const dx=e.clientX-lx; lx=e.clientX; gsap.set(track,{x:'+='+dx}); });
   const drop=()=>{ if(!drag) return; drag=false; deck.classList.remove('grab');
-    at=Math.max(0,Math.min(WHY.length-1,Math.round(-gsap.getProperty(track,'x')/W())));
+    const off2=(deck.clientWidth-track.children[0].getBoundingClientRect().width)/2;
+    at=Math.max(0,Math.min(WHY.length-1,Math.round((off2-gsap.getProperty(track,'x'))/W())));
     paint(); locked=false; };
   deck.addEventListener('pointerup',drop);
   deck.addEventListener('pointercancel',drop);
@@ -7857,7 +7880,11 @@ async function mvpClaim(){
   setPhase(4);
   const myGen=gen;
   clearTurn(); dockHide(); await wait(320); if(myGen!==gen) return;
-  const {box}=turn({q:'10,000 credits, yours to claim.'});
+  qWide=true;
+  await voLine("That's it. And to get you started, your first 10,000 credits are yours to claim in one go.",3400);
+  if(myGen!==gen) return;
+  qWide=false;
+  const {box}=turn({q:''});
   const rew=mk('div','rew');
   const num=mk('div','rewn','0'); num.id='mvRewN'; rew.appendChild(num);
   rew.appendChild(mk('div','rewl','credits, yours to claim'));
@@ -7871,11 +7898,7 @@ async function mvpClaim(){
     confetti(r.left+r.width/2, r.top+r.height*.6);
     sfx('success'); },1700);
   await wait(2300); if(myGen!==gen) return;
-  await voLine('Credits are what scenarios and reviews cost inside Zero.',2400);
-  if(myGen!==gen) return;
-  await voLine('10,000 covers your first 2 months in full.',2200);
-  if(myGen!==gen) return;
-  await voLine('After that, finished work keeps paying for the next scenario.',2500);
+  await voLine('Credits are what scenarios and reviews cost inside Zero. 10,000 covers your first two months.',3100);
   if(myGen!==gen) return;
   line("Enter your email and they're yours.");
   emailDock(v=>{
@@ -7924,8 +7947,7 @@ const VTILES=[
   html:()=>'<div class="vq">“'+P.pull+'”</div>'},
  {key:'role', span:'s2', emoji:'🎯', label:'Going after', fall:true,
   ready:()=>!!(P.role||P.roleGuess),
-  html:()=>'<span class="vpill big">'+I.target+'<b>'+(P.role||P.roleGuess)+'</b></span>'
-    +(P.role?'':'<span class="vguess">my first guess</span>')},
+  html:()=>'<span class="vpill big">'+I.target+'<b>'+(P.role||P.roleGuess)+'</b></span>'},
  {key:'company', span:'s2', emoji:'🏢', label:'The company you want',
   ready:()=>!!P.companyKind,
   html:()=>'<span class="vpill">'+'<b>'+P.companyKind+'</b></span>'},
@@ -7967,11 +7989,9 @@ function renderBoard(){
   if(!vz){
     s2.innerHTML='';
     vz=mk('div','vz'); vz.id='vz';
-    const tt=mk('div','vtitle'); tt.id='vtitle'; vz.appendChild(tt);
     const gr=mk('div','vgrid'); gr.id='vgrid'; vz.appendChild(gr);
     s2.appendChild(vz);
   }
-  $('vtitle').textContent=(P.name||'Your')+(P.name?"'s":'')+' vision board';
   const gr=$('vgrid');
   /* FLIP: where everyone was, before the new arrival moves them */
   const first={};
@@ -8038,11 +8058,12 @@ function renderBoard(){
   });
   renderMeter();
 }
-function renderMeter(){
-  const el=document.querySelector('.capn'); if(!el) return;
-  const n=VTILES.filter(x=>x.ready()).length;
-  el.textContent='Vision board '+Math.round(n/VTILES.length*100)+'%';
+function capTitle(){
+  const cap=$('cap'); if(!cap) return;
+  cap.innerHTML='<span class="captitle">'+(P.name?(P.name+"'s vision board"):'Your vision board')+'</span>';
+  const cn=document.querySelector('.capn'); if(cn) cn.textContent='';
 }
+function renderMeter(){ capTitle(); }
 function retireMeter(){ const el=document.querySelector('.capn'); if(el) el.textContent=''; }
 /* the camera: a lean, never a crop */
 function vzCam(){
@@ -8091,14 +8112,13 @@ async function mvpBuilding(key,ms){
   }
   await wait(ms||820);
   const el2=$('vt_'+key); if(el2) el2.classList.remove('vbuild');
-  if(cap) cap.innerHTML='<span class="live pulse"></span>Zero is listening';
+  capTitle();
 }
 /* the pull-back: the whole board, named, in one look */
 function mvpZoomOut(){
   VFOCUS=null; VREVEALED=true;
   const vz=$('vz'); if(!vz) return;
   document.querySelectorAll('.vt').forEach(c=>c.classList.remove('dim'));
-  const tt=document.getElementById('vtitle'); if(tt) tt.classList.add('on');
   gsap.to(vz,{scale:1,x:0,y:0,duration:1.1,ease:EIO});
   sfx('sparkle');
 }
