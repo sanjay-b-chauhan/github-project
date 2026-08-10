@@ -1699,6 +1699,9 @@ body.dark .lit{ animation-name:litd; }
 .pfxr{ font-size:13px; font-weight:500; }
 .pfxm{ font-size:12.5px; color:var(--tx-3); }
 .pfxd{ font-size:13px; line-height:1.5; color:var(--tx-2); margin-top:3px; }
+/* the real portfolio, embedded whole */
+.pfembed{ position:absolute; inset:0; }
+.pfembed .pfif{ width:100%; height:100%; border:0; border-radius:0; display:block; background:#f4f2ee; }
 /* ── the finale: a 16:9 window on the stream ── */
 .finframe{ position:relative; aspect-ratio:16/9; border-radius:24px; overflow:hidden;
   background:linear-gradient(150deg,#e8e4f5 0%,#f3e9e2 46%,#e4eef0 100%);
@@ -7026,6 +7029,37 @@ setInterval(()=>{ try{
   _lastTick=gsap.ticker.time;
 }catch(e){} },500);
 
+/* the arrow, rewired: EVERY press moves something you can see.
+   queue first (a waiting line speaks), then skip-the-hold with a kick so the
+   next line follows, then your turn: mic, fields, buttons, then the step. */
+function paceAdvance(){
+  PACE=true;
+  if(sayCancel){ try{ sayCancel(); }catch(e){} sayCancel=null; return; }
+  if(paceQueue.length){ paceRelease(); return; }
+  if(beatLive){
+    try{ voStop(); }catch(e){}
+    try{ if(voSkip){ const f=voSkip; voSkip=null; f(); } }catch(e){}
+    paceCredit=1;
+    /* if the next line parks in the queue instead of taking the credit,
+       let it through: one press, one visible beat, always */
+    setTimeout(()=>{ if(paceQueue.length){ paceCredit=0; paceRelease(); } },90);
+    setTimeout(()=>{ if(paceQueue.length){ paceCredit=0; paceRelease(); } },260);
+    return; }
+  if(SCRIPTED&&!locked&&sayScripted()) return;
+  const f=document.querySelector('.dfield input,.dfield textarea');
+  if(f&&!locked){
+    const ph=(f.placeholder||'').toLowerCase();
+    f.value=/mail|@/.test(ph) ? 'sanjay@z-ro.co'
+      : /linkedin|resume|drive|\.com/.test(ph) ? 'linkedin.com/in/sanjaybchauhan'
+      : /name/.test(ph) ? 'Sanjay' : 'Yes, that works';
+    f.dispatchEvent(new Event('input',{bubbles:true}));
+    const send=document.querySelector('.dsend'); if(send){ send.click(); return; }
+  }
+  const act=document.querySelector('.holdclaim, .ozb, .ozdrop, .dbig, .opt, .rcd, .chip2, .pfb');
+  if(act&&!locked){ act.click(); return; }
+  dbgGoto(dbgAt+1);
+}
+
 /* ---- persona: the promise, then the name ---- */
 async function mvpOpen(){
   atStep('Open');
@@ -7464,25 +7498,26 @@ async function mvpOutcome(){
   await voLine('This is your portfolio at the end of the road, '+P.name+'.',2600);
   if(myGen!==gen) return;
   panelBack();
-  await swapPanel('Your portfolio, at the end of the road',buildMvpPortfolio,false,true);
+  await swapPanel('Your portfolio, at the end of the road',h=>{
+    const fr=mk('div','pfembed');
+    const ifr=document.createElement('iframe');
+    ifr.className='pfif'; ifr.title='Your portfolio';
+    ifr.src='zero-portfolio-student/index.html';
+    fr.appendChild(ifr); h.appendChild(fr);
+    /* the page is a desktop layout: embed it at desktop width, scaled to fit */
+    const DW=1180;
+    const fit=()=>{ const r=fr.getBoundingClientRect(); if(!r.width) return;
+      const k=r.width/DW;
+      ifr.style.width=DW+'px';
+      ifr.style.height=Math.ceil(r.height/k)+'px';
+      ifr.style.transform='scale('+k+')';
+      ifr.style.transformOrigin='0 0'; };
+    setTimeout(fit,80); setTimeout(fit,600);
+    addEventListener('resize',fit);
+  },false,false);
   if(myGen!==gen) return;
-  const rows0=[...document.querySelectorAll('.pfr')];
-  rows0.forEach((c,i2)=>gsap.fromTo(c,{y:22,opacity:0},{y:0,opacity:1,duration:.6,delay:.15+i2*.12,ease:'power3.out'}));
-  await wait(900); if(myGen!==gen) return;
+  await wait(1400); if(myGen!==gen) return;
   await voLine('Real projects, real deliverables.',2000);
-  if(myGen!==gen) return;
-  const more=document.querySelector('.pfmore'); if(more) more.click();
-  await wait(500); if(myGen!==gen) return;
-  const rows=[...document.querySelectorAll('.pfr')];
-  for(const c of rows){
-    if(myGen!==gen) return;
-    rows.forEach(x=>x.classList.remove('mvlit'));
-    c.classList.add('mvlit');
-    if(typeof sheen==='function'){ try{ sheen(c,.75); }catch(e){} }
-    const sc2=$('scroll'); if(sc2) gsap.to(sc2,{scrollTop:Math.max(0,c.offsetTop-90),duration:.5,ease:EIO});
-    await wait(640);
-  }
-  rows.forEach(x=>x.classList.remove('mvlit'));
   if(myGen!==gen) return;
   await voLine("This is what a hiring manager or a recruiter sees when they're deciding on you.",2900);
   if(myGen!==gen) return;
