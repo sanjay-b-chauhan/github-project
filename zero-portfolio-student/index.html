@@ -2098,7 +2098,7 @@ function App(){
   const toggleProjectVis=(id)=>setHiddenProjects(prev=>{const n=new Set(prev);if(n.has(id)){n.delete(id);}else{if(ordered.length-n.size<=1)return prev;n.add(id);}return n;});
   const orderedVisible=ordered.filter(pp=>!hiddenProjects.has(pp.id));
   const density=pCount===1?"xl":"m";
-  const [showAll,setShowAll]=useState(false);
+  const [showAll,setShowAll]=useState(true);
   const gen="v1";
   const [phase,setPhase]=useState(3);
   const [mIdx,setMIdx]=useState(4);
@@ -2366,10 +2366,30 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
       if(t2.nodeValue&&t2.nodeValue.indexOf('\u2014')>=0)
         t2.nodeValue=t2.nodeValue.replace(/\s?\u2014\s?/g,', '); }
   }
+  /* onboarding preview: the coach rail leaves; the work stands alone */
+  function railKill(){
+    var marks=[].slice.call(document.querySelectorAll('body *')).filter(function(n){
+      return n.children.length===0&&/Interview-ready|Edit portfolio/.test(n.textContent||''); });
+    marks.forEach(function(m){
+      var n=m, main=null;
+      while(n&&n!==document.body){
+        var p=n.parentElement; if(!p) break;
+        var cs=getComputedStyle(p);
+        if((cs.display==='flex'||cs.display==='grid')&&p.children.length>1&&
+           p.getBoundingClientRect().width>800){ n.style.display='none'; return; }
+        n=p;
+      }
+    });
+  }
+  setTimeout(railKill,950);
+  new MutationObserver(function(){ clearTimeout(railKill._t); railKill._t=setTimeout(railKill,400); })
+    .observe(document.body,{subtree:true,childList:true});
   setTimeout(sweep,900);
   new MutationObserver(function(){ clearTimeout(sweep._t); sweep._t=setTimeout(sweep,350); })
     .observe(document.body,{subtree:true,childList:true});
 })();
 </script>
+
+<style>html,body{background:#F1F1EF !important;}</style>
 </body>
 </html>

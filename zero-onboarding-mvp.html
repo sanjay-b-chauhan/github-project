@@ -1520,6 +1520,10 @@ body.dark .lit{ animation-name:litd; }
 #vt_location{ --tt-location:#ff6a4d; }
 #vt_pull{ --tt-pull:#a78bfa; }
 #vt_plan{ --tt-plan:#0084CE; }
+/* about you: a sentence, chips riding in it */
+.vabout{ font-family:var(--serif); font-size:18px; line-height:1.95; }
+.vguess{ display:inline-block; margin-left:10px; font-size:var(--inds,12.5px); font-weight:500;
+  color:var(--tx-3); }
 /* the hero: the name, written properly */
 .vhero{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
 .vhava{ width:46px; height:46px; border-radius:50%; color:#fff; font-family:var(--serif);
@@ -1600,8 +1604,12 @@ body.dark .lit{ animation-name:litd; }
 .q.qhero{ font-size:clamp(30px,2.6vw,46px); max-width:24ch; }
 /* ── the road: a titled, top-to-bottom timeline ── */
 .rmwrap{ text-align:left; }
-.rmtitle{ font-family:var(--serif); font-size:clamp(23px,1.9vw,31px); letter-spacing:-.02em;
-  text-align:center; margin:2px 0 24px; }
+.rmhead{ display:flex; align-items:center; justify-content:space-between; gap:14px;
+  margin:2px 0 24px; }
+.rmtitle{ font-family:var(--serif); font-size:clamp(23px,1.9vw,31px); letter-spacing:-.02em; }
+.rmweeks{ display:inline-flex; align-items:center; gap:8px; height:38px; padding:0 16px;
+  border-radius:999px; background:var(--ink); color:var(--on-ink); font-size:13.5px; font-weight:600;
+  box-shadow:0 8px 22px rgba(0,0,0,.16); white-space:nowrap; }
 .rmrows{ position:relative; }
 .rmrow{ display:flex; gap:14px; position:relative; padding-bottom:14px; }
 .rmrow::before{ content:''; position:absolute; left:9px; top:22px; bottom:-2px; width:2px;
@@ -1699,6 +1707,34 @@ body.dark .lit{ animation-name:litd; }
 .pfxr{ font-size:13px; font-weight:500; }
 .pfxm{ font-size:12.5px; color:var(--tx-3); }
 .pfxd{ font-size:13px; line-height:1.5; color:var(--tx-2); margin-top:3px; }
+/* ── why Zero: a deck of screens, dragged like the pen ── */
+.wdeck{ width:min(860px,88vw); margin:0 auto; cursor:grab; touch-action:pan-y; overflow:visible; }
+.wdeck.grab{ cursor:grabbing; }
+.wtrack{ display:flex; gap:28px; will-change:transform; }
+.wcard{ flex:0 0 100%; min-width:0; opacity:.3; }
+.wcard .wscreen{ position:relative; aspect-ratio:16/9; border-radius:24px; overflow:hidden;
+  background:linear-gradient(150deg,#e8e4f5 0%,#f3e9e2 46%,#e4eef0 100%);
+  box-shadow:0 3px 8px rgba(0,0,0,.06), 0 26px 64px rgba(0,0,0,.16);
+  padding:30px 36px 0; }
+body.dark .wcard .wscreen{ background:linear-gradient(150deg,#232134 0%,#2e2431 46%,#1f2b2e 100%); }
+.macfill{ height:100%; }
+.macfill .macwin{ height:100%; border-radius:13px 13px 0 0;
+  box-shadow:0 2px 6px rgba(0,0,0,.08), 0 24px 60px rgba(0,0,0,.22); overflow:hidden; }
+.wfade{ position:absolute; left:0; right:0; bottom:0; height:32%; pointer-events:none;
+  background:linear-gradient(to bottom, transparent, var(--page)); }
+.wtitle{ font-family:var(--serif); font-size:clamp(21px,1.8vw,28px); letter-spacing:-.02em;
+  margin:22px 0 8px; text-align:left; }
+.wbody{ font-size:15px; line-height:1.6; color:var(--tx-2); letter-spacing:-.012em;
+  text-align:left; max-width:62ch; }
+.wbody b{ color:var(--tx); font-weight:600; }
+.wcard .fintrack{ position:absolute; inset:0; cursor:grab; }
+/* the screens live: quiet loops */
+.wcard.on .mchat{ animation:wpulse 3.2s ease-in-out infinite; }
+.wcard.on .mchat.r{ animation-delay:.6s; }
+.wcard.on .mmeter i{ animation:wgrow 4s ease-in-out infinite; }
+@keyframes wpulse{ 0%,100%{ opacity:.75; } 50%{ opacity:1; } }
+@keyframes wgrow{ 0%,100%{ transform:scaleX(.92); } 50%{ transform:scaleX(1); } }
+
 /* the real portfolio, embedded whole */
 .pfembed{ position:absolute; inset:0; }
 .pfembed .pfif{ width:100%; height:100%; border:0; border-radius:0; display:block; background:#f4f2ee; }
@@ -7034,6 +7070,10 @@ setInterval(()=>{ try{
    next line follows, then your turn: mic, fields, buttons, then the step. */
 function paceAdvance(){
   PACE=true;
+  /* the press must land NOW: collapse every wait until the next beat settles */
+  fastMode=true;
+  clearTimeout(paceAdvance._fm);
+  paceAdvance._fm=setTimeout(()=>{ fastMode=false; },700);
   if(sayCancel){ try{ sayCancel(); }catch(e){} sayCancel=null; return; }
   if(paceQueue.length){ paceRelease(); return; }
   if(beatLive){
@@ -7059,6 +7099,41 @@ function paceAdvance(){
   if(act&&!locked){ act.click(); return; }
   dbgGoto(dbgAt+1);
 }
+
+/* every hold answers to the press: the silent path arms the same skip hook
+   the audio path uses, so a click cuts it INSTANTLY */
+async function voLine(text,fallback){
+  { const g0=gen; await paceGate(); if(g0!==gen) return; }
+  beatLive=true;
+  try{
+    const g=gen;
+    line(text);
+    const p=voPlay(text);
+    if(p){ await p; if(g!==gen) return; await wait(300/voRate); }
+    else await new Promise(res=>{
+      const done=()=>{ if(voSkip===done) voSkip=null; res(); };
+      voSkip=done;
+      setTimeout(done, fastMode?40:(fallback||1800));
+    });
+  } finally { beatLive=false; }
+}
+async function reflect(text,hold){
+  if(!text) return; const g=gen;
+  await paceGate(); if(g!==gen) return;
+  beatLive=true;
+  try{
+    line(text);
+    await new Promise(res=>{
+      const done=()=>{ if(voSkip===done) voSkip=null; res(); };
+      voSkip=done;
+      setTimeout(done, fastMode?40:(hold||1700));
+    });
+  } finally { beatLive=false; }
+}
+
+/* an answer or a decision carries the flow through its own consequence:
+   the ack and the next question arrive without demanding more presses */
+function flowCredit(){ if(PACE) paceCredit=Math.max(paceCredit,3); }
 
 /* ---- persona: the promise, then the name ---- */
 async function mvpOpen(){
@@ -7086,6 +7161,7 @@ async function mvpOpen(){
   line('So, what should I call you?');
   dockMode='type';
   linkDock(async v=>{
+    flowCredit();
     const nm=v.trim().split(/\s+/)[0].replace(/[^A-Za-z'-]/g,'');
     P.name=(nm||'You').charAt(0).toUpperCase()+(nm||'ou').slice(1).toLowerCase();
     dockMode='voice';
@@ -7101,7 +7177,7 @@ const ALIGN=[
   deeper:'Say a bit more, what pulls you toward that?',
   script:'Honestly, I like the why behind the numbers. I want to be the person who figures out what is actually going on in a business and what to do next. Somewhere that moves fast.',
   ack:'Love that, the why-behind-the-numbers work.',
-  focus:'pull', set:()=>{ P.pull='the why behind the numbers'; }},
+  focus:'pull', set:()=>{ P.pull='the why behind the numbers'; P.roleGuess='Data Analyst'; }},
  {label:'Where you are',
   q:()=>'Where are you now, still studying, working, figuring it out?',
   deeper:'What are you studying, or what do you do day to day?',
@@ -7158,6 +7234,7 @@ const ALIGN=[
 ];
 let ALAT=0;
 async function mvpAlign(){
+  setPhase(0);
   if(ALAT>=ALIGN.length){ mvpVision(); return; }
   const st=ALIGN[ALAT];
   atStep(st.label);
@@ -7176,6 +7253,7 @@ async function mvpAlign(){
   let deepened=false;
   async function take(text){
     if(myGen!==gen) return;
+    flowCredit();
     /* thin answer: ONE follow-up, then move on. the copy's own rule */
     if(!deepened && st.deeper && String(text||'').trim().length<16){
       deepened=true; locked=false;
@@ -7224,24 +7302,34 @@ async function mvpVision(){
   atStep('Vision');
   const myGen=gen;
   await lightsUp();
+  setPhase(1);   /* after the flip: the label reads the light theme's ink */
   clearTurn(); dockHide(); await wait(300); if(myGen!==gen) return;
   await voLine('Alright, '+P.name+", let me show you what I've got.",2400);
   if(myGen!==gen) return;
   P.goal=mvpGoal(); renderBoard();
   mvpZoomOut();
+  { const sc2=$('scroll'); if(sc2) gsap.to(sc2,{scrollTop:0,duration:.8,ease:EIO}); }
   await voLine('Okay, '+P.name+". Here's what I've got.",2300);
   if(myGen!==gen) return;
   qWide=true;
+  /* the left answers the right: each tile takes the light while the line speaks */
+  { const g2=gen;
+    (async()=>{ const tiles=[...document.querySelectorAll('.vt')];
+      for(const t2 of tiles){ if(g2!==gen) return;
+        tiles.forEach(x=>x.classList.remove('mvlit'));
+        t2.classList.add('mvlit');
+        await wait(420); }
+      if(g2===gen) document.querySelectorAll('.vt').forEach(x=>x.classList.remove('mvlit'));
+    })(); }
   await voLine('This is you, '+P.goal+'.',3600);
   if(myGen!==gen) return;
+  document.querySelectorAll('.vt').forEach(x=>x.classList.remove('mvlit'));
   qWide=false;
   const {box}=turn({q:"Tell me if I've got it right."});
   choices(box,[['check','That is me','ok'],['pen','Change something','fix']],v=>{
+    flowCredit();
     if(v==='ok'){ sfx('success');
       go(async()=>{ await voLine("Good. Let's build your path.",2100);
-        /* the split layout lives only as long as the board does: from here
-           everything takes the centerline, the board stays one click away */
-        drawerShut();
         mvpPlan(); }); }
     else go(mvpEdit);
   },{pill:true,nomorph:true});
@@ -7250,6 +7338,7 @@ function mvpEdit(){
   const {box}=turn({q:"What doesn't line up?"});
   devPills(box,['The city is wrong. I want London first.'],t=>take(t));
   const take=async t=>{
+    flowCredit();
     const s2=(t||'').toLowerCase();
     if(/\brole\b|\bjob\b|title|analyst|strategy/.test(s2)) P.role=null;
     if(/compan|startup|scale|big|small/.test(s2)) P.companyKind=null;
@@ -7280,6 +7369,7 @@ function mvpEdit(){
 /* ---- plan: linkedin or not, then the road ---- */
 async function mvpPlan(){
   atStep('Plan');
+  setPhase(2);
   const myGen=gen;
   clearTurn(); dockHide(); await wait(300); if(myGen!==gen) return;
   await voLine('Last thing before I build this.',1900);
@@ -7292,8 +7382,26 @@ async function mvpPlan(){
   qWide=false;
   const {box}=turn({q:"Skip it if you'd rather, I'll just paint in broader strokes."});
   choices(box,[['LinkedIn','Connect LinkedIn','li'],['doc','Share a resume','cv'],['skip','Skip for now','skip']],async v=>{
+    flowCredit();
     if(v==='skip'){ await voLine('No profile, no problem. I\'ll pace this on what you told me.',2500); }
-    else { sfx('success'); await voLine('Got it. Reading where you\'re starting from.',2200); }
+    else {
+      sfx('success');
+      const cap=$('cap');
+      if(cap) cap.innerHTML='<span class="live pulse"></span>Connecting to LinkedIn';
+      await voLine('Connecting to your LinkedIn.',1900);
+      if(cap) cap.innerHTML='<span class="live pulse"></span>Reading your profile';
+      await voLine('Reading your profile.',1700);
+      /* what the profile confirms lands on the board, live */
+      P.school='Rotman, University of Toronto';
+      await mvpBuilding('hero',700);
+      renderBoard();
+      P.interned='2 internships'; P.expcampus='ops at a campus startup';
+      await mvpBuilding('exp',760);
+      renderBoard(); mvpFocus('exp');
+      await voLine('Two internships, and the campus work. All on the board.',2600);
+      if(cap) cap.innerHTML='<span class="live pulse"></span>Zero is listening';
+      vzCam();
+    }
     mvpRoadmap();
   },{pill:true,nomorph:true});
 }
@@ -7337,17 +7445,21 @@ function mvpScCard(c){
 }
 async function mvpRoadmap(){
   atStep('Roadmap');
+  setPhase(2);
   const myGen=gen;
   clearTurn(); dockHide(); await wait(320); if(myGen!==gen) return;
-  await voLine("Here's your road to "+(P.role||'the role')+', '+P.name+'.',2400);
-  if(myGen!==gen) return;
   panelBack();
-  await swapPanel('Your road to '+(P.role||'the role'),h=>{
+  const totW=CURRICULUM.reduce((a,c)=>a+c.weeks,0);
+  /* left and right move together: the panel morphs WHILE the line speaks */
+  sfx('sparkle');
+  swapPanel('Your curriculum',h=>{
     const w=mk('div','rmwrap');
-    w.innerHTML='<div class="rmtitle">Your road to '+(P.role||'the role')+'</div>';
+    w.innerHTML='<div class="rmhead"><span class="rmtitle">Your road to '+(P.role||'the role')+'</span>'
+      +'<span class="rmweeks">⏳ '+totW+' weeks to build</span></div>';
     const st=mk('div','rmrows'); st.id='mvCur'; w.appendChild(st);
     h.appendChild(w);
   },false,true);
+  await voLine("Here's your road to "+(P.role||'the role')+', '+P.name+'.',2400);
   if(myGen!==gen) return;
   await voLine('Calibrated to you, paced for '+low(P.timeline||'your timeline')+'.',2300);
   if(myGen!==gen) return;
@@ -7374,7 +7486,8 @@ async function mvpRoadmap(){
     if(c.unlock){
       await wait(260); if(myGen!==gen) return;
       const ur=mk('div','rmrow mile on');
-      ur.innerHTML='<div class="rmrail"><span class="rmnode spark">'+(I.spark||'')+'</span></div>';
+      ur.innerHTML='<div class="rmrail"><span class="rmnode spark">'+(I.spark||'')+'</span>'
+        +'<span class="rmwk">Unlock</span></div>';
       const us=mk('div','rmslot'); ur.appendChild(us);
       const u=mk('div','mvunlock');
       u.innerHTML=(I.spark||'')+'<span>'+c.unlock[0]+'</span><span class="mus">'+c.unlock[1]+'</span>';
@@ -7404,7 +7517,7 @@ async function mvpRoadmap(){
       q.textContent=tot+' weeks. This portfolio.';
       gsap.to(q,{opacity:1,y:0,duration:.45,ease:'power2.out',onComplete:res}); }}); }); }
   if(myGen!==gen) return;
-  cta('Show me the portfolio',()=>go(mvpOutcome));
+  cta('Show me the portfolio',()=>{ flowCredit(); go(mvpOutcome); });
 }
 
 /* ---- outcome: the portfolio, then the one line that matters ---- */
@@ -7495,10 +7608,10 @@ async function mvpOutcome(){
   const myGen=gen;
   setPhase(3);
   clearTurn(); dockHide(); await wait(320); if(myGen!==gen) return;
-  await voLine('This is your portfolio at the end of the road, '+P.name+'.',2600);
-  if(myGen!==gen) return;
   panelBack();
-  await swapPanel('Your portfolio, at the end of the road',h=>{
+  sfx('sparkle');
+  /* the panel is already converting while the line speaks: one motion, two sides */
+  swapPanel('Your portfolio, at the end of the road',h=>{
     const fr=mk('div','pfembed');
     const ifr=document.createElement('iframe');
     ifr.className='pfif'; ifr.title='Your portfolio';
@@ -7515,8 +7628,8 @@ async function mvpOutcome(){
     setTimeout(fit,80); setTimeout(fit,600);
     addEventListener('resize',fit);
   },false,false);
+  await voLine('This is your portfolio at the end of the road, '+P.name+'.',2600);
   if(myGen!==gen) return;
-  await wait(1400); if(myGen!==gen) return;
   await voLine('Real projects, real deliverables.',2000);
   if(myGen!==gen) return;
   await voLine("This is what a hiring manager or a recruiter sees when they're deciding on you.",2900);
@@ -7525,8 +7638,7 @@ async function mvpOutcome(){
   if(myGen!==gen) return;
   clearTurn(); await wait(300); if(myGen!==gen) return;
   const {box}=turn({q:'I cannot hand you the job. I can get you the portfolio that wins it.'});
-  const q=box.parentElement.querySelector('.q'); if(q) q.classList.add('qhero');
-  cta('How do I get there?',()=>{ drawerShut(); go(mvpWhy); });
+  cta('How do I get there?',()=>{ flowCredit(); drawerShut(); go(mvpWhy); });
 }
 
 /* ---- launch: why Zero, one container at a time, text at the bottom ---- *//* ---- launch: why Zero, one container at a time, text at the bottom ---- */
@@ -7565,37 +7677,56 @@ function macMock(kind){
     +'</div></div>';
 }
 let WHYAT=0;
+const WHYT=['Learn by doing','Real projects','A manager, the whole way',
+  'A review that counts','XP, earned','Again and again','Credits, on me'];
 async function mvpWhy(){
   atStep('Why Zero');
   const myGen=gen;
   setPhase(4);
-  if(WHYAT===0){ clearTurn(); dockHide(); await wait(320); if(myGen!==gen) return; }
-  const b=WHY[Math.min(WHYAT,WHY.length-1)];
-  clearTurn(); await wait(240); if(myGen!==gen) return;
+  clearTurn(); dockHide(); await wait(300); if(myGen!==gen) return;
   const {box}=turn({q:''});
-  const card=mk('div','apl2');
-  if(b.mock==='finale'){
-    card.innerHTML='<div class="finframe"><div class="fintrack" id="finTrack"></div>'
-      +'<div class="finfade l"></div><div class="finfade r"></div></div>'
-      +'<div class="aplt">'+b.t+'</div>';
-    box.appendChild(card);
-    enter([card],{y:22,blur:10,scale:.97,duration:.7},1400);
-    mvpFinale(card.querySelector('#finTrack'));
-  } else {
-    card.innerHTML=macMock(b.mock)+'<div class="aplt">'+b.t+'</div>';
-    box.appendChild(card);
-    enter([card],{y:22,blur:10,scale:.97,duration:.7},1400);
-    const win=card.querySelector('.macwin');
-    if(win) gsap.fromTo(win,{y:26,scale:.94,opacity:0},{y:0,scale:1,opacity:1,duration:.85,delay:.2,ease:'power3.out'});
-  }
-  const last=WHYAT>=WHY.length-1;
-  cta(last?'Claim your credits':'Keep going',()=>{
-    if(last){ WHYAT=0; go(mvpClaim); }
-    else { WHYAT++; locked=false; mvpWhy(); }
+  const deck=mk('div','wdeck');
+  const track=mk('div','wtrack');
+  deck.appendChild(track);
+  box.appendChild(deck);
+  WHY.forEach((b,i)=>{
+    const c=mk('div','wcard');
+    const scr=(b.mock==='finale')
+      ? '<div class="wscreen"><div class="fintrack" id="finTrack"></div><div class="wfade"></div></div>'
+      : '<div class="wscreen">'+macMock(b.mock).replace('class="macdesk"','class="macfill"')+'<div class="wfade"></div></div>';
+    c.innerHTML=scr+'<div class="wtitle">'+WHYT[i]+'</div><div class="wbody">'+b.t+'</div>';
+    track.appendChild(c);
   });
+  mvpFinale(deck.querySelector('#finTrack'));
+  let at=0;
+  const W=()=>{ const r=track.children[0].getBoundingClientRect(); return r.width+28; };
+  const paint=anim=>{
+    gsap.to(track,{x:-at*W(),duration:anim===false?0:.85,ease:EIO});
+    [...track.children].forEach((c,i)=>{
+      c.classList.toggle('on',i===at);
+      gsap.to(c,{opacity:i===at?1:.3,scale:i===at?1:.94,duration:.6,ease:EIO});
+    });
+    cta(at>=WHY.length-1?'Claim your credits':'Keep going',()=>{
+      if(at>=WHY.length-1){ flowCredit(); go(mvpClaim); }
+      else { locked=false; at++; paint(); }
+    });
+  };
+  /* drag: back and forth, snapping home */
+  let drag=false,lx=0;
+  deck.addEventListener('pointerdown',e=>{ drag=true; lx=e.clientX;
+    try{ deck.setPointerCapture(e.pointerId); }catch(e2){} deck.classList.add('grab'); });
+  deck.addEventListener('pointermove',e=>{ if(!drag) return;
+    const dx=e.clientX-lx; lx=e.clientX; gsap.set(track,{x:'+='+dx}); });
+  const drop=()=>{ if(!drag) return; drag=false; deck.classList.remove('grab');
+    at=Math.max(0,Math.min(WHY.length-1,Math.round(-gsap.getProperty(track,'x')/W())));
+    paint(); locked=false; };
+  deck.addEventListener('pointerup',drop);
+  deck.addEventListener('pointercancel',drop);
+  paint(false);
+  gsap.fromTo(deck,{y:28,opacity:0},{y:0,opacity:1,duration:.85,ease:'power3.out'});
 }
 
-/* the finale: everything you will build, drifting by. drag it, it snaps. */
+/* the finale: everything you will build, drifting by. drag it, it snaps. *//* the finale: everything you will build, drifting by. drag it, it snaps. */
 function mvpFinale(track){
   if(!track) return;
   const myGen=gen;
@@ -7714,6 +7845,7 @@ function mvpFinale(track){
 /* ---- the close: 10,000 credits, email, see you inside ---- */
 async function mvpClaim(){
   atStep('Claim');
+  setPhase(4);
   const myGen=gen;
   clearTurn(); dockHide(); await wait(320); if(myGen!==gen) return;
   const {box}=turn({q:'10,000 credits, yours to claim.'});
@@ -7738,6 +7870,7 @@ async function mvpClaim(){
   if(myGen!==gen) return;
   line("Enter your email and they're yours.");
   emailDock(v=>{
+    flowCredit();
     const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
     if(!ok){ sfx('error'); locked=false;
       gsap.fromTo('.dfield',{x:0},{x:7,duration:.07,yoyo:true,repeat:5}); return; }
@@ -7746,6 +7879,7 @@ async function mvpClaim(){
 }
 async function mvpFinish(email){
   atStep('Handoff');
+  setPhase(4);
   const myGen=gen;
   clearTurn(); dockHide(); await wait(320); if(myGen!==gen) return;
   await voLine('Sent to '+email+'.',2000);
@@ -7769,21 +7903,21 @@ async function mvpFinish(email){
    one thing stacks: fanned cards, piled pills. Apple emoji lead each tile. */
 function vflag(city){ return {'Toronto':'🇨🇦','New York':'🇺🇸','San Francisco':'🇺🇸','London':'🇬🇧','Berlin':'🇩🇪','Mumbai':'🇮🇳','Bangalore':'🇮🇳','Singapore':'🇸🇬','Dubai':'🇦🇪'}[city]||'📍'; }
 const VTILES=[
- {key:'hero', span:'s4', emoji:'', label:'',
+ {key:'hero', span:'s4', emoji:'👋', label:'About you',
   ready:()=>!!P.name,
-  html:()=>'<div class="vhero">'
-    +'<span class="vhava" style="'+avStyle(P.name||'You')+'">'+(P.name||'Y').charAt(0)+'</span>'
-    +'<span class="vhname">'+(P.name||'You')+'</span>'
-    +(P.role?'<span class="vherole">'+I.target+'<b>'+P.role+'</b></span>':'')
-    +(P.status?'<span class="vhsub">🎓 '+P.status.replace('final year of ','final year, ')+(P.location?' · '+P.location:'')+'</span>':'<span class="vhsub">starts here.</span>')
-    +'</div>'},
- {key:'pull', span:'s2', emoji:'💭', label:'The pull',
+  html:()=>{
+    if(!P.status) return '<div class="vabout">'+chip(avatar(P.name)+T_(P.name))+G_(' starts here.')+'</div>';
+    return '<div class="vabout">'+chip(avatar(P.name)+T_(P.name))
+      +G_(' is in his ')+chip(cico('cap')+T_(P.school?('final year, '+P.school):'final year, business school'))
+      +(P.location?G_(', studying in ')+cityChip(P.location):'')+G_('.')+'</div>'; }},
+ {key:'pull', span:'s2', emoji:'💭', label:'Excited about',
   ready:()=>!!P.pull,
   html:()=>'<div class="vq">“'+P.pull+'”</div>'},
- {key:'role', span:'s2', emoji:'🎯', label:'The role',
-  ready:()=>!!P.role,
-  html:()=>'<span class="vpill big">'+I.target+'<b>'+P.role+'</b></span>'},
- {key:'company', span:'s2', emoji:'🏢', label:'The company',
+ {key:'role', span:'s2', emoji:'🎯', label:'Going after', fall:true,
+  ready:()=>!!(P.role||P.roleGuess),
+  html:()=>'<span class="vpill big">'+I.target+'<b>'+(P.role||P.roleGuess)+'</b></span>'
+    +(P.role?'':'<span class="vguess">my first guess</span>')},
+ {key:'company', span:'s2', emoji:'🏢', label:'The company you want',
   ready:()=>!!P.companyKind,
   html:()=>'<span class="vpill">'+'<b>'+P.companyKind+'</b></span>'},
  {key:'dreams', span:'s2 r2', emoji:'✨', label:'Dream companies',
@@ -7792,7 +7926,7 @@ const VTILES=[
      const co=c2.trim();
      return '<div class="vfw" style="--i:'+i2+'"><div class="vfc"><span class="vfl">'+(LOGO[co]||I.spark)+'</span><b>'+co+'</b></div></div>';
    }).join('')+'</div>'},
- {key:'domain', span:'s2', emoji:'📊', label:'The domain',
+ {key:'domain', span:'s2', emoji:'📊', label:'Drawn to',
   ready:()=>!!P.industry,
   html:()=>'<span class="vpill">'+'<b>'+P.industry+'</b></span>'
     +(P.problems?'<div class="vq sm">“'+P.problems+'”</div>':'')},
@@ -7802,6 +7936,10 @@ const VTILES=[
     +'<div class="vpr on"><span class="vem">'+vflag(P.location)+'</span><b>'+P.location+'</b><span class="vnow">now</span></div>'
     +(P.citynext?'<div class="vpr"><span class="vem">'+vflag(P.citynext)+'</span><b>'+P.citynext+'</b><span class="vnow">next</span></div>':'')
     +'</div>'},
+ {key:'exp', span:'s2', emoji:'💼', label:'Experience so far',
+  ready:()=>!!P.interned,
+  html:()=>'<div class="vpills"><span class="vpill sm">💼 <b>'+P.interned+'</b></span>'
+    +(P.expcampus?'<span class="vpill sm">🚀 <b>'+P.expcampus+'</b></span>':'')+'</div>'},
  {key:'plan', span:'s2', emoji:'🗓️', label:'The plan',
   ready:()=>!!(P.timeline||P.workmode),
   html:()=>'<div class="vpills">'
@@ -7845,11 +7983,26 @@ function renderBoard(){
     const body=el.querySelector('.vtb');
     const html=tl.html();
     if(body.dataset.k!==html){
-      body.dataset.k=html;
+      const wasGuess=body.dataset.guess==='1';
       const had=!!body.innerHTML;
-      body.innerHTML=html;
-      if(had&&fresh.indexOf(el)<0){
-        safeTL(gsap.timeline().fromTo(body,{opacity:.2,y:6},{opacity:1,y:0,duration:.45,ease:'power2.out'}),900);
+      body.dataset.k=html;
+      body.dataset.guess=(tl.fall&&!P.role&&P.roleGuess)?'1':'';
+      if(tl.fall&&wasGuess&&had){
+        /* the wrong guess falls off the board; the corrected one arrives */
+        const olds=[...body.children];
+        olds.forEach(o2=>gsap.to(o2,{rotation:8,y:34,opacity:0,duration:.5,ease:'power2.in'}));
+        setTimeout(()=>{
+          body.innerHTML=html;
+          const bits=body.querySelectorAll('.vpill,.vq');
+          gsap.fromTo(bits,{scale:.6,opacity:0,y:-16},
+            {scale:1,opacity:1,y:0,duration:.55,stagger:.08,ease:'back.out(1.8)'});
+          sfx('success');
+        },520);
+      } else {
+        body.innerHTML=html;
+        if(had&&fresh.indexOf(el)<0){
+          safeTL(gsap.timeline().fromTo(body,{opacity:.2,y:6},{opacity:1,y:0,duration:.45,ease:'power2.out'}),900);
+        }
       }
     }
   });
