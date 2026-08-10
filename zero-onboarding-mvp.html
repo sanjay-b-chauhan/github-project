@@ -1623,8 +1623,16 @@ body.dark .lit{ animation-name:litd; }
 .mteam img:first-child{ margin-left:0; }
 .mteam b{ margin-left:7px; font-size:12px; font-weight:500; color:var(--tx-3); }
 .mvunlock .mus{ font-weight:400; opacity:.65; margin-left:auto; font-size:12.5px; }
-.rewexp{ margin:26px auto 0; font-size:15px; line-height:1.5; color:var(--tx-2); max-width:52ch; text-align:center; }
-.rewexp.em{ margin-top:10px; font-size:13px; color:var(--tx-3); }
+.rewexp{ margin:30px auto 0; font-family:var(--serif); font-size:clamp(19px,1.6vw,25px); line-height:1.34;
+  letter-spacing:-.02em; color:var(--tx); max-width:30ch; text-align:center; }
+.rewdone{ margin:44px auto 0; display:flex; flex-direction:column; align-items:center; gap:15px; }
+.rewdone .rdh{ font-family:var(--serif); font-size:clamp(19px,1.6vw,25px); letter-spacing:-.02em; }
+.rewdone .rdb{ display:inline-flex; align-items:center; gap:9px; height:50px; padding:0 26px; border:0;
+  border-radius:999px; cursor:pointer; background:var(--ink); color:var(--on-ink);
+  font-size:15px; font-weight:600; letter-spacing:-.01em;
+  box-shadow:0 10px 26px rgba(0,0,0,.2); }
+.rewdone .rdb svg{ width:16px; height:16px; }
+.rewdone .rds{ font-size:12.5px; color:var(--tx-3); }
 .dockin{ position:relative; }
 .dmailhint{ position:absolute; left:50%; transform:translateX(-50%); top:calc(100% + 7px);
   white-space:nowrap; font-size:12.5px; color:#c0392b; }
@@ -1734,22 +1742,40 @@ body.dark .lit{ animation-name:litd; }
 .pfxm{ font-size:12.5px; color:var(--tx-3); }
 .pfxd{ font-size:13px; line-height:1.5; color:var(--tx-2); margin-top:3px; }
 /* ── why Zero: a deck of screens, dragged like the pen ── */
-.wdeck{ width:min(1400px,96vw); margin:0 auto; overflow:visible; }
+.wdeck{ width:min(1400px,96vw); margin:0 auto 30px; overflow:visible; transform:translateY(-14px); }
 .wtrack{ display:flex; gap:28px; will-change:transform; }
-.wcard{ flex:0 0 auto; width:min(1320px,92vw,124vh); min-width:0; opacity:.22; }
-.wcard .wscreen{ position:relative; aspect-ratio:16/9; border-radius:24px; overflow:hidden;
-  background:linear-gradient(150deg,#e8e4f5 0%,#f3e9e2 46%,#e4eef0 100%);
-  box-shadow:0 3px 8px rgba(0,0,0,.06), 0 26px 64px rgba(0,0,0,.16);
-  padding:30px 36px 0; }
+.wcard{ flex:0 0 auto; width:min(1320px,90vw,104vh); min-width:0; opacity:.22; }
+/* the card is a window: chrome, hairlines, and real weight under it */
+.wwin{ border-radius:18px; overflow:hidden; background:#f4f2ee; transition:transform .5s var(--ease,cubic-bezier(.625,.05,0,1)), box-shadow .5s ease;
+  box-shadow:0 0 0 1px rgba(13,13,13,.13), inset 0 0 0 1px rgba(255,255,255,.55),
+    0 2px 4px rgba(0,0,0,.05), 0 10px 22px -8px rgba(0,0,0,.16); }
+.wcard.on .wwin{ box-shadow:0 0 0 1px rgba(13,13,13,.18), inset 0 0 0 1.2px rgba(255,255,255,.62),
+    0 3px 7px rgba(0,0,0,.07), 0 22px 44px -12px rgba(0,0,0,.28), 0 54px 110px -34px rgba(0,0,0,.4); }
+.wcard.on .wwin:hover{ transform:translateY(-3px); }
+.wcard.dk .wwin{ background:#1E1E1E;
+  box-shadow:0 0 0 1px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.1),
+    0 2px 4px rgba(0,0,0,.2), 0 10px 22px -8px rgba(0,0,0,.3); }
+.wcard.dk.on .wwin{ box-shadow:0 0 0 1px rgba(0,0,0,.6), inset 0 0 0 1.2px rgba(255,255,255,.13),
+    0 22px 44px -12px rgba(0,0,0,.45), 0 54px 110px -34px rgba(0,0,0,.55); }
+.wbar{ display:flex; align-items:center; height:30px; padding:0 13px; position:relative; flex-shrink:0;
+  background:linear-gradient(180deg,#fbfaf8,#f0eeea); border-bottom:1px solid rgba(13,13,13,.08); }
+.wcard.dk .wbar{ background:linear-gradient(180deg,#2c2c2c,#242424); border-bottom-color:rgba(255,255,255,.07); }
+.wtl{ display:flex; gap:7px; }
+.wtl i{ width:10px; height:10px; border-radius:50%; box-shadow:inset 0 0 0 .5px rgba(0,0,0,.16); }
+.wtl .r{ background:#FF5F57; } .wtl .y{ background:#FEBC2E; } .wtl .g{ background:#28C840; }
+.wbt{ position:absolute; left:0; right:0; text-align:center; font-size:11px; font-weight:600;
+  letter-spacing:-.01em; color:var(--tx-3); pointer-events:none; }
+.wcard.dk .wbt{ color:#6d6a63; }
+.wcard .wscreen{ position:relative; aspect-ratio:16/9; overflow:hidden;
+  background:linear-gradient(150deg,#e8e4f5 0%,#f3e9e2 46%,#e4eef0 100%); }
 body.dark .wcard .wscreen{ background:linear-gradient(150deg,#232134 0%,#2e2431 46%,#1f2b2e 100%); }
 .macfill{ height:100%; }
 .macfill .macwin{ height:100%; border-radius:13px 13px 0 0;
   box-shadow:0 2px 6px rgba(0,0,0,.08), 0 24px 60px rgba(0,0,0,.22); overflow:hidden; }
 .wfade{ position:absolute; left:0; right:0; bottom:0; height:46%; pointer-events:none;
   background:linear-gradient(to bottom, transparent, color-mix(in srgb, var(--page) 96%, transparent)); }
-.winfo{ margin:0 auto 16px; text-align:center; pointer-events:none; }
-.wtitle{ font-family:var(--serif); font-size:clamp(21px,1.8vw,27px); letter-spacing:-.02em;
-  margin:0 0 5px; }
+.winfo{ margin:18px auto 0; text-align:center; pointer-events:none; }
+.wtitle{ font-family:var(--serif); font-size:clamp(20px,1.7vw,26px); letter-spacing:-.02em; margin:0; }
 .wbody{ font-size:13.5px; line-height:1.55; color:var(--tx-2); letter-spacing:-.012em;
   max-width:64ch; margin:0 auto; }
 .wbody b{ color:var(--tx); font-weight:600; }
@@ -7375,6 +7401,8 @@ function dbgGoto(i){
 /* a hidden or occluded surface freezes rAF and strands every tween the flow
    awaits on, sometimes while visibilityState still says visible. The clock
    pumps the ticker whenever it stops advancing on its own. */
+/* a throttled tab must not crawl: let gsap use real elapsed time, not 33ms lies */
+try{ gsap.ticker.lagSmoothing(0); }catch(e){}
 let _lastTick=-1;
 setInterval(()=>{ try{
   if(gsap.ticker.time===_lastTick) gsap.ticker.tick();
@@ -7690,6 +7718,7 @@ function mvpEdit(){
 /* ---- plan: linkedin or not, then the road ---- */
 async function mvpPlan(){
   atStep('Plan');
+  pfScroll(false);
   setPhase(2);
   const myGen=gen;
   clearTurn(); dockHide(); await wait(300); if(myGen!==gen) return;
@@ -7792,6 +7821,7 @@ function mvpScCard(c){
 }
 async function mvpRoadmap(){
   atStep('Roadmap');
+  pfScroll(false);
   setPhase(2);
   const myGen=gen;
   clearTurn(); dockHide(); await wait(320); if(myGen!==gen) return;
@@ -7942,27 +7972,77 @@ function buildMvpPortfolio(h){
   w.appendChild(xp);
   h.appendChild(w);
 }
+/* the portfolio panel is the one surface the reader may scroll themselves */
+function pfScroll(on){
+  const s=$('scroll'); if(!s) return;
+  s.style.overflowY=on?'auto':'';
+  s.style.overscrollBehavior=on?'contain':'';
+}
 async function mvpOutcome(){
   atStep('Outcome');
+  document.body.classList.remove('dark');
   const myGen=gen;
   setPhase(3);
   clearTurn(); dockHide(); await wait(320); if(myGen!==gen) return;
   panelBack();
   sfx('sparkle');
-  /* the panel is already converting while the line speaks: one motion, two sides */
+  /* the portfolio's own html, fetched first so the walk can never outrun it */
+  let snap=null;
+  try{ snap=await fetch('zero-portfolio-snap.html?v='+Date.now()).then(r=>r.text()); }catch(e){}
+  if(myGen!==gen) return;
+  let root=null;
   swapPanel('Your portfolio, at the end of the road',h=>{
-    /* not an embed: the portfolio's own html, inlined in a shadow root */
     const fr=mk('div','pfembed');
     h.appendChild(fr);
-    const root=fr.attachShadow({mode:'open'});
-    fetch('zero-portfolio-snap.html?v='+Date.now()).then(r=>r.text()).then(t=>{
-      root.innerHTML=t;
-    }).catch(e=>{ root.innerHTML='<div style="padding:40px;font:14px sans-serif;color:#999">The portfolio preview could not load.</div>'; });
+    root=fr.attachShadow({mode:'open'});
+    root.innerHTML=snap||'<div style="padding:40px;font:14px sans-serif;color:#999">The portfolio preview could not load.</div>';
+    /* structure only: a click never does anything, scrolling always does */
+    root.addEventListener('click',e=>{ e.preventDefault(); e.stopPropagation(); },true);
   },false,false);
-  await voLine('This is your portfolio at the end of the road, '+P.name+'.',2600);
-  if(myGen!==gen) return;
-  await voLine('Real projects, real deliverables.',2000);
-  if(myGen!==gen) return;
+  /* the panel mounts a beat after it is asked for: wait for it, never race it */
+  for(let w=0; w<40 && !root; w++){ await wait(60); if(myGen!==gen) return; }
+  pfScroll(true);
+  await wait(220); if(myGen!==gen) return;
+
+  /* the walk is content, never set-up: a stepper jump must not collapse it */
+  fastMode=false;
+  const sc=$('scroll');
+  const goTo=(el,pad)=>new Promise(res=>{
+    if(!el||!sc){ res(); return; }
+    gsap.killTweensOf(sc);
+    const r=el.getBoundingClientRect(), sr=sc.getBoundingClientRect();
+    const y=sc.scrollTop+(r.top-sr.top)-(pad===undefined?54:pad);
+    gsap.to(sc,{scrollTop:Math.max(0,y),duration:1,ease:EIO,onComplete:res});
+  });
+  const byHead=t=>{ if(!root) return null;
+    const h=[...root.querySelectorAll('h2')].find(x=>x.textContent.trim().toLowerCase().startsWith(t));
+    return h?(h.closest('section')||h.parentElement):null; };
+  const sect=(sel,head)=>{ if(!root) return null;
+    const byId=sel?root.querySelector(sel):null;
+    return (byId&&(byId.closest('section')||byId.parentElement))||byHead(head); };
+  const lit=(el,on)=>{ if(!el) return; el.classList.add('pflit'); el.classList.toggle('on',on); };
+
+  /* top to bottom, one section at a time, the way you would present it */
+  const walk=[
+    [null, 'This is your portfolio at the end of the road, '+P.name+'.', 2500],
+    [null, 'Up top, who you are and how you actually work.', 2300],
+    [()=>sect(null,'projects'), 'Five projects. Every one a real brief, with the deliverable attached.', 2900],
+    [()=>sect('#sec-experience','experience'), 'Your experience sits right under the work.', 2400],
+    [()=>sect('#sec-credential','achievements'), 'What you earned along the way.', 2100],
+    [()=>sect('#sec-academics','academics'), 'And school last, because here it matters least.', 2400],
+  ];
+  for(const [find,ln,ms] of walk){
+    if(myGen!==gen) return;
+    await paceGate(); if(myGen!==gen) return;
+    const el=find?find():null;
+    if(el){ await goTo(el); if(myGen!==gen) return; lit(el,true); sfx('whisper'); }
+    await voLine(ln,ms);
+    if(myGen!==gen) return;
+    if(el) lit(el,false);
+  }
+  /* then all the way back up, so the whole thing lands as one object */
+  if(sc){ gsap.killTweensOf(sc); gsap.to(sc,{scrollTop:0,duration:1.35,ease:EIO}); }
+  sfx('page');
   await voLine("This is what a hiring manager or a recruiter sees when they're deciding on you.",2900);
   if(myGen!==gen) return;
   await voLine('Your proof of work, not a promise.',2300);
@@ -7974,12 +8054,8 @@ async function mvpOutcome(){
 
 /* ---- launch: why Zero, one container at a time, text at the bottom ---- *//* ---- launch: why Zero, one container at a time, text at the bottom ---- */
 const WHY=[
- {mock:'brief', t:''},
- {mock:'work', t:'The same kind of brief a company hands its own analysts.'},
- {mock:'manager', t:'They review what you build, push back, make you sharpen it.'},
- {mock:'review', t:'Quality, independence, speed, communication. It sits on your portfolio.'},
- {mock:'xp', t:'Do it well and you earn XP. The stronger you perform, the faster you climb.'},
- {mock:'loop', t:'Different problems, different situations. Every round leaves you more ready.'},
+ {mock:'brief'}, {mock:'work'}, {mock:'manager'},
+ {mock:'review'}, {mock:'xp'}, {mock:'loop'},
 ];
 /* the app, on a desktop: sidebar + canvas, content per beat. clean, no noise */
 function macMock(kind){
@@ -8299,8 +8375,12 @@ function pzWire(card,kind,myGen){
 let WHYAT=0;
 const WHYT=['Learn by doing','Real projects','A manager, the whole way',
   'A review that counts','XP, earned','Again and again'];
+/* the window's own document name, the way a real app titles itself */
+const WHYW={brief:'Zero',work:'Zero — Home',manager:'Zero — Workspace',
+  review:'Zero — Workspace · Stage 3',xp:'Zero — Stage complete',loop:'Zero — Progress'};
 async function mvpWhy(){
   atStep('Why Zero');
+  pfScroll(false);
   document.body.classList.remove('dark');
   const myGen=gen;
   setPhase(4);
@@ -8312,9 +8392,12 @@ async function mvpWhy(){
   box.appendChild(deck);
   WHY.forEach((b,i)=>{
     const c=mk('div','wcard');
-    c.innerHTML='<div class="winfo"><div class="wtitle">'+WHYT[i]+'</div>'
-      +(b.t?'<div class="wbody">'+b.t+'</div>':'')+'</div>'
-      +'<div class="wscreen">'+pzScreen(b.mock)+'</div>';
+    if(b.mock==='manager'||b.mock==='review') c.classList.add('dk');
+    c.innerHTML='<div class="wwin">'
+      +'<div class="wbar"><span class="wtl"><i class="r"></i><i class="y"></i><i class="g"></i></span>'
+        +'<span class="wbt">'+(WHYW[b.mock]||'Zero')+'</span></div>'
+      +'<div class="wscreen">'+pzScreen(b.mock)+'</div></div>'
+      +'<div class="winfo"><div class="wtitle">'+WHYT[i]+'</div></div>';
     track.appendChild(c);
   });
   [...track.children].forEach((c,i)=>pzWire(c,WHY[i].mock,myGen));
@@ -8460,6 +8543,7 @@ function mvpFinale(track){
 /* ---- the close: 10,000 credits, email, see you inside ---- */
 async function mvpClaim(){
   atStep('Claim');
+  pfScroll(false);
   document.body.classList.remove('dark');
   setPhase(4);
   const myGen=gen;
@@ -8486,9 +8570,6 @@ async function mvpClaim(){
   const exp=mk('div','rewexp','Credits are what scenarios and reviews cost inside Zero. 10,000 covers your first two months.');
   rew.appendChild(exp);
   enter([exp],{y:12,blur:6,duration:.55},1100);
-  const exp2=mk('div','rewexp em',"Enter your email below and they're yours.");
-  rew.appendChild(exp2);
-  enter([exp2],{y:10,blur:5,duration:.5,delay:.2},1300);
   emailDock(v=>{
     flowCredit();
     const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
@@ -8501,7 +8582,23 @@ async function mvpClaim(){
         gsap.fromTo(h9,{opacity:0,y:6},{opacity:1,y:0,duration:.4});
       }
       return; }
-    sfx('success'); mvpFinish(v.trim());
+    sfx('success');
+    const em=v.trim();
+    const hint=document.querySelector('.dmailhint'); if(hint) hint.remove();
+    /* nothing moves to another screen: the bottom converts in place */
+    /* the field leaves at once: the bottom of this screen is the unlock now */
+    dockHide();
+    const done=mk('div','rewdone');
+    done.innerHTML='<div class="rdh">Zero app has been unlocked.</div>'
+      +'<button class="rdb">'+(I.dl||'')+'<span>Download now</span></button>'
+      +'<div class="rds">Sent to '+em+'.</div>';
+    rew.appendChild(done);
+    gsap.fromTo(done,{y:18,opacity:0,filter:'blur(8px)'},
+      {y:0,opacity:1,filter:'blur(0px)',duration:.75,delay:.35,ease:'power3.out'});
+    const b9=done.querySelector('.rdb');
+    if(b9) b9.onclick=()=>{ sfx('success');
+      gsap.fromTo(b9,{scale:.97},{scale:1,duration:.4,ease:'back.out(2)'}); };
+    atStep('Handoff');
   });
 }
 async function mvpFinish(email){
