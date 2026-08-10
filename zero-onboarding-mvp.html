@@ -1623,6 +1623,11 @@ body.dark .lit{ animation-name:litd; }
 .mteam img:first-child{ margin-left:0; }
 .mteam b{ margin-left:7px; font-size:12px; font-weight:500; color:var(--tx-3); }
 .mvunlock .mus{ font-weight:400; opacity:.65; margin-left:auto; font-size:12.5px; }
+.rewexp{ margin:26px auto 0; font-size:15px; line-height:1.5; color:var(--tx-2); max-width:52ch; text-align:center; }
+.rewexp.em{ margin-top:10px; font-size:13px; color:var(--tx-3); }
+.dockin{ position:relative; }
+.dmailhint{ position:absolute; left:50%; transform:translateX(-50%); top:calc(100% + 7px);
+  white-space:nowrap; font-size:12.5px; color:#c0392b; }
 /* the outcome line, big */
 .q.qhero{ font-size:clamp(30px,2.6vw,46px); max-width:24ch; }
 /* ── the road: a titled, top-to-bottom timeline ── */
@@ -1731,7 +1736,7 @@ body.dark .lit{ animation-name:litd; }
 /* ── why Zero: a deck of screens, dragged like the pen ── */
 .wdeck{ width:min(1400px,96vw); margin:0 auto; overflow:visible; }
 .wtrack{ display:flex; gap:28px; will-change:transform; }
-.wcard{ flex:0 0 auto; width:min(1240px,88vw,115vh); min-width:0; opacity:.22; }
+.wcard{ flex:0 0 auto; width:min(1320px,92vw,124vh); min-width:0; opacity:.22; }
 .wcard .wscreen{ position:relative; aspect-ratio:16/9; border-radius:24px; overflow:hidden;
   background:linear-gradient(150deg,#e8e4f5 0%,#f3e9e2 46%,#e4eef0 100%);
   box-shadow:0 3px 8px rgba(0,0,0,.06), 0 26px 64px rgba(0,0,0,.16);
@@ -1742,7 +1747,7 @@ body.dark .wcard .wscreen{ background:linear-gradient(150deg,#232134 0%,#2e2431 
   box-shadow:0 2px 6px rgba(0,0,0,.08), 0 24px 60px rgba(0,0,0,.22); overflow:hidden; }
 .wfade{ position:absolute; left:0; right:0; bottom:0; height:46%; pointer-events:none;
   background:linear-gradient(to bottom, transparent, color-mix(in srgb, var(--page) 96%, transparent)); }
-.winfo{ margin:14px auto 0; text-align:center; pointer-events:none; }
+.winfo{ margin:0 auto 16px; text-align:center; pointer-events:none; }
 .wtitle{ font-family:var(--serif); font-size:clamp(21px,1.8vw,27px); letter-spacing:-.02em;
   margin:0 0 5px; }
 .wbody{ font-size:13.5px; line-height:1.55; color:var(--tx-2); letter-spacing:-.012em;
@@ -1868,11 +1873,11 @@ body.dark .wcard .wscreen{ background:linear-gradient(150deg,#232134 0%,#2e2431 
 .pz-xp{ background:rgb(246,245,243); }
 .pz-xp .pzeyeb{ position:absolute; top:15px; left:0; right:0; text-align:center; font-size:9.5px;
   letter-spacing:.18em; text-transform:uppercase; color:#9a9aa0; }
-.pzhero{ position:absolute; left:8%; top:47%; transform:translateY(-50%); }
+.pzhero{ position:absolute; left:50%; top:50%; transform:translate(-50%,-52%); text-align:center; }
 .pzhero .pzh1{ font-family:var(--serif); font-size:clamp(28px,3.3vw,44px); line-height:1; color:rgb(24,67,47); }
 .pzhero .pzh1 em{ font-style:italic; }
-.pzxpn{ font-family:var(--serif); font-size:clamp(46px,5.4vw,74px); color:rgb(102,62,0); letter-spacing:-.045em;
-  font-variant-numeric:tabular-nums; display:flex; align-items:baseline; gap:5px; margin-top:6px; }
+.pzxpn{ font-family:var(--serif); font-size:clamp(52px,6vw,84px); color:rgb(102,62,0); letter-spacing:-.045em;
+  font-variant-numeric:tabular-nums; display:flex; align-items:baseline; justify-content:center; gap:5px; margin-top:6px; }
 .pzxpn .pl{ font-size:.5em; color:rgb(73,186,97); }
 .pzxpn .un{ font-family:ui-monospace,Menlo,monospace; font-size:.15em; color:#9a9aa0; margin-left:8px; letter-spacing:.1em; }
 .pzverd{ display:inline-block; margin-top:11px; padding:5px 12px; background:rgba(210,250,220,.6); border-radius:999px;
@@ -1905,6 +1910,147 @@ body.dark .wcard .wscreen{ background:linear-gradient(150deg,#232134 0%,#2e2431 
 .pzmini .win{ font-family:ui-monospace,Menlo,monospace; font-size:9px; letter-spacing:.05em; color:#8a6410;
   background:#fff4d6; border-radius:999px; padding:2.5px 8px; opacity:0; transition:opacity .4s ease; }
 .pzmini .win.on{ opacity:1; }
+.pzport{ opacity:0; transform:translateY(8px); display:inline-flex; align-items:center; gap:7px; height:30px;
+  padding:0 15px; border-radius:999px; background:linear-gradient(120deg,#18432f,#1d5238); color:#eafff0;
+  font-size:12px; font-weight:600; box-shadow:inset 0 0 0 1px rgba(164,244,178,.3);
+  transition:opacity .5s ease, transform .5s ease; }
+.pzport.on{ opacity:1; transform:translateY(0); }
+
+/* ══ screens rebuilt from the live apps (world-nav-lab + independent-orchestra) ══ */
+.pz-map .pzvig{ position:absolute; inset:0; background:
+  linear-gradient(105deg,rgba(0,0,0,.5),transparent 46%),
+  radial-gradient(120% 90% at 50% 106%, rgba(0,0,0,.42), transparent 62%); }
+.pzgp{ display:inline-flex; align-items:center; gap:6px; height:27px; padding:0 12px; border-radius:999px;
+  background:rgba(0,0,0,.42); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.13); color:#fff; font-size:10px;
+  letter-spacing:.11em; text-transform:uppercase; white-space:nowrap; }
+.pzgp.lv{ color:#fff9d5; }
+.pztopc{ position:absolute; left:50%; top:15px; transform:translateX(-50%); display:flex; gap:9px; z-index:4; }
+.pztopr{ position:absolute; right:20px; top:15px; display:flex; gap:8px; z-index:4; }
+.pzcface{ width:19px; height:19px; border-radius:999px; overflow:hidden; flex-shrink:0; display:block;
+  box-shadow:0 0 0 1.5px rgba(255,255,255,.5); }
+.pzcface img{ width:100%; height:100%; object-fit:cover; object-position:top; display:block; }
+.pzcface.sm{ width:17px; height:17px; box-shadow:0 0 0 1.5px rgba(255,255,255,.18); }
+.pzsrail{ position:absolute; left:18px; top:50%; transform:translateY(-50%); z-index:4;
+  display:flex; flex-direction:column; gap:13px; }
+.pzsrail i{ width:24px; height:24px; border-radius:999px; display:flex; align-items:center; justify-content:center;
+  font-style:normal; font-size:11px; color:rgba(255,255,255,.82); background:rgba(0,0,0,.34);
+  backdrop-filter:blur(10px); box-shadow:inset 0 0 0 1px rgba(255,255,255,.1); }
+.pzsrail i.bot{ margin-top:26px; }
+.pzdrag{ position:absolute; left:50%; bottom:16px; transform:translateX(-50%); z-index:4;
+  font-size:9.5px; letter-spacing:.2em; color:rgba(255,255,255,.5); }
+/* the scenario card, to the live spec */
+.pz-map .pzsc{ right:24px; top:50%; transform:translateY(-50%); width:290px; padding:14px;
+  border-radius:34px; background:rgba(0,0,0,.5); gap:11px;
+  box-shadow:0 44px 90px -24px rgba(0,0,0,.55); }
+.pzsc .pzrole{ font-family:var(--serif); font-size:26px; line-height:1.06; text-align:center;
+  letter-spacing:-.02em; margin-top:2px; }
+.pzsc .pzprob{ min-height:auto; font-size:12.5px; opacity:.9; }
+.pzsc .pzmeta b{ font-weight:600; color:#fff; text-transform:none; font-size:11px; letter-spacing:0; }
+/* their signature 3D continue button */
+.pzsbtn{ position:relative; overflow:hidden; height:42px; border:0; border-radius:100px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; margin-top:2px;
+  background-image:linear-gradient(180deg,rgba(240,240,240,.96),rgb(224,224,224));
+  box-shadow:0 5px 0 #c2c2c2, 0 12px 18px -6px rgba(0,0,0,.45), 0 0 0 1.3px #e6e6e6,
+    inset 0 1.3px 0 rgba(255,255,255,.8); }
+.pzsbtn .pzsl{ position:relative; z-index:2; font-size:14.5px; font-weight:600; letter-spacing:-.02em; color:#121212; }
+.pzsbtn::after{ content:''; position:absolute; top:-25%; bottom:-25%; left:0; width:120%; z-index:1;
+  background:linear-gradient(100deg,transparent 33%,rgba(255,255,255,.9) 38%,transparent 42%,
+    transparent 48%,rgba(255,255,255,.9) 53%,transparent 57%);
+  transform:translateX(-100%) skewX(-14deg); animation:pzshine 3.2s ease-in-out infinite; }
+@keyframes pzshine{ 0%{ transform:translateX(-100%) skewX(-14deg);} 55%,100%{ transform:translateX(100%) skewX(-14deg);} }
+/* ── the stage, dark, on the workspace's own tokens ── */
+.pz-stage.dk{ --zbg:#1E1E1E; --zcard:#262626; --zbub:#333; --zsoft:#282828;
+  --zline:rgba(255,255,255,.075); --ztx:#f2f1ee; --ztx2:#a5a29b; --ztx3:#6d6a63;
+  background:var(--zbg); color:var(--ztx); }
+.pz-stage.dk .pztop{ border-bottom:1px solid var(--zline); height:38px; }
+.pz-stage.dk .pzback{ background:var(--zsoft); color:var(--ztx2); }
+.pz-stage.dk .pzchip{ background:var(--zsoft); color:var(--ztx); box-shadow:inset 0 0 0 1px var(--zline); }
+.pz-stage.dk .pzchip .xl{ color:var(--ztx3); }
+.pz-stage.dk .pzbars i{ background:rgba(255,255,255,.14); }
+.pzcoachp{ display:inline-flex; align-items:center; gap:7px; height:24px; padding:0 9px 0 4px;
+  border-radius:99px; background:#282828; box-shadow:inset 0 0 0 1px rgba(255,255,255,.075); }
+.pz-stage.dk .pzpeer{ border-bottom:1px solid var(--zline); }
+.pz-stage.dk .pzpeer .pzava img{ border-color:var(--zline); }
+.pz-stage.dk .pzpeer .pzod{ border-color:var(--zbg); }
+.pz-stage.dk .pzpeer .pzwho b{ color:var(--ztx); }
+.pz-stage.dk .pzpeer .pzwho span{ color:var(--ztx3); }
+.pzlike{ margin-left:auto; display:inline-flex; align-items:center; gap:6px; font-size:11px; color:#ff6a8a; }
+.pzlt{ display:block; width:54px; height:4px; border-radius:99px; background:rgba(255,255,255,.1); overflow:hidden; }
+.pzlt i{ display:block; height:100%; width:68%; border-radius:99px;
+  background:linear-gradient(90deg,#ff6a8a,#ffa8c0); }
+.pz-stage.dk .pzm{ color:var(--ztx); }
+.pz-stage.dk .pzm.mgr{ background:#282828; border-color:rgba(255,255,255,.04); }
+.pz-stage.dk .pzm.usr{ background:var(--zbub); }
+.pz-stage.dk .pztyp{ background:#282828; }
+.pz-stage.dk .pzsugg{ background:var(--zsoft); border-color:var(--zline); color:var(--ztx2); }
+.pz-stage.dk .pzsugg:hover{ background:#303030; }
+.pz-stage.dk .pzcomp .pzfield{ background:#282828; border-color:var(--zline); color:var(--ztx3); border-radius:24px; height:40px; }
+.pz-stage.dk .pzcomp .pzsend{ background:#fff; color:#111; }
+.pz-stage.dk .pzrail{ border-right:1px solid var(--zline); }
+.pz-stage.dk .pzbrand b{ color:var(--ztx); }
+.pz-stage.dk .pzbrand .lg{ background:#fff; border-color:transparent; }
+.pz-stage.dk .pzlbl{ color:var(--ztx3); }
+.pz-stage.dk .pzst{ color:var(--ztx2); }
+.pz-stage.dk .pzst i{ border-color:rgba(255,255,255,.16); }
+.pz-stage.dk .pzact{ border-color:var(--zline); background:var(--zcard); }
+.pz-stage.dk .pzact > b{ color:var(--ztx); }
+.pz-stage.dk .pzreq{ color:var(--ztx2); }
+/* the voice note, as the app plays it */
+.pzvn{ align-self:flex-start; display:flex; align-items:center; gap:9px; height:38px; padding:0 12px 0 5px;
+  border-radius:99px; background:#282828; box-shadow:inset 0 0 0 1px rgba(255,255,255,.06); }
+.pzvp{ width:28px; height:28px; border-radius:999px; background:#3a3a3a; color:#f2f1ee; font-size:9px;
+  display:flex; align-items:center; justify-content:center; }
+.pzwav{ display:flex; align-items:center; gap:2px; height:18px; }
+.pzwav i{ width:2px; border-radius:2px; background:rgba(255,255,255,.34); }
+.pzvt{ font-size:9.5px; color:#a5a29b; }
+.pzvx{ font-size:9px; color:#a5a29b; padding:2px 6px; border-radius:99px; background:rgba(255,255,255,.07); }
+/* ── the XP screen: aurora, orb, one number ── */
+.pz-xp{ background:linear-gradient(170deg,#eafaf0 0%,#e6f7ef 40%,#f4fbf6 100%); overflow:hidden; }
+.pz-xp .pzaur{ position:absolute; left:-24%; top:-40%; width:150%; height:170%; pointer-events:none;
+  background:
+    radial-gradient(38% 30% at 30% 34%, rgba(120,226,168,.72), transparent 66%),
+    radial-gradient(30% 26% at 68% 26%, rgba(163,230,120,.6), transparent 66%),
+    radial-gradient(34% 30% at 52% 66%, rgba(140,238,214,.58), transparent 68%);
+  filter:blur(26px); transform-origin:50% 50%; }
+.pz-xp .pzaur.b{ left:-10%; top:-30%; width:130%; height:150%;
+  background:
+    radial-gradient(28% 24% at 22% 62%, rgba(96,206,235,.42), transparent 66%),
+    radial-gradient(26% 22% at 82% 58%, rgba(196,240,150,.5), transparent 66%);
+  filter:blur(34px); animation-direction:reverse; }
+.pz-xp .pzsheen{ position:absolute; left:-30%; top:0; width:80%; height:100%; pointer-events:none;
+  background:linear-gradient(96deg,transparent,rgba(255,255,255,.72) 46%,transparent);
+  filter:blur(16px); }
+.pz-xp .pzgl{ position:absolute; color:#fff; font-size:22px; text-shadow:0 0 18px rgba(255,255,255,.9); }
+.pz-xp .pzgl.sm{ font-size:14px; }
+.pzorb{ position:absolute; left:50%; top:31%; transform:translate(-50%,-50%);
+  width:min(29%,190px); aspect-ratio:1; display:flex; align-items:center; justify-content:center; }
+.pzring{ position:absolute; inset:0; border-radius:999px; }
+.pzring.r1{ background:radial-gradient(circle at 50% 42%, rgba(255,255,255,.9), rgba(255,255,255,.18) 62%, transparent 74%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.65), 0 12px 44px rgba(180,240,200,.6); }
+.pzring.r2{ inset:13%; box-shadow:inset 0 0 0 1px rgba(255,255,255,.85); }
+.pzring.r3{ inset:26%; background:radial-gradient(circle at 50% 40%, rgba(255,244,190,.9), rgba(255,232,150,.25) 70%, transparent);
+  box-shadow:inset 0 0 0 1px rgba(255,225,127,.55); }
+.pzstar{ position:relative; z-index:3; font-size:min(11vw,64px); line-height:1; color:#ffc832;
+  text-shadow:0 6px 22px rgba(226,170,20,.6); }
+.pzlvb{ position:absolute; left:50%; bottom:-6%; transform:translateX(-50%); z-index:4;
+  font-size:10px; font-weight:600; color:#fff; background:linear-gradient(180deg,#ffd451,#f2b71f);
+  border-radius:6px; padding:2px 8px; box-shadow:0 4px 12px rgba(200,150,10,.45); }
+.pzgood{ position:absolute; left:0; right:0; top:60%; text-align:center; font-size:clamp(13px,1.4vw,18px);
+  font-weight:500; color:#4b6b58; }
+.pzbig{ position:absolute; left:0; right:0; top:68%; text-align:center; font-weight:600;
+  font-size:clamp(38px,5.4vw,74px); letter-spacing:-.03em; color:#17281d; font-variant-numeric:tabular-nums; }
+/* ── the ladder on the loop card ── */
+.pzlad{ display:flex; gap:0; align-items:center; margin-top:4px; }
+.pzlr{ display:flex; align-items:center; gap:7px; padding:0 15px; position:relative; opacity:.42;
+  transition:opacity .5s ease; }
+.pzlr.done{ opacity:1; }
+.pzlr + .pzlr::before{ content:''; position:absolute; left:0; top:50%; width:1px; height:16px;
+  transform:translateY(-50%); background:rgba(13,13,13,.1); }
+.pzln{ width:9px; height:9px; border-radius:999px; background:rgba(13,13,13,.16); }
+.pzlr.done .pzln{ background:#2e9e5b; box-shadow:0 0 0 3px rgba(46,158,91,.16); }
+.pzlr b{ font-size:10.5px; letter-spacing:.05em; color:#111113; }
+.pzlr span:last-child{ font-size:10.5px; color:#63636a; }
 
 /* the real portfolio, embedded whole */
 .pfembed{ display:block; }
@@ -7829,16 +7975,11 @@ async function mvpOutcome(){
 /* ---- launch: why Zero, one container at a time, text at the bottom ---- *//* ---- launch: why Zero, one container at a time, text at the bottom ---- */
 const WHY=[
  {mock:'brief', t:''},
- {mock:'work',
-  t:'<b>Everything here is a real project.</b> The same kind of brief a company hands its own analysts. You get the problem, you do the work, you turn it into something you can show.'},
- {mock:'manager',
-  t:"<b>You've got a manager the whole way through.</b> They review what you build, push back, make you sharpen it."},
- {mock:'review',
-  t:'<b>Your manager watches how you work.</b> Quality, independence, speed, communication. It becomes a review that sits on your portfolio.'},
- {mock:'xp',
-  t:'<b>Do it well and you earn XP.</b> The stronger you perform, the faster you climb.'},
- {mock:'loop',
-  t:'<b>Then you do it again and again</b>, across different problems, different situations, different expectations. Every round leaves you more ready than the last.'},
+ {mock:'work', t:'The same kind of brief a company hands its own analysts.'},
+ {mock:'manager', t:'They review what you build, push back, make you sharpen it.'},
+ {mock:'review', t:'Quality, independence, speed, communication. It sits on your portfolio.'},
+ {mock:'xp', t:'Do it well and you earn XP. The stronger you perform, the faster you climb.'},
+ {mock:'loop', t:'Different problems, different situations. Every round leaves you more ready.'},
 ];
 /* the app, on a desktop: sidebar + canvas, content per beat. clean, no noise */
 function macMock(kind){
@@ -7912,43 +8053,75 @@ function pzScreen(kind){
   if(kind==='brief') return '<div class="pzc pz-brief">'
     +'<span class="pze pzmono">How Zero works</span>'
     +'<div class="pzs">You learn the job by doing it, before you have it.</div></div>';
-  if(kind==='work') return '<div class="pzc pz-map">'
-    +'<div class="pzcity"></div><div class="pzscrim"></div>'
+
+  /* ── the home world, exactly as the app runs it ── */
+  if(kind==='work'){
+    const rails=['◈','⤢','▣','✿'];
+    return '<div class="pzc pz-map">'
+    +'<div class="pzcity"></div><div class="pzvig"></div>'
     +'<span class="pzwm">'+ZSVG+'</span>'
-    +'<span class="pzdot" style="left:22%;top:60%"></span>'
-    +'<span class="pzdot on" style="left:40%;top:40%"></span>'
-    +'<span class="pzdot" style="left:56%;top:66%"></span>'
+    +'<div class="pztopc">'
+      +'<span class="pzgp"><i class="pzcface"><img src="mvp-assets/navi.jpg" alt=""></i>Coach</span>'
+      +'<span class="pzgp">▤ Roadmap</span>'
+    +'</div>'
+    +'<div class="pztopr">'
+      +'<span class="pzgp st">🔥 D•03</span>'
+      +'<span class="pzgp lv">✦ L•07</span>'
+    +'</div>'
+    +'<div class="pzsrail">'+rails.map(r=>'<i>'+r+'</i>').join('')+'<i class="bot">⚙</i></div>'
+    +'<span class="pzdot" style="left:20%;top:62%"></span>'
+    +'<span class="pzdot on" style="left:37%;top:41%"></span>'
+    +'<span class="pzdot" style="left:52%;top:70%"></span>'
+    +'<span class="pzdrag pzmono">✋ DRAG</span>'
     +'<div class="pzsc">'
       +'<div class="pzpager pzmono"><span class="pzbtn" data-pz="prev">‹</span><b class="pzpgt">01 / 05</b><span class="pzbtn" data-pz="next">›</span></div>'
       +'<span class="pzlogo pzslogo"></span>'
+      +'<div class="pzrole"></div>'
       +'<div class="pzprob"></div>'
       +'<div class="pzhair"></div>'
-      +'<div class="pzmeta pzmono"><span>Earn XP upto</span><span class="pzxpill">✦ +1,200</span></div>'
-      +'<div class="pzmeta pzmono"><span>Time</span><span class="pztime" style="color:#fff;text-transform:none;font-size:11px"></span></div>'
+      +'<div class="pzmeta pzmono"><span>Time</span><b class="pztime"></b></div>'
+      +'<div class="pzmeta pzmono"><span>XP earned</span><span class="pzxpill">✦ +1,200</span></div>'
       +'<div class="pzmeta pzmono"><span>Difficulty</span><span class="pzdiff"><i></i><i></i><i></i><i class="o"></i></span></div>'
-      +'<div class="pzstart pzbtn2">Start scenario</div>'
+      +'<button class="pzsbtn"><span class="pzsl">▸ Continue</span></button>'
     +'</div></div>';
-  if(kind==='manager') return '<div class="pzc pz-chat">'
-    +'<div class="pzpeer"><span class="pzava"><img src="mvp-assets/navi.jpg" alt=""><i class="pzod"></i></span>'
-    +'<span class="pzwho"><b>Navi</b><span>Manager · online</span></span></div>'
+  }
+
+  /* ── the stage, as the workspace really is: dark ── */
+  if(kind==='manager') return '<div class="pzc pz-stage dk">'
+    +'<div class="pztop">'
+      +'<span class="pzback">‹</span><span class="sp"></span>'
+      +'<span class="pzchip"><span class="st">✦</span><b>320</b><span class="xl">/500 XP</span></span>'
+      +'<span class="pzchip">L•07</span>'
+      +'<span class="pzcoachp"><i class="pzcface sm"><img src="mvp-assets/navi.jpg" alt=""></i>'
+        +'<span class="pzbars"><i class="f1"></i><i class="f2"></i><i class="f3"></i><i></i></span></span>'
+    +'</div>'
+    +'<div class="pzpeer"><span class="pzava"><img src="mvp-assets/jenna.jpg" alt=""><i class="pzod"></i></span>'
+      +'<span class="pzwho"><b>Marcus Bell</b><span>VP, Nike Direct Digital · Manager</span></span>'
+      +'<span class="pzlike">♥<span class="pzlt"><i></i></span></span></div>'
     +'<div class="pzmsgs">'
-      +'<div class="pzm mgr">Morning. Walk me through your funnel numbers, what changed in week two?</div>'
-      +'<div class="pzm usr">Signups held steady, activation dropped right after the pricing change.</div>'
+      +'<div class="pzm mgr">Before you run with it, let\'s align on expectations. Walk me through your funnel numbers, what changed in week two?</div>'
+      +'<div class="pzm usr">Signups held steady. Activation dropped right after the pricing change.</div>'
       +'<div class="pzm mgr">Good catch. Now push on the why. Pull the cohort that hit the new page first.</div>'
+      +'<div class="pzvn"><span class="pzvp">▶</span><span class="pzwav">'
+        +Array.from({length:22},(_,i)=>'<i style="height:'+(24+((i*37)%62))+'%"></i>').join('')
+        +'</span><span class="pzvt pzmono">0:40</span><span class="pzvx pzmono">1×</span></div>'
       +'<div class="pzsugg pzbtn2">Send your first cut</div>'
     +'</div>'
-    +'<div class="pzcomp"><span class="pzfield">Message Navi…</span><span class="pzsend">↑</span></div>'
+    +'<div class="pzcomp"><span class="pzfield">Message Marcus…</span><span class="pzsend">↑</span></div>'
     +'</div>';
-  if(kind==='review') return '<div class="pzc pz-stage">'
+
+  if(kind==='review') return '<div class="pzc pz-stage dk">'
     +'<div class="pztop"><span class="pzback">‹</span><span class="sp"></span>'
-      +'<span class="pzchip"><span class="st">✦</span><b class="pzxpv">240</b><span class="xl">XP</span></span>'
-      +'<span class="pzchip"><span class="pzbars"><i class="f1"></i><i class="f2"></i><i class="f3"></i><i class="pzb4"></i></span>Strong pace</span></div>'
+      +'<span class="pzchip"><span class="st">✦</span><b class="pzxpv">320</b><span class="xl">/500 XP</span></span>'
+      +'<span class="pzchip">L•07</span>'
+      +'<span class="pzcoachp"><i class="pzcface sm"><img src="mvp-assets/navi.jpg" alt=""></i>'
+        +'<span class="pzbars"><i class="f1"></i><i class="f2"></i><i class="f3"></i><i class="pzb4"></i></span></span></div>'
     +'<div class="pzwork"><div class="pzrail">'
-      +'<div class="pzbrand"><span class="lg">'+(LOGO['Shopify']||'')+'</span><b>Shopify · Month-two churn</b></div>'
+      +'<div class="pzbrand"><span class="lg">'+(LOGO['Shopify']||'')+'</span><b>Reducing month-two churn at Shopify</b></div>'
       +'<div class="pzlbl pzmono">Completed · 2</div>'
       +'<div class="pzst done"><i></i>Read the account</div><div class="pzst done"><i></i>Map the funnel</div>'
       +'<div class="pzact"><b>Stage 3 · Find the leak</b>'
-        +'<div class="pzlbl pzmono" style="margin:5px 0 3px">Requirements</div>'
+        +'<div class="pzlbl pzmono" style="margin:6px 0 3px">Requirements</div>'
         +'<div class="pzreq hit"><i></i>Cohorts split by signup month</div>'
         +'<div class="pzreq hit"><i></i>Churn curve, month one vs two</div>'
         +'<div class="pzreq pzflip"><i></i>One suspected cause, evidenced</div>'
@@ -7956,38 +8129,48 @@ function pzScreen(kind){
       +'<div class="pzlbl pzmono">Upcoming · 2</div>'
       +'<div class="pzst"><i></i>Propose the fix</div><div class="pzst"><i></i>Present to the room</div>'
     +'</div><div class="pzcen">'
-      +'<div class="pzmsgs" style="padding-top:14px">'
+      +'<div class="pzpeer"><span class="pzava"><img src="mvp-assets/jenna.jpg" alt=""><i class="pzod"></i></span>'
+        +'<span class="pzwho"><b>Marcus Bell</b><span>watching how you work</span></span></div>'
+      +'<div class="pzmsgs">'
         +'<div class="pzm mgr">I\'m watching how you work, not just what you ship. Take the time to be right.</div>'
         +'<div class="pzm usr">Running the month-two cohort now.</div>'
         +'<div class="pzm mgr">Good pace. Evidence the cause and stage three is done.</div>'
       +'</div>'
     +'</div></div></div>';
+
+  /* ── the XP screen, the aurora one ── */
   if(kind==='xp') return '<div class="pzc pz-xp">'
-    +'<div class="pzeyeb pzmono">Find the leak · reviewed</div>'
-    +'<div class="pzhero"><div class="pzh1">stage <em>complete.</em></div>'
-      +'<div class="pzxpn"><span class="pl">+</span><span class="pzxv">120</span><span class="un">XP</span></div>'
-      +'<span class="pzverd">Strong pass · quality high</span></div>'
-    +'<div class="pzskill">'
-      +'<div class="pzsk"><b>Quality</b><span class="sg"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i></span></div>'
-      +'<div class="pzsk"><b>Independence</b><span class="sg"><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i></span></div>'
-      +'<div class="pzsk"><b>Speed</b><span class="sg"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i></span></div>'
-      +'<div class="pzsk"><b>Communication</b><span class="sg"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i></span></div>'
-    +'</div></div>';
+    +'<div class="pzaur"></div><div class="pzaur b"></div><div class="pzsheen"></div>'
+    +'<span class="pzgl" style="left:9%;top:26%">✦</span><span class="pzgl" style="right:11%;top:21%">✦</span>'
+    +'<span class="pzgl sm" style="left:74%;top:42%">✦</span>'
+    +'<div class="pzorb"><span class="pzring r1"></span><span class="pzring r2"></span><span class="pzring r3"></span>'
+      +'<span class="pzstar">✦</span><span class="pzlvb pzmono">01</span></div>'
+    +'<div class="pzgood">Good job.</div>'
+    +'<div class="pzbig"><span class="pzxv">450</span> XP</div>'
+    +'</div>';
+
+  /* ── again and again: the real ladder ── */
   if(kind==='loop') return '<div class="pzc pz-loop">'
-    +'<span class="pzlvl">✦ <b class="pzlxp">Level 2 · 2,340 XP</b></span>'
     +'<div class="pzrow6">'+['Stripe','DoorDash','Notion','Salesforce','Shopify'].map((co,i2)=>
       '<div class="pzmini'+(i2>0?' off':'')+'">'
       +'<span class="lg">'+(LOGO[co]||'')+'</span><b>'+co+'</b>'
       +'<span class="dts"><i></i><i></i><i></i><i></i><i></i></span>'
       +'<span class="win">+1,200 XP</span></div>').join('')
-    +'</div></div>';
+    +'</div>'
+    +'<div class="pzlad">'
+      +'<div class="pzlr done"><span class="pzln"></span><b class="pzmono">L•07</b><span>14,000 XP</span></div>'
+      +'<div class="pzlr" data-mile="port"><span class="pzln"></span><b class="pzmono">L•15</b><span>Portfolio</span></div>'
+      +'<div class="pzlr" data-mile="job"><span class="pzln"></span><b class="pzmono">L•20</b><span>Job portal</span></div>'
+    +'</div>'
+    +'<span class="pzlvl">✦ <b class="pzlxp">Level 7 · 14,000 XP</b></span></div>';
   return '';
 }
+
 /* wire each screen alive: gsap only, so the occlusion watchdog keeps it moving */
 function pzWire(card,kind,myGen){
   const scr=card.querySelector('.pzc'); if(!scr) return;
   const dead=()=>myGen!==gen||!scr.isConnected;
-  scr.querySelectorAll('[data-pz],.pzbtn2').forEach(b=>{
+  scr.querySelectorAll('[data-pz],.pzbtn2,.pzsbtn').forEach(b=>{
     b.addEventListener('pointerdown',e=>e.stopPropagation());
   });
   if(kind==='work'){
@@ -7997,10 +8180,11 @@ function pzWire(card,kind,myGen){
       const c=CURRICULUM[i];
       scr.querySelector('.pzpgt').textContent='0'+(i+1)+' / 05';
       scr.querySelector('.pzslogo').innerHTML=LOGO[c.co]||'';
+      scr.querySelector('.pzrole').textContent=c.co;
       scr.querySelector('.pzprob').textContent=c.prob;
       scr.querySelector('.pztime').textContent=c.weeks+(c.weeks>1?' weeks':' week');
       dots.forEach((d,di)=>d.classList.toggle('on',di===i%3));
-      gsap.fromTo(scr.querySelector('.pzsc'),{opacity:.75},{opacity:1,duration:.45,ease:'power2.out'});
+      gsap.fromTo(scr.querySelector('.pzsc'),{opacity:.72},{opacity:1,duration:.45,ease:'power2.out'});
     };
     show();
     scr.querySelector('[data-pz="prev"]').addEventListener('click',()=>{ i=(i+4)%5; show(); });
@@ -8012,6 +8196,7 @@ function pzWire(card,kind,myGen){
   if(kind==='manager'){
     const msgs=scr.querySelector('.pzmsgs');
     const sugg=scr.querySelector('.pzsugg');
+    const lf=scr.querySelector('.pzlt i');
     let sent=false;
     sugg.addEventListener('click',()=>{
       if(sent||dead()) return; sent=true;
@@ -8024,11 +8209,15 @@ function pzWire(card,kind,myGen){
         gsap.fromTo(ty,{opacity:0},{opacity:1,duration:.25}); });
       gsap.delayedCall(2.1,()=>{ if(dead()) return; ty.remove();
         const m=mk('div','pzm mgr');
-        m.textContent="That's the level I want. Sharpen the takeaway line and it's presentation-ready.";
+        m.textContent="That's the level I want. Sharpen the takeaway and it's presentation-ready.";
         msgs.appendChild(m);
         gsap.fromTo(m,{y:10,opacity:0,filter:'blur(4px)'},{y:0,opacity:1,filter:'blur(0px)',duration:.5,ease:'power2.out'});
+        if(lf) gsap.to(lf,{width:'86%',duration:.9,ease:EIO});
       });
     });
+    if(lf){ const pulse=()=>{ if(dead()) return;
+      gsap.fromTo(lf,{opacity:.75},{opacity:1,duration:1.5,yoyo:true,repeat:1,onComplete:()=>gsap.delayedCall(1.4,pulse)}); };
+      gsap.delayedCall(1,pulse); }
   }
   if(kind==='review'){
     const xpv=scr.querySelector('.pzxpv'), b4=scr.querySelector('.pzb4'),
@@ -8039,57 +8228,63 @@ function pzWire(card,kind,myGen){
         flip.classList.add('hit');
         gsap.fromTo(flip.querySelector('i'),{scale:1.9},{scale:1,duration:.5,ease:'back.out(2)'});
         gsap.delayedCall(.9,()=>{ if(dead()) return;
-          xpv.textContent='265'; b4.classList.add('f4');
-          gsap.fromTo(chips,{scale:1.14},{scale:1,duration:.55,ease:'power2.out'});
+          xpv.textContent='420'; if(b4) b4.classList.add('f4');
+          gsap.fromTo(chips,{scale:1.12},{scale:1,duration:.55,ease:'power2.out'});
         });
         gsap.delayedCall(5.6,()=>{ if(dead()) return;
-          flip.classList.remove('hit'); xpv.textContent='240'; b4.classList.remove('f4'); });
+          flip.classList.remove('hit'); xpv.textContent='320'; if(b4) b4.classList.remove('f4'); });
       }
       gsap.delayedCall(7.5,cyc);
     };
     gsap.delayedCall(2,cyc);
   }
   if(kind==='xp'){
-    const xv=scr.querySelector('.pzxv'), segs=scr.querySelectorAll('.pzsk .sg i.f');
+    const xv=scr.querySelector('.pzxv');
+    const orb=scr.querySelector('.pzorb'), star=scr.querySelector('.pzstar');
     const play=()=>{
       if(dead()) return;
       if(card.classList.contains('on')){
         const o={v:0};
-        gsap.to(o,{v:120,duration:1.3,ease:'power2.out',onUpdate:()=>{ xv.textContent=Math.round(o.v); }});
-        gsap.fromTo(segs,{scaleX:0,transformOrigin:'0 50%'},{scaleX:1,duration:.5,ease:'power2.out',stagger:.05,delay:.3});
-        for(let s2=0;s2<6;s2++){
-          const sp=mk('span','pzspark'); sp.textContent='✦';
-          sp.style.left=(14+Math.random()*22)+'%'; sp.style.top=(38+Math.random()*26)+'%';
-          scr.appendChild(sp);
-          gsap.fromTo(sp,{opacity:0,scale:.4,y:8},{opacity:1,scale:1,y:-26-Math.random()*26,duration:1.1,
-            delay:.35+s2*.14,ease:'power1.out',onComplete:()=>{ gsap.to(sp,{opacity:0,duration:.4,onComplete:()=>sp.remove()}); }});
-        }
+        gsap.to(o,{v:450,duration:1.5,ease:'power2.out',onUpdate:()=>{ xv.textContent=Math.round(o.v); }});
+        gsap.fromTo(orb,{scale:.82,opacity:.4},{scale:1,opacity:1,duration:1.1,ease:'back.out(1.4)'});
+        gsap.fromTo(star,{scale:.4,rotate:-25},{scale:1,rotate:0,duration:1,ease:'back.out(2)'});
+        scr.querySelectorAll('.pzring').forEach((r,ri)=>
+          gsap.fromTo(r,{scale:.7,opacity:0},{scale:1,opacity:1,duration:1.2,delay:ri*.13,ease:'power2.out'}));
       }
       gsap.delayedCall(7,play);
     };
-    gsap.delayedCall(.8,play);
+    gsap.delayedCall(.6,play);
+    /* the aurora never stops breathing */
+    gsap.to(scr.querySelectorAll('.pzaur'),{rotate:360,duration:46,ease:'none',repeat:-1});
+    gsap.to(scr.querySelector('.pzsheen'),{x:'32%',duration:9,yoyo:true,repeat:-1,ease:'sine.inOut'});
+    scr.querySelectorAll('.pzgl').forEach((g,gi)=>gsap.to(g,{opacity:.35,scale:.8,duration:2.4,
+      delay:gi*.5,yoyo:true,repeat:-1,ease:'sine.inOut'}));
   }
   if(kind==='loop'){
     const minis=[...scr.querySelectorAll('.pzmini')], lxp=scr.querySelector('.pzlxp');
-    let xp=2340, lvl=2;
+    const port=scr.querySelector('[data-mile="port"]'), job=scr.querySelector('[data-mile="job"]');
+    let xp=14000, lvl=7;
     const runCard=ci=>{
       if(dead()) return;
       if(!card.classList.contains('on')){ gsap.delayedCall(2,()=>runCard(ci)); return; }
       const m=minis[ci]; m.classList.remove('off');
       const dts=[...m.querySelectorAll('.dts i')];
-      dts.forEach((d,di)=>gsap.delayedCall(.4+di*.28,()=>{ if(dead()) return; d.classList.add('f'); }));
-      gsap.delayedCall(.4+5*.28+.3,()=>{
+      dts.forEach((d,di)=>gsap.delayedCall(.35+di*.24,()=>{ if(dead()) return; d.classList.add('f'); }));
+      gsap.delayedCall(.35+5*.24+.3,()=>{
         if(dead()) return;
         m.querySelector('.win').classList.add('on');
         gsap.fromTo(m,{y:0},{y:-6,duration:.3,yoyo:true,repeat:1,ease:'power2.out'});
-        xp+=1200; if(xp>4000&&lvl===2){ lvl=3; }
+        xp+=1200; lvl=xp>=17600?9:(xp>=16400?8:7);
         lxp.textContent='Level '+lvl+' · '+xp.toLocaleString()+' XP';
+        if(ci>=2&&port){ port.classList.add('done'); }
+        if(ci>=4&&job){ job.classList.add('done'); sfx('sparkle'); }
         gsap.delayedCall(1.1,()=>{
           if(dead()) return;
           if(ci<minis.length-1) runCard(ci+1);
-          else gsap.delayedCall(2.2,()=>{
+          else gsap.delayedCall(2.6,()=>{
             if(dead()) return;
-            xp=2340; lvl=2; lxp.textContent='Level 2 · 2,340 XP';
+            xp=14000; lvl=7; lxp.textContent='Level 7 · 14,000 XP';
+            if(port) port.classList.remove('done'); if(job) job.classList.remove('done');
             minis.forEach((m2,mi)=>{ m2.classList.toggle('off',mi>0);
               m2.querySelector('.win').classList.remove('on');
               m2.querySelectorAll('.dts i').forEach(d=>d.classList.remove('f')); });
@@ -8106,6 +8301,7 @@ const WHYT=['Learn by doing','Real projects','A manager, the whole way',
   'A review that counts','XP, earned','Again and again'];
 async function mvpWhy(){
   atStep('Why Zero');
+  document.body.classList.remove('dark');
   const myGen=gen;
   setPhase(4);
   clearTurn(); dockHide(); await wait(300); if(myGen!==gen) return;
@@ -8116,16 +8312,18 @@ async function mvpWhy(){
   box.appendChild(deck);
   WHY.forEach((b,i)=>{
     const c=mk('div','wcard');
-    c.innerHTML='<div class="wscreen">'+pzScreen(b.mock)+'</div>'
-      +'<div class="winfo"><div class="wtitle">'+WHYT[i]+'</div>'
-      +(b.t?'<div class="wbody">'+b.t+'</div>':'')+'</div>';
+    c.innerHTML='<div class="winfo"><div class="wtitle">'+WHYT[i]+'</div>'
+      +(b.t?'<div class="wbody">'+b.t+'</div>':'')+'</div>'
+      +'<div class="wscreen">'+pzScreen(b.mock)+'</div>';
     track.appendChild(c);
   });
   [...track.children].forEach((c,i)=>pzWire(c,WHY[i].mock,myGen));
   let at=0;
   const W=()=>track.children[0].offsetWidth+28;
   const paint=anim=>{
-    const off=(deck.clientWidth-track.children[0].offsetWidth)/2;
+    /* centre on the viewport, not the strip: layout timing can never shift it */
+    const dr=deck.getBoundingClientRect();
+    const off=(innerWidth/2-dr.left)-track.children[0].offsetWidth/2;
     gsap.to(track,{x:-at*W()+off,duration:anim===false?0:.9,ease:EIO});
     [...track.children].forEach((c,i)=>{
       c.classList.toggle('on',i===at);
@@ -8137,6 +8335,9 @@ async function mvpWhy(){
     });
   };
   paint(false);
+  const rePaint=()=>{ if(myGen!==gen||!deck.isConnected) return; paint(false); };
+  setTimeout(rePaint,400); setTimeout(rePaint,1000);
+  addEventListener('resize',rePaint);
   gsap.fromTo(deck,{y:28,opacity:0},{y:0,opacity:1,duration:.85,ease:'power3.out'});
 }
 
@@ -8259,6 +8460,7 @@ function mvpFinale(track){
 /* ---- the close: 10,000 credits, email, see you inside ---- */
 async function mvpClaim(){
   atStep('Claim');
+  document.body.classList.remove('dark');
   setPhase(4);
   const myGen=gen;
   clearTurn(); dockHide(); await wait(320); if(myGen!==gen) return;
@@ -8280,19 +8482,31 @@ async function mvpClaim(){
     confetti(r.left+r.width/2, r.top+r.height*.6);
     sfx('success'); },1700);
   await wait(2300); if(myGen!==gen) return;
-  await voLine('Credits are what scenarios and reviews cost inside Zero. 10,000 covers your first two months.',3100);
-  if(myGen!==gen) return;
-  line("Enter your email and they're yours.");
+  /* the explainer and the email live on the SAME screen as the number */
+  const exp=mk('div','rewexp','Credits are what scenarios and reviews cost inside Zero. 10,000 covers your first two months.');
+  rew.appendChild(exp);
+  enter([exp],{y:12,blur:6,duration:.55},1100);
+  const exp2=mk('div','rewexp em',"Enter your email below and they're yours.");
+  rew.appendChild(exp2);
+  enter([exp2],{y:10,blur:5,duration:.5,delay:.2},1300);
   emailDock(v=>{
     flowCredit();
     const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
     if(!ok){ sfx('error'); locked=false;
-      gsap.fromTo('.dfield',{x:0},{x:7,duration:.07,yoyo:true,repeat:5}); return; }
+      gsap.fromTo('.dfield',{x:0},{x:7,duration:.07,yoyo:true,repeat:5});
+      const f9=document.querySelector('.dfield');
+      if(f9&&f9.parentNode&&!f9.parentNode.querySelector('.dmailhint')){
+        const h9=mk('div','dmailhint',"That doesn't look like an email yet.");
+        f9.parentNode.appendChild(h9);
+        gsap.fromTo(h9,{opacity:0,y:6},{opacity:1,y:0,duration:.4});
+      }
+      return; }
     sfx('success'); mvpFinish(v.trim());
   });
 }
 async function mvpFinish(email){
   atStep('Handoff');
+  document.body.classList.remove('dark');
   setPhase(4);
   const myGen=gen;
   clearTurn(); dockHide(); await wait(320); if(myGen!==gen) return;
