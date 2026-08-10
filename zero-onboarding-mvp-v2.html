@@ -4370,6 +4370,7 @@ const MV_ROLE=[['Product Manager','product manager','product management',' pm ']
   ['Product Designer','product designer','ux designer','product design','ui designer'],
   ['Data Analyst','data analyst','analytics','data analysis'],
   ['Business Analyst','business analyst',' ba '],
+  ['Analyst','analysis','analyst','analytics','data analysis'],
   ['Strategy','strategy','strategic'],
   ['Marketing','marketing','growth','brand'],
   ['Operations','operations',' ops '],
@@ -4475,17 +4476,19 @@ function mvAsk(question, stuck, scripted){
 /* The best-case answers. Assume a candidate who knows what they want and says
    it well: this is the vision board the flow exists to produce. */
 const MV_SCRIPT={
-  opener:"I want to be a product designer. The messy problems, where you have to work out what people actually need before you draw anything.",
-  level:"I'm in my final year at university, studying design.",
-  role:"Product design. Owning a real surface end to end, not just pushing pixels.",
-  company:"Somewhere smaller and scrappier. I want to own things, not wait in a queue.",
-  dream:"Figma, Notion and Linear. That level of craft.",
-  industry:"AI. How people actually talk to these tools, because right now it is mostly guesswork.",
-  location:"London, ideally.",
-  workmode:"Hybrid.",
-  timeline:"In six months, full time.",
-  deeper:"It is the part where you get to decide what is worth building, and then you have to live with the decision."
+  opener:{say:"I want the why-behind-the-numbers work.",echo:'Love that, the why-behind-the-numbers work.'},
+  level:{say:'Studying.'},
+  role:{say:'Analysis.'},
+  company:{say:'Smaller and faster.',echo:'Right, smaller and faster.'},
+  dream:{say:'Salesforce, Notion.',echo:'Salesforce, Notion, solid.'},
+  industry:{say:'Fintech.'},
+  location:{say:'London.'},
+  workmode:{say:'Hybrid.'},
+  timeline:{say:'Six months, full time.'},
+  deeper:{say:'I like finding the reason underneath the number, not just reporting it.'}
 };
+const mvSay  = k => (MV_SCRIPT[k]||{}).say || '';
+const mvEchoOf = k => (MV_SCRIPT[k]||{}).echo || null;
 const MV_TOPICS=[
  {k:'level', q:'Where are you now, still studying, working, figuring it out?',
   deeper:'What are you studying, or what do you do day to day?',
@@ -4516,24 +4519,22 @@ async function alignStage(){
   const g=gen;
   /* the board is born here and fills as he learns, exactly as v6 does it */
   bornPanel();
-  await voLine('Good to meet you, '+P.name+'.',1700);
+  await voLine('Good to meet you, '+P.name+'.',1900);
   if(g!==gen) return;
-  await voLine('So tell me, what do you actually want to be doing?',2400);
-  if(g!==gen) return;
-  const first=await mvAsk('The work, the kind of place, the dream version of it.',null,MV_SCRIPT.opener);
+  const first=await mvAsk('So tell me, what do you actually want to be doing? The work, the kind of place, the dream version of it.',null,mvSay('opener'));
   if(g!==gen) return;
   let got=mvAbsorb(first);
   if(mvThin(first)){
-    const more=await mvAsk('Say a bit more, what pulls you toward that?',null,MV_SCRIPT.deeper);
+    const more=await mvAsk('Say a bit more, what pulls you toward that?',null,mvSay('deeper'));
     if(g!==gen) return;
     got=got.concat(mvAbsorb(more));
   }
-  const back=mvEcho(got,first);
+  const back=mvEchoOf('opener')||mvEcho(got,first);
   if(back){ await voLine(back,1900); if(g!==gen) return; }
 
   for(const T of MV_TOPICS){
     if(P[T.k]) continue;
-    const a=await mvAsk(T.q,T.stuck,MV_SCRIPT[T.k]);
+    const a=await mvAsk(T.q,T.stuck,mvSay(T.k));
     if(g!==gen) return;
     let gg=mvAbsorb(a);
     /* the hours ride in with the timeline question */
@@ -4541,11 +4542,11 @@ async function alignStage(){
     /* a value the vocabulary missed is still their answer: keep their words */
     if(!P[T.k]&&T.k!=='dream'){ P[T.k]=mvTidy(a); renderBoard(); }
     if(mvThin(a)&&T.deeper){
-      const more=await mvAsk(T.deeper,null,MV_SCRIPT.deeper);
+      const more=await mvAsk(T.deeper,null,mvSay('deeper'));
       if(g!==gen) return;
       gg=gg.concat(mvAbsorb(more));
     }
-    const e=mvEcho(gg,a);
+    const e=mvEchoOf(T.k)||mvEcho(gg,a);
     if(e){ await voLine(e,1800); if(g!==gen) return; }
   }
   if(!P.jobtype) P.jobtype='Full time';
@@ -4574,7 +4575,7 @@ async function mvVisionStage(){
   dockHide();
   choices(box,[['spark','That is me','ok'],['pen','Change something','fix']],async v=>{
     if(v==='fix'){
-      const what=await mvAsk("What doesn't line up?",null,'Actually make it hybrid rather than fully remote.');
+      const what=await mvAsk("What doesn't line up?",null,'Make it fully remote rather than hybrid.');
       mvAbsorb(what);
       return go(mvVisionStage);
     }
@@ -4589,13 +4590,11 @@ async function mvPlanStage(){
   const g=gen;
   clearTurn(); await wait(320); if(g!==gen) return;
   await voLine('Last thing before I build this.',1900); if(g!==gen) return;
-  await voLine("Share your LinkedIn, or a resume, and I'll see exactly where you're starting from.",3600);
+  await voLine("That's what lets me make this roadmap yours.",2600);
   if(g!==gen) return;
-  await voLine("That's what lets me make this roadmap yours.",2400);
+  await voLine("The right projects, the real problems you'll work on, the skills you'll actually build.",4400);
   if(g!==gen) return;
-  await voLine("The right projects, the real problems you'll work on, the skills you'll actually build.",4200);
-  if(g!==gen) return;
-  const {box}=turn({q:"Skip it if you'd rather, I'll just paint in broader strokes."});
+  const {box}=turn({q:"Share your LinkedIn, or a resume, and I'll see exactly where you're starting from. Skip it if you'd rather, I'll just paint in broader strokes."});
   dockHide();
   choices(box,[['link','Connect LinkedIn','li'],['file','Share a resume','cv'],['skip','Skip for now','no']],
     async v=>{
@@ -6647,62 +6646,37 @@ const DBG_STEPS=[
   ['Plan',        ()=>mvPlanStage()],
   ['Roadmap',     ()=>roadmapStage()],
   ['Portfolio',   ()=>portfolioStage()],
-  ['LinkedIn',    ()=>linkedinStage()],
-  ['Read back',   ()=>readbackStage()],
-  ['Pivot',       ()=>pivotStage(P.pivot)],
-  ['Cards intro', ()=>cardsIntroStage()],
-  ['Cards',       ()=>cardsStage()],
-  ['Reflection',  ()=>reflectStage()],
-  ['Preferences', ()=>prefStage()],
-  ['Vision',      ()=>visionStage(true)],
-  ['Roles',       ()=>rolesStage()],
-  ['Synthesis',   ()=>synthesisStage()],
-  ['Portfolio',   ()=>portfolioStage()],
-  ['How it works',()=>worksStage()],
-  ['Claim',       ()=>claimStage()],
+  ['How Zero works',()=>zeroStage()],
   ['Credits',     ()=>creditsStage()],
   ['Handoff',     ()=>finishStage('sanjay@z-ro.co')],
 ];
 /* what each step would have produced, so any step can be entered cold */
 function dbgFill(upTo){
   const d=pack();
-  /* the stepper has to be able to go backwards. Without this P only ever grows,
-     so an earlier step shows a fuller board than it should. */
+  /* the stepper has to go backwards too, so P is cleared first: without this
+     it only ever grows and an earlier step shows a fuller board than it had */
   Object.keys(P).forEach(k=>{ P[k]= k==='picks' ? [] : null; });
   const set=(i,fn)=>{ if(upTo>i) fn(); };
-  /* DBG_STEPS actually starts at Draw, so every index here was one short and
-     the read-back - the screen whose whole job is to validate the profile -
-     arrived before the profile existed. That is why the board showed only
-     "Sanjay starts here." and the validation had nothing to light.
-     0 Draw, 1 Open, 2 LinkedIn, 3 Read back, 4 Pivot, 5 Cards intro,
-     6 Cards, 7 Reflection, 8 Preferences, 9 Vision, 10 Roles ... */
-  set(1,()=>P.name='Sanjay');
-  set(2,()=>{ P.linked='LinkedIn'; P.linkedUrl='linkedin.com/in/sanjaybchauhan'; });
-  set(2,()=>{ P.level='Student';
-    P.year='Third year'; P.college='Yale University';
-    P.interned='2 internships'; P.tools='Figma, Illustrator, prototyping';
-    P.follows='OpenAI, Figma, Notion';
-    P.about='I started in graphic design but recently I have been looking more into product design.';
-    P.pivot=['graphic design','product design']; });
-  set(5,()=>{ P.why='I want to work on products people actually use and build a career I can grow in.'; });
-  set(7,()=>{ /* the cards have been played: their read-out is the preference state */
-    P.role=d.roles&&d.roles[0]?d.roles[0][0]:'Product Designer';
-    P.dream='OpenAI, Figma, Anthropic, Google, Salesforce, Adobe, DoorDash, Shopify';
+  /* 0 Draw · 1 Open · 2 Align · 3 Vision · 4 Plan · 5 Roadmap · 6 Portfolio
+     7 How Zero works · 8 Credits · 9 Handoff */
+  set(1,()=>{ P.name='Sanjay'; });
+  /* everything Align would have learned, which is the best-case answer set */
+  set(2,()=>{
+    P.level='a student';
+    P.role='Product Designer';
+    P.company='a startup';
+    P.dream='Figma, Notion, Linear';
     P.industry='Tech and AI';
-    P.problems=d.problemChips?d.problemChips[0]:'Confusing tools';
-    P.location='Toronto';
-    P.timeline='This year'; });
-  /* the cards are behind every screen from the reflection on. Replaying the
-     deck here is what the real flow would have left behind, so a jumped-to
-     screen scores on the same evidence a walked-to one does. */
-  set(6,()=>{ try{ rreset(); rdeck().forEach(r=>rapply(r, r.n%3===0?'b':'a')); }catch(e){}
-    /* picks live in the click handler, not rapply, so a jumped-to screen needs
-       them seeded or the vision summary shows nothing */
-    RPICKED['OpenAI']={role:'Product Designer',city:'SF Bay Area',pay:'$174-238K'};
-    RPICKED['Figma']={role:'Product Designer',city:'Toronto',pay:'$95-130K'};
-    RPICKED['Anthropic']={role:'Product Designer',city:'New York',pay:'$150-205K'}; });
-  set(10,()=>{ P.aim=d.roles&&d.roles[0]?d.roles[0][0]:'Product Designer'; });
+    P.problems='AI';
+    P.location='London';
+    P.workmode='hybrid';
+    P.timeline='In six months';
+    P.jobtype='Full time';
+  });
+  /* from the plan on, the roadmap and portfolio need an aim to build against */
+  set(4,()=>{ P.aim=P.role||'Product Designer'; });
 }
+
 /* The stepper was rebuilding the Zero board on every jump, so steps that should
    show the LinkedIn board showed the synthesised one - the exact confusion the
    two boards exist to avoid. This lays the LinkedIn board out instantly, no
