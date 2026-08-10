@@ -1490,8 +1490,33 @@ body.dark .lit{ animation-name:litd; }
 @media (prefers-reduced-motion:reduce){ *,*::before,*::after{ animation-duration:.01ms!important; transition-duration:.01ms!important; } }
 
 /* ═══ MVP layer ═══ */
+/* the structured board */
+.vz{ transform-origin:0 0; will-change:transform; padding:8px 6px 30px; }
+.vtitle{ font-family:var(--serif); font-size:clamp(21px,1.8vw,30px); text-align:center;
+  margin:2px 0 18px; opacity:0; transform:translateY(-6px);
+  transition:opacity .8s ease, transform .8s var(--eio,ease); }
+.vtitle.on{ opacity:1; transform:none; }
+.vgrid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.vsec{ border:1px solid var(--line); border-radius:18px; background:var(--card);
+  padding:14px 16px 15px; min-height:104px; opacity:.9;
+  transition:opacity .5s ease, box-shadow .5s ease, border-color .5s ease; }
+.vsec.dim{ opacity:.38; }
+.vsec.on{ box-shadow:0 10px 30px rgba(0,0,0,.07); }
+.vsec .vslab{ font-size:var(--inds,12.5px); font-weight:500; letter-spacing:-.01em;
+  color:var(--tx-3); margin-bottom:10px; }
+.vsec .vsb{ font-family:var(--serif); font-size:17px; line-height:1.7; }
+.vsec .vsb:empty::after{ content:''; display:block; height:3px; width:42%;
+  background:var(--line); border-radius:2px; margin-top:16px; }
+.vsec .vsrow{ margin-top:8px; }
+.vsec .vsq{ margin-top:9px; font-size:13.5px; line-height:1.5; color:var(--tx-2); font-style:italic; }
+.vsec .vslogos{ display:flex; }
+.vsec .vslogos i{ width:34px; height:34px; border-radius:50%; background:#fff;
+  border:2px solid var(--card); display:flex; align-items:center; justify-content:center;
+  margin-left:-9px; font-style:normal; box-shadow:0 2px 8px rgba(0,0,0,.10); }
+.vsec .vslogos i:first-child{ margin-left:0; }
+.vsec .vslogos i svg{ width:18px; height:18px; }
 /* curriculum: one scenario, one card */
-.mvstack{ margin-top:34px; display:flex; flex-direction:column; gap:12px; width:min(620px,86vw); }
+.mvstack{ margin:34px auto 0; display:flex; flex-direction:column; gap:12px; width:min(620px,86vw); }
 .mvsc{ background:var(--card); border:1px solid var(--line); border-radius:20px; padding:20px 22px 18px;
   text-align:left; box-shadow:0 12px 34px rgba(0,0,0,.07); }
 .mvsc .mtop{ display:flex; align-items:center; gap:12px; margin-bottom:12px; }
@@ -1517,7 +1542,7 @@ body.dark .lit{ animation-name:litd; }
 /* the outcome line, big */
 .q.qhero{ font-size:clamp(30px,2.6vw,46px); max-width:24ch; }
 /* why Zero: one container at a time, text at the bottom, like a feature page */
-.apl{ width:min(640px,86vw); margin-top:30px; border-radius:26px; background:var(--card);
+.apl{ width:min(640px,86vw); margin:30px auto 0; border-radius:26px; background:var(--card);
   border:1px solid var(--line); overflow:hidden; box-shadow:0 18px 50px rgba(0,0,0,.08); }
 .apl .aplv{ height:min(300px,34vh); background:var(--wash); display:flex; align-items:center;
   justify-content:center; position:relative; }
@@ -1533,6 +1558,8 @@ body.dark .lit{ animation-name:litd; }
   text-align:left; letter-spacing:-.012em; }
 .apl .aplt b{ color:var(--tx); font-weight:600; }
 /* the MVP portfolio */
+.mvout{ width:min(640px,88vw); margin:30px auto 0; background:var(--card); border:1px solid var(--line);
+  border-radius:24px; padding:26px 26px 20px; box-shadow:0 18px 50px rgba(0,0,0,.08); }
 .mvpf{ text-align:left; }
 .mvpf .ph{ display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:22px; }
 .mvpf .ph .pn{ font-family:var(--serif); font-size:27px; }
@@ -6789,6 +6816,10 @@ function dbgGoto(i){
 /* ═══════════════════════ ZERO Onboarding MVP ═══════════════════════
    Six phases, copy word for word. Components from the chassis; flow new. */
 
+/* a hidden tab freezes rAF and strands every tween the flow awaits on.
+   intervals still run when hidden, so the ticker is pumped by the clock */
+setInterval(()=>{ if(document.hidden){ try{ gsap.ticker.tick(); }catch(e){} } },400);
+
 /* ---- persona: the promise, then the name ---- */
 async function mvpOpen(){
   atStep('Open');
@@ -6799,13 +6830,13 @@ async function mvpOpen(){
   qWide=true;
   await voLine("Hey, I'm Navid. I started Zero.",2400);
   if(gen!==myGen) return;
-  await voLine('Before we do anything, I want to understand you properly.',2500);
+  await voLine('Before we do anything, I want to understand you properly:',2500);
   if(gen!==myGen) return;
-  await voLine("The role you're really after, the companies you want to be in, the problems you like solving.",3300);
+  await voLine("the role you're really after, the companies you want to be in, the problems you like solving.",3300);
   if(gen!==myGen) return;
-  await voLine('The more I understand, the more precise your path becomes.',2500);
+  await voLine('The more I understand, the more precise your path becomes,',2500);
   if(gen!==myGen) return;
-  await voLine('And the closer your final portfolio gets to what actually lands the job.',2700);
+  await voLine('and the closer your final portfolio gets to what actually lands the job.',2700);
   if(gen!==myGen) return;
   await voLine('Stay with me a few minutes.',1900);
   if(gen!==myGen) return;
@@ -6830,60 +6861,60 @@ const ALIGN=[
   deeper:'Say a bit more, what pulls you toward that?',
   script:'Honestly, I like the why behind the numbers. I want to be the person who figures out what is actually going on in a business and what to do next. Somewhere that moves fast.',
   ack:'Love that, the why-behind-the-numbers work.',
-  set:()=>{ P.pull='the why behind the numbers'; }},
+  focus:'domain', set:()=>{ P.pull='the why behind the numbers'; }},
  {label:'Where you are',
   q:()=>'Where are you now, still studying, working, figuring it out?',
   deeper:'What are you studying, or what do you do day to day?',
   stuck:['Studying','Graduated','Working','Between things'],
   script:'I am in my final year of business school in Toronto. Case comps, spreadsheets, and a part time ops gig at a campus startup.',
   ack:'Right, final year, hands already dirty.',
-  set:()=>{ P.level='Student'; P.status='final year of business school'; P.location='Toronto'; }},
+  focus:'role', set:()=>{ P.level='Student'; P.status='final year of business school'; P.location='Toronto'; }},
  {label:'The role',
   q:()=>"What do you actually want to be doing? If it went perfectly, what's the job?",
   deeper:'What is it about that work that you like?',
   stuck:['Strategy','Analysis','Marketing','Ops','Not sure yet'],
   script:'Business analyst, or strategy. The job where someone hands you a messy problem and you come back with the answer and the plan.',
   ack:'Okay so, analyst with a strategy lean.',
-  set:()=>{ P.role='Business Analyst'; }},
+  focus:'role', set:()=>{ P.role='Business Analyst'; }},
  {label:'Company kind',
   q:()=>'Big name, or somewhere smaller and scrappier?',
   deeper:'What draws you to that kind of place?',
   stuck:['Startup','Scale-up','Big tech','An agency'],
   script:'Smaller. I want my work to actually change what the company does next month, not disappear into a deck.',
   ack:'Right, smaller and faster.',
-  set:()=>{ P.companyKind='smaller and faster'; }},
+  focus:'company', set:()=>{ P.companyKind='smaller and faster'; }},
  {label:'Dreams',
   q:()=>"Any names you'd kill to work at, even a dream one?",
   deeper:'What is it about them?',
   script:'Stripe for sure. Notion. And honestly Salesforce, my cousin works there and the problems sound massive.',
   ack:'Salesforce, Notion, solid.',
-  set:()=>{ P.dream='Stripe, Notion, Salesforce'; }},
+  focus:'dreams', set:()=>{ P.dream='Stripe, Notion, Salesforce'; }},
  {label:'Problems', wide:true,
   q:()=>"What kind of problems do you actually like solving? Any industry you're drawn to?",
   deeper:"Anything you'd love to fix if you could?",
   stuck:['Health','Fintech','Retail','Climate','Consumer'],
   script:'Fintech pulls me. Money problems are real problems. Why users drop off, where the revenue actually comes from, that kind of thing.',
   ack:'Got it, fintech, the why behind the money.',
-  set:()=>{ P.industry='Fintech'; P.problems='why users drop off, where the revenue comes from'; }},
+  focus:'domain', set:()=>{ P.industry='Fintech'; P.problems='why users drop off, where the revenue comes from'; }},
  {label:'City',
   q:()=>'Where in the world do you want to be?',
   deeper:'Set on there, or open to a few places?',
   stuck:['London','New York','SF','Fully remote'],
   script:'Toronto works, but if I am dreaming, New York.',
   ack:'Nice, Toronto now, New York on the horizon.',
-  set:()=>{ P.location='Toronto'; P.citynext='New York'; }},
+  focus:'location', set:()=>{ P.location='Toronto'; P.citynext='New York'; }},
  {label:'Mode',
   q:()=>'In person, hybrid, or fully remote?',
   script:'Hybrid. I like a desk I can leave.',
   ack:'Got it, hybrid.',
-  set:()=>{ P.workmode='Hybrid'; }},
+  focus:'plan', set:()=>{ P.workmode='Hybrid'; }},
  {label:'Timeline', wide:true,
   q:()=>'When do you want to be in the role, and full or part time?',
   deeper:'Is that a hard deadline or a rough aim?',
   stuck:['Three months','Six months','Sometime this year'],
   script:'Six months, full time. Graduation is the deadline.',
   ack:'Okay so, six months, full time. A real deadline.',
-  set:()=>{ P.timeline='In 6 months'; P.jobtype='Full time'; }},
+  focus:'plan', set:()=>{ P.timeline='6 months'; P.jobtype='Full time'; }},
 ];
 let ALAT=0;
 async function mvpAlign(){
@@ -6917,6 +6948,7 @@ async function mvpAlign(){
     dockHide();
     st.set(text);
     renderBoard();
+    if(st.focus) mvpFocus(st.focus);
     await reflect(st.ack,1650);
     if(myGen!==gen) return;
     ALAT++;
@@ -6942,6 +6974,7 @@ async function mvpVision(){
   await voLine('Alright, '+P.name+", let me show you what I've got.",2400);
   if(myGen!==gen) return;
   P.goal=mvpGoal(); renderBoard();
+  mvpZoomOut();
   await voLine('Okay, '+P.name+". Here's what I've got.",2300);
   if(myGen!==gen) return;
   qWide=true;
@@ -6951,12 +6984,17 @@ async function mvpVision(){
   const {box}=turn({q:"Tell me if I've got it right."});
   choices(box,[['check','That is me','ok'],['pen','Change something','fix']],v=>{
     if(v==='ok'){ sfx('success');
-      go(async()=>{ await voLine("Good. Let's build your path.",2100); mvpPlan(); }); }
+      go(async()=>{ await voLine("Good. Let's build your path.",2100);
+        /* the split layout lives only as long as the board does: from here
+           everything takes the centerline, the board stays one click away */
+        drawerShut();
+        mvpPlan(); }); }
     else go(mvpEdit);
   },{pill:true,nomorph:true});
 }
 function mvpEdit(){
   const {box}=turn({q:"What doesn't line up?"});
+  devPills(box,['The city is wrong. I want London first.'],t=>take(t));
   const take=async t=>{
     const s2=(t||'').toLowerCase();
     if(/\brole\b|\bjob\b|title|analyst|strategy/.test(s2)) P.role=null;
@@ -6966,8 +7004,17 @@ function mvpEdit(){
     if(/industr|fintech|problem/.test(s2)) P.industry=null;
     if(/tim|month|deadline|full|part/.test(s2)){ P.timeline=null; P.jobtype=null; }
     extractInto(t);
+    /* a named city is the answer, not a hint: first named city leads */
+    const CITIES=['London','New York','San Francisco','SF','Toronto','Berlin','Bangalore','Mumbai','Singapore','Dubai'];
+    const found=CITIES.filter(c2=>new RegExp('\\b'+c2+'\\b','i').test(t));
+    if(found.length){
+      const lead=found[0]==='SF'?'San Francisco':found[0];
+      if(/first|instead|not|rather|move/i.test(t)||!P.location){ P.citynext=P.location&&P.location!==lead?P.location:P.citynext; P.location=lead; }
+      else P.citynext=lead;
+    }
     renderBoard();
-    await reflect(said('changed that'),1300);
+    await reflect('Okay, changed that.',1300);
+    dockHide();
     mvpVision();
   };
   dockInput(take);
@@ -7098,12 +7145,16 @@ async function mvpOutcome(){
   const myGen=gen;
   setPhase(3);
   clearTurn(); dockHide(); await wait(320); if(myGen!==gen) return;
-  await swapPanel('Your portfolio, at the end of the road',buildMvpPortfolio,false,true);
-  await wait(900); if(myGen!==gen) return;
   await voLine('This is your portfolio at the end of the road, '+P.name+'.',2600);
   if(myGen!==gen) return;
-  await voLine('Real projects, real deliverables.',2000);
-  if(myGen!==gen) return;
+  clearTurn(); await wait(260); if(myGen!==gen) return;
+  const {box:pbox}=turn({q:'Real projects, real deliverables.'});
+  const holder=mk('div','mvout');
+  buildMvpPortfolio(holder);
+  pbox.appendChild(holder);
+  enter([holder],{y:22,blur:10,scale:.97,duration:.7},1400);
+  await wait(1500); if(myGen!==gen) return;
+  await paceGate(); if(myGen!==gen) return;
   await voLine("This is what a hiring manager or a recruiter sees when they're deciding on you.",2900);
   if(myGen!==gen) return;
   await voLine('Your proof of work, not a promise.',2300);
@@ -7209,35 +7260,100 @@ async function mvpFinish(email){
   enter([dl],{y:16,blur:8,duration:.6},1200);
 }
 
-/* ---- the board: MVP sentences, computed from the align answers ---- */
-function SENTENCES(){
-  return [
-   { id:'m1', g:0, ready:!!P.name, key:[P.name,P.role].join('|'),
-     html:()=>{
-       const who=chip(avatar(P.name)+T_(P.name));
-       if(!P.role) return who+G_(' starts here.');
-       return who+G_(' is going after ')+chip(I.target+T_(P.role))+G_('.'); } },
-   { id:'m2', g:0, ready:!!P.status, key:[P.status,P.location].join('|'),
-     html:()=>G_('In his ')+chip(cico('cap')+T_(P.status.replace('final year of ','final year, ')))
-       +(P.location?G_(', ')+cityChip(P.location):'')+G_('.') },
-   { id:'m3', g:1, ready:!!P.companyKind, key:[P.companyKind].join('|'),
-     html:()=>G_('Built for somewhere ')+chip(cico('bldg')+T_(P.companyKind))+G_('.') },
-   { id:'m4', g:1, ready:!!P.dream, key:[P.dream].join('|'),
-     html:()=>G_('The dreams are ')+logoStack(P.dream.split(',').map(s2=>s2.trim()))+G_('.') },
-   { id:'m5', g:1, ready:!!P.industry, key:[P.industry,P.problems].join('|'),
-     html:()=>G_('Pulled by ')+chip(cico('spark')+T_(P.industry))
-       +(P.problems?G_(': ')+'<span class="vbq">“'+P.problems+'”</span>':G_(''))+G_('.') },
-   { id:'m6', g:2, ready:!!P.citynext, key:[P.location,P.citynext].join('|'),
-     html:()=>G_('From ')+cityChip(P.location||'here')+G_(', eyes on ')+cityChip(P.citynext)+G_('.') },
-   { id:'m7', g:2, ready:!!(P.timeline&&P.jobtype), key:[P.timeline,P.jobtype,P.workmode].join('|'),
-     html:()=>G_('Wants ')+chip(cico('bag')+T_(low(P.jobtype)))
-       +(P.workmode?G_(', ')+chip(cico('globe')+T_(low(P.workmode))):'')
-       +G_(', ')+chip(cico('cal')+T_(low(P.timeline)))+G_('.') },
-   { id:'m8', g:2, ready:!!P.goal, key:[P.goal].join('|'),
-     html:()=>G_('In one line: ')+'<span class="vbq">“'+P.goal+'”</span>'+G_('.') },
-  ];
+/* ---- the board: structured areas, populated live, a camera that cares ----
+   Dhruv's structure: labeled areas (role, domain, companies, location...)
+   filled as the conversation lands, each answer pulling focus to its area,
+   and at the end the camera pulls back: "Sanjay's vision board." */
+const VSEC=[
+ {key:'role', label:'The role',
+  ready:()=>!!P.role,
+  html:()=>chip(I.target+T_(P.role))
+    +(P.status?'<div class="vsrow">'+chip(cico('cap')+T_(P.status.replace('final year of ','final year, ')))+'</div>':'')},
+ {key:'company', label:'The company',
+  ready:()=>!!P.companyKind,
+  html:()=>chip(cico('bldg')+T_(P.companyKind))},
+ {key:'dreams', label:'Dream companies',
+  ready:()=>!!P.dream,
+  html:()=>'<span class="vslogos">'+P.dream.split(',').map(c2=>{
+    const co=c2.trim(); return '<i title="'+co+'">'+(LOGO[co]||I.spark)+'</i>'; }).join('')+'</span>'},
+ {key:'domain', label:'The domain',
+  ready:()=>!!(P.industry||P.pull),
+  html:()=>(P.industry?chip(cico('spark')+T_(P.industry)):'')
+    +(P.problems?'<div class="vsq">&ldquo;'+P.problems+'&rdquo;</div>'
+      :(P.pull?'<div class="vsq">&ldquo;'+P.pull+'&rdquo;</div>':''))},
+ {key:'location', label:'Location',
+  ready:()=>!!P.location,
+  html:()=>cityChip(P.location)+(P.citynext?G_(' then ')+cityChip(P.citynext):'')},
+ {key:'plan', label:'The plan',
+  ready:()=>!!(P.timeline||P.workmode),
+  html:()=>[P.jobtype&&chip(cico('bag')+T_(low(P.jobtype))),
+            P.workmode&&chip(cico('globe')+T_(low(P.workmode))),
+            P.timeline&&chip(cico('cal')+T_('in '+low(P.timeline)))].filter(Boolean).join(' ')},
+];
+let VFOCUS=null, VREVEALED=false;
+function renderBoard(){
+  if(!boardLive) return;
+  const s2=$('scroll'); if(!s2) return;
+  s2.classList.add('ctr');
+  $('paper').classList.add('canvas');
+  let vz=$('vz');
+  if(!vz){
+    s2.innerHTML='';
+    vz=mk('div','vz'); vz.id='vz';
+    const tt=mk('div','vtitle'); tt.id='vtitle';
+    tt.textContent=(P.name||'Your')+(P.name?"'s":'')+' vision board';
+    vz.appendChild(tt);
+    const gr=mk('div','vgrid'); gr.id='vgrid'; vz.appendChild(gr);
+    s2.appendChild(vz);
+    VSEC.forEach(sec=>{
+      const c=mk('div','vsec'); c.id='vs_'+sec.key;
+      c.appendChild(mk('div','vslab',sec.label));
+      c.appendChild(mk('div','vsb'));
+      gr.appendChild(c);
+    });
+  }
+  $('vtitle').textContent=(P.name||'Your')+(P.name?"'s":'')+' vision board';
+  VSEC.forEach(sec=>{
+    const c=$('vs_'+sec.key); if(!c) return;
+    const on=sec.ready();
+    c.classList.toggle('on',on);
+    const body=c.querySelector('.vsb');
+    const html=on?sec.html():'';
+    if(body.dataset.k!==html){ body.dataset.k=html; body.innerHTML=html;
+      if(on){ const bits=body.querySelectorAll('.vbc,.vslogos i,.vsq');
+        if(bits.length) safeTL(gsap.timeline().fromTo(bits,{scale:.75,opacity:0},
+          {scale:1,opacity:1,duration:.45,stagger:.07,ease:'back.out(1.7)'}),1200); } }
+  });
+  renderMeter();
 }
-
+function renderMeter(){
+  const el=document.querySelector('.capn'); if(!el) return;
+  const n=VSEC.filter(x=>x.ready()).length;
+  el.textContent='Vision board '+Math.round(n/VSEC.length*100)+'%';
+}
+function retireMeter(){ const el=document.querySelector('.capn'); if(el) el.textContent=''; }
+/* the camera: focus one area while it fills, everyone else waits quietly */
+function mvpFocus(key){
+  VFOCUS=key;
+  const vz=$('vz'), sec=$('vs_'+key), host=$('scroll');
+  if(!vz||!sec||!host) return;
+  document.querySelectorAll('.vsec').forEach(c=>c.classList.toggle('dim',c.id!=='vs_'+key));
+  sec.classList.remove('dim');
+  const S=1.32;
+  const hw=host.clientWidth, hh=host.clientHeight;
+  const tx=hw/2-S*(sec.offsetLeft+sec.offsetWidth/2);
+  const ty=hh/2-S*(sec.offsetTop+sec.offsetHeight/2);
+  gsap.to(vz,{scale:S,x:tx,y:Math.min(0,ty),duration:.9,ease:EIO});
+}
+/* the pull-back: the whole board, named, in one look */
+function mvpZoomOut(){
+  VFOCUS=null; VREVEALED=true;
+  const vz=$('vz'); if(!vz) return;
+  document.querySelectorAll('.vsec').forEach(c=>c.classList.remove('dim'));
+  document.getElementById('vtitle').classList.add('on');
+  gsap.to(vz,{scale:1,x:0,y:0,duration:1.1,ease:EIO});
+  sfx('sparkle');
+}
 /* ---- the stepper drives the MVP flow now ---- */
 DBG_STEPS.length=0;
 [['Draw', ()=>{ $('drawScreen').style.display='flex';
@@ -7245,13 +7361,13 @@ DBG_STEPS.length=0;
  ['Open', ()=>mvpOpen()]]
  .forEach(s2=>DBG_STEPS.push(s2));
 ALIGN.forEach((st,i2)=>DBG_STEPS.push([st.label,()=>{ ALAT=i2; bornPanel(); mvpAlign(); }]));
-[['Vision',  ()=>mvpVision()],
- ['Plan',    ()=>mvpPlan()],
- ['Roadmap', ()=>mvpRoadmap()],
- ['Outcome', ()=>mvpOutcome()],
- ['Why Zero',()=>{ WHYAT=0; mvpWhy(); }],
- ['Claim',   ()=>mvpClaim()],
- ['Handoff', ()=>mvpFinish('sanjay@z-ro.co')]]
+[['Vision',  ()=>{ bornPanel(); mvpVision(); }],
+ ['Plan',    ()=>{ if(panelBorn) drawerShut(); mvpPlan(); }],
+ ['Roadmap', ()=>{ if(panelBorn) drawerShut(); mvpRoadmap(); }],
+ ['Outcome', ()=>{ if(panelBorn) drawerShut(); mvpOutcome(); }],
+ ['Why Zero',()=>{ if(panelBorn) drawerShut(); WHYAT=0; mvpWhy(); }],
+ ['Claim',   ()=>{ if(panelBorn) drawerShut(); mvpClaim(); }],
+ ['Handoff', ()=>{ if(panelBorn) drawerShut(); mvpFinish('sanjay@z-ro.co'); }]]
  .forEach(s2=>DBG_STEPS.push(s2));
 
 function dbgFill(upTo){
