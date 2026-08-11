@@ -1531,6 +1531,17 @@ body.noico .vt .vti{ display:none; }
 #vt_location{ --tt-location:#ff6a4d; }
 #vt_pull{ --tt-pull:#a78bfa; }
 #vt_plan{ --tt-plan:#0084CE; }
+#vt_roles{ --tt-roles:#c9a227; }
+.vroles{ display:flex; flex-direction:column; gap:8px; }
+.vrole{ display:flex; align-items:center; gap:11px; padding:9px 11px; border-radius:13px;
+  background:var(--card); border:1px solid var(--line-2);
+  box-shadow:0 4px 14px rgba(0,0,0,.05); }
+.vrole .vrl{ width:26px; height:26px; flex-shrink:0; border-radius:8px; background:#fff;
+  border:1px solid var(--line-2); display:flex; align-items:center; justify-content:center; }
+.vrole .vrl svg{ width:14px; height:14px; }
+.vrole .vrb{ display:flex; flex-direction:column; min-width:0; }
+.vrole .vrb b{ font-size:13.5px; font-weight:600; letter-spacing:-.02em; line-height:1.25; }
+.vrole .vrb span{ font-size:11.5px; color:var(--tx-3); margin-top:2px; }
 /* the chips ride the line, centred on it, never half a step off */
 .vabout .vbc, .vq .vbc{ vertical-align:middle; }
 .vbc{ vertical-align:middle !important; }
@@ -7694,7 +7705,7 @@ const ALIGN=[
 let ALAT=0;
 async function mvpAlign(){
   setPhase(0);
-  if(ALAT>=ALIGN.length){ mvpVision(); return; }
+  if(ALAT>=ALIGN.length){ mvpRoles(); return; }
   const st=ALIGN[ALAT];
   atStep(st.label);
   const myGen=gen;
@@ -7766,12 +7777,14 @@ async function mvpVision(){
   await lightsUp();
   setPhase(1);   /* after the flip: the label reads the light theme's ink */
   clearTurn(); dockHide(); await wait(300); if(myGen!==gen) return;
-  await voLine('Alright, '+P.name+", let me show you what I've got.",2400);
+  await voLine('Alright, '+P.name+'. Now this is the vision I built for you.',2500);
   if(myGen!==gen) return;
+  boardLive=true;
+  if(panelHidden||!$('vz')){ panelBack(); }
   P.goal=mvpGoal(); renderBoard();
   mvpZoomOut();
   vzHome(true);
-  await voLine('Okay, '+P.name+". Here's what I've got.",2300);
+  await voLine('Your roles, your companies, the whole picture in one place.',2400);
   if(myGen!==gen) return;
   qWide=true;
   /* the left answers the right: each tile takes the light while the line speaks */
@@ -7791,9 +7804,109 @@ async function mvpVision(){
   choices(box,[['check','That is me','ok'],['pen','Change something','fix']],v=>{
     flowCredit();
     if(v==='ok'){ sfx('success');
-      go(mvpRooms); }
+      go(async()=>{ await voLine("Good. Let's build your path.",2100); mvpPlan(); }); }
     else go(mvpEdit);
   },{pill:true,nomorph:true});
+}
+/* the roles, as references. Money on them, because that is the honest part */
+const ROLESETS={
+ base:[
+  {co:'Stripe', title:'Business Analyst, Payments', meta:'Toronto · 85 to 105k'},
+  {co:'Notion', title:'Growth Analyst', meta:'New York · 90 to 115k'},
+  {co:'Salesforce', title:'Revenue Operations Analyst', meta:'Toronto · 80 to 100k'},
+ ],
+ growth:[
+  {co:'Notion', title:'Growth Analyst', meta:'New York · 90 to 115k'},
+  {co:'DoorDash', title:'Growth Strategy Associate', meta:'Toronto · 95 to 120k'},
+  {co:'Shopify', title:'Lifecycle and Retention Analyst', meta:'Remote · 85 to 110k'},
+ ],
+ strategy:[
+  {co:'DoorDash', title:'Strategy and Operations Associate', meta:'Toronto · 95 to 120k'},
+  {co:'Salesforce', title:'Business Strategy Analyst', meta:'Toronto · 90 to 115k'},
+  {co:'Stripe', title:'Commercial Strategy Analyst', meta:'New York · 100 to 125k'},
+ ],
+ data:[
+  {co:'Stripe', title:'Data Analyst, Payments', meta:'Toronto · 90 to 115k'},
+  {co:'Notion', title:'Product Data Analyst', meta:'New York · 95 to 120k'},
+  {co:'Shopify', title:'Analytics Engineer, Merchant', meta:'Remote · 100 to 125k'},
+ ],
+ product:[
+  {co:'Notion', title:'Product Analyst', meta:'New York · 95 to 120k'},
+  {co:'Stripe', title:'Product Operations Analyst', meta:'Toronto · 90 to 115k'},
+  {co:'DoorDash', title:'Associate Product Manager', meta:'Toronto · 105 to 130k'},
+ ],
+};
+function roleSetFor(text){
+  const s=(text||'').toLowerCase();
+  if(/growth|retention|lifecycle|acquisition/.test(s)) return 'growth';
+  if(/strategy|consult|ops|operations|commercial/.test(s)) return 'strategy';
+  if(/data|analytics|sql|engineer|scientist/.test(s)) return 'data';
+  if(/product|pm\b|apm/.test(s)) return 'product';
+  return 'base';
+}
+function roleCards(box,list,delay){
+  const w=mk('div','jobs');
+  list.forEach(j=>{
+    const c=mk('div','jobc');
+    c.innerHTML='<span class="jl">'+(LOGO[j.co]||I.spark)+'</span>'
+      +'<span class="jb"><span class="jt">'+j.title+'</span>'
+      +'<span class="jm">'+j.co+' · '+j.meta+'</span></span>';
+    w.appendChild(c);
+  });
+  box.appendChild(w);
+  gsap.fromTo(w.children,{y:16,opacity:0,filter:'blur(7px)'},
+    {y:0,opacity:1,filter:'blur(0px)',duration:.65,stagger:.11,delay:delay||.2,ease:'power3.out'});
+  return w;
+}
+/* the roles question, before the picture. The board gets the answer. */
+async function mvpRoles(again){
+  atStep('Roles');
+  const myGen=gen;
+  setPhase(0);
+  /* the answer lands on the board, so the board has to be here */
+  boardLive=true;
+  if(!panelBorn) bornPanel();
+  else if(panelHidden||!$('vz')){ panelBack(); renderBoard(); }
+  vzCam();
+  clearTurn(); dockHide(); await wait(300); if(myGen!==gen) return;
+  if(!again){
+    await voLine('One thing before I show you the whole picture.',2100);
+    if(myGen!==gen) return;
+  }
+  const list=ROLESETS[P.roleset||'base']||ROLESETS.base;
+  qWide=true;
+  const {box}=turn({q: again ? 'Okay. These are the roles. I think this is you.'
+                            : 'So what kind of roles are you aiming for? These are the ones I would put you in.'});
+  qWide=false;
+  roleCards(box,list,.3);
+  await wait(1600); if(myGen!==gen) return;
+  choices(box,[['check',"Yes, that's me",'yes'],['pen','Not quite','no']],v=>{
+    flowCredit();
+    if(v==='yes'){
+      go(async()=>{
+        P.roles=list;
+        renderBoard(); mvpFeed('roles'); sfx('success');
+        await wait(360);
+        mvpFocus('roles');
+        await voLine('Good. Then that is what we are building for.',2200);
+        vzCam();
+        mvpVision();
+      });
+    } else go(mvpRolesEdit);
+  },{pill:true,nomorph:true});
+}
+/* not quite: what are you actually after? */
+function mvpRolesEdit(){
+  const {box}=turn({q:"What doesn't line up? Tell me the roles you have in mind."});
+  devPills(box,['I am more after growth roles than pure reporting.'],t=>take(t));
+  const take=async t=>{
+    flowCredit();
+    P.roleset=roleSetFor(t);
+    extractInto(t);
+    await voLine('Oh, perfect.',1500);
+    mvpRoles(true);
+  };
+  dockInput(take);
 }
 /* the rooms this vision puts you in: real postings, not abstractions */
 const JOBS=[
@@ -9032,6 +9145,11 @@ const VTILES=[
     +'<div class="vpr on"><span class="vem">'+vflag(P.location)+'</span><b>'+P.location+'</b><span class="vnow">now</span></div>'
     +(P.citynext?'<div class="vpr"><span class="vem">'+vflag(P.citynext)+'</span><b>'+P.citynext+'</b><span class="vnow">next</span></div>':'')
     +'</div>'},
+ {key:'roles', span:'s2', emoji:'🎯', label:'The roles you want',
+  ready:()=>!!(P.roles&&P.roles.length),
+  html:()=>'<div class="vroles">'+P.roles.map(r=>
+    '<div class="vrole"><span class="vrl">'+(LOGO[r.co]||I.spark)+'</span>'
+    +'<span class="vrb"><b>'+r.title+'</b><span>'+r.co+' · '+r.meta+'</span></span></div>').join('')+'</div>'},
  {key:'exp', span:'s2', emoji:'💼', label:'Experience so far',
   ready:()=>!!P.interned,
   html:()=>'<div class="vpills"><span class="vpill sm">'+vpic('work')+'<b>'+P.interned+'</b></span>'
@@ -9206,7 +9324,8 @@ DBG_STEPS.length=0;
 ALIGN.forEach((st,i2)=>DBG_STEPS.push([st.label,()=>{ ALAT=i2; bornPanel();
   const vz=$('vz'); if(vz) vz.remove();
   renderBoard(); mvpAlign(); }]));
-[['Vision',  ()=>{ bornPanel(); const vz=$('vz'); if(vz) vz.remove(); renderBoard(); mvpVision(); }],
+[['Roles',   ()=>{ bornPanel(); const vz=$('vz'); if(vz) vz.remove(); renderBoard(); mvpRoles(); }],
+ ['Vision',  ()=>{ bornPanel(); const vz=$('vz'); if(vz) vz.remove(); renderBoard(); mvpVision(); }],
  ['Plan',    ()=>{ if(panelBorn) drawerShut(); mvpPlan(); }],
  ['Outcome', ()=>mvpOutcome()],
  ['Roadmap', ()=>mvpRoadmap()],
