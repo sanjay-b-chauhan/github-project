@@ -2053,6 +2053,7 @@ body.dark .wcard .wscreen{ background:linear-gradient(150deg,#232134 0%,#2e2431 
 @keyframes wpulse{ 0%,100%{ opacity:.75; } 50%{ opacity:1; } }
 @keyframes wgrow{ 0%,100%{ transform:scaleX(.92); } 50%{ transform:scaleX(1); } }
 .right{ order:0 !important; }
+#pnlT, .pnlt{ display:none !important; }
 /* the ask is the focus: more air, more size, while the board fills beside it */
 .q{ max-width:26ch; }
 body.align .col .q{ font-size:clamp(30px,2.9vw,50px); }
@@ -2060,16 +2061,17 @@ body.align .col .q{ font-size:clamp(30px,2.9vw,50px); }
 .jobs{ display:flex; flex-direction:column; gap:11px; width:min(560px,92%); margin:34px auto 0; }
 /* real jobs, with the money where the eye lands */
 /* three squares in a row: the money is the number, in our own type */
-.rlswrap{ position:relative; width:100%; max-width:740px; margin:24px auto 14px; }
-.rls{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px;
-  max-height:224px; overflow:hidden; transition:max-height .8s var(--e,cubic-bezier(.625,.05,0,1)); }
-.rlswrap:not(.open)::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:58px;
-  pointer-events:none; background:linear-gradient(transparent, var(--page)); }
-.rlswrap.open .rls{ max-height:296px; overflow-y:auto; overscroll-behavior:contain; padding-right:6px; }
-.rlmore{ display:block; margin:14px auto 0; height:34px; padding:0 18px; border:1px solid var(--line);
-  border-radius:999px; background:var(--card); font-size:12.5px; font-weight:600; cursor:pointer;
-  position:relative; z-index:2; box-shadow:0 6px 16px rgba(0,0,0,.06); }
-.rlmore:hover{ background:var(--field); }
+.rlswrap{ position:relative; width:100%; max-width:760px; margin:30px auto 22px; }
+.rls{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+/* collapsed shows four whole cards: nothing is ever cut mid body */
+.rlswrap:not(.open) .rlc:nth-child(n+5){ display:none; }
+.rlswrap.open .rls{ max-height:400px; overflow-y:auto; overscroll-behavior:contain; padding:2px 6px 6px 2px; }
+/* the expander is a seam in the page, not another card */
+.rlmore{ display:flex; align-items:center; gap:14px; width:100%; margin:18px 0 0; padding:6px 0;
+  border:0; background:transparent; font-size:12.5px; font-weight:600; color:var(--tx-3);
+  cursor:pointer; letter-spacing:-.01em; }
+.rlmore::before,.rlmore::after{ content:''; flex:1; height:1px; background:var(--line); }
+.rlmore:hover{ color:var(--tx); }
 body.rolesq .col .q{ font-size:clamp(21px,1.9vw,29px); max-width:34ch; }
 body.rolesq .mid{ padding-top:110px; padding-bottom:118px; }
 /* a job row the way a job board writes one: mark, title, company, place, terms */
@@ -5433,6 +5435,7 @@ function unspot(){
    panel slides away and comes back only when there is something to add */
 let panelHidden=false;
 function panelToggleBtn(){
+  return;   /* the flow drives the panel; there is nothing to toggle */
   if($('pnlT')) return;
   /* lives in the top bar beside the zero pill, in the same family - floating
      it over the logo is what made it feel bolted on */
@@ -8136,7 +8139,7 @@ function roleCards(box,list,delay){
   });
   holder.appendChild(w);
   if(list.length>4){
-    const more=mk('button','rlmore','Show all '+list.length+' jobs');
+    const more=mk('button','rlmore','See all '+list.length+' jobs');
     more.onclick=e=>{ e.stopPropagation(); sfx('open'); holder.classList.add('open'); more.remove(); };
     holder.appendChild(more);
   }
@@ -8151,6 +8154,7 @@ async function mvpRoles(again){
   const myGen=gen;
   if(document.body.classList.contains('dark')){ await lightsUp(); }
   setPhase(1);
+  gsap.delayedCall(.9,()=>{ if(myGen===gen){ setPhase(1); atStep('Roles'); } });
   /* the answer lands on the board, so the board has to be here */
   boardLive=true;
   if(!panelBorn) bornPanel();
