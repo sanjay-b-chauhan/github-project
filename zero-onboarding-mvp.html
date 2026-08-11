@@ -1584,31 +1584,55 @@ body.dark .lit{ animation-name:litd; }
 .vq{ font-family:var(--serif); font-size:15.5px; line-height:1.55; font-style:italic; color:var(--tx-2); }
 .vq.sm{ font-size:13.5px; margin-top:10px; }
 /* curriculum: one scenario, one card */
-.mvstack{ margin:34px auto 0; display:flex; flex-direction:column; gap:12px; width:min(620px,86vw); }
-.mvsc{ background:var(--card); border:1px solid var(--line); border-radius:20px; padding:20px 22px 18px;
-  text-align:left; box-shadow:0 12px 34px rgba(0,0,0,.07); }
-.mvsc .mtop{ display:flex; align-items:center; gap:12px; margin-bottom:12px; }
-.mvsc .mlg{ width:40px; height:40px; border-radius:12px; background:#fff; border:1px solid var(--line);
+.mvstack{ margin:34px auto 0; display:flex; flex-direction:column; gap:10px; width:min(620px,86vw); }
+.mvsc{ background:var(--card); border:1px solid var(--line); border-radius:18px; padding:15px 18px 14px;
+  text-align:left; box-shadow:0 10px 28px rgba(0,0,0,.06); }
+.mvsc .mtop{ display:flex; align-items:center; gap:11px; margin-bottom:9px; }
+.mvsc .mlg{ width:34px; height:34px; border-radius:12px; background:#fff; border:1px solid var(--line);
   display:flex; align-items:center; justify-content:center; }
 .mvsc .mlg svg{ width:21px; height:21px; }
 .mvsc .mco{ font-size:13.5px; font-weight:600; flex:1; }
 .mvsc .mwk{ font-size:12.5px; font-weight:500; color:var(--tx-3); font-variant-numeric:tabular-nums; }
-.mvsc .mprob{ font-family:var(--serif); font-size:19px; line-height:1.3; margin-bottom:12px; }
+.mvsc .mprob{ font-family:var(--serif); font-size:17px; line-height:1.32; margin-bottom:0; padding-right:26px; }
+.mvsc.open .mprob{ margin-bottom:12px; }
 .mvsc .mmgr{ display:flex; align-items:center; gap:9px; font-size:13px; color:var(--tx-2); margin-bottom:12px; }
 .mvsc .mmgr .ma{ width:24px; height:24px; border-radius:50%; color:#fff; font-size:11px; font-weight:700;
   display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.mvsc{ position:relative; cursor:pointer; transition:box-shadow .4s ease, transform .4s ease;
+  padding:10px 42px 10px 13px; }
+.mvsc:not(.open){ display:flex; align-items:center; column-gap:14px; flex-wrap:nowrap; }
+.mvsc:not(.open) .mtop{ flex:0 0 auto; }
+.mvsc:not(.open) .mco{ flex:0 0 auto; white-space:nowrap; }
+.mvsc:not(.open) .mprob{ flex:1 1 auto; min-width:0; }
+/* the closed body must not size the row: zero width, zero say */
+.mvsc:not(.open) .mvbody{ flex:0 0 0; width:0; }
+.mvsc.open{ display:block; padding:15px 18px 14px; }
+.mvsc:not(.open) .mtop{ margin-bottom:0; }
+.mvsc:not(.open) .mprob{ font-size:15.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  padding-right:0; color:var(--tx-2); }
+.mvsc:hover{ transform:translateY(-1px); box-shadow:0 16px 40px rgba(0,0,0,.09); }
+.mvsc .mvbody{ max-height:0; overflow:hidden; opacity:0;
+  transition:max-height .55s cubic-bezier(.625,.05,0,1), opacity .4s ease; }
+.mvsc.open .mvbody{ max-height:300px; opacity:1; }
+.mvsc .mvchev{ position:absolute; right:17px; top:50%; font-size:13px; color:var(--tx-4);
+  transition:transform .45s cubic-bezier(.625,.05,0,1); transform:translateY(-50%) rotate(180deg); }
+.mvsc.open .mvchev{ top:19px; transform:rotate(0deg); }
+.mvsc .mvdel{ margin-top:11px; font-size:13px; line-height:1.5; color:var(--tx-2); }
+.mvsc .mvdel b{ color:var(--tx); font-weight:600; }
+.rmhow{ font-size:13.5px; line-height:1.55; color:var(--tx-2); max-width:52ch; margin:0 0 20px; }
+.inlinecta{ display:inline-flex; margin:34px auto 0; }
 .mvsc .mrow2{ display:flex; flex-wrap:wrap; gap:6px; }
 .mvsc .mtag{ display:inline-flex; align-items:center; gap:6px; height:26px; padding:0 11px;
   border-radius:999px; background:var(--wash); border:1px solid var(--line-2); font-size:12.5px; color:var(--tx-2); }
 .mvsc .mtag svg{ width:12px; height:12px; }
 .mvsc .mtag.sk{ background:transparent; border-style:dashed; }
-.mvunlock{ display:flex; align-items:center; gap:12px; padding:15px 20px; border-radius:16px;
+.mvunlock{ display:flex; align-items:center; gap:11px; padding:9px 16px; border-radius:14px;
   background:var(--ink); color:var(--on-ink); font-size:14.5px; font-weight:600;
   box-shadow:0 14px 34px rgba(0,0,0,.18); }
 .mvunlock .mue{ font-size:17px; }
 .mvunlock.green{ background:linear-gradient(120deg,#0d2417 0%,#18432f 55%,#1d5238 100%); color:#eafff0;
   box-shadow:0 18px 44px rgba(24,67,47,.35), inset 0 0 0 1px rgba(164,244,178,.28); }
-.mvunlock.green .mue{ width:36px; height:36px; border-radius:11px; background:rgba(164,244,178,.16);
+.mvunlock.green .mue{ width:30px; height:30px; border-radius:11px; background:rgba(164,244,178,.16);
   display:flex; align-items:center; justify-content:center; }
 .mvunlock.green .mus{ color:rgba(164,244,178,.8); }
 .mvsc .ma{ position:relative; overflow:hidden; }
@@ -1655,18 +1679,18 @@ body.dark .lit{ animation-name:litd; }
   border-radius:999px; background:var(--ink); color:var(--on-ink); font-size:13.5px; font-weight:600;
   box-shadow:0 8px 22px rgba(0,0,0,.16); white-space:nowrap; }
 .rmrows{ position:relative; }
-.rmrow{ display:flex; flex-wrap:nowrap; align-items:flex-start; gap:14px; position:relative; padding-bottom:14px; }
+.rmrow{ display:flex; flex-wrap:nowrap; align-items:flex-start; gap:14px; position:relative; padding-bottom:10px; }
 .rmrow::before{ content:''; position:absolute; left:9px; top:22px; bottom:-2px; width:2px;
   background:var(--line); border-radius:1px; opacity:0; transition:opacity .6s ease .2s; }
 .rmrow.on::before{ opacity:1; }
 .rmrow:last-child::before{ display:none; }
-.rmrail{ width:104px; flex-shrink:0; padding-top:14px; position:relative; }
+.rmrail{ width:104px; flex-shrink:0; padding-top:8px; position:relative; }
 .rmnode{ width:20px; height:20px; border-radius:50%; background:var(--card); border:2px solid var(--tx-3);
   box-shadow:0 0 0 4px color-mix(in srgb, var(--tx-3) 12%, transparent); position:relative; z-index:2;
   display:flex; align-items:center; justify-content:center; }
 .rmnode.spark{ border-color:var(--tx); background:var(--ink); color:var(--on-ink); }
 .rmnode.spark svg{ width:10px; height:10px; }
-.rmwk{ position:absolute; left:32px; top:17px; margin:0; font-size:var(--inds,12.5px); font-weight:500;
+.rmwk{ position:absolute; left:32px; top:11px; margin:0; font-size:var(--inds,12.5px); font-weight:500;
   letter-spacing:-.01em; color:var(--tx-3); white-space:nowrap; }
 .rmslot{ flex:1; min-width:0; }
 .rmrow .mwk{ display:none; }
@@ -1790,6 +1814,23 @@ body.dark .wcard .wscreen{ background:linear-gradient(150deg,#232134 0%,#2e2431 
 .wcard.on .mmeter i{ animation:wgrow 4s ease-in-out infinite; }
 @keyframes wpulse{ 0%,100%{ opacity:.75; } 50%{ opacity:1; } }
 @keyframes wgrow{ 0%,100%{ transform:scaleX(.92); } 50%{ transform:scaleX(1); } }
+.right{ order:0 !important; }
+/* the ask is the focus: more air, more size, while the board fills beside it */
+.q{ max-width:26ch; }
+body.align .col .q{ font-size:clamp(30px,2.9vw,50px); }
+/* example jobs: the rooms this puts you in */
+.jobs{ display:flex; flex-direction:column; gap:11px; width:min(560px,92%); margin:34px auto 0; }
+.jobc{ display:flex; align-items:center; gap:14px; padding:15px 18px; border-radius:17px;
+  background:var(--card); border:1px solid var(--line); text-align:left;
+  box-shadow:0 10px 26px rgba(0,0,0,.06); }
+.jobc .jl{ width:36px; height:36px; flex-shrink:0; border-radius:11px; background:#fff;
+  border:1px solid var(--line-2); display:flex; align-items:center; justify-content:center; }
+.jobc .jl svg{ width:19px; height:19px; }
+.jobc .jb{ flex:1; min-width:0; display:flex; flex-direction:column; }
+.jobc .jt{ display:block; font-size:15px; font-weight:600; letter-spacing:-.02em; }
+.jobc .jm{ display:block; font-size:12.5px; color:var(--tx-3); margin-top:3px; }
+.jobc .jf{ flex-shrink:0; font-size:12px; font-weight:600; color:#2f9c45;
+  background:#e8ffe9; border-radius:999px; padding:5px 11px; }
 /* ══ the deck screens: the real product, rebuilt from zero-core-ui ══ */
 .pzc{ position:absolute; inset:0; overflow:hidden; text-align:left; }
 .pzmono{ font-family:ui-monospace,'SF Mono',Menlo,monospace; }
@@ -7635,9 +7676,9 @@ function panelBack(cap){
   panelBorn=true; panelHidden=false;
   panelToggleBtn();
   const b=$('pnlT'); if(b) b.classList.remove('closed');
-  gsap.set('.right',{width:panelPref?panelPref+'px':'50%'});
-  gsap.fromTo('.right',{opacity:0,x:-60},{opacity:1,x:0,duration:.85,ease:EIO});
-  shiftLeft(panelPref?panelPref+'px':'50vw');
+  gsap.set('.right',{width:panelPref?panelPref+'px':PANELW});
+  gsap.fromTo('.right',{opacity:0,x:60},{opacity:1,x:0,duration:.85,ease:EIO});
+  shiftLeft(panelPref?panelPref+'px':PANELW.replace('%','vw'));
   if(cap) setCap(cap,false);
 }
 
@@ -7682,8 +7723,47 @@ async function mvpVision(){
   choices(box,[['check','That is me','ok'],['pen','Change something','fix']],v=>{
     flowCredit();
     if(v==='ok'){ sfx('success');
-      go(async()=>{ await voLine("Good. Let's build your path.",2100);
-        mvpPlan(); }); }
+      go(mvpRooms); }
+    else go(mvpEdit);
+  },{pill:true,nomorph:true});
+}
+/* the rooms this vision puts you in: real postings, not abstractions */
+const JOBS=[
+ {co:'Stripe', title:'Business Analyst, Payments', meta:'Toronto · full time · 85 to 105k', fit:'Strong fit'},
+ {co:'Notion', title:'Growth Analyst', meta:'New York · full time · 90 to 115k', fit:'Strong fit'},
+ {co:'Salesforce', title:'Revenue Operations Analyst', meta:'Toronto · hybrid · 80 to 100k', fit:'Good fit'},
+];
+function jobList(box,delay){
+  const w=mk('div','jobs');
+  JOBS.forEach(j=>{
+    const c=mk('div','jobc');
+    c.innerHTML='<span class="jl">'+(LOGO[j.co]||I.spark)+'</span>'
+      +'<span class="jb"><span class="jt">'+j.title+'</span>'
+      +'<span class="jm">'+j.co+' · '+j.meta+'</span></span>'
+      +'<span class="jf">'+j.fit+'</span>';
+    w.appendChild(c);
+  });
+  box.appendChild(w);
+  gsap.fromTo(w.children,{y:16,opacity:0,filter:'blur(7px)'},
+    {y:0,opacity:1,filter:'blur(0px)',duration:.65,stagger:.11,delay:delay||.2,ease:'power3.out'});
+  return w;
+}
+/* the board is agreed: now show the rooms it opens */
+async function mvpRooms(){
+  atStep('Rooms');
+  const myGen=gen;
+  clearTurn(); dockHide(); await wait(300); if(myGen!==gen) return;
+  await voLine('Good. Then these are the rooms it puts you in.',2400);
+  if(myGen!==gen) return;
+  qWide=true;
+  const {box}=turn({q:'Jobs like these, once the work is behind you.'});
+  qWide=false;
+  jobList(box,.3);
+  await wait(1700); if(myGen!==gen) return;
+  choices(box,[['check',"Yes, that's where I want to go",'yes'],['pen','Not quite','no']],v=>{
+    flowCredit();
+    if(v==='yes') go(async()=>{ await voLine("Then let's build the path that gets you there.",2200);
+      mvpPlan(); });
     else go(mvpEdit);
   },{pill:true,nomorph:true});
 }
@@ -7781,16 +7861,16 @@ const TFACES=['https://randomuser.me/api/portraits/men/45.jpg',
  'https://randomuser.me/api/portraits/women/33.jpg',
  'https://randomuser.me/api/portraits/men/71.jpg'];
 const CURRICULUM=[
- {co:'Stripe', weeks:1, prob:'Churn is up 4% and nobody knows why. Find out.',
+ {co:'Stripe', weeks:1, deliver:'a churn read-out with the three fixes that recover the most accounts', prob:'Churn is up 4% and nobody knows why. Find out.',
   mgr:['Maya Chen','Analytics Lead'], tools:['SQL','Metabase','Sheets'], skills:['Funnel analysis','Cohort thinking']},
- {co:'DoorDash', weeks:1, prob:'Which city do we launch next? Build the case.',
+ {co:'DoorDash', weeks:1, deliver:'a launch case with the unit economics for the city you pick', prob:'Which city do we launch next? Build the case.',
   mgr:['Andre Silva','Strategy Manager'], tools:['Sheets','Looker'], skills:['Market sizing','Unit economics']},
- {co:'Notion', weeks:2, prob:'Free users who never invite a teammate rarely convert. Change that.',
+ {co:'Notion', weeks:2, deliver:'an activation experiment, designed and read out to a decision', prob:'Free users who never invite a teammate rarely convert. Change that.',
   mgr:['Priya Nair','Growth PM'], tools:['Amplitude','SQL'], skills:['Activation metrics','Experiment design'],
   unlock:['📁','Your portfolio goes live','three scenarios in, recruiters can see it']},
- {co:'Salesforce', weeks:1, team:true, prob:'A renewal is at risk. Read the account, brief the room.',
+ {co:'Salesforce', weeks:1, deliver:'a one page renewal brief and the walkthrough you give the room', team:true, prob:'A renewal is at risk. Read the account, brief the room.',
   mgr:['Tom Okafor','RevOps Director'], tools:['Salesforce','Slides'], skills:['Account analysis','Exec communication']},
- {co:'Shopify', weeks:2, team:true, her:true, prob:'Merchants are churning in month two. Find the leak, propose the fix.',
+ {co:'Shopify', weeks:2, deliver:'a retention analysis and the fix you propose to the team', team:true, her:true, prob:'Merchants are churning in month two. Find the leak, propose the fix.',
   mgr:['Dana Roy','Retention Lead'], tools:['SQL','Tableau'], skills:['Retention analysis','Storytelling'],
   unlock:['🔑','The job portal opens','the work speaks for you now','green']},
 ];
@@ -7814,13 +7894,25 @@ function mvpScCard(c){
     cl.appendChild(t2); });
   mg.appendChild(cl);
   mg.appendChild(mk('span',null,'with '+c.mgr[0]+(c.team?(' and '+(c.her?'her':'his')+' team'):(' · '+c.mgr[1]))));
-  el.appendChild(mg);
+  const body=mk('div','mvbody');
+  body.appendChild(mg);
   const row=mk('div','mrow2');
   c.tools.forEach(t=>{ const g2=mk('span','mtag');
     if(LOGO[t]) g2.innerHTML=LOGO[t]+'<span>'+t+'</span>'; else g2.textContent=t;
     row.appendChild(g2); });
   c.skills.forEach(s2=>row.appendChild(mk('span','mtag sk',s2)));
-  el.appendChild(row);
+  body.appendChild(row);
+  if(c.deliver){
+    const d=mk('div','mvdel');
+    d.innerHTML='<b>You hand in</b> '+c.deliver;
+    body.appendChild(d);
+  }
+  el.appendChild(body);
+  el.appendChild(mk('span','mvchev','⌃'));
+  /* condensed until asked: the whole road fits on one screen first */
+  el.onclick=()=>{ const open=el.classList.toggle('open'); sfx(open?'open':'tick');
+    if(open) gsap.fromTo(body.querySelectorAll('.mtag,.mmgr,.mvdel'),{opacity:0,y:7},
+      {opacity:1,y:0,duration:.4,stagger:.04,ease:'power2.out'}); };
   return el;
 }
 async function mvpRoadmap(){
@@ -7833,10 +7925,13 @@ async function mvpRoadmap(){
   const totW=CURRICULUM.reduce((a,c)=>a+c.weeks,0);
   /* left and right move together: the panel morphs WHILE the line speaks */
   sfx('sparkle');
-  swapPanel('Your curriculum',h=>{
+  panelSize(58);
+  swapPanel('Your journey',h=>{
     const w=mk('div','rmwrap');
-    w.innerHTML='<div class="rmhead sticky"><span class="rmtitle">Your road to '+(P.role||'the role')+'</span>'
-      +'<span class="rmweeks">⏳ '+totW+' weeks to build</span><span class="rmfade"></span></div>';
+    w.innerHTML='<div class="rmhead sticky"><span class="rmtitle">Your journey</span>'
+      +'<span class="rmweeks">⏳ '+totW+' weeks to build</span><span class="rmfade"></span></div>'
+      +'<div class="rmhow">Every week is one real brief from a real company. You do the work, your '
+      +'manager reviews it, and what you make goes into your portfolio.</div>';
     const st=mk('div','rmrows'); st.id='mvCur'; w.appendChild(st);
     h.appendChild(w);
   },false,true);
@@ -7858,7 +7953,7 @@ async function mvpRoadmap(){
     const slot=mk('div','rmslot'); row.appendChild(slot);
     host.appendChild(row);
     const card=mvpScCard(c);
-    await ghostIn(card,128,430,slot);
+    await ghostIn(card,58,430,slot);
     row.classList.add('on');
     gsap.fromTo(card.querySelectorAll('.mtag'),{opacity:0,y:8,scale:.92},
       {opacity:1,y:0,scale:1,duration:.45,ease:'back.out(1.6)',stagger:.06,delay:.1});
@@ -7877,7 +7972,6 @@ async function mvpRoadmap(){
       us.appendChild(u);
       host.appendChild(ur);
       enter([u],{y:12,blur:6,duration:.5},1000);
-      const sc2=$('scroll'); if(sc2) gsap.to(sc2,{scrollTop:sc2.scrollHeight,duration:.5,ease:EIO});
       sfx('sparkle');
     }
   }
@@ -7887,10 +7981,18 @@ async function mvpRoadmap(){
   const tot=CURRICULUM.reduce((a,c)=>a+c.weeks,0);
   const q=document.querySelector('#turn .q');
   if(q){ await new Promise(res=>{ gsap.to(q,{opacity:0,y:-8,duration:.3,onComplete:()=>{
-      q.textContent=tot+' weeks. This portfolio.';
+      q.textContent='After '+tot+' weeks you have a portfolio that puts you in the top 1% of candidates.';
       gsap.to(q,{opacity:1,y:0,duration:.45,ease:'power2.out',onComplete:res}); }}); }); }
   if(myGen!==gen) return;
-  cta('Show me the portfolio',()=>{ flowCredit(); go(mvpOutcome); });
+  /* the button sits with the line, not a screen away from it */
+  const qb=document.querySelector('#turn .qbox')||document.querySelector('#turn');
+  if(qb){
+    const b=mk('button','dbig inlinecta','See my future portfolio');
+    b.onclick=()=>{ if(locked) return; locked=true; sfx('droplet'); flowCredit(); go(mvpOutcome); };
+    qb.appendChild(b);
+    enter([b],{y:14,blur:6,duration:.55},1100);
+    dockHide();
+  } else cta('See my future portfolio',()=>{ flowCredit(); go(mvpOutcome); });
 }
 
 /* ---- outcome: the portfolio, then the one line that matters ---- */
@@ -7989,6 +8091,7 @@ async function mvpOutcome(){
   setPhase(3);
   clearTurn(); dockHide(); await wait(320); if(myGen!==gen) return;
   panelBack();
+  panelSize(58);
   sfx('sparkle');
   /* the portfolio's own html, fetched first so the walk can never outrun it */
   let snap=null;
@@ -8031,7 +8134,7 @@ async function mvpOutcome(){
     [null, 'This is your portfolio at the end of the road, '+P.name+'.', 2500],
     [null, 'Up top, who you are and how you actually work.', 2300],
     [()=>sect(null,'projects'), 'Five projects. Every one a real brief, with the deliverable attached.', 2900],
-    [()=>sect('#sec-experience','experience'), 'Your experience sits right under the work.', 2400],
+    [()=>sect('#sec-experience','experience'), 'Your Wealthsimple internship carried straight over from your LinkedIn.', 2900],
     [()=>sect('#sec-credential','achievements'), 'What you earned along the way.', 2100],
     [()=>sect('#sec-academics','academics'), 'And school last, because here it matters least.', 2400],
   ];
@@ -8051,6 +8154,13 @@ async function mvpOutcome(){
   if(myGen!==gen) return;
   await voLine('Your proof of work, not a promise.',2300);
   if(myGen!==gen) return;
+  /* what it actually opens: the same rooms, now earned */
+  clearTurn(); await wait(280); if(myGen!==gen) return;
+  qWide=true;
+  const {box:rb}=turn({q:'With this behind you, these stop being a long shot.'});
+  qWide=false;
+  jobList(rb,.3);
+  await wait(2600); if(myGen!==gen) return;
   clearTurn(); await wait(300); if(myGen!==gen) return;
   const {box}=turn({q:'I cannot hand you the job. I can get you the portfolio that wins it.'});
   cta('How do I get there?',()=>{ flowCredit(); drawerShut(); go(mvpWhy); });
@@ -8128,6 +8238,20 @@ async function mvpGather(){
   gsap.to(vz,{opacity:0,scale:.88,filter:'blur(10px)',duration:.55,ease:'power2.in'});
   sfx('whisper');
   await wait(520);
+}
+/* ══ the panel lives on the RIGHT now: the talking leads ══ */
+function shiftLeft(v){
+  if(innerWidth&&innerWidth<=1180) v='0px';
+  ['top','dock','dtr'].forEach(id=>{ const el=$(id); if(!el) return;
+    el.style.paddingLeft='';
+    el.style.paddingRight='calc('+v+' + 26px)'; });
+}
+/* the preview does not have to be half the screen */
+let PANELW='50%';
+function panelSize(pct){
+  PANELW=pct+'%';
+  gsap.to('.right',{width:PANELW,duration:.8,ease:EIO});
+  shiftLeft(pct+'vw');
 }
 function pzScreen(kind){
   if(kind==='brief') return '<div class="pzc pz-brief">'
@@ -8385,6 +8509,7 @@ const WHYW={brief:'Zero',work:'Zero — Home',manager:'Zero — Workspace',
 async function mvpWhy(){
   atStep('Why Zero');
   pfScroll(false);
+  panelSize(50);
   document.body.classList.remove('dark');
   const myGen=gen;
   setPhase(4);
