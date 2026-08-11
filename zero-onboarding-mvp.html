@@ -8409,6 +8409,7 @@ async function mvpRoadmap(){
   shiftLeft('0px');
   await wait(700); if(myGen!==gen) return;
   if(pf&&pf.parentNode) pf.remove();
+  document.querySelectorAll('#vz,#vb,.pf3,.pfrip').forEach(n=>n.remove());
   setCap('',false);
   const old=$('rmband'); if(old) old.remove();
   const totW=CURRICULUM.reduce((a,c)=>a+c.weeks,0);
@@ -8759,10 +8760,14 @@ async function mvpOutcome(){
   const myGen=gen;
   setPhase(3);
   clearTurn(); dockHide(); await wait(320); if(myGen!==gen) return;
+  /* whatever path led here, the stage is bare before the morph */
+  const sc=$('scroll');
+  sc.querySelectorAll('.pf3, #vb').forEach(n=>n.remove());
+  const ob9=$('rmband'); if(ob9) ob9.remove();
+  document.body.classList.remove('rmfull');
   panelBack();
   sfx('sparkle');
   /* the board BECOMES the portfolio: no wipe, no blink, one object into another */
-  const sc=$('scroll');
   document.body.classList.add('pfmode');
   setCap('',false);
   boardLive=false;
@@ -9809,6 +9814,22 @@ ALIGN.forEach((st,i2)=>DBG_STEPS.push([st.label,()=>{ ALAT=i2; bornPanel();
  ['Claim',   ()=>{ if(panelBorn) drawerShut(); mvpClaim(); }],
  ['Handoff', ()=>{ if(panelBorn) drawerShut(); mvpFinish('sanjay@z-ro.co'); }]]
  .forEach(s2=>DBG_STEPS.push(s2));
+
+/* a jump is a hard cut: nothing of ours survives into the next step.
+   the base sweep knows its own furniture, this sweeps the mvp layer's -
+   the board overlay, the portfolio, the road, the ripple, the body modes. */
+const dbgGoto0=dbgGoto;
+dbgGoto=function(i){
+  try{ gsap.killTweensOf(['#vz','.pf3','#rmband','#scroll']); }catch(e){}
+  document.querySelectorAll('#vz,.pf3,#rmband,.rmfloat,.pfrip').forEach(n=>n.remove());
+  document.body.classList.remove('pfmode','rmfull','noboard','rolesq');
+  const sc9=$('scroll');
+  if(sc9){ sc9.classList.remove('vzcv'); sc9.style.overflowY=''; sc9.style.overscrollBehavior=''; sc9.scrollTop=0;
+    gsap.set(sc9,{opacity:1,y:0,filter:'blur(0px)'}); }
+  try{ gsap.set('.right',{clearProps:'width,opacity'}); }catch(e){}
+  VZT.x=0; VZT.y=0; VZT.k=1;
+  dbgGoto0(i);
+};
 
 function dbgFill(upTo){
   Object.keys(P).forEach(k=>{ P[k]= k==='picks' ? [] : null; });
