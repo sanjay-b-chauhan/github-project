@@ -1719,7 +1719,7 @@ body.rmfull .inlinecta{ display:flex; width:max-content; margin:34px auto 0; }
 .pf3claim{ font-family:var(--serif); font-size:clamp(15.5px,1.3vw,19px); line-height:1.3;
   letter-spacing:-.015em; width:100%; margin:0 0 30px; text-align:center; color:var(--tx-2); }
 /* one sheet of paper: everything the user is, inside one quiet container */
-.pf3paper{ background:var(--card); border-radius:30px; padding:60px;
+.pf3paper{ background:var(--card); border-radius:30px; padding:30px; border:1px solid var(--line-2);
   box-shadow:0 1px 2px rgba(0,0,0,.04), 0 14px 34px rgba(0,0,0,.06), 0 48px 110px -24px rgba(0,0,0,.18); }
 .pfmode .cap{ visibility:hidden; }
 .pfrip{ position:absolute; width:130px; height:130px; margin:-65px 0 0 -65px; border-radius:50%;
@@ -1754,7 +1754,7 @@ body.rmfull .inlinecta{ display:flex; width:max-content; margin:34px auto 0; }
 .pf3h.sub{ margin-top:26px; }
 .pf3list{ display:flex; flex-direction:column; gap:12px; }
 /* a project: one white card, 16:9 key art, copy beside it */
-.pf3c{ display:flex; gap:20px; align-items:stretch; background:var(--card); border-radius:22px;
+.pf3c{ display:flex; gap:20px; align-items:flex-start; background:var(--card); border-radius:22px;
   padding:16px; border:1px solid var(--line-2);
   box-shadow:0 1px 2px rgba(0,0,0,.03), 0 14px 34px -18px rgba(0,0,0,.16);
   transition:transform .4s var(--e,cubic-bezier(.625,.05,0,1)), box-shadow .4s ease; }
@@ -1763,10 +1763,11 @@ body.rmfull .inlinecta{ display:flex; width:max-content; margin:34px auto 0; }
   overflow:hidden; padding:11px;
   background:linear-gradient(155deg, color-mix(in srgb, var(--pt) 13%, #fff) 0%,
     color-mix(in srgb, var(--pt) 5%, #fff) 100%); }
-.pf3inner{ position:absolute; inset:11px; display:flex; flex-direction:column;
+.pf3inner{ position:absolute; inset:11px; display:flex; align-items:center; justify-content:center;
   background:#fff; border-radius:11px; border:1px solid rgba(31,29,30,.05); padding:11px 13px; }
-.pf3co{ display:inline-flex; align-items:center; gap:6px; font-size:10.5px; color:var(--tx-3); }
-.pf3co svg{ width:12px; height:12px; }
+.pf3co{ display:inline-flex; align-items:center; gap:9px; font-size:14px; font-weight:600;
+  letter-spacing:-.02em; color:var(--tx); }
+.pf3co svg{ width:20px; height:20px; }
 .pf3co i{ font-style:normal; font-weight:500; }
 .pf3sh{ font-size:15px; font-weight:700; letter-spacing:-.03em; line-height:1.15;
   margin-top:auto; color:#1F1D1E; }
@@ -8749,9 +8750,6 @@ function pf3Card(p,i){
   c.innerHTML='<div class="pf3art">'
       +'<div class="pf3inner">'
         +'<span class="pf3co">'+(LOGO[p.co]||'')+'<i>'+p.co+'</i></span>'
-        +'<div class="pf3sh">'+p.short+'</div>'
-        +'<span class="pf3rule"></span>'
-        +'<span class="pf3z">ZERO · CASE STUDY</span>'
       +'</div>'
     +'</div>'
     +'<div class="pf3b">'
@@ -8785,7 +8783,7 @@ function buildPf3(host){
         +'<span class="pf3av"><i style="'+avStyle(nm)+'">'+nm.charAt(0)+'</i>'
           +'<video src="zero-portfolio-student/intro.mp4" muted loop autoplay playsinline preload="metadata"></video></span>'
         +'<span class="pf3nm">'+nm+'<span class="pfver">'+BADGE+'</span></span>'
-        +'<span class="pf3src">'+(I.leaf||'')+'<span>Proficient</span></span>'
+        +'<span class="pf3src">'+(I.leaf||'')+'<span>Recruiter certified</span></span>'
       +'</div>'
       +'<div class="pf3about">I work best on a framed problem with the data in hand. I build the model, '
         +'isolate one driver, size the opportunity, and open the write-up with the recommendation.</div>'
@@ -8795,17 +8793,8 @@ function buildPf3(host){
   const ps=mk('section','pf3sec'); ps.id='pf3-projects';
   ps.appendChild(mk('div','pf3h','Projects'));
   const list=mk('div','pf3list');
-  PF3.slice(0,3).forEach((p,i)=>list.appendChild(pf3Card(p,i)));
+  PF3.forEach((p,i)=>list.appendChild(pf3Card(p,i)));
   ps.appendChild(list);
-  const more=mk('button','pf3more');
-  more.innerHTML='<span class="pf3mf">'+PF3.slice(3).map(p=>'<i style="'+avStyle(p.co)+'">'
-    +(LOGO[p.co]?'<span class="pf3mfl">'+LOGO[p.co]+'</span>':p.co.charAt(0))+'</i>').join('')+'</span>'
-    +'<span>See '+(PF3.length-3)+' more projects</span>';
-  more.onclick=()=>{ if(more.dataset.open) return; more.dataset.open='1';
-    PF3.slice(3).forEach(p=>{ const r=pf3Card(p,0); list.appendChild(r);
-      gsap.fromTo(r,{y:16,opacity:0},{y:0,opacity:1,duration:.55,ease:'power3.out'}); });
-    more.style.display='none'; sfx('open'); };
-  ps.appendChild(more);
   paper.appendChild(ps);
   const ex=mk('section','pf3sec'); ex.id='pf3-exp';
   ex.appendChild(mk('div','pf3h','Experience'));
@@ -9926,6 +9915,7 @@ function dbgFill(upTo){
   shown={}; keys={}; queue=[];
   const set=(i2,fn)=>{ if(upTo>i2) fn(); };
   set(1,()=>P.name='Sanjay');
+  set(12,()=>P.fullname='Sanjay Chauhan');
   ALIGN.forEach((st,i2)=>set(2+i2,st.set));
   set(11,()=>P.goal=mvpGoal());
 }
