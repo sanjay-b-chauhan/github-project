@@ -1497,8 +1497,9 @@ body.dark .lit{ animation-name:litd; }
   margin:2px 0 18px; opacity:0; transform:translateY(-6px);
   transition:opacity .8s ease, transform .8s ease; letter-spacing:-.015em; }
 .vtitle.on{ opacity:1; transform:none; }
-.vgrid{ display:grid; grid-template-columns:repeat(4,1fr); grid-auto-flow:dense; gap:12px;
-  max-width:980px; margin:0 auto; }
+.vgrid{ column-count:2; column-gap:12px; max-width:980px; margin:0 auto; }
+.vgrid > .vt{ break-inside:avoid; margin:0 0 12px; width:100%; }
+.vt.s4{ column-span:all; }
 .vt{ position:relative; border:1px solid var(--line); border-radius:20px;
   background:linear-gradient(160deg, color-mix(in srgb, var(--tt) 9%, var(--card)) 0%, var(--card) 62%);
   padding:15px 16px 16px; min-height:96px; overflow:hidden;
@@ -1510,9 +1511,7 @@ body.dark .lit{ animation-name:litd; }
 .vt.ghost{ opacity:.5; box-shadow:none; background:var(--card); }
 .vt.ghost .vte{ filter:grayscale(1); opacity:.55; }
 .vt.ghost .vtl{ color:var(--tx-4); }
-.vt.s2{ grid-column:span 2; }
-.vt.s4{ grid-column:span 4; }
-.vt.r2{ grid-row:span 2; }
+.vt.s2, .vt.s4, .vt.r2{ grid-column:auto; grid-row:auto; }
 .vt .vth{ display:flex; align-items:center; gap:7px; margin-bottom:12px; }
 /* the mark is a 15px line icon, no container, no sticker */
 .vt .vti{ width:15px; height:15px; flex-shrink:0; color:var(--tx-4); display:flex;
@@ -1709,10 +1708,10 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .dmailhint{ position:absolute; left:50%; transform:translateX(-50%); top:calc(100% + 7px);
   white-space:nowrap; font-size:12.5px; color:#c0392b; }
 /* ══ the portfolio: paper on the panel, nothing boxed in a box ══ */
-.pf3{ text-align:left; padding:2px 2px 30px; }
+.pf3{ text-align:left; padding:2px 0 30px; width:100%; max-width:600px; margin:0 auto; }
 /* one line, then one surface. Nothing else competes up here. */
-.pf3claim{ font-family:var(--serif); font-size:clamp(25px,2.4vw,36px); line-height:1.12;
-  letter-spacing:-.025em; max-width:22ch; margin:0 0 22px; }
+.pf3claim{ font-family:var(--serif); font-size:clamp(19px,1.6vw,25px); line-height:1.2;
+  letter-spacing:-.02em; max-width:26ch; margin:0 auto 20px; text-align:center; }
 .pf3paper{ background:#fff; border-radius:32px; padding:30px 32px 34px;
   border:1px solid rgba(13,13,13,.05);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 0 4px 12px rgba(0,0,0,.04),
@@ -1722,7 +1721,10 @@ body.dark .pf3paper{ background:#1b1b1b; border-color:rgba(255,255,255,.06); }
   border:1px solid var(--line-2); border-radius:999px; padding:5px 12px; white-space:nowrap; }
 /* the rows live inside that one surface, so they carry no paper of their own */
 .pf3t{ height:25px; padding:0 10px; font-size:12px; }
-.pf3lit.on{ box-shadow:0 0 0 1.5px rgba(20,20,20,.08), 0 26px 60px -20px rgba(0,0,0,.18); }
+.pf3lit{ margin-left:-16px; margin-right:-16px; padding-left:16px; padding-right:16px;
+  border-radius:26px; transition:background-color .7s ease, box-shadow .7s ease; }
+.pf3lit.on{ background:color-mix(in srgb, var(--tx) 3%, transparent);
+  box-shadow:0 0 0 1px rgba(20,20,20,.05), 0 22px 54px -22px rgba(0,0,0,.14); }
 .pf3top{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin:0 0 26px;
   border-radius:32px; transition:box-shadow .7s var(--e,cubic-bezier(.625,.05,0,1)); }
 .pf3claim{ font-family:var(--serif); font-size:clamp(24px,2.3vw,34px); line-height:1.14;
@@ -1991,27 +1993,30 @@ body.align .col .q{ font-size:clamp(30px,2.9vw,50px); }
 /* example jobs: the rooms this puts you in */
 .jobs{ display:flex; flex-direction:column; gap:11px; width:min(560px,92%); margin:34px auto 0; }
 /* real jobs, with the money where the eye lands */
-.rls{ display:flex; flex-direction:column; gap:12px; width:min(620px,94%); margin:36px auto 0; }
-.rlc{ display:flex; align-items:center; gap:17px; padding:18px 24px; border-radius:26px;
-  background:var(--card); border:1px solid var(--line); text-align:left;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.6), 0 3px 8px rgba(0,0,0,.04),
-    0 16px 40px -14px rgba(0,0,0,.14);
+/* three squares in a row: the money is the number, in our own type */
+.rls{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px;
+  width:100%; max-width:600px; margin:36px auto 32px; }
+.rlc{ aspect-ratio:1/1; display:flex; flex-direction:column; align-items:flex-start;
+  padding:16px; border-radius:24px; text-align:left; min-width:0; overflow:hidden;
+  background:var(--card); border:1px solid var(--line);
+  box-shadow:0 3px 8px rgba(0,0,0,.05), 0 18px 44px -16px rgba(0,0,0,.16);
   transition:transform .45s var(--e,cubic-bezier(.625,.05,0,1)), box-shadow .45s ease; }
-.rlc:hover{ transform:translateY(-2px);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.7), 0 24px 54px -16px rgba(0,0,0,.2); }
-.rlg{ width:42px; height:42px; flex-shrink:0; border-radius:14px; background:#fff;
-  border:1px solid var(--line-2); display:flex; align-items:center; justify-content:center;
-  box-shadow:0 3px 10px rgba(0,0,0,.07); }
-.rlg svg{ width:22px; height:22px; }
-.rlb{ flex:1; min-width:0; display:flex; flex-direction:column; }
-.rlb b{ font-size:16px; font-weight:600; letter-spacing:-.02em; line-height:1.25; }
-.rlb span{ font-size:13px; color:var(--tx-3); margin-top:3px; }
-.rlp{ flex-shrink:0; text-align:right; }
-.rlp i{ display:block; font-style:normal; font-size:11px; color:var(--tx-4); letter-spacing:-.01em; }
-.rlp b{ display:block; font-family:var(--serif); font-size:28px; letter-spacing:-.035em; line-height:1.05;
-  font-variant-numeric:tabular-nums; margin-top:1px; }
-.vrole .vrp{ margin-left:auto; font-family:var(--serif); font-size:16px; letter-spacing:-.03em;
-  font-variant-numeric:tabular-nums; flex-shrink:0; }
+.rlc:hover{ transform:translateY(-3px); box-shadow:0 26px 56px -18px rgba(0,0,0,.22); }
+.rlg{ width:30px; height:30px; flex-shrink:0; border-radius:10px; margin-bottom:auto;
+  background:color-mix(in srgb, var(--tx) 7%, transparent);
+  display:flex; align-items:center; justify-content:center; }
+body.dark .rlg{ background:#EDEAE4; }
+.rlg svg{ width:19px; height:19px; }
+.rlb{ display:flex; flex-direction:column; }
+.rlb{ min-width:0; }
+.rlb b{ font-size:13.5px; font-weight:600; letter-spacing:-.025em; line-height:1.22; }
+.rlb span{ font-size:11.5px; color:var(--tx-3); margin-top:2px; }
+.rlp{ margin-top:9px; font-family:var(--f); font-size:clamp(16px,1.55vw,21px); font-weight:600;
+  letter-spacing:-.05em; line-height:1; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.vrole .vrp{ margin-left:auto; font-family:var(--f); font-size:14.5px; font-weight:600;
+  letter-spacing:-.05em; font-variant-numeric:tabular-nums; flex-shrink:0; }
+.vrole .vrl{ background:color-mix(in srgb, var(--tx) 7%, transparent); border:0; }
+body.dark .vrole .vrl{ background:#EDEAE4; }
 .jobc{ display:flex; align-items:center; gap:14px; padding:15px 18px; border-radius:17px;
   background:var(--card); border:1px solid var(--line); text-align:left;
   box-shadow:0 10px 26px rgba(0,0,0,.06); }
@@ -7970,34 +7975,29 @@ async function mvpVision(){
 /* the roles, as references. Money on them, because that is the honest part */
 const ROLESETS={
  base:[
-  {co:'Stripe', title:'Business Analyst, Payments', where:'Toronto', top:'$105k'},
-  {co:'Notion', title:'Growth Analyst', where:'New York', top:'$115k'},
-  {co:'Salesforce', title:'Revenue Operations Analyst', where:'Toronto', top:'$100k'},
-  {co:'Shopify', title:'Business Operations Analyst', where:'Remote', top:'$110k'},
+  {co:'Stripe', title:'Business Analyst, Payments', where:'Toronto', pay:'$85\u2013105k'},
+  {co:'Notion', title:'Growth Analyst', where:'New York', pay:'$90\u2013115k'},
+  {co:'Salesforce', title:'Revenue Operations Analyst', where:'Toronto', pay:'$80\u2013100k'},
  ],
  growth:[
-  {co:'Notion', title:'Growth Analyst', where:'New York', top:'$115k'},
-  {co:'DoorDash', title:'Growth Strategy Associate', where:'Toronto', top:'$120k'},
-  {co:'Shopify', title:'Lifecycle and Retention Analyst', where:'Remote', top:'$110k'},
-  {co:'Stripe', title:'Growth Operations Analyst', where:'Toronto', top:'$115k'},
+  {co:'Notion', title:'Growth Analyst', where:'New York', pay:'$90\u2013115k'},
+  {co:'DoorDash', title:'Growth Strategy Associate', where:'Toronto', pay:'$95\u2013120k'},
+  {co:'Shopify', title:'Lifecycle and Retention Analyst', where:'Remote', pay:'$85\u2013110k'},
  ],
  strategy:[
-  {co:'DoorDash', title:'Strategy and Operations Associate', where:'Toronto', top:'$120k'},
-  {co:'Salesforce', title:'Business Strategy Analyst', where:'Toronto', top:'$115k'},
-  {co:'Stripe', title:'Commercial Strategy Analyst', where:'New York', top:'$125k'},
-  {co:'Notion', title:'Strategic Finance Analyst', where:'New York', top:'$125k'},
+  {co:'DoorDash', title:'Strategy and Operations Associate', where:'Toronto', pay:'$95\u2013120k'},
+  {co:'Salesforce', title:'Business Strategy Analyst', where:'Toronto', pay:'$90\u2013115k'},
+  {co:'Stripe', title:'Commercial Strategy Analyst', where:'New York', pay:'$100\u2013125k'},
  ],
  data:[
-  {co:'Stripe', title:'Data Analyst, Payments', where:'Toronto', top:'$115k'},
-  {co:'Notion', title:'Product Data Analyst', where:'New York', top:'$120k'},
-  {co:'Shopify', title:'Analytics Engineer, Merchant', where:'Remote', top:'$125k'},
-  {co:'Salesforce', title:'Business Intelligence Analyst', where:'Toronto', top:'$110k'},
+  {co:'Stripe', title:'Data Analyst, Payments', where:'Toronto', pay:'$90\u2013115k'},
+  {co:'Notion', title:'Product Data Analyst', where:'New York', pay:'$95\u2013120k'},
+  {co:'Shopify', title:'Analytics Engineer, Merchant', where:'Remote', pay:'$100\u2013125k'},
  ],
  product:[
-  {co:'Notion', title:'Product Analyst', where:'New York', top:'$120k'},
-  {co:'Stripe', title:'Product Operations Analyst', where:'Toronto', top:'$115k'},
-  {co:'DoorDash', title:'Associate Product Manager', where:'Toronto', top:'$130k'},
-  {co:'Shopify', title:'Product Insights Analyst', where:'Remote', top:'$120k'},
+  {co:'Notion', title:'Product Analyst', where:'New York', pay:'$95\u2013120k'},
+  {co:'Stripe', title:'Product Operations Analyst', where:'Toronto', pay:'$90\u2013115k'},
+  {co:'DoorDash', title:'Associate Product Manager', where:'Toronto', pay:'$105\u2013130k'},
  ],
 };
 function roleSetFor(text){
@@ -8014,7 +8014,7 @@ function roleCards(box,list,delay){
     const c=mk('div','rlc');
     c.innerHTML='<span class="rlg">'+(LOGO[j.co]||I.spark)+'</span>'
       +'<span class="rlb"><b>'+j.title+'</b><span>'+j.co+' · '+j.where+'</span></span>'
-      +'<span class="rlp"><i>up to</i><b>'+j.top+'</b></span>';
+      +'<span class="rlp">'+j.pay+'</span>';
     w.appendChild(c);
   });
   box.appendChild(w);
@@ -8527,6 +8527,7 @@ function buildPf3(host){
   const nm=P.fullname||P.name||'You';
   /* one line above the paper, and then the paper itself */
   w.innerHTML='<div class="pf3claim" id="pf3-top">This portfolio is what lands you the job.</div>';
+  /* nothing shouts above it */
   const paper=mk('div','pf3paper'); paper.id='pf3-paper';
   paper.innerHTML='<div class="pf3head">'
       +'<span class="pf3av"><i style="'+avStyle(nm)+'">'+nm.charAt(0)+'</i>'
@@ -8534,7 +8535,7 @@ function buildPf3(host){
       +'<span class="pf3who"><span class="pf3nm">'+nm+'</span>'
         +'<span class="pf3sub">'+(I.bag||I.bld||'')+'<span>'+(P.role||'Business Analyst')+'</span>'
         +'<em>·</em>'+(I.pin||I.loc||'')+'<span>'+(P.location||'Toronto')+'</span></span></span>'
-      +'<span class="pf3src">Built from your vision board</span>'
+      +'<span class="pf3src">Recruiter approved</span>'
     +'</div>'
     +'<div class="pf3about">I work best on a framed problem with the data in hand. I build the model, '
       +'isolate the driver, size the opportunity, and open the write up with the recommendation.</div>';
@@ -8581,12 +8582,29 @@ async function mvpOutcome(){
   panelBack();
   panelSize(58);
   sfx('sparkle');
-  swapPanel('Your portfolio, at the end of the road',h=>{ buildPf3(h); },false,false);
-  await wait(520); if(myGen!==gen) return;
+  /* no reload: the board fades under the portfolio, the panel itself never blinks */
   const sc=$('scroll');
-  /* the reveal never strands invisible: land it, whatever the ticker did */
-  if(sc) gsap.set(sc,{opacity:1,y:0,filter:'blur(0px)'});
+  setCap('',false);
+  const cp9=$('cap'); if(cp9) cp9.innerHTML='';   /* no dot, no label: the page speaks */
+  const old=[...sc.children];
+  boardLive=false;
+  $('paper').classList.remove('canvas');
+  sc.classList.remove('ctr','vzcv');
+  const wrap=buildPf3(sc);
+  gsap.set(wrap,{opacity:0});
+  gsap.to(old,{opacity:0,y:-14,filter:'blur(10px)',duration:.55,ease:'power2.in',
+    onComplete:()=>old.forEach(n=>n.remove())});
+  gsap.to(wrap,{opacity:1,duration:.6,delay:.35,ease:'power2.out'});
+  gsap.set(sc,{opacity:1,y:0,filter:'blur(0px)'});
   pfScroll(true);
+  sfx('page');
+  /* one thing at a time: the name, then the work, then the history */
+  const bits=[wrap.querySelector('.pf3claim'), wrap.querySelector('.pf3head'),
+    wrap.querySelector('.pf3about'), ...wrap.querySelectorAll('.pf3h, .pf3c, .pf3x')].filter(Boolean);
+  gsap.set(bits,{opacity:0,y:16});
+  gsap.to(bits,{opacity:1,y:0,duration:.6,stagger:.075,delay:.45,ease:'power3.out'});
+  bits.slice(0,7).forEach((b,i)=>gsap.delayedCall(.5+i*.075,()=>{ try{ sfx('tick'); }catch(e){} }));
+  await wait(900); if(myGen!==gen) return;
   const goTo=(el,pad)=>new Promise(res=>{
     if(!el||!sc){ res(); return; }
     gsap.killTweensOf(sc);
@@ -9387,7 +9405,7 @@ const VTILES=[
   html:()=>'<div class="vroles">'+P.roles.map(r=>
     '<div class="vrole"><span class="vrl">'+(LOGO[r.co]||I.spark)+'</span>'
     +'<span class="vrb"><b>'+r.title+'</b><span>'+r.co+' · '+r.where+'</span></span>'
-    +'<span class="vrp">'+r.top+'</span></div>').join('')+'</div>'},
+    +'<span class="vrp">'+r.pay+'</span></div>').join('')+'</div>'},
  {key:'exp', span:'s2', emoji:'💼', label:'Experience so far',
   ready:()=>!!P.interned,
   html:()=>'<div class="vpills"><span class="vpill sm">'+vpic('work')+'<b>'+P.interned+'</b></span>'
