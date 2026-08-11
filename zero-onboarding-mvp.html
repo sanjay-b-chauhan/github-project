@@ -1549,6 +1549,7 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
   mask-image:linear-gradient(to bottom, transparent 0, #000 28px, #000 calc(100% - 22px), transparent 100%); }
 /* the free hand: a quiet zoom pill, and a grabbing cursor while you drag */
 .scroll.ctr{ cursor:grab; }
+.scroll.ctr.vzcv{ overflow:hidden; overscroll-behavior:contain; }
 .scroll.ctr.vzgrab{ cursor:grabbing; }
 .vzoom{ position:absolute; right:20px; bottom:16px; z-index:6; display:inline-flex; align-items:center;
   gap:9px; height:32px; padding:0 13px; border-radius:999px; cursor:pointer;
@@ -7769,7 +7770,7 @@ async function mvpVision(){
   if(myGen!==gen) return;
   P.goal=mvpGoal(); renderBoard();
   mvpZoomOut();
-  { const sc2=$('scroll'); if(sc2) gsap.to(sc2,{scrollTop:0,duration:.8,ease:EIO}); }
+  vzHome(true);
   await voLine('Okay, '+P.name+". Here's what I've got.",2300);
   if(myGen!==gen) return;
   qWide=true;
@@ -7902,7 +7903,7 @@ async function mvpPlan(){
       sh.stop();
       capTitle(); vzCam();
       /* back to the top, so the whole picture is in frame */
-      const sc9=$('scroll'); if(sc9) gsap.to(sc9,{scrollTop:0,duration:.85,ease:EIO});
+      vzHome(true);
       await wait(900); if(myGen!==gen) return;
       await voLine('I got your vision board updated.',2100);
       if(myGen!==gen) return;
@@ -8353,7 +8354,7 @@ function mvpFeed(key){
 async function mvpGather(){
   const vz=$('vz'); if(!vz) return;
   const host=$('scroll');
-  if(host) gsap.to(host,{scrollTop:0,duration:.45,ease:EIO});
+  vzHome(true);
   await wait(430);
   const tiles=[...vz.querySelectorAll('.vt')].filter(t9=>!t9.classList.contains('ghost'));
   if(!tiles.length) return;
@@ -8413,7 +8414,26 @@ function vzApply(anim){
   else gsap.set(vz,{x:VZT.x,y:VZT.y,scale:VZT.k});
   const rd=$('vzoomv'); if(rd) rd.textContent=Math.round(VZT.k*100)+'%';
 }
-/* free hand: drag to move it, pinch or ctrl scroll to zoom, click the pill to reset */
+/* the board never gets lost: panning stays inside soft bounds */
+function vzClampPan(){
+  const vz=$('vz'), host=$('scroll'); if(!vz||!host) return;
+  const cw=vz.offsetWidth*VZT.k, ch=vz.offsetHeight*VZT.k;
+  const hw=host.clientWidth, hh=host.clientHeight;
+  /* no measurements, no clamping: a collapsed panel must not freeze the canvas */
+  if(!hw||!hh||!cw||!ch) return;
+  const padX=Math.min(140,hw*.34), padY=Math.min(160,hh*.42);
+  const minX=Math.min(0,hw-cw)-padX, maxX=padX;
+  const minY=Math.min(0,hh-ch)-padY, maxY=padY;
+  VZT.x=Math.max(minX,Math.min(maxX,VZT.x));
+  VZT.y=Math.max(minY,Math.min(maxY,VZT.y));
+}
+/* home: the whole board, squared up */
+function vzHome(anim){
+  VZT.x=0; VZT.y=0; VZT.k=1;
+  const s=$('scroll'); if(s) s.scrollTop=0;
+  vzApply(anim!==false);
+}
+/* free hand: drag or two finger scroll to move, pinch or cmd scroll to zoom, double click to reset */
 let vzBound=false;
 function vzHand(host,vz){
   if(vzBound||!host) return; vzBound=true;
@@ -8429,28 +8449,40 @@ function vzHand(host,vz){
     const dx=e.clientX-lx, dy=e.clientY-ly; lx=e.clientX; ly=e.clientY;
     moved+=Math.abs(dx)+Math.abs(dy);
     if(moved>4) host.classList.add('vzgrab');
-    VZT.x+=dx; VZT.y+=dy; vzApply(false);
+    VZT.x+=dx; VZT.y+=dy; vzClampPan(); vzApply(false);
   });
   const up=()=>{ drag=false; host.classList.remove('vzgrab'); };
   host.addEventListener('pointerup',up);
   host.addEventListener('pointercancel',up);
   host.addEventListener('wheel',e=>{
-    if(!(e.ctrlKey||e.metaKey)) return;   /* plain wheel still scrolls the panel */
-    e.preventDefault();
     const r=host.getBoundingClientRect();
-    const px=e.clientX-r.left, py=e.clientY-r.top;
-    const k0=VZT.k, k1=clamp(k0*(1-e.deltaY*0.0022),.45,2.4);
-    /* zoom around the pointer, the way a canvas should */
-    VZT.x=px-(px-VZT.x)*(k1/k0);
-    VZT.y=py-(py-VZT.y)*(k1/k0);
-    VZT.k=k1; vzApply(false);
+    if(e.ctrlKey||e.metaKey){
+      /* pinch, or cmd scroll: zoom around the pointer, the way a canvas should */
+      e.preventDefault();
+      const px=e.clientX-r.left, py=e.clientY-r.top;
+      const k0=VZT.k, k1=clamp(k0*(1-e.deltaY*0.0022),.45,2.4);
+      VZT.x=px-(px-VZT.x)*(k1/k0);
+      VZT.y=py-(py-VZT.y)*(k1/k0);
+      VZT.k=k1; vzClampPan(); vzApply(false);
+      return;
+    }
+    /* a trackpad two finger scroll, or a plain wheel: this pans the board */
+    e.preventDefault();
+    const dx=e.shiftKey?-e.deltaY:-(e.deltaX||0);
+    const dy=e.shiftKey?0:-e.deltaY;
+    VZT.x+=dx; VZT.y+=dy; vzClampPan(); vzApply(false);
+    host.scrollTop=0;   /* pan owns the board, so scroll never fights it */
   },{passive:false});
+  host.addEventListener('dblclick',e=>{
+    if(e.target.closest('button,input,a')) return;
+    vzHome(true); sfx('tick');
+  });
 }
 function vzMount(){
   const paper=$('paper'); if(!paper||$('vzoom')) return;
   const z=mk('div','vzoom'); z.id='vzoom';
   z.innerHTML='<span id="vzoomv">100%</span><span class="vzr">Reset</span>';
-  z.onclick=()=>{ VZT.x=0; VZT.y=0; VZT.k=1; vzApply(true); sfx('tick'); };
+  z.onclick=()=>{ vzHome(true); sfx('tick'); };
   paper.appendChild(z);
 }
 function pzScreen(kind){
@@ -9024,6 +9056,7 @@ function renderBoard(){
     vz=mk('div','vz'); vz.id='vz';
     const gr=mk('div','vgrid'); gr.id='vgrid'; vz.appendChild(gr);
     s2.appendChild(vz);
+    s2.classList.add('vzcv');
     vzHand(s2,vz); vzMount();
   }
   const gr=$('vgrid');
@@ -9124,13 +9157,10 @@ function mvpFocus(key){
   sec.classList.remove('dim');
   const S=1.08;
   const hw=host.clientWidth, hh=host.clientHeight;
-  let tx=hw/2-S*(sec.offsetLeft+sec.offsetWidth/2);
-  let ty=hh/2-S*(sec.offsetTop+sec.offsetHeight/2);
-  tx=Math.max(-hw*.14,Math.min(0,tx));
-  ty=Math.max(-hh*.22,Math.min(0,ty));
-  VZT.x=tx; VZT.y=ty; VZT.k=S; vzApply(true);
-  const r=sec.offsetTop;
-  gsap.to(host,{scrollTop:Math.max(0,r-60),duration:.7,ease:EIO});
+  const tx=Math.max(-hw*.16,Math.min(hw*.06,hw/2-S*(sec.offsetLeft+sec.offsetWidth/2)));
+  const ty=hh/2-S*(sec.offsetTop+sec.offsetHeight/2);
+  host.scrollTop=0;
+  VZT.x=tx; VZT.y=ty; VZT.k=S; vzClampPan(); vzApply(true);
 }
 /* analyzing, then creating: the tile thinks before it resolves */
 async function mvpBuilding(key,ms){
