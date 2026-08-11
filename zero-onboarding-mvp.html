@@ -1699,13 +1699,18 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .rewexp{ margin:30px auto 0; font-family:var(--serif); font-size:clamp(19px,1.6vw,25px); line-height:1.34;
   letter-spacing:-.02em; color:var(--tx); max-width:30ch; text-align:center; }
 /* the email field, converted: one horizontal bar where it stood */
-.dfield.dlbar{ justify-content:space-between; padding:0 9px 0 26px; }
+.dfield.dlbar{ justify-content:space-between; gap:14px; padding:0 9px 0 20px;
+  background:var(--ink); border-color:var(--ink); }
+.dlzi{ display:inline-flex; align-items:center; height:20px; color:#fff; flex-shrink:0; }
+.dlzi svg{ height:100%; width:auto; }
 .dlbt{ font-size:15.5px; font-weight:500; letter-spacing:-.01em; white-space:nowrap; }
+.dlbar .dlbt{ color:var(--on-ink); margin-right:auto; }
 .dlbb{ display:inline-flex; align-items:center; gap:9px; height:48px; padding:0 22px; border:0;
   flex-shrink:0; border-radius:var(--pill); background:var(--ink); color:var(--on-ink);
   font-size:14.5px; font-weight:600; letter-spacing:-.01em; cursor:pointer;
   transition:transform .22s cubic-bezier(.2,.8,.3,1); }
 .dlbb:hover{ transform:translateY(-2px); }
+.dlbar .dlbb{ background:#fff; color:var(--ink); }
 .dlbb svg{ width:16px; height:16px; }
 .dlbs{ position:absolute; left:0; right:0; top:calc(100% + 11px); text-align:center;
   font-size:12.5px; color:var(--tx-3); pointer-events:none; }
@@ -1713,6 +1718,26 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .dockin{ position:relative; }
 .dmailhint{ position:absolute; left:50%; transform:translateX(-50%); top:calc(100% + 7px);
   white-space:nowrap; font-size:12.5px; color:#c0392b; }
+/* share, and the number climbs */
+.shcard{ margin:34px auto 0; width:min(560px,94%); background:#fff; border:1px solid var(--line-2);
+  border-radius:20px; padding:20px 22px; text-align:left; }
+.shhead{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.shhead b{ font-size:15px; font-weight:600; letter-spacing:-.02em; }
+.shcred{ font-size:12.5px; color:#2f9c45; font-weight:600; }
+.shlink{ display:flex; align-items:center; gap:10px; height:46px; padding:0 8px 0 16px;
+  border:1px dashed var(--line); border-radius:12px; margin-bottom:12px; }
+.shurl{ font-size:13.5px; color:var(--tx-2); margin-right:auto; letter-spacing:.01em; }
+.shrow{ display:flex; gap:10px; }
+.shbtn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; height:40px; padding:0 16px;
+  border-radius:999px; border:1px solid var(--line); background:#fff; font-size:13px; font-weight:600;
+  cursor:pointer; transition:transform .2s ease, opacity .3s ease; }
+.shbtn:hover{ transform:translateY(-1px); }
+.shbtn.dk{ flex:1; background:var(--ink); color:var(--on-ink); border-color:var(--ink); }
+.shbtn i{ font-style:normal; font-weight:700; color:#2f9c45; font-size:12px; }
+.shbtn.dk i{ color:#a4f4b2; }
+.shbtn svg{ width:15px; height:15px; }
+.shbtn.got{ opacity:.55; }
+.shbtn.got:hover{ transform:none; }
 /* ══ the portfolio, as the real one is built: grey page, white project cards ══ */
 .pf3{ text-align:left; padding:2px 0 34px; width:100%; max-width:880px; margin:0 auto; }
 .pf3claim{ font-family:var(--serif); font-size:clamp(15.5px,1.3vw,19px); line-height:1.3;
@@ -1857,7 +1882,7 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 /* the outcome line, big */
 .q.qhero{ font-size:clamp(30px,2.6vw,46px); max-width:24ch; }
 /* ── the road: a titled, top-to-bottom timeline ── */
-.rmwrap{ text-align:left; }
+.rmwrap{ text-align:left; max-width:880px; margin:0 auto; }
 .rmhead{ display:flex; align-items:center; justify-content:space-between; gap:14px;
   margin:2px 0 24px; }
 .rmhead.sticky{ position:sticky; top:0; z-index:5; padding:14px 4px 18px; margin:0 0 10px;
@@ -1869,27 +1894,27 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
   border-radius:999px; background:var(--ink); color:var(--on-ink); font-size:13.5px; font-weight:600;
   box-shadow:0 8px 22px rgba(0,0,0,.16); white-space:nowrap; }
 .rmrows{ position:relative; }
-.rmrow{ display:flex; flex-wrap:nowrap; align-items:flex-start; gap:14px; position:relative; padding-bottom:10px; }
-.rmrow::before{ content:''; position:absolute; left:9px; top:22px; bottom:-2px; width:2px;
+.rmrow{ display:flex; flex-wrap:nowrap; align-items:flex-start; gap:14px; position:relative; padding-bottom:18px; }
+.rmrow::before{ content:''; position:absolute; left:9px; top:40px; bottom:-2px; width:2px;
   background:var(--line); border-radius:1px; opacity:0; transition:opacity .6s ease .2s; }
 .rmrow.on::before{ opacity:1; }
 .rmrow:last-child::before{ display:none; }
 /* the walked part of the trail is green, one segment at a time */
-.rmrow::after{ content:''; position:absolute; left:9px; top:22px; bottom:-2px; width:2px; border-radius:1px;
+.rmrow::after{ content:''; position:absolute; left:9px; top:40px; bottom:-2px; width:2px; border-radius:1px;
   background:#2f9c45; transform:scaleY(0); transform-origin:0 0; z-index:1;
-  transition:transform .8s var(--e,cubic-bezier(.625,.05,0,1)) .1s; }
+  transition:transform 1s var(--e,cubic-bezier(.625,.05,0,1)) .15s; }
 .rmrow.done::after{ transform:scaleY(1); }
 .rmrow:last-child::after{ display:none; }
 .rmrow.done>.rmrail .rmnode{ border-color:#2f9c45; box-shadow:0 0 0 4px rgba(47,156,69,.15); }
 .rmrow.done>.rmrail .rmnode:not(.spark)::after{ content:''; width:8px; height:8px; border-radius:50%; background:#2f9c45; }
 .rmrow.done>.rmrail .rmnode.spark{ background:#2f9c45; border-color:#2f9c45; color:#fff; }
-.rmrail{ width:104px; flex-shrink:0; padding-top:8px; position:relative; }
+.rmrail{ width:104px; flex-shrink:0; padding-top:18px; position:relative; }
 .rmnode{ width:20px; height:20px; border-radius:50%; background:var(--card); border:2px solid var(--tx-3);
   box-shadow:0 0 0 4px color-mix(in srgb, var(--tx-3) 12%, transparent); position:relative; z-index:2;
   display:flex; align-items:center; justify-content:center; }
 .rmnode.spark{ border-color:var(--tx); background:var(--ink); color:var(--on-ink); }
 .rmnode.spark svg{ width:10px; height:10px; }
-.rmwk{ position:absolute; left:32px; top:11px; margin:0; font-size:var(--inds,12.5px); font-weight:500;
+.rmwk{ position:absolute; left:32px; top:20px; margin:0; font-size:var(--inds,12.5px); font-weight:500;
   letter-spacing:-.01em; color:var(--tx-3); white-space:nowrap; }
 .rmslot{ flex:1; min-width:0; }
 .rmrow .mwk{ display:none; }
@@ -1912,7 +1937,7 @@ body.rmfull .mid{ padding:470px 24px 80px; }
   padding:0 34px 4px; scrollbar-width:none; }
 .rmtrack::-webkit-scrollbar{ display:none; }
 .rmtrack.grab{ cursor:grabbing; }
-.rmrow{ display:flex; align-items:flex-end; gap:16px; width:max-content; }
+.rdrow{ display:flex; align-items:flex-end; gap:16px; width:max-content; }
 .rmstart{ flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:2px; padding:0 10px 42px; }
 .rmstart b{ font-size:12.5px; font-weight:700; letter-spacing:-.02em; white-space:nowrap; }
 .rmstart span{ font-size:11px; color:var(--tx-3); }
@@ -8445,7 +8470,7 @@ async function mvpRoadmapRoad(){
   band.innerHTML='<div class="rmhead2"><b>Your journey</b>'
       +'<span class="rmpill2">'+(I.clock||'')+' '+totW+' weeks to build</span>'
       +'<span class="rmdrag">drag to see the road</span></div>'
-    +'<div class="rmtrack" id="rmTrack"><div class="rmrow" id="rmRow">'
+    +'<div class="rmtrack" id="rmTrack"><div class="rdrow" id="rmRow">'
       +'<div class="rmstart"><span class="rmyou"></span><b>You are here</b><span>Level one</span></div>'
       +cells.map((x,i)=>'<div class="rmstop" data-i="'+i+'">'
         +'<span class="rmnode2"></span>'
@@ -8572,7 +8597,7 @@ async function mvpRoadmapPanel(){
   clearTurn(); await wait(240); if(myGen!==gen) return;
   const {box}=turn({q:'You do one, then you do it again, harder, on a real brief.'});
   const host=$('mvCur');
-  let wkAt=1, prevRow=null;
+  let wkAt=1;
   for(const c of CURRICULUM){
     if(myGen!==gen) return;
     await paceGate(); if(myGen!==gen) return;
@@ -8586,8 +8611,7 @@ async function mvpRoadmapPanel(){
     await ghostIn(card,58,430,slot);
     row.classList.add('on');
     card.classList.add('open');
-    if(prevRow){ prevRow.classList.add('done'); }
-    prevRow=row;
+    row.classList.add('done');
     gsap.fromTo(card.querySelectorAll('.mtag'),{opacity:0,y:8,scale:.92},
       {opacity:1,y:0,scale:1,duration:.45,ease:'back.out(1.6)',stagger:.06,delay:.1});
     /* the one being spoken about shines; the rest settle back */
@@ -8604,8 +8628,7 @@ async function mvpRoadmapPanel(){
       u.innerHTML='<span class="mue">'+c.unlock[0]+'</span><span>'+c.unlock[1]+'</span><span class="mus">'+c.unlock[2]+'</span>';
       us.appendChild(u);
       host.appendChild(ur);
-      if(prevRow){ prevRow.classList.add('done'); }
-      prevRow=ur;
+      ur.classList.add('done');
       if(c.unlock[3]==='green'){
         /* the job portal opens: the moment lands big */
         gsap.fromTo(u,{scale:.55,opacity:0,y:18},{scale:1,opacity:1,y:0,duration:.7,ease:'back.out(2.2)'});
@@ -8619,7 +8642,6 @@ async function mvpRoadmapPanel(){
     }
   }
   await wait(450); if(myGen!==gen) return;
-  if(prevRow){ prevRow.classList.add('done'); }
   const hostAll=$('mvCur'); if(hostAll) hostAll.querySelectorAll('.mvlit').forEach(x=>x.classList.remove('mvlit'));
   const q=document.querySelector('#turn .q');
   if(q){ await new Promise(res=>{ gsap.to(q,{opacity:0,y:-8,duration:.3,onComplete:()=>{
@@ -9643,6 +9665,59 @@ function mvpFinale(track){
 }
 
 /* ---- the close: 10,000 credits, email, see you inside ---- */
+const XSVG='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 1.2h3.7l-8.1 9.3L24 22.8h-7.5l-5.9-7.7-6.7 7.7H.2l8.7-9.9L0 1.2h7.7l5.3 7 5.9-7z"/></svg>';
+/* share your road, earn credits: a unique link, each channel pays once */
+function mvpShareCard(host){
+  if($('shCard')||!host) return;
+  let ref=''; try{ ref=localStorage.mvpRef||''; }catch(e){}
+  if(!ref){ ref=((P.name||'you').toLowerCase().replace(/[^a-z]/g,'')||'you')
+      +'-'+Math.random().toString(36).slice(2,6);
+    try{ localStorage.mvpRef=ref; }catch(e){} }
+  const link='zero.app/i/'+ref;
+  const card=mk('div','shcard'); card.id='shCard';
+  card.innerHTML='<div class="shhead"><b>Share your road, earn credits</b>'
+      +'<span class="shcred" id="shCred"></span></div>'
+    +'<div class="shlink"><span class="shurl">'+link+'</span>'
+      +'<button class="shbtn" data-ch="copy"><span>Copy link</span><i>+500</i></button></div>'
+    +'<div class="shrow">'
+      +'<button class="shbtn dk" data-ch="x">'+XSVG+'<span>Share on X</span><i>+1,000</i></button>'
+      +'<button class="shbtn dk" data-ch="li">'+(LOGO['LinkedIn']||'')+'<span>Share on LinkedIn</span><i>+1,000</i></button>'
+    +'</div>';
+  host.appendChild(card);
+  gsap.fromTo(card,{opacity:0,y:16},{opacity:1,y:0,duration:.7,delay:.35,ease:'power3.out'});
+  let got={}; try{ got=JSON.parse(localStorage.mvpShared||'{}'); }catch(e){}
+  const AMT={copy:500,x:1000,li:1000};
+  const sum=()=>Object.keys(got).reduce((a,k)=>a+(AMT[k]||0),0);
+  const paint=()=>{
+    const s=sum(), c9=$('shCred');
+    if(c9) c9.textContent=s?('+'+s.toLocaleString()+' earned'):'up to +2,500';
+    Object.keys(got).forEach(k=>{ const b=card.querySelector('[data-ch="'+k+'"]');
+      if(b) b.classList.add('got'); });
+  };
+  paint();
+  const bump=amt=>{
+    const NUM=$('mvRewN'); if(!NUM) return;
+    const from=parseInt((NUM.textContent||'0').replace(/\D/g,''))||0;
+    const o={v:from};
+    gsap.to(o,{v:from+amt,duration:1.1,ease:'power2.out',
+      onUpdate:()=>{ NUM.textContent=Math.round(o.v).toLocaleString(); }});
+    sfx('sparkle'); gsap.delayedCall(.2,()=>{ try{ sfx('success'); }catch(e){} });
+    try{ confettiBurst(NUM); }catch(e){}
+  };
+  card.querySelectorAll('.shbtn').forEach(b=>{
+    b.onclick=()=>{
+      const ch=b.dataset.ch;
+      const msg="I'm starting my journey at Zero. Here's my roadmap, follow to see my progress: https://"+link;
+      if(ch==='copy'){ try{ navigator.clipboard.writeText('https://'+link); }catch(e){}
+        const sp=b.querySelector('span'); if(sp) sp.textContent='Copied'; }
+      if(ch==='x') window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(msg),'_blank');
+      if(ch==='li') window.open('https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent('https://'+link),'_blank');
+      if(got[ch]){ sfx('tick'); return; }
+      got[ch]=1; try{ localStorage.mvpShared=JSON.stringify(got); }catch(e){}
+      bump(AMT[ch]); paint();
+    };
+  });
+}
 async function mvpClaim(){
   atStep('Claim');
   pfScroll(false);
@@ -9698,9 +9773,10 @@ async function mvpClaim(){
       gsap.to([...f9.children],{opacity:0,y:-7,filter:'blur(5px)',duration:.3,stagger:.04,
         onComplete:()=>{
           f9.classList.add('dlbar');
-          f9.innerHTML='<span class="dlbt">Zero is unlocked.</span>'
+          f9.innerHTML='<span class="dlzi">'+ZSVG+'</span>'
+            +'<span class="dlbt">Zero is unlocked.</span>'
             +'<button class="dlbb">'+(I.dl||'')+'<span>Download now</span></button>';
-          const bits=f9.querySelectorAll('.dlbt,.dlbb');
+          const bits=f9.querySelectorAll('.dlzi,.dlbt,.dlbb');
           gsap.fromTo(bits,{opacity:0,y:9,filter:'blur(6px)'},
             {opacity:1,y:0,filter:'blur(0px)',duration:.55,stagger:.07,ease:'power3.out'});
           const bb=f9.querySelector('.dlbb');
@@ -9712,6 +9788,7 @@ async function mvpClaim(){
             host9.appendChild(s9);
             gsap.fromTo(s9,{opacity:0,y:6},{opacity:1,y:0,duration:.5,delay:.15,ease:'power2.out'});
           }
+          mvpShareCard(rew);
         }});
     }
     atStep('Handoff');
