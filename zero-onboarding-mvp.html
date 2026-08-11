@@ -1670,6 +1670,7 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .mvsc .mvdel b{ color:var(--tx); font-weight:600; }
 .rmhow{ font-size:13.5px; line-height:1.55; color:var(--tx-2); max-width:52ch; margin:0 0 20px; }
 .inlinecta{ display:inline-flex; margin:34px auto 0; }
+body.rmfull .inlinecta{ display:flex; width:max-content; margin:34px auto 0; }
 .mvsc .mrow2{ display:flex; flex-wrap:wrap; gap:6px; }
 .mvsc .mtag{ display:inline-flex; align-items:center; gap:6px; height:26px; padding:0 11px;
   border-radius:999px; background:var(--wash); border:1px solid var(--line-2); font-size:12.5px; color:var(--tx-2); }
@@ -1714,9 +1715,12 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .dmailhint{ position:absolute; left:50%; transform:translateX(-50%); top:calc(100% + 7px);
   white-space:nowrap; font-size:12.5px; color:#c0392b; }
 /* ══ the portfolio, as the real one is built: grey page, white project cards ══ */
-.pf3{ text-align:left; padding:2px 0 34px; width:100%; max-width:720px; margin:0 auto; }
+.pf3{ text-align:left; padding:2px 0 34px; width:100%; max-width:880px; margin:0 auto; }
 .pf3claim{ font-family:var(--serif); font-size:clamp(15.5px,1.3vw,19px); line-height:1.3;
-  letter-spacing:-.015em; width:100%; margin:2px 0 22px; text-align:center; color:var(--tx-2); }
+  letter-spacing:-.015em; width:100%; margin:0 0 30px; text-align:center; color:var(--tx-2); }
+/* one sheet of paper: everything the user is, inside one quiet container */
+.pf3paper{ background:var(--card); border-radius:30px; padding:60px;
+  box-shadow:0 1px 2px rgba(0,0,0,.04), 0 14px 34px rgba(0,0,0,.06), 0 48px 110px -24px rgba(0,0,0,.18); }
 .pfmode .cap{ visibility:hidden; }
 .pfrip{ position:absolute; width:130px; height:130px; margin:-65px 0 0 -65px; border-radius:50%;
   border:2px solid rgba(73,186,97,.55); box-shadow:0 0 44px rgba(73,186,97,.3); pointer-events:none; z-index:6; }
@@ -1782,7 +1786,7 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .pf3f{ display:inline-flex; align-items:center; gap:6px; height:28px; padding:0 12px; border-radius:999px;
   background:var(--wash); font-size:12px; color:var(--tx-2); }
 .pf3f svg{ width:11px; height:11px; }
-.pf3mgr{ display:inline-flex; align-items:center; gap:7px; margin-left:auto; font-size:11.5px; color:var(--tx-3); }
+.pf3mgr{ display:inline-flex; align-items:center; gap:7px; font-size:11.5px; color:var(--tx-3); }
 .pf3ma{ position:relative; width:22px; height:22px; border-radius:50%; overflow:hidden; flex-shrink:0;
   color:#fff; font-size:10px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; }
 .pf3ma img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
@@ -7712,6 +7716,11 @@ function dbgGoto(i){
     v=>{ document.body.classList.toggle('noico',!v); });
   toggle(board,'Edge fade',()=>!document.body.classList.contains('nofade'),
     v=>{ document.body.classList.toggle('nofade',!v); });
+  const road9=section('Roadmap');
+  toggle(road9,'Full-screen road',
+    ()=>{ try{ return localStorage.mvpRoadLayout==='road'; }catch(e){ return false; } },
+    v=>{ try{ localStorage.mvpRoadLayout=v?'road':'panel'; }catch(e){}
+         try{ RMV=v?'road':'panel'; }catch(e){} });
   range(board,'Text size',14,34,1,
     ()=>parseInt(getComputedStyle(document.documentElement).getPropertyValue('--vbfs'))||22,
     v=>document.documentElement.style.setProperty('--vbfs',v+'px'));
@@ -8394,10 +8403,10 @@ function mvpScCard(c){
       {opacity:1,y:0,duration:.4,stagger:.04,ease:'power2.out'}); };
   return el;
 }
-async function mvpRoadmap(){
+async function mvpRoadmapRoad(){
   atStep('Roadmap');
   pfScroll(false);
-  setPhase(2);
+  setPhase(3);
   const myGen=gen;
   clearTurn(); dockHide(); await wait(240); if(myGen!==gen) return;
   /* the road owns the whole screen: no side container, nothing to squeeze into */
@@ -8497,6 +8506,89 @@ async function mvpRoadmap(){
   box.appendChild(b);
   enter([b],{y:14,blur:6,duration:.55},1100);
   dockHide();
+}
+
+/* ---- the journey, back in the panel: the default layout ---- */
+let RMV='panel'; try{ RMV=localStorage.mvpRoadLayout||'panel'; }catch(e){}
+async function mvpRoadmap(){ return (RMV==='road'?mvpRoadmapRoad:mvpRoadmapPanel)(); }
+async function mvpRoadmapPanel(){
+  atStep('Roadmap');
+  pfScroll(false);
+  setPhase(3);
+  const myGen=gen;
+  clearTurn(); dockHide(); await wait(320); if(myGen!==gen) return;
+  panelBack();
+  const totW=CURRICULUM.reduce((a,c)=>a+c.weeks,0);
+  /* left and right move together: the panel morphs WHILE the line speaks */
+  sfx('sparkle');
+  panelSize(58);
+  swapPanel('Your journey',h=>{
+    const w=mk('div','rmwrap');
+    w.innerHTML='<div class="rmhead sticky"><span class="rmtitle">Your journey</span>'
+      +'<span class="rmweeks">'+(I.clock||'')+' '+totW+' weeks to build</span><span class="rmfade"></span></div>'
+      +'<div class="rmhow">Every week is one real brief from a real company. You do the work, your '
+      +'manager reviews it, and what you make goes into your portfolio.</div>';
+    const st=mk('div','rmrows'); st.id='mvCur'; w.appendChild(st);
+    h.appendChild(w);
+  },false,true);
+  /* a throttled tab must not strand the panel invisible */
+  gsap.delayedCall(.9,()=>{ const s9=$('scroll'); if(s9) gsap.set(s9,{opacity:1,y:0,filter:'blur(0px)'}); });
+  await voLine("Here's your road to "+(P.role||'the role')+', '+P.name+'.',2400);
+  if(myGen!==gen) return;
+  await voLine('Calibrated to you, paced for '+low(P.timeline||'your timeline')+'.',2300);
+  if(myGen!==gen) return;
+  clearTurn(); await wait(240); if(myGen!==gen) return;
+  const {box}=turn({q:'You do one, then you do it again, harder, on a real brief.'});
+  const host=$('mvCur');
+  let wkAt=1;
+  for(const c of CURRICULUM){
+    if(myGen!==gen) return;
+    await paceGate(); if(myGen!==gen) return;
+    const w0=wkAt, w1=wkAt+c.weeks-1; wkAt+=c.weeks;
+    const row=mk('div','rmrow');
+    row.innerHTML='<div class="rmrail"><span class="rmnode"></span>'
+      +'<span class="rmwk">'+(w0===w1?('Week '+w0):('Weeks '+w0+'\u2013'+w1))+'</span></div>';
+    const slot=mk('div','rmslot'); row.appendChild(slot);
+    host.appendChild(row);
+    const card=mvpScCard(c);
+    await ghostIn(card,58,430,slot);
+    row.classList.add('on');
+    gsap.fromTo(card.querySelectorAll('.mtag'),{opacity:0,y:8,scale:.92},
+      {opacity:1,y:0,scale:1,duration:.45,ease:'back.out(1.6)',stagger:.06,delay:.1});
+    /* the one being spoken about shines; the rest settle back */
+    host.querySelectorAll('.mvsc,.mvunlock').forEach(x=>x.classList.remove('mvlit'));
+    card.classList.add('mvlit');
+    if(typeof sheen==='function'){ try{ sheen(card,.8); }catch(e){} }
+    if(c.unlock){
+      await wait(260); if(myGen!==gen) return;
+      const ur=mk('div','rmrow mile on');
+      ur.innerHTML='<div class="rmrail"><span class="rmnode spark">'+(I.spark||'')+'</span>'
+        +'<span class="rmwk">Unlock</span></div>';
+      const us=mk('div','rmslot'); ur.appendChild(us);
+      const u=mk('div','mvunlock'+(c.unlock[3]?' '+c.unlock[3]:''));
+      u.innerHTML='<span class="mue">'+c.unlock[0]+'</span><span>'+c.unlock[1]+'</span><span class="mus">'+c.unlock[2]+'</span>';
+      us.appendChild(u);
+      host.appendChild(ur);
+      enter([u],{y:12,blur:6,duration:.5},1000);
+      sfx('sparkle');
+    }
+  }
+  await wait(450); if(myGen!==gen) return;
+  const hostAll=$('mvCur'); if(hostAll) hostAll.querySelectorAll('.mvlit').forEach(x=>x.classList.remove('mvlit'));
+  const q=document.querySelector('#turn .q');
+  if(q){ await new Promise(res=>{ gsap.to(q,{opacity:0,y:-8,duration:.3,onComplete:()=>{
+      q.textContent='Seven weeks from level one to that portfolio. This is the road.';
+      gsap.to(q,{opacity:1,y:0,duration:.45,ease:'power2.out',onComplete:res}); }}); }); }
+  if(myGen!==gen) return;
+  /* the button sits with the line, not a screen away from it */
+  const qb=document.querySelector('#turn .qbox')||document.querySelector('#turn');
+  if(qb){
+    const b=mk('button','dbig inlinecta','Show me how this works');
+    b.onclick=()=>{ if(locked) return; locked=true; sfx('droplet'); flowCredit(); drawerShut(); go(mvpWhy); };
+    qb.appendChild(b);
+    enter([b],{y:14,blur:6,duration:.55},1100);
+    dockHide();
+  } else cta('Show me how this works',()=>{ flowCredit(); drawerShut(); go(mvpWhy); });
 }
 
 /* ---- outcome: the portfolio, then the one line that matters ---- */
@@ -8661,7 +8753,6 @@ function pf3Card(p,i){
         +'<span class="pf3rule"></span>'
         +'<span class="pf3z">ZERO · CASE STUDY</span>'
       +'</div>'
-      +'<span class="pf3vid"><video src="zero-portfolio-student/bubble-'+p.vid+'.mp4" muted loop autoplay playsinline preload="metadata"></video></span>'
     +'</div>'
     +'<div class="pf3b">'
       +'<div class="pf3t1">'+p.title+'</div>'
@@ -8671,8 +8762,6 @@ function pf3Card(p,i){
           +(LOGO[t]?LOGO[t]+'<span>'+t+'</span>':'<span>'+t+'</span>')+'</span>').join('')
       +'</div>'
       +'<div class="pf3foot">'
-        +'<span class="pf3f">'+(I.play||'')+'<span>Presentation · '+p.dur+'</span></span>'
-        +'<span class="pf3f">'+(I.doc||'')+'<span>'+p.file+'</span></span>'
         +'<span class="pf3mgr"><span class="pf3ma" style="'+avStyle(p.mgr)+'">'
           +'<img src="'+(MFACE[p.mgr]||'')+'" alt="" onerror="this.remove()"><i>'+p.mgr.charAt(0)+'</i></span>'
           +p.mgr+' · '+p.mrole+'</span>'
@@ -8700,9 +8789,9 @@ function buildPf3(host){
       +'</div>'
       +'<div class="pf3about">I work best on a framed problem with the data in hand. I build the model, '
         +'isolate one driver, size the opportunity, and open the write-up with the recommendation.</div>'
-      +'<div class="pf3lv"><span class="pf3lvp">Communication <i>·</i><b>Proficient</b></span>'
-        +'<span class="pf3lvp">Problem framing <i>·</i><em>Developing</em></span></div>'
     +'</div>';
+  const paper=mk('div','pf3paper');
+  paper.appendChild(w.querySelector('.pf3headw'));
   const ps=mk('section','pf3sec'); ps.id='pf3-projects';
   ps.appendChild(mk('div','pf3h','Projects'));
   const list=mk('div','pf3list');
@@ -8717,7 +8806,7 @@ function buildPf3(host){
       gsap.fromTo(r,{y:16,opacity:0},{y:0,opacity:1,duration:.55,ease:'power3.out'}); });
     more.style.display='none'; sfx('open'); };
   ps.appendChild(more);
-  w.appendChild(ps);
+  paper.appendChild(ps);
   const ex=mk('section','pf3sec'); ex.id='pf3-exp';
   ex.appendChild(mk('div','pf3h','Experience'));
   [['Wealthsimple','Internship','Data and Analytics Intern','May 2024 to Aug 2024 · Toronto · Hybrid',
@@ -8732,7 +8821,7 @@ function buildPf3(host){
        +'<span class="pf3xd">'+desc+'</span></span>';
      ex.appendChild(r);
    });
-  w.appendChild(ex);
+  paper.appendChild(ex);
   const cr=mk('section','pf3sec'); cr.id='pf3-edu';
   cr.appendChild(mk('div','pf3h','Achievements and credentials'));
   [['Google','Google Data Analytics Professional Certificate','Google · Aug 2024',''],
@@ -8750,7 +8839,8 @@ function buildPf3(host){
     +'<span class="pf3gpa">3.4/4.0</span>';
   cr.appendChild(mk('div','pf3h sub','Academics'));
   cr.appendChild(ac);
-  w.appendChild(cr);
+  paper.appendChild(cr);
+  w.appendChild(paper);
   host.appendChild(w);
   return w;
 }
