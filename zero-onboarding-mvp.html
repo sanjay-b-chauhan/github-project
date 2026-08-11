@@ -1530,7 +1530,13 @@ body.noico .vt .vti{ display:none; }
 #vt_location{ --tt-location:#ff6a4d; }
 #vt_pull{ --tt-pull:#a78bfa; }
 #vt_plan{ --tt-plan:#0084CE; }
-#vt_roles{ --tt-roles:#c9a227; }
+.vzroles{ background:var(--card); border:1px solid var(--line); border-radius:22px;
+  padding:16px 18px 14px; margin:0 0 12px;
+  box-shadow:0 3px 8px rgba(0,0,0,.04), 0 18px 44px -16px rgba(0,0,0,.12); }
+.vroh{ display:flex; align-items:baseline; gap:10px; margin:0 0 11px; }
+.vroh b{ font-size:13.5px; font-weight:700; letter-spacing:-.02em; }
+.vroh span{ font-size:11.5px; color:var(--tx-3); }
+.vrogrid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:5px 16px; }
 .vroles{ display:flex; flex-direction:column; gap:8px; }
 .vrole{ display:flex; align-items:center; gap:11px; padding:9px 11px; border-radius:13px;
   background:var(--card); border:1px solid var(--line-2);
@@ -2045,15 +2051,17 @@ body.align .col .q{ font-size:clamp(30px,2.9vw,50px); }
 .jobs{ display:flex; flex-direction:column; gap:11px; width:min(560px,92%); margin:34px auto 0; }
 /* real jobs, with the money where the eye lands */
 /* three squares in a row: the money is the number, in our own type */
-.rls{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px;
-  width:100%; max-width:600px; margin:36px auto 32px; }
-.rlc{ aspect-ratio:1/1; display:flex; flex-direction:column; align-items:flex-start;
-  padding:16px; border-radius:24px; text-align:left; min-width:0; overflow:hidden;
+.rls{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px;
+  width:100%; max-width:620px; margin:22px auto 20px; }
+body.rolesq .col .q{ font-size:clamp(21px,1.9vw,29px); max-width:34ch; }
+body.rolesq .mid{ padding-top:110px; padding-bottom:118px; }
+.rlc{ display:flex; flex-direction:column; align-items:flex-start;
+  padding:12px 13px 11px; border-radius:18px; text-align:left; min-width:0; overflow:hidden;
   background:var(--card); border:1px solid var(--line);
   box-shadow:0 3px 8px rgba(0,0,0,.05), 0 18px 44px -16px rgba(0,0,0,.16);
   transition:transform .45s var(--e,cubic-bezier(.625,.05,0,1)), box-shadow .45s ease; }
 .rlc:hover{ transform:translateY(-3px); box-shadow:0 26px 56px -18px rgba(0,0,0,.22); }
-.rlg{ width:30px; height:30px; flex-shrink:0; border-radius:10px; margin-bottom:auto;
+.rlg{ width:24px; height:24px; flex-shrink:0; border-radius:8px; margin-bottom:8px;
   background:color-mix(in srgb, var(--tx) 7%, transparent);
   display:flex; align-items:center; justify-content:center; }
 body.dark .rlg{ background:#EDEAE4; }
@@ -8030,26 +8038,56 @@ const ROLESETS={
   {co:'Stripe', title:'Business Analyst, Payments', where:'Toronto', pay:'$85\u2013105k'},
   {co:'Notion', title:'Growth Analyst', where:'New York', pay:'$90\u2013115k'},
   {co:'Salesforce', title:'Revenue Operations Analyst', where:'Toronto', pay:'$80\u2013100k'},
+  {co:'Shopify', title:'Business Operations Analyst', where:'Remote', pay:'$85\u2013110k'},
+  {co:'DoorDash', title:'Strategy and Ops Associate', where:'Toronto', pay:'$95\u2013120k'},
+  {co:'Uber', title:'Business Analyst, Mobility', where:'Toronto', pay:'$85\u2013110k'},
+  {co:'Spotify', title:'Revenue Analyst', where:'New York', pay:'$90\u2013110k'},
+  {co:'Figma', title:'Business Operations Analyst', where:'Remote', pay:'$95\u2013120k'},
+  {co:'Google', title:'Business Analyst, gTech', where:'Toronto', pay:'$95\u2013125k'},
  ],
  growth:[
   {co:'Notion', title:'Growth Analyst', where:'New York', pay:'$90\u2013115k'},
   {co:'DoorDash', title:'Growth Strategy Associate', where:'Toronto', pay:'$95\u2013120k'},
   {co:'Shopify', title:'Lifecycle and Retention Analyst', where:'Remote', pay:'$85\u2013110k'},
+  {co:'Stripe', title:'Growth Operations Analyst', where:'Toronto', pay:'$90\u2013115k'},
+  {co:'Spotify', title:'Growth Insights Analyst', where:'New York', pay:'$90\u2013115k'},
+  {co:'Uber', title:'Growth Analyst, Rider', where:'Toronto', pay:'$90\u2013115k'},
+  {co:'Figma', title:'Growth Data Analyst', where:'Remote', pay:'$95\u2013120k'},
+  {co:'Netflix', title:'Acquisition Analyst', where:'Remote', pay:'$100\u2013130k'},
+  {co:'Google', title:'Growth Marketing Analyst', where:'Toronto', pay:'$95\u2013120k'},
  ],
  strategy:[
   {co:'DoorDash', title:'Strategy and Operations Associate', where:'Toronto', pay:'$95\u2013120k'},
   {co:'Salesforce', title:'Business Strategy Analyst', where:'Toronto', pay:'$90\u2013115k'},
   {co:'Stripe', title:'Commercial Strategy Analyst', where:'New York', pay:'$100\u2013125k'},
+  {co:'Uber', title:'Strategy and Planning Analyst', where:'Toronto', pay:'$95\u2013120k'},
+  {co:'Notion', title:'Strategic Finance Analyst', where:'New York', pay:'$100\u2013125k'},
+  {co:'Shopify', title:'Corporate Strategy Analyst', where:'Remote', pay:'$95\u2013120k'},
+  {co:'Netflix', title:'Strategy Analyst, Content', where:'Remote', pay:'$105\u2013135k'},
+  {co:'Spotify', title:'Business Strategy Associate', where:'New York', pay:'$95\u2013120k'},
+  {co:'Google', title:'Strategy and Insights Analyst', where:'Toronto', pay:'$100\u2013130k'},
  ],
  data:[
   {co:'Stripe', title:'Data Analyst, Payments', where:'Toronto', pay:'$90\u2013115k'},
   {co:'Notion', title:'Product Data Analyst', where:'New York', pay:'$95\u2013120k'},
   {co:'Shopify', title:'Analytics Engineer, Merchant', where:'Remote', pay:'$100\u2013125k'},
+  {co:'Salesforce', title:'Business Intelligence Analyst', where:'Toronto', pay:'$85\u2013110k'},
+  {co:'Uber', title:'Data Analyst, Marketplace', where:'Toronto', pay:'$90\u2013115k'},
+  {co:'Spotify', title:'Data Analyst, Insights', where:'New York', pay:'$95\u2013120k'},
+  {co:'DoorDash', title:'Analytics Associate', where:'Toronto', pay:'$90\u2013115k'},
+  {co:'Figma', title:'Product Analyst, Data', where:'Remote', pay:'$100\u2013125k'},
+  {co:'Google', title:'Data Analyst, Ads', where:'Toronto', pay:'$100\u2013130k'},
  ],
  product:[
   {co:'Notion', title:'Product Analyst', where:'New York', pay:'$95\u2013120k'},
   {co:'Stripe', title:'Product Operations Analyst', where:'Toronto', pay:'$90\u2013115k'},
   {co:'DoorDash', title:'Associate Product Manager', where:'Toronto', pay:'$105\u2013130k'},
+  {co:'Shopify', title:'Product Insights Analyst', where:'Remote', pay:'$95\u2013120k'},
+  {co:'Figma', title:'Product Operations Associate', where:'Remote', pay:'$95\u2013120k'},
+  {co:'Uber', title:'Product Analyst, Delivery', where:'Toronto', pay:'$95\u2013120k'},
+  {co:'Spotify', title:'Product Insights Analyst', where:'New York', pay:'$95\u2013120k'},
+  {co:'Netflix', title:'Product Analyst, Growth', where:'Remote', pay:'$105\u2013135k'},
+  {co:'Google', title:'Associate Product Analyst', where:'Toronto', pay:'$100\u2013130k'},
  ],
 };
 function roleSetFor(text){
@@ -8078,7 +8116,8 @@ function roleCards(box,list,delay){
 async function mvpRoles(again){
   atStep('Roles');
   const myGen=gen;
-  setPhase(0);
+  if(document.body.classList.contains('dark')){ await lightsUp(); }
+  setPhase(1);
   /* the answer lands on the board, so the board has to be here */
   boardLive=true;
   if(!panelBorn) bornPanel();
@@ -8095,8 +8134,10 @@ async function mvpRoles(again){
     await voLine('So what kind of roles are you aiming for?',2100);
     if(myGen!==gen) return;
   }
+  document.body.classList.add('rolesq');
   const {box}=turn({q: again ? 'Okay. These are the roles. I think this is you.'
                             : 'Real examples of the jobs you would be going for.'});
+  box.addEventListener('DOMNodeRemoved',()=>{},false);
   qWide=false;
   roleCards(box,list,.3);
   await wait(1600); if(myGen!==gen) return;
@@ -8104,19 +8145,22 @@ async function mvpRoles(again){
     flowCredit();
     if(v==='yes'){
       go(async()=>{
+        document.body.classList.remove('rolesq');
         P.roles=list;
-        renderBoard(); mvpFeed('roles'); sfx('success');
-        await wait(360);
-        mvpFocus('roles');
-        await voLine('Good. Then that is what we are building for.',2200);
-        vzCam();
-        mvpVision();
+        renderRolesOut(); sfx('success');
+        const ro=$('vzroles');
+        if(ro) gsap.fromTo(ro.querySelectorAll('.vrole,.vroh'),{opacity:0,y:12},
+          {opacity:1,y:0,duration:.5,stagger:.05,ease:'power3.out'});
+        vzFit(true);
+        await voLine('Good. Then that is what we are building for.',2300);
+        mvpPlan();
       });
     } else go(mvpRolesEdit);
   },{pill:true,nomorph:true});
 }
 /* not quite: what are you actually after? */
 function mvpRolesEdit(){
+  document.body.classList.remove('rolesq');
   const {box}=turn({q:"What doesn't line up? Tell me the roles you have in mind."});
   devPills(box,['I am more after growth roles than pure reporting.'],t=>take(t));
   const take=async t=>{
@@ -8663,7 +8707,7 @@ async function mvpOutcome(){
     gsap.set([claim,paper],{opacity:0});
     const pr=paper.getBoundingClientRect(), sr=sc.getBoundingClientRect();
     const cx=pr.left+pr.width/2, cy=pr.top+Math.min(230,pr.height/2);
-    [...vz.querySelectorAll('.vt')].forEach((t9,i)=>{
+    [...vz.querySelectorAll('.vt,.vzroles')].forEach((t9,i)=>{
       const r=t9.getBoundingClientRect();
       gsap.to(t9,{x:'+='+(cx-(r.left+r.width/2)),y:'+='+(cy-(r.top+r.height/2)),
         scale:.18,opacity:0,duration:.8,delay:i*.035,ease:'power3.in'});
@@ -8791,13 +8835,25 @@ function mvpFeed(key){
   gsap.fromTo(bits,{opacity:0,y:10,filter:'blur(5px)'},
     {opacity:1,y:0,filter:'blur(0px)',duration:.55,ease:'power2.out',stagger:.08});
 }
+/* the output, separated from the data: the jobs sit above the board */
+function renderRolesOut(){
+  const vz=$('vz'); if(!vz||!(P.roles&&P.roles.length)) return;
+  let ro=$('vzroles');
+  if(!ro){ ro=mk('div','vzroles'); ro.id='vzroles'; vz.insertBefore(ro,vz.firstChild); }
+  ro.innerHTML='<div class="vroh"><b>The jobs you are going for</b>'
+    +'<span>'+P.roles.length+' doors your board opens</span></div>'
+    +'<div class="vrogrid">'+P.roles.map(r=>
+      '<div class="vrole"><span class="vrl">'+(LOGO[r.co]||I.spark)+'</span>'
+      +'<span class="vrb"><b>'+r.title+'</b><span>'+r.co+' · '+r.where+'</span></span>'
+      +'<span class="vrp">'+r.pay+'</span></div>').join('')+'</div>';
+}
 /* on the yes: the whole board stacks to the centre, holds, hands off */
 async function mvpGather(keep){
   const vz=$('vz'); if(!vz) return;
   const host=$('scroll');
   vzHome(true);
   await wait(430);
-  const tiles=[...vz.querySelectorAll('.vt')].filter(t9=>!t9.classList.contains('ghost'));
+  const tiles=[...vz.querySelectorAll('.vt,.vzroles')].filter(t9=>!t9.classList.contains('ghost'));
   if(!tiles.length) return;
   const hr=(host||vz).getBoundingClientRect();
   const cx=hr.left+hr.width/2, cy=hr.top+Math.min(hr.height*.46,380);
@@ -9489,12 +9545,6 @@ const VTILES=[
     +'<div class="vpr on"><span class="vem">'+vflag(P.location)+'</span><b>'+P.location+'</b><span class="vnow">now</span></div>'
     +(P.citynext?'<div class="vpr"><span class="vem">'+vflag(P.citynext)+'</span><b>'+P.citynext+'</b><span class="vnow">next</span></div>':'')
     +'</div>'},
- {key:'roles', span:'s2', emoji:'🎯', label:'The roles you want',
-  ready:()=>!!(P.roles&&P.roles.length),
-  html:()=>'<div class="vroles">'+P.roles.map(r=>
-    '<div class="vrole"><span class="vrl">'+(LOGO[r.co]||I.spark)+'</span>'
-    +'<span class="vrb"><b>'+r.title+'</b><span>'+r.co+' · '+r.where+'</span></span>'
-    +'<span class="vrp">'+r.pay+'</span></div>').join('')+'</div>'},
  {key:'exp', span:'s2', emoji:'💼', label:'Experience so far',
   ready:()=>!!P.interned,
   html:()=>'<div class="vpills"><span class="vpill sm">'+vpic('work')+'<b>'+P.interned+'</b></span>'
@@ -9669,7 +9719,6 @@ ALIGN.forEach((st,i2)=>DBG_STEPS.push([st.label,()=>{ ALAT=i2; bornPanel();
   const vz=$('vz'); if(vz) vz.remove();
   renderBoard(); mvpAlign(); }]));
 [['Roles',   ()=>{ bornPanel(); const vz=$('vz'); if(vz) vz.remove(); renderBoard(); mvpRoles(); }],
- ['Vision',  ()=>{ bornPanel(); const vz=$('vz'); if(vz) vz.remove(); renderBoard(); mvpVision(); }],
  ['Plan',    ()=>{ if(panelBorn) drawerShut(); mvpPlan(); }],
  ['Outcome', ()=>mvpOutcome()],
  ['Roadmap', ()=>mvpRoadmap()],
