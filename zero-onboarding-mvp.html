@@ -1664,6 +1664,38 @@ body.dark .lit{ animation-name:litd; }
 .dockin{ position:relative; }
 .dmailhint{ position:absolute; left:50%; transform:translateX(-50%); top:calc(100% + 7px);
   white-space:nowrap; font-size:12.5px; color:#c0392b; }
+/* the portfolio going out, and the answers coming back */
+.sout{ display:flex; flex-direction:column; gap:10px; width:min(520px,92%); margin:34px auto 0; }
+.sor{ display:flex; align-items:center; gap:13px; padding:13px 16px; border-radius:15px;
+  background:var(--card); border:1px solid var(--line); text-align:left;
+  box-shadow:0 8px 22px rgba(0,0,0,.05); transition:box-shadow .5s ease, border-color .5s ease; }
+.sor .sol{ width:32px; height:32px; flex-shrink:0; border-radius:10px; background:#fff;
+  border:1px solid var(--line-2); display:flex; align-items:center; justify-content:center; }
+.sor .sol svg{ width:17px; height:17px; }
+.sor .sob{ flex:1; min-width:0; display:flex; flex-direction:column; }
+.sor .sob b{ font-size:14px; font-weight:600; letter-spacing:-.02em; }
+.sor .sos{ font-size:12.5px; color:var(--tx-3); margin-top:2px; }
+.sor .sod{ display:flex; gap:4px; flex-shrink:0; }
+.sor .sod i{ width:5px; height:5px; border-radius:50%; background:var(--tx-4);
+  animation:sodp 1.1s ease-in-out infinite; }
+.sor .sod i:nth-child(2){ animation-delay:.15s; } .sor .sod i:nth-child(3){ animation-delay:.3s; }
+@keyframes sodp{ 0%,100%{ opacity:.3; } 50%{ opacity:1; } }
+.sor.sent .sod i{ animation:none; background:#2e9e5b; opacity:1; }
+.sor.back{ border-color:rgba(47,156,69,.45); box-shadow:0 12px 30px rgba(47,156,69,.16); }
+.sor.back .sos{ color:#2f9c45; font-weight:600; }
+.sor.back .sod{ display:none; }
+.sor.back::after{ content:'✦'; font-size:13px; color:#2f9c45; }
+/* the standing band: the first thing the eye lands on */
+.pfstand{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin:0 0 18px; }
+.pfrank{ display:inline-flex; align-items:baseline; gap:7px; padding:9px 16px; border-radius:14px;
+  background:linear-gradient(135deg,#18432f,#1d5238); color:#eafff0;
+  box-shadow:0 10px 26px rgba(24,67,47,.28); }
+.pfrank b{ font-family:var(--serif); font-size:23px; letter-spacing:-.03em; }
+.pfrank span{ font-size:11.5px; opacity:.82; }
+.pfsig{ display:inline-flex; align-items:center; gap:7px; height:34px; padding:0 14px;
+  border-radius:999px; background:var(--card); border:1px solid var(--line);
+  font-size:12.5px; font-weight:500; color:var(--tx-2); }
+.pfsig b{ font-weight:700; color:var(--tx); }
 /* the outcome line, big */
 .q.qhero{ font-size:clamp(30px,2.6vw,46px); max-width:24ch; }
 /* ── the road: a titled, top-to-bottom timeline ── */
@@ -7843,11 +7875,11 @@ async function mvpPlan(){
       choices(b3,[['check','Yes, this is me','yes']],async ()=>{
         flowCredit(); sfx('success');
         await mvpGather(); if(myGen!==gen) return;
-        go(mvpRoadmap);
+        go(mvpOutcome);
       },{pill:true,nomorph:true});
       return;
     }
-    mvpRoadmap();
+    mvpOutcome();
   },{pill:true,nomorph:true});
 }
 
@@ -7981,18 +8013,18 @@ async function mvpRoadmap(){
   const tot=CURRICULUM.reduce((a,c)=>a+c.weeks,0);
   const q=document.querySelector('#turn .q');
   if(q){ await new Promise(res=>{ gsap.to(q,{opacity:0,y:-8,duration:.3,onComplete:()=>{
-      q.textContent='After '+tot+' weeks you have a portfolio that puts you in the top 1% of candidates.';
+      q.textContent='Seven weeks from level one to that portfolio. This is the road.';
       gsap.to(q,{opacity:1,y:0,duration:.45,ease:'power2.out',onComplete:res}); }}); }); }
   if(myGen!==gen) return;
   /* the button sits with the line, not a screen away from it */
   const qb=document.querySelector('#turn .qbox')||document.querySelector('#turn');
   if(qb){
-    const b=mk('button','dbig inlinecta','See my future portfolio');
-    b.onclick=()=>{ if(locked) return; locked=true; sfx('droplet'); flowCredit(); go(mvpOutcome); };
+    const b=mk('button','dbig inlinecta','Show me how this works');
+    b.onclick=()=>{ if(locked) return; locked=true; sfx('droplet'); flowCredit(); drawerShut(); go(mvpWhy); };
     qb.appendChild(b);
     enter([b],{y:14,blur:6,duration:.55},1100);
     dockHide();
-  } else cta('See my future portfolio',()=>{ flowCredit(); go(mvpOutcome); });
+  } else cta('Show me how this works',()=>{ flowCredit(); drawerShut(); go(mvpWhy); });
 }
 
 /* ---- outcome: the portfolio, then the one line that matters ---- */
@@ -8078,6 +8110,39 @@ function buildMvpPortfolio(h){
   w.appendChild(xp);
   h.appendChild(w);
 }
+/* the portfolio goes out to the dream companies, and the room answers */
+async function sendOut(box){
+  const myGen=gen;
+  const w=mk('div','sout');
+  const rows=JOBS.map(j=>{
+    const r=mk('div','sor');
+    r.innerHTML='<span class="sol">'+(LOGO[j.co]||I.spark)+'</span>'
+      +'<span class="sob"><b>'+j.co+'</b><span class="sos">Sending your portfolio</span></span>'
+      +'<span class="sod"><i></i><i></i><i></i></span>';
+    w.appendChild(r); return r;
+  });
+  box.appendChild(w);
+  gsap.fromTo(rows,{y:14,opacity:0},{y:0,opacity:1,duration:.55,stagger:.13,ease:'power3.out'});
+  await wait(1500); if(myGen!==gen) return;
+  for(let i=0;i<rows.length;i++){
+    if(myGen!==gen) return;
+    const r=rows[i], s=r.querySelector('.sos'), d=r.querySelector('.sod');
+    r.classList.add('sent');
+    s.textContent='Portfolio delivered';
+    await wait(560); if(myGen!==gen) return;
+  }
+  await wait(600); if(myGen!==gen) return;
+  /* the answers: this is the part that lands */
+  for(let i=0;i<rows.length;i++){
+    if(myGen!==gen) return;
+    const r=rows[i], s=r.querySelector('.sos');
+    r.classList.remove('sent'); r.classList.add('back');
+    s.textContent='Interview request';
+    gsap.fromTo(r,{scale:.985},{scale:1,duration:.5,ease:'back.out(2.2)'});
+    sfx('success');
+    await wait(760); if(myGen!==gen) return;
+  }
+}
 /* the portfolio panel is the one surface the reader may scroll themselves */
 function pfScroll(on){
   const s=$('scroll'); if(!s) return;
@@ -8103,6 +8168,32 @@ async function mvpOutcome(){
     h.appendChild(fr);
     root=fr.attachShadow({mode:'open'});
     root.innerHTML=snap||'<div style="padding:40px;font:14px sans-serif;color:#999">The portfolio preview could not load.</div>';
+    /* the standing band: what a recruiter reads in the first two seconds */
+    const ex=document.createElement('style');
+    ex.textContent=
+      '.pfsnaproot [style*="rgb(220, 220, 220)"]{display:none !important;}'
+     +'.pfstand{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 22px;'
+     +'font-family:Google_Sans_Flex,-apple-system,system-ui,sans-serif;}'
+     +'.pfrank{display:inline-flex;align-items:baseline;gap:8px;padding:10px 17px;border-radius:15px;'
+     +'background:linear-gradient(135deg,#18432f,#1d5238);color:#eafff0;'
+     +'box-shadow:0 12px 30px rgba(24,67,47,.3);}'
+     +'.pfrank b{font-family:STK_Bureau_Serif,Georgia,serif;font-size:25px;letter-spacing:-.03em;line-height:1;}'
+     +'.pfrank span{font-size:11.5px;opacity:.85;}'
+     +'.pfsig{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 15px;border-radius:999px;'
+     +'background:#fff;border:1px solid rgba(31,29,30,.09);font-size:12.5px;color:rgba(31,29,30,.62);}'
+     +'.pfsig b{font-weight:700;color:#1F1D1E;}'
+     +'.pflitband{border-radius:18px;transition:box-shadow .7s cubic-bezier(.625,.05,0,1);}'
+     +'.pflitband.on{box-shadow:0 0 0 1.5px rgba(20,20,20,.12),0 20px 50px rgba(0,0,0,.09);}';
+    root.appendChild(ex);
+    const snaproot=root.querySelector('.pfsnaproot');
+    if(snaproot){
+      const band=document.createElement('div');
+      band.className='pfstand pflit';
+      band.innerHTML='<span class="pfrank"><b>Top 4%</b><span>of analyst portfolios on Zero</span></span>'
+        +'<span class="pfsig"><b>Interview ready</b></span>'
+        +'<span class="pfsig"><b>5</b> projects, every one manager reviewed</span>';
+      snaproot.insertBefore(band,snaproot.firstChild);
+    }
     /* structure only: a click never does anything, scrolling always does */
     root.addEventListener('click',e=>{ e.preventDefault(); e.stopPropagation(); },true);
   },false,false);
@@ -8132,7 +8223,8 @@ async function mvpOutcome(){
   /* top to bottom, one section at a time, the way you would present it */
   const walk=[
     [null, 'This is your portfolio at the end of the road, '+P.name+'.', 2500],
-    [null, 'Up top, who you are and how you actually work.', 2300],
+    [()=>root&&root.querySelector('.pfstand'), 'Top 4% of analyst portfolios on Zero. A recruiter reads that before anything else.', 3100],
+    [null, 'Then who you are, and how you actually work.', 2300],
     [()=>sect(null,'projects'), 'Five projects. Every one a real brief, with the deliverable attached.', 2900],
     [()=>sect('#sec-experience','experience'), 'Your Wealthsimple internship carried straight over from your LinkedIn.', 2900],
     [()=>sect('#sec-credential','achievements'), 'What you earned along the way.', 2100],
@@ -8162,8 +8254,14 @@ async function mvpOutcome(){
   jobList(rb,.3);
   await wait(2600); if(myGen!==gen) return;
   clearTurn(); await wait(300); if(myGen!==gen) return;
-  const {box}=turn({q:'I cannot hand you the job. I can get you the portfolio that wins it.'});
-  cta('How do I get there?',()=>{ flowCredit(); drawerShut(); go(mvpWhy); });
+  const {box}=turn({q:'And Zero does not sit on it. It goes out.'});
+  await sendOut(box); if(myGen!==gen) return;
+  await wait(700); if(myGen!==gen) return;
+  clearTurn(); await wait(320); if(myGen!==gen) return;
+  qWide=true;
+  turn({q:'That is where you could be seven weeks from now. Now let me show you the road from level one.'});
+  qWide=false;
+  cta('Show me the road',()=>{ flowCredit(); go(mvpRoadmap); });
 }
 
 /* ---- launch: why Zero, one container at a time, text at the bottom ---- *//* ---- launch: why Zero, one container at a time, text at the bottom ---- */
@@ -8972,8 +9070,8 @@ ALIGN.forEach((st,i2)=>DBG_STEPS.push([st.label,()=>{ ALAT=i2; bornPanel();
   renderBoard(); mvpAlign(); }]));
 [['Vision',  ()=>{ bornPanel(); const vz=$('vz'); if(vz) vz.remove(); renderBoard(); mvpVision(); }],
  ['Plan',    ()=>{ if(panelBorn) drawerShut(); mvpPlan(); }],
- ['Roadmap', ()=>mvpRoadmap()],
  ['Outcome', ()=>mvpOutcome()],
+ ['Roadmap', ()=>mvpRoadmap()],
  ['Why Zero',()=>{ if(panelBorn) drawerShut(); WHYAT=0; mvpWhy(); }],
  ['Claim',   ()=>{ if(panelBorn) drawerShut(); mvpClaim(); }],
  ['Handoff', ()=>{ if(panelBorn) drawerShut(); mvpFinish('sanjay@z-ro.co'); }]]
