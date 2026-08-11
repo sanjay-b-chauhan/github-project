@@ -1555,9 +1555,10 @@ body.noico .vpi{ display:none; }
 .vpile .vpr{ align-items:center; }
 /* the board fades at the edges instead of being cut by the frame */
 body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
-.paper.canvas{ -webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 28px,
-  #000 calc(100% - 22px), transparent 100%);
-  mask-image:linear-gradient(to bottom, transparent 0, #000 28px, #000 calc(100% - 22px), transparent 100%); }
+.paper.canvas{ -webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 13px,
+  #000 calc(100% - 12px), transparent 100%);
+  mask-image:linear-gradient(to bottom, transparent 0, #000 13px, #000 calc(100% - 12px), transparent 100%); }
+.paper.canvas .vz{ padding-top:16px; }
 /* the free hand: a quiet zoom pill, and a grabbing cursor while you drag */
 .scroll.ctr{ cursor:grab; }
 .scroll.ctr.vzcv{ overflow:hidden; overscroll-behavior:contain; }
@@ -1707,6 +1708,88 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .dockin{ position:relative; }
 .dmailhint{ position:absolute; left:50%; transform:translateX(-50%); top:calc(100% + 7px);
   white-space:nowrap; font-size:12.5px; color:#c0392b; }
+/* ══ the portfolio: paper on the panel, nothing boxed in a box ══ */
+.pf3{ text-align:left; padding:2px 2px 30px; }
+.pf3top{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin:0 0 26px;
+  border-radius:32px; transition:box-shadow .7s var(--e,cubic-bezier(.625,.05,0,1)); }
+.pf3claim{ font-family:var(--serif); font-size:clamp(24px,2.3vw,34px); line-height:1.14;
+  letter-spacing:-.02em; max-width:20ch; }
+.pf3pill{ display:inline-flex; align-items:center; gap:8px; height:36px; padding:0 16px;
+  border-radius:999px; background:var(--ink); color:var(--on-ink); font-size:13px; font-weight:600;
+  box-shadow:0 10px 24px rgba(0,0,0,.18); white-space:nowrap; }
+.pf3pill svg{ width:14px; height:14px; }
+.pf3head{ display:flex; align-items:center; gap:16px; }
+.pf3av{ position:relative; width:64px; height:64px; flex-shrink:0; border-radius:50%; overflow:hidden;
+  box-shadow:0 0 0 2px var(--card), 0 0 0 4px color-mix(in srgb, var(--commit,#3fb968) 55%, transparent),
+    0 10px 26px rgba(0,0,0,.16); }
+.pf3av video{ width:100%; height:100%; object-fit:cover; display:block; position:relative; z-index:2; }
+.pf3av i{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-family:var(--serif); font-size:25px; color:#fff; font-style:normal; }
+.pf3nm{ display:block; font-family:var(--serif); font-size:clamp(24px,2.1vw,31px); letter-spacing:-.02em; }
+.pf3sub{ display:block; font-size:13.5px; color:var(--tx-3); margin-top:3px; }
+.pf3about{ font-size:14.5px; line-height:1.6; color:var(--tx-2); max-width:62ch; margin:16px 0 0; }
+.pf3sec{ display:block; margin-top:34px; border-radius:32px;
+  transition:box-shadow .7s var(--e,cubic-bezier(.625,.05,0,1)); }
+.pf3h{ font-size:12.5px; font-weight:600; letter-spacing:-.01em; color:var(--tx-3); margin:0 0 14px; }
+/* a project reads as one piece of paper */
+.pf3c{ display:flex; gap:20px; align-items:stretch; background:var(--card); border-radius:32px;
+  padding:18px; margin-bottom:14px; border:1px solid var(--line-2);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7), 0 2px 5px rgba(0,0,0,.04),
+    0 18px 44px -14px rgba(0,0,0,.14);
+  transition:transform .5s var(--e,cubic-bezier(.625,.05,0,1)), box-shadow .5s ease; }
+.pf3c:hover{ transform:translateY(-2px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.75), 0 3px 8px rgba(0,0,0,.05),
+    0 28px 60px -16px rgba(0,0,0,.2); }
+.pf3art{ position:relative; flex:0 0 34%; min-width:0; border-radius:22px; padding:15px 16px;
+  display:flex; flex-direction:column; overflow:hidden;
+  background:linear-gradient(155deg, color-mix(in srgb, var(--pt) 13%, #fff) 0%,
+    color-mix(in srgb, var(--pt) 5%, #fff) 100%);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--pt) 16%, transparent); }
+.pf3lg{ position:relative; z-index:2; width:26px; height:26px; border-radius:8px; background:#fff; display:flex; align-items:center;
+  justify-content:center; box-shadow:0 2px 7px rgba(0,0,0,.1); }
+.pf3lg svg{ width:15px; height:15px; }
+.pf3co{ font-size:11px; font-weight:600; color:var(--tx-3); margin-top:9px; }
+.pf3sh{ font-size:17px; font-weight:700; letter-spacing:-.025em; line-height:1.18; margin-top:auto; }
+.pf3rule{ display:block; width:24px; height:2px; border-radius:2px; background:var(--tx); margin:9px 0 8px; }
+.pf3z{ font-size:8.5px; letter-spacing:.12em; color:var(--tx-4); }
+.pf3vid{ position:absolute; right:12px; top:12px; width:33%; aspect-ratio:1; border-radius:14px;
+  overflow:hidden; border:2px solid #fff; box-shadow:0 8px 20px rgba(0,0,0,.18); }
+.pf3vid video{ width:100%; height:100%; object-fit:cover; display:block; }
+.pf3b{ flex:1; min-width:0; display:flex; flex-direction:column; }
+.pf3t1{ font-family:var(--serif); font-size:18.5px; line-height:1.28; letter-spacing:-.02em; }
+.pf3m{ font-size:13.5px; font-weight:600; color:var(--tx); margin-top:9px;
+  padding-left:11px; border-left:2px solid color-mix(in srgb, var(--pt) 55%, transparent); }
+.pf3tools{ display:flex; flex-wrap:wrap; gap:6px; margin-top:13px; }
+.pf3t{ display:inline-flex; align-items:center; gap:6px; height:27px; padding:0 11px; border-radius:999px;
+  background:var(--wash); border:1px solid var(--line-2); font-size:12.5px; color:var(--tx-2); }
+.pf3t svg{ width:12px; height:12px; }
+.pf3t.sk{ background:transparent; border-style:dashed; }
+.pf3foot{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  margin-top:auto; padding-top:14px; }
+.pf3mgr{ display:inline-flex; align-items:center; gap:8px; font-size:12.5px; color:var(--tx-3); }
+.pf3ma{ position:relative; width:24px; height:24px; border-radius:50%; overflow:hidden; flex-shrink:0;
+  color:#fff; font-size:11px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; }
+.pf3ma img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.pf3ma i{ font-style:normal; }
+.pf3files{ display:inline-flex; gap:7px; flex-wrap:wrap; }
+.pf3f{ display:inline-flex; align-items:center; gap:6px; height:28px; padding:0 12px; border-radius:999px;
+  background:var(--wash); font-size:12px; color:var(--tx-2); }
+.pf3f svg{ width:11px; height:11px; }
+/* history: quieter paper */
+.pf3x{ display:flex; gap:14px; background:var(--card); border-radius:24px; padding:15px 17px;
+  margin-bottom:10px; border:1px solid var(--line-2);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.6), 0 10px 26px -12px rgba(0,0,0,.12); }
+.pf3x.sm{ padding:12px 15px; border-radius:20px; }
+.pf3xl{ width:36px; height:36px; flex-shrink:0; border-radius:11px; background:#fff;
+  border:1px solid var(--line-2); display:flex; align-items:center; justify-content:center; }
+.pf3xl svg{ width:18px; height:18px; }
+.pf3xb{ display:flex; flex-direction:column; min-width:0; }
+.pf3xb b{ font-size:14.5px; font-weight:600; letter-spacing:-.02em; }
+.pf3xc{ font-size:13px; color:var(--tx-2); margin-top:2px; }
+.pf3xw{ font-size:12px; color:var(--tx-3); margin-top:2px; }
+.pf3xd{ font-size:13px; line-height:1.5; color:var(--tx-2); margin-top:6px; }
+/* the beat being spoken about lifts, it never gets outlined */
+.pf3lit.on{ box-shadow:0 0 0 1.5px rgba(20,20,20,.09), 0 22px 54px -18px rgba(0,0,0,.16); }
 /* the portfolio going out, and the answers coming back */
 .sout{ display:flex; flex-direction:column; gap:10px; width:min(520px,92%); margin:34px auto 0; }
 .sor{ display:flex; align-items:center; gap:13px; padding:13px 16px; border-radius:15px;
@@ -8295,8 +8378,115 @@ async function sendOut(box){
 /* the portfolio panel is the one surface the reader may scroll themselves */
 function pfScroll(on){
   const s=$('scroll'); if(!s) return;
+  /* the board's canvas lock belongs to the board alone */
+  if(on) s.classList.remove('vzcv');
   s.style.overflowY=on?'auto':'';
   s.style.overscrollBehavior=on?'contain':'';
+}
+/* ══ the portfolio, built here, from what the user gave us ══ */
+const PF3=[
+ {co:'Stripe', tint:'#635BFF', vid:1, short:'Churn Diagnosis',
+  title:'Churn diagnosis and the three fixes that win the most accounts back',
+  metric:'Traced a 4% churn jump to one step in the pricing flow',
+  tools:['SQL','Metabase','Sheets'], skills:['Funnel analysis','Cohort thinking'],
+  mgr:'Maya Chen', mrole:'Analytics Lead', file:'churn-diagnosis.pdf', dur:'4:12'},
+ {co:'DoorDash', tint:'#FF3008', vid:2, short:'Launch Case',
+  title:'Market entry case and the launch recommendation behind it',
+  metric:'Sized three cities and picked the one worth the spend',
+  tools:['Sheets','Looker'], skills:['Market sizing','Unit economics'],
+  mgr:'Andre Silva', mrole:'Strategy Manager', file:'launch-case.pdf', dur:'3:48'},
+ {co:'Notion', tint:'#0f0f0f', vid:3, short:'Activation Test',
+  title:'Activation experiment, designed and read out to a clean decision',
+  metric:'Found the invite moment that converts free teams',
+  tools:['Amplitude','SQL'], skills:['Experiment design','Activation metrics'],
+  mgr:'Priya Nair', mrole:'Growth PM', file:'activation-readout.pdf', dur:'4:05'},
+ {co:'Salesforce', tint:'#00A1E0', vid:4, short:'Renewal Brief',
+  title:'At risk renewal, read end to end, briefed to the room in one page',
+  metric:'Kept a seven figure renewal on the table',
+  tools:['Salesforce','Slides'], skills:['Account analysis','Exec communication'],
+  mgr:'Tom Okafor', mrole:'RevOps Director', file:'renewal-brief.pdf', dur:'3:30'},
+ {co:'Shopify', tint:'#008060', vid:5, short:'Retention Story',
+  title:'Month two churn, the leak found and the fix put to the team',
+  metric:'Named the moment merchants quietly give up',
+  tools:['SQL','Tableau'], skills:['Retention analysis','Storytelling'],
+  mgr:'Dana Roy', mrole:'Retention Lead', file:'retention-story.pdf', dur:'4:21'},
+];
+function pf3Card(p,i){
+  const c=mk('div','pf3c');
+  c.style.setProperty('--pt',p.tint);
+  const art='<div class="pf3art">'
+    +'<span class="pf3lg">'+(LOGO[p.co]||I.spark)+'</span>'
+    +'<span class="pf3co">'+p.co+'</span>'
+    +'<div class="pf3sh">'+p.short+'</div>'
+    +'<span class="pf3rule"></span>'
+    +'<span class="pf3z">ZERO · CASE STUDY</span>'
+    +'<span class="pf3vid"><video src="zero-portfolio-student/bubble-'+p.vid+'.mp4" muted loop autoplay playsinline preload="metadata"></video></span>'
+    +'</div>';
+  const tools=p.tools.map(t=>'<span class="pf3t">'+(LOGO[t]?LOGO[t]+'<span>'+t+'</span>':'<span>'+t+'</span>')+'</span>').join('');
+  const skills=p.skills.map(s=>'<span class="pf3t sk"><span>'+s+'</span></span>').join('');
+  c.innerHTML=art
+    +'<div class="pf3b">'
+      +'<div class="pf3t1">'+p.title+'</div>'
+      +'<div class="pf3m">'+p.metric+'</div>'
+      +'<div class="pf3tools">'+tools+skills+'</div>'
+      +'<div class="pf3foot">'
+        +'<span class="pf3mgr"><span class="pf3ma" style="'+avStyle(p.mgr)+'">'
+          +'<img src="'+(MFACE[p.mgr]||'')+'" alt="" onerror="this.remove()"><i>'+p.mgr.charAt(0)+'</i></span>'
+          +'Reviewed by '+p.mgr+' · '+p.mrole+'</span>'
+        +'<span class="pf3files"><span class="pf3f">'+(I.play||'')+'<span>Presentation · '+p.dur+'</span></span>'
+        +'<span class="pf3f">'+(I.doc||'')+'<span>'+p.file+'</span></span></span>'
+      +'</div>'
+    +'</div>';
+  return c;
+}
+function buildPf3(host){
+  const w=mk('div','pf3');
+  const nm=P.fullname||P.name||'You';
+  /* the promise, in one line, before anything else */
+  w.innerHTML='<div class="pf3top" id="pf3-top">'
+    +'<div class="pf3claim">This portfolio is what lands you the job.</div>'
+    +'<span class="pf3pill">'+(I.clock||'')+'<span>About 7 weeks to build</span></span>'
+    +'</div>'
+    +'<div class="pf3head">'
+      +'<span class="pf3av"><video src="zero-portfolio-student/intro.mp4" muted loop autoplay playsinline preload="metadata"></video>'
+        +'<i style="'+avStyle(nm)+'">'+nm.charAt(0)+'</i></span>'
+      +'<span class="pf3who"><span class="pf3nm">'+nm+'</span>'
+        +'<span class="pf3sub">'+(P.role||'Business Analyst')+' · '+(P.location||'Toronto')+'</span></span>'
+    +'</div>'
+    +'<div class="pf3about">I work best on a framed problem with the data in hand. I build the model, '
+      +'isolate the driver, size the opportunity, and open the write up with the recommendation.</div>';
+  const ps=mk('section','pf3sec'); ps.id='pf3-projects';
+  ps.appendChild(mk('div','pf3h','Five projects, every one reviewed'));
+  PF3.forEach((p,i)=>ps.appendChild(pf3Card(p,i)));
+  w.appendChild(ps);
+  const ex=mk('section','pf3sec'); ex.id='pf3-exp';
+  ex.appendChild(mk('div','pf3h','Where you have been'));
+  [['Wealthsimple','Data and Analytics Intern','May 2024 to Aug 2024 · Toronto',
+    'Funnel reporting and the weekly KPI dashboards for the self serve funnel.'],
+   ['TMU Analytics Society','Case Team Lead','Sep 2023 to Apr 2024 · Toronto',
+    'Led a four person case team to two regional finals and owned the modelling.']]
+   .forEach(([co,role,when,desc])=>{
+     const r=mk('div','pf3x');
+     r.innerHTML='<span class="pf3xl">'+(LOGO[co]||I.bld||I.spark)+'</span>'
+       +'<span class="pf3xb"><b>'+role+'</b><span class="pf3xc">'+co+'</span>'
+       +'<span class="pf3xw">'+when+'</span><span class="pf3xd">'+desc+'</span></span>';
+     ex.appendChild(r);
+   });
+  w.appendChild(ex);
+  const ed=mk('section','pf3sec'); ed.id='pf3-edu';
+  ed.appendChild(mk('div','pf3h','School and credentials'));
+  [['Toronto Metropolitan University','Bachelor of Commerce, Business Management','Sep 2021 to Apr 2025'],
+   ['Google','Data Analytics Professional Certificate','Aug 2024'],
+   ['DataCamp','SQL for Data Analysis','Jun 2024']]
+   .forEach(([co,what,when])=>{
+     const r=mk('div','pf3x sm');
+     r.innerHTML='<span class="pf3xl">'+(LOGO[co]||I.cap||I.spark)+'</span>'
+       +'<span class="pf3xb"><b>'+what+'</b><span class="pf3xw">'+co+' · '+when+'</span></span>';
+     ed.appendChild(r);
+   });
+  w.appendChild(ed);
+  host.appendChild(w);
+  return w;
 }
 async function mvpOutcome(){
   atStep('Outcome');
@@ -8307,77 +8497,27 @@ async function mvpOutcome(){
   panelBack();
   panelSize(58);
   sfx('sparkle');
-  /* the portfolio's own html, fetched first so the walk can never outrun it */
-  let snap=null;
-  try{ snap=await fetch('zero-portfolio-snap.html?v='+Date.now()).then(r=>r.text()); }catch(e){}
-  if(myGen!==gen) return;
-  let root=null;
-  swapPanel('Your portfolio, at the end of the road',h=>{
-    const fr=mk('div','pfembed');
-    h.appendChild(fr);
-    root=fr.attachShadow({mode:'open'});
-    root.innerHTML=snap||'<div style="padding:40px;font:14px sans-serif;color:#999">The portfolio preview could not load.</div>';
-    /* the standing band: what a recruiter reads in the first two seconds */
-    const ex=document.createElement('style');
-    ex.textContent=
-      '.pfsnaproot [style*="rgb(220, 220, 220)"]{display:none !important;}'
-     +'.pfstand{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 22px;'
-     +'font-family:Google_Sans_Flex,-apple-system,system-ui,sans-serif;}'
-     +'.pfrank{display:inline-flex;align-items:baseline;gap:8px;padding:10px 17px;border-radius:15px;'
-     +'background:linear-gradient(135deg,#18432f,#1d5238);color:#eafff0;'
-     +'box-shadow:0 12px 30px rgba(24,67,47,.3);}'
-     +'.pfrank b{font-family:STK_Bureau_Serif,Georgia,serif;font-size:25px;letter-spacing:-.03em;line-height:1;}'
-     +'.pfrank span{font-size:11.5px;opacity:.85;}'
-     +'.pfsig{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 15px;border-radius:999px;'
-     +'background:#fff;border:1px solid rgba(31,29,30,.09);font-size:12.5px;color:rgba(31,29,30,.62);}'
-     +'.pfsig b{font-weight:700;color:#1F1D1E;}'
-     +'.pflitband{border-radius:18px;transition:box-shadow .7s cubic-bezier(.625,.05,0,1);}'
-     +'.pflitband.on{box-shadow:0 0 0 1.5px rgba(20,20,20,.12),0 20px 50px rgba(0,0,0,.09);}';
-    root.appendChild(ex);
-    const snaproot=root.querySelector('.pfsnaproot');
-    if(snaproot){
-      const band=document.createElement('div');
-      band.className='pfstand pflit';
-      band.innerHTML='<span class="pfrank"><b>Top 4%</b><span>of analyst portfolios on Zero</span></span>'
-        +'<span class="pfsig"><b>Interview ready</b></span>'
-        +'<span class="pfsig"><b>5</b> projects, every one manager reviewed</span>';
-      snaproot.insertBefore(band,snaproot.firstChild);
-    }
-    /* structure only: a click never does anything, scrolling always does */
-    root.addEventListener('click',e=>{ e.preventDefault(); e.stopPropagation(); },true);
-  },false,false);
-  /* the panel mounts a beat after it is asked for: wait for it, never race it */
-  for(let w=0; w<40 && !root; w++){ await wait(60); if(myGen!==gen) return; }
-  pfScroll(true);
-  await wait(220); if(myGen!==gen) return;
-
-  /* the walk is content, never set-up: a stepper jump must not collapse it */
-  fastMode=false;
+  swapPanel('Your portfolio, at the end of the road',h=>{ buildPf3(h); },false,false);
+  await wait(520); if(myGen!==gen) return;
   const sc=$('scroll');
+  /* the reveal never strands invisible: land it, whatever the ticker did */
+  if(sc) gsap.set(sc,{opacity:1,y:0,filter:'blur(0px)'});
+  pfScroll(true);
   const goTo=(el,pad)=>new Promise(res=>{
     if(!el||!sc){ res(); return; }
     gsap.killTweensOf(sc);
     const r=el.getBoundingClientRect(), sr=sc.getBoundingClientRect();
-    const y=sc.scrollTop+(r.top-sr.top)-(pad===undefined?54:pad);
+    const y=sc.scrollTop+(r.top-sr.top)-(pad===undefined?46:pad);
     gsap.to(sc,{scrollTop:Math.max(0,y),duration:1,ease:EIO,onComplete:res});
   });
-  const byHead=t=>{ if(!root) return null;
-    const h=[...root.querySelectorAll('h2')].find(x=>x.textContent.trim().toLowerCase().startsWith(t));
-    return h?(h.closest('section')||h.parentElement):null; };
-  const sect=(sel,head)=>{ if(!root) return null;
-    const byId=sel?root.querySelector(sel):null;
-    return (byId&&(byId.closest('section')||byId.parentElement))||byHead(head); };
-  const lit=(el,on)=>{ if(!el) return; el.classList.add('pflit'); el.classList.toggle('on',on); };
-
-  /* top to bottom, one section at a time, the way you would present it */
+  const lit=(el,on)=>{ if(!el) return; el.classList.add('pf3lit'); el.classList.toggle('on',on); };
+  fastMode=false;
   const walk=[
-    [null, 'This is your portfolio at the end of the road, '+P.name+'.', 2500],
-    [()=>root&&root.querySelector('.pfstand'), 'Top 4% of analyst portfolios on Zero. A recruiter reads that before anything else.', 3100],
-    [null, 'Then who you are, and how you actually work.', 2300],
-    [()=>sect(null,'projects'), 'Five projects. Every one a real brief, with the deliverable attached.', 2900],
-    [()=>sect('#sec-experience','experience'), 'Your Wealthsimple internship carried straight over from your LinkedIn.', 2900],
-    [()=>sect('#sec-credential','achievements'), 'What you earned along the way.', 2100],
-    [()=>sect('#sec-academics','academics'), 'And school last, because here it matters least.', 2400],
+    [()=>$('pf3-top'), 'This is your portfolio at the end of the road, '+(P.name||'')+'.', 2600],
+    [()=>$('pf3-top'), 'One line at the top, and a recruiter already knows what this is.', 2700],
+    [()=>$('pf3-projects'), 'Five projects. Real companies, real tools, and a manager on every one.', 3000],
+    [()=>$('pf3-exp'), 'Your Wealthsimple internship carried straight over from your LinkedIn.', 2900],
+    [()=>$('pf3-edu'), 'School and certificates last, because here they matter least.', 2600],
   ];
   for(const [find,ln,ms] of walk){
     if(myGen!==gen) return;
@@ -8388,14 +8528,12 @@ async function mvpOutcome(){
     if(myGen!==gen) return;
     if(el) lit(el,false);
   }
-  /* then all the way back up, so the whole thing lands as one object */
-  if(sc){ gsap.killTweensOf(sc); gsap.to(sc,{scrollTop:0,duration:1.35,ease:EIO}); }
+  if(sc){ gsap.killTweensOf(sc); gsap.to(sc,{scrollTop:0,duration:1.3,ease:EIO}); }
   sfx('page');
-  await voLine("This is what a hiring manager or a recruiter sees when they're deciding on you.",2900);
+  await voLine("This is what a hiring manager sees when they're deciding on you.",2900);
   if(myGen!==gen) return;
   await voLine('Your proof of work, not a promise.',2300);
   if(myGen!==gen) return;
-  /* what it actually opens: the same rooms, now earned */
   clearTurn(); await wait(280); if(myGen!==gen) return;
   qWide=true;
   const {box:rb}=turn({q:'With this behind you, these stop being a long shot.'});
