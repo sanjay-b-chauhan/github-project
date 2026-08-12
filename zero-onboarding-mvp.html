@@ -1757,12 +1757,33 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .pfamb.a{ left:-16vw; top:-14vw; background:radial-gradient(circle, #d7f1de, transparent 66%); }
 .pfamb.b{ right:-16vw; bottom:-18vw; background:radial-gradient(circle, #e3f3e6, transparent 66%); }
 .pfstage.on .pfamb{ opacity:.9; }
-.pfsheetw{ position:absolute; left:50%; top:92px; bottom:0; width:min(900px,74vw);
-  margin-left:calc(min(900px,74vw) / -2); overflow:hidden; overflow-x:hidden;
+.pfsheetw{ position:absolute; left:50%; top:92px; bottom:0; width:calc(min(800px,68vw) + 170px);
+  margin-left:calc((min(800px,68vw) + 170px) / -2); overflow:hidden; overflow-x:hidden;
   transform-style:preserve-3d; scrollbar-width:none; }
 .pfsheetw::-webkit-scrollbar{ display:none; }
 .pfsheet{ transform-style:preserve-3d; }
-.pfsheet .pf3{ max-width:none; padding-bottom:220px; }
+.pfsheet .pf3{ max-width:min(800px,68vw); margin:0 auto; padding-bottom:220px; }
+/* real depth: layered shadow with a breath of green, blue and warm light */
+.pfstage .pf3paper{
+  box-shadow:0 2px 4px rgba(0,0,0,.05), 0 30px 60px -14px rgba(0,0,0,.17),
+    0 90px 170px -40px rgba(24,67,47,.26), 0 60px 150px -50px rgba(46,124,238,.11),
+    0 40px 120px -60px rgba(255,209,102,.1); }
+.pfstage .pf3c{ box-shadow:0 18px 44px -20px rgba(0,0,0,.18); }
+/* the glow that travels with the camera */
+.pfglowb{ position:absolute; left:50%; top:30%; width:760px; height:760px; margin:-380px 0 0 -380px;
+  border-radius:50%; filter:blur(100px); pointer-events:none;
+  background:radial-gradient(circle, rgba(88,196,120,.34), rgba(88,196,120,0) 66%); }
+/* everything arrives out of blur, with energy on its edge */
+body.pfull #turn{ animation:pfLineIn .9s cubic-bezier(.22,.9,.24,1) both; }
+@keyframes pfLineIn{
+  from{ opacity:0; filter:blur(16px); transform:translateY(16px);
+    text-shadow:0 0 26px rgba(47,156,69,.4); }
+  to{ opacity:1; filter:blur(0); transform:none; text-shadow:0 0 0 rgba(47,156,69,0); } }
+.sweepin{ animation:pfSweep 1.2s ease-out both; }
+@keyframes pfSweep{
+  0%{ box-shadow:0 0 0 0 rgba(88,196,120,0); }
+  25%{ box-shadow:0 0 44px -4px rgba(88,196,120,.4), inset 0 0 26px rgba(88,196,120,.12); }
+  100%{ box-shadow:0 0 0 0 rgba(88,196,120,0); } }
 .pfring{ position:fixed; width:170px; height:170px; margin:-85px 0 0 -85px; border-radius:50%;
   border:2px solid rgba(47,156,69,.6); z-index:79; pointer-events:none;
   box-shadow:0 0 70px rgba(47,156,69,.35), inset 0 0 34px rgba(47,156,69,.2); }
@@ -1783,10 +1804,12 @@ body.pfl-r #turn{ left:auto; right:5vw; top:36vh; bottom:auto; width:min(430px,3
 .pfcursor>span{ display:inline-flex; align-items:center; gap:6px; margin:2px 0 0 14px; height:26px;
   padding:0 11px 0 5px; border-radius:999px; color:#fff; font-size:12px; font-weight:600;
   box-shadow:0 6px 16px rgba(0,0,0,.22); white-space:nowrap; }
-.pfcursor>span i{ width:16px; height:16px; border-radius:50%; background:rgba(255,255,255,.85); }
-.pfnote{ position:absolute; left:30px; top:-40px; background:#fff; color:var(--tx);
-  font-size:12.5px; font-weight:500; padding:8px 13px; border-radius:13px 13px 13px 4px;
-  border:1px solid var(--line-2); box-shadow:0 10px 26px rgba(0,0,0,.12); white-space:nowrap; }
+.pfcursor>span i{ width:17px; height:17px; border-radius:50%; background:#fff;
+  display:inline-flex; align-items:center; justify-content:center; font-style:normal; }
+.pfcursor>span i svg{ width:10px; height:10px; }
+.pfnote{ position:absolute; left:16px; top:38px; background:#fff; color:var(--tx);
+  font-size:12.5px; font-weight:500; padding:8px 13px; border-radius:4px 13px 13px 13px;
+  border:1px solid var(--line-2); box-shadow:0 12px 30px rgba(0,0,0,.14); white-space:nowrap; }
 .pfthumb{ position:absolute; left:50%; top:42%; font-size:44px; z-index:31;
   filter:drop-shadow(0 8px 18px rgba(0,0,0,.2)); }
 /* share, and the number climbs */
@@ -9015,29 +9038,40 @@ function pfBloom(x,y){
 /* the recruiters arrive: multiplayer cursors, a note each, and a thumbs up */
 function pfRecruiters(g){
   const host=$('pfCur'); if(!host) return;
-  const CUR=[['Nike','#F56B25'],['Microsoft','#2E7CEE'],['Salesforce','#3B5BDB'],['Spotify','#1DB954']];
-  const bub=['We have a role for you.','Open to a quick chat?','Loved the churn read-out.','Interview this week?'];
-  CUR.forEach((pair,i)=>{
-    const nm=pair[0], col=pair[1];
+  const BRAND={Stripe:'#635BFF',Notion:'#1F1D1E',Salesforce:'#00A1E0',Google:'#4285F4',
+    Shopify:'#008060',DoorDash:'#FF3008',Microsoft:'#2E7CEE',Spotify:'#1DB954',Nike:'#F56B25'};
+  /* the cursors are the user's own dream companies, padded with big names */
+  let cos=(P.picks||[]).filter(c9=>LOGO[c9]&&BRAND[c9]);
+  ['Google','Microsoft','Spotify','Nike'].forEach(c9=>{ if(cos.length<4&&cos.indexOf(c9)<0) cos.push(c9); });
+  cos=cos.slice(0,4);
+  const bub=['Open to a quick chat?','We have a role for you.','Loved the churn read-out.','Interview this week?'];
+  const sw=$('pfSheetW');
+  const sr=sw?sw.getBoundingClientRect():{left:innerWidth*.4,right:innerWidth*.9,top:120,width:innerWidth*.5};
+  cos.forEach((nm,i)=>{
+    const col=BRAND[nm]||'#1F1D1E';
     const c=mk('div','pfcursor');
     c.innerHTML='<svg viewBox="0 0 24 24"><path fill="'+col+'" stroke="#fff" stroke-width="1.4" d="M5 3l14 7-6.2 1.8L9.5 18z"/></svg>'
-      +'<span style="background:'+col+'"><i></i>'+nm+'</span>';
+      +'<span style="background:'+col+'"><i>'+(LOGO[nm]||'')+'</i>'+nm+'</span>';
     host.appendChild(c);
-    const sx=(i%2? innerWidth+90:-90), sy=140+(i*97)%380;
-    const tx=innerWidth/2+((i%2)?1:-1)*(290+(i*53)%170), ty=200+i*118;
+    const left=(i%2===0);
+    const sx=left?-120:innerWidth+120, sy=120+(i*93)%360;
+    const tx=left? sr.left+40+((i>>1)*26) : sr.left+sr.width-190-((i>>1)*30);
+    const ty=sr.top+120+i*112;
     gsap.set(c,{x:sx,y:sy,opacity:0});
-    const tl=gsap.timeline({delay:.4+i*.5});
+    const tl=gsap.timeline({delay:.4+i*.55});
     tl.to(c,{opacity:1,duration:.3},0)
-      .to(c,{x:tx,y:ty,duration:1.6,ease:'power2.inOut'},0)
-      .to(c,{x:'+='+(((i%2)?-1:1)*34),y:'+='+((i%3-1)*26),duration:.9,ease:'sine.inOut'})
+      .to(c,{x:tx,y:ty,duration:1.7,ease:'power2.inOut'},0)
+      .to(c,{x:'+='+((left?1:-1)*26),y:'+='+((i%3-1)*22),duration:.9,ease:'sine.inOut'})
       .call(()=>{ if(g!==gen){ return; }
         const b=mk('div','pfnote',bub[i%bub.length]);
         c.appendChild(b);
-        gsap.fromTo(b,{opacity:0,y:8,scale:.85},{opacity:1,y:0,scale:1,duration:.45,ease:'back.out(1.8)'});
+        gsap.fromTo(b,{opacity:0,y:-6,scale:.85,filter:'blur(6px)'},
+          {opacity:1,y:0,scale:1,filter:'blur(0px)',duration:.5,ease:'back.out(1.7)'});
         try{ sfx('droplet'); }catch(e){} });
   });
-  gsap.delayedCall(3.3,()=>{ if(g!==gen) return;
+  gsap.delayedCall(3.4,()=>{ if(g!==gen) return;
     const t=mk('div','pfthumb','👍');
+    t.style.left=(sr.left+sr.width*.5)+'px'; t.style.top=(sr.top+170)+'px';
     host.appendChild(t);
     gsap.fromTo(t,{scale:.3,opacity:0,y:22},{scale:1,opacity:1,y:0,duration:.6,ease:'back.out(2.4)'});
     gsap.to(t,{y:-64,opacity:0,duration:1,delay:1.1,ease:'power1.in',onComplete:()=>t.remove()});
@@ -9049,7 +9083,6 @@ async function mvpOutcome(){
   const myGen=gen;
   setPhase(3);
   clearTurn(); dockHide(); await wait(320); if(myGen!==gen) return;
-  /* the stage is bare, and it is the WHOLE screen: no panels, no columns */
   const sc=$('scroll');
   sc.querySelectorAll('.pf3, #vb').forEach(n=>n.remove());
   const ob9=$('rmband'); if(ob9) ob9.remove();
@@ -9060,7 +9093,6 @@ async function mvpOutcome(){
   sc.classList.remove('ctr','vzcv');
   document.body.classList.add('pfull');
   fastMode=false;
-  /* the board pours into one point; the portfolio is born out of the impact */
   const vz=$('vz');
   let cx=innerWidth/2, cy=innerHeight*.42;
   if(vz){
@@ -9078,14 +9110,13 @@ async function mvpOutcome(){
   gsap.to('.right',{width:0,opacity:0,duration:.7,ease:EIO});
   shiftLeft('0px'); setCap('',false);
   const stage=mk('div','pfstage'); stage.id='pfStage';
-  stage.innerHTML='<div class="pfamb a"></div><div class="pfamb b"></div>'
+  stage.innerHTML='<div class="pfamb a"></div><div class="pfamb b"></div><div class="pfglowb" id="pfGlowB"></div>'
     +'<div class="pfsheetw" id="pfSheetW"><div class="pfsheet" id="pfSheet"></div></div>'
     +'<div class="pfcurhost" id="pfCur"></div>';
   document.body.appendChild(stage);
   const sheet=$('pfSheet');
   buildPf3(sheet);
   const oldClaim=sheet.querySelector('.pf3claim'); if(oldClaim) oldClaim.remove();
-  /* the face comes from LinkedIn: a real photo, always */
   const av=sheet.querySelector('.pf3av');
   if(av){
     const im=document.createElement('img'); im.src='mvp-assets/student.jpg'; im.alt='';
@@ -9094,7 +9125,7 @@ async function mvpOutcome(){
   }
   const secs=['pf3-projects','pf3-exp','pf3-edu'].map(id=>$(id)).filter(Boolean);
   secs.forEach(s9=>{ s9.dataset.hid='1'; });
-  gsap.set(secs,{opacity:0,y:26});
+  gsap.set(secs,{opacity:0,y:26,filter:'blur(16px)'});
   const w=$('pfSheetW');
   gsap.set(w,{opacity:0,scale:.62,y:70,transformOrigin:'50% 26%'});
   await wait(vz?900:150); if(myGen!==gen) return;
@@ -9102,7 +9133,6 @@ async function mvpOutcome(){
   sfx('bloom');
   stage.classList.add('on');
   gsap.to(w,{opacity:1,scale:1,y:0,duration:1.1,ease:'power3.out',delay:.12});
-  /* the ambience breathes, slowly, the whole time */
   gsap.to('.pfamb.a',{x:60,y:40,duration:11,yoyo:true,repeat:-1,ease:'sine.inOut'});
   gsap.to('.pfamb.b',{x:-50,y:-30,duration:13,yoyo:true,repeat:-1,ease:'sine.inOut'});
   await wait(1300); if(myGen!==gen) return;
@@ -9112,62 +9142,75 @@ async function mvpOutcome(){
     gsap.to(w,{scrollTop:Math.max(0,w.scrollTop+(r.top-wr.top)-(pad===undefined?76:pad)),
       duration:1.15,ease:EIO,onComplete:res});
   });
-  const cam=(m,d)=>gsap.to(w,{rotationY:0,x:0,scale:1,...m,duration:d||1.4,ease:EIO,overwrite:'auto'});
+  const cam=(m,d)=>gsap.to(w,{rotationY:0,x:0,scale:1,...m,duration:d||1.5,ease:EIO,overwrite:'auto'});
+  /* the glow travels with the camera: the energy is always on the lit side */
+  const glowTo=dir=>gsap.to('#pfGlowB',{x:dir*300,duration:1.7,ease:EIO,overwrite:'auto'});
   const linePos=p=>{ ['pfl-b','pfl-l','pfl-r','pfl-t'].forEach(c9=>document.body.classList.remove(c9));
     document.body.classList.add('pfl-'+p); };
+  /* discipline: the line leaves, THEN the camera moves, THEN the next line blurs in */
+  const fadeLine=()=>new Promise(res=>{ const t=$('turn');
+    if(!t){ res(); return; }
+    gsap.to(t,{opacity:0,filter:'blur(14px)',y:-14,duration:.45,ease:'power2.in',onComplete:res}); });
   const show=async s9=>{ if(!s9) return; if(s9.dataset.hid){ delete s9.dataset.hid;
-    gsap.to(s9,{opacity:1,y:0,duration:.8,ease:'power3.out'}); await wait(240); } };
-  /* ── beat 1: center. the name, the face, the proof ── */
+    s9.classList.add('sweepin');
+    gsap.to(s9,{opacity:1,y:0,filter:'blur(0px)',duration:.95,ease:'power3.out'});
+    await wait(260); } };
+  /* ── beat 1: center. this is where seven weeks land ── */
   linePos('b');
   await voLine('This is your portfolio at the end of the road, '+(P.name||'')+'.',2600);
   if(myGen!==gen) return;
-  await voLine('Your name, your face from LinkedIn, and how you actually work. Verified by Zero.',3100);
+  await voLine('Seven weeks of real work, on one page. Let me walk you through it.',2900);
   if(myGen!==gen) return;
-  /* ── beat 2: the sheet tilts right, the projects pop out one by one ── */
+  /* ── beat 2: tilt right. the projects you'll have done ── */
+  await fadeLine(); if(myGen!==gen) return;
   linePos('l');
-  cam({rotationY:-25,x:Math.min(300,innerWidth*.15),scale:1.05},1.5);
+  cam({rotationY:-24,x:Math.min(280,innerWidth*.14),scale:1.04},1.6);
+  glowTo(1);
   sfx('page');
+  await wait(1000); if(myGen!==gen) return;
   await show(secs[0]); if(myGen!==gen) return;
   await goTo(secs[0]); if(myGen!==gen) return;
   const cards=[...sheet.querySelectorAll('.pf3c')];
   gsap.set(cards,{opacity:0});
   cards.forEach((c9,i)=>{
-    gsap.fromTo(c9,{opacity:0,z:150,y:30},{opacity:1,z:0,y:0,duration:.75,delay:.25+i*.22,ease:'power3.out'});
-    gsap.delayedCall(.28+i*.22,()=>{ try{ sfx('tick'); }catch(e){} });
+    gsap.fromTo(c9,{opacity:0,filter:'blur(18px)',z:150,y:34},
+      {opacity:1,filter:'blur(0px)',z:0,y:0,duration:.85,delay:.25+i*.24,ease:'power3.out'});
+    gsap.delayedCall(.27+i*.24,()=>{ try{ c9.classList.add('sweepin'); sfx('tick'); }catch(e){} });
   });
-  await voLine('Five projects. Real companies, real tools, and a manager on every one.',3200);
+  await voLine("These are the projects you'll have done. Real companies, and a manager on every one.",3400);
   if(myGen!==gen) return;
-  await voLine('Every piece lands here as you finish it. The page builds itself.',2900);
+  await voLine("And the tools and skills you'll have picked up along the way.",2900);
   if(myGen!==gen) return;
-  /* ── beat 3: tilt left, the history side ── */
+  /* ── beat 3: tilt left. the experience that carries over ── */
+  await fadeLine(); if(myGen!==gen) return;
   linePos('r');
-  cam({rotationY:25,x:-Math.min(300,innerWidth*.15),scale:1.05},1.5);
+  cam({rotationY:24,x:-Math.min(280,innerWidth*.14),scale:1.04},1.6);
+  glowTo(-1);
   sfx('page');
+  await wait(1000); if(myGen!==gen) return;
   await show(secs[1]); await show(secs[2]); if(myGen!==gen) return;
   await goTo(secs[1]); if(myGen!==gen) return;
   await voLine((P.school?'Your Wealthsimple internship carried straight over from your LinkedIn.':'Your real experience, carried straight onto the page.'),2900);
   if(myGen!==gen) return;
-  await goTo(secs[2]); if(myGen!==gen) return;
-  await voLine('School and certificates last, because here they matter least.',2600);
-  if(myGen!==gen) return;
-  /* ── beat 4: back to center, and the recruiters find it ── */
-  linePos('t');
-  cam({},1.5);
+  /* ── beat 4: the sheet parks right, the story lives on the left ── */
+  await fadeLine(); if(myGen!==gen) return;
+  linePos('l');
+  cam({rotationY:-9,x:Math.min(330,innerWidth*.165),scale:.98},1.6);
+  glowTo(1);
   gsap.to(w,{scrollTop:0,duration:1.2,ease:EIO});
   sfx('page');
-  await wait(900); if(myGen!==gen) return;
+  await wait(1000); if(myGen!==gen) return;
   await voLine("And once it's live, you're not the one knocking.",2600);
   if(myGen!==gen) return;
   pfRecruiters(myGen);
   await voLine('Recruiters land on it, leave notes, ask for interviews. The work speaks first.',3600);
   if(myGen!==gen) return;
   await wait(1400); if(myGen!==gen) return;
-  await voLine('Your proof of work, not a promise.',2300);
+  await voLine("This is the page you'll be proud of, seven weeks from now.",2800);
   if(myGen!==gen) return;
-  /* the sheet steps back so the closing line and the CTA own the top */
-  gsap.to(w,{y:110,scale:.94,duration:1,ease:EIO});
+  await fadeLine(); if(myGen!==gen) return;
   qWide=true;
-  const endT=turn({q:"That's where you could be seven weeks from now. Let me show you the road from level one."});
+  const endT=turn({q:"That's where you could be. Let me show you the road from level one."});
   qWide=false;
   ctaGo('Show me the road',()=>{ flowCredit();
     gsap.to('#pfStage',{opacity:0,duration:.55,ease:'power2.in'});
