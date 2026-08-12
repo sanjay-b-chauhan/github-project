@@ -1769,8 +1769,7 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 
 
 .shbtn svg{ width:15px; height:15px; }
-.shbtn.got{ opacity:.55; }
-.shbtn.got:hover{ transform:none; }
+
 /* ══ the portfolio, as the real one is built: grey page, white project cards ══ */
 .pf3{ text-align:left; padding:2px 0 34px; width:100%; max-width:880px; margin:0 auto; }
 .pf3claim{ font-family:var(--serif); font-size:clamp(15.5px,1.3vw,19px); line-height:1.3;
@@ -9727,11 +9726,7 @@ function mvpShareCard(){
   let got={}; try{ got=JSON.parse(localStorage.mvpShared||'{}'); }catch(e){}
   const AMT={x:1000,li:1000};
   const sum=()=>Object.keys(got).reduce((a,k)=>a+(AMT[k]||0),0);
-  const paint=()=>{
-    Object.keys(got).forEach(k=>{ const b=card.querySelector('[data-ch="'+k+'"]');
-      if(b) b.classList.add('got'); });
-  };
-  paint();
+
   const bump=amt=>{
     const NUM=$('mvRewN'); if(!NUM) return;
     const from=parseInt((NUM.textContent||'0').replace(/\D/g,''))||0;
@@ -9750,12 +9745,9 @@ function mvpShareCard(){
   card.querySelectorAll('.shbtn').forEach(b=>{
     b.onclick=()=>{
       const ch=b.dataset.ch;
-      const msg="I'm starting my journey at Zero. Here's my roadmap, follow to see my progress: https://"+link;
-      if(ch==='x') window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(msg),'_blank');
-      if(ch==='li') window.open('https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent('https://'+link),'_blank');
-      if(got[ch]){ sfx('tick'); return; }
+      if(got[ch]){ sfx('tick'); return; }   /* each channel pays once, no dimming */
       got[ch]=1; try{ localStorage.mvpShared=JSON.stringify(got); }catch(e){}
-      bump(AMT[ch]); paint();
+      bump(AMT[ch]);
     };
   });
 }
@@ -9806,18 +9798,23 @@ async function mvpClaim(){
     sfx('droplet');
     const em=v.trim();
     const hint=document.querySelector('.dmailhint'); if(hint) hint.remove();
-    /* the field leaves with the dock; a skeleton holds the spot, then the CTA lands */
-    dockHide();
+    /* the field shines while the input is taken, then it gives way to the CTA */
+    const f9=document.querySelector('.dfield');
+    if(f9){
+      const inp9=f9.querySelector('input'); if(inp9) inp9.disabled=true;
+      try{ sheen(f9,1.1); }catch(e){}
+      gsap.fromTo(f9,{scale:1},{scale:1.015,duration:.55,yoyo:true,repeat:1,ease:'power1.inOut'});
+    }
     const dl=mk('button','dbig dlmain');
     dl.innerHTML=(I.dl||'')+'<span>Download the app</span>';
     dl.onclick=()=>{ sfx('success');
       gsap.fromTo(dl,{scale:.96},{scale:1,duration:.4,ease:'back.out(2)'}); };
     const sent=mk('div','dlsent','Zero is unlocked. Sent to '+em+'.');
-    const wrap=mk('div','dlwrap');
-    wrap.appendChild(dl); wrap.appendChild(sent);
-    Promise.resolve(ghostIn(wrap,92,1400,rew)).then(()=>{
+    gsap.delayedCall(1.35,()=>{
       if(myGen!==gen) return;
+      dockHide();
       sfx('success');
+      rew.appendChild(dl); rew.appendChild(sent);
       gsap.fromTo(dl,{opacity:0,y:14,scale:.92,filter:'blur(6px)'},
         {opacity:1,y:0,scale:1,filter:'blur(0px)',duration:.75,ease:'back.out(1.7)'});
       gsap.fromTo(sent,{opacity:0,y:10},{opacity:1,y:0,duration:.55,delay:.18,ease:'power2.out'});
