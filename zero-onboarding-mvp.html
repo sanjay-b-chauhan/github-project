@@ -1748,20 +1748,17 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .shlinkbtn:hover{ color:var(--tx-2); }
 /* ══ the portfolio story stage: the site is the portfolio ══ */
 .pfstage{ position:fixed; inset:0; z-index:8; pointer-events:none; perspective:1700px; }
-.pfstage::before{ content:''; position:absolute; left:0; right:0; top:0; height:150px; z-index:12;
-  background:linear-gradient(180deg, var(--page) 42%, transparent); }
-.pfstage::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:130px; z-index:12;
-  background:linear-gradient(0deg, var(--page) 20%, transparent); }
+
+.pfstage::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:120px; z-index:12;
+  background:linear-gradient(0deg, var(--page) 22%, transparent); pointer-events:none; }
 .pfamb{ position:absolute; width:58vw; height:58vw; border-radius:50%; filter:blur(90px);
   opacity:0; transition:opacity 1.6s ease; }
 .pfamb.a{ left:-16vw; top:-14vw; background:radial-gradient(circle, #d7f1de, transparent 66%); }
 .pfamb.b{ right:-16vw; bottom:-18vw; background:radial-gradient(circle, #e3f3e6, transparent 66%); }
 .pfstage.on .pfamb{ opacity:.9; }
-.pfsheetw{ position:absolute; left:50%; top:126px; bottom:0; width:calc(min(800px,68vw) + 170px);
-  margin-left:calc((min(800px,68vw) + 170px) / -2); overflow:hidden; overflow-x:hidden;
-  transform-style:preserve-3d; scrollbar-width:none; }
-.pfsheetw::-webkit-scrollbar{ display:none; }
-.pfsheet{ transform-style:preserve-3d; }
+.pfsheetw{ position:absolute; left:50%; top:110px; width:calc(min(800px,68vw) + 170px);
+  margin-left:calc((min(800px,68vw) + 170px) / -2); transform-style:preserve-3d; pointer-events:auto; }
+.pfsheet{ transform-style:preserve-3d; position:relative; }
 .pfsheet .pf3{ max-width:min(800px,68vw); margin:0 auto; padding-bottom:220px; }
 /* real depth: layered shadow with a breath of green, blue and warm light */
 .pfstage .pf3paper{
@@ -1823,9 +1820,12 @@ body.pfl-r #turn{ left:auto; right:5vw; top:36vh; bottom:auto; width:min(430px,3
 .pfcursor>span i{ width:23px; height:23px; border-radius:50%; background:#fff;
   display:inline-flex; align-items:center; justify-content:center; font-style:normal; }
 .pfcursor>span i svg{ width:13px; height:13px; }
-.pfnote{ position:absolute; left:21px; top:48px; background:#fff; color:var(--tx);
+.pfnote{ position:absolute; left:21px; top:76px; background:#fff; color:var(--tx);
   font-size:14px; font-weight:500; padding:10px 16px; border-radius:4px 15px 15px 15px;
   border:1px solid var(--line-2); box-shadow:0 14px 36px rgba(0,0,0,.16); white-space:nowrap; }
+.emopart{ position:fixed; z-index:402; font-size:22px; pointer-events:none; }
+.wln{ display:inline-block; }
+body.pfsay #turn .q{ opacity:0; }
 .pfthumb{ position:absolute; left:50%; top:42%; font-size:56px; z-index:31;
   filter:drop-shadow(0 8px 18px rgba(0,0,0,.2)); }
 /* share, and the number climbs */
@@ -9052,6 +9052,23 @@ function pfBloom(x,y){
   gsap.fromTo(g,{scale:.3,opacity:.9},{scale:2.6,opacity:0,duration:1.6,ease:'power2.out',onComplete:()=>g.remove()});
 }
 /* the recruiters arrive: multiplayer cursors, a note each, and a thumbs up */
+/* the haptic burst: a reaction throws its emoji out of the cursor like confetti */
+function emojiBurst(el,em){
+  const r=el.getBoundingClientRect();
+  const x0=r.left+22, y0=r.top+34;
+  for(let i=0;i<7;i++){
+    const p=mk('b','emopart',em);
+    p.style.left=x0+'px'; p.style.top=y0+'px';
+    document.body.appendChild(p);
+    const a=(-90+(i-3)*18+(Math.random()-.5)*10)*Math.PI/180, v=100+Math.random()*150;
+    gsap.fromTo(p,{scale:.35,opacity:1},{x:Math.cos(a)*v, y:Math.sin(a)*v,
+      scale:.8+Math.random()*.6, rotation:(Math.random()-.5)*120,
+      duration:.75+Math.random()*.3, ease:'power3.out',
+      onComplete:()=>gsap.to(p,{y:'+=90', opacity:0, scale:'-=.2', duration:.55, ease:'power1.in',
+        onComplete:()=>p.remove()})});
+  }
+  try{ sfx('sparkle'); }catch(e){}
+}
 function pfRecruiters(g){
   const host=$('pfCur'); if(!host) return;
   const BRAND={Stripe:'#635BFF',Notion:'#1F1D1E',Salesforce:'#00A1E0',Google:'#4285F4',
@@ -9067,18 +9084,26 @@ function pfRecruiters(g){
   const cards9=[...document.querySelectorAll('#pfSheet .pf3c')];
   const sw=$('pfSheetW');
   const srect=sw?sw.getBoundingClientRect():{left:innerWidth*.4,top:120,width:innerWidth*.5};
+  const sheet9=$('pfSheet');
+  const spots=[
+    sheet9&&sheet9.querySelector('.pf3head'),
+    sheet9&&sheet9.querySelector('.pf3about'),
+    (cards9[1]||cards9[0])&&(cards9[1]||cards9[0]).querySelector('.pf3tools'),
+    cards9[0]
+  ];
   cos.forEach((nm,i)=>{
     const col=BRAND[nm]||'#1F1D1E';
     const c=mk('div','pfcursor');
     c.innerHTML='<svg viewBox="0 0 24 24"><path fill="'+col+'" stroke="#fff" stroke-width="1.4" d="M5 3l14 7-6.2 1.8L9.5 18z"/></svg>'
       +'<span style="background:'+col+'"><i>'+(LOGO[nm]||'')+'</i>'+nm+'</span>';
     host.appendChild(c);
-    const tc=cards9[i%Math.max(1,cards9.length)];
+    const tc=spots[i]||cards9[i%Math.max(1,cards9.length)];
     const tr=tc?tc.getBoundingClientRect():srect;
     const left=(i%2===0);
     const sx=left?-140:innerWidth+140, sy=110+(i*97)%340;
-    const tx=left? Math.max(30,tr.left-210-(i*10)) : Math.min(innerWidth-230,tr.right-30+(i*8));
-    const ty=Math.max(120,tr.top+16+(i%2?46:6));
+    /* the pointer parks on the exact piece it is reading */
+    const tx=Math.max(srect.left+40,Math.min(srect.left+srect.width-260, tr.left+34+i*14));
+    const ty=Math.max(120,tr.top+Math.min(40,tr.height*.45));
     gsap.set(c,{x:sx,y:sy,opacity:0});
     const tl=gsap.timeline({delay:.4+i*.6});
     tl.to(c,{opacity:1,duration:.3},0)
@@ -9090,17 +9115,19 @@ function pfRecruiters(g){
         gsap.fromTo(b,{opacity:0,y:-6,scale:.85,filter:'blur(6px)'},
           {opacity:1,y:0,scale:1,filter:'blur(0px)',duration:.5,ease:'back.out(1.7)'});
         /* the piece they are reading lights up under them */
-        if(tc){ tc.classList.remove('sweepin'); void tc.offsetWidth; tc.classList.add('sweepin'); }
+        if(tc){ const hl=tc.closest('.pf3c')||tc;
+          hl.classList.remove('sweepin'); void hl.offsetWidth; hl.classList.add('sweepin'); }
         try{ sfx('droplet'); }catch(e){} })
       .to({},{duration:1.5})
       .call(()=>{ if(g!==gen) return;
         const b=c.querySelector('.pfnote'); if(!b) return;
+        const EMO=['🔥','👏','🤯','✨'];
         gsap.to(b,{opacity:0,filter:'blur(6px)',duration:.28,onComplete:()=>{
           b.textContent=SAY[i%SAY.length][1];
           gsap.fromTo(b,{opacity:0,scale:.8,filter:'blur(6px)'},
             {opacity:1,scale:1,filter:'blur(0px)',duration:.5,ease:'back.out(2)'});
-        }});
-        try{ sfx('sparkle'); }catch(e){} });
+          emojiBurst(c,EMO[i%EMO.length]);
+        }}); });
   });
   gsap.delayedCall(4.6,()=>{ if(g!==gen) return;
     const t=mk('div','pfthumb','👍');
@@ -9163,6 +9190,11 @@ async function mvpOutcome(){
   secs.forEach(s9=>{ s9.dataset.hid='1'; });
   gsap.set(secs,{opacity:0,y:26,filter:'blur(16px)'});
   const w=$('pfSheetW');
+  const EMOPOOL=['🔥','👏','🤯','✨','💚','🎉'];
+  w.addEventListener('pointerdown',e=>{ if(myGen!==gen) return;
+    const fake={getBoundingClientRect:()=>({left:e.clientX-22,top:e.clientY-34})};
+    emojiBurst(fake,EMOPOOL[Math.floor(Math.random()*EMOPOOL.length)]);
+  });
   gsap.set(w,{opacity:0,scale:.62,y:70,transformOrigin:'50% 26%'});
   await wait(vz?900:150); if(myGen!==gen) return;
   pfBloom(cx,cy);
@@ -9172,13 +9204,13 @@ async function mvpOutcome(){
   gsap.to('.pfamb.a',{x:60,y:40,duration:11,yoyo:true,repeat:-1,ease:'sine.inOut'});
   gsap.to('.pfamb.b',{x:-50,y:-30,duration:13,yoyo:true,repeat:-1,ease:'sine.inOut'});
   gsap.to('#pfHalo',{rotation:360,duration:26,repeat:-1,ease:'none'});
-  gsap.to('.pfsheet',{rotationY:1.6,rotationX:-1,y:-7,duration:4.6,yoyo:true,repeat:-1,ease:'sine.inOut'});
+  gsap.to('.pfsheet',{rotationY:1.6,rotationX:-1,duration:4.6,yoyo:true,repeat:-1,ease:'sine.inOut'});
   await wait(1250); if(myGen!==gen) return;
   const goTo=(el,pad)=>new Promise(res=>{
     if(!el){ res(); return; }
     const r=el.getBoundingClientRect(), wr=w.getBoundingClientRect();
-    gsap.to(w,{scrollTop:Math.max(0,w.scrollTop+(r.top-wr.top)-(pad===undefined?76:pad)),
-      duration:1.15,ease:EIO,onComplete:res});
+    const delta=(r.top-wr.top)-(pad===undefined?40:pad);
+    gsap.to(sheet,{y:'-='+delta,duration:1.15,ease:EIO,onComplete:res});
   });
   /* the camera finishes its move BEFORE anything else happens */
   const cam=(m,d)=>new Promise(res=>{
@@ -9198,13 +9230,32 @@ async function mvpOutcome(){
   const fadeLine=()=>new Promise(res=>{ const t=$('turn');
     if(!t){ res(); return; }
     gsap.to(t,{opacity:0,filter:'blur(14px)',y:-14,duration:.45,ease:'power2.in',onComplete:res}); });
+  /* the line assembles word by word, each out of its own blur */
+  const say=async(text,ms)=>{
+    /* a new line is born invisible: it never paints before the stagger owns it */
+    document.body.classList.add('pfsay');
+    const p=voLine(text,ms);
+    let q=null;
+    for(let k=0;k<20;k++){ await wait(50);
+      const c9=document.querySelector('#turn .q');
+      if(c9&&(c9.textContent||'').trim().slice(0,14)===text.trim().slice(0,14)){ q=c9; break; } }
+    if(q&&myGen===gen&&!q.querySelector('.wln')){
+      const words=(q.textContent||'').split(' ');
+      q.innerHTML=words.map(w9=>'<span class="wln">'+w9+'</span>').join(' ');
+      gsap.set(q,{opacity:1});
+      gsap.fromTo(q.querySelectorAll('.wln'),{opacity:0,filter:'blur(10px)',y:12},
+        {opacity:1,filter:'blur(0px)',y:0,duration:.6,stagger:.05,ease:'power2.out'});
+    }
+    document.body.classList.remove('pfsay');
+    return p;
+  };
   const show=async s9=>{ if(!s9) return; if(s9.dataset.hid){ delete s9.dataset.hid;
     s9.classList.add('sweepin');
     gsap.to(s9,{opacity:1,y:0,filter:'blur(0px)',duration:.95,ease:'power3.out'});
     await wait(240); } };
   /* ── one short opener: why this page exists ── */
   linePos('b');
-  await voLine("To land the job at companies like those, you'll need a page like this. Here's yours, seven weeks in.",3600);
+  await say("To land the job at those companies, you need proof. This is your portfolio, 7 weeks in.",3400);
   if(myGen!==gen) return;
   /* ── the projects: the sheet moves first, the words land in the space it left ── */
   await fadeLine(); if(myGen!==gen) return;
@@ -9226,7 +9277,7 @@ async function mvpOutcome(){
     gsap.to(c9,{z:0,y:0,scale:1,duration:.6,delay:t0+.55,ease:'back.out(1.4)'});
     gsap.delayedCall(t0+.55,()=>{ try{ c9.classList.add('sweepin'); sfx('tick'); }catch(e){} });
   });
-  await voLine("These are the projects you'll have done. Real companies, and a manager on every one.",3400);
+  await say("The projects you'll have shipped. Real companies, real briefs, a manager on every one.",3400);
   if(myGen!==gen) return;
   /* ── the tools: every chip lights, one after the other ── */
   const chips=[...sheet.querySelectorAll('.pf3t')];
@@ -9234,7 +9285,7 @@ async function mvpOutcome(){
     ch.classList.add('chipglow');
     gsap.fromTo(ch,{scale:1},{scale:1.14,duration:.26,yoyo:true,repeat:1,ease:'power2.inOut'});
     if(i%3===0){ try{ sfx('tick'); }catch(e){} } }); });
-  await voLine("Every tool and every skill on it is one you'll actually have used.",3100);
+  await say("Every tool and skill here is one you've actually used, not just listed.",3100);
   if(myGen!==gen) return;
   gsap.delayedCall(.4,()=>chips.forEach(ch=>ch.classList.remove('chipglow')));
   /* ── the history side ── */
@@ -9246,28 +9297,28 @@ async function mvpOutcome(){
   if(myGen!==gen) return;
   await show(secs[1]); await show(secs[2]); if(myGen!==gen) return;
   await goTo(secs[1]); if(myGen!==gen) return;
-  await voLine((P.school?'Your Wealthsimple internship carried straight over from your LinkedIn.':'Your real experience, carried straight onto the page.'),2900);
+  await say((P.school?'Your Wealthsimple internship carried straight over from your LinkedIn.':'Your real experience, carried straight onto the page.'),2900);
   if(myGen!==gen) return;
   /* ── the visitors: sheet parks right, the story owns the left ── */
   await fadeLine(); if(myGen!==gen) return;
   linePos('l');
   glowTo(1);
-  gsap.to(w,{scrollTop:0,duration:1.2,ease:EIO});
+  gsap.to(sheet,{y:0,duration:1.2,ease:EIO});
   sfx('page');
   await cam({rotationY:-13,rotationX:2,x:Math.min(330,innerWidth*.165),scale:.98},1.8);
   if(myGen!==gen) return;
   await wait(200); if(myGen!==gen) return;
-  await voLine("And once it's live, you're not the one knocking.",2600);
+  await say("And once it's live, you're not the one knocking.",2600);
   if(myGen!==gen) return;
   pfRecruiters(myGen);
-  await voLine('Recruiters land on it, react to the work, and ask for interviews.',3400);
+  await say('Recruiters land on it, react to the work, and ask for interviews.',3400);
   if(myGen!==gen) return;
   await wait(2200); if(myGen!==gen) return;
-  await voLine("This is the page you'll be proud of, seven weeks from now.",2800);
+  await say("7 weeks from now, this page is yours.",2500);
   if(myGen!==gen) return;
   await fadeLine(); if(myGen!==gen) return;
   qWide=true;
-  const endT=turn({q:"That's where you could be. Let me show you the road from level one."});
+  const endT=turn({q:"That's the outcome. Now, the road from level one."});
   qWide=false;
   ctaGo('Show me the road',()=>{ flowCredit();
     gsap.to('#pfStage',{opacity:0,duration:.55,ease:'power2.in'});
