@@ -1696,6 +1696,25 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .mteam img:first-child{ margin-left:0; }
 .mteam b{ margin-left:7px; font-size:12px; font-weight:500; color:var(--tx-3); }
 .mvunlock .mus{ font-weight:400; opacity:.65; margin-left:auto; font-size:12.5px; }
+/* the unlocks stand taller and show what they mean */
+.mvunlock.big{ justify-content:space-between; gap:18px; padding:18px 20px; min-height:92px; }
+.mvunlock.big .mub{ display:flex; align-items:center; gap:14px; min-width:0; }
+.mvunlock.big .mutx{ display:flex; flex-direction:column; gap:3px; text-align:left; min-width:0; }
+.mvunlock.big .mutx b{ font-size:15.5px; letter-spacing:-.015em; }
+.mvunlock.big .mus{ margin-left:0; }
+.mustack{ display:flex; align-items:center; flex-shrink:0; }
+.mustack i{ width:34px; height:34px; border-radius:50%; background:#fff; font-style:normal;
+  display:flex; align-items:center; justify-content:center; margin-left:-10px;
+  border:2px solid rgba(255,255,255,.3); box-shadow:0 4px 12px rgba(0,0,0,.25); }
+.mustack i:first-child{ margin-left:0; }
+.mustack i svg{ width:17px; height:17px; }
+.mustack em{ margin-left:10px; font-style:normal; font-size:12px; opacity:.85; white-space:nowrap; }
+.muprev{ width:118px; height:82px; background:#fff; border-radius:10px; padding:10px;
+  display:flex; flex-direction:column; gap:5px; flex-shrink:0;
+  box-shadow:0 8px 22px rgba(0,0,0,.3); }
+.muprev .mpa{ width:15px; height:15px; border-radius:50%; background:#2f9c45; opacity:.9; }
+.muprev .mpl{ width:70%; height:6px; border-radius:3px; background:#1F1D1E; opacity:.85; }
+.muprev .mpr{ width:100%; height:5px; border-radius:3px; background:rgba(31,29,30,.14); }
 .rewexp{ margin:30px auto 0; font-family:var(--serif); font-size:clamp(19px,1.6vw,25px); line-height:1.34;
   letter-spacing:-.02em; color:var(--tx); max-width:30ch; text-align:center; }
 /* the email field, converted: one horizontal bar where it stood */
@@ -7751,6 +7770,11 @@ function dbgGoto(i){
     v=>{ document.body.classList.toggle('noico',!v); });
   toggle(board,'Edge fade',()=>!document.body.classList.contains('nofade'),
     v=>{ document.body.classList.toggle('nofade',!v); });
+  const cta9=section('Buttons');
+  toggle(cta9,'CTA docked at the bottom',
+    ()=>{ try{ return localStorage.mvpCtaPos==='dock'; }catch(e){ return false; } },
+    v=>{ try{ localStorage.mvpCtaPos=v?'dock':'inline'; }catch(e){}
+         try{ CTAPOS=v?'dock':'inline'; }catch(e){} });
   const road9=section('Roadmap');
   toggle(road9,'Full-screen road',
     ()=>{ try{ return localStorage.mvpRoadLayout==='road'; }catch(e){ return false; } },
@@ -8205,14 +8229,10 @@ async function mvpRoles(again){
   else if(panelHidden||!$('vz')){ panelBack(); renderBoard(); }
   vzCam();
   clearTurn(); dockHide(); await wait(300); if(myGen!==gen) return;
-  if(!again){
-    await voLine('One thing before I show you the whole picture.',2100);
-    if(myGen!==gen) return;
-  }
   const list=ROLESETS[P.roleset||'base']||ROLESETS.base;
   qWide=true;
   if(!again){
-    await voLine('So what kind of roles are you aiming for?',2100);
+    await voLine("I've read your vision. These are the jobs it points to.",2500);
     if(myGen!==gen) return;
   }
   document.body.classList.add('rolesq');
@@ -8536,17 +8556,26 @@ async function mvpRoadmapRoad(){
   qWide=true;
   const {box}=turn({q:"This is where you are. That's where we're going."});
   qWide=false;
-  const b=mk('button','dbig inlinecta','Show me how this works');
-  b.onclick=()=>{ if(locked) return; locked=true; sfx('droplet'); flowCredit();
+  ctaGo('Show me how this works',()=>{ sfx('droplet'); flowCredit();
     const bd=$('rmband'); if(bd) gsap.to(bd,{y:70,opacity:0,duration:.6,ease:'power2.in',
       onComplete:()=>bd.remove()});
     document.body.classList.remove('rmfull');
-    drawerShut(); go(mvpWhy); };
-  box.appendChild(b);
+    drawerShut(); go(mvpWhy); });
+}
+
+/* one CTA position everywhere: 'inline' sits after the text, 'dock' pins bottom center */
+let CTAPOS='inline'; try{ CTAPOS=localStorage.mvpCtaPos||'inline'; }catch(e){}
+function ctaGo(label,fn){
+  if(CTAPOS==='dock'){ cta(label,fn); return; }
+  const qb=document.querySelector('#turn .qbox')||document.querySelector('#turn');
+  if(!qb){ cta(label,fn); return; }
+  qb.querySelectorAll('.inlinecta').forEach(n=>n.remove());
+  const b=mk('button','dbig inlinecta',label);
+  b.onclick=()=>{ if(locked) return; locked=true; fn(); };
+  qb.appendChild(b);
   enter([b],{y:14,blur:6,duration:.55},1100);
   dockHide();
 }
-
 /* the burst: paper pieces up and out, then gravity */
 function confettiBurst(el){
   const r=el.getBoundingClientRect();
@@ -8583,8 +8612,7 @@ async function mvpRoadmapPanel(){
     const w=mk('div','rmwrap');
     w.innerHTML='<div class="rmhead sticky"><span class="rmtitle">Your journey</span>'
       +'<span class="rmweeks">'+(I.clock||'')+' '+totW+' weeks to build</span><span class="rmfade"></span></div>'
-      +'<div class="rmhow">Every week is one real brief from a real company. You do the work, your '
-      +'manager reviews it, and what you make goes into your portfolio.</div>';
+      ;
     const st=mk('div','rmrows'); st.id='mvCur'; w.appendChild(st);
     h.appendChild(w);
   },false,true);
@@ -8624,8 +8652,15 @@ async function mvpRoadmapPanel(){
       ur.innerHTML='<div class="rmrail"><span class="rmnode spark">'+(I.spark||'')+'</span>'
         +'<span class="rmwk">Unlock</span></div>';
       const us=mk('div','rmslot'); ur.appendChild(us);
-      const u=mk('div','mvunlock'+(c.unlock[3]?' '+c.unlock[3]:''));
-      u.innerHTML='<span class="mue">'+c.unlock[0]+'</span><span>'+c.unlock[1]+'</span><span class="mus">'+c.unlock[2]+'</span>';
+      const u=mk('div','mvunlock big'+(c.unlock[3]?' '+c.unlock[3]:''));
+      const isJob9=c.unlock[3]==='green';
+      u.innerHTML='<span class="mub"><span class="mue">'+c.unlock[0]+'</span>'
+          +'<span class="mutx"><b>'+c.unlock[1]+'</b><span class="mus">'+c.unlock[2]+'</span></span></span>'
+        +(isJob9
+          ? '<span class="mustack">'+['Google','Stripe','Salesforce','Notion','Shopify','DoorDash']
+              .map(co9=>'<i>'+(LOGO[co9]||'')+'</i>').join('')+'<em>+40 more</em></span>'
+          : '<span class="muprev"><span class="mpa"></span><span class="mpl"></span>'
+            +'<span class="mpr"></span><span class="mpr"></span><span class="mpr"></span></span>');
       us.appendChild(u);
       host.appendChild(ur);
       ur.classList.add('done');
@@ -8649,14 +8684,7 @@ async function mvpRoadmapPanel(){
       gsap.to(q,{opacity:1,y:0,duration:.45,ease:'power2.out',onComplete:res}); }}); }); }
   if(myGen!==gen) return;
   /* the button sits with the line, not a screen away from it */
-  const qb=document.querySelector('#turn .qbox')||document.querySelector('#turn');
-  if(qb){
-    const b=mk('button','dbig inlinecta','Show me how this works');
-    b.onclick=()=>{ if(locked) return; locked=true; sfx('droplet'); flowCredit(); drawerShut(); go(mvpWhy); };
-    qb.appendChild(b);
-    enter([b],{y:14,blur:6,duration:.55},1100);
-    dockHide();
-  } else cta('Show me how this works',()=>{ flowCredit(); drawerShut(); go(mvpWhy); });
+  ctaGo('Show me how this works',()=>{ sfx('droplet'); flowCredit(); drawerShut(); go(mvpWhy); });
 }
 
 /* ---- outcome: the portfolio, then the one line that matters ---- */
@@ -9018,7 +9046,7 @@ async function mvpOutcome(){
   qWide=true;
   turn({q:"That's where you could be seven weeks from now. Let me show you the road from level one."});
   qWide=false;
-  cta('Show me the road',()=>{ flowCredit(); go(mvpRoadmap); });
+  ctaGo('Show me the road',()=>{ flowCredit(); go(mvpRoadmap); });
 }
 
 /* ---- launch: why Zero, one container at a time, text at the bottom ---- *//* ---- launch: why Zero, one container at a time, text at the bottom ---- */
@@ -9536,7 +9564,7 @@ async function mvpWhy(){
       c.classList.toggle('on',i===at);
       gsap.to(c,{opacity:i===at?1:.22,scale:i===at?1:.9,duration:.7,ease:EIO});
     });
-    cta(at>=WHY.length-1?'Claim your credits':'Continue',()=>{
+    ctaGo(at>=WHY.length-1?'Claim your credits':'Continue',()=>{
       if(at>=WHY.length-1){ flowCredit(); deckAway(deck,()=>go(mvpClaim)); }
       else { locked=false; at++; paint(); }
     });
