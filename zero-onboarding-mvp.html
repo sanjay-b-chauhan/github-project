@@ -1747,8 +1747,9 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
   text-decoration-color:var(--line); }
 .shlinkbtn:hover{ color:var(--tx-2); }
 /* share, and the number climbs */
-.shcard{ margin:34px auto 0; width:min(560px,94%); background:#fff; border:1px solid var(--line-2);
-  border-radius:20px; padding:20px 22px; text-align:left; }
+.shcard.mini{ margin:34px auto 0; width:min(560px,94%); background:none; border:0; padding:0; text-align:center; }
+.shmini{ font-size:13px; color:var(--tx-3); margin-bottom:13px; }
+.shcard.mini .shrow{ justify-content:center; }
 .shhead{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
 .shhead b{ font-size:15px; font-weight:600; letter-spacing:-.02em; }
 .shcred{ font-size:12.5px; color:#2f9c45; font-weight:600; }
@@ -1760,9 +1761,8 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
   border-radius:999px; border:1px solid var(--line); background:#fff; font-size:13px; font-weight:600;
   cursor:pointer; transition:transform .2s ease, opacity .3s ease; }
 .shbtn:hover{ transform:translateY(-1px); }
-.shbtn.dk{ flex:1; background:var(--ink); color:var(--on-ink); border-color:var(--ink); }
-.shbtn i{ font-style:normal; font-weight:700; color:#2f9c45; font-size:12px; }
-.shbtn.dk i{ color:#a4f4b2; }
+
+.shbtn{ color:var(--tx-2); }
 .shbtn svg{ width:15px; height:15px; }
 .shbtn.got{ opacity:.55; }
 .shbtn.got:hover{ transform:none; }
@@ -9711,14 +9711,12 @@ function mvpShareCard(host){
       +'-'+Math.random().toString(36).slice(2,6);
     try{ localStorage.mvpRef=ref; }catch(e){} }
   const link='zero.app/i/'+ref;
-  const card=mk('div','shcard'); card.id='shCard';
-  card.innerHTML='<div class="shhead"><b>Share your road, earn credits</b>'
-      +'<span class="shcred" id="shCred"></span></div>'
-    +'<div class="shlink"><span class="shurl">'+link+'</span>'
-      +'<button class="shbtn" data-ch="copy"><span>Copy link</span><i>+500</i></button></div>'
+  const card=mk('div','shcard mini'); card.id='shCard';
+  card.innerHTML='<div class="shmini">Share this to earn more credits</div>'
     +'<div class="shrow">'
-      +'<button class="shbtn dk" data-ch="x">'+XSVG+'<span>Share on X</span><i>+1,000</i></button>'
-      +'<button class="shbtn dk" data-ch="li">'+(LOGO['LinkedIn']||'')+'<span>Share on LinkedIn</span><i>+1,000</i></button>'
+      +'<button class="shbtn" data-ch="copy">'+(I.link||'')+'<span>Copy link</span></button>'
+      +'<button class="shbtn" data-ch="x">'+XSVG+'<span>Share on X</span></button>'
+      +'<button class="shbtn" data-ch="li">'+(LOGO['LinkedIn']||'')+'<span>Share on LinkedIn</span></button>'
     +'</div>';
   host.appendChild(card);
   gsap.fromTo(card,{opacity:0,y:16},{opacity:1,y:0,duration:.7,delay:.35,ease:'power3.out'});
@@ -9726,8 +9724,6 @@ function mvpShareCard(host){
   const AMT={copy:500,x:1000,li:1000};
   const sum=()=>Object.keys(got).reduce((a,k)=>a+(AMT[k]||0),0);
   const paint=()=>{
-    const s=sum(), c9=$('shCred');
-    if(c9) c9.textContent=s?('+'+s.toLocaleString()+' earned'):'up to +2,500';
     Object.keys(got).forEach(k=>{ const b=card.querySelector('[data-ch="'+k+'"]');
       if(b) b.classList.add('got'); });
   };
