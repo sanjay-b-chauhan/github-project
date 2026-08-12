@@ -9087,8 +9087,21 @@ function emojiBurst(el,em){
 function pfRecruiters(g){
   const host=$('pfCur'); if(!host) return;
   const BRAND={Stripe:'#635BFF',Notion:'#1F1D1E',Salesforce:'#00A1E0',Google:'#4285F4',
-    Shopify:'#008060',DoorDash:'#FF3008',Microsoft:'#2E7CEE',Spotify:'#1DB954',Nike:'#F56B25'};
-  let cos=(P.picks||[]).filter(c9=>LOGO[c9]&&BRAND[c9]);
+    Shopify:'#008060',DoorDash:'#FF3008',Microsoft:'#2E7CEE',Spotify:'#1DB954',Nike:'#F56B25',
+    Amazon:'#FF9900',Apple:'#1F1D1E',Meta:'#0866FF',Netflix:'#E50914',Airbnb:'#FF5A5F',
+    Uber:'#1F1D1E',Figma:'#F24E1E',Slack:'#4A154B',Amplitude:'#1E61F0',Tableau:'#E97627',
+    Looker:'#4285F4',Datadog:'#632CA6',Linear:'#5E6AD2',Ramp:'#F5C518',Plaid:'#111111'};
+  /* his own words: "Stripe, Notion, Salesforce" -> the cursors that show up */
+  const said=[];
+  String(P.dream||'').split(/[,/&]|\band\b/).forEach(s9=>{
+    const nm9=s9.trim().replace(/[.!?]+$/,'');
+    if(!nm9) return;
+    const hit=Object.keys(LOGO).find(k=>k.toLowerCase()===nm9.toLowerCase());
+    if(hit&&said.indexOf(hit)<0) said.push(hit);
+  });
+  (P.picks||[]).forEach(p9=>{ const n9=Array.isArray(p9)?p9[0]:p9;
+    if(LOGO[n9]&&said.indexOf(n9)<0) said.push(n9); });
+  let cos=said.slice(0,3);
   ['Google','Microsoft','Spotify'].forEach(c9=>{ if(cos.length<3&&cos.indexOf(c9)<0) cos.push(c9); });
   cos=cos.slice(0,3);
   /* each visitor speaks, then reacts to the exact piece they are hovering */
@@ -9108,6 +9121,8 @@ function pfRecruiters(g){
   const EMO=['🔥','👏','🤯','✨'];
   /* google reads the first project (left), microsoft the second's tools (left), spotify the bio (right) */
   const SIDE=[0,0,1];
+  const sheetEl=$('pfSheet');
+  const baseY=+((sheetEl&&gsap.getProperty(sheetEl,'y'))||0);
   cos.forEach((nm,i)=>{
     const col=BRAND[nm]||'#1F1D1E';
     const c=mk('div','pfcursor');
@@ -9148,6 +9163,8 @@ function pfRecruiters(g){
       .to(c,{x:tx,y:ty,duration:1.7,ease:'power2.inOut'},0)
       .to(c,{x:'+='+((right?-1:1)*22),y:'+='+((i%3-1)*18),duration:.8,ease:'sine.inOut'})
       .call(()=>{ if(g!==gen) return;
+        /* from here it is anchored to the page: scrolling carries it along */
+        c.dataset.anchor=String(+gsap.getProperty(c,'y'));
         swap(SAY[i%SAY.length][0]);
         if(tc){ const hl=tc.closest('.pf3c')||tc;
           hl.classList.remove('sweepin'); void hl.offsetWidth; hl.classList.add('sweepin'); }
@@ -9158,6 +9175,16 @@ function pfRecruiters(g){
         emojiBurst(c,EMO[i%EMO.length]);
       });
   });
+  /* one ticker keeps every landed cursor glued to the scrolling page */
+  const ride=()=>{
+    if(g!==gen||!$('pfCur')){ gsap.ticker.remove(ride); return; }
+    const sy=+((sheetEl&&gsap.getProperty(sheetEl,'y'))||0);
+    host.querySelectorAll('.pfcursor').forEach(c9=>{
+      if(c9.dataset.anchor===undefined) return;
+      gsap.set(c9,{y:parseFloat(c9.dataset.anchor)+(sy-baseY)});
+    });
+  };
+  gsap.ticker.add(ride);
   gsap.delayedCall(4.6,()=>{ if(g!==gen) return;
     const t=mk('div','pfthumb','👍');
     t.style.left=(srect.left+srect.width*.5)+'px'; t.style.top=(srect.top+180)+'px';
