@@ -1756,10 +1756,10 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .pfamb.a{ left:-16vw; top:-14vw; background:radial-gradient(circle, #d7f1de, transparent 66%); }
 .pfamb.b{ right:-16vw; bottom:-18vw; background:radial-gradient(circle, #e3f3e6, transparent 66%); }
 .pfstage.on .pfamb{ opacity:.9; }
-.pfsheetw{ position:absolute; left:50%; top:110px; width:calc(min(800px,60vw) + 170px);
-  margin-left:calc((min(800px,60vw) + 170px) / -2); transform-style:preserve-3d; pointer-events:auto; }
+.pfsheetw{ position:absolute; left:50%; top:110px; width:calc(min(800px,68vw) + 170px);
+  margin-left:calc((min(800px,68vw) + 170px) / -2); transform-style:preserve-3d; pointer-events:auto; }
 .pfsheet{ transform-style:preserve-3d; position:relative; }
-.pfsheet .pf3{ max-width:min(800px,60vw); margin:0 auto; padding-bottom:220px; }
+.pfsheet .pf3{ max-width:min(800px,68vw); margin:0 auto; padding-bottom:220px; }
 /* real depth: layered shadow with a breath of green, blue and warm light */
 .pfstage .pf3paper{
   box-shadow:0 2px 4px rgba(0,0,0,.05), 0 30px 60px -14px rgba(0,0,0,.17),
@@ -9317,8 +9317,21 @@ async function mvpOutcome(){
   if(myGen!==gen) return;
   await fadeLine(); if(myGen!==gen) return;
   qWide=true;
+  document.body.classList.add('pfsay');
   const endT=turn({q:"That's the outcome. Now, the road from level one."});
   qWide=false;
+  (async()=>{
+    for(let k=0;k<20;k++){ await wait(50);
+      const q9=document.querySelector('#turn .q');
+      if(q9&&(q9.textContent||'').slice(0,10)==="That's the"&&!q9.querySelector('.wln')){
+        const words=q9.textContent.split(' ');
+        q9.innerHTML=words.map(w9=>'<span class="wln">'+w9+'</span>').join(' ');
+        gsap.set(q9,{opacity:1});
+        gsap.fromTo(q9.querySelectorAll('.wln'),{opacity:0,filter:'blur(10px)',y:12},
+          {opacity:1,filter:'blur(0px)',y:0,duration:.6,stagger:.05,ease:'power2.out'});
+        break; } }
+    document.body.classList.remove('pfsay');
+  })();
   ctaGo('Show me the road',()=>{ flowCredit();
     gsap.to('#pfStage',{opacity:0,duration:.55,ease:'power2.in'});
     go(mvpRoadmap); }, endT&&endT.box);
