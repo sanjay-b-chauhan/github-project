@@ -1746,6 +1746,49 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
   font-size:13px; color:var(--tx-3); text-decoration:underline; text-underline-offset:3px;
   text-decoration-color:var(--line); }
 .shlinkbtn:hover{ color:var(--tx-2); }
+/* ══ the portfolio story stage: the site is the portfolio ══ */
+.pfstage{ position:fixed; inset:0; z-index:8; pointer-events:none; perspective:1700px; }
+.pfstage::before{ content:''; position:absolute; left:0; right:0; top:0; height:110px; z-index:12;
+  background:linear-gradient(180deg, var(--page) 30%, transparent); }
+.pfstage::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:130px; z-index:12;
+  background:linear-gradient(0deg, var(--page) 20%, transparent); }
+.pfamb{ position:absolute; width:58vw; height:58vw; border-radius:50%; filter:blur(90px);
+  opacity:0; transition:opacity 1.6s ease; }
+.pfamb.a{ left:-16vw; top:-14vw; background:radial-gradient(circle, #d7f1de, transparent 66%); }
+.pfamb.b{ right:-16vw; bottom:-18vw; background:radial-gradient(circle, #e3f3e6, transparent 66%); }
+.pfstage.on .pfamb{ opacity:.9; }
+.pfsheetw{ position:absolute; left:50%; top:92px; bottom:0; width:min(900px,74vw);
+  margin-left:calc(min(900px,74vw) / -2); overflow:hidden; overflow-x:hidden;
+  transform-style:preserve-3d; scrollbar-width:none; }
+.pfsheetw::-webkit-scrollbar{ display:none; }
+.pfsheet{ transform-style:preserve-3d; }
+.pfsheet .pf3{ max-width:none; padding-bottom:220px; }
+.pfring{ position:fixed; width:170px; height:170px; margin:-85px 0 0 -85px; border-radius:50%;
+  border:2px solid rgba(47,156,69,.6); z-index:79; pointer-events:none;
+  box-shadow:0 0 70px rgba(47,156,69,.35), inset 0 0 34px rgba(47,156,69,.2); }
+.pfbloomfx{ position:fixed; width:440px; height:440px; margin:-220px 0 0 -220px; border-radius:50%;
+  background:radial-gradient(circle, rgba(88,196,120,.5), rgba(88,196,120,0) 70%);
+  z-index:78; filter:blur(8px); pointer-events:none; }
+/* the narration line moves around the stage */
+body.pfull #turn{ position:fixed; z-index:40; }
+body.pfl-b #turn{ left:0; right:0; margin:0 auto; top:auto; bottom:8vh; width:min(680px,84vw); text-align:center; }
+body.pfl-t #turn{ left:0; right:0; margin:0 auto; top:9vh; bottom:auto; width:min(720px,84vw); text-align:center; }
+body.pfl-l #turn{ left:5vw; right:auto; top:36vh; bottom:auto; width:min(430px,32vw); text-align:left; }
+body.pfl-r #turn{ left:auto; right:5vw; top:36vh; bottom:auto; width:min(430px,32vw); text-align:left; }
+/* the recruiters: multiplayer cursors with a name and a note */
+.pfcurhost{ position:absolute; inset:0; z-index:30; pointer-events:none; }
+.pfcursor{ position:absolute; left:0; top:0; }
+.pfcursor svg{ width:22px; height:22px; display:block;
+  filter:drop-shadow(0 3px 8px rgba(0,0,0,.25)); }
+.pfcursor>span{ display:inline-flex; align-items:center; gap:6px; margin:2px 0 0 14px; height:26px;
+  padding:0 11px 0 5px; border-radius:999px; color:#fff; font-size:12px; font-weight:600;
+  box-shadow:0 6px 16px rgba(0,0,0,.22); white-space:nowrap; }
+.pfcursor>span i{ width:16px; height:16px; border-radius:50%; background:rgba(255,255,255,.85); }
+.pfnote{ position:absolute; left:30px; top:-40px; background:#fff; color:var(--tx);
+  font-size:12.5px; font-weight:500; padding:8px 13px; border-radius:13px 13px 13px 4px;
+  border:1px solid var(--line-2); box-shadow:0 10px 26px rgba(0,0,0,.12); white-space:nowrap; }
+.pfthumb{ position:absolute; left:50%; top:42%; font-size:44px; z-index:31;
+  filter:drop-shadow(0 8px 18px rgba(0,0,0,.2)); }
 /* share, and the number climbs */
 .shbottom{ position:fixed; left:50%; transform:translateX(-50%); bottom:26px; z-index:60; text-align:center; }
 .shmini{ font-size:13px; color:var(--tx-3); margin-bottom:11px; }
@@ -8491,6 +8534,7 @@ async function mvpRoadmapRoad(){
   await wait(700); if(myGen!==gen) return;
   if(pf&&pf.parentNode) pf.remove();
   document.querySelectorAll('#vz,#vb,.pf3,.pfrip').forEach(n=>n.remove());
+  pfStageOff();
   setCap('',false);
   const old=$('rmband'); if(old) old.remove();
   const totW=CURRICULUM.reduce((a,c)=>a+c.weeks,0);
@@ -8578,9 +8622,9 @@ async function mvpRoadmapRoad(){
 
 /* one CTA position everywhere: 'inline' sits after the text, 'dock' pins bottom center */
 let CTAPOS='inline'; try{ CTAPOS=localStorage.mvpCtaPos||'inline'; }catch(e){}
-function ctaGo(label,fn){
+function ctaGo(label,fn,host){
   if(CTAPOS==='dock'){ cta(label,fn); return; }
-  const qb=document.querySelector('#turn .qbox')||document.querySelector('#turn');
+  const qb=host||document.querySelector('#turn .qbox')||document.querySelector('#turn');
   if(!qb){ cta(label,fn); return; }
   qb.querySelectorAll('.inlinecta').forEach(n=>n.remove());
   const b=mk('button','dbig inlinecta',label);
@@ -8616,6 +8660,7 @@ async function mvpRoadmapPanel(){
   setPhase(3);
   const myGen=gen;
   clearTurn(); dockHide(); await wait(320); if(myGen!==gen) return;
+  pfStageOff();
   panelBack();
   const totW=CURRICULUM.reduce((a,c)=>a+c.weeks,0);
   /* left and right move together: the panel morphs WHILE the line speaks */
@@ -8949,117 +8994,184 @@ function buildPf3(host){
   host.appendChild(w);
   return w;
 }
+/* ══ the portfolio story: a scroll-site whose centerpiece is the portfolio ══ */
+function pfStageOff(){
+  const s=$('pfStage'); if(s) s.remove();
+  document.body.classList.remove('pfull','pfl-b','pfl-l','pfl-r','pfl-t');
+}
+/* the impact: rings and a green bloom, high quality, then gone */
+function pfBloom(x,y){
+  for(let i=0;i<3;i++){
+    const r=mk('i','pfring');
+    r.style.left=x+'px'; r.style.top=y+'px';
+    document.body.appendChild(r);
+    gsap.fromTo(r,{scale:.1,opacity:.75-.18*i},
+      {scale:3.2+i*1.5,opacity:0,duration:1.5+i*.35,delay:i*.16,ease:'power2.out',onComplete:()=>r.remove()});
+  }
+  const g=mk('i','pfbloomfx'); g.style.left=x+'px'; g.style.top=y+'px';
+  document.body.appendChild(g);
+  gsap.fromTo(g,{scale:.3,opacity:.9},{scale:2.6,opacity:0,duration:1.6,ease:'power2.out',onComplete:()=>g.remove()});
+}
+/* the recruiters arrive: multiplayer cursors, a note each, and a thumbs up */
+function pfRecruiters(g){
+  const host=$('pfCur'); if(!host) return;
+  const CUR=[['Nike','#F56B25'],['Microsoft','#2E7CEE'],['Salesforce','#3B5BDB'],['Spotify','#1DB954']];
+  const bub=['We have a role for you.','Open to a quick chat?','Loved the churn read-out.','Interview this week?'];
+  CUR.forEach((pair,i)=>{
+    const nm=pair[0], col=pair[1];
+    const c=mk('div','pfcursor');
+    c.innerHTML='<svg viewBox="0 0 24 24"><path fill="'+col+'" stroke="#fff" stroke-width="1.4" d="M5 3l14 7-6.2 1.8L9.5 18z"/></svg>'
+      +'<span style="background:'+col+'"><i></i>'+nm+'</span>';
+    host.appendChild(c);
+    const sx=(i%2? innerWidth+90:-90), sy=140+(i*97)%380;
+    const tx=innerWidth/2+((i%2)?1:-1)*(290+(i*53)%170), ty=200+i*118;
+    gsap.set(c,{x:sx,y:sy,opacity:0});
+    const tl=gsap.timeline({delay:.4+i*.5});
+    tl.to(c,{opacity:1,duration:.3},0)
+      .to(c,{x:tx,y:ty,duration:1.6,ease:'power2.inOut'},0)
+      .to(c,{x:'+='+(((i%2)?-1:1)*34),y:'+='+((i%3-1)*26),duration:.9,ease:'sine.inOut'})
+      .call(()=>{ if(g!==gen){ return; }
+        const b=mk('div','pfnote',bub[i%bub.length]);
+        c.appendChild(b);
+        gsap.fromTo(b,{opacity:0,y:8,scale:.85},{opacity:1,y:0,scale:1,duration:.45,ease:'back.out(1.8)'});
+        try{ sfx('droplet'); }catch(e){} });
+  });
+  gsap.delayedCall(3.3,()=>{ if(g!==gen) return;
+    const t=mk('div','pfthumb','👍');
+    host.appendChild(t);
+    gsap.fromTo(t,{scale:.3,opacity:0,y:22},{scale:1,opacity:1,y:0,duration:.6,ease:'back.out(2.4)'});
+    gsap.to(t,{y:-64,opacity:0,duration:1,delay:1.1,ease:'power1.in',onComplete:()=>t.remove()});
+    try{ sfx('success'); }catch(e){} });
+}
 async function mvpOutcome(){
   atStep('Outcome');
   document.body.classList.remove('dark');
   const myGen=gen;
   setPhase(3);
   clearTurn(); dockHide(); await wait(320); if(myGen!==gen) return;
-  /* whatever path led here, the stage is bare before the morph */
+  /* the stage is bare, and it is the WHOLE screen: no panels, no columns */
   const sc=$('scroll');
   sc.querySelectorAll('.pf3, #vb').forEach(n=>n.remove());
   const ob9=$('rmband'); if(ob9) ob9.remove();
   document.body.classList.remove('rmfull');
-  panelBack();
-  sfx('sparkle');
-  /* the board BECOMES the portfolio: no wipe, no blink, one object into another */
-  document.body.classList.add('pfmode');
-  setCap('',false);
+  pfStageOff();
   boardLive=false;
   $('paper').classList.remove('canvas');
   sc.classList.remove('ctr','vzcv');
-  sc.scrollTop=0;
+  document.body.classList.add('pfull');
+  fastMode=false;
+  /* the board pours into one point; the portfolio is born out of the impact */
   const vz=$('vz');
-  if(vz){ const vr=vz.getBoundingClientRect(), sr0=sc.getBoundingClientRect();
-    gsap.set(vz,{position:'absolute',left:0,top:vr.top-sr0.top,width:'100%',zIndex:3}); }
-  const wrap=buildPf3(sc);
-  const paper=wrap.querySelector('.pf3paper');
-  const claim=wrap.querySelector('.pf3claim');
-  const secs=['pf3-projects','pf3-exp','pf3-edu'].map(id=>$(id)).filter(Boolean);
-  secs.forEach(s9=>{ s9.dataset.hid='1'; });
-  gsap.set(secs,{opacity:0,y:24});
-  gsap.set(sc,{opacity:1,y:0,filter:'blur(0px)'});
+  let cx=innerWidth/2, cy=innerHeight*.42;
   if(vz){
-    gsap.set([claim,paper],{opacity:0});
-    const pr=paper.getBoundingClientRect(), sr=sc.getBoundingClientRect();
-    const cx=pr.left+pr.width/2, cy=pr.top+Math.min(230,pr.height/2);
-    [...($('vzroles')?[$('vzroles')]:[]),...vz.querySelectorAll('.vt')].forEach((t9,i)=>{
+    const vr=vz.getBoundingClientRect();
+    cx=Math.min(innerWidth-220,Math.max(220,vr.left+vr.width/2));
+    cy=Math.min(innerHeight-220,Math.max(220,vr.top+120));
+    [...vz.querySelectorAll('.vt')].forEach((t9,i)=>{
       const r=t9.getBoundingClientRect();
       gsap.to(t9,{x:'+='+(cx-(r.left+r.width/2)),y:'+='+(cy-(r.top+r.height/2)),
-        scale:.18,opacity:0,duration:.8,delay:i*.035,ease:'power3.in'});
-      gsap.delayedCall(i*.035,()=>{ try{ sfx('tick'); }catch(e){} });
+        scale:.16,opacity:0,duration:.8,delay:i*.03,ease:'power3.in'});
+      gsap.delayedCall(i*.03,()=>{ try{ sfx('tick'); }catch(e){} });
     });
-    /* the energy leaves as a ring where they land */
-    const rip=mk('div','pfrip'); sc.appendChild(rip);
-    rip.style.left=(cx-sr.left)+'px'; rip.style.top=(cy-sr.top)+'px';
-    gsap.fromTo(rip,{scale:.15,opacity:.6},{scale:3.4,opacity:0,duration:1.2,delay:.6,
-      ease:'power2.out',onComplete:()=>rip.remove()});
-    gsap.delayedCall(.65,()=>{ if(myGen!==gen) return; sfx('bloom');
-      gsap.fromTo(paper,{opacity:0,scale:.94,y:12},{opacity:1,scale:1,y:0,duration:.85,ease:'power3.out'});
-      paper.classList.add('pfglow');
-      gsap.delayedCall(1.4,()=>paper.classList.remove('pfglow'));
-      gsap.fromTo(claim,{opacity:0,y:10},{opacity:1,y:0,duration:.6,delay:.2,ease:'power2.out'});
-    });
-    gsap.delayedCall(1.35,()=>{ if(vz.parentNode) vz.remove(); });
-    await wait(1650); if(myGen!==gen) return;
-  } else {
-    gsap.set([claim,paper],{opacity:1});
-    gsap.fromTo(wrap,{opacity:0,y:14},{opacity:1,y:0,duration:.7,ease:'power3.out'});
-    await wait(500); if(myGen!==gen) return;
+    gsap.delayedCall(1.15,()=>{ if(vz.parentNode) vz.remove(); });
   }
-  pfScroll(true);
-  sfx('page');
+  gsap.to('.right',{width:0,opacity:0,duration:.7,ease:EIO});
+  shiftLeft('0px'); setCap('',false);
+  const stage=mk('div','pfstage'); stage.id='pfStage';
+  stage.innerHTML='<div class="pfamb a"></div><div class="pfamb b"></div>'
+    +'<div class="pfsheetw" id="pfSheetW"><div class="pfsheet" id="pfSheet"></div></div>'
+    +'<div class="pfcurhost" id="pfCur"></div>';
+  document.body.appendChild(stage);
+  const sheet=$('pfSheet');
+  buildPf3(sheet);
+  const oldClaim=sheet.querySelector('.pf3claim'); if(oldClaim) oldClaim.remove();
+  /* the face comes from LinkedIn: a real photo, always */
+  const av=sheet.querySelector('.pf3av');
+  if(av){
+    const im=document.createElement('img'); im.src='mvp-assets/student.jpg'; im.alt='';
+    im.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;';
+    av.insertBefore(im,av.firstChild);
+  }
+  const secs=['pf3-projects','pf3-exp','pf3-edu'].map(id=>$(id)).filter(Boolean);
+  secs.forEach(s9=>{ s9.dataset.hid='1'; });
+  gsap.set(secs,{opacity:0,y:26});
+  const w=$('pfSheetW');
+  gsap.set(w,{opacity:0,scale:.62,y:70,transformOrigin:'50% 26%'});
+  await wait(vz?900:150); if(myGen!==gen) return;
+  pfBloom(cx,cy);
+  sfx('bloom');
+  stage.classList.add('on');
+  gsap.to(w,{opacity:1,scale:1,y:0,duration:1.1,ease:'power3.out',delay:.12});
+  /* the ambience breathes, slowly, the whole time */
+  gsap.to('.pfamb.a',{x:60,y:40,duration:11,yoyo:true,repeat:-1,ease:'sine.inOut'});
+  gsap.to('.pfamb.b',{x:-50,y:-30,duration:13,yoyo:true,repeat:-1,ease:'sine.inOut'});
+  await wait(1300); if(myGen!==gen) return;
   const goTo=(el,pad)=>new Promise(res=>{
-    if(!el||!sc){ res(); return; }
-    gsap.killTweensOf(sc);
-    const r=el.getBoundingClientRect(), sr=sc.getBoundingClientRect();
-    const y=sc.scrollTop+(r.top-sr.top)-(pad===undefined?46:pad);
-    gsap.to(sc,{scrollTop:Math.max(0,y),duration:1,ease:EIO,onComplete:res});
+    if(!el){ res(); return; }
+    const r=el.getBoundingClientRect(), wr=w.getBoundingClientRect();
+    gsap.to(w,{scrollTop:Math.max(0,w.scrollTop+(r.top-wr.top)-(pad===undefined?76:pad)),
+      duration:1.15,ease:EIO,onComplete:res});
   });
-  const parts=()=>[$('pf3-head-w'),$('pf3-projects'),$('pf3-exp'),$('pf3-edu')].filter(Boolean);
-  const lit=(el,on)=>{ parts().forEach(p=>p.classList.toggle('pf3back',on&&p!==el)); };
-  fastMode=false;
-  const walk=[
-    [null, 'This is your portfolio at the end of the road, '+(P.name||'')+'.', 2600],
-    [()=>$('pf3-head-w'), 'Your name, verified by Zero, and how you actually work.', 2700],
-    [()=>$('pf3-projects'), 'Five projects. Real companies, real tools, and a manager on every one.', 3000],
-    [()=>$('pf3-exp'), (P.school?'Your Wealthsimple internship carried straight over from your LinkedIn.':'Your real experience, carried straight onto the page.'), 2900],
-    [()=>$('pf3-edu'), 'School and certificates last, because here they matter least.', 2600],
-  ];
-  for(const [find,ln,ms] of walk){
-    if(myGen!==gen) return;
-    await paceGate(); if(myGen!==gen) return;
-    const el=find?find():null;
-    if(el){
-      if(el.dataset.hid){ delete el.dataset.hid;
-        gsap.to(el,{opacity:1,y:0,duration:.75,ease:'power3.out'});
-        await wait(280); if(myGen!==gen) return; }
-      await goTo(el); if(myGen!==gen) return; lit(el,true); sfx('whisper'); }
-    await voLine(ln,ms);
-    if(myGen!==gen) return;
-    if(el) lit(el,false);
-  }
-  if(sc){ gsap.killTweensOf(sc); gsap.to(sc,{scrollTop:0,duration:1.3,ease:EIO}); }
-  sfx('page');
-  await voLine("This is what a hiring manager sees when they're deciding on you.",2900);
+  const cam=(m,d)=>gsap.to(w,{rotationY:0,x:0,scale:1,...m,duration:d||1.4,ease:EIO,overwrite:'auto'});
+  const linePos=p=>{ ['pfl-b','pfl-l','pfl-r','pfl-t'].forEach(c9=>document.body.classList.remove(c9));
+    document.body.classList.add('pfl-'+p); };
+  const show=async s9=>{ if(!s9) return; if(s9.dataset.hid){ delete s9.dataset.hid;
+    gsap.to(s9,{opacity:1,y:0,duration:.8,ease:'power3.out'}); await wait(240); } };
+  /* ── beat 1: center. the name, the face, the proof ── */
+  linePos('b');
+  await voLine('This is your portfolio at the end of the road, '+(P.name||'')+'.',2600);
   if(myGen!==gen) return;
+  await voLine('Your name, your face from LinkedIn, and how you actually work. Verified by Zero.',3100);
+  if(myGen!==gen) return;
+  /* ── beat 2: the sheet tilts right, the projects pop out one by one ── */
+  linePos('l');
+  cam({rotationY:-25,x:Math.min(300,innerWidth*.15),scale:1.05},1.5);
+  sfx('page');
+  await show(secs[0]); if(myGen!==gen) return;
+  await goTo(secs[0]); if(myGen!==gen) return;
+  const cards=[...sheet.querySelectorAll('.pf3c')];
+  gsap.set(cards,{opacity:0});
+  cards.forEach((c9,i)=>{
+    gsap.fromTo(c9,{opacity:0,z:150,y:30},{opacity:1,z:0,y:0,duration:.75,delay:.25+i*.22,ease:'power3.out'});
+    gsap.delayedCall(.28+i*.22,()=>{ try{ sfx('tick'); }catch(e){} });
+  });
+  await voLine('Five projects. Real companies, real tools, and a manager on every one.',3200);
+  if(myGen!==gen) return;
+  await voLine('Every piece lands here as you finish it. The page builds itself.',2900);
+  if(myGen!==gen) return;
+  /* ── beat 3: tilt left, the history side ── */
+  linePos('r');
+  cam({rotationY:25,x:-Math.min(300,innerWidth*.15),scale:1.05},1.5);
+  sfx('page');
+  await show(secs[1]); await show(secs[2]); if(myGen!==gen) return;
+  await goTo(secs[1]); if(myGen!==gen) return;
+  await voLine((P.school?'Your Wealthsimple internship carried straight over from your LinkedIn.':'Your real experience, carried straight onto the page.'),2900);
+  if(myGen!==gen) return;
+  await goTo(secs[2]); if(myGen!==gen) return;
+  await voLine('School and certificates last, because here they matter least.',2600);
+  if(myGen!==gen) return;
+  /* ── beat 4: back to center, and the recruiters find it ── */
+  linePos('t');
+  cam({},1.5);
+  gsap.to(w,{scrollTop:0,duration:1.2,ease:EIO});
+  sfx('page');
+  await wait(900); if(myGen!==gen) return;
+  await voLine("And once it's live, you're not the one knocking.",2600);
+  if(myGen!==gen) return;
+  pfRecruiters(myGen);
+  await voLine('Recruiters land on it, leave notes, ask for interviews. The work speaks first.',3600);
+  if(myGen!==gen) return;
+  await wait(1400); if(myGen!==gen) return;
   await voLine('Your proof of work, not a promise.',2300);
   if(myGen!==gen) return;
-  clearTurn(); await wait(280); if(myGen!==gen) return;
+  /* the sheet steps back so the closing line and the CTA own the top */
+  gsap.to(w,{y:110,scale:.94,duration:1,ease:EIO});
   qWide=true;
-  const {box:rb}=turn({q:'With this behind you, these stop being a long shot.'});
+  const endT=turn({q:"That's where you could be seven weeks from now. Let me show you the road from level one."});
   qWide=false;
-  jobList(rb,.3);
-  await wait(2600); if(myGen!==gen) return;
-  clearTurn(); await wait(300); if(myGen!==gen) return;
-  const {box}=turn({q:"And Zero doesn't sit on it. It goes out."});
-  await sendOut(box); if(myGen!==gen) return;
-  await wait(700); if(myGen!==gen) return;
-  clearTurn(); await wait(320); if(myGen!==gen) return;
-  qWide=true;
-  turn({q:"That's where you could be seven weeks from now. Let me show you the road from level one."});
-  qWide=false;
-  ctaGo('Show me the road',()=>{ flowCredit(); go(mvpRoadmap); });
+  ctaGo('Show me the road',()=>{ flowCredit();
+    gsap.to('#pfStage',{opacity:0,duration:.55,ease:'power2.in'});
+    go(mvpRoadmap); }, endT&&endT.box);
 }
 
 /* ---- launch: why Zero, one container at a time, text at the bottom ---- *//* ---- launch: why Zero, one container at a time, text at the bottom ---- */
@@ -9543,6 +9655,7 @@ function boardRetired(){
 async function mvpWhy(){
   atStep('Why Zero');
   pfScroll(false);
+  pfStageOff();
   boardRetired();
   document.body.classList.remove('rmfull');
   { const bd=$('rmband'); if(bd) bd.remove(); }
@@ -9754,6 +9867,7 @@ function mvpShareCard(){
 async function mvpClaim(){
   atStep('Claim');
   pfScroll(false);
+  pfStageOff();
   boardRetired();
   document.body.classList.remove('rmfull');
   { const bd=$('rmband'); if(bd) bd.remove(); }
@@ -10070,8 +10184,8 @@ ALIGN.forEach((st,i2)=>DBG_STEPS.push([st.label,()=>{ ALAT=i2; bornPanel();
 const dbgGoto0=dbgGoto;
 dbgGoto=function(i){
   try{ gsap.killTweensOf(['#vz','.pf3','#rmband','#scroll']); }catch(e){}
-  document.querySelectorAll('#vz,.pf3,#rmband,.rmfloat,.pfrip,#shCard').forEach(n=>n.remove());
-  document.body.classList.remove('pfmode','rmfull','noboard','rolesq');
+  document.querySelectorAll('#vz,.pf3,#rmband,.rmfloat,.pfrip,#shCard,#pfStage').forEach(n=>n.remove());
+  document.body.classList.remove('pfmode','rmfull','noboard','rolesq','pfull','pfl-b','pfl-l','pfl-r','pfl-t');
   const sc9=$('scroll');
   if(sc9){ sc9.classList.remove('vzcv'); sc9.style.overflowY=''; sc9.style.overscrollBehavior=''; sc9.scrollTop=0;
     gsap.set(sc9,{opacity:1,y:0,filter:'blur(0px)'}); }
