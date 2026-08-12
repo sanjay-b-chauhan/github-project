@@ -1767,8 +1767,22 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .pfstage .pf3paper{
   box-shadow:0 2px 4px rgba(0,0,0,.05), 0 30px 60px -14px rgba(0,0,0,.17),
     0 90px 170px -40px rgba(24,67,47,.26), 0 60px 150px -50px rgba(46,124,238,.11),
-    0 40px 120px -60px rgba(255,209,102,.1); }
+    0 40px 120px -60px rgba(255,209,102,.1), inset 0 1px 0 rgba(255,255,255,.85); }
 .pfstage .pf3c{ box-shadow:0 18px 44px -20px rgba(0,0,0,.18); }
+/* the living aura behind the sheet: green, blue and warm light, slowly turning */
+.pfhalo{ position:absolute; left:50%; top:46%; width:820px; height:960px; margin:-480px 0 0 -410px;
+  border-radius:46%; filter:blur(85px); opacity:.42; pointer-events:none;
+  background:conic-gradient(from 0deg, rgba(126,226,160,.85), rgba(124,196,255,.6),
+    rgba(255,224,138,.55), rgba(126,226,160,.85)); }
+/* the ground catches the sheet: a soft contact shadow that leans against the tilt */
+.pfground{ position:absolute; left:50%; bottom:52px; width:560px; height:56px; margin-left:-280px;
+  border-radius:50%; filter:blur(26px); opacity:.38; pointer-events:none;
+  background:radial-gradient(ellipse, rgba(20,32,24,.55), transparent 70%); }
+/* the specular pass: a band of light crossing the paper on every camera move */
+.pfstage .pf3paper{ position:relative; }
+.pfsheen{ position:absolute; inset:0; z-index:6; pointer-events:none; border-radius:30px; opacity:0;
+  background:linear-gradient(105deg, transparent 40%, rgba(255,255,255,.55) 50%, transparent 60%);
+  background-size:240% 100%; background-repeat:no-repeat; mix-blend-mode:soft-light; }
 /* the glow that travels with the camera */
 .pfglowb{ position:absolute; left:50%; top:30%; width:760px; height:760px; margin:-380px 0 0 -380px;
   border-radius:50%; filter:blur(100px); pointer-events:none;
@@ -9111,6 +9125,7 @@ async function mvpOutcome(){
   shiftLeft('0px'); setCap('',false);
   const stage=mk('div','pfstage'); stage.id='pfStage';
   stage.innerHTML='<div class="pfamb a"></div><div class="pfamb b"></div><div class="pfglowb" id="pfGlowB"></div>'
+    +'<div class="pfhalo" id="pfHalo"></div><div class="pfground" id="pfGround"></div>'
     +'<div class="pfsheetw" id="pfSheetW"><div class="pfsheet" id="pfSheet"></div></div>'
     +'<div class="pfcurhost" id="pfCur"></div>';
   document.body.appendChild(stage);
@@ -9123,6 +9138,8 @@ async function mvpOutcome(){
     im.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;';
     av.insertBefore(im,av.firstChild);
   }
+  const paper9=sheet.querySelector('.pf3paper');
+  if(paper9){ const shn=mk('i','pfsheen'); shn.id='pfSheen'; paper9.appendChild(shn); }
   const secs=['pf3-projects','pf3-exp','pf3-edu'].map(id=>$(id)).filter(Boolean);
   secs.forEach(s9=>{ s9.dataset.hid='1'; });
   gsap.set(secs,{opacity:0,y:26,filter:'blur(16px)'});
@@ -9135,6 +9152,8 @@ async function mvpOutcome(){
   gsap.to(w,{opacity:1,scale:1,y:0,duration:1.1,ease:'power3.out',delay:.12});
   gsap.to('.pfamb.a',{x:60,y:40,duration:11,yoyo:true,repeat:-1,ease:'sine.inOut'});
   gsap.to('.pfamb.b',{x:-50,y:-30,duration:13,yoyo:true,repeat:-1,ease:'sine.inOut'});
+  gsap.to('#pfHalo',{rotation:360,duration:26,repeat:-1,ease:'none'});
+  gsap.to('.pfsheet',{rotationY:1.6,rotationX:-1,y:-7,duration:4.6,yoyo:true,repeat:-1,ease:'sine.inOut'});
   await wait(1300); if(myGen!==gen) return;
   const goTo=(el,pad)=>new Promise(res=>{
     if(!el){ res(); return; }
@@ -9142,9 +9161,19 @@ async function mvpOutcome(){
     gsap.to(w,{scrollTop:Math.max(0,w.scrollTop+(r.top-wr.top)-(pad===undefined?76:pad)),
       duration:1.15,ease:EIO,onComplete:res});
   });
-  const cam=(m,d)=>gsap.to(w,{rotationY:0,x:0,scale:1,...m,duration:d||1.5,ease:EIO,overwrite:'auto'});
-  /* the glow travels with the camera: the energy is always on the lit side */
-  const glowTo=dir=>gsap.to('#pfGlowB',{x:dir*300,duration:1.7,ease:EIO,overwrite:'auto'});
+  const cam=(m,d)=>{
+    gsap.to(w,{rotationY:0,rotationX:0,x:0,scale:1,...m,duration:d||1.7,ease:EIO,overwrite:'auto'});
+    /* the light sweeps across the paper with every move */
+    gsap.fromTo('#pfSheen',{opacity:.9,backgroundPosition:'-160% 0'},
+      {backgroundPosition:'260% 0',duration:1.5,ease:'power2.inOut',
+       onComplete:()=>gsap.set('#pfSheen',{opacity:0})});
+  };
+  /* the glow, the aura and the ground shadow all lean with the camera */
+  const glowTo=dir=>{
+    gsap.to('#pfGlowB',{x:dir*300,duration:1.7,ease:EIO,overwrite:'auto'});
+    gsap.to('#pfHalo',{x:dir*220,duration:1.8,ease:EIO,overwrite:'auto'});
+    gsap.to('#pfGround',{x:dir*-150,skewX:dir*-7,duration:1.8,ease:EIO,overwrite:'auto'});
+  };
   const linePos=p=>{ ['pfl-b','pfl-l','pfl-r','pfl-t'].forEach(c9=>document.body.classList.remove(c9));
     document.body.classList.add('pfl-'+p); };
   /* discipline: the line leaves, THEN the camera moves, THEN the next line blurs in */
@@ -9164,7 +9193,7 @@ async function mvpOutcome(){
   /* ── beat 2: tilt right. the projects you'll have done ── */
   await fadeLine(); if(myGen!==gen) return;
   linePos('l');
-  cam({rotationY:-24,x:Math.min(280,innerWidth*.14),scale:1.04},1.6);
+  cam({rotationY:-33,rotationX:4,x:Math.min(300,innerWidth*.15),scale:1.07},1.8);
   glowTo(1);
   sfx('page');
   await wait(1000); if(myGen!==gen) return;
@@ -9184,7 +9213,7 @@ async function mvpOutcome(){
   /* ── beat 3: tilt left. the experience that carries over ── */
   await fadeLine(); if(myGen!==gen) return;
   linePos('r');
-  cam({rotationY:24,x:-Math.min(280,innerWidth*.14),scale:1.04},1.6);
+  cam({rotationY:33,rotationX:4,x:-Math.min(300,innerWidth*.15),scale:1.07},1.8);
   glowTo(-1);
   sfx('page');
   await wait(1000); if(myGen!==gen) return;
@@ -9195,7 +9224,7 @@ async function mvpOutcome(){
   /* ── beat 4: the sheet parks right, the story lives on the left ── */
   await fadeLine(); if(myGen!==gen) return;
   linePos('l');
-  cam({rotationY:-9,x:Math.min(330,innerWidth*.165),scale:.98},1.6);
+  cam({rotationY:-13,rotationX:2,x:Math.min(330,innerWidth*.165),scale:.98},1.8);
   glowTo(1);
   gsap.to(w,{scrollTop:0,duration:1.2,ease:EIO});
   sfx('page');
