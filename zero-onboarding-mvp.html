@@ -1748,8 +1748,8 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .shlinkbtn:hover{ color:var(--tx-2); }
 /* ══ the portfolio story stage: the site is the portfolio ══ */
 .pfstage{ position:fixed; inset:0; z-index:8; pointer-events:none; perspective:1700px; }
-.pfstage::before{ content:''; position:absolute; left:0; right:0; top:0; height:110px; z-index:12;
-  background:linear-gradient(180deg, var(--page) 30%, transparent); }
+.pfstage::before{ content:''; position:absolute; left:0; right:0; top:0; height:150px; z-index:12;
+  background:linear-gradient(180deg, var(--page) 42%, transparent); }
 .pfstage::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:130px; z-index:12;
   background:linear-gradient(0deg, var(--page) 20%, transparent); }
 .pfamb{ position:absolute; width:58vw; height:58vw; border-radius:50%; filter:blur(90px);
@@ -1757,7 +1757,7 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .pfamb.a{ left:-16vw; top:-14vw; background:radial-gradient(circle, #d7f1de, transparent 66%); }
 .pfamb.b{ right:-16vw; bottom:-18vw; background:radial-gradient(circle, #e3f3e6, transparent 66%); }
 .pfstage.on .pfamb{ opacity:.9; }
-.pfsheetw{ position:absolute; left:50%; top:92px; bottom:0; width:calc(min(800px,68vw) + 170px);
+.pfsheetw{ position:absolute; left:50%; top:126px; bottom:0; width:calc(min(800px,68vw) + 170px);
   margin-left:calc((min(800px,68vw) + 170px) / -2); overflow:hidden; overflow-x:hidden;
   transform-style:preserve-3d; scrollbar-width:none; }
 .pfsheetw::-webkit-scrollbar{ display:none; }
@@ -1779,7 +1779,7 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
   border-radius:50%; filter:blur(26px); opacity:.38; pointer-events:none;
   background:radial-gradient(ellipse, rgba(20,32,24,.55), transparent 70%); }
 /* the specular pass: a band of light crossing the paper on every camera move */
-.pfstage .pf3paper{ position:relative; }
+.pfstage .pf3paper{ position:relative; border:6px solid rgba(31,29,30,.06); }
 .pfsheen{ position:absolute; inset:0; z-index:6; pointer-events:none; border-radius:30px; opacity:0;
   background:linear-gradient(105deg, transparent 40%, rgba(255,255,255,.55) 50%, transparent 60%);
   background-size:240% 100%; background-repeat:no-repeat; mix-blend-mode:soft-light; }
@@ -1794,6 +1794,8 @@ body.pfull #turn{ animation:pfLineIn .9s cubic-bezier(.22,.9,.24,1) both; }
     text-shadow:0 0 26px rgba(47,156,69,.4); }
   to{ opacity:1; filter:blur(0); transform:none; text-shadow:0 0 0 rgba(47,156,69,0); } }
 .sweepin{ animation:pfSweep 1.2s ease-out both; }
+.chipglow{ box-shadow:0 0 0 1.5px rgba(47,156,69,.4), 0 6px 18px rgba(47,156,69,.2) !important;
+  border-color:rgba(47,156,69,.45) !important; transition:box-shadow .3s ease, border-color .3s ease; }
 @keyframes pfSweep{
   0%{ box-shadow:0 0 0 0 rgba(88,196,120,0); }
   25%{ box-shadow:0 0 44px -4px rgba(88,196,120,.4), inset 0 0 26px rgba(88,196,120,.12); }
@@ -1813,18 +1815,18 @@ body.pfl-r #turn{ left:auto; right:5vw; top:36vh; bottom:auto; width:min(430px,3
 /* the recruiters: multiplayer cursors with a name and a note */
 .pfcurhost{ position:absolute; inset:0; z-index:30; pointer-events:none; }
 .pfcursor{ position:absolute; left:0; top:0; }
-.pfcursor svg{ width:22px; height:22px; display:block;
-  filter:drop-shadow(0 3px 8px rgba(0,0,0,.25)); }
-.pfcursor>span{ display:inline-flex; align-items:center; gap:6px; margin:2px 0 0 14px; height:26px;
-  padding:0 11px 0 5px; border-radius:999px; color:#fff; font-size:12px; font-weight:600;
-  box-shadow:0 6px 16px rgba(0,0,0,.22); white-space:nowrap; }
-.pfcursor>span i{ width:17px; height:17px; border-radius:50%; background:#fff;
+.pfcursor svg{ width:30px; height:30px; display:block;
+  filter:drop-shadow(0 4px 10px rgba(0,0,0,.28)); }
+.pfcursor>span{ display:inline-flex; align-items:center; gap:8px; margin:3px 0 0 19px; height:34px;
+  padding:0 15px 0 6px; border-radius:999px; color:#fff; font-size:14px; font-weight:600;
+  box-shadow:0 8px 22px rgba(0,0,0,.26); white-space:nowrap; }
+.pfcursor>span i{ width:23px; height:23px; border-radius:50%; background:#fff;
   display:inline-flex; align-items:center; justify-content:center; font-style:normal; }
-.pfcursor>span i svg{ width:10px; height:10px; }
-.pfnote{ position:absolute; left:16px; top:38px; background:#fff; color:var(--tx);
-  font-size:12.5px; font-weight:500; padding:8px 13px; border-radius:4px 13px 13px 13px;
-  border:1px solid var(--line-2); box-shadow:0 12px 30px rgba(0,0,0,.14); white-space:nowrap; }
-.pfthumb{ position:absolute; left:50%; top:42%; font-size:44px; z-index:31;
+.pfcursor>span i svg{ width:13px; height:13px; }
+.pfnote{ position:absolute; left:21px; top:48px; background:#fff; color:var(--tx);
+  font-size:14px; font-weight:500; padding:10px 16px; border-radius:4px 15px 15px 15px;
+  border:1px solid var(--line-2); box-shadow:0 14px 36px rgba(0,0,0,.16); white-space:nowrap; }
+.pfthumb{ position:absolute; left:50%; top:42%; font-size:56px; z-index:31;
   filter:drop-shadow(0 8px 18px rgba(0,0,0,.2)); }
 /* share, and the number climbs */
 .shbottom{ position:fixed; left:50%; transform:translateX(-50%); bottom:26px; z-index:60; text-align:center; }
@@ -9054,41 +9056,58 @@ function pfRecruiters(g){
   const host=$('pfCur'); if(!host) return;
   const BRAND={Stripe:'#635BFF',Notion:'#1F1D1E',Salesforce:'#00A1E0',Google:'#4285F4',
     Shopify:'#008060',DoorDash:'#FF3008',Microsoft:'#2E7CEE',Spotify:'#1DB954',Nike:'#F56B25'};
-  /* the cursors are the user's own dream companies, padded with big names */
   let cos=(P.picks||[]).filter(c9=>LOGO[c9]&&BRAND[c9]);
   ['Google','Microsoft','Spotify','Nike'].forEach(c9=>{ if(cos.length<4&&cos.indexOf(c9)<0) cos.push(c9); });
   cos=cos.slice(0,4);
-  const bub=['Open to a quick chat?','We have a role for you.','Loved the churn read-out.','Interview this week?'];
+  /* each visitor speaks, then reacts to the exact piece they are hovering */
+  const SAY=[['Open to a quick chat?','This is crazy 🔥'],
+             ['We have a role for you.','Clean thinking 👏'],
+             ['Loved the churn read-out.','So sharp 🤯'],
+             ['Interview this week?','Great storytelling ✨']];
+  const cards9=[...document.querySelectorAll('#pfSheet .pf3c')];
   const sw=$('pfSheetW');
-  const sr=sw?sw.getBoundingClientRect():{left:innerWidth*.4,right:innerWidth*.9,top:120,width:innerWidth*.5};
+  const srect=sw?sw.getBoundingClientRect():{left:innerWidth*.4,top:120,width:innerWidth*.5};
   cos.forEach((nm,i)=>{
     const col=BRAND[nm]||'#1F1D1E';
     const c=mk('div','pfcursor');
     c.innerHTML='<svg viewBox="0 0 24 24"><path fill="'+col+'" stroke="#fff" stroke-width="1.4" d="M5 3l14 7-6.2 1.8L9.5 18z"/></svg>'
       +'<span style="background:'+col+'"><i>'+(LOGO[nm]||'')+'</i>'+nm+'</span>';
     host.appendChild(c);
+    const tc=cards9[i%Math.max(1,cards9.length)];
+    const tr=tc?tc.getBoundingClientRect():srect;
     const left=(i%2===0);
-    const sx=left?-120:innerWidth+120, sy=120+(i*93)%360;
-    const tx=left? sr.left+40+((i>>1)*26) : sr.left+sr.width-190-((i>>1)*30);
-    const ty=sr.top+120+i*112;
+    const sx=left?-140:innerWidth+140, sy=110+(i*97)%340;
+    const tx=left? Math.max(30,tr.left-210-(i*10)) : Math.min(innerWidth-230,tr.right-30+(i*8));
+    const ty=Math.max(120,tr.top+16+(i%2?46:6));
     gsap.set(c,{x:sx,y:sy,opacity:0});
-    const tl=gsap.timeline({delay:.4+i*.55});
+    const tl=gsap.timeline({delay:.4+i*.6});
     tl.to(c,{opacity:1,duration:.3},0)
       .to(c,{x:tx,y:ty,duration:1.7,ease:'power2.inOut'},0)
-      .to(c,{x:'+='+((left?1:-1)*26),y:'+='+((i%3-1)*22),duration:.9,ease:'sine.inOut'})
-      .call(()=>{ if(g!==gen){ return; }
-        const b=mk('div','pfnote',bub[i%bub.length]);
+      .to(c,{x:'+='+((left?1:-1)*24),y:'+='+((i%3-1)*20),duration:.8,ease:'sine.inOut'})
+      .call(()=>{ if(g!==gen) return;
+        const b=mk('div','pfnote',SAY[i%SAY.length][0]);
         c.appendChild(b);
         gsap.fromTo(b,{opacity:0,y:-6,scale:.85,filter:'blur(6px)'},
           {opacity:1,y:0,scale:1,filter:'blur(0px)',duration:.5,ease:'back.out(1.7)'});
-        try{ sfx('droplet'); }catch(e){} });
+        /* the piece they are reading lights up under them */
+        if(tc){ tc.classList.remove('sweepin'); void tc.offsetWidth; tc.classList.add('sweepin'); }
+        try{ sfx('droplet'); }catch(e){} })
+      .to({},{duration:1.5})
+      .call(()=>{ if(g!==gen) return;
+        const b=c.querySelector('.pfnote'); if(!b) return;
+        gsap.to(b,{opacity:0,filter:'blur(6px)',duration:.28,onComplete:()=>{
+          b.textContent=SAY[i%SAY.length][1];
+          gsap.fromTo(b,{opacity:0,scale:.8,filter:'blur(6px)'},
+            {opacity:1,scale:1,filter:'blur(0px)',duration:.5,ease:'back.out(2)'});
+        }});
+        try{ sfx('sparkle'); }catch(e){} });
   });
-  gsap.delayedCall(3.4,()=>{ if(g!==gen) return;
+  gsap.delayedCall(4.6,()=>{ if(g!==gen) return;
     const t=mk('div','pfthumb','👍');
-    t.style.left=(sr.left+sr.width*.5)+'px'; t.style.top=(sr.top+170)+'px';
+    t.style.left=(srect.left+srect.width*.5)+'px'; t.style.top=(srect.top+180)+'px';
     host.appendChild(t);
-    gsap.fromTo(t,{scale:.3,opacity:0,y:22},{scale:1,opacity:1,y:0,duration:.6,ease:'back.out(2.4)'});
-    gsap.to(t,{y:-64,opacity:0,duration:1,delay:1.1,ease:'power1.in',onComplete:()=>t.remove()});
+    gsap.fromTo(t,{scale:.3,opacity:0,y:24},{scale:1.15,opacity:1,y:0,duration:.65,ease:'back.out(2.4)'});
+    gsap.to(t,{y:-70,opacity:0,duration:1,delay:1.2,ease:'power1.in',onComplete:()=>t.remove()});
     try{ sfx('success'); }catch(e){} });
 }
 async function mvpOutcome(){
@@ -9154,21 +9173,21 @@ async function mvpOutcome(){
   gsap.to('.pfamb.b',{x:-50,y:-30,duration:13,yoyo:true,repeat:-1,ease:'sine.inOut'});
   gsap.to('#pfHalo',{rotation:360,duration:26,repeat:-1,ease:'none'});
   gsap.to('.pfsheet',{rotationY:1.6,rotationX:-1,y:-7,duration:4.6,yoyo:true,repeat:-1,ease:'sine.inOut'});
-  await wait(1300); if(myGen!==gen) return;
+  await wait(1250); if(myGen!==gen) return;
   const goTo=(el,pad)=>new Promise(res=>{
     if(!el){ res(); return; }
     const r=el.getBoundingClientRect(), wr=w.getBoundingClientRect();
     gsap.to(w,{scrollTop:Math.max(0,w.scrollTop+(r.top-wr.top)-(pad===undefined?76:pad)),
       duration:1.15,ease:EIO,onComplete:res});
   });
-  const cam=(m,d)=>{
-    gsap.to(w,{rotationY:0,rotationX:0,x:0,scale:1,...m,duration:d||1.7,ease:EIO,overwrite:'auto'});
-    /* the light sweeps across the paper with every move */
+  /* the camera finishes its move BEFORE anything else happens */
+  const cam=(m,d)=>new Promise(res=>{
+    gsap.to(w,{rotationY:0,rotationX:0,x:0,scale:1,...m,duration:d||1.8,ease:EIO,
+      overwrite:'auto',onComplete:res});
     gsap.fromTo('#pfSheen',{opacity:.9,backgroundPosition:'-160% 0'},
       {backgroundPosition:'260% 0',duration:1.5,ease:'power2.inOut',
        onComplete:()=>gsap.set('#pfSheen',{opacity:0})});
-  };
-  /* the glow, the aura and the ground shadow all lean with the camera */
+  });
   const glowTo=dir=>{
     gsap.to('#pfGlowB',{x:dir*300,duration:1.7,ease:EIO,overwrite:'auto'});
     gsap.to('#pfHalo',{x:dir*220,duration:1.8,ease:EIO,overwrite:'auto'});
@@ -9176,65 +9195,74 @@ async function mvpOutcome(){
   };
   const linePos=p=>{ ['pfl-b','pfl-l','pfl-r','pfl-t'].forEach(c9=>document.body.classList.remove(c9));
     document.body.classList.add('pfl-'+p); };
-  /* discipline: the line leaves, THEN the camera moves, THEN the next line blurs in */
   const fadeLine=()=>new Promise(res=>{ const t=$('turn');
     if(!t){ res(); return; }
     gsap.to(t,{opacity:0,filter:'blur(14px)',y:-14,duration:.45,ease:'power2.in',onComplete:res}); });
   const show=async s9=>{ if(!s9) return; if(s9.dataset.hid){ delete s9.dataset.hid;
     s9.classList.add('sweepin');
     gsap.to(s9,{opacity:1,y:0,filter:'blur(0px)',duration:.95,ease:'power3.out'});
-    await wait(260); } };
-  /* ── beat 1: center. this is where seven weeks land ── */
+    await wait(240); } };
+  /* ── one short opener: why this page exists ── */
   linePos('b');
-  await voLine('This is your portfolio at the end of the road, '+(P.name||'')+'.',2600);
+  await voLine("To land the job at companies like those, you'll need a page like this. Here's yours, seven weeks in.",3600);
   if(myGen!==gen) return;
-  await voLine('Seven weeks of real work, on one page. Let me walk you through it.',2900);
-  if(myGen!==gen) return;
-  /* ── beat 2: tilt right. the projects you'll have done ── */
+  /* ── the projects: the sheet moves first, the words land in the space it left ── */
   await fadeLine(); if(myGen!==gen) return;
   linePos('l');
-  cam({rotationY:-33,rotationX:4,x:Math.min(300,innerWidth*.15),scale:1.07},1.8);
   glowTo(1);
   sfx('page');
-  await wait(1000); if(myGen!==gen) return;
+  await cam({rotationY:-33,rotationX:4,x:Math.min(300,innerWidth*.15),scale:1.07},1.8);
+  if(myGen!==gen) return;
+  await wait(220); if(myGen!==gen) return;
   await show(secs[0]); if(myGen!==gen) return;
   await goTo(secs[0]); if(myGen!==gen) return;
+  /* the cards climb OUT of the page, hang, then set back down: ta, ta, ta */
   const cards=[...sheet.querySelectorAll('.pf3c')];
   gsap.set(cards,{opacity:0});
   cards.forEach((c9,i)=>{
-    gsap.fromTo(c9,{opacity:0,filter:'blur(18px)',z:150,y:34},
-      {opacity:1,filter:'blur(0px)',z:0,y:0,duration:.85,delay:.25+i*.24,ease:'power3.out'});
-    gsap.delayedCall(.27+i*.24,()=>{ try{ c9.classList.add('sweepin'); sfx('tick'); }catch(e){} });
+    const t0=.2+i*.34;
+    gsap.fromTo(c9,{opacity:0,z:0,scale:.96,filter:'blur(12px)'},
+      {opacity:1,z:170,y:-14,scale:1.05,filter:'blur(0px)',duration:.55,delay:t0,ease:'power2.out'});
+    gsap.to(c9,{z:0,y:0,scale:1,duration:.6,delay:t0+.55,ease:'back.out(1.4)'});
+    gsap.delayedCall(t0+.55,()=>{ try{ c9.classList.add('sweepin'); sfx('tick'); }catch(e){} });
   });
   await voLine("These are the projects you'll have done. Real companies, and a manager on every one.",3400);
   if(myGen!==gen) return;
-  await voLine("And the tools and skills you'll have picked up along the way.",2900);
+  /* ── the tools: every chip lights, one after the other ── */
+  const chips=[...sheet.querySelectorAll('.pf3t')];
+  chips.forEach((ch,i)=>{ gsap.delayedCall(.1+i*.09,()=>{
+    ch.classList.add('chipglow');
+    gsap.fromTo(ch,{scale:1},{scale:1.14,duration:.26,yoyo:true,repeat:1,ease:'power2.inOut'});
+    if(i%3===0){ try{ sfx('tick'); }catch(e){} } }); });
+  await voLine("Every tool and every skill on it is one you'll actually have used.",3100);
   if(myGen!==gen) return;
-  /* ── beat 3: tilt left. the experience that carries over ── */
+  gsap.delayedCall(.4,()=>chips.forEach(ch=>ch.classList.remove('chipglow')));
+  /* ── the history side ── */
   await fadeLine(); if(myGen!==gen) return;
   linePos('r');
-  cam({rotationY:33,rotationX:4,x:-Math.min(300,innerWidth*.15),scale:1.07},1.8);
   glowTo(-1);
   sfx('page');
-  await wait(1000); if(myGen!==gen) return;
+  await cam({rotationY:33,rotationX:4,x:-Math.min(300,innerWidth*.15),scale:1.07},1.8);
+  if(myGen!==gen) return;
   await show(secs[1]); await show(secs[2]); if(myGen!==gen) return;
   await goTo(secs[1]); if(myGen!==gen) return;
   await voLine((P.school?'Your Wealthsimple internship carried straight over from your LinkedIn.':'Your real experience, carried straight onto the page.'),2900);
   if(myGen!==gen) return;
-  /* ── beat 4: the sheet parks right, the story lives on the left ── */
+  /* ── the visitors: sheet parks right, the story owns the left ── */
   await fadeLine(); if(myGen!==gen) return;
   linePos('l');
-  cam({rotationY:-13,rotationX:2,x:Math.min(330,innerWidth*.165),scale:.98},1.8);
   glowTo(1);
   gsap.to(w,{scrollTop:0,duration:1.2,ease:EIO});
   sfx('page');
-  await wait(1000); if(myGen!==gen) return;
+  await cam({rotationY:-13,rotationX:2,x:Math.min(330,innerWidth*.165),scale:.98},1.8);
+  if(myGen!==gen) return;
+  await wait(200); if(myGen!==gen) return;
   await voLine("And once it's live, you're not the one knocking.",2600);
   if(myGen!==gen) return;
   pfRecruiters(myGen);
-  await voLine('Recruiters land on it, leave notes, ask for interviews. The work speaks first.',3600);
+  await voLine('Recruiters land on it, react to the work, and ask for interviews.',3400);
   if(myGen!==gen) return;
-  await wait(1400); if(myGen!==gen) return;
+  await wait(2200); if(myGen!==gen) return;
   await voLine("This is the page you'll be proud of, seven weeks from now.",2800);
   if(myGen!==gen) return;
   await fadeLine(); if(myGen!==gen) return;
