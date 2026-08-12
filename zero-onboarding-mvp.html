@@ -1756,10 +1756,10 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .pfamb.a{ left:-16vw; top:-14vw; background:radial-gradient(circle, #d7f1de, transparent 66%); }
 .pfamb.b{ right:-16vw; bottom:-18vw; background:radial-gradient(circle, #e3f3e6, transparent 66%); }
 .pfstage.on .pfamb{ opacity:.9; }
-.pfsheetw{ position:absolute; left:50%; top:110px; width:calc(min(800px,68vw) + 170px);
-  margin-left:calc((min(800px,68vw) + 170px) / -2); transform-style:preserve-3d; pointer-events:auto; }
+.pfsheetw{ position:absolute; left:50%; top:110px; width:calc(min(800px,60vw) + 170px);
+  margin-left:calc((min(800px,60vw) + 170px) / -2); transform-style:preserve-3d; pointer-events:auto; }
 .pfsheet{ transform-style:preserve-3d; position:relative; }
-.pfsheet .pf3{ max-width:min(800px,68vw); margin:0 auto; padding-bottom:220px; }
+.pfsheet .pf3{ max-width:min(800px,60vw); margin:0 auto; padding-bottom:220px; }
 /* real depth: layered shadow with a breath of green, blue and warm light */
 .pfstage .pf3paper{
   box-shadow:0 2px 4px rgba(0,0,0,.05), 0 30px 60px -14px rgba(0,0,0,.17),
@@ -1807,8 +1807,8 @@ body.pfull #turn{ animation:pfLineIn .9s cubic-bezier(.22,.9,.24,1) both; }
 body.pfull #turn{ position:fixed; z-index:40; }
 body.pfl-b #turn{ left:0; right:0; margin:0 auto; top:auto; bottom:8vh; width:min(680px,84vw); text-align:center; }
 body.pfl-t #turn{ left:0; right:0; margin:0 auto; top:9vh; bottom:auto; width:min(720px,84vw); text-align:center; }
-body.pfl-l #turn{ left:5vw; right:auto; top:36vh; bottom:auto; width:min(430px,32vw); text-align:left; }
-body.pfl-r #turn{ left:auto; right:5vw; top:36vh; bottom:auto; width:min(430px,32vw); text-align:left; }
+body.pfl-l #turn{ left:4vw; right:auto; top:36vh; bottom:auto; width:min(430px,27vw); text-align:left; }
+body.pfl-r #turn{ left:auto; right:4vw; top:36vh; bottom:auto; width:min(430px,27vw); text-align:left; }
 /* the recruiters: multiplayer cursors with a name and a note */
 .pfcurhost{ position:absolute; inset:0; z-index:30; pointer-events:none; }
 .pfcursor{ position:absolute; left:0; top:0; }
@@ -9074,8 +9074,8 @@ function pfRecruiters(g){
   const BRAND={Stripe:'#635BFF',Notion:'#1F1D1E',Salesforce:'#00A1E0',Google:'#4285F4',
     Shopify:'#008060',DoorDash:'#FF3008',Microsoft:'#2E7CEE',Spotify:'#1DB954',Nike:'#F56B25'};
   let cos=(P.picks||[]).filter(c9=>LOGO[c9]&&BRAND[c9]);
-  ['Google','Microsoft','Spotify','Nike'].forEach(c9=>{ if(cos.length<4&&cos.indexOf(c9)<0) cos.push(c9); });
-  cos=cos.slice(0,4);
+  ['Google','Microsoft','Spotify'].forEach(c9=>{ if(cos.length<3&&cos.indexOf(c9)<0) cos.push(c9); });
+  cos=cos.slice(0,3);
   /* each visitor speaks, then reacts to the exact piece they are hovering */
   const SAY=[['Open to a quick chat?','This is crazy 🔥'],
              ['We have a role for you.','Clean thinking 👏'],
@@ -9086,10 +9086,9 @@ function pfRecruiters(g){
   const srect=sw?sw.getBoundingClientRect():{left:innerWidth*.4,top:120,width:innerWidth*.5};
   const sheet9=$('pfSheet');
   const spots=[
-    sheet9&&sheet9.querySelector('.pf3head'),
-    sheet9&&sheet9.querySelector('.pf3about'),
+    cards9[0],
     (cards9[1]||cards9[0])&&(cards9[1]||cards9[0]).querySelector('.pf3tools'),
-    cards9[0]
+    sheet9&&sheet9.querySelector('.pf3about')
   ];
   cos.forEach((nm,i)=>{
     const col=BRAND[nm]||'#1F1D1E';
@@ -9102,10 +9101,10 @@ function pfRecruiters(g){
     const left=(i%2===0);
     const sx=left?-140:innerWidth+140, sy=110+(i*97)%340;
     /* the pointer parks on the exact piece it is reading */
-    const tx=Math.max(srect.left+40,Math.min(srect.left+srect.width-260, tr.left+34+i*14));
-    const ty=Math.max(120,tr.top+Math.min(40,tr.height*.45));
+    const tx=Math.max(srect.left+40,Math.min(srect.left+srect.width-280, tr.left+tr.width*.28));
+    const ty=Math.max(120,tr.top+tr.height*.5-10);
     gsap.set(c,{x:sx,y:sy,opacity:0});
-    const tl=gsap.timeline({delay:.4+i*.6});
+    const tl=gsap.timeline({delay:.4+i*.9});
     tl.to(c,{opacity:1,duration:.3},0)
       .to(c,{x:tx,y:ty,duration:1.7,ease:'power2.inOut'},0)
       .to(c,{x:'+='+((left?1:-1)*24),y:'+='+((i%3-1)*20),duration:.8,ease:'sine.inOut'})
