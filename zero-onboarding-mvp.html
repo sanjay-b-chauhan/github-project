@@ -1757,9 +1757,14 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .pfamb.b{ right:-16vw; bottom:-18vw; background:radial-gradient(circle, #e3f3e6, transparent 66%); }
 .pfstage.on .pfamb{ opacity:.9; }
 .pfsheetw{ position:absolute; left:50%; top:110px; width:calc(min(800px,68vw) + 170px);
-  margin-left:calc((min(800px,68vw) + 170px) / -2); transform-style:preserve-3d; pointer-events:auto; }
+  margin-left:calc((min(800px,68vw) + 170px) / -2); transform-style:preserve-3d; pointer-events:auto;
+  will-change:transform,opacity; backface-visibility:hidden; }
 .pfsheet{ transform-style:preserve-3d; position:relative; }
 .pfsheet .pf3{ max-width:min(800px,68vw); margin:0 auto; padding-bottom:220px; }
+/* while the page is landing, the heavy paint is off: no jank on the entrance */
+body.pfboot .pfstage .pf3paper{ box-shadow:0 18px 44px -20px rgba(0,0,0,.16) !important; }
+body.pfboot .pfamb, body.pfboot .pfhalo{ filter:blur(60px); }
+body.pfboot .pfsheen{ display:none; }
 /* real depth: layered shadow with a breath of green, blue and warm light */
 .pfstage .pf3paper{
   box-shadow:0 2px 4px rgba(0,0,0,.05), 0 30px 60px -14px rgba(0,0,0,.17),
@@ -1793,8 +1798,8 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
   25%{ box-shadow:0 0 44px -4px rgba(88,196,120,.4), inset 0 0 26px rgba(88,196,120,.12); }
   100%{ box-shadow:0 0 0 0 rgba(88,196,120,0); } }
 .pfring{ position:fixed; width:150px; height:150px; margin:-75px 0 0 -75px; border-radius:50%;
-  border:9px solid rgba(60,175,95,.5); z-index:2; pointer-events:none; filter:blur(3px);
-  box-shadow:0 0 90px rgba(47,156,69,.3), inset 0 0 44px rgba(47,156,69,.18); }
+  border:9px solid rgba(60,175,95,.42); z-index:2; pointer-events:none;
+  will-change:transform,opacity; }
 .pfbloomfx{ position:fixed; width:440px; height:440px; margin:-220px 0 0 -220px; border-radius:50%;
   background:radial-gradient(circle, rgba(88,196,120,.5), rgba(88,196,120,0) 70%);
   z-index:1; filter:blur(10px); pointer-events:none; }
@@ -1843,23 +1848,41 @@ body.noinput #dock, body.noinput #dtr{ opacity:0 !important; pointer-events:none
 body.wzon #turn{ display:none !important; }
 body.wzon #dock, body.wzon #dtr{ opacity:0 !important; pointer-events:none; }
 .wzstage{ position:fixed; inset:0; z-index:60; display:flex; flex-direction:column;
-  align-items:center; justify-content:center; gap:clamp(18px,3vh,34px);
-  padding:88px clamp(20px,4vw,64px) 34px; }
+  align-items:center; justify-content:flex-start; gap:clamp(14px,2.2vh,24px);
+  padding:clamp(84px,11vh,132px) clamp(20px,4vw,64px) 28px; }
 /* the video: one clean 16:9 frame, nothing around it */
 .wzvid{ width:min(1060px,86vw); }
 .wzframe{ position:relative; width:100%; aspect-ratio:16/9; border-radius:20px; overflow:hidden;
   background:var(--paper,#F2F0ED);
   box-shadow:0 2px 4px rgba(0,0,0,.05), 0 30px 70px -20px rgba(0,0,0,.24),
     0 80px 150px -55px rgba(24,67,47,.22); }
-.wzframe>*{ position:absolute; inset:0; }
+.wzscr{ position:absolute; inset:0; }
+.wzscr>*{ position:absolute; inset:0; }
+.wzframe{ cursor:pointer; }
+/* the play control lives in the middle of the picture, and hides while it plays */
+.wzbig{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) scale(.94);
+  width:64px; height:64px; border-radius:50%; border:0; cursor:pointer; z-index:6;
+  background:rgba(255,255,255,.94); color:#111; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 10px 30px rgba(0,0,0,.28); opacity:0;
+  transition:opacity .35s ease, transform .35s cubic-bezier(.2,.8,.3,1); }
+.wzbig svg{ width:20px; height:20px; }
+.wzframe:hover .wzbig, .wzstage.paused .wzbig{ opacity:1; transform:translate(-50%,-50%) scale(1); }
+/* one timeline under the picture: markers, and each section sits at its own marker */
+.wzline{ position:relative; width:min(1060px,86vw); height:3px; border-radius:2px; cursor:pointer;
+  background:var(--line-2); margin-top:clamp(14px,2vh,22px); }
+.wzline i{ position:absolute; left:0; top:0; bottom:0; width:0; border-radius:2px; background:var(--ink); }
+.wzmk{ position:absolute; top:-4px; width:2px; height:11px; border-radius:1px; background:var(--line);
+  transform:translateX(-1px); }
+.wzmk.first{ background:transparent; }
+.wzsegs{ position:absolute; left:0; right:0; top:14px; height:26px; }
 /* chapters: the one playing is ink, the rest step back */
-.wzchaps{ display:flex; gap:clamp(18px,3vw,44px); justify-content:center; flex-wrap:wrap; }
-.wzstep{ background:none; border:0; cursor:pointer; padding:0; font-size:15px; font-weight:600;
-  letter-spacing:-.02em; color:var(--tx-4);
+.wzstep{ position:absolute; top:0; text-align:left; background:none; border:0; cursor:pointer;
+  padding:0 10px 0 0; font-size:12.5px; font-weight:600; letter-spacing:-.02em; color:var(--tx-4);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   transition:color .55s var(--e,cubic-bezier(.625,.05,0,1)); }
 .wzstep.on{ color:var(--tx); }
 .wzstep:hover{ color:var(--tx-2); }
-.wzfoot{ margin-top:clamp(2px,1vh,10px); }
+.wzfoot{ margin-top:clamp(34px,5vh,54px); }
 .wzcta{ min-width:210px; }
 /* ── legacy: the earlier inline video block ── */
 .wvid{ position:fixed; left:0; right:0; top:84px; bottom:70px; margin:auto;
@@ -2059,12 +2082,12 @@ body.wzon #dock, body.wzon #dtr{ opacity:0 !important; pointer-events:none; }
   background:var(--line); border-radius:1px; opacity:0; transition:opacity .6s ease .2s; }
 .rmrow.on::before{ opacity:1; }
 .rmrow:last-child::before{ display:none; }
-/* the walked part of the trail is green, one segment at a time */
-.rmrow::after{ content:''; position:absolute; left:9px; top:40px; bottom:-2px; width:2px; border-radius:1px;
-  background:#2f9c45; transform:scaleY(0); transform-origin:0 0; z-index:1;
-  transition:transform 1s var(--e,cubic-bezier(.625,.05,0,1)) .15s; }
-.rmrow.done::after{ transform:scaleY(1); }
-.rmrow:last-child::after{ display:none; }
+/* the walked part of the trail: a real stroke that draws from stop to stop */
+.rmseg{ position:absolute; left:9px; top:40px; bottom:-2px; width:2px; border-radius:1px;
+  overflow:hidden; z-index:1; }
+.rmseg b{ display:block; width:100%; height:100%; border-radius:1px; background:#2f9c45;
+  transform:scaleY(0); transform-origin:0 0; }
+.rmrow:last-child .rmseg{ display:none; }
 .rmrow.done>.rmrail .rmnode{ border-color:#2f9c45; box-shadow:0 0 0 4px rgba(47,156,69,.15); }
 .rmrow.done>.rmrail .rmnode:not(.spark)::after{ content:''; width:8px; height:8px; border-radius:50%; background:#2f9c45; }
 .rmrow.done>.rmrail .rmnode.spark{ background:#2f9c45; border-color:#2f9c45; color:#fff; }
@@ -3134,7 +3157,8 @@ window.PFM_DEF={camDur:1.8, tilt:33, tiltX:4, camScale:1.07, parkTilt:13,
   revealDur:0.95, cardStep:0.34, cardLift:170,
   rippleDur:2.2, rippleRings:5, rippleWidth:9,
   zoom:1.06, sheetIn:1.3, glowDur:1.7, sheenDur:1.5,
-  typeSpeed:28, curFly:1.7};
+  typeSpeed:28, curFly:1.7,
+  qStagger:0.075, qDur:0.8, qBlur:12};
 window.PFM=Object.assign({},window.PFM_DEF);
 try{ Object.assign(window.PFM,JSON.parse(localStorage.mvpPfm||'{}')); }catch(e){}
 function pfmSave(){ try{ localStorage.mvpPfm=JSON.stringify(window.PFM); }catch(e){} }
@@ -3213,7 +3237,10 @@ function turn(o){
     if(myGen!==gen) return;
     $('col').innerHTML=''; $('col').appendChild(t);
     const ws=words(q,o.q);
-    enter(ws,{y:26,blur:10,scale:1,stagger:.038,duration:.72},2600);
+    { const M=window.PFM||{};
+      enter(ws,{y:26,blur:(M.qBlur!==undefined?M.qBlur:10),scale:1,
+        stagger:(M.qStagger!==undefined?M.qStagger:.038),
+        duration:(M.qDur!==undefined?M.qDur:.72)}, 4200); }
     enter([box],{y:16,blur:8,scale:1,duration:.6},1400);
     if(o.after) o.after(box);
   }, old?300:0);
@@ -7943,6 +7970,9 @@ function dbgGoto(i){
    ['Sheet entrance (s)','sheetIn',.4,3,.05],
    ['Glow travel (s)','glowDur',.4,4,.05],
    ['Light sweep (s)','sheenDur',.4,4,.05],
+   ['Line word stagger (s)','qStagger',0,.25,.005],
+   ['Line word fade (s)','qDur',.2,2,.05],
+   ['Line word blur (px)','qBlur',0,30,1],
    ['Type speed (ms)','typeSpeed',8,120,2],
    ['Cursor fly (s)','curFly',.5,4,.05]
   ].forEach(([lab,k,a,b,st])=>range(pfm9,lab,a,b,st,()=>PFM[k],v=>{ PFM[k]=v; pfmSave(); }));
@@ -8830,22 +8860,43 @@ async function mvpRoadmapPanel(){
     const w0=wkAt, w1=wkAt+c.weeks-1; wkAt+=c.weeks;
     const row=mk('div','rmrow');
     row.innerHTML='<div class="rmrail"><span class="rmnode"></span>'
+      +'<i class="rmseg"><b></b></i>'
       +'<span class="rmwk">'+(w0===w1?('Week '+w0):('Weeks '+w0+'\u2013'+w1))+'</span></div>';
     const slot=mk('div','rmslot'); row.appendChild(slot);
     host.appendChild(row);
+    /* nothing on this row is visible until its own beat calls for it */
+    const nd9=row.querySelector('.rmnode'), wk9=row.querySelector('.rmwk');
+    gsap.set([nd9,wk9],{opacity:0});
+    { const b0=row.querySelector('.rmseg b'); if(b0) gsap.set(b0,{scaleY:0}); }
+    /* 1. the marker arrives */
+    gsap.fromTo(nd9,{scale:.3,opacity:0},{scale:1,opacity:1,duration:.5,ease:'back.out(2.2)'});
+    sfx('tick');
+    await wait(420); if(myGen!==gen) return;
+    /* 2. the week reads out */
+    gsap.fromTo(wk9,{opacity:0,x:-8},{opacity:1,x:0,duration:.5,ease:'power2.out'});
+    await wait(520); if(myGen!==gen) return;
+    /* 3. the brief lands */
     const card=mvpScCard(c);
-    await ghostIn(card,58,430,slot);
+    await ghostIn(card,58,520,slot);
     row.classList.add('on');
     card.classList.add('open');
-    row.classList.add('done');
     gsap.fromTo(card.querySelectorAll('.mtag'),{opacity:0,y:8,scale:.92},
       {opacity:1,y:0,scale:1,duration:.45,ease:'back.out(1.6)',stagger:.06,delay:.1});
-    /* the one being spoken about shines; the rest settle back */
     host.querySelectorAll('.mvsc,.mvunlock').forEach(x=>x.classList.remove('mvlit'));
     card.classList.add('mvlit');
     if(typeof sheen==='function'){ try{ sheen(card,.8); }catch(e){} }
+    await wait(900); if(myGen!==gen) return;
+    /* 4. the trail travels: it draws from this stop down to the next one */
+    row.classList.add('done');
+    await new Promise(res=>{
+      const b9=row.querySelector('.rmseg b');
+      if(!b9){ res(); return; }
+      gsap.fromTo(b9,{scaleY:0},{scaleY:1,duration:1.05,ease:'power2.inOut',onComplete:res});
+    });
+    if(myGen!==gen) return;
+    await wait(240); if(myGen!==gen) return;
     if(c.unlock){
-      await wait(260); if(myGen!==gen) return;
+      await wait(500); if(myGen!==gen) return;
       const ur=mk('div','rmrow mile on');
       ur.innerHTML='<div class="rmrail"><span class="rmnode spark">'+(I.spark||'')+'</span>'
         +'<span class="rmwk">Unlock</span></div>';
@@ -9311,6 +9362,8 @@ async function mvpOutcome(){
   $('paper').classList.remove('canvas');
   sc.classList.remove('ctr','vzcv');
   document.body.classList.add('pfull');
+  document.body.classList.add('pfboot');   /* light mode while the page lands */
+  gsap.delayedCall(1.9,()=>document.body.classList.remove('pfboot'));
   fastMode=false;
   const vz=$('vz');
   let cx=innerWidth/2, cy=innerHeight*.42;
@@ -9364,7 +9417,10 @@ async function mvpOutcome(){
   gsap.to(w,{opacity:1,scale:PFM.zoom,y:0,duration:PFM.sheetIn,ease:'power3.out',delay:.12});
   gsap.to('.pfamb.a',{x:60,y:40,duration:11,yoyo:true,repeat:-1,ease:'sine.inOut'});
   gsap.to('.pfamb.b',{x:-50,y:-30,duration:13,yoyo:true,repeat:-1,ease:'sine.inOut'});
-  gsap.to('#pfHalo',{rotation:360,duration:26,repeat:-1,ease:'none'});
+  /* the aura drifts instead of spinning: rotating an 85px-blurred layer re-rasterises
+     every frame, which is what made the first seconds stutter */
+  gsap.delayedCall(1.5,()=>{ if(myGen!==gen) return;
+    gsap.to('#pfHalo',{rotation:360,duration:44,repeat:-1,ease:'none'}); });
   gsap.to('.pfsheet',{rotationY:1.6,rotationX:-1,duration:4.6,yoyo:true,repeat:-1,ease:'sine.inOut'});
   await wait(1250); if(myGen!==gen) return;
   const goTo=(el,pad)=>new Promise(res=>{
@@ -9391,20 +9447,16 @@ async function mvpOutcome(){
   const fadeLine=()=>new Promise(res=>{ const t=$('turn');
     if(!t){ res(); return; }
     gsap.to(t,{opacity:0,filter:'blur(14px)',y:-14,duration:.45,ease:'power2.in',
-      onComplete:()=>{ /* it is leaving: clear the parked values so a reused node cannot
-                          inherit them, then let the next line mount clean */
-        if(t.isConnected) gsap.set(t,{clearProps:'opacity,filter,y'});
+      onComplete:()=>{ /* gone, not parked: the next line mounts into a clean column */
+        if(t.isConnected) t.remove();
         res(); }}); });
   /* the line assembles word by word, each out of its own blur */
   /* the base's turn() already reveals a line word by word out of blur, with its own
      progress(1) safety. we never touch those spans: we only make sure the line's
      container is visible, because fadeLine() may have parked an old one at zero. */
-  const splitLine=()=>{};
-  const wordGuard=setInterval(()=>{
-    if(myGen!==gen||!document.body.classList.contains('pfull')){ clearInterval(wordGuard); return; }
-    const t9=$('turn'); if(!t9) return;
-    if(+gsap.getProperty(t9,'opacity')<1) gsap.set(t9,{opacity:1,y:0,filter:'blur(0px)'});
-  },80);
+  /* the base reveals each line word by word and force-lands it on its own timer.
+     nothing here touches the type: an old guard used to restore the OUTGOING line
+     to full opacity, which is what flashed ghost text at every phase change. */
   const say=(text,ms)=>voLine(text,ms);
   const show=async s9=>{ if(!s9) return; if(s9.dataset.hid){ delete s9.dataset.hid;
     s9.classList.add('sweepin');
@@ -9474,7 +9526,6 @@ async function mvpOutcome(){
   await say("7 weeks from now, this page is yours.",2500);
   if(myGen!==gen) return;
   await fadeLine(); if(myGen!==gen) return;
-  clearInterval(wordGuard);
   /* the page is yours now: wheel moves it, gently, within its own bounds */
   const maxUp=Math.max(0, sheet.scrollHeight-(innerHeight-260));
   window.__pfWheel=e=>{
@@ -9994,9 +10045,16 @@ async function mvpWhy(){
   /* the chapters follow the founder's storyboard: kickoff, the work, feedback, payoff */
   const SEQ=[['brief','The kickoff'],['manager','The work'],['review','Feedback'],['xp','Your portfolio']];
   const st=mk('div','wzstage'); st.id='wzStage';
-  st.innerHTML='<div class="wzvid"><div class="wzframe" id="wzScreen">'+pzScreen(SEQ[0][0])+'</div></div>'
-    +'<div class="wzchaps" id="wzSteps">'
-      +SEQ.map((s,i)=>'<button class="wzstep'+(i===0?' on':'')+'" data-i="'+i+'">'+s[1]+'</button>').join('')
+  const SEG=100/SEQ.length;
+  st.innerHTML='<div class="wzvid">'
+    +'<div class="wzframe" id="wzFrame"><div class="wzscr" id="wzScreen">'+pzScreen(SEQ[0][0])+'</div>'
+      +'<button class="wzbig" id="wzPP" aria-label="Pause">'+(I.pause||'')+'</button></div>'
+    +'<div class="wzline" id="wzTrack"><i id="wzFill"></i>'
+      +SEQ.map((s,i)=>'<span class="wzmk'+(i===0?' first':'')+'" style="left:'+(i*SEG)+'%"></span>').join('')
+      +'<div class="wzsegs" id="wzSteps">'
+        +SEQ.map((s,i)=>'<button class="wzstep'+(i===0?' on':'')+'" data-i="'+i+'" '
+          +'style="left:'+(i*SEG)+'%; width:'+SEG+'%">'+s[1]+'</button>').join('')
+      +'</div>'
     +'</div>'
     +'<div class="wzfoot"><button class="dbig wzcta" id="wzCta">Continue</button></div>';
   document.body.appendChild(st);
@@ -10007,6 +10065,31 @@ async function mvpWhy(){
   const cta=$('wzCta');
   const DUR=7;
   let at=-1, autoCall=null;
+  /* the player: one clock for the whole run, scrubbable, pausable */
+  const TOT=DUR*SEQ.length;
+  let playing=true, elapsed=0, last=0;
+  const fill=$('wzFill'), pp=$('wzPP'), trk=$('wzTrack');
+  const tick9=()=>{
+    if(myGen!==gen||!$('wzStage')){ gsap.ticker.remove(tick9); return; }
+    const now=performance.now();
+    if(last&&playing) elapsed=Math.min(TOT,elapsed+(now-last)/1000);
+    last=now;
+    if(fill) fill.style.width=(elapsed/TOT*100)+'%';
+    const should=Math.min(SEQ.length-1,Math.floor(elapsed/DUR));
+    if(should!==at) goTo(should);
+  };
+  gsap.ticker.add(tick9);
+  const setPP=()=>{ if(!pp) return;
+    pp.innerHTML=playing?(I.pause||''):(I.play||'');
+    pp.setAttribute('aria-label',playing?'Pause':'Play');
+    st.classList.toggle('paused',!playing); };
+  const toggle=()=>{ playing=!playing; sfx('tick'); setPP(); };
+  if(pp) pp.onclick=e=>{ e.stopPropagation(); toggle(); };
+  const fr=$('wzFrame'); if(fr) fr.onclick=toggle;
+  setPP();
+  if(trk) trk.onclick=e=>{ if(e.target.closest('.wzstep')) return;
+    const r=trk.getBoundingClientRect();
+    elapsed=Math.max(0,Math.min(TOT,((e.clientX-r.left)/r.width)*TOT)); sfx('tick'); };
   const paintBar=()=>{};
   const goTo=i=>{
     if(myGen!==gen) return;
@@ -10022,18 +10105,16 @@ async function mvpWhy(){
     }});
     try{ sfx('tick'); }catch(e){}
     cta.textContent = at>=SEQ.length-1 ? 'Claim your credits' : 'Continue';
-    if(autoCall) autoCall.kill();
-    if(at<SEQ.length-1) autoCall=gsap.delayedCall(DUR,()=>goTo(at+1));
   };
   cta.onclick=()=>{
-    if(at<SEQ.length-1){ sfx('droplet'); goTo(at+1); return; }
+    if(at<SEQ.length-1){ sfx('droplet'); elapsed=(at+1)*DUR+.05; goTo(at+1); return; }
     if(locked) return; locked=true; flowCredit();
-    if(autoCall) autoCall.kill();
+    playing=false;
     gsap.to(st,{opacity:0,y:18,duration:.45,ease:'power2.in',
       onComplete:()=>{ st.remove(); document.body.classList.remove('wzon'); }});
     go(mvpClaim);
   };
-  steps.forEach((s9,i)=>{ s9.onclick=()=>{ sfx('tick'); goTo(i); }; });
+  steps.forEach((s9,i)=>{ s9.onclick=e=>{ e.stopPropagation(); sfx('tick'); elapsed=i*DUR+.05; goTo(i); }; });
   goTo(0);
 }
 
