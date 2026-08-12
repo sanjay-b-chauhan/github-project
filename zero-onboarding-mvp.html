@@ -10078,6 +10078,15 @@ dbgGoto=function(i){
   try{ gsap.set('.right',{clearProps:'width,opacity'}); }catch(e){}
   VZT.x=0; VZT.y=0; VZT.k=1;
   dbgGoto0(i);
+  /* the base seeds its OLD sentence board on non-board steps and leaves the
+     panel half-open; the mvp flow never uses it - remove it before it shows */
+  const vb9=$('vb'); if(vb9) vb9.remove();
+  const t9=(DBG_STEPS[i]||[''])[0]||'';
+  if(/^(Draw|Open|Plan|Outcome|Roadmap|Why Zero|Claim|Handoff)$/.test(t9)){
+    gsap.killTweensOf('.right');
+    gsap.set('.right',{width:0,opacity:0}); shiftLeft('0px');
+    setCap('',false);
+  }
 };
 
 function dbgFill(upTo){
