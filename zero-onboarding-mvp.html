@@ -1832,6 +1832,19 @@ body.pfl-r #turn{ left:auto; right:4vw; top:0; bottom:0; height:fit-content; mar
 body.pfsay #turn .q{ opacity:0; }
 .pfthumb{ position:absolute; left:50%; top:42%; font-size:56px; z-index:31;
   filter:drop-shadow(0 8px 18px rgba(0,0,0,.2)); }
+/* ── why zero: one video, a marked timeline, sections that light as it plays ── */
+.wvid{ position:fixed; left:0; right:0; top:84px; bottom:70px; margin:auto;
+  width:min(920px,74vw); height:fit-content; z-index:30; }
+.wvid .wwin{ width:100%; }
+.wvid .wscreen{ min-height:min(52vh,480px); }
+.wvbar{ position:relative; height:5px; background:var(--line-2); border-radius:0 0 14px 14px; overflow:hidden; }
+.wvbar i{ display:block; height:100%; width:0; background:var(--ink); border-radius:0 3px 3px 0; }
+.wvm{ position:absolute; top:0; bottom:0; width:2px; background:var(--card);
+  box-shadow:0 0 0 1px rgba(0,0,0,.08); }
+.wsecs{ display:flex; gap:14px; justify-content:center; margin-top:24px; flex-wrap:wrap; }
+.wsec{ font-size:14px; font-weight:600; color:var(--tx-3); padding:9px 18px; border-radius:999px;
+  border:1px solid transparent; transition:all .45s cubic-bezier(.22,.9,.24,1); }
+.wsec.on{ background:var(--ink); color:var(--on-ink); box-shadow:0 8px 22px rgba(0,0,0,.14); }
 /* share, and the number climbs */
 .shbottom{ position:fixed; left:50%; transform:translateX(-50%); bottom:26px; z-index:60; text-align:center; }
 .shmini{ font-size:13px; color:var(--tx-3); margin-bottom:11px; }
@@ -9859,43 +9872,52 @@ async function mvpWhy(){
   const myGen=gen;
   setPhase(4);
   clearTurn(); dockHide(); await wait(300); if(myGen!==gen) return;
-  const {box}=turn({q:''});
-  const deck=mk('div','wdeck');
-  const track=mk('div','wtrack');
-  deck.appendChild(track);
-  box.appendChild(deck);
-  WHY.forEach((b,i)=>{
-    const c=mk('div','wcard');
-    if(b.mock==='manager'||b.mock==='review') c.classList.add('dk');
-    c.innerHTML='<div class="wwin">'
-      +'<div class="wbar"><span class="wtl"><i class="r"></i><i class="y"></i><i class="g"></i></span>'
-        +'<span class="wbt">'+(WHYW[b.mock]||'Zero')+'</span></div>'
-      +'<div class="wscreen">'+pzScreen(b.mock)+'</div></div>'
-      +'<div class="winfo"><div class="wtitle">'+WHYT[i]+'</div></div>';
-    track.appendChild(c);
-  });
-  [...track.children].forEach((c,i)=>pzWire(c,WHY[i].mock,myGen));
+  /* one video, one timeline with markers, four sections that light as it plays.
+     mounted on the BODY: a transformed #turn turns fixed into absolute */
+  const SEQ=[['brief','Real projects'],['manager','Your manager'],
+             ['review','Feedback'],['xp','Level up']];
+  const wrap=mk('div','wvid');
+  wrap.innerHTML='<div class="wwin"><div class="wbar"><span class="wtl"><i class="r"></i><i class="y"></i><i class="g"></i></span>'
+      +'<span class="wbt">Zero · How it works</span></div>'
+      +'<div class="wscreen" id="wvScreen">'+pzScreen(SEQ[0][0])+'</div>'
+      +'<div class="wvbar"><i id="wvFill"></i>'
+        +[1,2,3].map(k=>'<span class="wvm" style="left:'+(k*25)+'%"></span>').join('')
+      +'</div></div>'
+    +'<div class="wsecs" id="wSecs">'
+      +SEQ.map((s,i)=>'<span class="wsec'+(i===0?' on':'')+'">'+s[1]+'</span>').join('')
+    +'</div>';
+  wrap.id='wVid';
+  document.body.appendChild(wrap);
+  gsap.fromTo(wrap,{y:26,opacity:0},{y:0,opacity:1,duration:.85,ease:'power3.out'});
+  sfx('page');
+  const DUR=6;
+  /* the turn mounts async: aim at the fill only once it is really in the document */
+  gsap.delayedCall(.7,()=>{ const f9=$('wvFill');
+    if(f9&&myGen===gen) gsap.fromTo(f9,{width:'0%'},{width:'100%',duration:DUR*SEQ.length-.7,ease:'none'}); });
   let at=0;
-  const W=()=>track.children[0].offsetWidth+28;
-  const paint=anim=>{
-    /* centre on the viewport, not the strip: layout timing can never shift it */
-    const dr=deck.getBoundingClientRect();
-    const off=(innerWidth/2-dr.left)-track.children[0].offsetWidth/2;
-    gsap.to(track,{x:-at*W()+off,duration:anim===false?0:.9,ease:EIO});
-    [...track.children].forEach((c,i)=>{
-      c.classList.toggle('on',i===at);
-      gsap.to(c,{opacity:i===at?1:.22,scale:i===at?1:.9,duration:.7,ease:EIO});
-    });
-    ctaGo(at>=WHY.length-1?'Claim your credits':'Continue',()=>{
-      if(at>=WHY.length-1){ flowCredit(); deckAway(deck,()=>go(mvpClaim)); }
-      else { locked=false; at++; paint(); }
-    });
+  const step=()=>{
+    if(myGen!==gen) return;
+    at++;
+    if(at>=SEQ.length){
+      const b=mk('button','dbig inlinecta','Claim your credits');
+      b.onclick=()=>{ if(locked) return; locked=true; flowCredit();
+        gsap.to(wrap,{opacity:0,y:16,duration:.4,ease:'power2.in'});
+        go(mvpClaim); };
+      wrap.appendChild(b);
+      enter([b],{y:14,blur:6,duration:.55},1100);
+      return;
+    }
+    [...document.querySelectorAll('.wsec')].forEach((s9,i)=>s9.classList.toggle('on',i===at));
+    const scr=$('wvScreen');
+    gsap.to(scr,{opacity:0,duration:.35,ease:'power2.in',onComplete:()=>{
+      if(myGen!==gen) return;
+      scr.innerHTML=pzScreen(SEQ[at][0]);
+      gsap.to(scr,{opacity:1,duration:.45,ease:'power2.out'});
+    }});
+    try{ sfx('tick'); }catch(e){}
+    gsap.delayedCall(DUR,step);
   };
-  paint(false);
-  const rePaint=()=>{ if(myGen!==gen||!deck.isConnected) return; paint(false); };
-  setTimeout(rePaint,400); setTimeout(rePaint,1000);
-  addEventListener('resize',rePaint);
-  gsap.fromTo(deck,{y:28,opacity:0},{y:0,opacity:1,duration:.85,ease:'power3.out'});
+  gsap.delayedCall(DUR,step);
 }
 
 /* the finale: everything you will build, drifting by. drag it, it snaps. *//* the finale: everything you will build, drifting by. drag it, it snaps. */
@@ -10064,6 +10086,7 @@ async function mvpClaim(){
   atStep('Claim');
   pfScroll(false);
   pfStageOff();
+  { const wv=$('wVid'); if(wv) wv.remove(); }
   boardRetired();
   document.body.classList.remove('rmfull');
   { const bd=$('rmband'); if(bd) bd.remove(); }
@@ -10380,7 +10403,7 @@ ALIGN.forEach((st,i2)=>DBG_STEPS.push([st.label,()=>{ ALAT=i2; bornPanel();
 const dbgGoto0=dbgGoto;
 dbgGoto=function(i){
   try{ gsap.killTweensOf(['#vz','.pf3','#rmband','#scroll']); }catch(e){}
-  document.querySelectorAll('#vz,.pf3,#rmband,.rmfloat,.pfrip,#shCard,#pfStage').forEach(n=>n.remove());
+  document.querySelectorAll('#vz,.pf3,#rmband,.rmfloat,.pfrip,#shCard,#pfStage,#wVid').forEach(n=>n.remove());
   document.body.classList.remove('pfmode','rmfull','noboard','rolesq','pfull','pfl-b','pfl-l','pfl-r','pfl-t');
   const sc9=$('scroll');
   if(sc9){ sc9.classList.remove('vzcv'); sc9.style.overflowY=''; sc9.style.overscrollBehavior=''; sc9.scrollTop=0;
