@@ -1800,27 +1800,26 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
   z-index:78; filter:blur(8px); pointer-events:none; }
 /* the narration line moves around the stage */
 body.pfull #turn{ position:fixed; z-index:40; }
-body.pfl-b #turn{ left:0; right:0; margin:0 auto; top:auto; bottom:8vh; width:min(680px,84vw); text-align:center; }
+body.pfl-b #turn{ left:0; right:0; margin:0 auto; top:auto; bottom:13vh; width:min(680px,84vw); text-align:center; }
 body.pfl-t #turn{ left:0; right:0; margin:0 auto; top:9vh; bottom:auto; width:min(720px,84vw); text-align:center; }
-body.pfl-l #turn{ left:4vw; right:auto; top:0; bottom:0; height:fit-content; margin:auto 0;
-  width:min(430px,27vw); text-align:left; }
-body.pfl-r #turn{ left:auto; right:4vw; top:0; bottom:0; height:fit-content; margin:auto 0;
-  width:min(430px,27vw); text-align:left; }
+body.pfl-l #turn{ left:7.5vw; right:auto; top:0; bottom:0; height:fit-content; margin:auto 0;
+  width:min(400px,25vw); text-align:left; }
+body.pfl-r #turn{ left:auto; right:7.5vw; top:0; bottom:0; height:fit-content; margin:auto 0;
+  width:min(400px,25vw); text-align:left; }
 /* the recruiters: multiplayer cursors with a name and a note */
 .pfcurhost{ position:absolute; inset:0; z-index:30; pointer-events:none; }
 .pfcursor{ position:absolute; left:0; top:0; }
 .pfcursor svg{ width:30px; height:30px; display:block;
   filter:drop-shadow(0 4px 10px rgba(0,0,0,.28)); }
 .pfcursor>span{ display:inline-flex; align-items:center; gap:8px; margin:3px 0 0 19px; height:38px;
+  transition:none; will-change:contents;
   padding:0 17px 0 7px; border-radius:7px 20px 20px 20px; color:#fff; font-size:14px; font-weight:600;
   box-shadow:0 10px 26px rgba(0,0,0,.28), inset 0 0 0 1.5px rgba(255,255,255,.28); white-space:nowrap; }
 .pfcursor .pftxt{ font-weight:600; }
-.tdots{ display:inline-flex; gap:3px; align-items:center; }
-.tdots i{ width:5px; height:5px; border-radius:50%; background:rgba(255,255,255,.92);
-  animation:tdotp 1s infinite ease-in-out; }
-.tdots i:nth-child(2){ animation-delay:.16s; }
-.tdots i:nth-child(3){ animation-delay:.32s; }
-@keyframes tdotp{ 0%,100%{ transform:translateY(0); opacity:.55; } 50%{ transform:translateY(-3px); opacity:1; } }
+.pfcursor .pftxt{ display:inline-flex; align-items:center; }
+.tcar{ display:inline-block; width:2px; height:15px; margin-left:2px; background:#fff;
+  animation:tcarb .95s steps(1) infinite; }
+@keyframes tcarb{ 0%,49%{ opacity:1; } 50%,100%{ opacity:0; } }
 .pfcursor>span i{ width:23px; height:23px; border-radius:50%; background:#fff;
   display:inline-flex; align-items:center; justify-content:center; font-style:normal; }
 .pfcursor>span i svg{ width:13px; height:13px; }
@@ -9116,17 +9115,24 @@ function pfRecruiters(g){
       +'<span style="background:'+col+'"><i>'+(LOGO[nm]||'')+'</i><b class="pftxt">'+nm+'</b></span>';
     host.appendChild(c);
     const pill=c.querySelector('span');
+    /* they type it: a caret blinks, the letters land one by one, the pill grows */
     const swap=t9=>{ const b=c.querySelector('.pftxt'); if(!b) return;
-      gsap.to(b,{opacity:0,y:-4,duration:.18,ease:'power2.in',onComplete:()=>{
-        b.innerHTML='<span class="tdots"><i></i><i></i><i></i></span>';
+      gsap.to(b,{opacity:0,y:-4,duration:.16,ease:'power2.in',onComplete:()=>{
+        b.innerHTML='<span class="ttx"></span><span class="tcar"></span>';
         gsap.set(b,{opacity:1,y:0});
-        gsap.delayedCall(.95,()=>{ if(g!==gen) return;
-          gsap.to(b,{opacity:0,duration:.15,onComplete:()=>{
-            b.textContent=t9;
-            gsap.fromTo(b,{opacity:0,y:4},{opacity:1,y:0,duration:.3,ease:'power2.out'});
-            gsap.fromTo(pill,{scale:.94},{scale:1,duration:.45,ease:'back.out(2)'});
-          }});
-        });
+        const tx=b.querySelector('.ttx'), car=b.querySelector('.tcar');
+        let i9=0;
+        const tick=()=>{
+          if(g!==gen||!tx.isConnected) return;
+          tx.textContent=t9.slice(0,++i9);
+          if(i9<t9.length){
+            if(i9%3===0){ try{ sfx('tick'); }catch(e){} }
+            gsap.delayedCall(.028+Math.random()*.032,tick);
+          } else {
+            gsap.delayedCall(.7,()=>{ if(car&&car.isConnected) car.remove(); });
+          }
+        };
+        gsap.delayedCall(.22,tick);
       }}); };
     const tc=spots[i]||cards9[i%Math.max(1,cards9.length)];
     const tr=tc?tc.getBoundingClientRect():srect;
@@ -9283,7 +9289,7 @@ async function mvpOutcome(){
     await wait(240); } };
   /* ── one short opener: why this page exists ── */
   linePos('b');
-  await say("To land the job at those companies, you need proof. This is your portfolio, 7 weeks in.",3400);
+  await say("To land the job you actually want, you need proof. This is your portfolio, 7 weeks in.",3600);
   if(myGen!==gen) return;
   /* ── the projects: the sheet moves first, the words land in the space it left ── */
   await fadeLine(); if(myGen!==gen) return;
