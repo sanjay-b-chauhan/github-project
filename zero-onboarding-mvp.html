@@ -3106,6 +3106,17 @@ const P={ about:null, role:null, company:null, dream:null, openness:null,
   location:null, citynext:null, industry:null, problems:null, timeline:null, jobtype:null,
   name:null, aim:null, level:null, linked:null, why:null, doing:null, workmode:null, probed:null,
   picks:[], aimTier:null };
+/* the portfolio story's motion desk: defined here so the settings panel can read
+   these values at load, long before the story layer is parsed */
+window.PFM_DEF={camDur:1.8, tilt:33, tiltX:4, camScale:1.07, parkTilt:13,
+  hold:1.0, beat:0.22, stagger:0.05, wordDur:0.6, blurIn:10,
+  revealDur:0.95, cardStep:0.34, cardLift:170,
+  rippleDur:2.2, rippleRings:5, rippleWidth:9,
+  zoom:1.06, sheetIn:1.3, glowDur:1.7, sheenDur:1.5,
+  typeSpeed:28, curFly:1.7};
+window.PFM=Object.assign({},window.PFM_DEF);
+try{ Object.assign(window.PFM,JSON.parse(localStorage.mvpPfm||'{}')); }catch(e){}
+function pfmSave(){ try{ localStorage.mvpPfm=JSON.stringify(window.PFM); }catch(e){} }
 let locked=false, editReturn=null, gen=0;
 const $=id=>document.getElementById(id);
 const mk=(t,c,h2)=>{const n=document.createElement(t); if(c)n.className=c; if(h2!=null)n.innerHTML=h2; return n;};
@@ -7923,7 +7934,7 @@ function dbgGoto(i){
     setTimeout(()=>{ cpBtn.textContent='Copy motion values'; },1400);
   };
   const rsBtn=mk('button','pbtn','Reset');
-  rsBtn.onclick=()=>{ PFM=Object.assign({},PFM_DEF); pfmSave(); sfx('tick');
+  rsBtn.onclick=()=>{ window.PFM=Object.assign({},window.PFM_DEF); pfmSave(); sfx('tick');
     rsBtn.textContent='Reset done'; setTimeout(()=>{ rsBtn.textContent='Reset'; },1200); };
   cpRow.appendChild(cpBtn); cpRow.appendChild(rsBtn);
   pfm9.appendChild(cpRow);
@@ -9103,16 +9114,7 @@ function buildPf3(host){
   return w;
 }
 /* ══ the portfolio story: a scroll-site whose centerpiece is the portfolio ══ */
-/* every number in the story lives here, so it can be dialled without a rebuild */
-const PFM_DEF={camDur:1.8, tilt:33, tiltX:4, camScale:1.07, parkTilt:13,
-  hold:1.0, beat:0.22, stagger:0.05, wordDur:0.6, blurIn:10,
-  revealDur:0.95, cardStep:0.34, cardLift:170,
-  rippleDur:2.2, rippleRings:5, rippleWidth:9,
-  zoom:1.06, sheetIn:1.3, glowDur:1.7, sheenDur:1.5,
-  typeSpeed:28, curFly:1.7};
-let PFM=Object.assign({},PFM_DEF);
-try{ Object.assign(PFM,JSON.parse(localStorage.mvpPfm||'{}')); }catch(e){}
-function pfmSave(){ try{ localStorage.mvpPfm=JSON.stringify(PFM); }catch(e){} }
+/* every number in the story is dialled from window.PFM (see the base patch) */
 function pfStageOff(){
   const s=$('pfStage'); if(s) s.remove();
   document.body.classList.remove('pfstory','noinput');
