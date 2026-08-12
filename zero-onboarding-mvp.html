@@ -1750,7 +1750,10 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .shbottom{ position:fixed; left:50%; transform:translateX(-50%); bottom:26px; z-index:60; text-align:center; }
 .shmini{ font-size:13px; color:var(--tx-3); margin-bottom:11px; }
 .shbottom .shrow{ justify-content:center; }
-.shbtn i{ font-style:normal; font-size:12px; font-weight:700; color:#2f9c45; }
+.shbtn i{ font-style:normal; font-size:12.5px; font-weight:800; color:#2f9c45; }
+.dlwrap{ text-align:center; }
+.credfloat{ position:fixed; z-index:401; color:#2f9c45; font-weight:800; font-size:28px;
+  letter-spacing:-.02em; pointer-events:none; }
 .shhead{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
 .shhead b{ font-size:15px; font-weight:600; letter-spacing:-.02em; }
 .shcred{ font-size:12.5px; color:#2f9c45; font-weight:600; }
@@ -1758,12 +1761,13 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
   border:1px dashed var(--line); border-radius:12px; margin-bottom:12px; }
 .shurl{ font-size:13.5px; color:var(--tx-2); margin-right:auto; letter-spacing:.01em; }
 .shrow{ display:flex; gap:10px; }
-.shbtn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; height:40px; padding:0 16px;
+.shbtn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; height:42px; padding:0 18px;
   border-radius:999px; border:1px solid var(--line); background:#fff; font-size:13px; font-weight:600;
-  cursor:pointer; transition:transform .2s ease, opacity .3s ease; }
-.shbtn:hover{ transform:translateY(-1px); }
+  color:var(--tx); cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.06);
+  transition:transform .22s cubic-bezier(.2,.8,.3,1), box-shadow .25s ease, border-color .25s ease; }
+.shbtn:hover{ transform:translateY(-2px); box-shadow:0 12px 26px rgba(0,0,0,.1); border-color:var(--tx-4); }
 
-.shbtn{ color:var(--tx-2); }
+
 .shbtn svg{ width:15px; height:15px; }
 .shbtn.got{ opacity:.55; }
 .shbtn.got:hover{ transform:none; }
@@ -9735,6 +9739,12 @@ function mvpShareCard(){
     gsap.to(o,{v:from+amt,duration:1.1,ease:'power2.out',
       onUpdate:()=>{ NUM.textContent=Math.round(o.v).toLocaleString(); }});
     sfx('sparkle'); gsap.delayedCall(.2,()=>{ try{ sfx('success'); }catch(e){} });
+    const nr=NUM.getBoundingClientRect();
+    const fl=mk('b','credfloat','+'+amt.toLocaleString());
+    fl.style.left=(nr.right+18)+'px'; fl.style.top=(nr.top+nr.height/2-14)+'px';
+    document.body.appendChild(fl);
+    gsap.fromTo(fl,{opacity:0,y:10,scale:.7},{opacity:1,y:-40,scale:1,duration:.8,ease:'power2.out',
+      onComplete:()=>gsap.to(fl,{opacity:0,y:-72,duration:.55,ease:'power1.in',onComplete:()=>fl.remove()})});
     try{ confettiBurst(NUM); }catch(e){}
   };
   card.querySelectorAll('.shbtn').forEach(b=>{
@@ -9793,19 +9803,26 @@ async function mvpClaim(){
         gsap.fromTo(h9,{opacity:0,y:6},{opacity:1,y:0,duration:.4});
       }
       return; }
-    sfx('success');
+    sfx('droplet');
     const em=v.trim();
     const hint=document.querySelector('.dmailhint'); if(hint) hint.remove();
-    /* the field leaves with the dock; the main CTA lands under the credit line */
+    /* the field leaves with the dock; a skeleton holds the spot, then the CTA lands */
     dockHide();
     const dl=mk('button','dbig dlmain');
     dl.innerHTML=(I.dl||'')+'<span>Download the app</span>';
     dl.onclick=()=>{ sfx('success');
       gsap.fromTo(dl,{scale:.96},{scale:1,duration:.4,ease:'back.out(2)'}); };
     const sent=mk('div','dlsent','Zero is unlocked. Sent to '+em+'.');
-    rew.appendChild(dl); rew.appendChild(sent);
-    enter([dl,sent],{y:14,blur:6,duration:.6},1100);
-    gsap.delayedCall(.7,()=>{ if(myGen===gen) mvpShareCard(); });
+    const wrap=mk('div','dlwrap');
+    wrap.appendChild(dl); wrap.appendChild(sent);
+    Promise.resolve(ghostIn(wrap,92,1400,rew)).then(()=>{
+      if(myGen!==gen) return;
+      sfx('success');
+      gsap.fromTo(dl,{opacity:0,y:14,scale:.92,filter:'blur(6px)'},
+        {opacity:1,y:0,scale:1,filter:'blur(0px)',duration:.75,ease:'back.out(1.7)'});
+      gsap.fromTo(sent,{opacity:0,y:10},{opacity:1,y:0,duration:.55,delay:.18,ease:'power2.out'});
+      gsap.delayedCall(.55,()=>{ if(myGen===gen) mvpShareCard(); });
+    });
     atStep('Handoff');
   });
 }
