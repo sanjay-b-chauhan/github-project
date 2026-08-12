@@ -1749,8 +1749,8 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 /* ══ the portfolio story stage: the site is the portfolio ══ */
 .pfstage{ position:fixed; inset:0; z-index:8; pointer-events:none; perspective:1700px; }
 
-.pfstage::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:120px; z-index:12;
-  background:linear-gradient(0deg, var(--page) 22%, transparent); pointer-events:none; }
+.pfstage::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:250px; z-index:11;
+  background:linear-gradient(0deg, var(--page) 45%, transparent); pointer-events:none; }
 .pfamb{ position:absolute; width:58vw; height:58vw; border-radius:50%; filter:blur(90px);
   opacity:0; transition:opacity 1.6s ease; }
 .pfamb.a{ left:-16vw; top:-14vw; background:radial-gradient(circle, #d7f1de, transparent 66%); }
@@ -1785,11 +1785,6 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
   border-radius:50%; filter:blur(100px); pointer-events:none;
   background:radial-gradient(circle, rgba(88,196,120,.34), rgba(88,196,120,0) 66%); }
 /* everything arrives out of blur, with energy on its edge */
-body.pfull #turn{ animation:pfLineIn .9s cubic-bezier(.22,.9,.24,1) both; }
-@keyframes pfLineIn{
-  from{ opacity:0; filter:blur(16px); transform:translateY(16px);
-    text-shadow:0 0 26px rgba(47,156,69,.4); }
-  to{ opacity:1; filter:blur(0); transform:none; text-shadow:0 0 0 rgba(47,156,69,0); } }
 .sweepin{ animation:pfSweep 1.2s ease-out both; }
 .chipglow{ box-shadow:0 0 0 1.5px rgba(47,156,69,.4), 0 6px 18px rgba(47,156,69,.2) !important;
   border-color:rgba(47,156,69,.45) !important; transition:box-shadow .3s ease, border-color .3s ease; }
@@ -1820,6 +1815,12 @@ body.pfl-r #turn{ left:auto; right:4vw; top:0; bottom:0; height:fit-content; mar
   padding:0 17px 0 7px; border-radius:7px 20px 20px 20px; color:#fff; font-size:14px; font-weight:600;
   box-shadow:0 10px 26px rgba(0,0,0,.28), inset 0 0 0 1.5px rgba(255,255,255,.28); white-space:nowrap; }
 .pfcursor .pftxt{ font-weight:600; }
+.tdots{ display:inline-flex; gap:3px; align-items:center; }
+.tdots i{ width:5px; height:5px; border-radius:50%; background:rgba(255,255,255,.92);
+  animation:tdotp 1s infinite ease-in-out; }
+.tdots i:nth-child(2){ animation-delay:.16s; }
+.tdots i:nth-child(3){ animation-delay:.32s; }
+@keyframes tdotp{ 0%,100%{ transform:translateY(0); opacity:.55; } 50%{ transform:translateY(-3px); opacity:1; } }
 .pfcursor>span i{ width:23px; height:23px; border-radius:50%; background:#fff;
   display:inline-flex; align-items:center; justify-content:center; font-style:normal; }
 .pfcursor>span i svg{ width:13px; height:13px; }
@@ -9103,10 +9104,16 @@ function pfRecruiters(g){
     host.appendChild(c);
     const pill=c.querySelector('span');
     const swap=t9=>{ const b=c.querySelector('.pftxt'); if(!b) return;
-      gsap.to(b,{opacity:0,y:-4,duration:.22,ease:'power2.in',onComplete:()=>{
-        b.textContent=t9;
-        gsap.fromTo(b,{opacity:0,y:5},{opacity:1,y:0,duration:.32,ease:'power2.out'});
-        gsap.fromTo(pill,{scale:.94},{scale:1,duration:.45,ease:'back.out(2)'});
+      gsap.to(b,{opacity:0,y:-4,duration:.18,ease:'power2.in',onComplete:()=>{
+        b.innerHTML='<span class="tdots"><i></i><i></i><i></i></span>';
+        gsap.set(b,{opacity:1,y:0});
+        gsap.delayedCall(.95,()=>{ if(g!==gen) return;
+          gsap.to(b,{opacity:0,duration:.15,onComplete:()=>{
+            b.textContent=t9;
+            gsap.fromTo(b,{opacity:0,y:4},{opacity:1,y:0,duration:.3,ease:'power2.out'});
+            gsap.fromTo(pill,{scale:.94},{scale:1,duration:.45,ease:'back.out(2)'});
+          }});
+        });
       }}); };
     const tc=spots[i]||cards9[i%Math.max(1,cards9.length)];
     const tr=tc?tc.getBoundingClientRect():srect;
@@ -9350,9 +9357,17 @@ async function mvpOutcome(){
         break; } }
     document.body.classList.remove('pfsay');
   })();
-  ctaGo('Show me the road',()=>{ flowCredit();
-    gsap.to('#pfStage',{opacity:0,duration:.55,ease:'power2.in'});
-    go(mvpRoadmap); }, endT&&endT.box);
+  { const qb=(endT&&endT.box)||document.querySelector('#turn');
+    if(qb){
+      qb.querySelectorAll('.inlinecta').forEach(n=>n.remove());
+      const b=mk('button','dbig inlinecta','Show me the road');
+      b.onclick=()=>{ if(locked) return; locked=true; flowCredit();
+        gsap.to('#pfStage',{opacity:0,duration:.55,ease:'power2.in'});
+        go(mvpRoadmap); };
+      qb.appendChild(b);
+      enter([b],{y:14,blur:6,duration:.55},1100);
+      dockHide();
+    } }
 }
 
 /* ---- launch: why Zero, one container at a time, text at the bottom ---- *//* ---- launch: why Zero, one container at a time, text at the bottom ---- */
