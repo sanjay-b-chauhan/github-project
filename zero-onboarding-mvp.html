@@ -1814,9 +1814,10 @@ body.pfl-r #turn{ left:auto; right:4vw; top:36vh; bottom:auto; width:min(430px,2
 .pfcursor{ position:absolute; left:0; top:0; }
 .pfcursor svg{ width:30px; height:30px; display:block;
   filter:drop-shadow(0 4px 10px rgba(0,0,0,.28)); }
-.pfcursor>span{ display:inline-flex; align-items:center; gap:8px; margin:3px 0 0 19px; height:34px;
-  padding:0 15px 0 6px; border-radius:999px; color:#fff; font-size:14px; font-weight:600;
-  box-shadow:0 8px 22px rgba(0,0,0,.26); white-space:nowrap; }
+.pfcursor>span{ display:inline-flex; align-items:center; gap:8px; margin:3px 0 0 19px; height:38px;
+  padding:0 17px 0 7px; border-radius:7px 20px 20px 20px; color:#fff; font-size:14px; font-weight:600;
+  box-shadow:0 10px 26px rgba(0,0,0,.28), inset 0 0 0 1.5px rgba(255,255,255,.28); white-space:nowrap; }
+.pfcursor .pftxt{ font-weight:600; }
 .pfcursor>span i{ width:23px; height:23px; border-radius:50%; background:#fff;
   display:inline-flex; align-items:center; justify-content:center; font-style:normal; }
 .pfcursor>span i svg{ width:13px; height:13px; }
@@ -9036,6 +9037,7 @@ function buildPf3(host){
 /* ══ the portfolio story: a scroll-site whose centerpiece is the portfolio ══ */
 function pfStageOff(){
   const s=$('pfStage'); if(s) s.remove();
+  if(window.__pfWheel){ removeEventListener('wheel',window.__pfWheel); window.__pfWheel=null; }
   document.body.classList.remove('pfull','pfl-b','pfl-l','pfl-r','pfl-t');
 }
 /* the impact: rings and a green bloom, high quality, then gone */
@@ -9090,43 +9092,45 @@ function pfRecruiters(g){
     (cards9[1]||cards9[0])&&(cards9[1]||cards9[0]).querySelector('.pf3tools'),
     sheet9&&sheet9.querySelector('.pf3about')
   ];
+  const EMO=['🔥','👏','🤯','✨'];
+  /* google reads the first project (left), microsoft the second's tools (left), spotify the bio (right) */
+  const SIDE=[0,0,1];
   cos.forEach((nm,i)=>{
     const col=BRAND[nm]||'#1F1D1E';
     const c=mk('div','pfcursor');
     c.innerHTML='<svg viewBox="0 0 24 24"><path fill="'+col+'" stroke="#fff" stroke-width="1.4" d="M5 3l14 7-6.2 1.8L9.5 18z"/></svg>'
-      +'<span style="background:'+col+'"><i>'+(LOGO[nm]||'')+'</i>'+nm+'</span>';
+      +'<span style="background:'+col+'"><i>'+(LOGO[nm]||'')+'</i><b class="pftxt">'+nm+'</b></span>';
     host.appendChild(c);
+    const pill=c.querySelector('span');
+    const swap=t9=>{ const b=c.querySelector('.pftxt'); if(!b) return;
+      gsap.to(b,{opacity:0,y:-4,duration:.22,ease:'power2.in',onComplete:()=>{
+        b.textContent=t9;
+        gsap.fromTo(b,{opacity:0,y:5},{opacity:1,y:0,duration:.32,ease:'power2.out'});
+        gsap.fromTo(pill,{scale:.94},{scale:1,duration:.45,ease:'back.out(2)'});
+      }}); };
     const tc=spots[i]||cards9[i%Math.max(1,cards9.length)];
     const tr=tc?tc.getBoundingClientRect():srect;
-    const left=(i%2===0);
-    const sx=left?-140:innerWidth+140, sy=110+(i*97)%340;
-    /* the pointer parks on the exact piece it is reading */
-    const tx=Math.max(srect.left+40,Math.min(srect.left+srect.width-280, tr.left+tr.width*.28));
+    const right=SIDE[i]===1;
+    const sx=right?innerWidth+140:-140, sy=110+(i*97)%340;
+    const anchorL=(i===1&&cards9[1])?cards9[1].getBoundingClientRect().left+36:tr.left+30;
+    const tx=right? Math.min(srect.left+srect.width-320, tr.right-240)
+                  : Math.min(srect.left+srect.width*.42, Math.max(srect.left+40, anchorL));
     const ty=Math.max(120,tr.top+tr.height*.5-10);
     gsap.set(c,{x:sx,y:sy,opacity:0});
     const tl=gsap.timeline({delay:.4+i*.9});
     tl.to(c,{opacity:1,duration:.3},0)
       .to(c,{x:tx,y:ty,duration:1.7,ease:'power2.inOut'},0)
-      .to(c,{x:'+='+((left?1:-1)*24),y:'+='+((i%3-1)*20),duration:.8,ease:'sine.inOut'})
+      .to(c,{x:'+='+((right?-1:1)*22),y:'+='+((i%3-1)*18),duration:.8,ease:'sine.inOut'})
       .call(()=>{ if(g!==gen) return;
-        const b=mk('div','pfnote',SAY[i%SAY.length][0]);
-        c.appendChild(b);
-        gsap.fromTo(b,{opacity:0,y:-6,scale:.85,filter:'blur(6px)'},
-          {opacity:1,y:0,scale:1,filter:'blur(0px)',duration:.5,ease:'back.out(1.7)'});
-        /* the piece they are reading lights up under them */
+        swap(SAY[i%SAY.length][0]);
         if(tc){ const hl=tc.closest('.pf3c')||tc;
           hl.classList.remove('sweepin'); void hl.offsetWidth; hl.classList.add('sweepin'); }
         try{ sfx('droplet'); }catch(e){} })
-      .to({},{duration:1.5})
+      .to({},{duration:1.6})
       .call(()=>{ if(g!==gen) return;
-        const b=c.querySelector('.pfnote'); if(!b) return;
-        const EMO=['🔥','👏','🤯','✨'];
-        gsap.to(b,{opacity:0,filter:'blur(6px)',duration:.28,onComplete:()=>{
-          b.textContent=SAY[i%SAY.length][1];
-          gsap.fromTo(b,{opacity:0,scale:.8,filter:'blur(6px)'},
-            {opacity:1,scale:1,filter:'blur(0px)',duration:.5,ease:'back.out(2)'});
-          emojiBurst(c,EMO[i%EMO.length]);
-        }}); });
+        swap(SAY[i%SAY.length][1]);
+        emojiBurst(c,EMO[i%EMO.length]);
+      });
   });
   gsap.delayedCall(4.6,()=>{ if(g!==gen) return;
     const t=mk('div','pfthumb','👍');
@@ -9316,6 +9320,15 @@ async function mvpOutcome(){
   await say("7 weeks from now, this page is yours.",2500);
   if(myGen!==gen) return;
   await fadeLine(); if(myGen!==gen) return;
+  /* the page is yours now: wheel moves it, gently, within its own bounds */
+  const maxUp=Math.max(0, sheet.scrollHeight-(innerHeight-260));
+  window.__pfWheel=e=>{
+    if(!document.body.classList.contains('pfull')) return;
+    const cur=+gsap.getProperty(sheet,'y')||0;
+    const ny=Math.max(-maxUp,Math.min(70,cur-e.deltaY));
+    gsap.to(sheet,{y:ny,duration:.45,ease:'power2.out',overwrite:'auto'});
+  };
+  addEventListener('wheel',window.__pfWheel,{passive:true});
   qWide=true;
   document.body.classList.add('pfsay');
   const endT=turn({q:"That's the outcome. Now, the road from level one."});
