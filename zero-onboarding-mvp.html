@@ -1840,7 +1840,39 @@ body.pfstory #turn .q[data-wsplit]{ opacity:1; }
 
 .pfthumb{ position:absolute; left:50%; top:42%; font-size:56px; z-index:31;
   filter:drop-shadow(0 8px 18px rgba(0,0,0,.2)); }
-/* ── why zero: one video, a marked timeline, sections that light as it plays ── */
+/* ── why zero: its own stage. video, stepped sections, one button ── */
+body.wzon #turn{ display:none !important; }
+body.wzon #dock, body.wzon #dtr{ opacity:0 !important; pointer-events:none; }
+.wzstage{ position:fixed; inset:0; z-index:60; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:clamp(14px,2.2vh,26px);
+  padding:96px clamp(20px,4vw,64px) 34px; }
+.wzhead{ text-align:center; }
+.wzhead b{ display:block; font-family:var(--serif); font-size:clamp(22px,2.3vw,31px);
+  letter-spacing:-.025em; }
+.wzhead span{ display:block; margin-top:5px; font-size:13.5px; color:var(--tx-3); }
+.wzvid{ width:min(1000px,84vw); }
+.wzvid .wwin{ width:100%; border-radius:18px; overflow:hidden;
+  box-shadow:0 2px 4px rgba(0,0,0,.05), 0 26px 60px -18px rgba(0,0,0,.22),
+    0 70px 140px -50px rgba(24,67,47,.2); }
+.wzvid .wscreen{ height:clamp(280px,43vh,520px); }
+.wzsteps{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px;
+  width:min(1000px,84vw); }
+.wzstep{ position:relative; text-align:left; background:none; border:0; cursor:pointer;
+  padding:14px 2px 0; opacity:.45; transition:opacity .5s var(--e,cubic-bezier(.625,.05,0,1)); }
+.wzstep.on, .wzstep.done{ opacity:1; }
+.wzbar{ display:block; height:3px; border-radius:2px; background:var(--line-2);
+  overflow:hidden; margin-bottom:11px; }
+.wzbar b{ display:block; width:0; height:100%; border-radius:2px; background:var(--ink); }
+.wzstep.done .wzbar b{ background:#2f9c45; }
+.wzt{ display:block; font-size:14px; font-weight:600; letter-spacing:-.02em; }
+.wzd{ display:block; margin-top:5px; font-size:12.5px; line-height:1.5; color:var(--tx-3);
+  max-height:0; opacity:0; overflow:hidden;
+  transition:max-height .55s var(--e,cubic-bezier(.625,.05,0,1)), opacity .45s ease; }
+.wzstep.on .wzd{ max-height:64px; opacity:1; }
+.wzfoot{ margin-top:clamp(4px,1.4vh,14px); }
+.wzcta{ min-width:210px; }
+@media (max-height:760px){ .wzhead span{ display:none; } .wzd{ display:none; } }
+/* ── legacy: the earlier inline video block ── */
 .wvid{ position:fixed; left:0; right:0; top:84px; bottom:70px; margin:auto;
   width:min(920px,74vw); height:fit-content; z-index:30; }
 .wvid .wwin{ width:100%; }
@@ -9960,53 +9992,74 @@ async function mvpWhy(){
   document.body.classList.remove('dark');
   const myGen=gen;
   setPhase(4);
-  clearTurn(); dockHide(); await wait(300); if(myGen!==gen) return;
-  /* one video, one timeline with markers, four sections that light as it plays.
-     mounted on the BODY: a transformed #turn turns fixed into absolute */
-  const SEQ=[['brief','Real projects'],['manager','Your manager'],
-             ['review','Feedback'],['xp','Level up']];
-  const wrap=mk('div','wvid');
-  wrap.innerHTML='<div class="wwin"><div class="wbar"><span class="wtl"><i class="r"></i><i class="y"></i><i class="g"></i></span>'
-      +'<span class="wbt">Zero · How it works</span></div>'
-      +'<div class="wscreen" id="wvScreen">'+pzScreen(SEQ[0][0])+'</div>'
-      +'<div class="wvbar"><i id="wvFill"></i>'
-        +[1,2,3].map(k=>'<span class="wvm" style="left:'+(k*25)+'%"></span>').join('')
-      +'</div></div>'
-    +'<div class="wsecs" id="wSecs">'
-      +SEQ.map((s,i)=>'<span class="wsec'+(i===0?' on':'')+'">'+s[1]+'</span>').join('')
-    +'</div>';
-  wrap.id='wVid';
-  document.body.appendChild(wrap);
-  gsap.fromTo(wrap,{y:26,opacity:0},{y:0,opacity:1,duration:.85,ease:'power3.out'});
+  clearTurn(); dockHide(); await wait(320); if(myGen!==gen) return;
+  /* its own stage: the video breathes, the steps sit under it, the button sits last */
+  const SEQ=[
+    ['brief','Real briefs','A real company, a real problem, a manager waiting on your read.'],
+    ['manager','A manager who replies','You ask, they answer. Feedback on the work, not on your resume.'],
+    ['review','Reviewed like a job','Every submission comes back marked, with what to fix next.'],
+    ['xp','Proof that compounds','Each scenario levels you up and lands on your portfolio.']
+  ];
+  const st=mk('div','wzstage'); st.id='wzStage';
+  st.innerHTML='<div class="wzhead"><b>How Zero works</b><span>Four things, then your credits.</span></div>'
+    +'<div class="wzvid"><div class="wwin"><div class="wbar">'
+        +'<span class="wtl"><i class="r"></i><i class="y"></i><i class="g"></i></span>'
+        +'<span class="wbt">Zero · How it works</span></div>'
+      +'<div class="wscreen" id="wzScreen">'+pzScreen(SEQ[0][0])+'</div></div></div>'
+    +'<div class="wzsteps" id="wzSteps">'
+      +SEQ.map((s,i)=>'<button class="wzstep'+(i===0?' on':'')+'" data-i="'+i+'">'
+        +'<i class="wzbar"><b></b></i>'
+        +'<span class="wzt">'+s[1]+'</span>'
+        +'<span class="wzd">'+s[2]+'</span></button>').join('')
+    +'</div>'
+    +'<div class="wzfoot"><button class="dbig wzcta" id="wzCta">Continue</button></div>';
+  document.body.appendChild(st);
+  document.body.classList.add('wzon');
+  gsap.fromTo(st,{y:24,opacity:0},{y:0,opacity:1,duration:.9,ease:'power3.out'});
   sfx('page');
-  const DUR=6;
-  /* the turn mounts async: aim at the fill only once it is really in the document */
-  gsap.delayedCall(.7,()=>{ const f9=$('wvFill');
-    if(f9&&myGen===gen) gsap.fromTo(f9,{width:'0%'},{width:'100%',duration:DUR*SEQ.length-.7,ease:'none'}); });
-  let at=0;
-  const step=()=>{
+  const steps=[...st.querySelectorAll('.wzstep')];
+  const cta=$('wzCta');
+  const DUR=7;
+  let at=-1, autoCall=null;
+  const paintBar=i=>{
+    const b=steps[i]&&steps[i].querySelector('.wzbar b');
+    if(!b) return;
+    gsap.killTweensOf(b);
+    gsap.fromTo(b,{width:'0%'},{width:'100%',duration:DUR,ease:'none'});
+  };
+  const goTo=i=>{
     if(myGen!==gen) return;
-    at++;
-    if(at>=SEQ.length){
-      const b=mk('button','dbig inlinecta','Claim your credits');
-      b.onclick=()=>{ if(locked) return; locked=true; flowCredit();
-        gsap.to(wrap,{opacity:0,y:16,duration:.4,ease:'power2.in'});
-        go(mvpClaim); };
-      wrap.appendChild(b);
-      enter([b],{y:14,blur:6,duration:.55},1100);
-      return;
-    }
-    [...document.querySelectorAll('.wsec')].forEach((s9,i)=>s9.classList.toggle('on',i===at));
-    const scr=$('wvScreen');
-    gsap.to(scr,{opacity:0,duration:.35,ease:'power2.in',onComplete:()=>{
+    if(i===at) return;
+    at=i;
+    steps.forEach((s9,k)=>{ s9.classList.toggle('on',k===at);
+      s9.classList.toggle('done',k<at);
+      const b=s9.querySelector('.wzbar b');
+      if(k<at) gsap.set(b,{width:'100%'});
+      if(k>at) gsap.set(b,{width:'0%'});
+    });
+    paintBar(at);
+    const scr=$('wzScreen');
+    gsap.to(scr,{opacity:0,y:-10,filter:'blur(8px)',duration:.32,ease:'power2.in',onComplete:()=>{
       if(myGen!==gen) return;
       scr.innerHTML=pzScreen(SEQ[at][0]);
-      gsap.to(scr,{opacity:1,duration:.45,ease:'power2.out'});
+      gsap.fromTo(scr,{opacity:0,y:12,filter:'blur(10px)'},
+        {opacity:1,y:0,filter:'blur(0px)',duration:.6,ease:'power3.out'});
     }});
     try{ sfx('tick'); }catch(e){}
-    gsap.delayedCall(DUR,step);
+    cta.textContent = at>=SEQ.length-1 ? 'Claim your credits' : 'Continue';
+    if(autoCall) autoCall.kill();
+    if(at<SEQ.length-1) autoCall=gsap.delayedCall(DUR,()=>goTo(at+1));
   };
-  gsap.delayedCall(DUR,step);
+  cta.onclick=()=>{
+    if(at<SEQ.length-1){ sfx('droplet'); goTo(at+1); return; }
+    if(locked) return; locked=true; flowCredit();
+    if(autoCall) autoCall.kill();
+    gsap.to(st,{opacity:0,y:18,duration:.45,ease:'power2.in',
+      onComplete:()=>{ st.remove(); document.body.classList.remove('wzon'); }});
+    go(mvpClaim);
+  };
+  steps.forEach((s9,i)=>{ s9.onclick=()=>{ sfx('tick'); goTo(i); }; });
+  goTo(0);
 }
 
 /* the finale: everything you will build, drifting by. drag it, it snaps. *//* the finale: everything you will build, drifting by. drag it, it snaps. */
@@ -10492,8 +10545,8 @@ ALIGN.forEach((st,i2)=>DBG_STEPS.push([st.label,()=>{ ALAT=i2; bornPanel();
 const dbgGoto0=dbgGoto;
 dbgGoto=function(i){
   try{ gsap.killTweensOf(['#vz','.pf3','#rmband','#scroll']); }catch(e){}
-  document.querySelectorAll('#vz,.pf3,#rmband,.rmfloat,.pfrip,#shCard,#pfStage,#wVid').forEach(n=>n.remove());
-  document.body.classList.remove('pfmode','rmfull','noboard','rolesq','pfull','pfl-b','pfl-l','pfl-r','pfl-t');
+  document.querySelectorAll('#vz,.pf3,#rmband,.rmfloat,.pfrip,#shCard,#pfStage,#wVid,#wzStage').forEach(n=>n.remove());
+  document.body.classList.remove('pfmode','rmfull','noboard','rolesq','pfull','pfl-b','pfl-l','pfl-r','pfl-t','wzon','pfstory','noinput');
   const sc9=$('scroll');
   if(sc9){ sc9.classList.remove('vzcv'); sc9.style.overflowY=''; sc9.style.overscrollBehavior=''; sc9.scrollTop=0;
     gsap.set(sc9,{opacity:1,y:0,filter:'blur(0px)'}); }
