@@ -1807,8 +1807,10 @@ body.pfull #turn{ animation:pfLineIn .9s cubic-bezier(.22,.9,.24,1) both; }
 body.pfull #turn{ position:fixed; z-index:40; }
 body.pfl-b #turn{ left:0; right:0; margin:0 auto; top:auto; bottom:8vh; width:min(680px,84vw); text-align:center; }
 body.pfl-t #turn{ left:0; right:0; margin:0 auto; top:9vh; bottom:auto; width:min(720px,84vw); text-align:center; }
-body.pfl-l #turn{ left:4vw; right:auto; top:36vh; bottom:auto; width:min(430px,27vw); text-align:left; }
-body.pfl-r #turn{ left:auto; right:4vw; top:36vh; bottom:auto; width:min(430px,27vw); text-align:left; }
+body.pfl-l #turn{ left:4vw; right:auto; top:0; bottom:0; height:fit-content; margin:auto 0;
+  width:min(430px,27vw); text-align:left; }
+body.pfl-r #turn{ left:auto; right:4vw; top:0; bottom:0; height:fit-content; margin:auto 0;
+  width:min(430px,27vw); text-align:left; }
 /* the recruiters: multiplayer cursors with a name and a note */
 .pfcurhost{ position:absolute; inset:0; z-index:30; pointer-events:none; }
 .pfcursor{ position:absolute; left:0; top:0; }
@@ -8476,14 +8478,12 @@ async function mvpPlan(){
       vzFit(true);
       gsap.delayedCall(.6,()=>{ if(myGen===gen) vzFit(true); });
       await wait(900); if(myGen!==gen) return;
-      await voLine('Your vision board is updated.',2100);
+      await voLine('Your vision board is updated. This is you.',2800);
       if(myGen!==gen) return;
-      const {box:b3}=turn({q:'This is you.'});
-      choices(b3,[['check','Yes, this is me','yes']],async ()=>{
-        flowCredit(); sfx('success');
-        await mvpGather(true); if(myGen!==gen) return;
-        go(mvpOutcome);
-      },{pill:true,nomorph:true});
+      await wait(700); if(myGen!==gen) return;
+      sfx('success');
+      await mvpGather(true); if(myGen!==gen) return;
+      go(mvpOutcome);
       return;
     }
     mvpOutcome();
@@ -9234,22 +9234,27 @@ async function mvpOutcome(){
     if(!t){ res(); return; }
     gsap.to(t,{opacity:0,filter:'blur(14px)',y:-14,duration:.45,ease:'power2.in',onComplete:res}); });
   /* the line assembles word by word, each out of its own blur */
-  const say=async(text,ms)=>{
-    /* a new line is born invisible: it never paints before the stagger owns it */
+  const say=(text,ms)=>{
+    /* a new line is born invisible, and the watcher waits as long as the pacing does:
+       whether the line lands now or on the user's press, it always staggers in */
     document.body.classList.add('pfsay');
     const p=voLine(text,ms);
-    let q=null;
-    for(let k=0;k<20;k++){ await wait(50);
-      const c9=document.querySelector('#turn .q');
-      if(c9&&(c9.textContent||'').trim().slice(0,14)===text.trim().slice(0,14)){ q=c9; break; } }
-    if(q&&myGen===gen&&!q.querySelector('.wln')){
-      const words=(q.textContent||'').split(' ');
-      q.innerHTML=words.map(w9=>'<span class="wln">'+w9+'</span>').join(' ');
-      gsap.set(q,{opacity:1});
-      gsap.fromTo(q.querySelectorAll('.wln'),{opacity:0,filter:'blur(10px)',y:12},
-        {opacity:1,filter:'blur(0px)',y:0,duration:.6,stagger:.05,ease:'power2.out'});
-    }
-    document.body.classList.remove('pfsay');
+    (async()=>{
+      for(let k=0;k<600;k++){ await wait(50);
+        if(myGen!==gen) break;
+        const c9=document.querySelector('#turn .q');
+        if(c9&&(c9.textContent||'').trim().slice(0,14)===text.trim().slice(0,14)){
+          if(!c9.querySelector('.wln')){
+            const words=(c9.textContent||'').split(' ');
+            c9.innerHTML=words.map(w9=>'<span class="wln">'+w9+'</span>').join(' ');
+            gsap.set(c9,{opacity:1});
+            gsap.fromTo(c9.querySelectorAll('.wln'),{opacity:0,filter:'blur(10px)',y:12},
+              {opacity:1,filter:'blur(0px)',y:0,duration:.6,stagger:.05,ease:'power2.out'});
+          }
+          break;
+        } }
+      document.body.classList.remove('pfsay');
+    })();
     return p;
   };
   const show=async s9=>{ if(!s9) return; if(s9.dataset.hid){ delete s9.dataset.hid;
