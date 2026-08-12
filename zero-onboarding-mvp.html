@@ -1737,6 +1737,15 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .dockin{ position:relative; }
 .dmailhint{ position:absolute; left:50%; transform:translateX(-50%); top:calc(100% + 7px);
   white-space:nowrap; font-size:12.5px; color:#c0392b; }
+/* the main CTA under the credit line, and the quiet share link below */
+.dlmain{ margin:32px auto 0; display:flex; align-items:center; gap:10px; width:max-content;
+  height:56px; padding:0 30px; font-size:16px; }
+.dlmain svg{ width:17px; height:17px; }
+.dlsent{ margin-top:13px; font-size:12.5px; color:var(--tx-3); text-align:center; }
+.shlinkbtn{ margin:30px auto 0; display:block; background:none; border:0; cursor:pointer;
+  font-size:13px; color:var(--tx-3); text-decoration:underline; text-underline-offset:3px;
+  text-decoration-color:var(--line); }
+.shlinkbtn:hover{ color:var(--tx-2); }
 /* share, and the number climbs */
 .shcard{ margin:34px auto 0; width:min(560px,94%); background:#fff; border:1px solid var(--line-2);
   border-radius:20px; padding:20px 22px; text-align:left; }
@@ -9793,32 +9802,19 @@ async function mvpClaim(){
     sfx('success');
     const em=v.trim();
     const hint=document.querySelector('.dmailhint'); if(hint) hint.remove();
-    /* nothing moves to another screen: the bottom converts in place */
-    /* the same field morphs into the download bar: nothing new appears elsewhere */
-    const f9=document.querySelector('.dfield');
-    if(f9){
-      const inp9=f9.querySelector('input'); if(inp9) inp9.disabled=true;
-      gsap.to([...f9.children],{opacity:0,y:-7,filter:'blur(5px)',duration:.3,stagger:.04,
-        onComplete:()=>{
-          f9.classList.add('dlbar');
-          f9.innerHTML='<span class="dlzi">'+ZSVG+'</span>'
-            +'<span class="dlbt">Zero is unlocked.</span>'
-            +'<button class="dlbb">'+(I.dl||'')+'<span>Download now</span></button>';
-          const bits=f9.querySelectorAll('.dlzi,.dlbt,.dlbb');
-          gsap.fromTo(bits,{opacity:0,y:9,filter:'blur(6px)'},
-            {opacity:1,y:0,filter:'blur(0px)',duration:.55,stagger:.07,ease:'power3.out'});
-          const bb=f9.querySelector('.dlbb');
-          if(bb) bb.onclick=()=>{ sfx('success');
-            gsap.fromTo(bb,{scale:.96},{scale:1,duration:.4,ease:'back.out(2)'}); };
-          const host9=f9.parentNode;
-          if(host9&&!host9.querySelector('.dlbs')){
-            const s9=mk('div','dlbs','Sent to '+em+'.');
-            host9.appendChild(s9);
-            gsap.fromTo(s9,{opacity:0,y:6},{opacity:1,y:0,duration:.5,delay:.15,ease:'power2.out'});
-          }
-          mvpShareCard(rew);
-        }});
-    }
+    /* the field leaves with the dock; the main CTA lands under the credit line */
+    dockHide();
+    const dl=mk('button','dbig dlmain');
+    dl.innerHTML=(I.dl||'')+'<span>Download the app</span>';
+    dl.onclick=()=>{ sfx('success');
+      gsap.fromTo(dl,{scale:.96},{scale:1,duration:.4,ease:'back.out(2)'}); };
+    const sent=mk('div','dlsent','Zero is unlocked. Sent to '+em+'.');
+    const shl=mk('button','shlinkbtn','Share your road, earn extra credits');
+    shl.onclick=()=>{ sfx('tick');
+      gsap.to(shl,{opacity:0,duration:.3,onComplete:()=>shl.remove()});
+      mvpShareCard(rew); };
+    rew.appendChild(dl); rew.appendChild(sent); rew.appendChild(shl);
+    enter([dl,sent,shl],{y:14,blur:6,duration:.6},1100);
     atStep('Handoff');
   });
 }
