@@ -1835,8 +1835,7 @@ body.noinput #dock, body.noinput #dtr{ opacity:0 !important; pointer-events:none
   background:var(--card); font-size:12px; font-weight:600; cursor:pointer; color:var(--tx); }
 .pfmbtns .pbtn:hover{ background:var(--field); }
 /* a story line is invisible only until the splitter owns it */
-body.pfstory #turn .q{ opacity:0; }
-body.pfstory #turn .q[data-wsplit]{ opacity:1; }
+
 
 .pfthumb{ position:absolute; left:50%; top:42%; font-size:56px; z-index:31;
   filter:drop-shadow(0 8px 18px rgba(0,0,0,.2)); }
@@ -1844,34 +1843,24 @@ body.pfstory #turn .q[data-wsplit]{ opacity:1; }
 body.wzon #turn{ display:none !important; }
 body.wzon #dock, body.wzon #dtr{ opacity:0 !important; pointer-events:none; }
 .wzstage{ position:fixed; inset:0; z-index:60; display:flex; flex-direction:column;
-  align-items:center; justify-content:center; gap:clamp(14px,2.2vh,26px);
-  padding:96px clamp(20px,4vw,64px) 34px; }
-.wzhead{ text-align:center; }
-.wzhead b{ display:block; font-family:var(--serif); font-size:clamp(22px,2.3vw,31px);
-  letter-spacing:-.025em; }
-.wzhead span{ display:block; margin-top:5px; font-size:13.5px; color:var(--tx-3); }
-.wzvid{ width:min(1000px,84vw); }
-.wzvid .wwin{ width:100%; border-radius:18px; overflow:hidden;
-  box-shadow:0 2px 4px rgba(0,0,0,.05), 0 26px 60px -18px rgba(0,0,0,.22),
-    0 70px 140px -50px rgba(24,67,47,.2); }
-.wzvid .wscreen{ height:clamp(280px,43vh,520px); }
-.wzsteps{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px;
-  width:min(1000px,84vw); }
-.wzstep{ position:relative; text-align:left; background:none; border:0; cursor:pointer;
-  padding:14px 2px 0; opacity:.45; transition:opacity .5s var(--e,cubic-bezier(.625,.05,0,1)); }
-.wzstep.on, .wzstep.done{ opacity:1; }
-.wzbar{ display:block; height:3px; border-radius:2px; background:var(--line-2);
-  overflow:hidden; margin-bottom:11px; }
-.wzbar b{ display:block; width:0; height:100%; border-radius:2px; background:var(--ink); }
-.wzstep.done .wzbar b{ background:#2f9c45; }
-.wzt{ display:block; font-size:14px; font-weight:600; letter-spacing:-.02em; }
-.wzd{ display:block; margin-top:5px; font-size:12.5px; line-height:1.5; color:var(--tx-3);
-  max-height:0; opacity:0; overflow:hidden;
-  transition:max-height .55s var(--e,cubic-bezier(.625,.05,0,1)), opacity .45s ease; }
-.wzstep.on .wzd{ max-height:64px; opacity:1; }
-.wzfoot{ margin-top:clamp(4px,1.4vh,14px); }
+  align-items:center; justify-content:center; gap:clamp(18px,3vh,34px);
+  padding:88px clamp(20px,4vw,64px) 34px; }
+/* the video: one clean 16:9 frame, nothing around it */
+.wzvid{ width:min(1060px,86vw); }
+.wzframe{ position:relative; width:100%; aspect-ratio:16/9; border-radius:20px; overflow:hidden;
+  background:var(--paper,#F2F0ED);
+  box-shadow:0 2px 4px rgba(0,0,0,.05), 0 30px 70px -20px rgba(0,0,0,.24),
+    0 80px 150px -55px rgba(24,67,47,.22); }
+.wzframe>*{ position:absolute; inset:0; }
+/* chapters: the one playing is ink, the rest step back */
+.wzchaps{ display:flex; gap:clamp(18px,3vw,44px); justify-content:center; flex-wrap:wrap; }
+.wzstep{ background:none; border:0; cursor:pointer; padding:0; font-size:15px; font-weight:600;
+  letter-spacing:-.02em; color:var(--tx-4);
+  transition:color .55s var(--e,cubic-bezier(.625,.05,0,1)); }
+.wzstep.on{ color:var(--tx); }
+.wzstep:hover{ color:var(--tx-2); }
+.wzfoot{ margin-top:clamp(2px,1vh,10px); }
 .wzcta{ min-width:210px; }
-@media (max-height:760px){ .wzhead span{ display:none; } .wzd{ display:none; } }
 /* ── legacy: the earlier inline video block ── */
 .wvid{ position:fixed; left:0; right:0; top:84px; bottom:70px; margin:auto;
   width:min(920px,74vw); height:fit-content; z-index:30; }
@@ -8874,11 +8863,21 @@ async function mvpRoadmapPanel(){
       host.appendChild(ur);
       ur.classList.add('done');
       if(c.unlock[3]==='green'){
-        /* the job portal opens: the moment lands big */
-        gsap.fromTo(u,{scale:.55,opacity:0,y:18},{scale:1,opacity:1,y:0,duration:.7,ease:'back.out(2.2)'});
-        sfx('success');
-        gsap.delayedCall(.25,()=>{ try{ sfx('bloom'); }catch(e){} });
-        gsap.delayedCall(.15,()=>confettiBurst(u));
+        /* the job portal opens: bring it into view, let it land, then celebrate */
+        const sc9=$('scroll');
+        if(sc9){
+          const ur9=ur.getBoundingClientRect(), sr9=sc9.getBoundingClientRect();
+          const target=sc9.scrollTop+(ur9.top-sr9.top)-(sr9.height*.42);
+          gsap.to(sc9,{scrollTop:Math.max(0,target),duration:1.1,ease:EIO});
+        }
+        gsap.set(u,{opacity:0});
+        gsap.delayedCall(1.15,()=>{ if(myGen!==gen) return;
+          gsap.fromTo(u,{scale:.55,opacity:0,y:18},{scale:1,opacity:1,y:0,duration:.75,ease:'back.out(2.2)'});
+          sfx('success');
+          gsap.delayedCall(.25,()=>{ try{ sfx('bloom'); }catch(e){} });
+          gsap.delayedCall(.2,()=>confettiBurst(u));
+        });
+        await wait(1900); if(myGen!==gen) return;
       } else {
         enter([u],{y:12,blur:6,duration:.5},1000);
         sfx('sparkle');
@@ -9348,7 +9347,7 @@ async function mvpOutcome(){
   if(paper9){ const shn=mk('i','pfsheen'); shn.id='pfSheen'; paper9.appendChild(shn); }
   const secs=['pf3-projects','pf3-exp','pf3-edu'].map(id=>$(id)).filter(Boolean);
   secs.forEach(s9=>{ s9.dataset.hid='1'; });
-  gsap.set(secs,{opacity:0,y:26,filter:'blur(16px)'});
+  gsap.set(secs,{opacity:0,y:26});
   const w=$('pfSheetW');
   const EMOPOOL=['🔥','👏','🤯','✨','💚','🎉'];
   w.addEventListener('pointerdown',e=>{ if(myGen!==gen) return;
@@ -9357,7 +9356,9 @@ async function mvpOutcome(){
   });
   gsap.set(w,{opacity:0,scale:.62,y:70,transformOrigin:'50% 26%'});
   await wait(vz?900:150); if(myGen!==gen) return;
-  pfBloom(cx,cy);
+  /* the wave starts where the page will stand, not where the tiles came from */
+  { const wr9=w.getBoundingClientRect();
+    pfBloom(wr9.left+wr9.width/2, Math.min(innerHeight*.55, wr9.top+innerHeight*.28)); }
   sfx('bloom');
   stage.classList.add('on');
   gsap.to(w,{opacity:1,scale:PFM.zoom,y:0,duration:PFM.sheetIn,ease:'power3.out',delay:.12});
@@ -9389,28 +9390,25 @@ async function mvpOutcome(){
     document.body.classList.add('pfl-'+p); };
   const fadeLine=()=>new Promise(res=>{ const t=$('turn');
     if(!t){ res(); return; }
-    gsap.to(t,{opacity:0,filter:'blur(14px)',y:-14,duration:.45,ease:'power2.in',onComplete:res}); });
+    gsap.to(t,{opacity:0,filter:'blur(14px)',y:-14,duration:.45,ease:'power2.in',
+      onComplete:()=>{ /* it is leaving: clear the parked values so a reused node cannot
+                          inherit them, then let the next line mount clean */
+        if(t.isConnected) gsap.set(t,{clearProps:'opacity,filter,y'});
+        res(); }}); });
   /* the line assembles word by word, each out of its own blur */
-  /* every narration line on this stage staggers in: no text matching, and a line
-     is hidden ONLY until this loop has split it, so nothing can stay invisible */
-  const splitLine=q9=>{
-    if(!q9||q9.dataset.wsplit) return;
-    q9.dataset.wsplit='1';
-    const words=(q9.textContent||'').split(' ');
-    q9.innerHTML=words.map(w9=>'<span class="wln">'+w9+'</span>').join(' ');
-    gsap.set(q9,{opacity:1});
-    gsap.fromTo(q9.querySelectorAll('.wln'),{opacity:0,filter:'blur('+PFM.blurIn+'px)',y:12},
-      {opacity:1,filter:'blur(0px)',y:0,duration:PFM.wordDur,stagger:PFM.stagger,ease:'power2.out'});
-  };
-  document.body.classList.add('pfstory');
-  const splitTicker=setInterval(()=>{
-    if(myGen!==gen||!document.body.classList.contains('pfull')){ clearInterval(splitTicker); return; }
-    document.querySelectorAll('#turn .q').forEach(splitLine);
-  },60);
+  /* the base's turn() already reveals a line word by word out of blur, with its own
+     progress(1) safety. we never touch those spans: we only make sure the line's
+     container is visible, because fadeLine() may have parked an old one at zero. */
+  const splitLine=()=>{};
+  const wordGuard=setInterval(()=>{
+    if(myGen!==gen||!document.body.classList.contains('pfull')){ clearInterval(wordGuard); return; }
+    const t9=$('turn'); if(!t9) return;
+    if(+gsap.getProperty(t9,'opacity')<1) gsap.set(t9,{opacity:1,y:0,filter:'blur(0px)'});
+  },80);
   const say=(text,ms)=>voLine(text,ms);
   const show=async s9=>{ if(!s9) return; if(s9.dataset.hid){ delete s9.dataset.hid;
     s9.classList.add('sweepin');
-    gsap.to(s9,{opacity:1,y:0,filter:'blur(0px)',duration:PFM.revealDur,ease:'power3.out'});
+    gsap.to(s9,{opacity:1,y:0,duration:PFM.revealDur,ease:'power3.out'});
     await wait(PFM.beat*1000); } };
   /* ── one short opener: why this page exists ── */
   linePos('b');
@@ -9431,8 +9429,8 @@ async function mvpOutcome(){
   gsap.set(cards,{opacity:0});
   cards.forEach((c9,i)=>{
     const t0=.2+i*PFM.cardStep;
-    gsap.fromTo(c9,{opacity:0,z:0,scale:.96,filter:'blur(12px)'},
-      {opacity:1,z:PFM.cardLift,y:-14,scale:1.05,filter:'blur(0px)',duration:.55,delay:t0,ease:'power2.out'});
+    gsap.fromTo(c9,{opacity:0,z:0,scale:.94},
+      {opacity:1,z:PFM.cardLift,y:-14,scale:1.05,duration:.55,delay:t0,ease:'power2.out'});
     gsap.to(c9,{z:0,y:0,scale:1,duration:.6,delay:t0+.55,ease:'back.out(1.4)'});
     gsap.delayedCall(t0+.55,()=>{ try{ c9.classList.add('sweepin'); sfx('tick'); }catch(e){} });
   });
@@ -9476,8 +9474,7 @@ async function mvpOutcome(){
   await say("7 weeks from now, this page is yours.",2500);
   if(myGen!==gen) return;
   await fadeLine(); if(myGen!==gen) return;
-  clearInterval(splitTicker);
-  document.querySelectorAll('#turn .q').forEach(splitLine);
+  clearInterval(wordGuard);
   /* the page is yours now: wheel moves it, gently, within its own bounds */
   const maxUp=Math.max(0, sheet.scrollHeight-(innerHeight-260));
   window.__pfWheel=e=>{
@@ -9490,7 +9487,7 @@ async function mvpOutcome(){
   qWide=true;
   const endT=turn({q:"That's the outcome. Now, the road from level one."});
   qWide=false;
-  gsap.delayedCall(.25,()=>document.querySelectorAll('#turn .q').forEach(splitLine));
+
   { const qb=(endT&&endT.box)||document.querySelector('#turn');
     if(qb){
       qb.querySelectorAll('.inlinecta').forEach(n=>n.remove());
@@ -9994,23 +9991,12 @@ async function mvpWhy(){
   setPhase(4);
   clearTurn(); dockHide(); await wait(320); if(myGen!==gen) return;
   /* its own stage: the video breathes, the steps sit under it, the button sits last */
-  const SEQ=[
-    ['brief','Real briefs','A real company, a real problem, a manager waiting on your read.'],
-    ['manager','A manager who replies','You ask, they answer. Feedback on the work, not on your resume.'],
-    ['review','Reviewed like a job','Every submission comes back marked, with what to fix next.'],
-    ['xp','Proof that compounds','Each scenario levels you up and lands on your portfolio.']
-  ];
+  /* the chapters follow the founder's storyboard: kickoff, the work, feedback, payoff */
+  const SEQ=[['brief','The kickoff'],['manager','The work'],['review','Feedback'],['xp','Your portfolio']];
   const st=mk('div','wzstage'); st.id='wzStage';
-  st.innerHTML='<div class="wzhead"><b>How Zero works</b><span>Four things, then your credits.</span></div>'
-    +'<div class="wzvid"><div class="wwin"><div class="wbar">'
-        +'<span class="wtl"><i class="r"></i><i class="y"></i><i class="g"></i></span>'
-        +'<span class="wbt">Zero · How it works</span></div>'
-      +'<div class="wscreen" id="wzScreen">'+pzScreen(SEQ[0][0])+'</div></div></div>'
-    +'<div class="wzsteps" id="wzSteps">'
-      +SEQ.map((s,i)=>'<button class="wzstep'+(i===0?' on':'')+'" data-i="'+i+'">'
-        +'<i class="wzbar"><b></b></i>'
-        +'<span class="wzt">'+s[1]+'</span>'
-        +'<span class="wzd">'+s[2]+'</span></button>').join('')
+  st.innerHTML='<div class="wzvid"><div class="wzframe" id="wzScreen">'+pzScreen(SEQ[0][0])+'</div></div>'
+    +'<div class="wzchaps" id="wzSteps">'
+      +SEQ.map((s,i)=>'<button class="wzstep'+(i===0?' on':'')+'" data-i="'+i+'">'+s[1]+'</button>').join('')
     +'</div>'
     +'<div class="wzfoot"><button class="dbig wzcta" id="wzCta">Continue</button></div>';
   document.body.appendChild(st);
@@ -10021,23 +10007,12 @@ async function mvpWhy(){
   const cta=$('wzCta');
   const DUR=7;
   let at=-1, autoCall=null;
-  const paintBar=i=>{
-    const b=steps[i]&&steps[i].querySelector('.wzbar b');
-    if(!b) return;
-    gsap.killTweensOf(b);
-    gsap.fromTo(b,{width:'0%'},{width:'100%',duration:DUR,ease:'none'});
-  };
+  const paintBar=()=>{};
   const goTo=i=>{
     if(myGen!==gen) return;
     if(i===at) return;
     at=i;
-    steps.forEach((s9,k)=>{ s9.classList.toggle('on',k===at);
-      s9.classList.toggle('done',k<at);
-      const b=s9.querySelector('.wzbar b');
-      if(k<at) gsap.set(b,{width:'100%'});
-      if(k>at) gsap.set(b,{width:'0%'});
-    });
-    paintBar(at);
+    steps.forEach((s9,k)=>{ s9.classList.toggle('on',k===at); });
     const scr=$('wzScreen');
     gsap.to(scr,{opacity:0,y:-10,filter:'blur(8px)',duration:.32,ease:'power2.in',onComplete:()=>{
       if(myGen!==gen) return;
