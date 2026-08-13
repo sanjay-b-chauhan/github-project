@@ -1856,8 +1856,9 @@ body.wzon #dock, body.wzon #dtr{ opacity:0 !important; pointer-events:none; }
   background:var(--paper,#F2F0ED);
   box-shadow:0 2px 4px rgba(0,0,0,.05), 0 30px 70px -20px rgba(0,0,0,.24),
     0 80px 150px -55px rgba(24,67,47,.22); }
-.wzscr{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;
-  background:#0e0d0c; }
+.wzscr{ position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block;
+  background:#0b0c0b; }
+.wzframe{ background:#0b0c0b; }
 .wzscr>*{ position:absolute; inset:0; }
 .wzframe{ cursor:pointer; }
 /* the play control lives in the middle of the picture, and hides while it plays */
@@ -1867,6 +1868,14 @@ body.wzon #dock, body.wzon #dtr{ opacity:0 !important; pointer-events:none; }
   box-shadow:0 10px 30px rgba(0,0,0,.28); opacity:0;
   transition:opacity .35s ease, transform .35s cubic-bezier(.2,.8,.3,1); }
 .wzbig svg{ width:20px; height:20px; }
+/* the small controls sit on the film, bottom left, and stay reachable */
+.wzctrl{ position:absolute; left:14px; bottom:14px; z-index:7; display:flex; gap:8px; }
+.wzbtn{ width:34px; height:34px; border-radius:50%; border:0; cursor:pointer;
+  background:rgba(18,20,19,.62); color:#fff; display:flex; align-items:center; justify-content:center;
+  backdrop-filter:blur(8px); transition:background .3s ease, transform .25s ease; }
+.wzbtn:hover{ background:rgba(18,20,19,.85); transform:translateY(-1px); }
+.wzbtn svg{ width:15px; height:15px; }
+.wzbtn.on{ color:#7ee2a0; }
 .wzframe:hover .wzbig, .wzstage.paused .wzbig{ opacity:1; transform:translate(-50%,-50%) scale(1); }
 /* one timeline under the picture: markers, and each section sits at its own marker */
 .wzline{ position:relative; width:min(1060px,86vw); height:3px; border-radius:2px; cursor:pointer;
@@ -10059,12 +10068,25 @@ async function mvpWhy(){
   /* the chapters follow the founder's storyboard: kickoff, the work, feedback, payoff */
   const SEQ=[['brief','The kickoff'],['manager','The work'],['review','Feedback'],['xp','Your portfolio']];
   const st=mk('div','wzstage'); st.id='wzStage';
+  /* filled glyphs, drawn not typed */
+  const WZI={
+    play:'<svg viewBox="0 0 24 24"><path fill="currentColor" d="M8 5.5v13a1 1 0 0 0 1.5.87l10-6.5a1 1 0 0 0 0-1.74l-10-6.5A1 1 0 0 0 8 5.5Z"/></svg>',
+    pause:'<svg viewBox="0 0 24 24"><path fill="currentColor" d="M7 4.8h3.4v14.4H7zm6.6 0H17v14.4h-3.4z"/></svg>',
+    muted:'<svg viewBox="0 0 24 24"><path fill="currentColor" d="M4 9.5h3.2L12 5.2v13.6L7.2 14.5H4z"/>'
+      +'<path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16 9.5l4.5 5m0-5-4.5 5"/></svg>',
+    sound:'<svg viewBox="0 0 24 24"><path fill="currentColor" d="M4 9.5h3.2L12 5.2v13.6L7.2 14.5H4z"/>'
+      +'<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" '
+      +'d="M15.6 9c1.2 1.6 1.2 4.4 0 6M18.4 6.6c2.1 2.9 2.1 7.9 0 10.8"/></svg>'};
   const SEG=100/SEQ.length;
   st.innerHTML='<div class="wzvid">'
     +'<div class="wzframe" id="wzFrame">'
       +'<video class="wzscr" id="wzVid" src="mvp-assets/zero-how-it-works.mp4" '
         +'playsinline preload="auto" autoplay muted></video>'
-      +'<button class="wzbig" id="wzPP" aria-label="Pause">'+(I.pause||'')+'</button></div>'
+      +'<button class="wzbig" id="wzPP" aria-label="Pause">'+WZI.pause+'</button>'
+      +'<div class="wzctrl">'
+        +'<button class="wzbtn" id="wzPP2" aria-label="Pause">'+WZI.pause+'</button>'
+        +'<button class="wzbtn" id="wzMute" aria-label="Unmute">'+WZI.muted+'</button>'
+      +'</div></div>'
     +'<div class="wzline" id="wzTrack"><i id="wzFill"></i>'
       +SEQ.map((s,i)=>'<span class="wzmk'+(i===0?' first':'')+'" style="left:'+(i*SEG)+'%"></span>').join('')
       +'<div class="wzsegs" id="wzSteps">'
@@ -10105,15 +10127,25 @@ async function mvpWhy(){
     if(should!==at) goTo(should);
   };
   gsap.ticker.add(tick9);
-  const setPP=()=>{ if(!pp) return;
-    pp.innerHTML=playing?(I.pause||''):(I.play||'');
-    pp.setAttribute('aria-label',playing?'Pause':'Play');
+  const pp2=$('wzPP2'), mb=$('wzMute');
+  const setPP=()=>{
+    const g=playing?WZI.pause:WZI.play;
+    if(pp){ pp.innerHTML=g; pp.setAttribute('aria-label',playing?'Pause':'Play'); }
+    if(pp2){ pp2.innerHTML=g; pp2.setAttribute('aria-label',playing?'Pause':'Play'); }
     st.classList.toggle('paused',!playing); };
+  const setMute=()=>{ if(!mb||!vid) return;
+    mb.innerHTML=vid.muted?WZI.muted:WZI.sound;
+    mb.setAttribute('aria-label',vid.muted?'Unmute':'Mute');
+    mb.classList.toggle('on',!vid.muted); };
   const toggle=()=>{ playing=!playing; sfx('tick'); setPP();
     if(vid){ if(playing){ const p=vid.play(); if(p&&p.catch) p.catch(()=>{}); } else vid.pause(); } };
   if(pp) pp.onclick=e=>{ e.stopPropagation(); toggle(); };
+  if(pp2) pp2.onclick=e=>{ e.stopPropagation(); toggle(); };
+  if(mb) mb.onclick=e=>{ e.stopPropagation(); if(!vid) return;
+    vid.muted=!vid.muted; if(!vid.muted) vid.volume=1;
+    sfx('tick'); setMute(); };
   const fr=$('wzFrame'); if(fr) fr.onclick=toggle;
-  setPP();
+  setPP(); setMute();
   if(trk) trk.onclick=e=>{ if(e.target.closest('.wzstep')) return;
     const r=trk.getBoundingClientRect();
     elapsed=Math.max(0,Math.min(TOT,((e.clientX-r.left)/r.width)*TOT));
