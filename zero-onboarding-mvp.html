@@ -1856,7 +1856,8 @@ body.wzon #dock, body.wzon #dtr{ opacity:0 !important; pointer-events:none; }
   background:var(--paper,#F2F0ED);
   box-shadow:0 2px 4px rgba(0,0,0,.05), 0 30px 70px -20px rgba(0,0,0,.24),
     0 80px 150px -55px rgba(24,67,47,.22); }
-.wzscr{ position:absolute; inset:0; }
+.wzscr{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;
+  background:#0e0d0c; }
 .wzscr>*{ position:absolute; inset:0; }
 .wzframe{ cursor:pointer; }
 /* the play control lives in the middle of the picture, and hides while it plays */
@@ -2552,10 +2553,10 @@ body.dark .vrole .vrl{ background:#EDEAE4; }
 .pz-stage.dk .pzpeer .pzod{ border-color:var(--zbg); }
 .pz-stage.dk .pzpeer .pzwho b{ color:var(--ztx); }
 .pz-stage.dk .pzpeer .pzwho span{ color:var(--ztx3); }
-.pzlike{ margin-left:auto; display:inline-flex; align-items:center; gap:6px; font-size:11px; color:#ff6a8a; }
+.pzlike{ margin-left:auto; display:inline-flex; align-items:center; gap:6px; font-size:11px; color:#58c478; }
 .pzlt{ display:block; width:54px; height:4px; border-radius:99px; background:rgba(255,255,255,.1); overflow:hidden; }
 .pzlt i{ display:block; height:100%; width:68%; border-radius:99px;
-  background:linear-gradient(90deg,#ff6a8a,#ffa8c0); }
+  background:linear-gradient(90deg,#2f9c45,#7ee2a0); }
 .pz-stage.dk .pzm{ color:var(--ztx); }
 .pz-stage.dk .pzm.mgr{ background:#282828; border-color:rgba(255,255,255,.04); }
 .pz-stage.dk .pzm.usr{ background:var(--zbub); }
@@ -8878,9 +8879,10 @@ async function mvpRoadmapPanel(){
        measured against the row's own centre, so a tall brief still reads centred */
     const centreRow=(dur)=>{ const sc9=$('scroll'); if(!sc9) return;
       const rr=row.getBoundingClientRect(), sr=sc9.getBoundingClientRect();
-      const want=sc9.scrollTop+((rr.top+rr.height/2)-sr.top)-(sr.height*.5);
-      gsap.to(sc9,{scrollTop:Math.max(0,want),duration:dur||.7,ease:EIO,overwrite:'auto'}); };
-    centreRow(.6);
+      /* between the middle and the bottom: the eye reads it without losing the trail above */
+      const want=sc9.scrollTop+((rr.top+rr.height/2)-sr.top)-(sr.height*.62);
+      gsap.killTweensOf(sc9);
+      gsap.to(sc9,{scrollTop:Math.max(0,want),duration:dur||.8,ease:EIO,overwrite:'auto'}); };
     await wait(300); if(myGen!==gen) return;
     /* 2. the week reads out */
     gsap.fromTo(wk9,{opacity:0,x:-8},{opacity:1,x:0,duration:.45,ease:'power2.out'});
@@ -10059,7 +10061,9 @@ async function mvpWhy(){
   const st=mk('div','wzstage'); st.id='wzStage';
   const SEG=100/SEQ.length;
   st.innerHTML='<div class="wzvid">'
-    +'<div class="wzframe" id="wzFrame"><div class="wzscr" id="wzScreen">'+pzScreen(SEQ[0][0])+'</div>'
+    +'<div class="wzframe" id="wzFrame">'
+      +'<video class="wzscr" id="wzVid" src="mvp-assets/zero-how-it-works.mp4" '
+        +'playsinline preload="auto" autoplay muted></video>'
       +'<button class="wzbig" id="wzPP" aria-label="Pause">'+(I.pause||'')+'</button></div>'
     +'<div class="wzline" id="wzTrack"><i id="wzFill"></i>'
       +SEQ.map((s,i)=>'<span class="wzmk'+(i===0?' first':'')+'" style="left:'+(i*SEG)+'%"></span>').join('')
@@ -10068,7 +10072,7 @@ async function mvpWhy(){
           +'style="left:'+(i*SEG)+'%; width:'+SEG+'%">'+s[1]+'</button>').join('')
       +'</div>'
     +'</div>'
-    +'<div class="wzfoot"><button class="dbig wzcta" id="wzCta">Continue</button></div>';
+    +'<div class="wzfoot"><button class="dbig wzcta" id="wzCta">Claim your credits</button></div>';
   document.body.appendChild(st);
   document.body.classList.add('wzon');
   gsap.fromTo(st,{y:24,opacity:0},{y:0,opacity:1,duration:.9,ease:'power3.out'});
@@ -10077,19 +10081,27 @@ async function mvpWhy(){
   const cta=$('wzCta');
   const DUR=7;
   let at=-1, autoCall=null;
-  /* the player: one clock for the whole run, scrubbable, pausable */
-  const TOT=DUR*SEQ.length;
+  /* the film drives everything: its own time is the clock */
+  const vid=$('wzVid');
+  let TOT=DUR*SEQ.length;
   let playing=true, elapsed=0, last=0;
   const fill=$('wzFill'), pp=$('wzPP'), trk=$('wzTrack');
+  if(vid){
+    vid.addEventListener('loadedmetadata',()=>{ if(vid.duration&&isFinite(vid.duration)) TOT=vid.duration; });
+    const tryPlay=()=>{ const p=vid.play(); if(p&&p.catch) p.catch(()=>{ playing=false; setPP(); }); };
+    vid.addEventListener('canplay',tryPlay,{once:true});
+    tryPlay();
+  }
   const tick9=()=>{
     if(myGen!==gen||!$('wzStage')){ gsap.ticker.remove(tick9); return; }
-    const now=performance.now();
-    if(last&&playing) elapsed=Math.min(TOT,elapsed+(now-last)/1000);
-    last=now;
+    if(vid&&vid.duration&&isFinite(vid.duration)){ TOT=vid.duration; elapsed=vid.currentTime; }
+    else { const now=performance.now();
+      if(last&&playing) elapsed=Math.min(TOT,elapsed+(now-last)/1000);
+      last=now; }
     if(fill) fill.style.width=(elapsed/TOT*100)+'%';
     /* the button shows up once the film is half watched */
     if(elapsed>=TOT/2 && !st.classList.contains('ctaon')){ st.classList.add('ctaon'); try{ sfx('tick'); }catch(e){} }
-    const should=Math.min(SEQ.length-1,Math.floor(elapsed/DUR));
+    const should=Math.min(SEQ.length-1,Math.floor((elapsed/Math.max(.001,TOT))*SEQ.length));
     if(should!==at) goTo(should);
   };
   gsap.ticker.add(tick9);
@@ -10097,38 +10109,34 @@ async function mvpWhy(){
     pp.innerHTML=playing?(I.pause||''):(I.play||'');
     pp.setAttribute('aria-label',playing?'Pause':'Play');
     st.classList.toggle('paused',!playing); };
-  const toggle=()=>{ playing=!playing; sfx('tick'); setPP(); };
+  const toggle=()=>{ playing=!playing; sfx('tick'); setPP();
+    if(vid){ if(playing){ const p=vid.play(); if(p&&p.catch) p.catch(()=>{}); } else vid.pause(); } };
   if(pp) pp.onclick=e=>{ e.stopPropagation(); toggle(); };
   const fr=$('wzFrame'); if(fr) fr.onclick=toggle;
   setPP();
   if(trk) trk.onclick=e=>{ if(e.target.closest('.wzstep')) return;
     const r=trk.getBoundingClientRect();
-    elapsed=Math.max(0,Math.min(TOT,((e.clientX-r.left)/r.width)*TOT)); sfx('tick'); };
+    elapsed=Math.max(0,Math.min(TOT,((e.clientX-r.left)/r.width)*TOT));
+    if(vid) vid.currentTime=elapsed;
+    sfx('tick'); };
   const paintBar=()=>{};
   const goTo=i=>{
     if(myGen!==gen) return;
     if(i===at) return;
     at=i;
     steps.forEach((s9,k)=>{ s9.classList.toggle('on',k===at); });
-    const scr=$('wzScreen');
-    gsap.to(scr,{opacity:0,y:-10,filter:'blur(8px)',duration:.32,ease:'power2.in',onComplete:()=>{
-      if(myGen!==gen) return;
-      scr.innerHTML=pzScreen(SEQ[at][0]);
-      gsap.fromTo(scr,{opacity:0,y:12,filter:'blur(10px)'},
-        {opacity:1,y:0,filter:'blur(0px)',duration:.6,ease:'power3.out'});
-    }});
     try{ sfx('tick'); }catch(e){}
-    cta.textContent = at>=SEQ.length-1 ? 'Claim your credits' : 'Continue';
+    cta.textContent='Claim your credits';
   };
   cta.onclick=()=>{
-    if(at<SEQ.length-1){ sfx('droplet'); elapsed=(at+1)*DUR+.05; goTo(at+1); return; }
     if(locked) return; locked=true; flowCredit();
-    playing=false;
+    playing=false; if(vid) vid.pause();
     gsap.to(st,{opacity:0,y:18,duration:.45,ease:'power2.in',
       onComplete:()=>{ st.remove(); document.body.classList.remove('wzon'); }});
     go(mvpClaim);
   };
-  steps.forEach((s9,i)=>{ s9.onclick=e=>{ e.stopPropagation(); sfx('tick'); elapsed=i*DUR+.05; goTo(i); }; });
+  steps.forEach((s9,i)=>{ s9.onclick=e=>{ e.stopPropagation(); sfx('tick');
+    elapsed=(i/SEQ.length)*TOT+.05; if(vid) vid.currentTime=elapsed; goTo(i); }; });
   goTo(0);
 }
 
