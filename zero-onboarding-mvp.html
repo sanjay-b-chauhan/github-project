@@ -1848,8 +1848,10 @@ body.noinput #dock, body.noinput #dtr{ opacity:0 !important; pointer-events:none
 body.wzon #turn{ display:none !important; }
 body.wzon #dock, body.wzon #dtr{ opacity:0 !important; pointer-events:none; }
 .wzstage{ position:fixed; inset:0; z-index:60; display:flex; flex-direction:column;
-  align-items:center; justify-content:flex-start; gap:clamp(14px,2.2vh,24px);
-  padding:clamp(84px,11vh,132px) clamp(20px,4vw,64px) 28px; }
+  align-items:center; justify-content:flex-start; gap:clamp(12px,1.8vh,20px);
+  padding:clamp(64px,8vh,104px) clamp(20px,4vw,64px) 28px; }
+.wzttl{ font-family:var(--serif); font-size:clamp(22px,2.4vw,34px); letter-spacing:-.025em;
+  text-align:center; margin-bottom:clamp(6px,1.2vh,14px); }
 /* the video: one clean 16:9 frame, nothing around it */
 .wzvid{ width:min(1060px,86vw); }
 .wzframe{ position:relative; width:100%; aspect-ratio:16/9; border-radius:20px; overflow:hidden;
@@ -2080,14 +2082,15 @@ body.wzon #dock, body.wzon #dtr{ opacity:0 !important; pointer-events:none; }
 .rmweeks{ display:inline-flex; align-items:center; gap:8px; height:38px; padding:0 16px;
   border-radius:999px; background:var(--ink); color:var(--on-ink); font-size:13.5px; font-weight:600;
   box-shadow:0 8px 22px rgba(0,0,0,.16); white-space:nowrap; }
-.rmrows{ position:relative; padding-bottom:46vh; }
+.rmrows{ position:relative; padding-bottom:42vh; transition:padding-bottom .9s ease; }
+.rmrows.settled{ padding-bottom:12vh; }
 .rmrow{ display:flex; flex-wrap:nowrap; align-items:flex-start; gap:14px; position:relative; padding-bottom:18px; }
-.rmrow::before{ content:''; position:absolute; left:9px; top:40px; bottom:-2px; width:2px;
-  background:var(--line); border-radius:1px; opacity:0; transition:opacity .6s ease .2s; }
+.rmrow::before{ content:''; position:absolute; left:9px; top:40px; bottom:-20px; width:2px;
+  background:var(--line-2); border-radius:1px; opacity:0; transition:opacity .6s ease .2s; }
 .rmrow.on::before{ opacity:1; }
 .rmrow:last-child::before{ display:none; }
 /* the walked part of the trail: a real stroke that draws from stop to stop */
-.rmseg{ position:absolute; left:9px; top:40px; bottom:-2px; width:2px; border-radius:1px;
+.rmseg{ position:absolute; left:9px; top:40px; bottom:-20px; width:2px; border-radius:1px;
   overflow:hidden; z-index:1; }
 .rmseg b{ display:block; width:100%; height:100%; border-radius:1px; background:#2f9c45;
   transform:scaleY(0); transform-origin:0 0; }
@@ -8951,6 +8954,14 @@ async function mvpRoadmapPanel(){
   }
   await wait(450); if(myGen!==gen) return;
   const hostAll=$('mvCur'); if(hostAll) hostAll.querySelectorAll('.mvlit').forEach(x=>x.classList.remove('mvlit'));
+  /* the road is finished: let the eye travel the whole thing back to level one */
+  if(hostAll) hostAll.classList.add('settled');
+  { const sc9=$('scroll');
+    if(sc9){ gsap.killTweensOf(sc9);
+      await new Promise(res=>gsap.to(sc9,{scrollTop:0,duration:1.8,ease:EIO,onComplete:res})); } }
+  if(myGen!==gen) return;
+  sfx('page');
+  await wait(400); if(myGen!==gen) return;
   const q=document.querySelector('#turn .q');
   if(q){ await new Promise(res=>{ gsap.to(q,{opacity:0,y:-8,duration:.3,onComplete:()=>{
       q.textContent='Seven weeks from level one to that portfolio. This is the road.';
@@ -10069,7 +10080,8 @@ async function mvpWhy(){
       +'<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" '
       +'d="M15.6 9c1.2 1.6 1.2 4.4 0 6M18.4 6.6c2.1 2.9 2.1 7.9 0 10.8"/></svg>'};
   const SEG=100/SEQ.length;
-  st.innerHTML='<div class="wzvid">'
+  st.innerHTML='<div class="wzttl" id="wzTtl">This is how Zero works.</div>'
+    +'<div class="wzvid">'
     +'<div class="wzframe" id="wzFrame">'
       +'<video class="wzscr" id="wzVid" src="mvp-assets/zero-how-it-works.mp4" '
         +'playsinline preload="auto" autoplay muted></video>'
@@ -10086,8 +10098,20 @@ async function mvpWhy(){
     +'<div class="wzfoot"><button class="dbig wzcta" id="wzCta">Claim your credits</button></div>';
   document.body.appendChild(st);
   document.body.classList.add('wzon');
-  gsap.fromTo(st,{y:24,opacity:0},{y:0,opacity:1,duration:.9,ease:'power3.out'});
+  /* the line reads first, on its own, word by word */
+  const ttl=$('wzTtl');
+  if(ttl){
+    const ws9=ttl.textContent.split(' ');
+    ttl.innerHTML=ws9.map(w9=>'<span class="wln">'+w9+'</span>').join(' ');
+    gsap.fromTo(ttl.querySelectorAll('.wln'),{opacity:0,y:16,filter:'blur(12px)'},
+      {opacity:1,y:0,filter:'blur(0px)',duration:.75,stagger:.08,ease:'power2.out'});
+  }
+  /* the film waits its turn, then rises into place */
+  const vidBlock=st.querySelector('.wzvid'), lineBlock=st.querySelector('.wzline'), footBlock=st.querySelector('.wzfoot');
+  gsap.set([vidBlock,lineBlock,footBlock],{opacity:0,y:34});
   sfx('page');
+  gsap.to([vidBlock,lineBlock],{opacity:1,y:0,duration:1,delay:1.5,ease:'power3.out',stagger:.08});
+  gsap.set(footBlock,{opacity:1,y:0,delay:1.6});
   const steps=[...st.querySelectorAll('.wzstep')];
   const cta=$('wzCta');
   const DUR=7;
@@ -10100,8 +10124,8 @@ async function mvpWhy(){
   if(vid){
     vid.addEventListener('loadedmetadata',()=>{ if(vid.duration&&isFinite(vid.duration)) TOT=vid.duration; });
     const tryPlay=()=>{ const p=vid.play(); if(p&&p.catch) p.catch(()=>{ playing=false; setPP(); }); };
-    vid.addEventListener('canplay',tryPlay,{once:true});
-    tryPlay();
+    vid.pause();
+    gsap.delayedCall(2.3,()=>{ if(myGen===gen) tryPlay(); });
   }
   const tick9=()=>{
     if(myGen!==gen||!$('wzStage')){ gsap.ticker.remove(tick9); return; }
