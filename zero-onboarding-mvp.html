@@ -1882,7 +1882,10 @@ body.wzon #dock, body.wzon #dtr{ opacity:0 !important; pointer-events:none; }
   transition:color .55s var(--e,cubic-bezier(.625,.05,0,1)); }
 .wzstep.on{ color:var(--tx); }
 .wzstep:hover{ color:var(--tx-2); }
-.wzfoot{ margin-top:clamp(34px,5vh,54px); }
+.wzfoot{ margin-top:clamp(34px,5vh,54px); width:100%; display:flex; justify-content:center; }
+.wzfoot .wzcta{ opacity:0; transform:translateY(10px); pointer-events:none;
+  transition:opacity .6s var(--e,cubic-bezier(.625,.05,0,1)), transform .6s var(--e,cubic-bezier(.625,.05,0,1)); }
+.wzstage.ctaon .wzfoot .wzcta{ opacity:1; transform:none; pointer-events:auto; }
 .wzcta{ min-width:210px; }
 /* ── legacy: the earlier inline video block ── */
 .wvid{ position:fixed; left:0; right:0; top:84px; bottom:70px; margin:auto;
@@ -2076,7 +2079,7 @@ body.wzon #dock, body.wzon #dtr{ opacity:0 !important; pointer-events:none; }
 .rmweeks{ display:inline-flex; align-items:center; gap:8px; height:38px; padding:0 16px;
   border-radius:999px; background:var(--ink); color:var(--on-ink); font-size:13.5px; font-weight:600;
   box-shadow:0 8px 22px rgba(0,0,0,.16); white-space:nowrap; }
-.rmrows{ position:relative; }
+.rmrows{ position:relative; padding-bottom:46vh; }
 .rmrow{ display:flex; flex-wrap:nowrap; align-items:flex-start; gap:14px; position:relative; padding-bottom:18px; }
 .rmrow::before{ content:''; position:absolute; left:9px; top:40px; bottom:-2px; width:2px;
   background:var(--line); border-radius:1px; opacity:0; transition:opacity .6s ease .2s; }
@@ -8871,32 +8874,41 @@ async function mvpRoadmapPanel(){
     /* 1. the marker arrives */
     gsap.fromTo(nd9,{scale:.3,opacity:0},{scale:1,opacity:1,duration:.5,ease:'back.out(2.2)'});
     sfx('tick');
-    await wait(420); if(myGen!==gen) return;
+    /* the new stop settles into the middle of the panel, never at the bottom edge.
+       measured against the row's own centre, so a tall brief still reads centred */
+    const centreRow=(dur)=>{ const sc9=$('scroll'); if(!sc9) return;
+      const rr=row.getBoundingClientRect(), sr=sc9.getBoundingClientRect();
+      const want=sc9.scrollTop+((rr.top+rr.height/2)-sr.top)-(sr.height*.5);
+      gsap.to(sc9,{scrollTop:Math.max(0,want),duration:dur||.7,ease:EIO,overwrite:'auto'}); };
+    centreRow(.6);
+    await wait(300); if(myGen!==gen) return;
     /* 2. the week reads out */
-    gsap.fromTo(wk9,{opacity:0,x:-8},{opacity:1,x:0,duration:.5,ease:'power2.out'});
-    await wait(520); if(myGen!==gen) return;
+    gsap.fromTo(wk9,{opacity:0,x:-8},{opacity:1,x:0,duration:.45,ease:'power2.out'});
+    await wait(360); if(myGen!==gen) return;
     /* 3. the brief lands */
     const card=mvpScCard(c);
-    await ghostIn(card,58,520,slot);
+    await ghostIn(card,58,420,slot);
     row.classList.add('on');
     card.classList.add('open');
     gsap.fromTo(card.querySelectorAll('.mtag'),{opacity:0,y:8,scale:.92},
       {opacity:1,y:0,scale:1,duration:.45,ease:'back.out(1.6)',stagger:.06,delay:.1});
+    /* now that the brief has height, put the whole stop back in the middle */
+    centreRow(.7);
     host.querySelectorAll('.mvsc,.mvunlock').forEach(x=>x.classList.remove('mvlit'));
     card.classList.add('mvlit');
     if(typeof sheen==='function'){ try{ sheen(card,.8); }catch(e){} }
-    await wait(900); if(myGen!==gen) return;
+    await wait(620); if(myGen!==gen) return;
     /* 4. the trail travels: it draws from this stop down to the next one */
     row.classList.add('done');
     await new Promise(res=>{
       const b9=row.querySelector('.rmseg b');
       if(!b9){ res(); return; }
-      gsap.fromTo(b9,{scaleY:0},{scaleY:1,duration:1.05,ease:'power2.inOut',onComplete:res});
+      gsap.fromTo(b9,{scaleY:0},{scaleY:1,duration:.8,ease:'power2.inOut',onComplete:res});
     });
     if(myGen!==gen) return;
-    await wait(240); if(myGen!==gen) return;
+    await wait(150); if(myGen!==gen) return;
     if(c.unlock){
-      await wait(500); if(myGen!==gen) return;
+      await wait(340); if(myGen!==gen) return;
       const ur=mk('div','rmrow mile on');
       ur.innerHTML='<div class="rmrail"><span class="rmnode spark">'+(I.spark||'')+'</span>'
         +'<span class="rmwk">Unlock</span></div>';
@@ -10075,6 +10087,8 @@ async function mvpWhy(){
     if(last&&playing) elapsed=Math.min(TOT,elapsed+(now-last)/1000);
     last=now;
     if(fill) fill.style.width=(elapsed/TOT*100)+'%';
+    /* the button shows up once the film is half watched */
+    if(elapsed>=TOT/2 && !st.classList.contains('ctaon')){ st.classList.add('ctaon'); try{ sfx('tick'); }catch(e){} }
     const should=Math.min(SEQ.length-1,Math.floor(elapsed/DUR));
     if(should!==at) goTo(should);
   };
