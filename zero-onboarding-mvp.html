@@ -1860,15 +1860,7 @@ body.wzon #dock, body.wzon #dtr{ opacity:0 !important; pointer-events:none; }
   background:#0b0c0b; }
 .wzframe{ background:#0b0c0b; }
 .wzscr>*{ position:absolute; inset:0; }
-.wzframe{ cursor:pointer; }
-/* the play control lives in the middle of the picture, and hides while it plays */
-.wzbig{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) scale(.94);
-  width:64px; height:64px; border-radius:50%; border:0; cursor:pointer; z-index:6;
-  background:rgba(255,255,255,.94); color:#111; display:flex; align-items:center; justify-content:center;
-  box-shadow:0 10px 30px rgba(0,0,0,.28); opacity:0;
-  transition:opacity .35s ease, transform .35s cubic-bezier(.2,.8,.3,1); }
-.wzbig svg{ width:20px; height:20px; }
-/* the small controls sit on the film, bottom left, and stay reachable */
+/* one control, bottom left of the film: sound, nothing else */
 .wzctrl{ position:absolute; left:14px; bottom:14px; z-index:7; display:flex; gap:8px; }
 .wzbtn{ width:34px; height:34px; border-radius:50%; border:0; cursor:pointer;
   background:rgba(18,20,19,.62); color:#fff; display:flex; align-items:center; justify-content:center;
@@ -1876,7 +1868,6 @@ body.wzon #dock, body.wzon #dtr{ opacity:0 !important; pointer-events:none; }
 .wzbtn:hover{ background:rgba(18,20,19,.85); transform:translateY(-1px); }
 .wzbtn svg{ width:15px; height:15px; }
 .wzbtn.on{ color:#7ee2a0; }
-.wzframe:hover .wzbig, .wzstage.paused .wzbig{ opacity:1; transform:translate(-50%,-50%) scale(1); }
 /* one timeline under the picture: markers, and each section sits at its own marker */
 .wzline{ position:relative; width:min(1060px,86vw); height:3px; border-radius:2px; cursor:pointer;
   background:var(--line-2); margin-top:clamp(14px,2vh,22px); }
@@ -10082,9 +10073,7 @@ async function mvpWhy(){
     +'<div class="wzframe" id="wzFrame">'
       +'<video class="wzscr" id="wzVid" src="mvp-assets/zero-how-it-works.mp4" '
         +'playsinline preload="auto" autoplay muted></video>'
-      +'<button class="wzbig" id="wzPP" aria-label="Pause">'+WZI.pause+'</button>'
       +'<div class="wzctrl">'
-        +'<button class="wzbtn" id="wzPP2" aria-label="Pause">'+WZI.pause+'</button>'
         +'<button class="wzbtn" id="wzMute" aria-label="Unmute">'+WZI.muted+'</button>'
       +'</div></div>'
     +'<div class="wzline" id="wzTrack"><i id="wzFill"></i>'
@@ -10107,7 +10096,7 @@ async function mvpWhy(){
   const vid=$('wzVid');
   let TOT=DUR*SEQ.length;
   let playing=true, elapsed=0, last=0;
-  const fill=$('wzFill'), pp=$('wzPP'), trk=$('wzTrack');
+  const fill=$('wzFill'), trk=$('wzTrack');
   if(vid){
     vid.addEventListener('loadedmetadata',()=>{ if(vid.duration&&isFinite(vid.duration)) TOT=vid.duration; });
     const tryPlay=()=>{ const p=vid.play(); if(p&&p.catch) p.catch(()=>{ playing=false; setPP(); }); };
@@ -10127,24 +10116,17 @@ async function mvpWhy(){
     if(should!==at) goTo(should);
   };
   gsap.ticker.add(tick9);
-  const pp2=$('wzPP2'), mb=$('wzMute');
-  const setPP=()=>{
-    const g=playing?WZI.pause:WZI.play;
-    if(pp){ pp.innerHTML=g; pp.setAttribute('aria-label',playing?'Pause':'Play'); }
-    if(pp2){ pp2.innerHTML=g; pp2.setAttribute('aria-label',playing?'Pause':'Play'); }
-    st.classList.toggle('paused',!playing); };
+  const mb=$('wzMute');
+  const setPP=()=>{ st.classList.toggle('paused',!playing); };
   const setMute=()=>{ if(!mb||!vid) return;
     mb.innerHTML=vid.muted?WZI.muted:WZI.sound;
     mb.setAttribute('aria-label',vid.muted?'Unmute':'Mute');
     mb.classList.toggle('on',!vid.muted); };
   const toggle=()=>{ playing=!playing; sfx('tick'); setPP();
     if(vid){ if(playing){ const p=vid.play(); if(p&&p.catch) p.catch(()=>{}); } else vid.pause(); } };
-  if(pp) pp.onclick=e=>{ e.stopPropagation(); toggle(); };
-  if(pp2) pp2.onclick=e=>{ e.stopPropagation(); toggle(); };
   if(mb) mb.onclick=e=>{ e.stopPropagation(); if(!vid) return;
     vid.muted=!vid.muted; if(!vid.muted) vid.volume=1;
     sfx('tick'); setMute(); };
-  const fr=$('wzFrame'); if(fr) fr.onclick=toggle;
   setPP(); setMute();
   if(trk) trk.onclick=e=>{ if(e.target.closest('.wzstep')) return;
     const r=trk.getBoundingClientRect();
