@@ -1537,6 +1537,13 @@ body.noico .vt .vti{ display:none; }
 #vt_location{ --tt-location:#ff6a4d; }
 #vt_pull{ --tt-pull:#a78bfa; }
 #vt_plan{ --tt-plan:#0084CE; }
+#vt_role{ --tt-role:#E0653F; }
+#vt_exp{ --tt-exp:#c9a227; }
+/* the family color arrives as light on an edge — never as paint.
+   a pill glows from its top corner in the color of the tile it lives on */
+.vt .vpill{ background:
+  radial-gradient(130% 150% at 10% -30%, color-mix(in srgb, var(--tt,transparent) 17%, transparent), transparent 55%),
+  var(--card); }
 .vzroles{ background:color-mix(in srgb, var(--card) 65%, var(--page));
   border:1px solid var(--line-2); border-radius:32px;
   corner-shape:squircle; padding:17px 20px 16px; margin:0 0 14px; }
@@ -1613,7 +1620,10 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .vfan{ display:flex; flex-direction:column; gap:0; padding-top:4px; }
 .vfw{ position:relative; z-index:calc(4 - var(--i)); margin-top:6px; }
 .vfc{ display:flex; align-items:center; gap:11px; padding:11px 14px; border-radius:17px;
-  corner-shape:squircle; background:var(--card); border:1px solid var(--line-2);
+  corner-shape:squircle; border:1px solid var(--line-2);
+  /* the brand's own color, as light off the logo's edge — never as paint */
+  background:radial-gradient(85% 170% at 0% 50%,
+    color-mix(in srgb, var(--gl,transparent) 15%, transparent), transparent 52%), var(--card);
   box-shadow:0 2px 4px rgba(0,0,0,.05), 0 8px 16px rgba(0,0,0,.06), 0 20px 36px -8px rgba(0,0,0,.14);
   transform:rotate(calc((var(--i) - 1) * 2.2deg)) translateY(calc(var(--i) * -4px));
   transition:transform .35s cubic-bezier(.2,.8,.3,1), box-shadow .35s ease; }
@@ -9741,6 +9751,9 @@ function vzApply(anim){
   else gsap.set(vz,{x:VZT.x,y:VZT.y,scale:VZT.k});
   const rd=$('vzoomv'); if(rd) rd.textContent=Math.round(VZT.k*100)+'%';
 }
+/* the camera has a floor and a ceiling: the board can never zoom out into a
+   postage stamp or in past readable — one min, one max */
+const ZK={min:.8,max:1.25};
 /* the board never gets lost: panning stays inside soft bounds */
 function vzClampPan(){
   const vz=$('vz'), host=$('scroll'); if(!vz||!host) return;
@@ -9759,7 +9772,7 @@ function vzFit(anim){
   const vz=$('vz'), host=$('scroll'); if(!vz||!host) return;
   const cw=vz.offsetWidth, ch=vz.offsetHeight, hw=host.clientWidth, hh=host.clientHeight;
   if(!cw||!ch||!hw||!hh) return;
-  const k=Math.max(.5,Math.min(1,Math.min(hw/(cw+10),hh/(ch+18))));
+  const k=Math.max(ZK.min,Math.min(1,Math.min(hw/(cw+10),hh/(ch+18))));
   VZT.k=k; VZT.x=(hw-cw*k)/2; VZT.y=Math.max(0,(hh-ch*k)/2);
   host.scrollTop=0;
   vzApply(anim!==false);
@@ -9801,7 +9814,7 @@ function vzHand(host,vz){
       /* pinch, or cmd scroll: zoom around the pointer, the way a canvas should */
       e.preventDefault();
       const px=e.clientX-r.left, py=e.clientY-r.top;
-      const k0=VZT.k, k1=clamp(k0*(1-e.deltaY*0.0022),.45,2.4);
+      const k0=VZT.k, k1=clamp(k0*(1-e.deltaY*0.0022),ZK.min,ZK.max);
       VZT.x=px-(px-VZT.x)*(k1/k0);
       VZT.y=py-(py-VZT.y)*(k1/k0);
       VZT.k=k1; vzClampPan(); vzApply(false);
@@ -10477,6 +10490,13 @@ function vflag(city){ return {'Toronto':'🇨🇦','New York':'🇺🇸','San Fr
 /* the cities we can show, not just say */
 const CITYPIC={'Toronto':'mvp-assets/city-toronto.jpg','New York':'mvp-assets/city-newyork.jpg',
   'London':'mvp-assets/city-london.jpg','San Francisco':'mvp-assets/city-sanfrancisco.jpg'};
+/* every brand's light, matched to the logos we already carry */
+const BRANDC={Stripe:'#635BFF',Notion:'#9A8F80',Salesforce:'#00A1E0',Anthropic:'#D97757',
+  DoorDash:'#FF3008',Uber:'#111114',Shopify:'#95BF47',Spotify:'#1DB954',Figma:'#A259FF',
+  Linear:'#5E6AD2',Airbnb:'#FF5A5F',Vercel:'#111114',Datadog:'#774AA4',HubSpot:'#FF7A59',
+  Slack:'#611F69',Atlassian:'#0052CC',Amplitude:'#1E61F0',Intercom:'#0057FF',Apple:'#555560',
+  Google:'#4285F4',Microsoft:'#737373',Netflix:'#E50914',Meta:'#0866FF',Adobe:'#EB1000',
+  OpenAI:'#10A37F',Snowflake:'#29B5E8',GitHub:'#24292F'};
 const VTILES=[
  {key:'hero', span:'s4', emoji:'👋', label:'About you',
   ready:()=>!!P.name,
@@ -10498,7 +10518,9 @@ const VTILES=[
   ready:()=>!!P.dream,
   html:()=>'<div class="vfan">'+P.dream.split(',').map((c2,i2)=>{
      const co=c2.trim();
-     return '<div class="vfw" style="--i:'+i2+'"><div class="vfc"><span class="vfl">'+(LOGO[co]||I.spark)+'</span><b>'+co+'</b></div></div>';
+     return '<div class="vfw" style="--i:'+i2+'"><div class="vfc"'
+       +(BRANDC[co]?' style="--gl:'+BRANDC[co]+'"':'')
+       +'><span class="vfl">'+(LOGO[co]||I.spark)+'</span><b>'+co+'</b></div></div>';
    }).join('')+'</div>'},
  {key:'domain', span:'s2', emoji:'📊', label:'Drawn to',
   ready:()=>!!P.industry,
@@ -10601,6 +10623,9 @@ function renderBoard(){
       }
     }
   });
+  /* what's filled floats up; what's still waiting sinks below it */
+  const order=[...VTILES.filter(t=>t.ready()),...VTILES.filter(t=>!t.ready())];
+  order.forEach(tl=>{ const el9=$('vt_'+tl.key); if(el9) gr.appendChild(el9); });
   /* everyone who moved glides; everyone new springs */
   [...gr.children].forEach(t2=>{
     const f=first[t2.id]; if(!f) return;
