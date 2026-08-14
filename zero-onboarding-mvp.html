@@ -1500,14 +1500,15 @@ body.dark .lit{ animation-name:litd; }
 .vgrid{ column-count:2; column-gap:14px; max-width:980px; margin:0 auto; }
 .vgrid > .vt{ break-inside:avoid; margin:0 0 14px; width:100%; }
 .vt.s4{ column-span:all; }
-/* the tile is the page itself: no surface, no shadow — a squircle hairline and air */
+/* a filled tile owns a surface one step lighter than the page — opaque, so the
+   dot grid stays behind the board; the things ON it cast the shadows, not the tile */
 .vt{ position:relative; border:1px solid var(--line-2); border-radius:32px;
-  corner-shape:squircle; background:transparent;
+  corner-shape:squircle; background:color-mix(in srgb, var(--card) 65%, var(--page));
   padding:18px 20px 20px; min-height:96px; overflow:hidden;
   transition:background .45s ease, border-color .45s ease; }
 .vt.dim{ opacity:.35; transition:opacity .45s ease; }
-/* waiting sections: the shape of what Zero wants to know */
-.vt:not(.ghost):hover{ background:color-mix(in srgb, var(--card) 55%, transparent);
+/* waiting sections: the shape of what Zero wants to know — no surface yet */
+.vt:not(.ghost):hover{ background:color-mix(in srgb, var(--card) 82%, var(--page));
   border-color:var(--line); }
 .vt.ghost{ opacity:.55; background:transparent; border-style:dashed; box-shadow:none; }
 .vt.ghost .vte{ filter:grayscale(1); opacity:.55; }
@@ -1531,7 +1532,8 @@ body.noico .vt .vti{ display:none; }
 #vt_location{ --tt-location:#ff6a4d; }
 #vt_pull{ --tt-pull:#a78bfa; }
 #vt_plan{ --tt-plan:#0084CE; }
-.vzroles{ background:transparent; border:1px solid var(--line-2); border-radius:32px;
+.vzroles{ background:color-mix(in srgb, var(--card) 65%, var(--page));
+  border:1px solid var(--line-2); border-radius:32px;
   corner-shape:squircle; padding:17px 20px 16px; margin:0 0 14px; }
 .vroh{ display:flex; align-items:baseline; gap:10px; margin:0 0 11px; }
 .vroh b{ font-size:13.5px; font-weight:700; letter-spacing:-.02em; }
@@ -1539,7 +1541,8 @@ body.noico .vt .vti{ display:none; }
 .vrogrid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:5px 16px; }
 .vroles{ display:flex; flex-direction:column; gap:8px; }
 .vrole{ display:flex; align-items:center; gap:11px; padding:9px 11px; border-radius:16px;
-  corner-shape:squircle; background:var(--wash); border:1px solid var(--line-2); }
+  corner-shape:squircle; background:var(--card); border:1px solid var(--line-2);
+  box-shadow:0 4px 14px rgba(0,0,0,.05); }
 .vrole .vrl{ width:26px; height:26px; flex-shrink:0; border-radius:9px; background:#fff;
   border:1px solid var(--line-2); display:flex; align-items:center; justify-content:center; }
 .vrole .vrl svg{ width:14px; height:14px; }
@@ -1582,7 +1585,8 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 /* the hero: the name, written properly */
 .vhero{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
 .vhava{ width:46px; height:46px; border-radius:50%; color:#fff; font-family:var(--serif);
-  font-size:21px; display:flex; align-items:center; justify-content:center; }
+  font-size:21px; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 6px 18px rgba(0,0,0,.18); }
 .vhname{ font-family:var(--serif); font-size:29px; letter-spacing:-.02em; }
 .vherole{ display:inline-flex; align-items:center; gap:8px; height:38px; padding:0 16px;
   border-radius:999px; background:var(--ink); color:var(--on-ink); font-size:14.5px; font-weight:600; }
@@ -1590,7 +1594,8 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .vhsub{ flex-basis:100%; font-size:13.5px; color:var(--tx-2); margin-top:2px; }
 /* pills: the language, with weight */
 .vpill{ display:inline-flex; align-items:center; gap:9px; padding:9px 15px; border-radius:999px;
-  background:var(--wash); border:1px solid var(--line-2); font-size:14px; }
+  background:var(--card); border:1px solid var(--line-2); font-size:14px;
+  box-shadow:0 1px 2px rgba(0,0,0,.06), 0 7px 18px rgba(0,0,0,.09); }
 .vpill b{ font-weight:600; letter-spacing:-.015em; }
 .vpill svg{ width:15px; height:15px; }
 .vpill.big{ padding:11px 18px; font-size:15.5px; }
@@ -1601,30 +1606,36 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .vfw{ position:relative; z-index:calc(4 - var(--i)); margin-top:6px; }
 .vfc{ display:flex; align-items:center; gap:11px; padding:11px 14px; border-radius:17px;
   corner-shape:squircle; background:var(--card); border:1px solid var(--line-2);
+  box-shadow:0 2px 5px rgba(0,0,0,.06), 0 12px 26px rgba(0,0,0,.10);
   transform:rotate(calc((var(--i) - 1) * 2.2deg)) translateY(calc(var(--i) * -4px));
   transition:transform .35s cubic-bezier(.2,.8,.3,1); }
 .vfw:hover .vfc{ transform:rotate(0deg) translateY(calc(var(--i) * -4px)) scale(1.04); }
 .vfw:hover{ z-index:9; }
 .vfc .vfl{ width:30px; height:30px; border-radius:50%; background:#fff; border:1px solid var(--line-2);
-  display:flex; align-items:center; justify-content:center; }
+  display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,.12); }
 .vfc .vfl svg{ width:16px; height:16px; }
 .vfc b{ font-weight:600; font-size:14px; letter-spacing:-.015em; }
 /* the pile: rows that sit on each other */
-.vpile{ display:flex; flex-direction:column; gap:7px; }
-.vpr{ display:flex; align-items:center; gap:10px; padding:9px 13px; border-radius:16px;
-  corner-shape:squircle; background:var(--wash); border:1px solid var(--line-2); }
+/* location rows are pills proper: rounded on both ends, dropped onto the tile */
+.vpr{ display:flex; align-items:center; gap:10px; padding:9px 16px; border-radius:999px;
+  background:var(--card); border:1px solid var(--line-2);
+  box-shadow:0 1px 3px rgba(0,0,0,.05), 0 8px 20px rgba(0,0,0,.07); }
 .vpr .vem{ font-size:16px; }
 .vpr b{ font-weight:600; font-size:14px; letter-spacing:-.015em; flex:1; }
 .vpr .vnow{ font-size:var(--inds,12.5px); font-weight:500; color:var(--tx-3); }
 .vpr.on b{ color:var(--tx); }
-/* the place, not just the name: a quiet photograph inside the squircle */
-.vcity{ position:relative; margin-top:10px; border-radius:20px; corner-shape:squircle;
-  overflow:hidden; aspect-ratio:21/9; border:1px solid var(--line-2); }
+/* the place, not just the name: a photograph dropped onto the tile,
+   with the same breathing room as the rows above it */
+.vpile{ display:flex; flex-direction:column; gap:8px; }
+.vcity{ position:relative; margin-top:12px; border-radius:18px; corner-shape:squircle;
+  overflow:hidden; aspect-ratio:21/9; border:1px solid var(--line-2);
+  box-shadow:0 2px 6px rgba(0,0,0,.07), 0 12px 28px rgba(0,0,0,.10); }
 .vcity img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
   filter:saturate(.85); transform:scale(1.03); }
-.vcity .vcl{ position:absolute; left:10px; bottom:9px; display:inline-flex; align-items:center;
-  gap:6px; padding:5px 12px; border-radius:999px; background:rgba(12,12,14,.5); color:#fff;
-  font-size:11.5px; font-weight:600; letter-spacing:-.01em; backdrop-filter:blur(8px); }
+.vcity .vcl{ position:absolute; left:12px; bottom:11px; display:inline-flex; align-items:center;
+  height:26px; padding:0 13px; border-radius:999px; background:rgba(12,12,14,.55); color:#fff;
+  font-size:11.5px; font-weight:600; letter-spacing:-.01em; backdrop-filter:blur(10px);
+  box-shadow:0 3px 10px rgba(0,0,0,.25); }
 /* the tile, while Zero is creating */
 .vtb .vskb{ display:block; height:12px; border-radius:6px; margin-bottom:9px;
   background:linear-gradient(90deg,var(--field) 20%,color-mix(in srgb,var(--commit) 22%, var(--field)) 50%,var(--field) 80%);
