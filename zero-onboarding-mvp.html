@@ -1538,10 +1538,9 @@ body.noico .vt .vti{ display:none; }
 #vt_pull{ --tt-pull:#a78bfa; }
 #vt_plan{ --tt-plan:#0084CE; }
 #vt_role{ --tt-role:#E0653F; }
-#vt_exp{ --tt-exp:#c9a227; }
-/* the family color arrives as light on an edge — never as paint.
-   a pill glows from its top corner in the color of the tile it lives on */
-.vt .vpill{ background:
+/* color is rationed: only the role you're going after glows — every other pill
+   stays plain white, or the board turns into a carnival */
+#vt_role .vpill{ background:
   radial-gradient(130% 150% at 10% -30%, color-mix(in srgb, var(--tt,transparent) 17%, transparent), transparent 55%),
   var(--card); }
 .vzroles{ background:color-mix(in srgb, var(--card) 65%, var(--page));
@@ -10623,9 +10622,8 @@ function renderBoard(){
       }
     }
   });
-  /* what's filled floats up; what's still waiting sinks below it */
-  const order=[...VTILES.filter(t=>t.ready()),...VTILES.filter(t=>!t.ready())];
-  order.forEach(tl=>{ const el9=$('vt_'+tl.key); if(el9) gr.appendChild(el9); });
+  /* tiles keep their places — a board that reshuffles under your eyes
+     steals the focus from the fact that just landed (Sanjay, 14 Aug) */
   /* everyone who moved glides; everyone new springs */
   [...gr.children].forEach(t2=>{
     const f=first[t2.id]; if(!f) return;
