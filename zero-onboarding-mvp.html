@@ -1497,9 +1497,31 @@ body.dark .lit{ animation-name:litd; }
   margin:2px 0 18px; opacity:0; transform:translateY(-6px);
   transition:opacity .8s ease, transform .8s ease; letter-spacing:-.015em; }
 .vtitle.on{ opacity:1; transform:none; }
-.vgrid{ column-count:2; column-gap:14px; max-width:980px; margin:0 auto; }
-.vgrid > .vt{ break-inside:avoid; margin:0 0 14px; width:100%; }
-.vt.s4{ column-span:all; }
+/* the bento skeleton, from the Figma frame: a banner, one big tile each side,
+   a wide card each side, and smalls to balance — every tile has a fixed seat */
+.vgrid{ display:grid; gap:14px; max-width:980px; margin:0 auto;
+  grid-template-columns:repeat(4, minmax(0,1fr));
+  grid-template-areas:
+    "hero   hero   hero    hero"
+    "dreams dreams role    company"
+    "dreams dreams location location"
+    "pull   pull   location location"
+    "domain exp    plan    plan"; }
+#vt_hero{ grid-area:hero; }     #vt_dreams{ grid-area:dreams; }
+#vt_role{ grid-area:role; }     #vt_company{ grid-area:company; }
+#vt_location{ grid-area:location; } #vt_pull{ grid-area:pull; }
+#vt_domain{ grid-area:domain; } #vt_exp{ grid-area:exp; }
+#vt_plan{ grid-area:plan; }
+/* a narrow panel folds the same board into two columns, same neighbours */
+.vgrid.vg2{ grid-template-columns:repeat(2, minmax(0,1fr));
+  grid-template-areas:
+    "hero     hero"
+    "role     company"
+    "dreams   dreams"
+    "location location"
+    "pull     pull"
+    "domain   exp"
+    "plan     plan"; }
 /* a filled tile owns a surface one step lighter than the page — opaque, so the
    dot grid stays behind the board. The outline holds the shape; a low, wide
    shadow floats the tile a breath off the paper. */
@@ -1519,15 +1541,21 @@ body.dark .lit{ animation-name:litd; }
 .vt.ghost .vte{ filter:grayscale(1); opacity:.55; }
 .vt.ghost .vtl{ color:var(--tx-4); }
 .vt.s2, .vt.s4, .vt.r2{ grid-column:auto; grid-row:auto; }
-.vt .vth{ display:flex; align-items:center; gap:7px; margin-bottom:12px; }
-/* the mark is a 15px line icon, no container, no sticker */
-.vt .vti{ width:15px; height:15px; flex-shrink:0; color:var(--tx-4); display:flex;
-  align-items:center; justify-content:center; }
-.vt .vti svg{ width:100%; height:100%; display:block; }
-.vt:not(.ghost) .vti{ color:var(--tx-3); }
-body.noico .vt .vti{ display:none; }
-.vt .vte{ display:none; }
-.vt .vtl{ font-size:var(--inds,12.5px); font-weight:500; letter-spacing:-.01em; color:var(--tx-3); }
+.vt .vth{ display:flex; align-items:center; margin-bottom:12px; }
+/* the header is a chip: the emoji as the mark, the label in the family's color
+   on a wash of the same color — a name tag, not a caption */
+.vt .vhc{ display:inline-flex; align-items:center; gap:7px; height:27px;
+  padding:0 12px 0 9px; border-radius:999px;
+  background:color-mix(in srgb, var(--tt, var(--tx-3)) 9%, transparent); }
+.vt .vte{ display:inline-flex; font-size:13.5px; line-height:1; }
+body.noico .vt .vte{ display:none; }
+.vt .vtl{ font-size:var(--inds,12.5px); font-weight:600; letter-spacing:-.005em;
+  white-space:nowrap; color:color-mix(in srgb, var(--tt, var(--tx-3)) 58%, var(--tx)); }
+/* the big seats centre their contents instead of leaving a hollow floor */
+#vt_dreams{ display:flex; flex-direction:column; }
+#vt_dreams .vtb{ flex:1; display:flex; flex-direction:column; justify-content:center; }
+.vt.ghost .vhc{ background:transparent; padding:0; }
+.vt.ghost .vtl{ color:var(--tx-4); }
 .vt .vtb:empty::after{ content:''; display:block; height:3px; width:42%;
   background:var(--line); border-radius:2px; margin-top:14px; }
 /* tile tints, from the family: quiet washes, never paint */
@@ -1538,6 +1566,8 @@ body.noico .vt .vti{ display:none; }
 #vt_pull{ --tt-pull:#a78bfa; }
 #vt_plan{ --tt-plan:#0084CE; }
 #vt_role{ --tt-role:#E0653F; }
+#vt_company{ --tt-company:#64748B; }
+#vt_exp{ --tt-exp:#b98e1c; }
 /* color is rationed: only the role you're going after glows — every other pill
    stays plain white, or the board turns into a carnival */
 #vt_role .vpill{ background:
@@ -1563,6 +1593,9 @@ body.noico .vt .vti{ display:none; }
 /* the LinkedIn photo takes the initial's seat, same size, same circle */
 .av.avp{ overflow:hidden; padding:0; background:var(--field); }
 .av.avp img{ width:100%; height:100%; object-fit:cover; display:block; border-radius:50%; }
+/* the 3D character sits on a quiet wash, cropped to the face */
+.av.avg{ background:color-mix(in srgb, #c9a227 14%, var(--field)); }
+.av.avg img{ object-fit:cover; object-position:50% 18%; transform:scale(1.35); transform-origin:50% 22%; }
 /* the chips ride the line, centred on it, never half a step off */
 .vabout .vbc, .vq .vbc{ vertical-align:middle; }
 .vbc{ vertical-align:middle !important; }
@@ -9739,19 +9772,19 @@ const VICO={
  plan:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8.5 3.5v3M15.5 3.5v3"/></svg>',
 };
 const VPIC={
- work:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7.5" width="18" height="12" rx="2"/><path d="M9 7.5V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5"/></svg>',
- globe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.3 2.4 14.2 0 17M12 3.5c-2.4 2.3-2.4 14.2 0 17"/></svg>',
- clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>',
- spark:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l1.8 4.7 4.7 1.8-4.7 1.8L12 16.5l-1.8-4.7L5.5 10l4.7-1.8z"/></svg>',
- coin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M14.6 9.6c-.5-.9-1.5-1.5-2.6-1.5-1.5 0-2.7.9-2.7 2.05 0 2.85 5.4 1.35 5.4 4.2 0 1.15-1.2 2.05-2.7 2.05-1.1 0-2.1-.6-2.6-1.5M12 6.5v1.6M12 15.9v1.6"/></svg>',
- layers:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l8.5 4.5L12 13 3.5 8.5 12 4z"/><path d="M3.5 13.5L12 18l8.5-4.5"/></svg>',
- pulse:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2.5-6 4.5 12 2.5-6H21"/></svg>',
- leaf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 18.5C5.5 11 10.5 6 19 5.5 18.5 14 13.5 19 6 18.5z"/><path d="M5.5 18.5c2.6-4.4 6-7.3 9.5-8.8"/></svg>',
- bag:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 8.5h13l-1 11.5h-11l-1-11.5z"/><path d="M9 10.5V7a3 3 0 0 1 6 0v3.5"/></svg>',
- play:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M10.2 9.2l4.6 2.8-4.6 2.8V9.2z"/></svg>',
- bars:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5.5 19.5v-5M11.5 19.5V9M17.5 19.5V5.5"/><path d="M3.5 19.5h17"/></svg>',
- trend:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 16.5l5.5-5.5 3.5 3.5 7-7"/><path d="M14 7.5h5.5V13"/></svg>',
- tower:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="4" width="13" height="16" rx="1.5"/><path d="M9.2 8h.01M14.8 8h.01M9.2 12h.01M14.8 12h.01M9.5 20v-3.5h5V20"/></svg>',
+ work:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /><rect width="20" height="14" x="2" y="6" rx="2" /></svg>',
+ globe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><circle cx="12" cy="12" r="10" /><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /><path d="M2 12h20" /></svg>',
+ clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>',
+ spark:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z" /><path d="M20 2v4" /><path d="M22 4h-4" /><circle cx="4" cy="20" r="2" /></svg>',
+ coin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><circle cx="12" cy="12" r="10" /><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" /><path d="M12 18V6" /></svg>',
+ layers:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z" /><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12" /><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17" /></svg>',
+ pulse:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2" /></svg>',
+ leaf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" /><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" /></svg>',
+ bag:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M16 10a4 4 0 0 1-8 0" /><path d="M3.103 6.034h17.794" /><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z" /></svg>',
+ play:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z" /><circle cx="12" cy="12" r="10" /></svg>',
+ bars:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M3 3v16a2 2 0 0 0 2 2h16" /><path d="M18 17V9" /><path d="M13 17V5" /><path d="M8 17v-3" /></svg>',
+ trend:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M16 7h6v6" /><path d="m22 7-8.5 8.5-5-5L2 17" /></svg>',
+ tower:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M10 12h4" /><path d="M10 8h4" /><path d="M14 21v-3a2 2 0 0 0-4 0v3" /><path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2" /><path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16" /></svg>',
 };
 function vpic(n){ return '<span class="vpi">'+(VPIC[n]||'')+'</span>'; }
 /* the industry names its own mark */
@@ -10513,6 +10546,14 @@ async function mvpFinish(email){
    the grid reflows around them (FLIP), and anything that holds more than
    one thing stacks: fanned cards, piled pills. Apple emoji lead each tile. */
 function vflag(city){ return {'Toronto':'🇨🇦','New York':'🇺🇸','San Francisco':'🇺🇸','London':'🇬🇧','Berlin':'🇩🇪','Mumbai':'🇮🇳','Bangalore':'🇮🇳','Singapore':'🇸🇬','Dubai':'🇦🇪'}[city]||'📍'; }
+/* the face on the board: the LinkedIn photo once we have it; before that,
+   a 3D character read off the first name — never a bare initial */
+function mvAv(){
+  if(P.fullname) return '<span class="av avp"><img src="mvp-assets/student.jpg" alt=""></span>';
+  const n=(P.name||'').trim().toLowerCase();
+  const fem=/(^(priya|ananya|sara|sarah|emma|olivia|maya|aisha|fatima|mei|yuki|sofia|elena|nina|zara|leah|chloe|grace|ivy|ruby|amara|naomi|diya|isha|kavya|riya|tanvi|neha|pooja|shreya|anika)$)|([ai]sha$|ika$|ita$|ina$|ella$|anne$|elle$)/.test(n);
+  return '<span class="av avp avg"><img src="mvp-assets/avatar-'+(fem?'f':'m')+'.png" alt=""></span>';
+}
 /* the cities we can show, not just say */
 const CITYPIC={'Toronto':'mvp-assets/city-toronto.jpg','New York':'mvp-assets/city-newyork.jpg',
   'London':'mvp-assets/city-london.jpg','San Francisco':'mvp-assets/city-sanfrancisco.jpg'};
@@ -10527,10 +10568,8 @@ const VTILES=[
  {key:'hero', span:'s4', emoji:'👋', label:'About you',
   ready:()=>!!P.name,
   html:()=>{
-    if(!P.status) return '<div class="vabout">'+chip(avatar(P.name)+T_(P.name))+G_(' starts here.')+'</div>';
-    /* once LinkedIn has been read, the initial becomes the person */
-    const av9=P.fullname?'<span class="av avp"><img src="mvp-assets/student.jpg" alt=""></span>':avatar(P.name);
-    return '<div class="vabout">'+chip(av9+T_(P.fullname||P.name))
+    if(!P.status) return '<div class="vabout">'+chip(mvAv()+T_(P.name))+G_(' starts here.')+'</div>';
+    return '<div class="vabout">'+chip(mvAv()+T_(P.fullname||P.name))
       +G_(' · ')+chip(cico('cap')+T_(P.school?('final year, '+P.school):'final year, business school'))
       +(P.location?G_(', studying in ')+cityChip(P.location):'')+G_('.')+'</div>'; }},
  {key:'pull', span:'s2', emoji:'💭', label:'Excited about',
@@ -10539,7 +10578,7 @@ const VTILES=[
  {key:'role', span:'s2', emoji:'🎯', label:'Going after', fall:true,
   ready:()=>!!(P.role||P.roleGuess),
   html:()=>'<span class="vpill big">'+I.target+'<b>'+(P.role||P.roleGuess)+'</b></span>'},
- {key:'company', span:'s2', emoji:'🏢', label:'The company you want',
+ {key:'company', span:'s2', emoji:'🏢', label:'Company',
   ready:()=>!!P.companyKind,
   html:()=>'<span class="vpill">'+vpic(kindPic(P.companyKind))+'<b>'+P.companyKind+'</b></span>'},
  {key:'dreams', span:'s2 r2', emoji:'✨', label:'Dream companies',
@@ -10594,6 +10633,7 @@ function renderBoard(){
     vzHand(s2,vz); vzMount();
   }
   const gr=$('vgrid');
+  gr.classList.toggle('vg2', s2.clientWidth<760);
   /* FLIP: where everyone was, before the new arrival moves them */
   const first={};
   [...gr.children].forEach(t2=>{ first[t2.id]=t2.getBoundingClientRect(); });
@@ -10604,8 +10644,8 @@ function renderBoard(){
     if(!el){
       el=mk('div','vt '+tl.span+(on?'':' ghost')); el.id='vt_'+tl.key;
       el.style.setProperty('--tt','var(--tt-'+tl.key+',transparent)');
-      if(tl.label) el.innerHTML='<div class="vth">'+(VICO[tl.key]?'<span class="vti">'+VICO[tl.key]+'</span>':'')
-        +'<span class="vtl">'+tl.label+'</span></div><div class="vtb"></div>';
+      if(tl.label) el.innerHTML='<div class="vth"><span class="vhc"><span class="vte">'+tl.emoji
+        +'</span><span class="vtl">'+tl.label+'</span></span></div><div class="vtb"></div>';
       else el.innerHTML='<div class="vtb"></div>';
       gr.appendChild(el);
       fresh.push(el);
@@ -10709,7 +10749,8 @@ async function mvpBuilding(key,ms){
     if(!el){
       el=mk('div','vt '+tl.span+' vbuild'); el.id='vt_'+key;
       el.style.setProperty('--tt','var(--tt-'+key+',transparent)');
-      el.innerHTML=(tl.label?'<div class="vth"><span class="vte">'+tl.emoji+'</span><span class="vtl">'+tl.label+'</span></div>':'')
+      el.innerHTML=(tl.label?'<div class="vth"><span class="vhc"><span class="vte">'+tl.emoji
+        +'</span><span class="vtl">'+tl.label+'</span></span></div>':'')
         +'<div class="vtb">'+sk+'</div>';
       gr.appendChild(el);
       gsap.fromTo(el,{scale:.7,opacity:0},{scale:1,opacity:1,duration:.5,ease:'back.out(1.6)'});
