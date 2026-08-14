@@ -1497,18 +1497,19 @@ body.dark .lit{ animation-name:litd; }
   margin:2px 0 18px; opacity:0; transform:translateY(-6px);
   transition:opacity .8s ease, transform .8s ease; letter-spacing:-.015em; }
 .vtitle.on{ opacity:1; transform:none; }
-.vgrid{ column-count:2; column-gap:12px; max-width:980px; margin:0 auto; }
-.vgrid > .vt{ break-inside:avoid; margin:0 0 12px; width:100%; }
+.vgrid{ column-count:2; column-gap:14px; max-width:980px; margin:0 auto; }
+.vgrid > .vt{ break-inside:avoid; margin:0 0 14px; width:100%; }
 .vt.s4{ column-span:all; }
-.vt{ position:relative; border:1px solid var(--line); border-radius:20px;
-  background:linear-gradient(160deg, color-mix(in srgb, var(--tt) 9%, var(--card)) 0%, var(--card) 62%);
-  padding:15px 16px 16px; min-height:96px; overflow:hidden;
-  box-shadow:0 1px 2px rgba(0,0,0,.05), 0 10px 28px rgba(0,0,0,.08), 0 24px 54px rgba(0,0,0,.05);
-  transition:box-shadow .5s ease; }
+/* the tile is the page itself: no surface, no shadow — a squircle hairline and air */
+.vt{ position:relative; border:1px solid var(--line-2); border-radius:32px;
+  corner-shape:squircle; background:transparent;
+  padding:18px 20px 20px; min-height:96px; overflow:hidden;
+  transition:background .45s ease, border-color .45s ease; }
 .vt.dim{ opacity:.35; transition:opacity .45s ease; }
 /* waiting sections: the shape of what Zero wants to know */
-.vt:not(.ghost):hover{ box-shadow:0 14px 38px rgba(0,0,0,.12); filter:brightness(1.015); }
-.vt.ghost{ opacity:.5; box-shadow:none; background:var(--card); }
+.vt:not(.ghost):hover{ background:color-mix(in srgb, var(--card) 55%, transparent);
+  border-color:var(--line); }
+.vt.ghost{ opacity:.55; background:transparent; border-style:dashed; box-shadow:none; }
 .vt.ghost .vte{ filter:grayscale(1); opacity:.55; }
 .vt.ghost .vtl{ color:var(--tx-4); }
 .vt.s2, .vt.s4, .vt.r2{ grid-column:auto; grid-row:auto; }
@@ -1530,18 +1531,16 @@ body.noico .vt .vti{ display:none; }
 #vt_location{ --tt-location:#ff6a4d; }
 #vt_pull{ --tt-pull:#a78bfa; }
 #vt_plan{ --tt-plan:#0084CE; }
-.vzroles{ background:var(--card); border:1px solid var(--line); border-radius:22px;
-  padding:16px 18px 14px; margin:0 0 12px;
-  box-shadow:0 3px 8px rgba(0,0,0,.04), 0 18px 44px -16px rgba(0,0,0,.12); }
+.vzroles{ background:transparent; border:1px solid var(--line-2); border-radius:32px;
+  corner-shape:squircle; padding:17px 20px 16px; margin:0 0 14px; }
 .vroh{ display:flex; align-items:baseline; gap:10px; margin:0 0 11px; }
 .vroh b{ font-size:13.5px; font-weight:700; letter-spacing:-.02em; }
 .vroh span{ font-size:11.5px; color:var(--tx-3); }
 .vrogrid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:5px 16px; }
 .vroles{ display:flex; flex-direction:column; gap:8px; }
-.vrole{ display:flex; align-items:center; gap:11px; padding:9px 11px; border-radius:13px;
-  background:var(--card); border:1px solid var(--line-2);
-  box-shadow:0 4px 14px rgba(0,0,0,.05); }
-.vrole .vrl{ width:26px; height:26px; flex-shrink:0; border-radius:8px; background:#fff;
+.vrole{ display:flex; align-items:center; gap:11px; padding:9px 11px; border-radius:16px;
+  corner-shape:squircle; background:var(--wash); border:1px solid var(--line-2); }
+.vrole .vrl{ width:26px; height:26px; flex-shrink:0; border-radius:9px; background:#fff;
   border:1px solid var(--line-2); display:flex; align-items:center; justify-content:center; }
 .vrole .vrl svg{ width:14px; height:14px; }
 .vrole .vrb{ display:flex; flex-direction:column; min-width:0; }
@@ -1572,7 +1571,7 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
   gap:9px; height:32px; padding:0 13px; border-radius:999px; cursor:pointer;
   background:color-mix(in srgb, var(--card) 88%, transparent); border:1px solid var(--line);
   backdrop-filter:blur(10px); font-size:11.5px; font-weight:500; color:var(--tx-3);
-  box-shadow:0 6px 18px rgba(0,0,0,.07); opacity:0; transition:opacity .4s ease; }
+  opacity:0; transition:opacity .4s ease; }
 .paper.canvas .vzoom{ opacity:1; }
 .vzoom .vzr{ color:var(--tx-4); }
 .vzoom:hover{ color:var(--tx); }
@@ -1583,8 +1582,7 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 /* the hero: the name, written properly */
 .vhero{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
 .vhava{ width:46px; height:46px; border-radius:50%; color:#fff; font-family:var(--serif);
-  font-size:21px; display:flex; align-items:center; justify-content:center;
-  box-shadow:0 6px 18px rgba(0,0,0,.18); }
+  font-size:21px; display:flex; align-items:center; justify-content:center; }
 .vhname{ font-family:var(--serif); font-size:29px; letter-spacing:-.02em; }
 .vherole{ display:inline-flex; align-items:center; gap:8px; height:38px; padding:0 16px;
   border-radius:999px; background:var(--ink); color:var(--on-ink); font-size:14.5px; font-weight:600; }
@@ -1592,8 +1590,7 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .vhsub{ flex-basis:100%; font-size:13.5px; color:var(--tx-2); margin-top:2px; }
 /* pills: the language, with weight */
 .vpill{ display:inline-flex; align-items:center; gap:9px; padding:9px 15px; border-radius:999px;
-  background:var(--card); border:1px solid var(--line); font-size:14px;
-  box-shadow:0 1px 2px rgba(0,0,0,.06), 0 7px 18px rgba(0,0,0,.09); }
+  background:var(--wash); border:1px solid var(--line-2); font-size:14px; }
 .vpill b{ font-weight:600; letter-spacing:-.015em; }
 .vpill svg{ width:15px; height:15px; }
 .vpill.big{ padding:11px 18px; font-size:15.5px; }
@@ -1602,33 +1599,38 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 /* the fan: one tile, many things, stacked like a pile worth keeping */
 .vfan{ display:flex; flex-direction:column; gap:0; padding-top:4px; }
 .vfw{ position:relative; z-index:calc(4 - var(--i)); margin-top:6px; }
-.vfc{ display:flex; align-items:center; gap:11px; padding:11px 14px; border-radius:15px;
-  background:var(--card); border:1px solid var(--line);
-  box-shadow:0 2px 5px rgba(0,0,0,.06), 0 12px 26px rgba(0,0,0,.10);
+.vfc{ display:flex; align-items:center; gap:11px; padding:11px 14px; border-radius:17px;
+  corner-shape:squircle; background:var(--card); border:1px solid var(--line-2);
   transform:rotate(calc((var(--i) - 1) * 2.2deg)) translateY(calc(var(--i) * -4px));
   transition:transform .35s cubic-bezier(.2,.8,.3,1); }
 .vfw:hover .vfc{ transform:rotate(0deg) translateY(calc(var(--i) * -4px)) scale(1.04); }
 .vfw:hover{ z-index:9; }
 .vfc .vfl{ width:30px; height:30px; border-radius:50%; background:#fff; border:1px solid var(--line-2);
-  display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,.12); }
+  display:flex; align-items:center; justify-content:center; }
 .vfc .vfl svg{ width:16px; height:16px; }
 .vfc b{ font-weight:600; font-size:14px; letter-spacing:-.015em; }
 /* the pile: rows that sit on each other */
 .vpile{ display:flex; flex-direction:column; gap:7px; }
-.vpr{ display:flex; align-items:center; gap:10px; padding:9px 13px; border-radius:13px;
-  background:var(--card); border:1px solid var(--line-2);
-  box-shadow:0 1px 3px rgba(0,0,0,.05), 0 8px 20px rgba(0,0,0,.07); }
+.vpr{ display:flex; align-items:center; gap:10px; padding:9px 13px; border-radius:16px;
+  corner-shape:squircle; background:var(--wash); border:1px solid var(--line-2); }
 .vpr .vem{ font-size:16px; }
 .vpr b{ font-weight:600; font-size:14px; letter-spacing:-.015em; flex:1; }
 .vpr .vnow{ font-size:var(--inds,12.5px); font-weight:500; color:var(--tx-3); }
 .vpr.on b{ color:var(--tx); }
+/* the place, not just the name: a quiet photograph inside the squircle */
+.vcity{ position:relative; margin-top:10px; border-radius:20px; corner-shape:squircle;
+  overflow:hidden; aspect-ratio:21/9; border:1px solid var(--line-2); }
+.vcity img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  filter:saturate(.85); transform:scale(1.03); }
+.vcity .vcl{ position:absolute; left:10px; bottom:9px; display:inline-flex; align-items:center;
+  gap:6px; padding:5px 12px; border-radius:999px; background:rgba(12,12,14,.5); color:#fff;
+  font-size:11.5px; font-weight:600; letter-spacing:-.01em; backdrop-filter:blur(8px); }
 /* the tile, while Zero is creating */
 .vtb .vskb{ display:block; height:12px; border-radius:6px; margin-bottom:9px;
   background:linear-gradient(90deg,var(--field) 20%,color-mix(in srgb,var(--commit) 22%, var(--field)) 50%,var(--field) 80%);
   background-size:220% 100%; animation:vskm 1.15s linear infinite; }
 @keyframes vskm{ from{ background-position:200% 0; } to{ background-position:-20% 0; } }
-.vt.vbuild{ box-shadow:0 0 0 1.5px color-mix(in srgb, var(--commit) 40%, transparent),
-  0 10px 28px rgba(0,0,0,.10); }
+.vt.vbuild{ box-shadow:0 0 0 1.5px color-mix(in srgb, var(--commit) 40%, transparent); }
 /* quotes stay soft */
 .vq{ font-family:var(--serif); font-size:15.5px; line-height:1.55; font-style:italic; color:var(--tx-2); }
 .vq.sm{ font-size:13.5px; margin-top:10px; }
@@ -10440,6 +10442,8 @@ async function mvpFinish(email){
    the grid reflows around them (FLIP), and anything that holds more than
    one thing stacks: fanned cards, piled pills. Apple emoji lead each tile. */
 function vflag(city){ return {'Toronto':'🇨🇦','New York':'🇺🇸','San Francisco':'🇺🇸','London':'🇬🇧','Berlin':'🇩🇪','Mumbai':'🇮🇳','Bangalore':'🇮🇳','Singapore':'🇸🇬','Dubai':'🇦🇪'}[city]||'📍'; }
+/* the cities we can show, not just say */
+const CITYPIC={'Toronto':'mvp-assets/city-toronto.jpg','New York':'mvp-assets/city-newyork.jpg'};
 const VTILES=[
  {key:'hero', span:'s4', emoji:'👋', label:'About you',
   ready:()=>!!P.name,
@@ -10469,10 +10473,15 @@ const VTILES=[
     +(P.problems?'<div class="vq sm">“'+P.problems+'”</div>':'')},
  {key:'location', span:'s2', emoji:'📍', label:'Location',
   ready:()=>!!P.location,
-  html:()=>'<div class="vpile">'
+  html:()=>{
+    const pic=CITYPIC[P.citynext]||CITYPIC[P.location];
+    const pcity=CITYPIC[P.citynext]?P.citynext:P.location;
+    return '<div class="vpile">'
     +'<div class="vpr on"><span class="vem">'+vflag(P.location)+'</span><b>'+P.location+'</b><span class="vnow">now</span></div>'
     +(P.citynext?'<div class="vpr"><span class="vem">'+vflag(P.citynext)+'</span><b>'+P.citynext+'</b><span class="vnow">next</span></div>':'')
-    +'</div>'},
+    +'</div>'
+    +(pic?'<div class="vcity"><img src="'+pic+'" alt=""><span class="vcl">'+pcity
+      +(P.citynext&&pcity===P.citynext?' next':'')+'</span></div>':''); }},
  {key:'exp', span:'s2', emoji:'💼', label:'Experience so far',
   ready:()=>!!P.interned,
   html:()=>'<div class="vpills"><span class="vpill sm">'+vpic('work')+'<b>'+P.interned+'</b></span>'
