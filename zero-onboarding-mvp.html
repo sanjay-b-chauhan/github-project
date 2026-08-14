@@ -1501,16 +1501,21 @@ body.dark .lit{ animation-name:litd; }
 .vgrid > .vt{ break-inside:avoid; margin:0 0 14px; width:100%; }
 .vt.s4{ column-span:all; }
 /* a filled tile owns a surface one step lighter than the page — opaque, so the
-   dot grid stays behind the board; the things ON it cast the shadows, not the tile */
-.vt{ position:relative; border:1px solid var(--line-2); border-radius:32px;
+   dot grid stays behind the board. The outline holds the shape; a low, wide
+   shadow floats the tile a breath off the paper. */
+.vt{ position:relative; border:1px solid var(--line); border-radius:32px;
   corner-shape:squircle; background:color-mix(in srgb, var(--card) 65%, var(--page));
   padding:18px 20px 20px; min-height:96px; overflow:hidden;
-  transition:background .45s ease, border-color .45s ease; }
+  box-shadow:0 1px 2px rgba(0,0,0,.03), 0 18px 44px -22px rgba(0,0,0,.10);
+  transition:background .45s var(--ease,ease), border-color .45s var(--ease,ease),
+    box-shadow .45s var(--ease,ease), transform .45s var(--ease,ease); }
 .vt.dim{ opacity:.35; transition:opacity .45s ease; }
 /* waiting sections: the shape of what Zero wants to know — no surface yet */
 .vt:not(.ghost):hover{ background:color-mix(in srgb, var(--card) 82%, var(--page));
-  border-color:var(--line); }
-.vt.ghost{ opacity:.55; background:transparent; border-style:dashed; box-shadow:none; }
+  transform:translateY(-2px);
+  box-shadow:0 2px 4px rgba(0,0,0,.03), 0 26px 56px -22px rgba(0,0,0,.14); }
+.vt.ghost{ opacity:.55; background:transparent; border-style:dashed;
+  border-color:var(--line-2); box-shadow:none; }
 .vt.ghost .vte{ filter:grayscale(1); opacity:.55; }
 .vt.ghost .vtl{ color:var(--tx-4); }
 .vt.s2, .vt.s4, .vt.r2{ grid-column:auto; grid-row:auto; }
@@ -1595,7 +1600,10 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 /* pills: the language, with weight */
 .vpill{ display:inline-flex; align-items:center; gap:9px; padding:9px 15px; border-radius:999px;
   background:var(--card); border:1px solid var(--line-2); font-size:14px;
-  box-shadow:0 1px 2px rgba(0,0,0,.06), 0 7px 18px rgba(0,0,0,.09); }
+  box-shadow:0 1px 2px rgba(0,0,0,.05), 0 5px 10px rgba(0,0,0,.05), 0 14px 28px -6px rgba(0,0,0,.12);
+  transition:transform .35s cubic-bezier(.2,.8,.3,1), box-shadow .35s ease; }
+.vpill:hover{ transform:translateY(-2px);
+  box-shadow:0 2px 4px rgba(0,0,0,.05), 0 8px 16px rgba(0,0,0,.07), 0 22px 40px -8px rgba(0,0,0,.16); }
 .vpill b{ font-weight:600; letter-spacing:-.015em; }
 .vpill svg{ width:15px; height:15px; }
 .vpill.big{ padding:11px 18px; font-size:15.5px; }
@@ -1606,9 +1614,9 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .vfw{ position:relative; z-index:calc(4 - var(--i)); margin-top:6px; }
 .vfc{ display:flex; align-items:center; gap:11px; padding:11px 14px; border-radius:17px;
   corner-shape:squircle; background:var(--card); border:1px solid var(--line-2);
-  box-shadow:0 2px 5px rgba(0,0,0,.06), 0 12px 26px rgba(0,0,0,.10);
+  box-shadow:0 2px 4px rgba(0,0,0,.05), 0 8px 16px rgba(0,0,0,.06), 0 20px 36px -8px rgba(0,0,0,.14);
   transform:rotate(calc((var(--i) - 1) * 2.2deg)) translateY(calc(var(--i) * -4px));
-  transition:transform .35s cubic-bezier(.2,.8,.3,1); }
+  transition:transform .35s cubic-bezier(.2,.8,.3,1), box-shadow .35s ease; }
 .vfw:hover .vfc{ transform:rotate(0deg) translateY(calc(var(--i) * -4px)) scale(1.04); }
 .vfw:hover{ z-index:9; }
 .vfc .vfl{ width:30px; height:30px; border-radius:50%; background:#fff; border:1px solid var(--line-2);
@@ -1624,18 +1632,31 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .vpr b{ font-weight:600; font-size:14px; letter-spacing:-.015em; flex:1; }
 .vpr .vnow{ font-size:var(--inds,12.5px); font-weight:500; color:var(--tx-3); }
 .vpr.on b{ color:var(--tx); }
-/* the place, not just the name: a photograph dropped onto the tile,
-   with the same breathing room as the rows above it */
-.vpile{ display:flex; flex-direction:column; gap:8px; }
-.vcity{ position:relative; margin-top:12px; border-radius:18px; corner-shape:squircle;
-  overflow:hidden; aspect-ratio:21/9; border:1px solid var(--line-2);
-  box-shadow:0 2px 6px rgba(0,0,0,.07), 0 12px 28px rgba(0,0,0,.10); }
-.vcity img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
-  filter:saturate(.85); transform:scale(1.03); }
-.vcity .vcl{ position:absolute; left:12px; bottom:11px; display:inline-flex; align-items:center;
-  height:26px; padding:0 13px; border-radius:999px; background:rgba(12,12,14,.55); color:#fff;
-  font-size:11.5px; font-weight:600; letter-spacing:-.01em; backdrop-filter:blur(10px);
-  box-shadow:0 3px 10px rgba(0,0,0,.25); }
+/* the place IS the card: the photograph is the row, and the name lives inside it */
+.vpile{ display:flex; flex-direction:column; gap:10px; }
+.vloc{ position:relative; border-radius:18px; corner-shape:squircle; overflow:hidden;
+  aspect-ratio:23/9; border:1px solid var(--line-2);
+  box-shadow:0 2px 4px rgba(0,0,0,.06), 0 10px 20px rgba(0,0,0,.08), 0 24px 44px -10px rgba(0,0,0,.16);
+  transition:transform .4s cubic-bezier(.2,.8,.3,1), box-shadow .4s ease; }
+.vloc:hover{ transform:translateY(-2px);
+  box-shadow:0 3px 6px rgba(0,0,0,.06), 0 14px 26px rgba(0,0,0,.10), 0 32px 56px -12px rgba(0,0,0,.20); }
+.vloc img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  filter:saturate(.88); transform:scale(1.03);
+  transition:transform .8s cubic-bezier(.2,.8,.3,1); }
+.vloc:hover img{ transform:scale(1.08); }
+/* legibility: the photo dims into its own bottom edge, never a flat scrim */
+.vloc::after{ content:''; position:absolute; inset:0; z-index:1;
+  background:linear-gradient(to top, rgba(10,10,12,.42), rgba(10,10,12,0) 52%); }
+.vloc .vlpill{ position:absolute; left:11px; bottom:10px; z-index:2; display:inline-flex;
+  align-items:center; gap:7px; height:29px; padding:0 13px; border-radius:999px;
+  background:rgba(255,255,255,.93); color:#141416; font-size:12.5px; font-weight:600;
+  letter-spacing:-.015em; backdrop-filter:blur(8px);
+  box-shadow:0 4px 14px rgba(0,0,0,.22); }
+.vloc .vlpill .vem{ font-size:13px; }
+.vloc .vltag{ position:absolute; right:11px; top:10px; z-index:2; display:inline-flex;
+  align-items:center; height:25px; padding:0 12px; border-radius:999px;
+  background:rgba(12,12,14,.5); color:#fff; font-size:11px; font-weight:600;
+  letter-spacing:.01em; backdrop-filter:blur(10px); }
 /* the tile, while Zero is creating */
 .vtb .vskb{ display:block; height:12px; border-radius:6px; margin-bottom:9px;
   background:linear-gradient(90deg,var(--field) 20%,color-mix(in srgb,var(--commit) 22%, var(--field)) 50%,var(--field) 80%);
@@ -10454,7 +10475,8 @@ async function mvpFinish(email){
    one thing stacks: fanned cards, piled pills. Apple emoji lead each tile. */
 function vflag(city){ return {'Toronto':'🇨🇦','New York':'🇺🇸','San Francisco':'🇺🇸','London':'🇬🇧','Berlin':'🇩🇪','Mumbai':'🇮🇳','Bangalore':'🇮🇳','Singapore':'🇸🇬','Dubai':'🇦🇪'}[city]||'📍'; }
 /* the cities we can show, not just say */
-const CITYPIC={'Toronto':'mvp-assets/city-toronto.jpg','New York':'mvp-assets/city-newyork.jpg'};
+const CITYPIC={'Toronto':'mvp-assets/city-toronto.jpg','New York':'mvp-assets/city-newyork.jpg',
+  'London':'mvp-assets/city-london.jpg','San Francisco':'mvp-assets/city-sanfrancisco.jpg'};
 const VTILES=[
  {key:'hero', span:'s4', emoji:'👋', label:'About you',
   ready:()=>!!P.name,
@@ -10485,14 +10507,15 @@ const VTILES=[
  {key:'location', span:'s2', emoji:'📍', label:'Location',
   ready:()=>!!P.location,
   html:()=>{
-    const pic=CITYPIC[P.citynext]||CITYPIC[P.location];
-    const pcity=CITYPIC[P.citynext]?P.citynext:P.location;
-    return '<div class="vpile">'
-    +'<div class="vpr on"><span class="vem">'+vflag(P.location)+'</span><b>'+P.location+'</b><span class="vnow">now</span></div>'
-    +(P.citynext?'<div class="vpr"><span class="vem">'+vflag(P.citynext)+'</span><b>'+P.citynext+'</b><span class="vnow">next</span></div>':'')
-    +'</div>'
-    +(pic?'<div class="vcity"><img src="'+pic+'" alt=""><span class="vcl">'+pcity
-      +(P.citynext&&pcity===P.citynext?' next':'')+'</span></div>':''); }},
+    /* a city with a photograph becomes a card; one without stays a quiet pill row */
+    const row=(city,tag,on)=>CITYPIC[city]
+      ? '<div class="vloc'+(on?' on':'')+'"><img src="'+CITYPIC[city]+'" alt="">'
+        +'<span class="vlpill"><span class="vem">'+vflag(city)+'</span><b>'+city+'</b></span>'
+        +'<span class="vltag">'+tag+'</span></div>'
+      : '<div class="vpr'+(on?' on':'')+'"><span class="vem">'+vflag(city)+'</span><b>'+city
+        +'</b><span class="vnow">'+tag+'</span></div>';
+    return '<div class="vpile">'+row(P.location,'now',true)
+      +(P.citynext?row(P.citynext,'next'):'')+'</div>'; }},
  {key:'exp', span:'s2', emoji:'💼', label:'Experience so far',
   ready:()=>!!P.interned,
   html:()=>'<div class="vpills"><span class="vpill sm">'+vpic('work')+'<b>'+P.interned+'</b></span>'
