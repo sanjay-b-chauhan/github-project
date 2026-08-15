@@ -1528,9 +1528,16 @@ body.dark .lit{ animation-name:litd; }
 .paper.canvas{ background-color:#F1F1F1; background-image:none; }
 .vt{ position:relative; border:0; border-radius:26px;
   corner-shape:squircle; background:#F8F8F8;
-  padding:26px 28px 28px; min-height:96px; overflow:hidden;
+  padding:28px 30px 30px; min-height:96px; overflow:hidden;
+  display:flex; flex-direction:column;
   box-shadow:0 1px 2px rgba(0,0,0,.03), 0 14px 34px -20px rgba(0,0,0,.10);
   transition:box-shadow .45s var(--ease,ease), transform .45s var(--ease,ease); }
+/* the frame's rhythm: eyebrow at the top, the fact resting on the tile's floor */
+.vt .vtb{ flex:1; display:flex; flex-direction:column; justify-content:flex-end;
+  align-items:flex-start; }
+#vt_hero .vtb{ justify-content:flex-start; align-items:stretch; }
+#vt_dreams .vtb{ align-items:stretch; }
+#vt_location .vtb{ align-items:stretch; }
 .vt.dim{ opacity:.35; transition:opacity .45s ease; }
 .vt:not(.ghost):hover{ transform:translateY(-2px);
   box-shadow:0 2px 4px rgba(0,0,0,.03), 0 24px 52px -22px rgba(0,0,0,.14); }
@@ -1595,13 +1602,17 @@ body.noico .vt .vsp{ display:none; }
 .vflip{ position:absolute; right:-6px; bottom:-8px; width:84px; pointer-events:none; }
 .vflip svg{ width:100%; height:auto; display:block; }
 /* ── Dream companies: stickers tossed onto a washed panel ── */
-.vscat{ position:relative; flex:1; min-height:230px; }
-.vdchip{ position:absolute; display:inline-flex; align-items:center; gap:11px;
+.vscat{ position:relative; flex:1; min-height:230px; overflow:hidden;
+  border-radius:18px; }
+/* the wrapper takes the fall; the chip keeps its resting tilt */
+.vdw{ position:absolute; will-change:transform; }
+.vdchip{ position:relative; display:inline-flex; align-items:center; gap:11px;
   padding:11px 20px 11px 13px; border-radius:999px; background:#fff;
   box-shadow:0 2px 5px rgba(0,0,0,.05), 0 12px 26px rgba(0,0,0,.10);
   transform:rotate(var(--r,0deg)) scale(var(--s,1));
   transition:transform .35s cubic-bezier(.2,.8,.3,1); }
-.vdchip:hover{ transform:rotate(0deg) scale(calc(var(--s,1) * 1.06)); z-index:5; }
+.vdchip:hover{ transform:rotate(0deg) scale(calc(var(--s,1) * 1.06)); }
+.vdw:hover{ z-index:5; }
 .vdchip .vdlg{ width:30px; height:30px; border-radius:50%; background:#fff;
   display:flex; align-items:center; justify-content:center; overflow:hidden; }
 .vdchip .vdlg svg{ width:26px; height:26px; }
@@ -1623,6 +1634,31 @@ body.noico .vt .vsp{ display:none; }
 .vpolar.pnow{ left:2%; top:14px; --r:-7deg; z-index:1; }
 .vpolar.pnext{ right:2%; top:2px; --r:6deg; z-index:2; }
 .vpolar.solo{ left:50%; margin-left:-27%; top:8px; --r:-3deg; }
+/* ── the same board after dark: every hardcoded neutral has a night value ── */
+body.dark .paper.canvas{ background-color:#0F0F11; }
+body.dark .vt{ background:#1B1B1E;
+  box-shadow:0 1px 2px rgba(0,0,0,.3), 0 14px 34px -20px rgba(0,0,0,.55); }
+body.dark .vt.ghost{ background:transparent; border-color:rgba(255,255,255,.12); }
+body.dark .vt .vtl{ color:#8B8880; }
+body.dark .vt .vsp{ color:#6E6B65; }
+body.dark .vbig{ color:#ECECEE; }
+body.dark .vname{ color:#F2F2F3; }
+body.dark .vwash{ background:#242428; }
+body.dark .vinfo{ background:#2E2E33; color:#ECECEE;
+  box-shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 16px rgba(0,0,0,.35); }
+body.dark .vinfo .vpi{ color:#A5A5AC; }
+body.dark .vdchip{ background:#2E2E33; }
+body.dark .vdchip b{ color:#F2F2F3; }
+body.dark .vq.big{ color:#D8D6D0; }
+body.dark .vt.note{ background:#332E24; }
+body.dark .vt.note .vq{ color:#E6DCC8; }
+body.dark .vt.note .vtl{ color:#A79877; }
+body.dark .vt.note .vsp{ color:#8A7D61; }
+body.dark .vt.metal{ background:linear-gradient(118deg,#4A4A4E 0%,#333336 26%,#5A5A5F 46%,#2C2C2F 68%,#464649 100%); }
+body.dark .vt.metal .vtl{ color:#A6A6AC; }
+body.dark .vt.metal.ghost{ background:transparent; }
+body.dark .vmojiw{ background:#2C3A2A; }
+body.dark .vpolar .vlpill{ background:#1F1F23; color:#F2F2F3; }
 .vt .vtb:empty::after{ content:''; display:block; height:3px; width:42%;
   background:var(--line); border-radius:2px; margin-top:14px; }
 /* tile tints, from the family: quiet washes, never paint */
@@ -10672,15 +10708,16 @@ const VTILES=[
   ready:()=>!!P.dream,
   html:()=>{
     const cos=P.dream.split(',').map(c2=>c2.trim()).filter(Boolean);
-    /* few stickers cascade; a full hand scatters like the frame */
-    const S3=[{l:8,t:12,r:-7,s:1},{l:36,t:40,r:5,s:1.02},{l:12,t:68,r:-3,s:.98}];
-    const S6=[{l:3,t:12,r:-8,s:1},{l:44,t:5,r:6,s:1.04},{l:26,t:37,r:-4,s:.96},
-              {l:55,t:41,r:8,s:1},{l:5,t:64,r:3,s:1},{l:46,t:69,r:-6,s:.98}];
+    /* gravity owns this panel: pills lie piled on its floor, one leaning on two */
+    const S3=[{l:5,b:6,r:-6,s:1},{l:47,b:9,r:4,s:1},{l:22,b:36,r:-10,s:1.02}];
+    const S6=[{l:3,b:5,r:-5,s:1},{l:40,b:8,r:3,s:1},{l:66,b:6,r:7,s:.96},
+              {l:14,b:34,r:-9,s:1},{l:52,b:37,r:6,s:1},{l:30,b:62,r:-4,s:1.02}];
     const T=cos.length<=3?S3:S6;
     return '<div class="vwash vscat">'+cos.map((co,i2)=>{
       const p=T[i2%T.length];
-      return '<span class="vdchip" style="left:'+p.l+'%;top:'+p.t+'%;--r:'+p.r+'deg;--s:'+p.s+'">'
-        +'<span class="vdlg">'+(LOGO[co]||I.spark)+'</span><b>'+co+'</b></span>';
+      return '<span class="vdw" style="left:'+p.l+'%;bottom:'+p.b+'%">'
+        +'<span class="vdchip" style="--r:'+p.r+'deg;--s:'+p.s+'">'
+        +'<span class="vdlg">'+(LOGO[co]||I.spark)+'</span><b>'+co+'</b></span></span>';
     }).join('')+'</div>'; }},
  {key:'domain', span:'s2', emoji:'📊', label:'Drawn to',
   ready:()=>!!P.industry,
@@ -10707,6 +10744,15 @@ const VTILES=[
     +'</div>'},
 ];
 let VFOCUS=null, VREVEALED=false;
+/* the stickers arrive by gravity: drop in from above the panel, bounce, settle */
+function dropChips(el){
+  const dr=el.querySelectorAll('.vdw'); if(!dr.length) return;
+  dr.forEach((w9,i9)=>{
+    gsap.fromTo(w9,{y:-240-i9*60,opacity:0},
+      {y:0,opacity:1,duration:.95,delay:.15+i9*.13,ease:'bounce.out'});
+    setTimeout(()=>{ try{ sfx('tick'); }catch(e){} },430+i9*130);
+  });
+}
 function renderBoard(){
   if(!boardLive) return;
   const s2=$('scroll'); if(!s2) return;
@@ -10768,10 +10814,11 @@ function renderBoard(){
         },520);
       } else {
         body.innerHTML=html;
+        if(el.id==='vt_dreams') dropChips(body);
         if(had&&fresh.indexOf(el)<0){
           safeTL(gsap.timeline().fromTo(body,{opacity:.15,y:8,filter:'blur(6px)'},
             {opacity:1,y:0,filter:'blur(0px)',duration:.55,ease:'power2.out'}),900);
-          const bits9=body.querySelectorAll('.vpill,.vfw,.vpr,.vq');
+          const bits9=body.querySelectorAll('.vpill,.vinfo,.vfw,.vpr,.vq');
           if(bits9.length){ safeTL(gsap.timeline().fromTo(bits9,{opacity:0,y:9},
             {opacity:1,y:0,duration:.5,delay:.12,stagger:.07,ease:'power2.out'}),1400);
             /* tick per thing, so the ear hears the board fill */
@@ -10794,9 +10841,10 @@ function renderBoard(){
       {scale:1,opacity:1,y:0,duration:.7,delay:i2*.1,ease:'back.out(1.5)'});
     setTimeout(()=>{ try{ sfx('tick'); }catch(e){} },i2*100);
     if(typeof sheen==='function') setTimeout(()=>{ try{ sheen(el,.85); }catch(e){} },350+i2*100);
-    const bits=el.querySelectorAll('.vpill,.vfw,.vpr,.vq');
+    const bits=el.querySelectorAll('.vpill,.vinfo,.vfw,.vpr,.vq');
     if(bits.length) safeTL(gsap.timeline().fromTo(bits,{scale:.7,opacity:0},
       {scale:1,opacity:1,duration:.5,delay:.2+i2*.1,stagger:.09,ease:'back.out(1.8)'}),1600);
+    if(el.id==='vt_dreams') dropChips(el);
   });
   /* an untouched camera lands in the comfort framing — synchronously, because
      a throttled tab never grants the rAF this used to wait on */
