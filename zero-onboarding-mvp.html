@@ -1526,11 +1526,12 @@ body.dark .lit{ animation-name:litd; }
 /* the Figma frame's own neutrals: a #F1F1F1 page, #F8F8F8 tiles with no border
    and a whisper of shadow — the paper is plain, no dot grid behind this board */
 .paper.canvas{ background-color:#F1F1F1; background-image:none; }
-.vt{ position:relative; border:0; border-radius:26px;
+.vt{ position:relative; border:1px solid rgba(13,13,13,.06); border-radius:36px;
   corner-shape:squircle; background:#F8F8F8;
   padding:28px 30px 30px; min-height:96px; overflow:hidden;
   display:flex; flex-direction:column;
-  box-shadow:0 1px 2px rgba(0,0,0,.03), 0 14px 34px -20px rgba(0,0,0,.10);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.85),
+    0 1px 2px rgba(0,0,0,.03), 0 8px 18px rgba(0,0,0,.04), 0 22px 44px -18px rgba(0,0,0,.12);
   transition:box-shadow .45s var(--ease,ease), transform .45s var(--ease,ease); }
 /* the frame's rhythm: eyebrow at the top, the fact resting on the tile's floor */
 .vt .vtb{ flex:1; display:flex; flex-direction:column; justify-content:flex-end;
@@ -1566,7 +1567,8 @@ body.noico .vt .vsp{ display:none; }
 .vbig{ font-size:23px; line-height:1.16; letter-spacing:-.015em; font-weight:500;
   color:#141416; }
 /* the inset wash: a quiet panel INSIDE a tile, one step back toward the page */
-.vwash{ background:#F0F0F0; border-radius:18px; corner-shape:squircle; }
+.vwash{ background:#F0F0F0; border-radius:24px; corner-shape:squircle;
+  border:1px solid rgba(13,13,13,.04); }
 /* ── About you: the memoji, the name in serif, then a washed panel of facts ── */
 .vhero2{ display:flex; align-items:center; gap:20px; margin:2px 0 20px; }
 .vmojiw{ width:82px; height:82px; border-radius:50%; flex-shrink:0; overflow:hidden;
@@ -1579,7 +1581,9 @@ body.noico .vt .vsp{ display:none; }
   padding:18px; min-height:96px; }
 .vinfo{ display:inline-flex; align-items:center; gap:9px; height:42px; padding:0 18px;
   border-radius:999px; background:#fff; font-size:15px; font-weight:500; color:#141416;
-  letter-spacing:-.01em; box-shadow:0 1px 2px rgba(0,0,0,.05), 0 6px 16px rgba(0,0,0,.06); }
+  letter-spacing:-.01em; border:1px solid rgba(13,13,13,.05);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),
+    0 1px 2px rgba(0,0,0,.05), 0 6px 16px rgba(0,0,0,.07); }
 .vinfo .vem{ font-size:15px; }
 .vinfo .vpi{ width:19px; height:19px; color:#8A8A8F; }
 .vq.big{ font-size:21px; line-height:1.45; color:#2E2C28; }
@@ -1603,12 +1607,14 @@ body.noico .vt .vsp{ display:none; }
 .vflip svg{ width:100%; height:auto; display:block; }
 /* ── Dream companies: stickers tossed onto a washed panel ── */
 .vscat{ position:relative; flex:1; min-height:230px; overflow:hidden;
-  border-radius:18px; }
+  border-radius:24px; }
 /* the wrapper takes the fall; the chip keeps its resting tilt */
 .vdw{ position:absolute; will-change:transform; }
 .vdchip{ position:relative; display:inline-flex; align-items:center; gap:11px;
   padding:11px 20px 11px 13px; border-radius:999px; background:#fff;
-  box-shadow:0 2px 5px rgba(0,0,0,.05), 0 12px 26px rgba(0,0,0,.10);
+  border:1px solid rgba(13,13,13,.05);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),
+    0 2px 5px rgba(0,0,0,.05), 0 12px 26px rgba(0,0,0,.11);
   transform:rotate(var(--r,0deg)) scale(var(--s,1));
   transition:transform .35s cubic-bezier(.2,.8,.3,1); }
 .vdchip:hover{ transform:rotate(0deg) scale(calc(var(--s,1) * 1.06)); }
@@ -1621,8 +1627,9 @@ body.noico .vt .vsp{ display:none; }
 /* ── Location: two city photographs, tossed like polaroids, spilling past the
       tile's bottom edge ── */
 #vt_location .vtb{ position:relative; min-height:118px; }
-.vpolar{ position:absolute; width:54%; aspect-ratio:20/17; border-radius:16px;
-  overflow:hidden; box-shadow:0 3px 8px rgba(0,0,0,.14), 0 16px 34px rgba(0,0,0,.18);
+.vpolar{ position:absolute; width:54%; aspect-ratio:20/17; border-radius:20px;
+  corner-shape:squircle; overflow:hidden; border:4px solid #fff;
+  box-shadow:0 3px 8px rgba(0,0,0,.14), 0 16px 34px rgba(0,0,0,.20);
   transform:rotate(var(--r,0deg));
   transition:transform .4s cubic-bezier(.2,.8,.3,1); }
 .vpolar:hover{ transform:rotate(0deg) translateY(-4px); z-index:5; }
@@ -1636,8 +1643,13 @@ body.noico .vt .vsp{ display:none; }
 .vpolar.solo{ left:50%; margin-left:-27%; top:8px; --r:-3deg; }
 /* ── the same board after dark: every hardcoded neutral has a night value ── */
 body.dark .paper.canvas{ background-color:#0F0F11; }
-body.dark .vt{ background:#1B1B1E;
-  box-shadow:0 1px 2px rgba(0,0,0,.3), 0 14px 34px -20px rgba(0,0,0,.55); }
+body.dark .vt{ background:#1B1B1E; border-color:rgba(255,255,255,.07);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),
+    0 1px 2px rgba(0,0,0,.3), 0 22px 44px -18px rgba(0,0,0,.55); }
+body.dark .vwash{ border-color:rgba(255,255,255,.05); }
+body.dark .vinfo{ border-color:rgba(255,255,255,.07); }
+body.dark .vdchip{ border-color:rgba(255,255,255,.07); }
+body.dark .vpolar{ border-color:#2A2A2E; }
 body.dark .vt.ghost{ background:transparent; border-color:rgba(255,255,255,.12); }
 body.dark .vt .vtl{ color:#8B8880; }
 body.dark .vt .vsp{ color:#6E6B65; }
