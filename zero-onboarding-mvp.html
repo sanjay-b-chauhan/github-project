@@ -1531,17 +1531,18 @@ body.dark .lit{ animation-name:litd; }
 .paper.canvas{ background-color:#F1F1F1; background-image:none; }
 /* the frame's REAL geometry: the tile owns only 10px — inner panels run almost
    to its edge, and content carries its own 20px, so everything reads dense */
-.vt{ position:relative; border:1px solid rgba(13,13,13,.06); border-radius:28px;
+.vt{ position:relative; border:1px solid rgba(13,13,13,.06); border-radius:32px;
   corner-shape:squircle; background:#F8F8F8;
   padding:10px; min-height:96px; overflow:hidden;
   display:flex; flex-direction:column;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.85),
     0 1px 2px rgba(0,0,0,.03), 0 8px 18px rgba(0,0,0,.04), 0 22px 44px -18px rgba(0,0,0,.12);
   transition:box-shadow .45s var(--ease,ease), transform .45s var(--ease,ease); }
-.vt .vth{ margin:20px 20px 16px; }
-/* content sits 30px optical from the tile edge; washes cancel this and bleed */
+.vt .vth{ margin:18px 18px 14px; min-width:0; }
+.vt .vhc{ max-width:100%; overflow:hidden; }
+/* content sits 28px optical from the tile edge; washes cancel this and bleed */
 .vt .vtb{ flex:1; display:flex; flex-direction:column; justify-content:flex-end;
-  align-items:flex-start; padding:0 20px 20px; }
+  align-items:flex-start; padding:0 18px 18px; }
 #vt_hero .vtb{ justify-content:flex-start; align-items:stretch; padding:0; }
 #vt_dreams .vtb{ align-items:stretch; padding:0; }
 #vt_location .vtb{ align-items:stretch; padding:0 10px 10px; }
@@ -1560,7 +1561,7 @@ body.dark .lit{ animation-name:litd; }
 .vt .vsp{ font-size:11px; line-height:1; color:#A8A49C; }
 body.noico .vt .vsp{ display:none; }
 .vt .vtl{ font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
-  font-size:10.5px; font-weight:500; letter-spacing:.14em; text-transform:uppercase;
+  font-size:10.5px; font-weight:500; letter-spacing:.12em; text-transform:uppercase;
   white-space:nowrap; color:#98948C; }
 /* the big seats fill their height instead of leaving a hollow floor */
 #vt_dreams{ display:flex; flex-direction:column; }
@@ -1576,7 +1577,7 @@ body.noico .vt .vsp{ display:none; }
 .vwash{ background:#F0F0F0; border-radius:24px; corner-shape:squircle;
   border:1px solid rgba(13,13,13,.04); }
 /* ── About you: the memoji, the name in serif, then a washed panel of facts ── */
-.vhero2{ display:flex; align-items:center; gap:22px; margin:0 20px 18px; }
+.vhero2{ display:flex; align-items:center; gap:22px; margin:0 18px 16px; }
 .vmojiw{ width:94px; height:94px; border-radius:50%; flex-shrink:0; overflow:hidden;
   background:#DFEBDD; display:flex; align-items:flex-end; justify-content:center; }
 .vmojiw img{ width:86%; display:block; transform:translateY(6%); }
@@ -1597,7 +1598,7 @@ body.noico .vt .vsp{ display:none; }
    exactly as the frame sets it */
 .vq.big{ font-family:var(--f); font-style:italic; font-weight:500;
   font-size:19px; line-height:1.4; letter-spacing:-.01em; color:#2A2A2C; }
-.vt.note .vq.big{ font-size:16.5px; line-height:1.42; }
+.vt.note .vq.big{ font-size:16px; line-height:1.42; }
 /* ── Going after: the one metallic tile on the board — the prize ── */
 .vt.metal{ background:linear-gradient(118deg,#E9E9E9 0%,#CFCFCF 26%,#F1F1F1 46%,#C6C6C6 68%,#E2E2E2 100%); }
 .vt.metal::before{ content:''; position:absolute; inset:0; pointer-events:none;
@@ -9966,8 +9967,9 @@ function vzFit(anim){
   const cw=vz.offsetWidth, ch=vz.offsetHeight;
   const b=vzBase(host,vz);
   if(!cw||!ch||!b.hw||!b.hh) return;
-  /* the whole board in frame, floating: equal air on every side, never flush */
-  const k=Math.max(ZK.min,Math.min(1,Math.min((b.hw*0.88)/cw,(b.hh*0.88)/ch)));
+  /* the whole board in frame, floating well back: generous air on every side,
+     and never blown up to full size even on a huge screen */
+  const k=Math.max(ZK.min,Math.min(.88,Math.min((b.hw*0.82)/cw,(b.hh*0.82)/ch)));
   VZT.k=k;
   VZT.x=(b.hw-cw*k)/2-b.l;
   VZT.y=Math.max(20,(b.hh-ch*k)/2)-b.t;
