@@ -1642,7 +1642,7 @@ body.noico .vt .vsp{ display:none; }
 /* ── Location: two city photographs, tossed like polaroids, spilling past the
       tile's bottom edge ── */
 #vt_location .vtb{ position:relative; min-height:118px; }
-.vpolar{ position:absolute; width:54%; aspect-ratio:20/17; border-radius:20px;
+.vpolar{ position:absolute; width:54%; aspect-ratio:20/17; border-radius:32px;
   corner-shape:squircle; overflow:hidden; border:4px solid #fff;
   box-shadow:0 3px 8px rgba(0,0,0,.14), 0 16px 34px rgba(0,0,0,.20);
   transform:rotate(var(--r,0deg));
@@ -1657,7 +1657,10 @@ body.noico .vt .vsp{ display:none; }
 .vpolar.pnext{ right:2%; top:2px; --r:6deg; z-index:2; }
 .vpolar.solo{ left:50%; margin-left:-27%; top:8px; --r:-3deg; }
 /* ── the same board after dark: every hardcoded neutral has a night value ── */
-body.dark .paper.canvas{ background-color:#0F0F11; }
+/* one surface after dark: the canvas paints nothing of its own, so the board,
+   its header and its frame are a single continuous color */
+body.dark .paper.canvas{ background-color:transparent; }
+body.dark .vt.note.ghost{ background:transparent; }
 body.dark .vt{ background:#1B1B1E; border-color:rgba(255,255,255,.07);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.05),
     0 1px 2px rgba(0,0,0,.3), 0 22px 44px -18px rgba(0,0,0,.55); }
@@ -1674,8 +1677,13 @@ body.dark .vwash{ background:#242428; }
 body.dark .vinfo{ background:#2E2E33; color:#ECECEE;
   box-shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 16px rgba(0,0,0,.35); }
 body.dark .vinfo .vpi{ color:#A5A5AC; }
-body.dark .vdchip{ background:#2E2E33; }
+/* a dark pill is lit from above, hollow below — never a white glare */
+body.dark .vdchip{ background:#2A2A2F;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09), inset 0 -8px 14px rgba(0,0,0,.28),
+    0 2px 5px rgba(0,0,0,.45), 0 12px 26px rgba(0,0,0,.5); }
 body.dark .vdchip b{ color:#F2F2F3; }
+body.dark .vinfo{ box-shadow:inset 0 1px 0 rgba(255,255,255,.07),
+  inset 0 -6px 10px rgba(0,0,0,.22), 0 1px 2px rgba(0,0,0,.3), 0 6px 16px rgba(0,0,0,.35); }
 body.dark .vq.big{ color:#D8D6D0; }
 body.dark .vt.note{ background:#332E24; }
 body.dark .vt.note .vq{ color:#E6DCC8; }
@@ -10788,6 +10796,7 @@ function dropChips(el){
     return;
   }
   const W=panel.offsetWidth||400, H=panel.offsetHeight||230;
+  panel.dataset.h=H;   /* remember which floor this pile fell to */
   const {Engine,Bodies,Body,Composite}=Matter;
   const eng=Engine.create(); eng.gravity.y=1.35;
   const T=80;
@@ -10833,6 +10842,18 @@ function dropChips(el){
   };
   gsap.ticker.add(dreamTick);
   wraps.forEach((w9,i9)=>setTimeout(()=>{ try{ sfx('tick'); }catch(e){} },480+i9*120));
+}
+/* the city cards surface from below the tile's edge, one after the other,
+   and settle into their lean */
+function riseCities(el){
+  const cards=[...el.querySelectorAll('.vpolar')]; if(!cards.length) return;
+  cards.forEach((c9,i9)=>{
+    const deg=c9.classList.contains('pnext')?6:(c9.classList.contains('solo')?-3:-7);
+    gsap.fromTo(c9,{y:240,rotation:deg*2.2,opacity:0},
+      {y:0,rotation:deg,opacity:1,duration:.95,delay:.15+i9*.2,
+       ease:'power3.out',clearProps:'transform'});
+    setTimeout(()=>{ try{ sfx('tick'); }catch(e){} },420+i9*200);
+  });
 }
 function renderBoard(){
   if(!boardLive) return;
@@ -10930,6 +10951,13 @@ function renderBoard(){
   /* an untouched camera lands in the comfort framing — synchronously, because
      a throttled tab never grants the rAF this used to wait on */
   if(!VFOCUS && VZT.k===1 && !VZT.x && !VZT.y) vzComfort(false);
+  /* the panel grew under the pile? gravity applies again: the pills fall
+     to the NEW floor instead of hovering over fresh air */
+  const dp9=document.querySelector('#vt_dreams .vscat');
+  if(dp9 && dp9.querySelector('.vdw') && dp9.dataset.h
+     && Math.abs((+dp9.dataset.h)-dp9.offsetHeight)>8){
+    dropChips($('vt_dreams'));
+  }
   renderMeter();
 }
 function capTitle(){
