@@ -1529,19 +1529,22 @@ body.dark .lit{ animation-name:litd; }
 /* the Figma frame's own neutrals: a #F1F1F1 page, #F8F8F8 tiles with no border
    and a whisper of shadow — the paper is plain, no dot grid behind this board */
 .paper.canvas{ background-color:#F1F1F1; background-image:none; }
+/* the frame's REAL geometry: the tile owns only 10px — inner panels run almost
+   to its edge, and content carries its own 20px, so everything reads dense */
 .vt{ position:relative; border:1px solid rgba(13,13,13,.06); border-radius:28px;
   corner-shape:squircle; background:#F8F8F8;
-  padding:28px 30px 30px; min-height:96px; overflow:hidden;
+  padding:10px; min-height:96px; overflow:hidden;
   display:flex; flex-direction:column;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.85),
     0 1px 2px rgba(0,0,0,.03), 0 8px 18px rgba(0,0,0,.04), 0 22px 44px -18px rgba(0,0,0,.12);
   transition:box-shadow .45s var(--ease,ease), transform .45s var(--ease,ease); }
-/* the frame's rhythm: eyebrow at the top, the fact resting on the tile's floor */
+.vt .vth{ margin:20px 20px 16px; }
+/* content sits 30px optical from the tile edge; washes cancel this and bleed */
 .vt .vtb{ flex:1; display:flex; flex-direction:column; justify-content:flex-end;
-  align-items:flex-start; }
-#vt_hero .vtb{ justify-content:flex-start; align-items:stretch; }
-#vt_dreams .vtb{ align-items:stretch; }
-#vt_location .vtb{ align-items:stretch; }
+  align-items:flex-start; padding:0 20px 20px; }
+#vt_hero .vtb{ justify-content:flex-start; align-items:stretch; padding:0; }
+#vt_dreams .vtb{ align-items:stretch; padding:0; }
+#vt_location .vtb{ align-items:stretch; padding:0 10px 10px; }
 .vt.dim{ opacity:.35; transition:opacity .45s ease; }
 .vt:not(.ghost):hover{ transform:translateY(-2px);
   box-shadow:0 2px 4px rgba(0,0,0,.03), 0 24px 52px -22px rgba(0,0,0,.14); }
@@ -1551,7 +1554,7 @@ body.dark .lit{ animation-name:litd; }
 .vt.ghost .vte{ filter:grayscale(1); opacity:.55; }
 .vt.ghost .vtl{ color:var(--tx-4); }
 .vt.s2, .vt.s4, .vt.r2{ grid-column:auto; grid-row:auto; }
-.vt .vth{ display:flex; align-items:center; margin-bottom:14px; }
+.vt .vth{ display:flex; align-items:center; }
 /* the eyebrow, exactly as drawn: a four-point spark and mono caps, tracked wide */
 .vt .vhc{ display:inline-flex; align-items:center; gap:8px; }
 .vt .vsp{ font-size:11px; line-height:1; color:#A8A49C; }
@@ -1573,17 +1576,17 @@ body.noico .vt .vsp{ display:none; }
 .vwash{ background:#F0F0F0; border-radius:24px; corner-shape:squircle;
   border:1px solid rgba(13,13,13,.04); }
 /* ── About you: the memoji, the name in serif, then a washed panel of facts ── */
-.vhero2{ display:flex; align-items:center; gap:18px; margin:0 0 16px; }
-.vmojiw{ width:74px; height:74px; border-radius:50%; flex-shrink:0; overflow:hidden;
+.vhero2{ display:flex; align-items:center; gap:22px; margin:0 20px 18px; }
+.vmojiw{ width:94px; height:94px; border-radius:50%; flex-shrink:0; overflow:hidden;
   background:#DFEBDD; display:flex; align-items:flex-end; justify-content:center; }
 .vmojiw img{ width:86%; display:block; transform:translateY(6%); }
 .vmojiw.ph img{ width:100%; height:100%; object-fit:cover; transform:none; }
-.vname{ font-family:var(--serif); font-size:clamp(32px,3.5vw,48px); letter-spacing:-.01em;
+.vname{ font-family:var(--serif); font-size:clamp(38px,4vw,56px); letter-spacing:-.01em;
   color:#141416; line-height:1; }
-.vstack{ display:flex; flex-direction:column; align-items:flex-start; gap:8px;
-  padding:16px; }
-.vinfo{ display:inline-flex; align-items:center; gap:9px; height:42px; padding:0 18px;
-  border-radius:999px; background:#fff; font-size:15.5px; font-weight:500; color:#141416;
+.vstack{ display:flex; flex-direction:column; align-items:flex-start; gap:9px;
+  padding:20px; }
+.vinfo{ display:inline-flex; align-items:center; gap:10px; height:46px; padding:0 20px;
+  border-radius:999px; background:#fff; font-size:16.5px; font-weight:500; color:#141416;
   white-space:nowrap;
   letter-spacing:-.01em; border:1px solid rgba(13,13,13,.05);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.9),
