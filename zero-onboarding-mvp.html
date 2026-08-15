@@ -9827,21 +9827,32 @@ function vzClampPan(){
   VZT.y=Math.max(minY,Math.min(maxY,VZT.y));
 }
 /* fit: the whole board in frame, because we have a free camera to do it with */
+/* where the board's box sits before any translation — the host's own padding
+   skews naive centering, so we centre against this measured base */
+function vzBase(host,vz){
+  const hr=host.getBoundingClientRect(), vr=vz.getBoundingClientRect();
+  /* subtract the transform the element is showing RIGHT NOW (it may be mid-tween) */
+  const curX=Number(gsap.getProperty(vz,'x'))||0, curY=Number(gsap.getProperty(vz,'y'))||0;
+  return { l:(vr.left-hr.left)-curX, t:(vr.top-hr.top)-curY, hw:hr.width, hh:hr.height };
+}
 function vzFit(anim){
   const vz=$('vz'), host=$('scroll'); if(!vz||!host) return;
-  const cw=vz.offsetWidth, ch=vz.offsetHeight, hw=host.clientWidth, hh=host.clientHeight;
-  if(!cw||!ch||!hw||!hh) return;
-  const k=Math.max(ZK.min,Math.min(1,Math.min(hw/(cw+10),hh/(ch+18))));
-  VZT.k=k; VZT.x=(hw-cw*k)/2; VZT.y=Math.max(0,(hh-ch*k)/2);
+  const cw=vz.offsetWidth, ch=vz.offsetHeight;
+  const b=vzBase(host,vz);
+  if(!cw||!ch||!b.hw||!b.hh) return;
+  /* the whole board in frame, floating: equal air on every side, never flush */
+  const k=Math.max(ZK.min,Math.min(1,Math.min((b.hw*0.88)/cw,(b.hh*0.88)/ch)));
+  VZT.k=k;
+  VZT.x=(b.hw-cw*k)/2-b.l;
+  VZT.y=Math.max(20,(b.hh-ch*k)/2)-b.t;
   host.scrollTop=0;
   vzApply(anim!==false);
 }
+/* comfort: the board floats — air on every side, never pressed to the frame.
+   This is the default framing; every reset lands here. */
+function vzComfort(anim){ vzFit(anim); }
 /* home: the whole board, squared up */
-function vzHome(anim){
-  VZT.x=0; VZT.y=0; VZT.k=1;
-  const s=$('scroll'); if(s) s.scrollTop=0;
-  vzApply(anim!==false);
-}
+function vzHome(anim){ vzComfort(anim); }
 /* free hand: drag or two finger scroll to move, pinch or cmd scroll to zoom, double click to reset */
 let vzBound=false;
 function vzHand(host,vz){
@@ -10709,6 +10720,9 @@ function renderBoard(){
     if(bits.length) safeTL(gsap.timeline().fromTo(bits,{scale:.7,opacity:0},
       {scale:1,opacity:1,duration:.5,delay:.2+i2*.1,stagger:.09,ease:'back.out(1.8)'}),1600);
   });
+  /* an untouched camera lands in the comfort framing — synchronously, because
+     a throttled tab never grants the rAF this used to wait on */
+  if(!VFOCUS && VZT.k===1 && !VZT.x && !VZT.y) vzComfort(false);
   renderMeter();
 }
 function capTitle(){
@@ -10722,7 +10736,7 @@ function retireMeter(){ const el=document.querySelector('.capn'); if(el) el.text
 function vzCam(){
   const vz=$('vz'); if(!vz) return;
   document.querySelectorAll('.vt').forEach(c=>c.classList.remove('dim'));
-  VZT.x=0; VZT.y=0; VZT.k=1; vzApply(true);
+  vzComfort(true);
 }
 function mvpFocus(key){
   VFOCUS=key;
@@ -10770,7 +10784,7 @@ function mvpZoomOut(){
   VFOCUS=null; VREVEALED=true;
   const vz=$('vz'); if(!vz) return;
   document.querySelectorAll('.vt').forEach(c=>c.classList.remove('dim'));
-  VZT.x=0; VZT.y=0; VZT.k=1; vzApply(true);
+  vzComfort(true);
   sfx('sparkle');
 }
 /* ---- the stepper drives the MVP flow now ---- */
