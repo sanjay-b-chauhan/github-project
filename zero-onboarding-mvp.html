@@ -9955,7 +9955,7 @@ function vzApply(anim){
 }
 /* the camera has a floor and a ceiling: the board can never zoom out into a
    postage stamp or in past readable — one min, one max */
-const ZK={min:.8,max:1.25};
+const ZK={min:.6,max:1.25};
 /* the board never gets lost: panning stays inside soft bounds */
 function vzClampPan(){
   const vz=$('vz'), host=$('scroll'); if(!vz||!host) return;
@@ -9984,8 +9984,9 @@ function vzFit(anim){
   const b=vzBase(host,vz);
   if(!cw||!ch||!b.hw||!b.hh) return;
   /* the whole board in frame, floating well back: generous air on every side,
-     and never blown up to full size even on a huge screen */
-  const k=Math.max(ZK.min,Math.min(.88,Math.min((b.hw*0.82)/cw,(b.hh*0.82)/ch)));
+     and never blown up to full size even on a huge screen. The fit may sit
+     BELOW the interactive zoom floor — showing everything beats the clamp. */
+  const k=Math.max(.5,Math.min(.88,Math.min((b.hw*0.82)/cw,(b.hh*0.82)/ch)));
   VZT.k=k;
   VZT.x=(b.hw-cw*k)/2-b.l;
   VZT.y=Math.max(20,(b.hh-ch*k)/2)-b.t;
