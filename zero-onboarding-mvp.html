@@ -9956,6 +9956,9 @@ function vzApply(anim){
 /* the camera has a floor and a ceiling: the board can never zoom out into a
    postage stamp or in past readable — one min, one max */
 const ZK={min:.6,max:1.25};
+/* the last framing the CAMERA chose on its own — if the user hasn't moved
+   since, a growing board is allowed to re-frame itself */
+let AFIT=null;
 /* the board never gets lost: panning stays inside soft bounds */
 function vzClampPan(){
   const vz=$('vz'), host=$('scroll'); if(!vz||!host) return;
@@ -9990,8 +9993,13 @@ function vzFit(anim){
   VZT.k=k;
   VZT.x=(b.hw-cw*k)/2-b.l;
   VZT.y=Math.max(20,(b.hh-ch*k)/2)-b.t;
+  AFIT={k:VZT.k,x:VZT.x,y:VZT.y,cw:cw,ch:ch,hw:b.hw,hh:b.hh};
   host.scrollTop=0;
   vzApply(anim!==false);
+}
+/* true while the camera still sits where IT parked itself */
+function vzAuto(){
+  return AFIT&&Math.abs(VZT.k-AFIT.k)<.001&&Math.abs(VZT.x-AFIT.x)<1.5&&Math.abs(VZT.y-AFIT.y)<1.5;
 }
 /* comfort: the board floats — air on every side, never pressed to the frame.
    This is the default framing; every reset lands here. */
@@ -10874,6 +10882,14 @@ function renderBoard(){
     s2.appendChild(vz);
     s2.classList.add('vzcv');
     vzHand(s2,vz); vzMount();
+    /* the board grows as facts, photos and physics land — while the camera
+       still sits where IT last framed things, it re-frames to keep the whole
+       board in view. One finger from the user, and it stops interfering. */
+    if(window.ResizeObserver&&!vz._ro){
+      vz._ro=new ResizeObserver(()=>{ if($('vz')&&vzAuto()) vzFit(false); });
+      vz._ro.observe(vz);
+      vz._ro.observe(s2);   /* the panel resizing re-frames too */
+    }
   }
   const gr=$('vgrid');
   gr.classList.toggle('vg2', s2.clientWidth<760);
@@ -10957,6 +10973,14 @@ function renderBoard(){
   /* an untouched camera lands in the comfort framing — synchronously, because
      a throttled tab never grants the rAF this used to wait on */
   if(!VFOCUS && VZT.k===1 && !VZT.x && !VZT.y) vzComfort(false);
+  /* the board or panel changed size while the camera was parked where it
+     framed itself? re-frame now, synchronously — no observer to wait on */
+  else if(!VFOCUS && vzAuto()){
+    const vz9=$('vz'), host9=$('scroll');
+    if(vz9&&host9&&(Math.abs(vz9.offsetHeight-AFIT.ch)>10||Math.abs(vz9.offsetWidth-AFIT.cw)>10
+       ||Math.abs(host9.clientHeight-AFIT.hh)>10||Math.abs(host9.clientWidth-AFIT.hw)>10))
+      vzFit(false);
+  }
   /* the panel grew under the pile? gravity applies again: the pills fall
      to the NEW floor instead of hovering over fresh air */
   const dp9=document.querySelector('#vt_dreams .vscat');
