@@ -1820,6 +1820,33 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .vpr b{ font-weight:600; font-size:14px; letter-spacing:-.015em; flex:1; }
 .vpr .vnow{ font-size:var(--inds,12.5px); font-weight:500; color:var(--tx-3); }
 .vpr.on b{ color:var(--tx); }
+/* the waiting state: centred ring + one line, in either theme */
+.mvload{ position:absolute; inset:0; z-index:40; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:15px; pointer-events:none; }
+.mvload.fix{ position:fixed; }
+.mvlr{ width:34px; height:34px; border-radius:50%; flex-shrink:0;
+  background:conic-gradient(from 0deg, transparent 0 68%, #141416 100%);
+  -webkit-mask:radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
+  mask:radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
+  animation:mvspin .9s linear infinite; }
+@keyframes mvspin{ to{ transform:rotate(360deg); } }
+.mvlt{ font-size:13.5px; font-weight:500; color:var(--tx-3); letter-spacing:-.01em; }
+body.dark .mvlr{ background:conic-gradient(from 0deg, transparent 0 68%, #ECECEE 100%); }
+/* the projects still to come: two quiet placeholder briefs and the count */
+.rmghost{ display:flex; flex-direction:column; gap:9px; padding:2px 0; }
+.rmghost .rgc{ display:flex; gap:12px; align-items:center; height:54px; padding:0 18px;
+  border-radius:16px; corner-shape:squircle; border:1.5px dashed rgba(13,13,13,.13);
+  width:min(430px,100%); }
+.rmghost .rgc i{ height:10px; border-radius:5px; background:rgba(13,13,13,.08); display:block; }
+.rmghost .rgc i:first-child{ width:32%; }
+.rmghost .rgc i:last-child{ width:18%; }
+.rmghost .rgc.two{ opacity:.55; width:min(392px,92%); }
+.rgmore{ display:inline-flex; align-items:center; gap:7px; height:31px; padding:0 15px;
+  border-radius:999px; background:var(--card); border:1px solid var(--line);
+  font-size:12.5px; font-weight:600; color:var(--tx-2); width:fit-content; margin-top:2px;
+  box-shadow:0 1px 2px rgba(0,0,0,.05), 0 6px 14px rgba(0,0,0,.06); }
+body.dark .rmghost .rgc{ border-color:rgba(255,255,255,.14); }
+body.dark .rmghost .rgc i{ background:rgba(255,255,255,.10); }
 /* the place IS the card: the photograph is the row, and the name lives inside it */
 .vpile{ display:flex; flex-direction:column; gap:10px; }
 .vloc{ position:relative; border-radius:18px; corner-shape:squircle; overflow:hidden;
@@ -8873,9 +8900,18 @@ const CURRICULUM=[
  {co:'Salesforce', weeks:1, deliver:'a one page renewal brief and the walkthrough you give the room', team:true, prob:'A renewal is at risk. Read the account, brief the room.',
   mgr:['Tom Okafor','RevOps Director'], tools:['Salesforce','Slides'], skills:['Account analysis','Exec communication']},
  {co:'Shopify', weeks:2, deliver:'a retention analysis and the fix you propose to the team', team:true, her:true, prob:'Merchants are churning in month two. Find the leak, propose the fix.',
-  mgr:['Dana Roy','Retention Lead'], tools:['SQL','Tableau'], skills:['Retention analysis','Storytelling'],
-  unlock:['🔑','The job portal opens','the work speaks for you now','green']},
+  mgr:['Dana Roy','Retention Lead'], tools:['SQL','Tableau'], skills:['Retention analysis','Storytelling']},
+ {co:'Uber', weeks:2, deliver:'a pricing experiment read-out with a clear ship or kill call', prob:'Airport pricing changed last month. Did it work?',
+  mgr:['Leo Martins','Pricing Lead'], tools:['SQL','Looker'], skills:['Experiment read-outs','Decision memos']},
+ {co:'Airbnb', weeks:1, deliver:'a market entry brief for the one city you pick', prob:'Pick our next market. Defend it with numbers.',
+  mgr:['Sofia Alvarez','Market Lead'], tools:['Sheets','Tableau'], skills:['Market sizing','Prioritization']},
+ {co:'Amplitude', weeks:2, deliver:'a funnel teardown naming the one metric that matters', prob:'Sign-ups are fine, activation is not. Find the break.',
+  mgr:['Ken Watanabe','Product Analyst'], tools:['Amplitude','SQL'], skills:['Funnel analysis','Metric trees']},
 ];
+/* the road shows this many briefs in full; the rest wait as placeholders.
+   The portal is not a data row anymore — every road ends at it. */
+const RM_MAX=6;
+const RM_FINALE=['🔑','The job portal opens','the work speaks for you now','green'];
 function mvpScCard(c){
   const el=mk('div','mvsc');
   const top=mk('div','mtop');
@@ -9006,7 +9042,7 @@ async function mvpRoadmapRoad(){
     };
   });
   await wait(2100); if(myGen!==gen) return;
-  await voLine('Seven weeks, five real briefs, and it ends at that portfolio.',2700);
+  await voLine(totW+' weeks, '+CURRICULUM.length+' real briefs, and it ends at that portfolio.',2700);
   if(myGen!==gen) return;
   await paceGate(); if(myGen!==gen) return;
   qWide=true;
@@ -9075,15 +9111,18 @@ async function mvpRoadmapPanel(){
   },false,true);
   /* a throttled tab must not strand the panel invisible */
   gsap.delayedCall(.9,()=>{ const s9=$('scroll'); if(s9) gsap.set(s9,{opacity:1,y:0,filter:'blur(0px)'}); });
+  /* the backup loading state: the backend may still be writing this road */
+  const rmDone=mvpLoad($('scroll'),'Drawing your roadmap\u2026');
   await voLine("Here's your road to "+(P.role||'the role')+', '+P.name+'.',2400);
   if(myGen!==gen) return;
   await voLine('Calibrated to you, paced for '+low(P.timeline||'your timeline')+'.',2300);
   if(myGen!==gen) return;
   clearTurn(); await wait(240); if(myGen!==gen) return;
+  await rmDone(1500); if(myGen!==gen) return;
   const {box}=turn({q:'You do one, then you do it again, harder, on a real brief.'});
   const host=$('mvCur');
   let wkAt=1;
-  for(const c of CURRICULUM){
+  for(const c of CURRICULUM.slice(0,RM_MAX)){
     if(myGen!==gen) return;
     await paceGate(); if(myGen!==gen) return;
     const w0=wkAt, w1=wkAt+c.weeks-1; wkAt+=c.weeks;
@@ -9174,6 +9213,62 @@ async function mvpRoadmapPanel(){
       }
     }
   }
+  /* the projects beyond the first stretch: real, just not dealt yet */
+  const hidden=CURRICULUM.length-RM_MAX;
+  if(hidden>0){
+    if(myGen!==gen) return;
+    await wait(300); if(myGen!==gen) return;
+    const gr=mk('div','rmrow on done');
+    gr.innerHTML='<div class="rmrail"><span class="rmnode"></span>'
+      +'<i class="rmseg"><b></b></i>'
+      +'<span class="rmwk">Later</span></div>';
+    const gs=mk('div','rmslot'); gr.appendChild(gs);
+    const stack=mk('div','rmghost');
+    stack.innerHTML='<span class="rgc"><i></i><i></i></span>'
+      +'<span class="rgc two"><i></i><i></i></span>'
+      +'<span class="rgmore">+'+hidden+' more project'+(hidden>1?'s':'')+' on your road</span>';
+    gs.appendChild(stack);
+    host.appendChild(gr);
+    { const b0=gr.querySelector('.rmseg b'); if(b0) gsap.fromTo(b0,{scaleY:0},{scaleY:1,duration:.6,ease:'power2.inOut'}); }
+    enter([...stack.children],{y:14,blur:5,duration:.5},1200);
+    sfx('tick');
+    { const sc9=$('scroll'); if(sc9){
+        const rr=gr.getBoundingClientRect(), sr=sc9.getBoundingClientRect();
+        const want=sc9.scrollTop+((rr.top+rr.height/2)-sr.top)-(sr.height*.62);
+        gsap.to(sc9,{scrollTop:Math.max(0,want),duration:.8,ease:EIO,overwrite:'auto'}); } }
+    await wait(750); if(myGen!==gen) return;
+  }
+  /* and every road, however long, ends at the same door */
+  {
+    const un=RM_FINALE;
+    await wait(340); if(myGen!==gen) return;
+    const ur=mk('div','rmrow mile on');
+    ur.innerHTML='<div class="rmrail"><span class="rmnode spark">'+(I.spark||'')+'</span>'
+      +'<span class="rmwk">Unlock</span></div>';
+    const us=mk('div','rmslot'); ur.appendChild(us);
+    const u=mk('div','mvunlock big '+un[3]);
+    u.innerHTML='<span class="mub"><span class="mue">'+un[0]+'</span>'
+        +'<span class="mutx"><b>'+un[1]+'</b><span class="mus">'+un[2]+'</span></span></span>'
+      +'<span class="mustack">'+['Google','Stripe','Salesforce','Notion','Shopify','DoorDash']
+          .map(co9=>'<i>'+(LOGO[co9]||'')+'</i>').join('')+'<em>+40 more</em></span>';
+    us.appendChild(u);
+    host.appendChild(ur);
+    ur.classList.add('done');
+    const sc9=$('scroll');
+    if(sc9){
+      const ur9=ur.getBoundingClientRect(), sr9=sc9.getBoundingClientRect();
+      const target=sc9.scrollTop+(ur9.top-sr9.top)-(sr9.height*.42);
+      gsap.to(sc9,{scrollTop:Math.max(0,target),duration:1.1,ease:EIO});
+    }
+    gsap.set(u,{opacity:0});
+    gsap.delayedCall(1.15,()=>{ if(myGen!==gen) return;
+      gsap.fromTo(u,{scale:.55,opacity:0,y:18},{scale:1,opacity:1,y:0,duration:.75,ease:'back.out(2.2)'});
+      sfx('success');
+      gsap.delayedCall(.25,()=>{ try{ sfx('bloom'); }catch(e){} });
+      gsap.delayedCall(.2,()=>confettiBurst(u));
+    });
+    await wait(1900); if(myGen!==gen) return;
+  }
   await wait(450); if(myGen!==gen) return;
   const hostAll=$('mvCur'); if(hostAll) hostAll.querySelectorAll('.mvlit').forEach(x=>x.classList.remove('mvlit'));
   /* the road is finished: let the eye travel the whole thing back to level one */
@@ -9186,7 +9281,7 @@ async function mvpRoadmapPanel(){
   await wait(400); if(myGen!==gen) return;
   const q=document.querySelector('#turn .q');
   if(q){ await new Promise(res=>{ gsap.to(q,{opacity:0,y:-8,duration:.3,onComplete:()=>{
-      q.textContent='Seven weeks from level one to that portfolio. This is the road.';
+      q.textContent=totW+' weeks from level one to that portfolio. This is the road.';
       gsap.to(q,{opacity:1,y:0,duration:.45,ease:'power2.out',onComplete:res}); }}); }); }
   if(myGen!==gen) return;
   /* the button sits with the line, not a screen away from it */
@@ -9628,6 +9723,8 @@ async function mvpOutcome(){
   }
   gsap.to('.right',{width:0,opacity:0,duration:.7,ease:EIO});
   shiftLeft('0px'); setCap('',false);
+  /* the backup loading state: the portfolio may still be generating */
+  const pfDone=mvpLoad(null,'Building your portfolio\u2026',true);
   const stage=mk('div','pfstage'); stage.id='pfStage';
   stage.innerHTML='<div class="pfamb a"></div><div class="pfamb b"></div><div class="pfglowb" id="pfGlowB"></div>'
     +'<div class="pfhalo" id="pfHalo"></div><div class="pfground" id="pfGround"></div>'
@@ -9655,7 +9752,7 @@ async function mvpOutcome(){
     emojiBurst(fake,EMOPOOL[Math.floor(Math.random()*EMOPOOL.length)]);
   });
   gsap.set(w,{opacity:0,scale:.62,y:70,transformOrigin:'50% 26%'});
-  await wait(vz?900:150); if(myGen!==gen) return;
+  await pfDone(vz?1700:1300); if(myGen!==gen) return;
   /* the wave starts where the page will stand, not where the tiles came from */
   { const wr9=w.getBoundingClientRect();
     pfBloom(wr9.left+wr9.width/2, Math.min(innerHeight*.55, wr9.top+innerHeight*.28)); }
@@ -10796,6 +10893,21 @@ const VTILES=[
     +'</div>'},
 ];
 let VFOCUS=null, VREVEALED=false;
+/* a quiet loader for the beats where the backend may take its time:
+   a hairline ring and one line of copy, gone the moment the real thing lands */
+function mvpLoad(host,label,fixed){
+  const l=mk('div','mvload'+(fixed?' fix':''));
+  l.innerHTML='<span class="mvlr"></span><span class="mvlt">'+label+'</span>';
+  (host||document.body).appendChild(l);
+  gsap.fromTo(l,{opacity:0},{opacity:1,duration:.4,ease:'power2.out'});
+  const t0=Date.now();
+  return async function(min){
+    const left=(min||1200)-(Date.now()-t0);
+    if(left>0) await wait(left);
+    await new Promise(r=>gsap.to(l,{opacity:0,duration:.35,onComplete:r}));
+    l.remove();
+  };
+}
 /* the stickers arrive by REAL gravity: matter.js drops them from above the
    panel, they collide, tumble, and come to rest ON the floor */
 let dreamTick=null;
