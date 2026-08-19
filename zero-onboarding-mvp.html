@@ -1835,6 +1835,13 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
   animation:mvsheen 1.5s linear infinite; }
 @keyframes mvsheen{ from{ background-position:180% 0; } to{ background-position:-90% 0; } }
 .mvload .mvsh i{ font-size:14.5px; font-weight:500; color:var(--tx-3); letter-spacing:-.01em; }
+.mvdots{ display:inline-flex; gap:4px; align-items:center; justify-content:center; }
+.mvdots i{ width:5px; height:5px; border-radius:50%; background:currentColor; opacity:.35;
+  animation:mvdot 1s ease-in-out infinite; }
+.mvdots i:nth-child(2){ animation-delay:.15s; }
+.mvdots i:nth-child(3){ animation-delay:.3s; }
+@keyframes mvdot{ 0%,100%{ opacity:.3; transform:translateY(0); } 50%{ opacity:1; transform:translateY(-2px); } }
+.dsend.ld{ opacity:1; }
 .mvbeat{ position:fixed; left:50%; transform:translateX(-50%); bottom:140px; z-index:70;
   pointer-events:none; }
 .mvbeat .mvsh i{ font-size:15px; font-weight:500; color:var(--tx-3); letter-spacing:-.01em; }
@@ -3772,7 +3779,7 @@ function typeDock(onText,extra){
   const f=mk('div','dfield');
   const inp=document.createElement('input'); inp.placeholder='Type your answer'; inp.setAttribute('aria-label','Your answer');
   const send=mk('button','dsend',I.arrow); send.setAttribute('aria-label','Send');
-  const fire=()=>{ const v=inp.value.trim(); if(!v||locked)return; locked=true; sfx('droplet'); mvBeat(()=>onText(v)); };
+  const fire=()=>{ const v=inp.value.trim(); if(!v||locked)return; locked=true; sfx('droplet'); mvSendLd(send); mvBeat(()=>onText(v)); };
   inp.oninput=()=>send.classList.toggle('on',!!inp.value.trim());
   inp.onkeydown=e=>{ if(e.key==='Enter') fire(); };
   send.onclick=fire;
@@ -3837,7 +3844,7 @@ function linkDock(onText,placeholder){
   inp.type='text'; inp.placeholder=placeholder||'linkedin.com/in/yourname';
   inp.setAttribute('aria-label','Your link');
   const send=mk('button','dsend',I.arrow); send.setAttribute('aria-label','Submit');
-  const fire=()=>{ const v=inp.value.trim(); if(!v||locked) return; sfx('droplet'); mvBeat(()=>onText(v)); };
+  const fire=()=>{ const v=inp.value.trim(); if(!v||locked) return; sfx('droplet'); mvSendLd(send); mvBeat(()=>onText(v)); };
   inp.oninput=()=>send.classList.toggle('on',!!inp.value.trim());
   inp.onkeydown=e=>{ if(e.key==='Enter') fire(); };
   send.onclick=fire;
@@ -3852,7 +3859,7 @@ function emailDock(onText){
   const inp=document.createElement('input');
   inp.type='email'; inp.placeholder='you@email.com'; inp.setAttribute('aria-label','Your email');
   const send=mk('button','dsend',I.arrow); send.setAttribute('aria-label','Send');
-  const fire=()=>{ const v=inp.value.trim(); if(!v||locked) return; sfx('droplet'); mvBeat(()=>onText(v)); };
+  const fire=()=>{ const v=inp.value.trim(); if(!v||locked) return; sfx('droplet'); mvSendLd(send); mvBeat(()=>onText(v)); };
   inp.oninput=()=>send.classList.toggle('on',!!inp.value.trim());
   inp.onkeydown=e=>{ if(e.key==='Enter') fire(); };
   send.onclick=fire;
@@ -3884,8 +3891,8 @@ function startRecording(onText){
     stopMeter(); stopRec(); showTranscript('',''); };
   /* one way out, used by silence, by Send, and by nothing else. It must NOT set
      `locked` - every receiver guards on locked and would bail on its own signal. */
-  const finish=txt=>{ if(!live||sent) return; sent=true; stopAll(); sfx('release'); mvBeat(()=>onText(txt)); };
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const finish=txt=>{ if(!live||sent) return; sent=true; mvSendLd(send); stopAll(); sfx('release'); mvBeat(()=>onText(txt)); };
+  const SR=null; /* simulated mic only - the demo speaks its own script */
   if(SR){ try{
       myRec=new SR(); rec=myRec;
       myRec.lang='en-US'; myRec.interimResults=true; myRec.continuous=true;
@@ -3953,7 +3960,7 @@ function sayScripted(){
   const tick=setInterval(()=>{ time.textContent=Math.floor((Date.now()-t0)/60000)+':'+String(Math.floor((Date.now()-t0)/1000)%60).padStart(2,'0'); },500);
   const teardown=()=>{ live=false; sayCancel=null; wav.kill(); clearInterval(tick);
     clearTimeout(timer); showTranscript('',''); dockClear&&dockClear(); };
-  const finish=()=>{ if(!live) return; teardown(); sfx('release'); if(!locked) fn(text); };
+  const finish=()=>{ if(!live) return; live=false; mvSendLd(send); sfx('release'); wav.kill(); clearInterval(tick); clearTimeout(timer); gsap.delayedCall(.55,()=>{ sayCancel=null; showTranscript('',''); dockClear&&dockClear(); if(!locked) mvBeat(()=>fn(text)); }); };
   sayCancel=()=>{ if(!live) return; teardown(); if(!locked) fn(text); };
   const step=()=>{
     if(!live) return;
@@ -10960,6 +10967,12 @@ let VFOCUS=null, VREVEALED=false;
    a hairline ring and one line of copy, gone the moment the real thing lands */
 /* the human beat: after you send, the coach visibly takes a breath and reads
    what you said before answering — a line, not a spinner */
+/* the arrow becomes three breathing dots the moment you send */
+function mvSendLd(btn){
+  if(!btn||btn.classList.contains('ld')) return;
+  btn.classList.add('ld'); btn.style.pointerEvents='none';
+  btn.innerHTML='<span class="mvdots"><i></i><i></i><i></i></span>';
+}
 let _beatLast=-1;
 function mvBeat(cb){
   const POOL=['Mm, one sec.','Okay, hold on.','Reading that.','Got it. Thinking.','Okay. Let me look.'];
