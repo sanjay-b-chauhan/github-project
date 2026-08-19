@@ -1835,6 +1835,10 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
   animation:mvsheen 1.5s linear infinite; }
 @keyframes mvsheen{ from{ background-position:180% 0; } to{ background-position:-90% 0; } }
 .mvload .mvsh i{ font-size:14.5px; font-weight:500; color:var(--tx-3); letter-spacing:-.01em; }
+.mvring{ display:block; width:17px; height:17px; border-radius:50%;
+  border:2px solid currentColor; border-top-color:transparent; opacity:.9;
+  animation:mvspin .8s linear infinite; }
+@keyframes mvspin{ to{ transform:rotate(360deg); } }
 .mvdots{ display:inline-flex; gap:4px; align-items:center; justify-content:center; }
 .mvdots i{ width:5px; height:5px; border-radius:50%; background:currentColor; opacity:.35;
   animation:mvdot 1s ease-in-out infinite; }
@@ -10971,7 +10975,7 @@ let VFOCUS=null, VREVEALED=false;
 function mvSendLd(btn){
   if(!btn||btn.classList.contains('ld')) return;
   btn.classList.add('ld'); btn.style.pointerEvents='none';
-  btn.innerHTML='<span class="mvdots"><i></i><i></i><i></i></span>';
+  btn.innerHTML='<span class="mvring"></span>';
 }
 let _beatLast=-1;
 function mvBeat(cb){
@@ -10981,6 +10985,10 @@ function mvBeat(cb){
   const b=mk('div','mvbeat');
   b.innerHTML='<span class="mvsh"><i>'+POOL[i9]+'</i><em>'+POOL[i9]+'</em></span>';
   document.body.appendChild(b);
+  /* centre on the conversation, not the viewport: the dock knows where that is */
+  { const a9=$('dock')||$('turn');
+    if(a9){ const r9=a9.getBoundingClientRect();
+      if(r9.width) b.style.left=(r9.left+r9.width/2)+'px'; } }
   gsap.fromTo(b,{opacity:0,y:8},{opacity:1,y:0,duration:.32,ease:'power2.out'});
   gsap.delayedCall(.65+Math.random()*.5,()=>{
     gsap.to(b,{opacity:0,y:-6,duration:.28,onComplete:()=>b.remove()});
