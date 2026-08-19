@@ -1820,18 +1820,42 @@ body.nofade .paper.canvas{ -webkit-mask-image:none; mask-image:none; }
 .vpr b{ font-weight:600; font-size:14px; letter-spacing:-.015em; flex:1; }
 .vpr .vnow{ font-size:var(--inds,12.5px); font-weight:500; color:var(--tx-3); }
 .vpr.on b{ color:var(--tx); }
-/* the waiting state: centred ring + one line, in either theme */
+/* the waiting state is TEXT with a light sweeping through it — no icon.
+   The base text stays solid; a clipped clone carries the sheen (the
+   transparent-base clip-text + gsap filter combination is a known Chrome trap) */
 .mvload{ position:absolute; inset:0; z-index:40; display:flex; flex-direction:column;
-  align-items:center; justify-content:center; gap:15px; pointer-events:none; }
+  align-items:center; justify-content:center; pointer-events:none; }
 .mvload.fix{ position:fixed; }
-.mvlr{ width:34px; height:34px; border-radius:50%; flex-shrink:0;
-  background:conic-gradient(from 0deg, transparent 0 68%, #141416 100%);
-  -webkit-mask:radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
-  mask:radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
-  animation:mvspin .9s linear infinite; }
-@keyframes mvspin{ to{ transform:rotate(360deg); } }
-.mvlt{ font-size:13.5px; font-weight:500; color:var(--tx-3); letter-spacing:-.01em; }
-body.dark .mvlr{ background:conic-gradient(from 0deg, transparent 0 68%, #ECECEE 100%); }
+.mvsh{ position:relative; display:inline-block; white-space:nowrap; }
+.mvsh i{ font-style:normal; }
+.mvsh em{ position:absolute; inset:0; font-style:normal; color:transparent;
+  background:linear-gradient(100deg, rgba(0,0,0,0) 38%, var(--tx) 50%, rgba(0,0,0,0) 62%);
+  background-size:230% 100%; background-repeat:no-repeat;
+  -webkit-background-clip:text; background-clip:text;
+  animation:mvsheen 1.5s linear infinite; }
+@keyframes mvsheen{ from{ background-position:180% 0; } to{ background-position:-90% 0; } }
+.mvload .mvsh i{ font-size:14.5px; font-weight:500; color:var(--tx-3); letter-spacing:-.01em; }
+.mvbeat{ position:fixed; left:50%; transform:translateX(-50%); bottom:140px; z-index:70;
+  pointer-events:none; }
+.mvbeat .mvsh i{ font-size:15px; font-weight:500; color:var(--tx-3); letter-spacing:-.01em; }
+/* more projects, on request: the pill, then shimmering stand-ins, then the cards */
+.pf3more{ display:flex; align-items:center; justify-content:center; height:44px; margin:14px auto 2px;
+  padding:0 22px; border-radius:999px; background:#fff; border:1px solid rgba(13,13,13,.07);
+  cursor:pointer; font-family:var(--f);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 0 1px 2px rgba(0,0,0,.05), 0 8px 18px rgba(0,0,0,.07);
+  transition:transform .3s cubic-bezier(.2,.8,.3,1), box-shadow .3s ease; }
+.pf3more:hover{ transform:translateY(-1px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 0 2px 4px rgba(0,0,0,.05), 0 12px 24px rgba(0,0,0,.10); }
+.pf3more .mvsh i{ font-size:14px; font-weight:600; color:#141416; letter-spacing:-.01em; }
+.pf3more:not(.ld) .mvsh em{ display:none; }
+.pf3c.pf3skel{ pointer-events:none; }
+.pf3c.pf3skel .pf3art.skel{ background:linear-gradient(90deg,#F0F0F0 20%,#E7E7E5 50%,#F0F0F0 80%);
+  background-size:220% 100%; animation:vskm 1.15s linear infinite; min-height:150px; }
+.pf3c.pf3skel .skb{ display:block; height:12px; border-radius:6px; margin:10px 0;
+  background:linear-gradient(90deg,#EFEFED 20%,#E4E4E2 50%,#EFEFED 80%);
+  background-size:220% 100%; animation:vskm 1.15s linear infinite; }
+.pf3c.pf3skel .skb.w70{ width:70%; } .pf3c.pf3skel .skb.w95{ width:95%; }
+.pf3c.pf3skel .skb.w60{ width:60%; }
 /* the projects still to come: two quiet placeholder briefs and the count */
 .rmghost{ display:flex; flex-direction:column; gap:9px; padding:2px 0; }
 .rmghost .rgc{ display:flex; gap:12px; align-items:center; height:54px; padding:0 18px;
@@ -3748,7 +3772,7 @@ function typeDock(onText,extra){
   const f=mk('div','dfield');
   const inp=document.createElement('input'); inp.placeholder='Type your answer'; inp.setAttribute('aria-label','Your answer');
   const send=mk('button','dsend',I.arrow); send.setAttribute('aria-label','Send');
-  const fire=()=>{ const v=inp.value.trim(); if(!v||locked)return; locked=true; sfx('droplet'); onText(v); };
+  const fire=()=>{ const v=inp.value.trim(); if(!v||locked)return; locked=true; sfx('droplet'); mvBeat(()=>onText(v)); };
   inp.oninput=()=>send.classList.toggle('on',!!inp.value.trim());
   inp.onkeydown=e=>{ if(e.key==='Enter') fire(); };
   send.onclick=fire;
@@ -3813,7 +3837,7 @@ function linkDock(onText,placeholder){
   inp.type='text'; inp.placeholder=placeholder||'linkedin.com/in/yourname';
   inp.setAttribute('aria-label','Your link');
   const send=mk('button','dsend',I.arrow); send.setAttribute('aria-label','Submit');
-  const fire=()=>{ const v=inp.value.trim(); if(!v||locked) return; sfx('droplet'); onText(v); };
+  const fire=()=>{ const v=inp.value.trim(); if(!v||locked) return; sfx('droplet'); mvBeat(()=>onText(v)); };
   inp.oninput=()=>send.classList.toggle('on',!!inp.value.trim());
   inp.onkeydown=e=>{ if(e.key==='Enter') fire(); };
   send.onclick=fire;
@@ -3828,7 +3852,7 @@ function emailDock(onText){
   const inp=document.createElement('input');
   inp.type='email'; inp.placeholder='you@email.com'; inp.setAttribute('aria-label','Your email');
   const send=mk('button','dsend',I.arrow); send.setAttribute('aria-label','Send');
-  const fire=()=>{ const v=inp.value.trim(); if(!v||locked) return; sfx('droplet'); onText(v); };
+  const fire=()=>{ const v=inp.value.trim(); if(!v||locked) return; sfx('droplet'); mvBeat(()=>onText(v)); };
   inp.oninput=()=>send.classList.toggle('on',!!inp.value.trim());
   inp.onkeydown=e=>{ if(e.key==='Enter') fire(); };
   send.onclick=fire;
@@ -3860,7 +3884,7 @@ function startRecording(onText){
     stopMeter(); stopRec(); showTranscript('',''); };
   /* one way out, used by silence, by Send, and by nothing else. It must NOT set
      `locked` - every receiver guards on locked and would bail on its own signal. */
-  const finish=txt=>{ if(!live||sent) return; sent=true; stopAll(); sfx('release'); onText(txt); };
+  const finish=txt=>{ if(!live||sent) return; sent=true; stopAll(); sfx('release'); mvBeat(()=>onText(txt)); };
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(SR){ try{
       myRec=new SR(); rec=myRec;
@@ -9440,6 +9464,18 @@ const PF3=[
   tools:['SQL','Tableau'], skills:['Retention analysis','Storytelling'],
   mgr:'Dana Roy', mrole:'Retention Lead', file:'retention-story.pdf', dur:'4:21'},
 ];
+const PF3MORE=[
+ {co:'Uber', tint:'#111114', short:'Pricing Read-out',
+  title:'Airport pricing experiment read-out for Uber',
+  desc:'Read the experiment end to end, separated signal from seasonality, and closed with a clear ship call and its revenue math.',
+  tools:['SQL','Looker'], skills:['Experiment read-outs','Decision memos'],
+  mgr:'Leo Martins', mrole:'Pricing Lead', file:'pricing-readout.pdf', dur:'3:26'},
+ {co:'Airbnb', tint:'#FF5A5F', short:'Market Entry',
+  title:'Market entry brief and city pick for Airbnb',
+  desc:'Screened eight candidate markets, sized the three that cleared the bar, and defended the one city worth entering first.',
+  tools:['Sheets','Tableau'], skills:['Market sizing','Prioritization'],
+  mgr:'Sofia Alvarez', mrole:'Market Lead', file:'market-entry.pdf', dur:'3:05'},
+];
 function pf3Card(p,i){
   const c=mk('div','pf3c');
   c.style.setProperty('--pt',p.tint);
@@ -9499,6 +9535,33 @@ function buildPf3(host){
   const list=mk('div','pf3list');
   PF3.forEach((p,i)=>list.appendChild(pf3Card(p,i)));
   ps.appendChild(list);
+  /* the rest of the shelf: ask, watch it load, watch it land */
+  if(PF3MORE.length){
+    const mp=mk('button','pf3more'); mp.type='button';
+    const lbl='Show '+PF3MORE.length+' more projects';
+    mp.innerHTML='<span class="mvsh"><i>'+lbl+'</i><em>'+lbl+'</em></span>';
+    mp.onclick=e=>{ e.stopPropagation();
+      if(mp.dataset.busy) return; mp.dataset.busy='1'; sfx('tick');
+      mp.classList.add('ld');
+      mp.querySelector('i').textContent='Adding your projects\u2026';
+      mp.querySelector('em').textContent='Adding your projects\u2026';
+      const sks=PF3MORE.map(()=>{ const sk=mk('div','pf3c pf3skel');
+        sk.innerHTML='<div class="pf3art skel"></div><div class="pf3b">'
+          +'<span class="skb w70"></span><span class="skb w95"></span><span class="skb w60"></span></div>';
+        list.appendChild(sk); return sk; });
+      gsap.fromTo(sks,{opacity:0,y:16},{opacity:1,y:0,duration:.45,stagger:.1,ease:'power2.out'});
+      gsap.delayedCall(1.5,()=>{
+        sks.forEach(s9=>s9.remove());
+        const fresh=PF3MORE.map((p9,i9)=>{ const c9=pf3Card(p9,PF3.length+i9);
+          list.appendChild(c9); return c9; });
+        gsap.fromTo(fresh,{opacity:0,y:24,scale:.98},
+          {opacity:1,y:0,scale:1,duration:.6,stagger:.14,ease:'power3.out'});
+        sfx('sparkle');
+        gsap.to(mp,{opacity:0,duration:.3,onComplete:()=>mp.remove()});
+      });
+    };
+    ps.appendChild(mp);
+  }
   paper.appendChild(ps);
   const ex=mk('section','pf3sec'); ex.id='pf3-exp';
   ex.appendChild(mk('div','pf3h','Experience'));
@@ -10895,9 +10958,25 @@ const VTILES=[
 let VFOCUS=null, VREVEALED=false;
 /* a quiet loader for the beats where the backend may take its time:
    a hairline ring and one line of copy, gone the moment the real thing lands */
+/* the human beat: after you send, the coach visibly takes a breath and reads
+   what you said before answering — a line, not a spinner */
+let _beatLast=-1;
+function mvBeat(cb){
+  const POOL=['Mm, one sec.','Okay, hold on.','Reading that.','Got it. Thinking.','Okay. Let me look.'];
+  let i9; do{ i9=Math.floor(Math.random()*POOL.length); }while(i9===_beatLast);
+  _beatLast=i9;
+  const b=mk('div','mvbeat');
+  b.innerHTML='<span class="mvsh"><i>'+POOL[i9]+'</i><em>'+POOL[i9]+'</em></span>';
+  document.body.appendChild(b);
+  gsap.fromTo(b,{opacity:0,y:8},{opacity:1,y:0,duration:.32,ease:'power2.out'});
+  gsap.delayedCall(.65+Math.random()*.5,()=>{
+    gsap.to(b,{opacity:0,y:-6,duration:.28,onComplete:()=>b.remove()});
+    cb();
+  });
+}
 function mvpLoad(host,label,fixed){
   const l=mk('div','mvload'+(fixed?' fix':''));
-  l.innerHTML='<span class="mvlr"></span><span class="mvlt">'+label+'</span>';
+  l.innerHTML='<span class="mvsh"><i>'+label+'</i><em>'+label+'</em></span>';
   (host||document.body).appendChild(l);
   gsap.fromTo(l,{opacity:0},{opacity:1,duration:.4,ease:'power2.out'});
   const t0=Date.now();
