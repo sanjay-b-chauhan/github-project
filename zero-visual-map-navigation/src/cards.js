@@ -309,11 +309,15 @@
      card by changing four numbers, not forty. */
   var GEO = {
     current: {
-      w: 500, h: 694, pad: '26px 30px 30px', art: 254, name: 26, r: 40,
+      // The top pad and the card's height move together: `mid` is the flexing
+      // child, so its slack splits above AND below the art. Trimming the
+      // padding alone leaves the same air, just measured from a different
+      // edge — the height has to come down with it.
+      w: 500, h: 660, pad: '18px 30px 30px', art: 254, name: 26, r: 40,
       row: 34, gap: 22, band: 26, head: 20, cta: 18,
     },
     other: {
-      w: 430, h: 596, pad: '22px 26px 26px', art: 208, name: 21, r: 34,
+      w: 430, h: 566, pad: '15px 26px 26px', art: 208, name: 21, r: 34,
       row: 30, gap: 18, band: 22, head: 16, cta: 16,
     },
   };
