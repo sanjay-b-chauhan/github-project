@@ -221,12 +221,6 @@
       '@media (prefers-reduced-motion: reduce){.nx-sbtn-label{background:none;color:#121212;animation:none}.nx-sbtn::after{opacity:0;animation:none}}',
       /* The deck's own furniture. */
       '.nx-deck::-webkit-scrollbar{display:none}',
-      /* One live thing on the screen, on the one card that is live. A steady
-         ring rather than a flashing dot: it reads as "running", not "alert". */
-      '.nx-live-dot{width:8px;height:8px;border-radius:999px;background:#3fb968;position:relative}',
-      '.nx-live-dot::after{content:"";position:absolute;inset:-4px;border-radius:999px;' +
-        'box-shadow:0 0 0 1.5px rgba(63,185,104,0.5);animation:nx-live 2.2s ease-out infinite}',
-      '@keyframes nx-live{0%{transform:scale(.7);opacity:.9}70%,100%{transform:scale(1.25);opacity:0}}',
       /* THE STOPS. Size and fill carry the state, and nothing else has to:
          done is a small filled mark, upcoming is a smaller and fainter one —
          the hollow rings the first version used read as empty checkboxes, an
@@ -262,7 +256,6 @@
         ', 0 10px 24px -10px rgba(13,13,13,.30)}',
       '@media (prefers-reduced-motion: reduce){.nx-node-current::before,' +
         '.nx-node-current::after{animation:none;opacity:0}}',
-      '@media (prefers-reduced-motion: reduce){.nx-live-dot::after{animation:none}}',
     ].join('');
     document.head.appendChild(css);
   }
@@ -316,11 +309,11 @@
      card by changing four numbers, not forty. */
   var GEO = {
     current: {
-      w: 500, h: 776, pad: '24px 30px 30px', art: 254, name: 26, r: 40,
+      w: 500, h: 694, pad: '26px 30px 30px', art: 254, name: 26, r: 40,
       row: 34, gap: 22, band: 26, head: 20, cta: 18,
     },
     other: {
-      w: 430, h: 676, pad: '20px 26px 26px', art: 208, name: 21, r: 34,
+      w: 430, h: 596, pad: '22px 26px 26px', art: 208, name: 21, r: 34,
       row: 30, gap: 18, band: 22, head: 16, cta: 16,
     },
   };
@@ -343,36 +336,14 @@
       '0 2px 4px -2px rgba(13,13,13,0.06), 0 40px 80px -30px rgba(13,13,13,0.34)',
   };
 
-  var STATE_CHIP = {
-    completed: { label: 'Completed', bg: 'rgba(63,185,104,0.10)', ring: 'rgba(63,185,104,0.30)', fg: '#2c7d47' },
-    current: { label: 'In progress', bg: 'rgba(63,185,104,0.12)', ring: 'rgba(63,185,104,0.34)', fg: '#2c7d47' },
-    locked: { label: 'Upcoming', bg: 'rgba(13,13,13,0.035)', ring: 'rgba(13,13,13,0.075)', fg: C.tx2 },
-  };
-
-  function stateChip(status) {
-    var t = STATE_CHIP[status];
-    var c = styleEl(document.createElement('span'), {
-      display: 'inline-flex', alignItems: 'center', gap: '8px',
-      borderRadius: '999px', padding: '8px 15px 8px 12px', flexShrink: '0',
-      background: t.bg, boxShadow: 'inset 0 0 0 1px ' + t.ring,
-      backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)',
-    });
-    var mark =
-      status === 'current'
-        ? '<span class="nx-live-dot"></span>'
-        : status === 'completed'
-        ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="' + t.fg +
-          '" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-          '<path d="M20 6 9 17l-5-5"/></svg>'
-        : '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="' + C.tx3 +
-          '" stroke-width="2" stroke-linecap="round" aria-hidden="true">' +
-          '<rect x="4" y="10.5" width="16" height="10.5" rx="2.5"/><path d="M7.5 10.5V7a4.5 4.5 0 0 1 9 0v3.5"/></svg>';
-    c.innerHTML =
-      mark +
-      '<span style="font:500 13px/1 ' + SANS + ';letter-spacing:-0.01em;color:' + t.fg + '">' +
-      t.label + '</span>';
-    return c;
-  }
+  /* NO STATE CHIP. There was one at the head of every card — Completed, In
+     progress, Upcoming — and it was the fourth thing on the card saying the
+     same word: the footer says it, the size and the glass rank it, and the lit
+     bead on the rail underneath marks it. A label that repeats three signals
+     is not redundancy, it is 50px of the card's top edge spent on nothing.
+     The words survive here, for the screen reader, where they are the ONLY
+     signal. */
+  var STATE_LABEL = { completed: 'Completed', current: 'In progress', locked: 'Upcoming' };
 
   /* The cover for a scenario with no title art. Not a fallback — the first
      pass printed the CATEGORY here, which named the chapter on a card about
@@ -490,14 +461,7 @@
     card.className = 'nx-card';
     card.dataset.nxIdx = index;
     card.dataset.nxState = st;
-
-    /* HEAD — the state, on every card, in the same place. */
-    var head = styleEl(document.createElement('div'), {
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      width: '100%', flexShrink: '0', paddingBottom: g.head + 'px',
-    });
-    head.appendChild(stateChip(st));
-    card.appendChild(head);
+    card.setAttribute('aria-label', s.title + ', ' + STATE_LABEL[st]);
 
     /* MIDDLE — the art, given the room it was missing. The title art is the
        most valuable thing on the card and it was floating in the middle of a
@@ -910,7 +874,7 @@
 
       cell.setAttribute('role', 'button');
       cell.setAttribute('tabindex', '0');
-      cell.setAttribute('aria-label', item.s.title + ', ' + STATE_CHIP[item.status].label);
+      cell.setAttribute('aria-label', item.s.title + ', ' + STATE_LABEL[item.status]);
       cell.addEventListener('click', function () { scrollToIndex(i); });
       cell.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); scrollToIndex(i); }
