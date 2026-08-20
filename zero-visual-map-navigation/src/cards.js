@@ -373,6 +373,11 @@
     },
   };
 
+  /* Where a scenario's brand chip actually sits inside its title art, measured
+     off the picture. A card that draws its own chip starts it here so Zero's
+     lines up with Spotify's rather than floating above it. */
+  var CHIP_DROP = 23;
+
   /* Apple's card recipe, and the reason each layer is there: a bright inner
      top edge so the card catches light, ONE dark hairline so it has an actual
      boundary on a pale ground (a shadow alone leaves the edge mushy), and a
@@ -533,9 +538,16 @@
     card.dataset.nxKind = 'training';
     card.setAttribute('aria-label', 'Training, ' + item.category);
 
+    /* THE CHIP LINE. A scenario's brand chip is painted INSIDE its title art,
+       a little way down from the top of the picture, so a chip that starts at
+       the very top of the content box sits a touch above every one of them.
+       CHIP_DROP is that distance, measured off the art: it puts Zero's chip on
+       the same line as Spotify's. Then the title centres in whatever is left
+       between the chip and the rule, rather than hanging directly under it. */
     var mid = styleEl(document.createElement('div'), {
-      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '26px',
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
       flex: '1 1 auto', justifyContent: 'flex-start', minHeight: '0', width: '100%',
+      paddingTop: CHIP_DROP + 'px',
     });
 
     // Zero's mark, in the same chip a scenario wears its company's in
@@ -563,13 +575,22 @@
     mid.appendChild(chip);
 
     /* The name of the category, as the picture. */
+    /* `flex: 1 1 0%`, not `auto`. With an auto basis the well takes its
+       content's height and stops, so the title sat just under the chip with
+       the whole card empty below it — the destination card made that obvious.
+       A zero basis makes it claim everything between the chip and the bottom,
+       which is the space the title is meant to be centred in. */
+    var well = styleEl(document.createElement('div'), {
+      flex: '1 1 0%', minHeight: '0', width: '100%',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+    });
     var title = styleEl(document.createElement('h3'), {
       font: '400 40px/1.08 ' + SERIF, letterSpacing: '-0.02em',
       color: done ? C.tx : C.tx2, textAlign: 'center', margin: '0', padding: '0 4px',
-      flexShrink: '0',
     });
     title.textContent = item.category;
-    mid.appendChild(title);
+    well.appendChild(title);
+    mid.appendChild(well);
 
     card.appendChild(mid);
 
@@ -648,8 +669,9 @@
     card.setAttribute('aria-label', 'The job portal unlocks');
 
     var mid = styleEl(document.createElement('div'), {
-      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '26px',
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
       flex: '1 1 auto', justifyContent: 'flex-start', minHeight: '0', width: '100%',
+      paddingTop: CHIP_DROP + 'px',
     });
 
     var disc = styleEl(document.createElement('span'), {
@@ -665,12 +687,22 @@
     }
     mid.appendChild(disc);
 
+    /* `flex: 1 1 0%`, not `auto`. With an auto basis the well takes its
+       content's height and stops, so the title sat just under the chip with
+       the whole card empty below it — the destination card made that obvious.
+       A zero basis makes it claim everything between the chip and the bottom,
+       which is the space the title is meant to be centred in. */
+    var well = styleEl(document.createElement('div'), {
+      flex: '1 1 0%', minHeight: '0', width: '100%',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+    });
     var title = styleEl(document.createElement('h3'), {
       font: '400 40px/1.08 ' + SERIF, letterSpacing: '-0.02em',
-      color: C.tx2, textAlign: 'center', margin: '0', padding: '0 4px', flexShrink: '0',
+      color: C.tx2, textAlign: 'center', margin: '0', padding: '0 4px',
     });
     title.textContent = 'Job portal unlocks';
-    mid.appendChild(title);
+    well.appendChild(title);
+    mid.appendChild(well);
     card.appendChild(mid);
     return card;
   }
