@@ -786,6 +786,20 @@
     };
   }
 
+  /* The deck's own XP number colour, so an award in flight and an award
+     banked on a card are the same gold. */
+  var XP_INK = '#8a6d00';
+
+  /** Is this sitting on a coloured chip, or loose on the paper? */
+  function onTint(el) {
+    var p = el;
+    for (var i = 0; i < 6 && p; i++, p = p.parentElement) {
+      var b = rgba(getComputedStyle(p).backgroundColor);
+      if (b && b.a > 0.05) return b.spread >= 20;
+    }
+    return false;
+  }
+
   function paperize(node, selfOnly) {
     if (!node || node.nodeType !== 1) return;
     // An attribute change touches ONE node; re-walking its whole subtree on
@@ -795,7 +809,16 @@
       if (!el.style) return;
 
       // ── surfaces: a dark inline background becomes paper ───────────────
-      var bg = rgba(el.style.background || el.style.backgroundColor);
+      /* Remember what the app authored. The first pass can run before the
+         element has been laid out, so the panel-or-tile test below can get the
+         wrong answer — and once a panel had been painted with the tile's wash
+         it no longer looked dark, so no later pass ever reconsidered it. The
+         original value is kept so every settle pass re-decides from scratch. */
+      if (el.dataset && el.dataset.nxBg0 === undefined) {
+        var authored = el.style.background || el.style.backgroundColor || '';
+        if (rgba(authored)) el.dataset.nxBg0 = authored;
+      }
+      var bg = rgba((el.dataset && el.dataset.nxBg0) || el.style.background || el.style.backgroundColor);
       if (bg && bg.lum <= 96) {
         /* A PANEL becomes paper. A TILE INSIDE a panel must not — painting it
            the same white as the surface it sits on erases it, which is exactly
@@ -803,7 +826,10 @@
            panel became white tile on a white panel, i.e. nothing. Small dark
            surfaces become a wash instead, so they stay their own object. */
         var r = el.getBoundingClientRect();
-        var isPanel = r.width > 150 && r.height > 70;
+        // radius is the other tell: panels in this app are rounded 20 and up,
+        // tiles are 14 and under — and radius is known before layout is
+        var radius = parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0;
+        var isPanel = (r.width > 150 && r.height > 70) || radius >= 20;
         el.style.setProperty('background', isPanel ? C.card : 'rgba(13,13,13,0.04)', 'important');
         el.style.setProperty('backdrop-filter', 'none', 'important');
         el.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
@@ -836,6 +862,26 @@
 
       var fg = white(cs.color);
       if (fg) el.style.setProperty('color', ink(fg.a), 'important');
+
+      /* ── the awards, which are a HUE and still illegible ────────────────
+         "+500 XP" flies up when you earn, in the XP gold, over a dark map with
+         a dark drop shadow holding it up. On paper the gold has nothing to sit
+         against and the shadow does nothing at all — the number arrives
+         invisible. Neutral translation cannot help: gold is the point.
+
+         So warm type is judged on WHAT IS BEHIND IT rather than on its own
+         value. On a coloured chip — the streak's peach tile, the XP pill — the
+         gold is doing its job and is left alone. Floating on paper it takes
+         the same deep gold the deck's own XP pill uses, so the two read as one
+         currency, and the shadow that was propping it up is dropped. */
+      var warm = rgba(cs.color);
+      if (warm && warm.spread >= 40 && warm.lum > 172 && warm.r >= warm.b && !onTint(el)) {
+        el.style.setProperty('color', XP_INK, 'important');
+      }
+      if (cs.textShadow && cs.textShadow !== 'none') {
+        var ts = rgba(cs.textShadow);
+        if (ts && ts.lum < 110) el.style.setProperty('text-shadow', 'none', 'important');
+      }
 
       if (el.namespaceURI === 'http://www.w3.org/2000/svg') {
         /* ⚠️ A MASK IS NOT A COLOUR. Sanjay's credits mark is two overlapping
@@ -895,9 +941,27 @@
         var swapped = shadow.replace(/rgba?\([^)]+\)/g, function (stop) {
           var c = rgba(stop);
           if (!c || c.lum <= 195 || c.spread >= 30) return stop;
-          return 'rgba(13,13,13,' + Math.min(0.16, Math.max(0.07, c.a * 1.25)).toFixed(3) + ')';
+          /* Proportional, and UNDER 1x. Ink reads heavier than white at the
+             same alpha, so a 7% white hairline promoted to 8.6% ink turned the
+             credits panel's two rows into a hard square-cornered box inside a
+             26px-rounded panel. Same value, quieter ink. */
+          return 'rgba(13,13,13,' + Math.min(0.14, c.a * 0.8).toFixed(3) + ')';
         });
-        if (swapped !== shadow) el.style.setProperty('box-shadow', swapped, 'important');
+        /* A HAIRLINE RING ON A SQUARE CORNER IS NOT AN OUTLINE, IT IS A ROW.
+           The credits panel's Effort and Usage rows each carry a full 1px ring
+           that is invisible at 10% white on dark glass. Translated faithfully
+           it becomes two stacked square-cornered rectangles inside a 26px
+           panel — the box Sanjay circled. On paper the thing that ring was
+           doing is SEPARATING, so it becomes the rule that separates: a bottom
+           hairline, and the enclosure goes. Narrow on purpose — a ring on a
+           rounded element is a real outline and is left alone. */
+        var ring = /^rgba?\([^)]+\)\s+0px\s+0px\s+0px\s+1(?:\.\d+)?px(\s+inset)?$/.test(swapped.trim());
+        var radius0 = parseFloat(getComputedStyle(el).borderTopLeftRadius) === 0;
+        if (ring && radius0 && el.getBoundingClientRect().width > 120) {
+          el.style.setProperty('box-shadow', 'inset 0 -1px 0 rgba(13,13,13,0.07)', 'important');
+        } else if (swapped !== shadow) {
+          el.style.setProperty('box-shadow', swapped, 'important');
+        }
       }
 
       /* Translucent-white SURFACES — the XP track, the ladder's rails, the
@@ -1029,59 +1093,30 @@
     var YOU = 'Sanjay';
 
     var hero = styleEl(document.createElement('div'), {
-      flex: '0 0 auto', padding: '104px 64px 0', display: 'flex',
-      flexDirection: 'column', alignItems: 'flex-start', gap: '14px',
+      // clears the Variants panel, which is centred at the top of every
+      // screen in this prototype — a centred title at 112 sat straight behind it
+      flex: '0 0 auto', padding: '178px 64px 26px', display: 'flex',
+      flexDirection: 'column', alignItems: 'center',
     });
 
+    /* ONE LINE. The first version added a "next up" sentence and a progress
+       bar under the greeting, and both were already on the screen: the deck
+       opens on the scenario you are next, and the timeline under it counts the
+       journey. Saying it three times did not make it clearer, it made the top
+       of the screen busy. What is left is the only thing the deck cannot say
+       for itself — that somebody is being spoken to. */
     var hello = styleEl(document.createElement('h1'), {
-      font: '400 46px/1.05 ' + SERIF, letterSpacing: '-0.02em', color: C.tx, margin: '0',
+      font: '400 46px/1.05 ' + SERIF, letterSpacing: '-0.02em', color: C.tx,
+      margin: '0', textAlign: 'center',
     });
     hello.textContent = 'Welcome back, ' + YOU;
     hero.appendChild(hello);
 
-    var current = items[currentIdx] && items[currentIdx].s;
-    var nextLine = styleEl(document.createElement('p'), {
-      font: '400 17px/1.5 ' + SANS, color: C.tx2, margin: '0', maxWidth: '640px',
-    });
-    nextLine.textContent = current
-      ? 'Next up is ' + current.title.charAt(0).toLowerCase() + current.title.slice(1) +
-        (current.company ? ', at ' + current.company.name + '.' : '.')
-      : 'Pick up where you left off.';
-    hero.appendChild(nextLine);
-
-    /* The count, said as a fraction and drawn as one. The bar is the same
-       green as the timeline under the deck, because they are measuring the
-       same thing and should not look like two different scores. */
-    var prog = styleEl(document.createElement('div'), {
-      display: 'flex', alignItems: 'center', gap: '14px', marginTop: '6px',
-    });
-    var bar = styleEl(document.createElement('div'), {
-      width: '260px', height: '6px', borderRadius: '999px',
-      background: 'rgba(13,13,13,0.09)', overflow: 'hidden',
-    });
-    var barFill = styleEl(document.createElement('div'), {
-      width: Math.round((doneN / Math.max(1, totalJourney)) * 100) + '%',
-      height: '100%', borderRadius: '999px', background: 'rgba(63,185,104,0.85)',
-    });
-    bar.appendChild(barFill);
-    prog.appendChild(bar);
-    var count = styleEl(document.createElement('span'), {
-      font: '400 13px/1 ' + MONO, letterSpacing: '0.06em', color: C.tx2, whiteSpace: 'nowrap',
-    });
-    count.textContent = doneN + ' of ' + totalJourney + ' done';
-    prog.appendChild(count);
-    var journey = styleEl(document.createElement('span'), {
-      font: '400 13px/1 ' + MONO, letterSpacing: '0.06em', color: C.tx3, whiteSpace: 'nowrap',
-    });
-    journey.textContent = '· ' + (window.__NX_ROADMAP.journeyTitle || 'Your journey');
-    prog.appendChild(journey);
-    hero.appendChild(prog);
-
     /* ⚠️ NAMES ARE SHARED HERE. This whole home is one function scope, and
-       `line`, `track`, `fill` and `head` were all already taken by the deck
-       and the timeline below. The first version of this header quietly
-       reassigned the timeline's `line()` helper and took the screen down with
-       it. Check before you name. */
+       `line`, `track`, `fill` and `head` are all taken by the deck and the
+       timeline below. An earlier version of this header quietly reassigned the
+       timeline's `line()` helper and took the screen down with it. Check
+       before you name. */
     layer.appendChild(hero);
 
     /* ── the deck rides a timeline ────────────────────────────────────────
