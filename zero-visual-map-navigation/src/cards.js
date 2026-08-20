@@ -609,20 +609,59 @@
   /* Re-skin the chrome for a light ground. Everything Zero draws here is built
      for a dark map; on white it either vanishes or reads as a hole. Scoped to
      the cards home so the City home is untouched. */
+  /* ── the chrome, re-skinned for paper ────────────────────────────────────
+     Everything Zero draws up here is built for a dark map: white type, white
+     hairlines, dark glass surfaces. On white it either vanishes or reads as a
+     hole. This translates it — and the translation is by RULE, not by element,
+     because the element-by-element version is what let the credits panel ship
+     as white-on-white for a week while two neighbouring pills were fine.
+
+     Two mechanisms, because the app uses two:
+
+     1. CLASSES. Tailwind's `text-white/NN` carries a hierarchy — full, 60-70%,
+        30-50% — and a blanket `color:ink` flattens all of it. Each tier is
+        mapped to its ink equivalent so the hierarchy survives the flip. The
+        orange and gold accents use their own colour classes, never text-white,
+        so they are untouched by design.
+
+     2. INLINE. The glass surfaces come from glassPanel.ts as INLINE styles,
+        which no class rule can reach. Those are repainted in JS below, on the
+        HUD and on anything the HUD mounts later.
+
+     Scope is every HUD root, not a hand-picked pair of pills. A panel that
+     opens tomorrow inside any of them is covered on the day it lands. */
+  var HUD = [
+    'div[class*="z-[90]"]',              // the app bar and its credits panel
+    '[aria-label^="Level "]',            // the XP pill and its level ladder
+    '[aria-label*="day streak"]',        // the streak pill and its calendar
+    'button[aria-label="Settings"]',
+    '#nx-portfolio-dock',
+  ];
+
+  /** `scope descendant, scope descendant, …` for every HUD root. */
+  function inHud(descendant) {
+    return HUD.map(function (root) {
+      return 'html[data-nx-home="cards"] ' + root + ' ' + descendant;
+    }).join(',');
+  }
+
   function lightChrome() {
     var css = document.createElement('style');
     css.id = 'nx-cards-chrome';
     css.textContent = [
       'html[data-nx-home="cards"] body{background:' + C.page + ' !important}',
-      // the wordmark and the HUD pills are white-on-dark by design
       'html[data-nx-home="cards"] nav[aria-label$="timeline"]{display:none !important}',
+      /* The app's own scenario card and the leader line that ties it to a
+         building. hideTheWorld() prunes most of the world, but these two sit
+         on the chrome's side of the tree — they have to be named. Dropping
+         these two lines in a refactor put the dark card straight back over the
+         deck, which is how they earned this comment. */
+      'html[data-nx-home="cards"] div[class*="right-[90px]"][class*="inset-y-0"]{display:none !important}',
+      'html[data-nx-home="cards"] svg[class*="z-[29]"]{display:none !important}',
       // the wordmark is a white SVG data-URI — invert it for paper
       'html[data-nx-home="cards"] img[alt="Zero"]{filter:invert(1) !important;opacity:.92}',
-      // The app's own dark scenario card is the CITY home's subject; on the
-      // deck every scenario already has a card, so it is a duplicate. Its real
-      // wrapper is the right-hand column, not the inner card.
-      'html[data-nx-home="cards"] div[class*="right-[90px]"][class*="inset-y-0"]{display:none !important}',
-      // glass pills → paper cards
+
+      // ── the pills themselves: glass -> paper ───────────────────────────
       'html[data-nx-home="cards"] button[aria-label="Settings"],' +
         'html[data-nx-home="cards"] #nx-portfolio-dock button,' +
         'html[data-nx-home="cards"] [aria-label^="Level "],' +
@@ -632,71 +671,110 @@
         'backdrop-filter:none !important;-webkit-backdrop-filter:none !important}',
       'html[data-nx-home="cards"] button[aria-label="Settings"] svg path,' +
         'html[data-nx-home="cards"] #nx-portfolio-dock button svg path{fill:' + C.tx + ' !important}',
-      // the glass lives on an INNER div of these pills, not the labelled
-      // wrapper — reach one level in, kill the dark fill and the blur
-      'html[data-nx-home="cards"] [aria-label^="Level "] [class*="bg-[rgba(0,0,0"],' +
-        'html[data-nx-home="cards"] [aria-label*="day streak"] [class*="bg-[rgba(0,0,0"]{' +
-        'background:transparent !important;backdrop-filter:none !important;' +
+      // the glass on the pills lives on an INNER div, not the labelled wrapper
+      inHud('[class*="bg-[rgba(0,0,0"]') +
+        '{background:transparent !important;backdrop-filter:none !important;' +
         '-webkit-backdrop-filter:none !important;border-color:' + C.line + ' !important}',
-      /* The popovers were designed against dark glass with a THREE-step text
-         hierarchy (white / white-60 / white-45) and translucent-white
-         sub-surfaces. A blanket color:ink flattened all of it — inversion,
-         not design. Map each tier to its ink equivalent so the hierarchy
-         survives the flip; the orange streak accents already read on white
-         and stay untouched. */
-      'html[data-nx-home="cards"] [aria-label^="Level "] [class*="text-white"],' +
-        'html[data-nx-home="cards"] [aria-label*="day streak"] [class*="text-white"]' +
-        '{color:' + C.tx + ' !important}',
-      'html[data-nx-home="cards"] [aria-label^="Level "] [class*="text-white/7"],' +
-        'html[data-nx-home="cards"] [aria-label^="Level "] [class*="text-white/6"],' +
-        'html[data-nx-home="cards"] [aria-label*="day streak"] [class*="text-white/7"],' +
-        'html[data-nx-home="cards"] [aria-label*="day streak"] [class*="text-white/6"]' +
+
+      // ── type, tier by tier ─────────────────────────────────────────────
+      inHud('[class*="text-white"]') + '{color:' + C.tx + ' !important}',
+      inHud('[class*="text-white/7"]') + ',' + inHud('[class*="text-white/6"]') +
         '{color:' + C.tx2 + ' !important}',
-      'html[data-nx-home="cards"] [aria-label^="Level "] [class*="text-white/5"],' +
-        'html[data-nx-home="cards"] [aria-label^="Level "] [class*="text-white/4"],' +
-        'html[data-nx-home="cards"] [aria-label^="Level "] [class*="text-white/3"],' +
-        'html[data-nx-home="cards"] [aria-label*="day streak"] [class*="text-white/5"],' +
-        'html[data-nx-home="cards"] [aria-label*="day streak"] [class*="text-white/4"],' +
-        'html[data-nx-home="cards"] [aria-label*="day streak"] [class*="text-white/3"]' +
-        '{color:' + C.tx3 + ' !important}',
-      // translucent-white sub-surfaces (day cells, milestone chips) vanish on
-      // white — wash + hairline instead
-      'html[data-nx-home="cards"] [aria-label^="Level "] [class*="bg-white/"],' +
-        'html[data-nx-home="cards"] [aria-label*="day streak"] [class*="bg-white/"],' +
-        'html[data-nx-home="cards"] [aria-label^="Level "] [class*="bg-[rgba(255,255,255"],' +
-        'html[data-nx-home="cards"] [aria-label*="day streak"] [class*="bg-[rgba(255,255,255"]' +
+      inHud('[class*="text-white/5"]') + ',' + inHud('[class*="text-white/4"]') + ',' +
+        inHud('[class*="text-white/3"]') + '{color:' + C.tx3 + ' !important}',
+
+      // ── translucent-white sub-surfaces vanish on white ─────────────────
+      inHud('[class*="bg-white/"]') + ',' + inHud('[class*="bg-[rgba(255,255,255"]') +
         '{background:' + C.wash + ' !important;border-color:' + C.line + ' !important}',
-      /* The panel SURFACE carries its dark glass as an INLINE style
-         (glassPanel.ts), which class-mapped rules never reach — so the panel
-         was opening as a ghost: transparent surface, faint text. The popover
-         hangs off a `top-full` positioning wrapper inside each pill; its first
-         child is the surface. Paper, hairline, a real drop. */
-      'html[data-nx-home="cards"] [aria-label^="Level "] [class*="top-full"] > div,' +
-        'html[data-nx-home="cards"] [aria-label*="day streak"] [class*="top-full"] > div' +
-        '{background:' + C.card + ' !important;' +
-        'border:1px solid ' + C.line + ' !important;' +
+
+      // ── popover surfaces and their caret ───────────────────────────────
+      inHud('[class*="top-full"] > div') +
+        '{background:' + C.card + ' !important;border:1px solid ' + C.line + ' !important;' +
         'box-shadow:0 24px 60px -24px rgba(13,13,13,0.28) !important;' +
         'backdrop-filter:none !important;-webkit-backdrop-filter:none !important}',
-      // the caret diamond joins the panel surface
-      'html[data-nx-home="cards"] [aria-label^="Level "] [class*="rotate-45"],' +
-        'html[data-nx-home="cards"] [aria-label*="day streak"] [class*="rotate-45"]' +
+      inHud('[class*="rotate-45"]') +
         '{background:' + C.card + ' !important;border:1px solid ' + C.line + ' !important}',
-      // the portfolio ring's empty track needs to be visible on paper
-      'html[data-nx-home="cards"] #nx-portfolio-dock circle[stroke="rgba(255,255,255,0.16)"]{' +
-        'stroke:rgba(13,13,13,.14) !important}',
-      // the fake macOS title bar: the dark fill is a CHILD of the transparent
-      // z-[90] wrapper — on paper it becomes a whisper of shell, not a slab
-      'html[data-nx-home="cards"] div[class*="z-[90]"] > div' +
-        '{background:rgba(13,13,13,0.04) !important}',
+
+      // ── the app bar's own shell ────────────────────────────────────────
+      'html[data-nx-home="cards"] div[class*="z-[90]"] > div{background:rgba(13,13,13,0.04) !important}',
       'html[data-nx-home="cards"] div[class*="z-[90]"] button' +
         '{background:' + C.card + ' !important;box-shadow:0 0 0 1px ' + C.line + ' !important}',
       'html[data-nx-home="cards"] div[class*="z-[90]"] button *{color:' + C.tx + ' !important}',
-      // the map pin-to-card leader line belongs to the city, not the deck
-      'html[data-nx-home="cards"] svg[class*="z-[29]"]{display:none !important}',
+
+      // the portfolio ring's empty track has to be visible on paper
+      'html[data-nx-home="cards"] #nx-portfolio-dock circle[stroke="rgba(255,255,255,0.16)"]{' +
+        'stroke:rgba(13,13,13,.14) !important}',
       // the debug panel keeps its dark treatment — it is not part of the design
     ].join('\n');
     document.head.appendChild(css);
     document.documentElement.dataset.nxHome = 'cards';
+    paperizeHud();
+  }
+
+  /* ── the surfaces CSS cannot reach ───────────────────────────────────────
+     `glassPanel.ts` writes its dark glass as an inline style, so no class rule
+     touches it and the panel opens as a ghost: transparent surface, ink text
+     on the page behind it. Repaint anything whose own inline background is
+     DARK — measured, not guessed by selector, so a panel that has not been
+     written yet is covered the moment it mounts.
+
+     Only the background and the blur are taken. Shape, padding and the
+     accents are the app's to keep. */
+  function rgba(str) {
+    var m = /rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+))?/.exec(str || '');
+    if (!m) return null;
+    var r = +m[1], g = +m[2], b = +m[3];
+    return {
+      r: r, g: g, b: b,
+      a: m[4] === undefined ? 1 : +m[4],
+      lum: 0.299 * r + 0.587 * g + 0.114 * b,
+      spread: Math.max(r, g, b) - Math.min(r, g, b), // 0 = neutral, high = a hue
+    };
+  }
+
+  function paperize(node) {
+    if (!node || node.nodeType !== 1) return;
+    var all = [node].concat(Array.prototype.slice.call(node.querySelectorAll('*')));
+    all.forEach(function (el) {
+      if (!el.style) return;
+
+      // ── surfaces: a dark inline background becomes paper ───────────────
+      var bg = rgba(el.style.background || el.style.backgroundColor);
+      if (bg && bg.lum <= 96) {
+        el.style.setProperty('background', C.card, 'important');
+        el.style.setProperty('backdrop-filter', 'none', 'important');
+        el.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
+        var r = el.getBoundingClientRect();
+        if (r.width > 150 && r.height > 70) {
+          el.style.setProperty('border-color', C.line, 'important');
+          el.style.setProperty('box-shadow', '0 24px 60px -24px rgba(13,13,13,0.28)', 'important');
+        }
+      }
+
+      /* ── type: near-white inline colour becomes its ink equivalent ──────
+         The alpha IS the hierarchy — the app writes white at 1 / .6 / .5 to
+         mean primary, secondary, tertiary — so it maps to the three inks
+         rather than flattening to one. NEUTRAL only: `spread` keeps the warm
+         streak orange and the XP gold out of this, since those are colours
+         that already read on paper and are the accent the panel is built on. */
+      var fg = rgba(el.style.color);
+      if (fg && fg.lum > 200 && fg.spread < 30) {
+        el.style.setProperty('color', fg.a >= 0.85 ? C.tx : fg.a >= 0.55 ? C.tx2 : C.tx3, 'important');
+      }
+    });
+  }
+
+  function paperizeHud() {
+    HUD.forEach(function (sel) {
+      var root = document.querySelector(sel);
+      if (!root) return;
+      paperize(root);
+      new MutationObserver(function (recs) {
+        recs.forEach(function (rec) {
+          Array.prototype.forEach.call(rec.addedNodes, paperize);
+        });
+      }).observe(root, { childList: true, subtree: true });
+    });
   }
 
   function initCardsHome(nav, rail) {
