@@ -360,15 +360,25 @@
       position: 'relative', display: 'grid', placeItems: 'center',
       height: box + 'px', width: '100%',
     });
+    /* A LOCKUP, NOT A LOOSE ICON. A scenario with title art wears a brand chip
+       at the top of the art and its name inside the picture; one without art
+       was showing a bare logo floating in the middle of a card, which reads as
+       an asset that failed to load rather than a design. So the cover borrows
+       the art's own anatomy: the mark large and soft behind, the same brand
+       chip in front of it. Now both kinds of card are the same kind of object. */
     if (logo) {
-      var size = Math.round(box * 0.44);
+      var ghost = Math.round(box * 0.78);
       wrap.innerHTML =
-        '<img src="' + logo + '" aria-hidden="true" style="position:absolute;width:' + size +
-        'px;height:' + size + 'px;object-fit:contain;filter:blur(46px);opacity:' +
-        (dim ? '0.16' : '0.34') + '"/>' +
-        '<img src="' + logo + '" alt="" style="position:relative;width:' + size + 'px;height:' +
-        size + 'px;object-fit:contain;filter:' + (dim ? 'grayscale(1)' : 'none') +
-        ';opacity:' + (dim ? '0.5' : '1') + '"/>';
+        '<img src="' + logo + '" aria-hidden="true" style="position:absolute;width:' + ghost +
+        'px;height:' + ghost + 'px;object-fit:contain;filter:blur(2px)' +
+        (dim ? ' grayscale(1)' : '') + ';opacity:' + (dim ? '0.05' : '0.09') + '"/>' +
+        '<span style="position:relative;display:inline-flex;align-items:center;gap:10px;' +
+        'padding:10px 18px 10px 14px;border-radius:999px;background:' + C.card + ';' +
+        'box-shadow:inset 0 0 0 1px ' + C.line + ', 0 10px 26px -16px rgba(13,13,13,0.35)">' +
+        '<img src="' + logo + '" alt="" style="width:24px;height:24px;object-fit:contain;filter:' +
+        (dim ? 'grayscale(1)' : 'none') + ';opacity:' + (dim ? '0.55' : '1') + '"/>' +
+        '<span style="font:500 17px/1 ' + SANS + ';letter-spacing:-0.01em;color:' +
+        (dim ? C.tx2 : C.tx) + '">' + companyName + '</span></span>';
     } else {
       wrap.innerHTML =
         '<span style="font:400 34px/1 ' + SERIF + ';letter-spacing:-0.02em;color:' +
@@ -472,7 +482,7 @@
        column of air; now it takes the space and the air comes out of the top. */
     var mid = styleEl(document.createElement('div'), {
       display: 'flex', flexDirection: 'column', alignItems: 'center',
-      gap: g.head + 'px',
+      gap: '9px',
       flex: '1 1 auto', justifyContent: 'center', minHeight: '0', width: '100%',
     });
 
@@ -480,7 +490,7 @@
     var art = ART[companyName];
     var artBox = styleEl(document.createElement('div'), {
       position: 'relative', display: 'grid', placeItems: 'center', flexShrink: '0',
-      height: g.art + 'px', width: '100%',
+      height: g.art + 'px', width: '100%', marginBottom: g.head - 9 + 'px',
     });
 
     if (art) {
@@ -510,6 +520,20 @@
     });
     name.textContent = s.title;
     mid.appendChild(name);
+
+    /* WHICH TRAINING THIS BELONGS TO. Every scenario sits inside one of the
+       journey's five categories, and the deck has never said so — you could
+       read all sixteen cards and not know the journey had parts at all. It is
+       a subtitle, not a heading: the scenario is what the card is about, the
+       category is what it is part of. */
+    var parent = styleEl(document.createElement('p'), {
+      font: '400 11px/1.4 ' + MONO, letterSpacing: '0.12em', textTransform: 'uppercase',
+      color: C.tx3, margin: '0', textAlign: 'center', maxWidth: '100%',
+      padding: '0 6px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+      flexShrink: '0',
+    });
+    parent.textContent = item.category;
+    mid.appendChild(parent);
     card.appendChild(mid);
 
     /* BOTTOM — what the state knows, then what the state is for. Three rows on
@@ -961,10 +985,9 @@
         'linear-gradient(180deg,#FAFAF9 0%,#F3F8F3 45%,#DDF0E5 74%,#C3E4E7 100%)',
     });
 
-    /* No header block any more: the journey text and focus title are gone —
-       the cards carry the story. Only the wordmark remains, aligned to the
-       streak/XP pills' centreline so the top reads as ONE row. Measured at
-       runtime: the pills live in the scaled canvas, this layer does not. */
+    /* The wordmark, aligned to the streak/XP pills' centreline so the top
+       reads as ONE row. Measured at runtime: the pills live in the scaled
+       canvas, this layer does not. */
     var appMark = document.querySelector('img[alt="Zero"]');
     if (appMark) {
       var mark = styleEl(document.createElement('img'), {
@@ -993,6 +1016,74 @@
       addEventListener('resize', alignMark);
     }
 
+    /* ── the landing ──────────────────────────────────────────────────────
+       On the city home the world does this job: you arrive somewhere, and the
+       place tells you where you are. Strip the city out and sixteen cards open
+       cold — a shelf, with no one on the other side of it. So this home opens
+       by addressing the person and saying where they have got to, and the deck
+       becomes the second thing you read rather than the only thing.
+
+       Everything in it is read, not written: the journey's own title, its
+       completed count, and the scenario that is current. The one authored
+       string is the name, which the prototype has no session to ask. */
+    var YOU = 'Sanjay';
+
+    var hero = styleEl(document.createElement('div'), {
+      flex: '0 0 auto', padding: '104px 64px 0', display: 'flex',
+      flexDirection: 'column', alignItems: 'flex-start', gap: '14px',
+    });
+
+    var hello = styleEl(document.createElement('h1'), {
+      font: '400 46px/1.05 ' + SERIF, letterSpacing: '-0.02em', color: C.tx, margin: '0',
+    });
+    hello.textContent = 'Welcome back, ' + YOU;
+    hero.appendChild(hello);
+
+    var current = items[currentIdx] && items[currentIdx].s;
+    var nextLine = styleEl(document.createElement('p'), {
+      font: '400 17px/1.5 ' + SANS, color: C.tx2, margin: '0', maxWidth: '640px',
+    });
+    nextLine.textContent = current
+      ? 'Next up is ' + current.title.charAt(0).toLowerCase() + current.title.slice(1) +
+        (current.company ? ', at ' + current.company.name + '.' : '.')
+      : 'Pick up where you left off.';
+    hero.appendChild(nextLine);
+
+    /* The count, said as a fraction and drawn as one. The bar is the same
+       green as the timeline under the deck, because they are measuring the
+       same thing and should not look like two different scores. */
+    var prog = styleEl(document.createElement('div'), {
+      display: 'flex', alignItems: 'center', gap: '14px', marginTop: '6px',
+    });
+    var bar = styleEl(document.createElement('div'), {
+      width: '260px', height: '6px', borderRadius: '999px',
+      background: 'rgba(13,13,13,0.09)', overflow: 'hidden',
+    });
+    var barFill = styleEl(document.createElement('div'), {
+      width: Math.round((doneN / Math.max(1, totalJourney)) * 100) + '%',
+      height: '100%', borderRadius: '999px', background: 'rgba(63,185,104,0.85)',
+    });
+    bar.appendChild(barFill);
+    prog.appendChild(bar);
+    var count = styleEl(document.createElement('span'), {
+      font: '400 13px/1 ' + MONO, letterSpacing: '0.06em', color: C.tx2, whiteSpace: 'nowrap',
+    });
+    count.textContent = doneN + ' of ' + totalJourney + ' done';
+    prog.appendChild(count);
+    var journey = styleEl(document.createElement('span'), {
+      font: '400 13px/1 ' + MONO, letterSpacing: '0.06em', color: C.tx3, whiteSpace: 'nowrap',
+    });
+    journey.textContent = '· ' + (window.__NX_ROADMAP.journeyTitle || 'Your journey');
+    prog.appendChild(journey);
+    hero.appendChild(prog);
+
+    /* ⚠️ NAMES ARE SHARED HERE. This whole home is one function scope, and
+       `line`, `track`, `fill` and `head` were all already taken by the deck
+       and the timeline below. The first version of this header quietly
+       reassigned the timeline's `line()` helper and took the screen down with
+       it. Check before you name. */
+    layer.appendChild(hero);
+
     /* ── the deck rides a timeline ────────────────────────────────────────
        Sixteen cards in a row is a shelf. The same sixteen hung off one
        continuous line is a journey: the line is solid green up to where you
@@ -1014,10 +1105,9 @@
 
     var track = styleEl(document.createElement('div'), {
       display: 'flex', flexDirection: 'column', width: 'max-content', margin: '0 auto',
-      // The panel, the wordmark and the pills all sit along the top edge, so a
-      // track centred by arithmetic reads as jammed against them. This is the
-      // optical correction, not a centring bug.
-      paddingTop: '72px',
+      // The header carries the top of the screen now, so the track no longer
+      // needs its own optical shove downward.
+      paddingTop: '0px',
     });
     var cardsRow = styleEl(document.createElement('div'), {
       display: 'flex', alignItems: 'flex-end', gap: GAP + 'px', padding: '16px ' + PAD_X + 'px 0',
