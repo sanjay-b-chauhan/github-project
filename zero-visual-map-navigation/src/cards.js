@@ -685,7 +685,16 @@
 
       // ── translucent-white sub-surfaces vanish on white ─────────────────
       inHud('[class*="bg-white/"]') + ',' + inHud('[class*="bg-[rgba(255,255,255"]') +
-        '{background:' + C.wash + ' !important;border-color:' + C.line + ' !important}',
+        '{background:rgba(13,13,13,0.055) !important;border-color:' + C.line + ' !important}',
+
+      /* The one control in these panels: the + that adds XP or a streak day.
+         It was a white glyph on a white-at-10% disc, which on paper is a ghost
+         of a button. Given a real surface, a real edge and an ink glyph, it
+         reads as something you can press — which is all it ever needed. */
+      inHud('button:has(svg.lucide-plus)') +
+        '{background:' + C.field + ' !important;box-shadow:inset 0 0 0 1px ' + C.line +
+        ' !important;transition:background 160ms ease}',
+      inHud('button:has(svg.lucide-plus):hover') + '{background:#e6e6e3 !important}',
 
       // ── popover surfaces and their caret ───────────────────────────────
       inHud('[class*="top-full"] > div') +
@@ -751,15 +760,55 @@
         }
       }
 
-      /* ── type: near-white inline colour becomes its ink equivalent ──────
-         The alpha IS the hierarchy — the app writes white at 1 / .6 / .5 to
-         mean primary, secondary, tertiary — so it maps to the three inks
-         rather than flattening to one. NEUTRAL only: `spread` keeps the warm
-         streak orange and the XP gold out of this, since those are colours
-         that already read on paper and are the accent the panel is built on. */
-      var fg = rgba(el.style.color);
-      if (fg && fg.lum > 200 && fg.spread < 30) {
-        el.style.setProperty('color', fg.a >= 0.85 ? C.tx : fg.a >= 0.55 ? C.tx2 : C.tx3, 'important');
+      /* ── everything else, read from the COMPUTED value ─────────────────
+         Not from the inline style. The app paints white through four different
+         channels — `color`, an svg `fill`, an svg `stroke`, a border — from
+         classes, from attributes and from inline styles, and only the computed
+         value knows what actually landed. The icons were the proof: the plus
+         and the ladder marks are `stroke: rgba(255,255,255,.85)` on the SVG
+         itself, which no `color` rule on earth reaches. Reading the computed
+         value catches all four in one pass and needs no list to maintain.
+
+         The alpha IS the hierarchy — the app writes white at 1 / .6 / .5 for
+         primary, secondary, tertiary — so it maps to the three inks rather
+         than flattening to one. NEUTRAL only: `spread` keeps the streak orange
+         and the XP gold out of it, since those already read on paper and are
+         the accent the panel is built on. */
+      var cs = getComputedStyle(el);
+      var ink = function (a) { return a >= 0.85 ? C.tx : a >= 0.55 ? C.tx2 : C.tx3; };
+      var white = function (v) {
+        var c = rgba(v);
+        return c && c.lum > 195 && c.spread < 30 ? c : null;
+      };
+
+      var fg = white(cs.color);
+      if (fg) el.style.setProperty('color', ink(fg.a), 'important');
+
+      if (el.namespaceURI === 'http://www.w3.org/2000/svg') {
+        var fill = cs.fill !== 'none' && white(cs.fill);
+        if (fill) el.style.setProperty('fill', ink(fill.a), 'important');
+        var stroke = cs.stroke !== 'none' && white(cs.stroke);
+        if (stroke) el.style.setProperty('stroke', ink(stroke.a), 'important');
+      }
+
+      var bd = white(cs.borderTopColor);
+      if (bd && bd.a > 0.02 && parseFloat(cs.borderTopWidth) > 0) {
+        el.style.setProperty('border-color', C.line, 'important');
+      }
+
+      /* Translucent-white SURFACES — the XP track, the ladder's rails, the
+         little sub-panels. These are a VALUE, not a colour: white at 22% on a
+         dark panel is a subtle lift, and its equivalent on paper is ink at the
+         same kind of lift, not a warm wash that disappears. Halved and capped,
+         because ink reads much heavier than white at the same alpha. A solid
+         white (alpha 1) is the panel itself and is left alone. */
+      var surface = white(cs.backgroundColor);
+      if (surface && surface.a > 0.02 && surface.a < 0.6) {
+        el.style.setProperty(
+          'background-color',
+          'rgba(13,13,13,' + Math.min(0.13, surface.a * 0.55).toFixed(3) + ')',
+          'important'
+        );
       }
     });
   }
