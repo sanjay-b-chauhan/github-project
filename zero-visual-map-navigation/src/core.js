@@ -658,8 +658,14 @@
   if (ENABLED) suppressFirstRun();
   installCardLift();
 
-  if (document.body) initDebugPanel();
-  else addEventListener('DOMContentLoaded', initDebugPanel);
+  /* The panel has to be built AFTER every lane script has run, or the rows
+     they contribute through NX.panelRow() are not registered yet and are
+     silently dropped. The lane scripts are classic <script> tags at the end of
+     <body>, so DOMContentLoaded is exactly "all of them have run". Building it
+     inline here — which is what this did — meant the API worked in theory and
+     never once in practice. */
+  if (document.readyState === 'loading') addEventListener('DOMContentLoaded', initDebugPanel);
+  else setTimeout(initDebugPanel, 0);
 
   if (!ENABLED) return; // pristine base: panel only, nothing else touched
 
