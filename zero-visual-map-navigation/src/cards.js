@@ -734,9 +734,26 @@
      Only the background and the blur are taken. Shape, padding and the
      accents are the app's to keep. */
   function rgba(str) {
-    var m = /rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+))?/.exec(str || '');
+    str = str || '';
+    var r, g, b, a = 1;
+    // hex as well as rgb(): SVG presentation attributes are written `#fff`,
+    // and the credits mark's centre dot is exactly that
+    var hex = /^\s*#([0-9a-f]{3}|[0-9a-f]{6})\s*$/i.exec(str);
+    if (hex) {
+      var h = hex[1];
+      if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+      r = parseInt(h.slice(0, 2), 16);
+      g = parseInt(h.slice(2, 4), 16);
+      b = parseInt(h.slice(4, 6), 16);
+      return {
+        r: r, g: g, b: b, a: 1,
+        lum: 0.299 * r + 0.587 * g + 0.114 * b,
+        spread: Math.max(r, g, b) - Math.min(r, g, b),
+      };
+    }
+    var m = /rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+))?/.exec(str);
     if (!m) return null;
-    var r = +m[1], g = +m[2], b = +m[3];
+    r = +m[1]; g = +m[2]; b = +m[3];
     return {
       r: r, g: g, b: b,
       a: m[4] === undefined ? 1 : +m[4],
@@ -791,16 +808,40 @@
       if (fg) el.style.setProperty('color', ink(fg.a), 'important');
 
       if (el.namespaceURI === 'http://www.w3.org/2000/svg') {
+        /* ⚠️ A MASK IS NOT A COLOUR. Sanjay's credits mark is two overlapping
+           coins: the back one is knocked out by a `<mask>` whose rect is
+           `fill="#fff"` (show) and whose circle is `fill="#000"` (hide) — a
+           LUMINANCE channel, not paint. Repainting that white rect as ink told
+           the mask to hide everything, the back coin vanished, and the stacked
+           coins collapsed into a plain ringed dot. Same trap for clip paths,
+           filters and gradient stops. Skip the lot: nothing inside them is a
+           colour anybody sees. */
+        if (el.closest('mask, clipPath, filter, linearGradient, radialGradient, pattern, defs')) {
+          return;
+        }
         /* Presentation ATTRIBUTES as well as the style property. An SVG can be
            painted either way, and the ring's track segments are written as
            `stroke="rgba(255,255,255,0.16)"` attributes — which survived every
            CSS-shaped fix, `!important` included. Rewrite the attribute in the
            same channel it was written in and the argument does not arise. */
-        ['fill', 'stroke'].forEach(function (k) {
+        /* An OUTLINE is not weighted like a fill. White at full strength on a
+           dark panel is a quiet line; black at full strength on paper is a
+           heavy one, and the credits coin at 15px turns into a blot. Strokes
+           drop a tier so the icon lands at the weight it had on the map —
+           present, grey, not shouting. */
+        var strokeInk = function (a) {
+          return a >= 0.85 ? C.tx2 : a >= 0.5 ? C.tx3 : 'rgba(13,13,13,0.26)';
+        };
+        /* Fill takes the same softened scale as stroke INSIDE an icon: the
+           coins' rings and the dot at their centre are one white in the dark
+           version, so they have to be one grey here. Two tiers would read as
+           two marks stuck together. */
+        [['fill', strokeInk], ['stroke', strokeInk]].forEach(function (pair) {
+          var k = pair[0], to = pair[1];
           var attr = white(el.getAttribute(k));
-          if (attr) el.setAttribute(k, ink(attr.a));
+          if (attr) el.setAttribute(k, to(attr.a));
           var comp = cs[k] !== 'none' && white(cs[k]);
-          if (comp) el.style.setProperty(k, ink(comp.a), 'important');
+          if (comp) el.style.setProperty(k, to(comp.a), 'important');
         });
       }
 
