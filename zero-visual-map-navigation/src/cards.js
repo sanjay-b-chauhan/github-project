@@ -534,8 +534,8 @@
     card.setAttribute('aria-label', 'Training, ' + item.category);
 
     var mid = styleEl(document.createElement('div'), {
-      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '22px',
-      flex: '1 1 auto', justifyContent: 'center', minHeight: '0', width: '100%',
+      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '26px',
+      flex: '1 1 auto', justifyContent: 'flex-start', minHeight: '0', width: '100%',
     });
 
     // Zero's mark, in the same chip a scenario wears its company's in
@@ -619,14 +619,17 @@
   }
 
   /* ── the destination card ────────────────────────────────────────────────
-     The last object in the deck, and the reason for the other twenty. It wears
-     the PRODUCT's own job-portal mark, cloned out of the rail's milestone
-     button, so this card and that rail can never show two different marks for
-     the same place. Two stats, both counted from where you stand — a
-     destination's only honest facts are how far away it is. */
+     One line and the mark, and nothing else. It carried a "THE DESTINATION"
+     eyebrow and two counted stats, and both were answering questions nobody
+     asks at the end of a deck — the timeline already counts the journey and
+     the cards ahead already say how far each one is. What is left is the only
+     thing this card exists to say.
+
+     The mark is the PRODUCT's own job-portal icon, cloned out of the rail's
+     milestone button, so this card and that rail can never show two different
+     marks for the same place. */
   function buildGoal(item, index, rail) {
     var g = GEO.other;
-    var open = item.status === 'completed';
 
     var card = styleEl(document.createElement('article'), {
       flex: '0 0 auto', width: g.w + 'px', height: g.h + 'px', scrollSnapAlign: 'center',
@@ -642,74 +645,34 @@
     card.dataset.nxIdx = index;
     card.dataset.nxState = item.status;
     card.dataset.nxKind = 'goal';
-    card.setAttribute('aria-label', 'The job portal, ' + STATE_LABEL[item.status]);
+    card.setAttribute('aria-label', 'The job portal unlocks');
 
     var mid = styleEl(document.createElement('div'), {
-      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '22px',
-      flex: '1 1 auto', justifyContent: 'center', minHeight: '0', width: '100%',
+      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '26px',
+      flex: '1 1 auto', justifyContent: 'flex-start', minHeight: '0', width: '100%',
     });
 
-    var chip = styleEl(document.createElement('span'), {
-      display: 'inline-flex', alignItems: 'center', gap: '9px', flexShrink: '0',
-      padding: '9px 16px', borderRadius: '999px', background: C.card,
+    var disc = styleEl(document.createElement('span'), {
+      width: '54px', height: '54px', borderRadius: '999px', display: 'grid',
+      placeItems: 'center', flexShrink: '0', background: C.card,
       boxShadow: 'inset 0 0 0 1px ' + C.line + ', 0 10px 26px -16px rgba(13,13,13,0.35)',
     });
     var mark = jobPortalIcon(rail);
     if (mark) {
-      mark.setAttribute('width', '15');
-      mark.setAttribute('height', '15');
-      chip.appendChild(mark);
+      mark.setAttribute('width', '24');
+      mark.setAttribute('height', '24');
+      disc.appendChild(mark);
     }
-    var word = styleEl(document.createElement('span'), {
-      font: '400 11px/1 ' + MONO, letterSpacing: '0.14em', textTransform: 'uppercase',
-      color: C.tx3,
-    });
-    word.textContent = 'The destination';
-    chip.appendChild(word);
-    mid.appendChild(chip);
+    mid.appendChild(disc);
 
     var title = styleEl(document.createElement('h3'), {
       font: '400 40px/1.08 ' + SERIF, letterSpacing: '-0.02em',
-      color: open ? C.tx : C.tx2, textAlign: 'center', margin: '0', padding: '0 4px',
-      flexShrink: '0',
+      color: C.tx2, textAlign: 'center', margin: '0', padding: '0 4px', flexShrink: '0',
     });
-    title.textContent = 'The job portal opens';
+    title.textContent = 'Job portal unlocks';
     mid.appendChild(title);
     card.appendChild(mid);
-
-    var bottom = styleEl(document.createElement('div'), {
-      display: 'flex', flexDirection: 'column', alignItems: 'center',
-      gap: g.band + 'px', width: '100%', flexShrink: '0',
-    });
-    bottom.appendChild(styleEl(document.createElement('div'), {
-      height: '1px', width: '100%', background: C.line2,
-    }));
-    var rows = styleEl(document.createElement('div'), {
-      display: 'flex', flexDirection: 'column', gap: g.gap + 'px', width: '100%',
-    });
-    rows.appendChild(metaRow('Scenarios left', metaValue(String(item.left), true), true));
-    rows.appendChild(metaRow('Parts left', metaValue(String(item.partsLeft), true), true));
-    bottom.appendChild(rows);
-
-    var foot = styleEl(document.createElement('div'), {
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      borderRadius: '18px', width: '100%', gap: '9px', padding: g.cta + 'px 0',
-      background: open ? 'rgba(63,185,104,0.09)' : 'transparent',
-      boxShadow: 'inset 0 0 0 1.5px ' + (open ? 'rgba(63,185,104,0.32)' : C.line),
-    });
-    foot.innerHTML =
-      (open ? ICONS.check : ICONS.lock) +
-      '<span style="font:500 17px/1.3 ' + SANS + ';letter-spacing:-0.02em;color:' +
-      (open ? '#2c7d47' : C.tx3) + ';white-space:nowrap">' +
-      (open ? 'Open' : 'After all ' + (item.left + doneCountForGoal()) + ' scenarios') + '</span>';
-    bottom.appendChild(foot);
-    card.appendChild(bottom);
     return card;
-  }
-
-  function doneCountForGoal() {
-    var rm = window.__NX_ROADMAP;
-    return rm ? rm.completedCount : 0;
   }
 
   function buildCard(item, index) {
@@ -737,10 +700,17 @@
     /* MIDDLE — the art, given the room it was missing. The title art is the
        most valuable thing on the card and it was floating in the middle of a
        column of air; now it takes the space and the air comes out of the top. */
+    /* ONE PLANE FOR THE TOPS. `mid` used to centre its content, so a title
+       that wrapped to two lines pushed its brand mark down and a short cover
+       pulled it up — four cards in a row, four different heights for the same
+       element. Every card of a given size is the same height and they all sit
+       on one bottom line, so starting the content at the TOP puts every mark
+       and every cover on one line too. The slack collects above the rule,
+       where it is air rather than misalignment. */
     var mid = styleEl(document.createElement('div'), {
       display: 'flex', flexDirection: 'column', alignItems: 'center',
       gap: '9px',
-      flex: '1 1 auto', justifyContent: 'center', minHeight: '0', width: '100%',
+      flex: '1 1 auto', justifyContent: 'flex-start', minHeight: '0', width: '100%',
     });
 
     var companyName = s.company ? s.company.name : '';
