@@ -85,7 +85,17 @@
     return m ? h + ' hr ' + m + ' min' : h + ' hr';
   }
 
-  /** Journey → a flat, ordered deck with each scenario's real status. */
+  /** The company marks, filled from the rail's own chips before the deck builds. */
+  var LOGOS = {};
+
+  /** Journey → a flat, ordered deck with each scenario's real status.
+   *
+   *  ALL SIXTEEN. The first pass shipped only the seven scenarios whose title
+   *  art exists, on the reasoning that a card without art is a lesser object
+   *  next to one with it. True of a card; fatal to a journey. Nine missing
+   *  stops means the deck cannot say "this is behind me, this is now, these are
+   *  still to come" — the gaps are exactly where the story is. A scenario with
+   *  no art gets a designed cover instead of being dropped. */
   function deck() {
     var rm = window.__NX_ROADMAP;
     if (!rm) return [];
@@ -93,15 +103,14 @@
     var out = [];
     rm.categories.forEach(function (cat) {
       cat.scenarios.forEach(function (s) {
-        // Art-first deck: a card without its title art is a lesser object next
-        // to one with it, so the deck shows only the scenarios whose art
-        // exists. The journey count in the header still reads the full 16.
-        if (!s.company || !ART[s.company.name]) return;
         out.push({
           s: s,
           category: cat.title,
           status:
             s.sequence_order <= done ? 'completed' : s.sequence_order === done + 1 ? 'current' : 'locked',
+          // how many scenarios stand between you and this one. "Locked" says
+          // no; this says how far, which is the thing worth knowing.
+          away: s.sequence_order - (done + 1),
         });
       });
     });
@@ -117,13 +126,13 @@
      against rgba(0,0,0,.5) glass, so each gets a considered ink equivalent,
      not a blind inversion. */
 
-  function metaRow(label, valueNode) {
+  function metaRow(label, valueNode, small) {
     var r = styleEl(document.createElement('div'), {
-      display: 'flex', height: '30px', alignItems: 'center',
-      justifyContent: 'space-between', padding: '0 20px', width: '100%',
+      display: 'flex', height: small ? '26px' : '30px', alignItems: 'center',
+      justifyContent: 'space-between', padding: '0 16px', width: '100%',
     });
     var l = styleEl(document.createElement('span'), {
-      font: '400 16px/1 ' + MONO, textTransform: 'uppercase',
+      font: '400 ' + (small ? '14px' : '16px') + '/1 ' + MONO, textTransform: 'uppercase',
       color: C.tx3, whiteSpace: 'nowrap',
     });
     l.textContent = label;
@@ -132,9 +141,9 @@
     return r;
   }
 
-  function metaValue(text) {
+  function metaValue(text, small) {
     var v = styleEl(document.createElement('span'), {
-      font: '500 18px/1.2 ' + SANS, color: C.tx,
+      font: '500 ' + (small ? '16px' : '18px') + '/1.2 ' + SANS, color: C.tx,
       fontFeatureSettings: "'lnum' 1, 'tnum' 1",
     });
     v.textContent = text;
@@ -161,20 +170,20 @@
     return p;
   }
 
-  function difficultyDots(label) {
+  function difficultyDots(label, small) {
     var level = DIFFICULTY_LEVEL[label] != null ? DIFFICULTY_LEVEL[label] : 2;
     var wrap = styleEl(document.createElement('span'), {
-      display: 'flex', alignItems: 'center', gap: '20px',
+      display: 'flex', alignItems: 'center', gap: small ? '14px' : '20px',
     });
     var dots = styleEl(document.createElement('span'), { display: 'inline-flex', gap: '2px' });
     for (var i = 0; i < 4; i++) {
       dots.appendChild(styleEl(document.createElement('span'), {
-        height: '10px', width: '23px', borderRadius: '30px',
+        height: small ? '9px' : '10px', width: small ? '19px' : '23px', borderRadius: '30px',
         background: C.tx, opacity: i <= level ? '1' : '0.12',
       }));
     }
     wrap.appendChild(dots);
-    wrap.appendChild(metaValue(label || 'Intermediate'));
+    wrap.appendChild(metaValue(label || 'Intermediate', small));
     return wrap;
   }
 
@@ -204,12 +213,54 @@
       '@keyframes nx-shine{0%{transform:translateX(-100%) skewX(-14deg)}55%,100%{transform:translateX(100%) skewX(-14deg)}}',
       '.nx-sbtn:hover::after{animation-duration:1s}',
       '@media (prefers-reduced-motion: reduce){.nx-sbtn-label{background:none;color:#121212;animation:none}.nx-sbtn::after{opacity:0;animation:none}}',
+      /* The deck's own furniture. */
+      '.nx-deck::-webkit-scrollbar{display:none}',
+      /* One live thing on the screen, on the one card that is live. A steady
+         ring rather than a flashing dot: it reads as "running", not "alert". */
+      '.nx-live-dot{width:8px;height:8px;border-radius:999px;background:#3fb968;position:relative}',
+      '.nx-live-dot::after{content:"";position:absolute;inset:-4px;border-radius:999px;' +
+        'box-shadow:0 0 0 1.5px rgba(63,185,104,0.5);animation:nx-live 2.2s ease-out infinite}',
+      '@keyframes nx-live{0%{transform:scale(.7);opacity:.9}70%,100%{transform:scale(1.25);opacity:0}}',
+      /* The stop on the timeline. Size is the hierarchy: done is a mark, ahead
+         is a smaller and fainter mark, and now is the only one with a ring
+         around it. */
+      '.nx-node{width:13px;height:13px;border-radius:999px;flex:0 0 auto;position:relative;' +
+        'transition:transform 260ms cubic-bezier(.22,.61,.36,1), box-shadow 260ms ease}',
+      '.nx-node-completed{background:#3fb968}',
+      '.nx-node-locked{background:#FAFAF9}',
+      '.nx-node-locked{width:11px;height:11px;margin-top:1px;background:transparent;' +
+        'box-shadow:inset 0 0 0 1.5px ' + C.tx4 + '}',
+      '.nx-node-current{width:19px;height:19px;margin-top:-3px;background:#3fb968;' +
+        'box-shadow:0 0 0 4.5px rgba(63,185,104,0.20), 0 0 0 1.5px rgba(255,255,255,0.95)}',
+      '.nx-cell-on .nx-node{transform:scale(1.25)}',
+      '.nx-node-goal{width:26px;height:26px;margin-top:-8px;background:' + C.card + ';' +
+        'display:grid;place-items:center;box-shadow:inset 0 0 0 1.5px ' + C.line + ', 0 6px 16px -8px rgba(13,13,13,.25)}',
+      '.nx-cell-on .nx-node-locked{box-shadow:inset 0 0 0 1.5px ' + C.tx3 + '}',
+      '@media (prefers-reduced-motion: reduce){.nx-live-dot::after{animation:none}}',
     ].join('');
     document.head.appendChild(css);
   }
 
-  function cta(status) {
-    if (status === 'current') {
+  var ICONS = {
+    lock:
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="' + C.tx3 +
+      '" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">' +
+      '<rect x="4" y="10.5" width="16" height="10.5" rx="2.5"/><path d="M7.5 10.5V7a4.5 4.5 0 0 1 9 0v3.5"/></svg>',
+    check:
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="' + C.ok +
+      '" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<path d="M20 6 9 17l-5-5"/></svg>',
+  };
+
+  /* How far away a locked scenario is, said in scenarios rather than in "no".
+     One away is the one you pick up next, and that is worth its own sentence. */
+  function distance(away) {
+    if (away <= 1) return 'Next after this one';
+    return away + ' scenarios away';
+  }
+
+  function cta(item) {
+    if (item.status === 'current') {
       var b = document.createElement('button');
       b.type = 'button';
       b.className = 'nx-sbtn';
@@ -218,101 +269,183 @@
         '<span class="nx-sbtn-label" style="position:relative;z-index:2">Continue</span>';
       return b;
     }
-    var isDone = status === 'completed';
+    var isDone = item.status === 'completed';
     var d = styleEl(document.createElement('div'), {
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      borderRadius: '100px', width: '100%', gap: '8px', padding: '18px 0',
-      background: isDone ? C.wash : C.field,
-      boxShadow: isDone ? 'inset 0 0 0 1.5px rgba(63,185,104,0.5)' : 'none',
+      borderRadius: '100px', width: '100%', gap: '9px', padding: '16px 0',
+      background: isDone ? 'rgba(63,185,104,0.07)' : 'transparent',
+      boxShadow: isDone
+        ? 'inset 0 0 0 1.5px rgba(63,185,104,0.34)'
+        : 'inset 0 0 0 1.5px ' + C.line,
     });
-    var ICONS = {
-      lock: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="' + C.tx3 + '" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
-      check: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="' + C.tx + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>',
-    };
     d.innerHTML =
       (isDone ? ICONS.check : ICONS.lock) +
-      '<span style="font:500 20px/1.3 ' + SANS + ';letter-spacing:-0.03em;color:' +
-      (isDone ? C.tx : C.tx3) + ';white-space:nowrap">' + (isDone ? 'Completed' : 'Locked') + '</span>';
+      '<span style="font:500 17px/1.3 ' + SANS + ';letter-spacing:-0.02em;color:' +
+      (isDone ? C.tx : C.tx3) + ';white-space:nowrap">' +
+      (isDone ? 'Completed' : distance(item.away)) + '</span>';
     return d;
+  }
+
+  /* ── the three states ─────────────────────────────────────────────────────
+     A deck where every card is the same object cannot say where you are in it.
+     These three are physically different things, and the differences are the
+     message, not decoration:
+
+       DONE     smaller and quieter, sitting lower. Its rows report what
+                happened — band, time, XP earned — because that is what the
+                past is for. Full-colour art: you earned the picture.
+       CURRENT  the tallest card, pure white, the only real shadow, a live chip
+                at its head and the only working button in the deck.
+       AHEAD    the same footprint as done, art held back to a soft grey — the
+                picture is part of the reward — rows advertising what it is
+                worth, and a footer that says how FAR away it is rather than
+                just "locked".
+
+     They share one bottom line: every card's base sits on the same rail, so
+     the current card rises out of the row instead of floating in it. */
+  var GEO = {
+    current: { w: 468, h: 726, pad: '26px 26px 30px', art: 200, name: 25 },
+    other: { w: 424, h: 646, pad: '22px 22px 26px', art: 168, name: 22 },
+  };
+
+  function liveChip() {
+    var c = styleEl(document.createElement('span'), {
+      display: 'inline-flex', alignItems: 'center', gap: '8px',
+      alignSelf: 'flex-start', borderRadius: '999px', padding: '7px 13px 7px 11px',
+      background: 'rgba(63,185,104,0.10)',
+      boxShadow: 'inset 0 0 0 1px rgba(63,185,104,0.28)',
+    });
+    c.innerHTML =
+      '<span class="nx-live-dot"></span>' +
+      '<span style="font:500 13px/1 ' + SANS + ';letter-spacing:-0.01em;color:#2c7d47">In progress</span>';
+    return c;
+  }
+
+  /* The cover for a scenario with no title art. Not a fallback — the first
+     pass printed the CATEGORY here, which named the chapter on a card that is
+     about one scenario, and read as a mistake. The company's own mark on a
+     soft ground says the same thing the art would have: whose problem this is. */
+  function plainCover(companyName, box, dim) {
+    var logo = LOGOS[companyName];
+    var wrap = styleEl(document.createElement('div'), {
+      position: 'relative', display: 'grid', placeItems: 'center',
+      height: box + 'px', width: '100%',
+    });
+    if (logo) {
+      var size = Math.round(box * 0.46);
+      wrap.innerHTML =
+        '<img src="' + logo + '" aria-hidden="true" style="position:absolute;width:' + size +
+        'px;height:' + size + 'px;object-fit:contain;filter:blur(46px);opacity:' +
+        (dim ? '0.16' : '0.34') + '"/>' +
+        '<img src="' + logo + '" alt="" style="position:relative;width:' + size + 'px;height:' +
+        size + 'px;object-fit:contain;filter:' + (dim ? 'grayscale(1)' : 'none') +
+        ';opacity:' + (dim ? '0.5' : '1') + '"/>';
+    } else {
+      wrap.innerHTML =
+        '<span style="font:400 34px/1 ' + SERIF + ';letter-spacing:-0.02em;color:' +
+        (dim ? C.tx3 : C.tx2) + '">' + companyName + '</span>';
+    }
+    return wrap;
   }
 
   function buildCard(item, index) {
     var s = item.s;
-    var active = item.status === 'current';
+    var st = item.status;
+    var active = st === 'current';
+    var g = active ? GEO.current : GEO.other;
+
     var card = styleEl(document.createElement('article'), {
-      flex: '0 0 auto', width: '460px', height: '700px', scrollSnapAlign: 'center',
+      flex: '0 0 auto', width: g.w + 'px', height: g.h + 'px', scrollSnapAlign: 'center',
       display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-      alignItems: 'center', gap: '18px',
-      background: active ? '#FFFFFF' : 'rgba(255,255,255,0.55)',
+      alignItems: 'center', gap: '16px',
+      background: active ? '#FFFFFF' : 'rgba(255,255,255,0.66)',
       border: '1px solid ' + (active ? C.line : C.line2),
-      borderRadius: '28px', padding: '24px 24px 28px',
+      borderRadius: '28px', padding: g.pad,
       boxShadow: active
-        ? '0 24px 64px -24px rgba(13,13,13,0.20)'
-        : '0 12px 36px -22px rgba(13,13,13,0.12)',
-      transition: 'background 300ms ease, box-shadow 300ms ease, border-color 300ms ease',
+        ? '0 30px 70px -26px rgba(13,13,13,0.26), 0 2px 0 0 rgba(255,255,255,0.9) inset'
+        : '0 12px 34px -24px rgba(13,13,13,0.14)',
+      transition: 'background 320ms ease, box-shadow 320ms ease, border-color 320ms ease',
     });
     card.dataset.nxIdx = index;
+    card.dataset.nxState = st;
 
-    /* ── middle: key art with halo · scenario name ────────────────────────
-       No chevron row and no company pill: the title art carries the brand
-       badge inside itself, and the deck is navigated by scroll and the pips.
-       What was chrome becomes air. */
+    /* ── head: only the current card announces itself ────────────────────── */
+    if (active) {
+      var head = styleEl(document.createElement('div'), {
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        width: '100%', height: '30px', flexShrink: '0',
+      });
+      head.appendChild(liveChip());
+      card.appendChild(head);
+    }
+
+    /* ── middle: the cover, then the scenario's name ──────────────────────── */
     var mid = styleEl(document.createElement('div'), {
       display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '18px',
       flex: '1 1 auto', justifyContent: 'center', minHeight: '0', width: '100%',
     });
 
     var companyName = s.company ? s.company.name : '';
-
     var art = ART[companyName];
     var artBox = styleEl(document.createElement('div'), {
       position: 'relative', display: 'grid', placeItems: 'center', flexShrink: '0',
-      height: '190px', width: '336px',
+      height: g.art + 'px', width: '100%',
     });
+
     if (art) {
-      // the product's signature: a blur(90px) twin behind the sharp art —
-      // softened to .3 on white, where .65 reads as a wash instead of a halo
+      /* The product's signature — a blur(90px) twin behind the sharp art,
+         softened to .3 on white where .65 reads as a wash instead of a halo.
+         Ahead of you the picture is held back: greyed and quieted, so arriving
+         at a scenario is also the moment its art turns on. */
+      var dim = st === 'locked';
       artBox.innerHTML =
-        '<img src="' + art + '" aria-hidden="true" style="position:absolute;height:190px;width:336px;object-fit:contain;filter:blur(90px);opacity:0.3"/>' +
-        '<img src="' + art + '" alt="Scenario" style="position:relative;height:190px;width:336px;object-fit:contain"/>';
+        '<img src="' + art + '" aria-hidden="true" style="position:absolute;height:' + g.art +
+        'px;width:100%;object-fit:contain;filter:blur(90px)' + (dim ? ' grayscale(1)' : '') +
+        ';opacity:' + (dim ? '0.12' : '0.3') + '"/>' +
+        '<img src="' + art + '" alt="" style="position:relative;height:' + g.art +
+        'px;width:100%;object-fit:contain;filter:' + (dim ? 'grayscale(1)' : 'none') +
+        ';opacity:' + (dim ? '0.42' : '1') + '"/>';
     } else {
-      artBox.innerHTML =
-        '<h3 style="font:400 40px/0.98 ' + SERIF + ';letter-spacing:-0.03em;color:' + C.tx +
-        ';text-align:center;margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">' +
-        item.category + '</h3>';
+      artBox.appendChild(plainCover(companyName, g.art, st === 'locked'));
     }
     mid.appendChild(artBox);
 
     var name = styleEl(document.createElement('p'), {
-      font: '500 24px/1.35 ' + SANS, color: C.tx, textAlign: 'center',
+      font: (active ? '500 ' : '500 ') + g.name + 'px/1.32 ' + SANS,
+      color: st === 'locked' ? C.tx2 : C.tx, textAlign: 'center',
       maxWidth: '360px', padding: '0 10px', margin: '0', flexShrink: '0',
+      letterSpacing: '-0.01em',
       display: '-webkit-box', WebkitLineClamp: '2', WebkitBoxOrient: 'vertical', overflow: 'hidden',
     });
     name.textContent = s.title;
     mid.appendChild(name);
     card.appendChild(mid);
 
-    /* ── bottom: divider · the state's rows · CTA ─────────────────────────── */
+    /* ── bottom: the state's own rows, then its footer ────────────────────── */
     var bottom = styleEl(document.createElement('div'), {
-      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '26px', width: '100%',
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      gap: active ? '24px' : '20px', width: '100%',
     });
     bottom.appendChild(styleEl(document.createElement('div'), {
-      height: '1px', width: '100%', background: C.line,
+      height: '1px', width: '100%', background: C.line2,
     }));
     var rows = styleEl(document.createElement('div'), {
-      display: 'flex', flexDirection: 'column', gap: '20px', width: '100%',
+      display: 'flex', flexDirection: 'column', gap: active ? '18px' : '14px', width: '100%',
     });
-    if (item.status === 'completed') {
-      rows.appendChild(metaRow('Performance', metaValue(s.outcome ? s.outcome.band : '—')));
-      rows.appendChild(metaRow('Time spent', metaValue(hhmm(s.outcome && s.outcome.minutes))));
-      rows.appendChild(metaRow('XP earned', xpPill(s.outcome ? s.outcome.xp : 0)));
+    var sm = !active;
+    if (st === 'completed') {
+      rows.appendChild(metaRow('Performance', metaValue(s.outcome ? s.outcome.band : '—', sm), sm));
+      rows.appendChild(metaRow('Time spent', metaValue(hhmm(s.outcome && s.outcome.minutes), sm), sm));
+      rows.appendChild(metaRow('XP earned', xpPill(s.outcome ? s.outcome.xp : 0), sm));
     } else {
-      rows.appendChild(metaRow('Earn XP upto', xpPill(750)));
-      if (s.estimated_minutes) rows.appendChild(metaRow('Time', metaValue('~' + hhmm(s.estimated_minutes))));
-      rows.appendChild(metaRow('Difficulty', difficultyDots(s.difficulty)));
+      rows.appendChild(metaRow('Earn XP upto', xpPill(750), sm));
+      if (s.estimated_minutes) {
+        rows.appendChild(metaRow('Time', metaValue('~' + hhmm(s.estimated_minutes), sm), sm));
+      }
+      rows.appendChild(metaRow('Difficulty', difficultyDots(s.difficulty, sm), sm));
     }
     bottom.appendChild(rows);
-    bottom.appendChild(cta(item.status));
+    bottom.appendChild(cta(item));
     card.appendChild(bottom);
     return card;
   }
@@ -418,9 +551,9 @@
     if (city) city.style.visibility = 'hidden';
 
     // company logos come from the rail's own chips, so the marks always match
-    var logos = {};
+    LOGOS = {};
     (rail.segments || []).forEach(function (seg) {
-      seg.chips.forEach(function (c) { if (c.company && c.logo) logos[c.company] = c.logo; });
+      seg.chips.forEach(function (c) { if (c.company && c.logo) LOGOS[c.company] = c.logo; });
     });
 
     var items = deck();
@@ -474,71 +607,178 @@
       addEventListener('resize', alignMark);
     }
 
+    /* ── the deck rides a timeline ────────────────────────────────────────
+       Sixteen cards in a row is a shelf. The same sixteen hung off one
+       continuous line is a journey: the line is solid green up to where you
+       stand and faint past it, so the shape of the whole thing is readable
+       before a single word is.
+
+       Both rows live in ONE horizontally-scrolling track and use the SAME gap
+       and the SAME per-card widths, which is what keeps a node under the
+       centre of its card at any scroll position. (A separately-scrolled rail
+       synced by listener drifts by a frame on every flick.) */
+    var GAP = 40, PAD_X = 72;
+
     var scroller = styleEl(document.createElement('div'), {
-      flex: '1 1 auto', display: 'flex', alignItems: 'center', gap: '44px',
-      padding: '18px 64px', overflowX: 'auto', overflowY: 'hidden',
+      flex: '1 1 auto', overflowX: 'auto', overflowY: 'hidden',
       scrollSnapType: 'x mandatory', scrollbarWidth: 'none',
+      display: 'flex', alignItems: 'center',
     });
-    function scrollToIndex(i) {
-      var el = scroller.children[Math.max(0, Math.min(items.length - 1, i))];
-      if (el) el.scrollIntoView({ behavior: REDUCE ? 'auto' : 'smooth', inline: 'center', block: 'nearest' });
-    }
+    scroller.className = 'nx-deck';
+
+    var track = styleEl(document.createElement('div'), {
+      display: 'flex', flexDirection: 'column', width: 'max-content', margin: '0 auto',
+    });
+    var cardsRow = styleEl(document.createElement('div'), {
+      display: 'flex', alignItems: 'flex-end', gap: GAP + 'px', padding: '20px ' + PAD_X + 'px 0',
+    });
+    var railRow = styleEl(document.createElement('div'), {
+      display: 'flex', alignItems: 'flex-start', gap: GAP + 'px',
+      padding: '28px ' + PAD_X + 'px 30px',
+    });
+
+    /* NO CHAPTER MARKS. Category looks like the obvious second axis here and
+       it is a trap: this journey's sequence INTERLEAVES its five categories
+       (1,2 Growth · 3 Ops · 4,5 Growth · 6,7 Ops …), so a "new category starts
+       here" rule fires eight times and marks nothing. Built it, saw it, took
+       it out. The sequence is the only spine this deck has, and it is enough. */
+    var cards = [];
+    var cells = [];
     items.forEach(function (item, i) {
-      scroller.appendChild(buildCard(item, i));
+      var card = buildCard(item, i);
+      cardsRow.appendChild(card);
+      cards.push(card);
+
+      /* One cell per card, exactly as wide, so the node lands on the card's
+         centre line. The connecting line is drawn by the cell itself and
+         overhangs by half a gap on each side, which is how the segments meet
+         across the gap — a single element spanning the row cannot work inside
+         an overflow-x container, its edges resolve against the padding box. */
+      var cell = styleEl(document.createElement('div'), {
+        position: 'relative', flex: '0 0 auto', width: card.style.width,
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '11px',
+      });
+
+      var behind = i <= currentIdx; // the line arriving at this card
+      var past = i < currentIdx;    // the line leaving it
+      [['left', behind], ['right', past]].forEach(function (side, k) {
+        if (k === 0 && i === 0) return; // the journey starts at the first stop
+        var seg = styleEl(document.createElement('span'), {
+          position: 'absolute', top: '7px', height: '3px', borderRadius: '3px',
+          background: side[1] ? 'rgba(63,185,104,0.72)' : 'rgba(13,13,13,0.13)',
+        });
+        if (k === 0) { seg.style.left = -(GAP / 2) + 'px'; seg.style.right = '50%'; }
+        else { seg.style.left = '50%'; seg.style.right = -(GAP / 2) + 'px'; }
+        cell.appendChild(seg);
+      });
+
+      var node = document.createElement('span');
+      node.className = 'nx-node nx-node-' + item.status;
+      cell.appendChild(node);
+
+      var num = styleEl(document.createElement('span'), {
+        font: (item.status === 'current' ? '500 ' : '400 ') + '12px/1 ' + MONO,
+        letterSpacing: '0.06em',
+        color: item.status === 'current' ? C.tx : item.status === 'completed' ? C.tx2 : C.tx3,
+      });
+      num.textContent = (item.s.sequence_order < 10 ? '0' : '') + item.s.sequence_order;
+      cell.appendChild(num);
+
+      cell.setAttribute('role', 'button');
+      cell.setAttribute('tabindex', '0');
+      cell.setAttribute('aria-label', item.s.title + ', ' + item.status);
+      cell.style.cursor = 'pointer';
+      cell.addEventListener('click', function () { scrollToIndex(i); });
+      cell.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); scrollToIndex(i); }
+      });
+
+      railRow.appendChild(cell);
+      cells.push(cell);
     });
+
+    /* ── where the road goes ──────────────────────────────────────────────
+       Sixteen scenarios and then nothing is a list that stops. The journey has
+       a destination — the job portal is the whole point of walking it — so the
+       rail runs one stop past the last card and ends there. It has no card
+       because it is not a scenario; it is the reason for the other sixteen. */
+    var end = styleEl(document.createElement('div'), {
+      position: 'relative', flex: '0 0 auto', width: '240px',
+      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '11px',
+    });
+    end.appendChild(styleEl(document.createElement('span'), {
+      position: 'absolute', top: '7px', height: '3px', borderRadius: '3px',
+      left: -(GAP / 2) + 'px', right: '50%', background: 'rgba(13,13,13,0.13)',
+    }));
+    var goal = document.createElement('span');
+    goal.className = 'nx-node nx-node-goal';
+    goal.innerHTML =
+      '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="' + C.tx2 +
+      '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg>';
+    end.appendChild(goal);
+    var goalLabel = styleEl(document.createElement('span'), {
+      font: '500 13px/1 ' + SANS, letterSpacing: '-0.01em', color: C.tx2, whiteSpace: 'nowrap',
+    });
+    goalLabel.textContent = 'The job portal opens';
+    end.appendChild(goalLabel);
+    railRow.appendChild(end);
+
+    track.appendChild(cardsRow);
+    track.appendChild(railRow);
+    scroller.appendChild(track);
     layer.appendChild(scroller);
 
-    /* Carousel indicators, not a bar: the centred scenario is a lozenge and
-       the rest are dots, so the deck's length is countable at a glance. */
-    var dockRow = styleEl(document.createElement('div'), {
-      flex: '0 0 auto', display: 'flex', justifyContent: 'center', alignItems: 'center',
-      gap: '7px', padding: '18px 0 34px',
-    });
-    var pips = items.map(function (item, i) {
-      var d = styleEl(document.createElement('button'), {
-        width: i === currentIdx ? '28px' : '7px', height: '7px', borderRadius: '999px', border: '0',
-        padding: '0', cursor: 'pointer',
-        background: item.status === 'completed' || item.status === 'current' ? C.tx : C.tx4,
-        transition: 'width 260ms cubic-bezier(.22,.61,.36,1), background 260ms ease',
-      });
-      d.type = 'button';
-      d.setAttribute('aria-label', 'Scenario ' + (i + 1) + ' of ' + items.length);
-      d.addEventListener('click', function () { scrollToIndex(i); });
-      return d;
-    });
-    pips.forEach(function (d) { dockRow.appendChild(d); });
-    layer.appendChild(dockRow);
+    function scrollToIndex(i) {
+      var el = cards[Math.max(0, Math.min(cards.length - 1, i))];
+      if (el) el.scrollIntoView({ behavior: REDUCE ? 'auto' : 'smooth', inline: 'center', block: 'nearest' });
+    }
 
-    /* The centred card is the solid one — the mock's read. Solidity follows
-       the scroll, not the scenario state, so browsing feels physical. */
+    /* WHAT BROWSING CHANGES, AND WHAT IT MUST NOT. The first pass moved
+       SOLIDITY with the scroll — the centred card went white, the rest went
+       translucent — which is a lovely physical read and quietly destroys the
+       thing this deck is for: a finished scenario in the centre then looks
+       exactly like the one you are on. Solidity now belongs to state and
+       nothing else. Browsing gets its own channel: the centred card lifts, and
+       its node opens. */
     function setCentred(idx) {
-      Array.prototype.forEach.call(scroller.children, function (c, i) {
+      cards.forEach(function (c, i) {
         var on = i === idx;
-        c.style.background = on ? '#FFFFFF' : 'rgba(255,255,255,0.55)';
-        c.style.borderColor = on ? C.line : C.line2;
-        c.style.boxShadow = on
-          ? '0 24px 64px -24px rgba(13,13,13,0.20)'
-          : '0 12px 36px -22px rgba(13,13,13,0.12)';
-        if (pips[i]) pips[i].style.width = on ? '28px' : '7px';
+        c.style.transform = on ? 'translateY(-8px)' : 'translateY(0)';
+        c.style.transition =
+          'transform 320ms ' + NX.EASE + ', box-shadow 320ms ease, background 320ms ease';
+        cells[i].classList.toggle('nx-cell-on', on);
       });
     }
+
+    var raf = 0;
     scroller.addEventListener('scroll', function () {
-      var mid = scroller.scrollLeft + scroller.clientWidth / 2;
-      var best = 0, bestD = Infinity;
-      Array.prototype.forEach.call(scroller.children, function (c, i) {
-        var d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid);
-        if (d < bestD) { bestD = d; best = i; }
+      if (raf) return;
+      raf = requestAnimationFrame(function () {
+        raf = 0;
+        var mid = scroller.getBoundingClientRect().left + scroller.clientWidth / 2;
+        var best = 0, bestD = Infinity;
+        cards.forEach(function (c, i) {
+          var r = c.getBoundingClientRect();
+          var d = Math.abs(r.left + r.width / 2 - mid);
+          if (d < bestD) { bestD = d; best = i; }
+        });
+        setCentred(best);
       });
-      setCentred(best);
     });
 
     var host = nav.parentElement || document.body;
     host.insertBefore(layer, host.firstChild);
 
-    // open on the scenario you are actually on
+    // Open on the scenario you are actually on — jumped, not scrolled: an
+    // animated arrival from card one reads as a tour nobody asked for.
     requestAnimationFrame(function () {
-      var el = scroller.children[currentIdx];
-      if (el) scroller.scrollLeft = el.offsetLeft + el.offsetWidth / 2 - scroller.clientWidth / 2;
+      var el = cards[currentIdx];
+      if (el) {
+        var r = el.getBoundingClientRect();
+        var sr = scroller.getBoundingClientRect();
+        scroller.scrollLeft += r.left + r.width / 2 - (sr.left + scroller.clientWidth / 2);
+      }
       setCentred(currentIdx);
     });
   }
