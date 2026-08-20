@@ -35,6 +35,11 @@
   if (!NX || !NX.state.enabled || !NX.state.cards) return;
 
   var styleEl = NX.styleEl;
+  // Inherited from core, not re-derived: one lane deciding on its own what
+  // "reduced motion" means is how two halves of a screen end up disagreeing.
+  // (It was referenced below and never defined — every call to scrollToIndex
+  // threw a ReferenceError, which is why clicking a stop did nothing.)
+  var REDUCE = NX.REDUCE;
 
   /* The onboarding palette, verbatim. */
   var C = {
@@ -221,28 +226,39 @@
       '.nx-live-dot::after{content:"";position:absolute;inset:-4px;border-radius:999px;' +
         'box-shadow:0 0 0 1.5px rgba(63,185,104,0.5);animation:nx-live 2.2s ease-out infinite}',
       '@keyframes nx-live{0%{transform:scale(.7);opacity:.9}70%,100%{transform:scale(1.25);opacity:0}}',
-      /* The stop on the timeline. Size is the hierarchy: done is a mark, ahead
-         is a smaller and fainter mark, and now is the only one with a ring
-         around it. */
-      '.nx-node{width:13px;height:13px;border-radius:999px;flex:0 0 auto;position:relative;' +
+      /* THE STOPS. Size and fill carry the state, and nothing else has to:
+         done is a small filled mark, upcoming is a smaller and fainter one —
+         the hollow rings the first version used read as empty checkboxes, an
+         invitation to click something that is not there yet — and now is the
+         only stop with any dimension to it. */
+      '.nx-node{border-radius:999px;flex:0 0 auto;position:relative;' +
         'transition:transform 260ms cubic-bezier(.22,.61,.36,1), box-shadow 260ms ease}',
-      '.nx-node-completed{background:#3fb968}',
-      '.nx-node-locked{background:#FAFAF9}',
-      '.nx-node-locked{width:11px;height:11px;margin-top:1px;background:transparent;' +
-        'box-shadow:inset 0 0 0 1.5px ' + C.tx4 + '}',
-      '.nx-node-current{width:19px;height:19px;margin-top:-3px;background:#3fb968;' +
-        'box-shadow:0 0 0 4.5px rgba(63,185,104,0.20), 0 0 0 1.5px rgba(255,255,255,0.95)}',
-      /* Resting, hovered, centred — three heights, so the deck answers the
-         cursor before it is clicked. Transform lives here rather than inline,
-         or the centred card's own inline transform would out-rank :hover. */
-      '.nx-card{cursor:pointer;transform:translateY(0)}',
-      '.nx-card:not(.nx-on):hover{transform:translateY(-7px)}',
-      '.nx-card.nx-on{cursor:default;transform:translateY(-10px)}',
-      '@media (prefers-reduced-motion: reduce){.nx-card,.nx-card:hover,.nx-card.nx-on{transform:none}}',
-      '.nx-cell-on .nx-node{transform:scale(1.25)}',
-      '.nx-node-goal{width:26px;height:26px;margin-top:-8px;background:' + C.card + ';' +
-        'display:grid;place-items:center;box-shadow:inset 0 0 0 1.5px ' + C.line + ', 0 6px 16px -8px rgba(13,13,13,.25)}',
-      '.nx-cell-on .nx-node-locked{box-shadow:inset 0 0 0 1.5px ' + C.tx3 + '}',
+      '.nx-node-completed{width:11px;height:11px;background:#3fb968;' +
+        'box-shadow:inset 0 1px 1px rgba(255,255,255,0.45), 0 0 0 3px rgba(63,185,104,0.10)}',
+      '.nx-node-locked{width:8px;height:8px;background:rgba(13,13,13,0.17)}',
+      /* NOW. A lit bead rather than a flat dot: the gradient puts the light
+         source above it, the inner highlight and the inner shade give it a
+         curve, and the outer ring seats it on the rail. */
+      '.nx-node-current{width:20px;height:20px;' +
+        'background:radial-gradient(120% 120% at 50% 22%, #86e3a6 0%, #43ba69 52%, #2d9b55 100%);' +
+        'box-shadow:inset 0 1.5px 1.5px rgba(255,255,255,0.6), inset 0 -2px 4px rgba(0,0,0,0.20),' +
+        '0 0 0 4px rgba(63,185,104,0.15), 0 0 16px rgba(63,185,104,0.45),' +
+        '0 0 0 1.5px rgba(255,255,255,0.95)}',
+      /* …and it pings. Two rings, half a cycle apart, so the rail always has
+         one travelling outward — a single ring reads as a hiccup, two read as
+         a pulse. They ride on ::before/::after so nothing is added to the DOM
+         sixteen times over. */
+      '.nx-node-current::before,.nx-node-current::after{content:"";position:absolute;' +
+        'inset:0;border-radius:999px;box-shadow:0 0 0 1.5px rgba(63,185,104,0.55);' +
+        'animation:nx-ripple 2.8s cubic-bezier(.22,.61,.36,1) infinite}',
+      '.nx-node-current::after{animation-delay:1.4s}',
+      '@keyframes nx-ripple{0%{transform:scale(1);opacity:.75}' +
+        '70%{transform:scale(2.7);opacity:0}100%{transform:scale(2.7);opacity:0}}',
+      '.nx-node-goal{width:26px;height:26px;background:' + C.card + ';display:grid;' +
+        'place-items:center;box-shadow:inset 0 0 0 1.5px ' + C.line +
+        ', 0 6px 16px -8px rgba(13,13,13,.28)}',
+      '@media (prefers-reduced-motion: reduce){.nx-node-current::before,' +
+        '.nx-node-current::after{animation:none;opacity:0}}',
       '@media (prefers-reduced-motion: reduce){.nx-live-dot::after{animation:none}}',
     ].join('');
     document.head.appendChild(css);
@@ -303,6 +319,9 @@
       '0 18px 44px -26px rgba(13,13,13,0.20)',
     current:
       'inset 0 1px 0 rgba(255,255,255,1), 0 0 0 1px rgba(13,13,13,0.075), ' +
+      // the same green as the bead on the rail below it, at a whisper — the
+      // card and its stop should read as one lit object, not two green things
+      '0 0 0 6px rgba(63,185,104,0.055), ' +
       '0 2px 4px -2px rgba(13,13,13,0.06), 0 40px 80px -30px rgba(13,13,13,0.34)',
   };
 
@@ -365,6 +384,33 @@
     return wrap;
   }
 
+  /* The job-portal mark, lifted out of the rail's own milestone button rather
+     than redrawn here. The rail is hidden on this home but still mounted, so
+     the icon the product uses for that milestone is right there in the DOM —
+     cloning it means this rail and that one can never show two different
+     marks for the same destination. */
+  function jobPortalIcon(rail) {
+    var btn = (rail.milestones || []).filter(function (b) {
+      return /job portal/i.test(b.getAttribute('aria-label') || '');
+    })[0];
+    var svg = btn && btn.querySelector('svg');
+    if (!svg) return null;
+    var copy = svg.cloneNode(true);
+    copy.setAttribute('width', '15');
+    copy.setAttribute('height', '15');
+    // it is drawn in white for the dark rail; on paper it has to be ink
+    copy.querySelectorAll('path').forEach(function (path) {
+      if (path.getAttribute('fill') && path.getAttribute('fill') !== 'none') {
+        path.setAttribute('fill', C.tx2);
+      }
+      if (path.getAttribute('stroke') && path.getAttribute('stroke') !== 'none') {
+        path.setAttribute('stroke', C.tx2);
+      }
+    });
+    if (!copy.querySelector('[fill]:not([fill="none"])')) copy.setAttribute('fill', C.tx2);
+    return copy;
+  }
+
   /* The footer is what the card is FOR, one per state: the reward you banked,
      the button you press, or the distance you still have to cover. The state
      itself is said at the head, so nothing here repeats it. */
@@ -385,16 +431,15 @@
       padding: (small ? '15px' : '17px') + ' 0',
     });
     if (st === 'completed') {
-      // Gold is reward and green is state, and they are kept apart on purpose:
-      // one card wearing both says neither.
-      var xp = item.s.outcome ? item.s.outcome.xp : 0;
-      d.style.background = 'rgba(255,183,58,0.12)';
-      d.style.boxShadow = 'inset 0 0 0 1.5px rgba(255,183,58,0.42)';
+      // How it went is the headline of a finished scenario, so it gets the
+      // widest line on the card rather than a row that scrolls past.
+      var band = item.s.outcome ? item.s.outcome.band : 'Completed';
+      d.style.background = 'rgba(63,185,104,0.09)';
+      d.style.boxShadow = 'inset 0 0 0 1.5px rgba(63,185,104,0.32)';
       d.innerHTML =
-        STAR +
+        ICONS.check +
         '<span style="font:500 ' + (small ? '16px' : '17px') + '/1.3 ' + SANS +
-        ';letter-spacing:-0.02em;color:#8a6d00;white-space:nowrap">' +
-        Number(xp).toLocaleString() + ' XP earned</span>';
+        ';letter-spacing:-0.02em;color:#2c7d47;white-space:nowrap">' + band + '</span>';
       return d;
     }
     d.style.boxShadow = 'inset 0 0 0 1.5px ' + C.line;
@@ -493,15 +538,23 @@
     var rows = styleEl(document.createElement('div'), {
       display: 'flex', flexDirection: 'column', gap: active ? '16px' : '13px', width: '100%',
     });
+    /* THREE SLOTS, ONE ORDER, EVERY CARD: reward, then time, then difficulty.
+       The words change with the state — earned or up-to, spent or needed — but
+       the row never moves, so two cards can be compared by looking at the same
+       line twice instead of re-reading both. That is the whole reason the slots
+       are fixed, and it is why PERFORMANCE is not one of them: it exists on
+       exactly one of the three states, and a row that is present on a third of
+       the deck is a row that shifts everything under it. It gets the footer,
+       which is a better home for it anyway — a finished scenario's headline is
+       how it went. */
     if (st === 'completed') {
-      rows.appendChild(metaRow('Performance', metaValue(s.outcome ? s.outcome.band : '—', sm), sm));
+      rows.appendChild(metaRow('XP earned', xpPill(s.outcome ? s.outcome.xp : 0), sm));
       rows.appendChild(metaRow('Time spent', metaValue(hhmm(s.outcome && s.outcome.minutes), sm), sm));
-      rows.appendChild(metaRow('Difficulty', difficultyDots(s.difficulty, sm), sm));
     } else {
-      rows.appendChild(metaRow('Time needed', metaValue('~' + hhmm(s.estimated_minutes || 0), sm), sm));
-      rows.appendChild(metaRow('Difficulty', difficultyDots(s.difficulty, sm), sm));
       rows.appendChild(metaRow('Earn XP upto', xpPill(750), sm));
+      rows.appendChild(metaRow('Time needed', metaValue('~' + hhmm(s.estimated_minutes || 0), sm), sm));
     }
+    rows.appendChild(metaRow('Difficulty', difficultyDots(s.difficulty, sm), sm));
     bottom.appendChild(rows);
     bottom.appendChild(footer(item, sm));
     card.appendChild(bottom);
@@ -694,18 +747,12 @@
     var cardsRow = styleEl(document.createElement('div'), {
       display: 'flex', alignItems: 'flex-end', gap: GAP + 'px', padding: '16px ' + PAD_X + 'px 0',
     });
-    var railRow = styleEl(document.createElement('div'), {
-      display: 'flex', alignItems: 'flex-start', gap: GAP + 'px',
-      padding: '28px ' + PAD_X + 'px 30px',
-    });
-
-    /* NO CHAPTER MARKS. Category looks like the obvious second axis here and
-       it is a trap: this journey's sequence INTERLEAVES its five categories
-       (1,2 Growth · 3 Ops · 4,5 Growth · 6,7 Ops …), so a "new category starts
+    /* THE DECK. One card per scenario, in the journey's own order — the only
+       spine this deck has. (Category looked like an obvious second axis and is
+       a trap: the sequence INTERLEAVES the five categories, so a "new chapter
        here" rule fires eight times and marks nothing. Built it, saw it, took
-       it out. The sequence is the only spine this deck has, and it is enough. */
+       it out.) */
     var cards = [];
-    var cells = [];
     items.forEach(function (item, i) {
       var card = buildCard(item, i);
       /* Clicking a card brings it to the middle. Obvious in hindsight; the
@@ -718,37 +765,64 @@
       });
       cardsRow.appendChild(card);
       cards.push(card);
+    });
 
-      /* One cell per card, exactly as wide, so the node lands on the card's
-         centre line. The connecting line is drawn by the cell itself and
-         overhangs by half a gap on each side, which is how the segments meet
-         across the gap — a single element spanning the row cannot work inside
-         an overflow-x container, its edges resolve against the padding box. */
+    /* ── the timeline ────────────────────────────────────────────────────
+       Rebuilt as ONE line with computed positions. The first version drew a
+       left half-line and a right half-line inside each card's cell and let
+       them meet in the gaps — which they did, to within a rounded end and a
+       subpixel, and the result was a rail with a nick in it under every card.
+       A line that describes a continuous journey cannot itself be dashed by
+       accident.
+
+       Positions are arithmetic, not measured: every card's width is known
+       before anything renders, so a node's centre is
+       PAD_X + Σ(widths and gaps before it) + its own half-width. No layout
+       read, nothing to re-sync, and the rail cannot drift from the deck. */
+    var GOAL_W = 250, NODE_BOX = 26;
+    var W = items.map(function (it) {
+      return it.status === 'current' ? GEO.current.w : GEO.other.w;
+    });
+    var xs = [];
+    var run = PAD_X;
+    W.forEach(function (w) { xs.push(run + w / 2); run += w + GAP; });
+    var xGoal = run + GOAL_W / 2;
+    var railW = run + GOAL_W + PAD_X;
+
+    var railRow = styleEl(document.createElement('div'), {
+      position: 'relative', width: railW + 'px', height: '64px', flexShrink: '0',
+      margin: '26px 0 30px',
+    });
+
+    function line(x1, x2, colour, z) {
+      return styleEl(document.createElement('span'), {
+        position: 'absolute', left: x1 + 'px', width: Math.max(0, x2 - x1) + 'px',
+        top: NODE_BOX / 2 - 1.5 + 'px', height: '3px', borderRadius: '3px',
+        background: colour, zIndex: String(z || 1),
+      });
+    }
+    // the whole road first, then the part of it you have walked over the top
+    railRow.appendChild(line(xs[0], xGoal, 'rgba(13,13,13,0.11)', 1));
+    railRow.appendChild(line(xs[0], xs[currentIdx], 'rgba(63,185,104,0.8)', 2));
+
+    var cells = [];
+    items.forEach(function (item, i) {
       var cell = styleEl(document.createElement('div'), {
-        position: 'relative', flex: '0 0 auto', width: card.style.width,
-        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '11px',
+        position: 'absolute', left: xs[i] + 'px', top: '0', transform: 'translateX(-50%)',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: '3',
+        cursor: 'pointer',
       });
-
-      var behind = i <= currentIdx; // the line arriving at this card
-      var past = i < currentIdx;    // the line leaving it
-      [['left', behind], ['right', past]].forEach(function (side, k) {
-        if (k === 0 && i === 0) return; // the journey starts at the first stop
-        var seg = styleEl(document.createElement('span'), {
-          position: 'absolute', top: '7px', height: '3px', borderRadius: '3px',
-          background: side[1] ? 'rgba(63,185,104,0.72)' : 'rgba(13,13,13,0.13)',
-        });
-        if (k === 0) { seg.style.left = -(GAP / 2) + 'px'; seg.style.right = '50%'; }
-        else { seg.style.left = '50%'; seg.style.right = -(GAP / 2) + 'px'; }
-        cell.appendChild(seg);
+      var box = styleEl(document.createElement('div'), {
+        height: NODE_BOX + 'px', display: 'flex', alignItems: 'center', justifyContent: 'center',
       });
-
       var node = document.createElement('span');
       node.className = 'nx-node nx-node-' + item.status;
-      cell.appendChild(node);
+      box.appendChild(node);
+      cell.appendChild(box);
 
       var num = styleEl(document.createElement('span'), {
         font: (item.status === 'current' ? '500 ' : '400 ') + '12px/1 ' + MONO,
-        letterSpacing: '0.06em',
+        letterSpacing: '0.06em', marginTop: '8px',
         color: item.status === 'current' ? C.tx : item.status === 'completed' ? C.tx2 : C.tx3,
       });
       num.textContent = (item.s.sequence_order < 10 ? '0' : '') + item.s.sequence_order;
@@ -756,8 +830,7 @@
 
       cell.setAttribute('role', 'button');
       cell.setAttribute('tabindex', '0');
-      cell.setAttribute('aria-label', item.s.title + ', ' + item.status);
-      cell.style.cursor = 'pointer';
+      cell.setAttribute('aria-label', item.s.title + ', ' + STATE_CHIP[item.status].label);
       cell.addEventListener('click', function () { scrollToIndex(i); });
       cell.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); scrollToIndex(i); }
@@ -769,31 +842,37 @@
 
     /* ── where the road goes ──────────────────────────────────────────────
        Sixteen scenarios and then nothing is a list that stops. The journey has
-       a destination — the job portal is the whole point of walking it — so the
-       rail runs one stop past the last card and ends there. It has no card
-       because it is not a scenario; it is the reason for the other sixteen. */
+       a destination — the job portal is the reason for walking it — so the
+       rail runs one stop past the last card and ends there. It carries no card
+       because it is not a scenario.
+
+       The mark is the PRODUCT's own job-portal icon, lifted out of the rail's
+       milestone button at runtime rather than redrawn, so it cannot drift from
+       whatever the rail is showing. */
     var end = styleEl(document.createElement('div'), {
-      position: 'relative', flex: '0 0 auto', width: '240px',
-      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '11px',
+      position: 'absolute', left: xGoal + 'px', top: '0', transform: 'translateX(-50%)',
+      display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: '3',
     });
-    end.appendChild(styleEl(document.createElement('span'), {
-      position: 'absolute', top: '7px', height: '3px', borderRadius: '3px',
-      left: -(GAP / 2) + 'px', right: '50%', background: 'rgba(13,13,13,0.13)',
-    }));
+    var goalBox = styleEl(document.createElement('div'), {
+      height: NODE_BOX + 'px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+    });
     var goal = document.createElement('span');
     goal.className = 'nx-node nx-node-goal';
-    goal.innerHTML =
-      '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="' + C.tx2 +
-      '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-      '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg>';
-    end.appendChild(goal);
+    var badge = jobPortalIcon(rail);
+    if (badge) goal.appendChild(badge);
+    goalBox.appendChild(goal);
+    end.appendChild(goalBox);
     var goalLabel = styleEl(document.createElement('span'), {
-      font: '500 13px/1 ' + SANS, letterSpacing: '-0.01em', color: C.tx2, whiteSpace: 'nowrap',
+      font: '500 13px/1 ' + SANS, letterSpacing: '-0.01em', color: C.tx2,
+      whiteSpace: 'nowrap', marginTop: '9px',
     });
     goalLabel.textContent = 'The job portal opens';
     end.appendChild(goalLabel);
     railRow.appendChild(end);
 
+    /* Both rows in ONE scroll container: the deck and its rail have to move as
+       a single object, and a rail synced to the deck by a scroll listener
+       drifts by a frame on every flick. */
     track.appendChild(cardsRow);
     track.appendChild(railRow);
     scroller.appendChild(track);

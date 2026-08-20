@@ -682,11 +682,11 @@
       NX.rail = rail;
       if (PF_STATE !== 'locked') initPortfolioDock();
       railQueue.forEach(function (fn) {
-        try { fn(nav, rail); } catch (err) { console.warn('[nav-explorations] lane failed:', err); }
+        try { fn(nav, rail); } catch (err) { console.error('[nav-explorations] lane failed:', err); }
       });
     } catch (err) {
       // an injection must never take the base down with it
-      console.warn('[nav-explorations] core failed:', err);
+      console.error('[nav-explorations] core failed:', err);
     }
   }, 200);
 
