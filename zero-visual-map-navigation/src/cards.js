@@ -741,9 +741,11 @@
     };
   }
 
-  function paperize(node) {
+  function paperize(node, selfOnly) {
     if (!node || node.nodeType !== 1) return;
-    var all = [node].concat(Array.prototype.slice.call(node.querySelectorAll('*')));
+    // An attribute change touches ONE node; re-walking its whole subtree on
+    // every React re-style is how a translator turns into a hot loop.
+    var all = selfOnly ? [node] : [node].concat(Array.prototype.slice.call(node.querySelectorAll('*')));
     all.forEach(function (el) {
       if (!el.style) return;
 
@@ -785,16 +787,27 @@
       if (fg) el.style.setProperty('color', ink(fg.a), 'important');
 
       if (el.namespaceURI === 'http://www.w3.org/2000/svg') {
-        var fill = cs.fill !== 'none' && white(cs.fill);
-        if (fill) el.style.setProperty('fill', ink(fill.a), 'important');
-        var stroke = cs.stroke !== 'none' && white(cs.stroke);
-        if (stroke) el.style.setProperty('stroke', ink(stroke.a), 'important');
+        /* Presentation ATTRIBUTES as well as the style property. An SVG can be
+           painted either way, and the ring's track segments are written as
+           `stroke="rgba(255,255,255,0.16)"` attributes — which survived every
+           CSS-shaped fix, `!important` included. Rewrite the attribute in the
+           same channel it was written in and the argument does not arise. */
+        ['fill', 'stroke'].forEach(function (k) {
+          var attr = white(el.getAttribute(k));
+          if (attr) el.setAttribute(k, ink(attr.a));
+          var comp = cs[k] !== 'none' && white(cs[k]);
+          if (comp) el.style.setProperty(k, ink(comp.a), 'important');
+        });
       }
 
-      var bd = white(cs.borderTopColor);
-      if (bd && bd.a > 0.02 && parseFloat(cs.borderTopWidth) > 0) {
-        el.style.setProperty('border-color', C.line, 'important');
-      }
+      // every side, not just the top — a rule drawn as a single left border is
+      // as common in this app as a full box
+      ['Top', 'Right', 'Bottom', 'Left'].forEach(function (side) {
+        var bd = white(cs['border' + side + 'Color']);
+        if (bd && bd.a > 0.02 && parseFloat(cs['border' + side + 'Width']) > 0) {
+          el.style.setProperty('border-' + side.toLowerCase() + '-color', C.line, 'important');
+        }
+      });
 
       /* Translucent-white SURFACES — the XP track, the ladder's rails, the
          little sub-panels. These are a VALUE, not a colour: white at 22% on a
@@ -814,15 +827,39 @@
   }
 
   function paperizeHud() {
+    /* A few settle passes on top of the observer. Panels mount, animate and
+       re-render across several frames, and an observer batch can hand back a
+       node whose styles are still a frame behind. These passes are cheap,
+       bounded and idempotent — anything already translated reads as ink and
+       falls straight through. */
+    [0, 160, 600, 1500].forEach(function (t) {
+      setTimeout(function () {
+        HUD.forEach(function (sel) {
+          var root = document.querySelector(sel);
+          if (root) paperize(root);
+        });
+      }, t);
+    });
+
     HUD.forEach(function (sel) {
       var root = document.querySelector(sel);
       if (!root) return;
       paperize(root);
+      /* childList catches a panel MOUNTING; attributes catch React re-styling
+         a node that is already there, which is how one white hairline survived
+         every sweep — the element never moved, its class just changed under
+         it. Both, or the translation is only true at mount. */
       new MutationObserver(function (recs) {
         recs.forEach(function (rec) {
-          Array.prototype.forEach.call(rec.addedNodes, paperize);
+          if (rec.type === 'attributes') paperize(rec.target, true);
+          else Array.prototype.forEach.call(rec.addedNodes, paperize);
         });
-      }).observe(root, { childList: true, subtree: true });
+      }).observe(root, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['class', 'style'],
+      });
     });
   }
 
