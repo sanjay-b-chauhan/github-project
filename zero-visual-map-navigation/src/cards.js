@@ -773,11 +773,17 @@
       // ── surfaces: a dark inline background becomes paper ───────────────
       var bg = rgba(el.style.background || el.style.backgroundColor);
       if (bg && bg.lum <= 96) {
-        el.style.setProperty('background', C.card, 'important');
+        /* A PANEL becomes paper. A TILE INSIDE a panel must not — painting it
+           the same white as the surface it sits on erases it, which is exactly
+           what happened to the locked streak tiers: dark glass tile on a dark
+           panel became white tile on a white panel, i.e. nothing. Small dark
+           surfaces become a wash instead, so they stay their own object. */
+        var r = el.getBoundingClientRect();
+        var isPanel = r.width > 150 && r.height > 70;
+        el.style.setProperty('background', isPanel ? C.card : 'rgba(13,13,13,0.04)', 'important');
         el.style.setProperty('backdrop-filter', 'none', 'important');
         el.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
-        var r = el.getBoundingClientRect();
-        if (r.width > 150 && r.height > 70) {
+        if (isPanel) {
           el.style.setProperty('border-color', C.line, 'important');
           el.style.setProperty('box-shadow', '0 24px 60px -24px rgba(13,13,13,0.28)', 'important');
         }
@@ -853,6 +859,22 @@
           el.style.setProperty('border-' + side.toLowerCase() + '-color', C.line, 'important');
         }
       });
+
+      /* BOX-SHADOW. The fourth way this app draws an edge, and the one that
+         outlines the locked streak tiers: `inset 0 0 0 1px rgba(255,255,255,
+         .07)`. A shadow is a compound value, so each colour stop inside it is
+         translated in place and the geometry — inset, offsets, spread — is
+         left exactly as authored. Ink needs a little more alpha than white to
+         carry the same hairline, hence the nudge and the floor. */
+      var shadow = cs.boxShadow;
+      if (shadow && shadow !== 'none') {
+        var swapped = shadow.replace(/rgba?\([^)]+\)/g, function (stop) {
+          var c = rgba(stop);
+          if (!c || c.lum <= 195 || c.spread >= 30) return stop;
+          return 'rgba(13,13,13,' + Math.min(0.16, Math.max(0.07, c.a * 1.25)).toFixed(3) + ')';
+        });
+        if (swapped !== shadow) el.style.setProperty('box-shadow', swapped, 'important');
+      }
 
       /* Translucent-white SURFACES — the XP track, the ladder's rails, the
          little sub-panels. These are a VALUE, not a colour: white at 22% on a
