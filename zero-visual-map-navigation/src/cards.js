@@ -119,7 +119,37 @@
         });
       });
     });
-    return out.sort(function (a, b) { return a.s.sequence_order - b.s.sequence_order; });
+    out.sort(function (a, b) { return a.s.sequence_order - b.s.sequence_order; });
+
+    /* ── a training opens every category ──────────────────────────────────
+       Each of the five categories is taught before it is practised, and the
+       teaching is Zero's own — no company, no scenario, no title art. So the
+       deck gets a card at the head of each one.
+
+       "Head of the category" is decided in SEQUENCE order, not in the
+       fixture's grouping, because this journey interleaves its categories
+       (1,2 Growth · 3 Ops · 4,5 Growth …). The training therefore lands
+       immediately before the first scenario of its category that you actually
+       reach — which is the only place it means anything.
+
+       Its state is read off that scenario: if you have got to it, you have
+       been through its training. */
+    var seen = {};
+    var withTraining = [];
+    out.forEach(function (item) {
+      if (!seen[item.category]) {
+        seen[item.category] = true;
+        withTraining.push({
+          kind: 'training',
+          category: item.category,
+          s: { title: 'Training', sequence_order: item.s.sequence_order - 0.5 },
+          status: item.s.sequence_order <= done + 1 ? 'completed' : 'locked',
+          away: item.away,
+        });
+      }
+      withTraining.push(item);
+    });
+    return withTraining;
   }
 
   /* ── the card, ScenarioIntroV1's own anatomy on white ─────────────────────
@@ -455,6 +485,102 @@
     return d;
   }
 
+  /* ── the training card ───────────────────────────────────────────────────
+     Not a scenario, and it should not pretend to be one. There is no company,
+     so the mark is Zero's own; there is no title art, so the category's name
+     IS the picture, set in the serif the app uses for the journey's own title.
+     No XP row, no difficulty, no time: a training is the ground you stand on
+     before the first scenario of its category, and inventing numbers for it
+     would be the only fiction on this screen. */
+  function buildTraining(item, index) {
+    var g = GEO.other;
+    var done = item.status === 'completed';
+
+    var card = styleEl(document.createElement('article'), {
+      flex: '0 0 auto', width: g.w + 'px', height: g.h + 'px', scrollSnapAlign: 'center',
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      background: 'rgba(255,255,255,0.46)',
+      backdropFilter: 'blur(26px) saturate(1.45)',
+      WebkitBackdropFilter: 'blur(26px) saturate(1.45)',
+      borderRadius: g.r + 'px', padding: g.pad,
+      boxShadow: SHELL.other,
+      transition: 'background 320ms ease, box-shadow 320ms ease, transform 320ms ' + NX.EASE,
+    });
+    card.className = 'nx-card';
+    card.dataset.nxIdx = index;
+    card.dataset.nxState = item.status;
+    card.dataset.nxKind = 'training';
+    card.setAttribute('aria-label', 'Training, ' + item.category);
+
+    var mid = styleEl(document.createElement('div'), {
+      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '22px',
+      flex: '1 1 auto', justifyContent: 'center', minHeight: '0', width: '100%',
+    });
+
+    // Zero's mark, in the same chip a scenario wears its company's in
+    var appMark = document.querySelector('img[alt="Zero"]');
+    var chip = styleEl(document.createElement('span'), {
+      display: 'inline-flex', alignItems: 'center', gap: '9px', flexShrink: '0',
+      padding: '9px 16px', borderRadius: '999px', background: C.card,
+      boxShadow: 'inset 0 0 0 1px ' + C.line + ', 0 10px 26px -16px rgba(13,13,13,0.35)',
+    });
+    if (appMark) {
+      var mark = styleEl(document.createElement('img'), {
+        height: '15px', width: 'auto', filter: 'invert(1)',
+        opacity: done ? '0.9' : '0.55',
+      });
+      mark.src = appMark.getAttribute('src');
+      mark.alt = 'Zero';
+      chip.appendChild(mark);
+    }
+    var word = styleEl(document.createElement('span'), {
+      font: '400 11px/1 ' + MONO, letterSpacing: '0.14em', textTransform: 'uppercase',
+      color: C.tx3,
+    });
+    word.textContent = 'Training';
+    chip.appendChild(word);
+    mid.appendChild(chip);
+
+    /* The name of the category, as the picture. */
+    var title = styleEl(document.createElement('h3'), {
+      font: '400 40px/1.08 ' + SERIF, letterSpacing: '-0.02em',
+      color: done ? C.tx : C.tx2, textAlign: 'center', margin: '0', padding: '0 4px',
+      flexShrink: '0',
+    });
+    title.textContent = item.category;
+    mid.appendChild(title);
+
+    var sub = styleEl(document.createElement('p'), {
+      font: '400 15px/1.5 ' + SANS, color: C.tx3, textAlign: 'center',
+      margin: '0', maxWidth: '300px', flexShrink: '0',
+    });
+    sub.textContent = 'The groundwork for this part, before the first scenario in it.';
+    mid.appendChild(sub);
+    card.appendChild(mid);
+
+    var bottom = styleEl(document.createElement('div'), {
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      gap: g.band + 'px', width: '100%', flexShrink: '0',
+    });
+    bottom.appendChild(styleEl(document.createElement('div'), {
+      height: '1px', width: '100%', background: C.line2,
+    }));
+    var foot = styleEl(document.createElement('div'), {
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      borderRadius: '18px', width: '100%', gap: '9px', padding: g.cta + 'px 0',
+      background: done ? 'rgba(63,185,104,0.09)' : 'transparent',
+      boxShadow: 'inset 0 0 0 1.5px ' + (done ? 'rgba(63,185,104,0.32)' : C.line),
+    });
+    foot.innerHTML =
+      (done ? ICONS.check : ICONS.lock) +
+      '<span style="font:500 17px/1.3 ' + SANS + ';letter-spacing:-0.02em;color:' +
+      (done ? '#2c7d47' : C.tx3) + ';white-space:nowrap">' +
+      (done ? 'Completed' : 'Opens with this category') + '</span>';
+    bottom.appendChild(foot);
+    card.appendChild(bottom);
+    return card;
+  }
+
   function buildCard(item, index) {
     var s = item.s;
     var st = item.status;
@@ -521,19 +647,9 @@
     name.textContent = s.title;
     mid.appendChild(name);
 
-    /* WHICH TRAINING THIS BELONGS TO. Every scenario sits inside one of the
-       journey's five categories, and the deck has never said so — you could
-       read all sixteen cards and not know the journey had parts at all. It is
-       a subtitle, not a heading: the scenario is what the card is about, the
-       category is what it is part of. */
-    var parent = styleEl(document.createElement('p'), {
-      font: '400 11px/1.4 ' + MONO, letterSpacing: '0.12em', textTransform: 'uppercase',
-      color: C.tx3, margin: '0', textAlign: 'center', maxWidth: '100%',
-      padding: '0 6px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-      flexShrink: '0',
-    });
-    parent.textContent = item.category;
-    mid.appendChild(parent);
+    /* No category line on a scenario card. It was added to name the training
+       each card belongs to, and the TRAINING CARD does that job properly now —
+       a line of small caps under every title was the cheap version of it. */
     card.appendChild(mid);
 
     /* BOTTOM — what the state knows, then what the state is for. Three rows on
@@ -1154,7 +1270,7 @@
        it out.) */
     var cards = [];
     items.forEach(function (item, i) {
-      var card = buildCard(item, i);
+      var card = item.kind === 'training' ? buildTraining(item, i) : buildCard(item, i);
       /* Clicking a card brings it to the middle. Obvious in hindsight; the
          first pass could only be steered from the dots underneath it, which
          meant the biggest targets on the screen did nothing. The button inside
@@ -1181,7 +1297,7 @@
        read, nothing to re-sync, and the rail cannot drift from the deck. */
     var GOAL_W = 260, NODE_BOX = 40;
     var W = items.map(function (it) {
-      return it.status === 'current' ? GEO.current.w : GEO.other.w;
+      return it.status === 'current' && it.kind !== 'training' ? GEO.current.w : GEO.other.w;
     });
     var xs = [];
     var run = PAD_X;
@@ -1216,7 +1332,8 @@
         height: NODE_BOX + 'px', display: 'flex', alignItems: 'center', justifyContent: 'center',
       });
       var node = document.createElement('span');
-      node.className = 'nx-node nx-node-' + item.status;
+      node.className =
+        'nx-node nx-node-' + item.status + (item.kind === 'training' ? ' nx-node-training' : '');
       box.appendChild(node);
       cell.appendChild(box);
 
@@ -1225,12 +1342,20 @@
         letterSpacing: '0.06em', marginTop: '8px',
         color: item.status === 'current' ? C.tx : item.status === 'completed' ? C.tx2 : C.tx3,
       });
-      num.textContent = (item.s.sequence_order < 10 ? '0' : '') + item.s.sequence_order;
+      // a training has no place in the numbering — the scenarios are what is
+      // counted, and giving it a number would push every count off by five
+      num.textContent = item.kind === 'training'
+        ? ''
+        : (item.s.sequence_order < 10 ? '0' : '') + item.s.sequence_order;
       cell.appendChild(num);
 
       cell.setAttribute('role', 'button');
       cell.setAttribute('tabindex', '0');
-      cell.setAttribute('aria-label', item.s.title + ', ' + STATE_LABEL[item.status]);
+      cell.setAttribute(
+        'aria-label',
+        (item.kind === 'training' ? 'Training, ' + item.category : item.s.title) +
+          ', ' + STATE_LABEL[item.status]
+      );
       cell.addEventListener('click', function () { scrollToIndex(i); });
       cell.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); scrollToIndex(i); }
