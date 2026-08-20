@@ -196,7 +196,7 @@
     var css = document.createElement('style');
     css.id = 'nx-sbtn-css';
     css.textContent = [
-      '.nx-sbtn{height:62px;width:100%;border-radius:100px;display:flex;align-items:center;justify-content:center;gap:10px;padding:15px 40px;cursor:pointer;position:relative;overflow:hidden;user-select:none;border:0;outline:none;',
+      '.nx-sbtn{height:64px;width:100%;border-radius:22px;display:flex;align-items:center;justify-content:center;gap:10px;padding:15px 40px;cursor:pointer;position:relative;overflow:hidden;user-select:none;border:0;outline:none;',
       'background-image:linear-gradient(90deg,rgba(255,255,255,.4),rgba(255,255,255,.4)),linear-gradient(180deg,rgba(229,229,229,.8),rgb(226,226,226));',
       'box-shadow:0 6px 0 #bfbfbf,0 12px 18px -6px rgba(0,0,0,.28),0 0 0 1.33px #dcdcdc,inset 0 1.33px 0 rgba(255,255,255,.75);',
       'transition:transform .1s cubic-bezier(.34,1.56,.64,1),box-shadow .1s}',
@@ -232,6 +232,13 @@
         'box-shadow:inset 0 0 0 1.5px ' + C.tx4 + '}',
       '.nx-node-current{width:19px;height:19px;margin-top:-3px;background:#3fb968;' +
         'box-shadow:0 0 0 4.5px rgba(63,185,104,0.20), 0 0 0 1.5px rgba(255,255,255,0.95)}',
+      /* Resting, hovered, centred — three heights, so the deck answers the
+         cursor before it is clicked. Transform lives here rather than inline,
+         or the centred card's own inline transform would out-rank :hover. */
+      '.nx-card{cursor:pointer;transform:translateY(0)}',
+      '.nx-card:not(.nx-on):hover{transform:translateY(-7px)}',
+      '.nx-card.nx-on{cursor:default;transform:translateY(-10px)}',
+      '@media (prefers-reduced-motion: reduce){.nx-card,.nx-card:hover,.nx-card.nx-on{transform:none}}',
       '.nx-cell-on .nx-node{transform:scale(1.25)}',
       '.nx-node-goal{width:26px;height:26px;margin-top:-8px;background:' + C.card + ';' +
         'display:grid;place-items:center;box-shadow:inset 0 0 0 1.5px ' + C.line + ', 0 6px 16px -8px rgba(13,13,13,.25)}',
@@ -259,72 +266,82 @@
     return away + ' scenarios away';
   }
 
-  function cta(item) {
-    if (item.status === 'current') {
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'nx-sbtn';
-      b.innerHTML =
-        '<svg width="17" height="17" viewBox="0 0 24 24" fill="#121212" style="position:relative;z-index:2" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>' +
-        '<span class="nx-sbtn-label" style="position:relative;z-index:2">Continue</span>';
-      return b;
-    }
-    var isDone = item.status === 'completed';
-    var d = styleEl(document.createElement('div'), {
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      borderRadius: '100px', width: '100%', gap: '9px', padding: '16px 0',
-      background: isDone ? 'rgba(63,185,104,0.07)' : 'transparent',
-      boxShadow: isDone
-        ? 'inset 0 0 0 1.5px rgba(63,185,104,0.34)'
-        : 'inset 0 0 0 1.5px ' + C.line,
-    });
-    d.innerHTML =
-      (isDone ? ICONS.check : ICONS.lock) +
-      '<span style="font:500 17px/1.3 ' + SANS + ';letter-spacing:-0.02em;color:' +
-      (isDone ? C.tx : C.tx3) + ';white-space:nowrap">' +
-      (isDone ? 'Completed' : distance(item.away)) + '</span>';
-    return d;
-  }
-
   /* ── the three states ─────────────────────────────────────────────────────
      A deck where every card is the same object cannot say where you are in it.
-     These three are physically different things, and the differences are the
+     These three are physically different things, and the difference is the
      message, not decoration:
 
-       DONE     smaller and quieter, sitting lower. Its rows report what
-                happened — band, time, XP earned — because that is what the
-                past is for. Full-colour art: you earned the picture.
-       CURRENT  the tallest card, pure white, the only real shadow, a live chip
-                at its head and the only working button in the deck.
-       AHEAD    the same footprint as done, art held back to a soft grey — the
-                picture is part of the reward — rows advertising what it is
-                worth, and a footer that says how FAR away it is rather than
-                just "locked".
+       DONE      the smallest footprint, glass rather than paper, and its rows
+                 report what HAPPENED — band, time spent, difficulty. Its
+                 footer is the payoff: the XP it paid.
+       CURRENT   the biggest card, the only opaque one, the only real shadow,
+                 and the only working button in the deck.
+       UPCOMING  done's footprint, art held back to a soft grey — the picture
+                 is part of the reward — rows advertising what it is worth, and
+                 a footer that says how FAR away it is rather than "locked".
 
-     They share one bottom line: every card's base sits on the same rail, so
-     the current card rises out of the row instead of floating in it. */
+     Every card says its state in the same place, at its head, in the same
+     shape. Reading the deck should never require reading a footer to work out
+     which of the three you are looking at.
+
+     They share one bottom line: every card's base sits on the timeline, so the
+     current card rises out of the row instead of floating in it. */
   var GEO = {
-    current: { w: 468, h: 726, pad: '26px 26px 30px', art: 200, name: 25 },
-    other: { w: 424, h: 646, pad: '22px 22px 26px', art: 168, name: 22 },
+    current: { w: 484, h: 724, pad: '18px 24px 24px', art: 252, name: 26, r: 40 },
+    other: { w: 392, h: 606, pad: '15px 19px 19px', art: 186, name: 20, r: 34 },
   };
 
-  function liveChip() {
+  /* Apple's card recipe, and the reason each layer is there: a bright inner
+     top edge so the card catches light, ONE dark hairline so it has an actual
+     boundary on a pale ground (a shadow alone leaves the edge mushy), and a
+     wide soft drop that does the lifting. The resting cards are glass — the
+     mint ground reads through them — and only the current one is opaque, which
+     is what makes it the object in front. */
+  var SHELL = {
+    other:
+      'inset 0 1px 0 rgba(255,255,255,0.9), 0 0 0 1px rgba(13,13,13,0.055), ' +
+      '0 18px 44px -26px rgba(13,13,13,0.20)',
+    current:
+      'inset 0 1px 0 rgba(255,255,255,1), 0 0 0 1px rgba(13,13,13,0.075), ' +
+      '0 2px 4px -2px rgba(13,13,13,0.06), 0 40px 80px -30px rgba(13,13,13,0.34)',
+  };
+
+  var STATE_CHIP = {
+    completed: { label: 'Completed', bg: 'rgba(63,185,104,0.10)', ring: 'rgba(63,185,104,0.30)', fg: '#2c7d47' },
+    current: { label: 'In progress', bg: 'rgba(63,185,104,0.12)', ring: 'rgba(63,185,104,0.34)', fg: '#2c7d47' },
+    locked: { label: 'Upcoming', bg: 'rgba(13,13,13,0.035)', ring: 'rgba(13,13,13,0.075)', fg: C.tx2 },
+  };
+
+  function stateChip(status) {
+    var t = STATE_CHIP[status];
     var c = styleEl(document.createElement('span'), {
       display: 'inline-flex', alignItems: 'center', gap: '8px',
-      alignSelf: 'flex-start', borderRadius: '999px', padding: '7px 13px 7px 11px',
-      background: 'rgba(63,185,104,0.10)',
-      boxShadow: 'inset 0 0 0 1px rgba(63,185,104,0.28)',
+      borderRadius: '999px', padding: '8px 15px 8px 12px', flexShrink: '0',
+      background: t.bg, boxShadow: 'inset 0 0 0 1px ' + t.ring,
+      backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)',
     });
+    var mark =
+      status === 'current'
+        ? '<span class="nx-live-dot"></span>'
+        : status === 'completed'
+        ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="' + t.fg +
+          '" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+          '<path d="M20 6 9 17l-5-5"/></svg>'
+        : '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="' + C.tx3 +
+          '" stroke-width="2" stroke-linecap="round" aria-hidden="true">' +
+          '<rect x="4" y="10.5" width="16" height="10.5" rx="2.5"/><path d="M7.5 10.5V7a4.5 4.5 0 0 1 9 0v3.5"/></svg>';
     c.innerHTML =
-      '<span class="nx-live-dot"></span>' +
-      '<span style="font:500 13px/1 ' + SANS + ';letter-spacing:-0.01em;color:#2c7d47">In progress</span>';
+      mark +
+      '<span style="font:500 13px/1 ' + SANS + ';letter-spacing:-0.01em;color:' + t.fg + '">' +
+      t.label + '</span>';
     return c;
   }
 
   /* The cover for a scenario with no title art. Not a fallback — the first
-     pass printed the CATEGORY here, which named the chapter on a card that is
-     about one scenario, and read as a mistake. The company's own mark on a
-     soft ground says the same thing the art would have: whose problem this is. */
+     pass printed the CATEGORY here, which named the chapter on a card about
+     one scenario and read as a mistake. The company's own mark on the same
+     blurred twin the art uses says what the art would have: whose problem
+     this is. */
   function plainCover(companyName, box, dim) {
     var logo = LOGOS[companyName];
     var wrap = styleEl(document.createElement('div'), {
@@ -332,7 +349,7 @@
       height: box + 'px', width: '100%',
     });
     if (logo) {
-      var size = Math.round(box * 0.46);
+      var size = Math.round(box * 0.44);
       wrap.innerHTML =
         '<img src="' + logo + '" aria-hidden="true" style="position:absolute;width:' + size +
         'px;height:' + size + 'px;object-fit:contain;filter:blur(46px);opacity:' +
@@ -348,40 +365,82 @@
     return wrap;
   }
 
+  /* The footer is what the card is FOR, one per state: the reward you banked,
+     the button you press, or the distance you still have to cover. The state
+     itself is said at the head, so nothing here repeats it. */
+  function footer(item, small) {
+    var st = item.status;
+    if (st === 'current') {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'nx-sbtn';
+      b.innerHTML =
+        '<svg width="17" height="17" viewBox="0 0 24 24" fill="#121212" style="position:relative;z-index:2" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>' +
+        '<span class="nx-sbtn-label" style="position:relative;z-index:2">Continue</span>';
+      return b;
+    }
+    var d = styleEl(document.createElement('div'), {
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      borderRadius: small ? '18px' : '22px', width: '100%', gap: '9px',
+      padding: (small ? '15px' : '17px') + ' 0',
+    });
+    if (st === 'completed') {
+      // Gold is reward and green is state, and they are kept apart on purpose:
+      // one card wearing both says neither.
+      var xp = item.s.outcome ? item.s.outcome.xp : 0;
+      d.style.background = 'rgba(255,183,58,0.12)';
+      d.style.boxShadow = 'inset 0 0 0 1.5px rgba(255,183,58,0.42)';
+      d.innerHTML =
+        STAR +
+        '<span style="font:500 ' + (small ? '16px' : '17px') + '/1.3 ' + SANS +
+        ';letter-spacing:-0.02em;color:#8a6d00;white-space:nowrap">' +
+        Number(xp).toLocaleString() + ' XP earned</span>';
+      return d;
+    }
+    d.style.boxShadow = 'inset 0 0 0 1.5px ' + C.line;
+    d.innerHTML =
+      ICONS.lock +
+      '<span style="font:500 ' + (small ? '16px' : '17px') + '/1.3 ' + SANS +
+      ';letter-spacing:-0.02em;color:' + C.tx3 + ';white-space:nowrap">' +
+      distance(item.away) + '</span>';
+    return d;
+  }
+
   function buildCard(item, index) {
     var s = item.s;
     var st = item.status;
     var active = st === 'current';
     var g = active ? GEO.current : GEO.other;
+    var sm = !active;
 
     var card = styleEl(document.createElement('article'), {
       flex: '0 0 auto', width: g.w + 'px', height: g.h + 'px', scrollSnapAlign: 'center',
-      display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-      alignItems: 'center', gap: '16px',
-      background: active ? '#FFFFFF' : 'rgba(255,255,255,0.66)',
-      border: '1px solid ' + (active ? C.line : C.line2),
-      borderRadius: '28px', padding: g.pad,
-      boxShadow: active
-        ? '0 30px 70px -26px rgba(13,13,13,0.26), 0 2px 0 0 rgba(255,255,255,0.9) inset'
-        : '0 12px 34px -24px rgba(13,13,13,0.14)',
-      transition: 'background 320ms ease, box-shadow 320ms ease, border-color 320ms ease',
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      background: active ? '#FFFFFF' : 'rgba(255,255,255,0.46)',
+      backdropFilter: active ? 'none' : 'blur(26px) saturate(1.45)',
+      WebkitBackdropFilter: active ? 'none' : 'blur(26px) saturate(1.45)',
+      borderRadius: g.r + 'px', padding: g.pad,
+      boxShadow: active ? SHELL.current : SHELL.other,
+      transition: 'background 320ms ease, box-shadow 320ms ease, transform 320ms ' + NX.EASE,
     });
+    card.className = 'nx-card';
     card.dataset.nxIdx = index;
     card.dataset.nxState = st;
 
-    /* ── head: only the current card announces itself ────────────────────── */
-    if (active) {
-      var head = styleEl(document.createElement('div'), {
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        width: '100%', height: '30px', flexShrink: '0',
-      });
-      head.appendChild(liveChip());
-      card.appendChild(head);
-    }
+    /* HEAD — the state, on every card, in the same place. */
+    var head = styleEl(document.createElement('div'), {
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      width: '100%', flexShrink: '0',
+    });
+    head.appendChild(stateChip(st));
+    card.appendChild(head);
 
-    /* ── middle: the cover, then the scenario's name ──────────────────────── */
+    /* MIDDLE — the art, given the room it was missing. The title art is the
+       most valuable thing on the card and it was floating in the middle of a
+       column of air; now it takes the space and the air comes out of the top. */
     var mid = styleEl(document.createElement('div'), {
-      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '18px',
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      gap: active ? '18px' : '14px',
       flex: '1 1 auto', justifyContent: 'center', minHeight: '0', width: '100%',
     });
 
@@ -411,41 +470,40 @@
     mid.appendChild(artBox);
 
     var name = styleEl(document.createElement('p'), {
-      font: (active ? '500 ' : '500 ') + g.name + 'px/1.32 ' + SANS,
+      font: '500 ' + g.name + 'px/1.3 ' + SANS,
       color: st === 'locked' ? C.tx2 : C.tx, textAlign: 'center',
-      maxWidth: '360px', padding: '0 10px', margin: '0', flexShrink: '0',
-      letterSpacing: '-0.01em',
+      maxWidth: '340px', padding: '0 6px', margin: '0', flexShrink: '0',
+      letterSpacing: '-0.015em',
       display: '-webkit-box', WebkitLineClamp: '2', WebkitBoxOrient: 'vertical', overflow: 'hidden',
     });
     name.textContent = s.title;
     mid.appendChild(name);
     card.appendChild(mid);
 
-    /* ── bottom: the state's own rows, then its footer ────────────────────── */
+    /* BOTTOM — what the state knows, then what the state is for. Three rows on
+       every card, in the same slots, so the eye can compare two cards without
+       re-learning where anything is. */
     var bottom = styleEl(document.createElement('div'), {
       display: 'flex', flexDirection: 'column', alignItems: 'center',
-      gap: active ? '24px' : '20px', width: '100%',
+      gap: active ? '22px' : '18px', width: '100%', flexShrink: '0',
     });
     bottom.appendChild(styleEl(document.createElement('div'), {
-      height: '1px', width: '100%', background: C.line2,
+      height: '1px', width: '100%', background: active ? C.line : C.line2,
     }));
     var rows = styleEl(document.createElement('div'), {
-      display: 'flex', flexDirection: 'column', gap: active ? '18px' : '14px', width: '100%',
+      display: 'flex', flexDirection: 'column', gap: active ? '16px' : '13px', width: '100%',
     });
-    var sm = !active;
     if (st === 'completed') {
       rows.appendChild(metaRow('Performance', metaValue(s.outcome ? s.outcome.band : '—', sm), sm));
       rows.appendChild(metaRow('Time spent', metaValue(hhmm(s.outcome && s.outcome.minutes), sm), sm));
-      rows.appendChild(metaRow('XP earned', xpPill(s.outcome ? s.outcome.xp : 0), sm));
-    } else {
-      rows.appendChild(metaRow('Earn XP upto', xpPill(750), sm));
-      if (s.estimated_minutes) {
-        rows.appendChild(metaRow('Time', metaValue('~' + hhmm(s.estimated_minutes), sm), sm));
-      }
       rows.appendChild(metaRow('Difficulty', difficultyDots(s.difficulty, sm), sm));
+    } else {
+      rows.appendChild(metaRow('Time needed', metaValue('~' + hhmm(s.estimated_minutes || 0), sm), sm));
+      rows.appendChild(metaRow('Difficulty', difficultyDots(s.difficulty, sm), sm));
+      rows.appendChild(metaRow('Earn XP upto', xpPill(750), sm));
     }
     bottom.appendChild(rows);
-    bottom.appendChild(cta(item));
+    bottom.appendChild(footer(item, sm));
     card.appendChild(bottom);
     return card;
   }
@@ -617,7 +675,7 @@
        and the SAME per-card widths, which is what keeps a node under the
        centre of its card at any scroll position. (A separately-scrolled rail
        synced by listener drifts by a frame on every flick.) */
-    var GAP = 40, PAD_X = 72;
+    var GAP = 36, PAD_X = 72;
 
     var scroller = styleEl(document.createElement('div'), {
       flex: '1 1 auto', overflowX: 'auto', overflowY: 'hidden',
@@ -628,9 +686,13 @@
 
     var track = styleEl(document.createElement('div'), {
       display: 'flex', flexDirection: 'column', width: 'max-content', margin: '0 auto',
+      // The panel, the wordmark and the pills all sit along the top edge, so a
+      // track centred by arithmetic reads as jammed against them. This is the
+      // optical correction, not a centring bug.
+      paddingTop: '72px',
     });
     var cardsRow = styleEl(document.createElement('div'), {
-      display: 'flex', alignItems: 'flex-end', gap: GAP + 'px', padding: '20px ' + PAD_X + 'px 0',
+      display: 'flex', alignItems: 'flex-end', gap: GAP + 'px', padding: '16px ' + PAD_X + 'px 0',
     });
     var railRow = styleEl(document.createElement('div'), {
       display: 'flex', alignItems: 'flex-start', gap: GAP + 'px',
@@ -646,6 +708,14 @@
     var cells = [];
     items.forEach(function (item, i) {
       var card = buildCard(item, i);
+      /* Clicking a card brings it to the middle. Obvious in hindsight; the
+         first pass could only be steered from the dots underneath it, which
+         meant the biggest targets on the screen did nothing. The button inside
+         the current card keeps its own click. */
+      card.addEventListener('click', function (e) {
+        if (e.target.closest && e.target.closest('button')) return;
+        scrollToIndex(i);
+      });
       cardsRow.appendChild(card);
       cards.push(card);
 
@@ -744,11 +814,21 @@
     function setCentred(idx) {
       cards.forEach(function (c, i) {
         var on = i === idx;
-        c.style.transform = on ? 'translateY(-8px)' : 'translateY(0)';
-        c.style.transition =
-          'transform 320ms ' + NX.EASE + ', box-shadow 320ms ease, background 320ms ease';
+        c.classList.toggle('nx-on', on);
         cells[i].classList.toggle('nx-cell-on', on);
       });
+    }
+
+    /* ⚠️ SCREEN PIXELS AND LAYOUT PIXELS ARE NOT THE SAME PIXELS HERE. The app
+       draws on a fixed design canvas that is scaled to fit the window (0.75 at
+       1440x900), and this deck lives inside it. `getBoundingClientRect()`
+       reports the SCALED, on-screen box; `clientWidth` and `scrollLeft` are in
+       the UNSCALED layout space. Mixing the two put the centre a few hundred
+       pixels off and opened the deck with the current card at the edge of the
+       screen. Compare rects with rects, and convert once when writing scroll. */
+    function scrollportMid() {
+      var sr = scroller.getBoundingClientRect();
+      return sr.left + sr.width / 2;
     }
 
     var raf = 0;
@@ -756,7 +836,7 @@
       if (raf) return;
       raf = requestAnimationFrame(function () {
         raf = 0;
-        var mid = scroller.getBoundingClientRect().left + scroller.clientWidth / 2;
+        var mid = scrollportMid();
         var best = 0, bestD = Infinity;
         cards.forEach(function (c, i) {
           var r = c.getBoundingClientRect();
@@ -770,17 +850,32 @@
     var host = nav.parentElement || document.body;
     host.insertBefore(layer, host.firstChild);
 
-    // Open on the scenario you are actually on — jumped, not scrolled: an
-    // animated arrival from card one reads as a tour nobody asked for.
-    requestAnimationFrame(function () {
+    /* Open on the scenario you are actually on — jumped, not scrolled: an
+       animated arrival from card one reads as a tour nobody asked for.
+
+       NOT rAF ALONE. A backgrounded or throttled tab never runs the frame, and
+       the deck then opens on scenario one — which is the single worst first
+       impression this screen can make, because it says the journey has not
+       started. Three chances, all idempotent, and every one of them stops as
+       soon as the reader has scrolled for themselves. */
+    var touched = false;
+    scroller.addEventListener('wheel', function () { touched = true; }, { passive: true });
+    scroller.addEventListener('pointerdown', function () { touched = true; });
+
+    function openOnCurrent() {
+      if (touched) return;
       var el = cards[currentIdx];
-      if (el) {
-        var r = el.getBoundingClientRect();
-        var sr = scroller.getBoundingClientRect();
-        scroller.scrollLeft += r.left + r.width / 2 - (sr.left + scroller.clientWidth / 2);
-      }
+      if (!el) return;
+      // scrollIntoView does the scaled-space conversion itself, which is why
+      // it is used here rather than arithmetic on scrollLeft.
+      el.scrollIntoView({ behavior: 'auto', inline: 'center', block: 'nearest' });
       setCentred(currentIdx);
-    });
+    }
+    requestAnimationFrame(openOnCurrent);
+    setTimeout(openOnCurrent, 0);
+    if (document.readyState !== 'complete') window.addEventListener('load', openOnCurrent);
+    // the title art is what gives a card its height on a slow connection
+    setTimeout(openOnCurrent, 700);
   }
 
   NX.onRail(function (nav, rail) { initCardsHome(nav, rail); });
