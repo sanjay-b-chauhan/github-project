@@ -133,11 +133,12 @@
 
   function metaRow(label, valueNode, small) {
     var r = styleEl(document.createElement('div'), {
-      display: 'flex', height: small ? '26px' : '30px', alignItems: 'center',
-      justifyContent: 'space-between', padding: '0 16px', width: '100%',
+      display: 'flex', height: (small ? GEO.other.row : GEO.current.row) + 'px',
+      alignItems: 'center',
+      justifyContent: 'space-between', padding: '0 14px', width: '100%',
     });
     var l = styleEl(document.createElement('span'), {
-      font: '400 ' + (small ? '14px' : '16px') + '/1 ' + MONO, textTransform: 'uppercase',
+      font: '400 ' + (small ? '14.5px' : '16px') + '/1 ' + MONO, textTransform: 'uppercase',
       color: C.tx3, whiteSpace: 'nowrap',
     });
     l.textContent = label;
@@ -148,7 +149,7 @@
 
   function metaValue(text, small) {
     var v = styleEl(document.createElement('span'), {
-      font: '500 ' + (small ? '16px' : '18px') + '/1.2 ' + SANS, color: C.tx,
+      font: '500 ' + (small ? '17px' : '19px') + '/1.2 ' + SANS, color: C.tx,
       fontFeatureSettings: "'lnum' 1, 'tnum' 1",
     });
     v.textContent = text;
@@ -254,9 +255,11 @@
       '.nx-node-current::after{animation-delay:1.4s}',
       '@keyframes nx-ripple{0%{transform:scale(1);opacity:.75}' +
         '70%{transform:scale(2.7);opacity:0}100%{transform:scale(2.7);opacity:0}}',
-      '.nx-node-goal{width:26px;height:26px;background:' + C.card + ';display:grid;' +
+      /* The destination is not another stop, so it does not wear a stop's
+         size. It is the only mark on the rail with a face on it. */
+      '.nx-node-goal{width:38px;height:38px;background:' + C.card + ';display:grid;' +
         'place-items:center;box-shadow:inset 0 0 0 1.5px ' + C.line +
-        ', 0 6px 16px -8px rgba(13,13,13,.28)}',
+        ', 0 10px 24px -10px rgba(13,13,13,.30)}',
       '@media (prefers-reduced-motion: reduce){.nx-node-current::before,' +
         '.nx-node-current::after{animation:none;opacity:0}}',
       '@media (prefers-reduced-motion: reduce){.nx-live-dot::after{animation:none}}',
@@ -302,9 +305,24 @@
 
      They share one bottom line: every card's base sits on the timeline, so the
      current card rises out of the row instead of floating in it. */
+  /* SPACING. The first pass tuned each gap where it sat, and the result was a
+     card that had run out of air by the time it reached its rows — Sanjay's
+     word was congested, and he was right: rows 13px apart under a 1px rule
+     with 18px of clearance is a block of text, not three facts.
+
+     One scale now, in two sizes, and every gap on the card comes out of it.
+     ROW is the height a fact stands in, GAP the air between facts, BAND the
+     air around the group, PAD the card's own margin. Change the feel of the
+     card by changing four numbers, not forty. */
   var GEO = {
-    current: { w: 484, h: 724, pad: '18px 24px 24px', art: 252, name: 26, r: 40 },
-    other: { w: 392, h: 606, pad: '15px 19px 19px', art: 186, name: 20, r: 34 },
+    current: {
+      w: 500, h: 776, pad: '24px 30px 30px', art: 254, name: 26, r: 40,
+      row: 34, gap: 22, band: 26, head: 20, cta: 18,
+    },
+    other: {
+      w: 430, h: 676, pad: '20px 26px 26px', art: 208, name: 21, r: 34,
+      row: 30, gap: 18, band: 22, head: 16, cta: 16,
+    },
   };
 
   /* Apple's card recipe, and the reason each layer is there: a bright inner
@@ -396,8 +414,8 @@
     var svg = btn && btn.querySelector('svg');
     if (!svg) return null;
     var copy = svg.cloneNode(true);
-    copy.setAttribute('width', '15');
-    copy.setAttribute('height', '15');
+    copy.setAttribute('width', '21');
+    copy.setAttribute('height', '21');
     // it is drawn in white for the dark rail; on paper it has to be ink
     copy.querySelectorAll('path').forEach(function (path) {
       if (path.getAttribute('fill') && path.getAttribute('fill') !== 'none') {
@@ -428,18 +446,19 @@
     var d = styleEl(document.createElement('div'), {
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       borderRadius: small ? '18px' : '22px', width: '100%', gap: '9px',
-      padding: (small ? '15px' : '17px') + ' 0',
+      padding: (small ? GEO.other.cta : GEO.current.cta) + 'px 0',
     });
     if (st === 'completed') {
-      // How it went is the headline of a finished scenario, so it gets the
-      // widest line on the card rather than a row that scrolls past.
-      var band = item.s.outcome ? item.s.outcome.band : 'Completed';
+      /* "Completed", not the band. The band belongs to the Performance row and
+         printing it twice — once as a fact, once as a headline — made the card
+         read as if it were arguing with itself. The footer's job is the same
+         on all three cards: say what this card IS. */
       d.style.background = 'rgba(63,185,104,0.09)';
       d.style.boxShadow = 'inset 0 0 0 1.5px rgba(63,185,104,0.32)';
       d.innerHTML =
         ICONS.check +
-        '<span style="font:500 ' + (small ? '16px' : '17px') + '/1.3 ' + SANS +
-        ';letter-spacing:-0.02em;color:#2c7d47;white-space:nowrap">' + band + '</span>';
+        '<span style="font:500 ' + (small ? '17px' : '18px') + '/1.3 ' + SANS +
+        ';letter-spacing:-0.02em;color:#2c7d47;white-space:nowrap">Completed</span>';
       return d;
     }
     d.style.boxShadow = 'inset 0 0 0 1.5px ' + C.line;
@@ -475,7 +494,7 @@
     /* HEAD — the state, on every card, in the same place. */
     var head = styleEl(document.createElement('div'), {
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      width: '100%', flexShrink: '0',
+      width: '100%', flexShrink: '0', paddingBottom: g.head + 'px',
     });
     head.appendChild(stateChip(st));
     card.appendChild(head);
@@ -485,7 +504,7 @@
        column of air; now it takes the space and the air comes out of the top. */
     var mid = styleEl(document.createElement('div'), {
       display: 'flex', flexDirection: 'column', alignItems: 'center',
-      gap: active ? '18px' : '14px',
+      gap: g.head + 'px',
       flex: '1 1 auto', justifyContent: 'center', minHeight: '0', width: '100%',
     });
 
@@ -530,13 +549,13 @@
        re-learning where anything is. */
     var bottom = styleEl(document.createElement('div'), {
       display: 'flex', flexDirection: 'column', alignItems: 'center',
-      gap: active ? '22px' : '18px', width: '100%', flexShrink: '0',
+      gap: g.band + 'px', width: '100%', flexShrink: '0',
     });
     bottom.appendChild(styleEl(document.createElement('div'), {
       height: '1px', width: '100%', background: active ? C.line : C.line2,
     }));
     var rows = styleEl(document.createElement('div'), {
-      display: 'flex', flexDirection: 'column', gap: active ? '16px' : '13px', width: '100%',
+      display: 'flex', flexDirection: 'column', gap: g.gap + 'px', width: '100%',
     });
     /* THREE SLOTS, ONE ORDER, EVERY CARD: reward, then time, then difficulty.
        The words change with the state — earned or up-to, spent or needed — but
@@ -550,15 +569,77 @@
     if (st === 'completed') {
       rows.appendChild(metaRow('XP earned', xpPill(s.outcome ? s.outcome.xp : 0), sm));
       rows.appendChild(metaRow('Time spent', metaValue(hhmm(s.outcome && s.outcome.minutes), sm), sm));
+      /* Difficulty is a question you ask BEFORE you start — is this within
+         reach today. Once the thing is finished the answer that matters is how
+         it went, so the third slot swaps to Performance rather than reporting
+         a rating for a decision nobody has to make again. Same slot, same
+         line, different question. */
+      rows.appendChild(metaRow('Performance', metaValue(s.outcome ? s.outcome.band : '—', sm), sm));
     } else {
       rows.appendChild(metaRow('Earn XP upto', xpPill(750), sm));
       rows.appendChild(metaRow('Time needed', metaValue('~' + hhmm(s.estimated_minutes || 0), sm), sm));
+      rows.appendChild(metaRow('Difficulty', difficultyDots(s.difficulty, sm), sm));
     }
-    rows.appendChild(metaRow('Difficulty', difficultyDots(s.difficulty, sm), sm));
     bottom.appendChild(rows);
     bottom.appendChild(footer(item, sm));
     card.appendChild(bottom);
     return card;
+  }
+
+  /* ── put the world away ───────────────────────────────────────────────────
+     The first pass hid the city IMAGE and called it done. It is not done: the
+     app paints a stack of things over that image that are drawn white because
+     they were drawn for a dark map — the Recruitment Hub sign, "Complete your
+     training", the "unlocks after" line, the DRAG hint, the map markers, the
+     leader line, and its own scenario card. On paper every one of them is
+     white text on white, which is not invisible, it is a smear you cannot
+     read. Chasing them one Tailwind class at a time is how that list got long
+     in the first place.
+
+     So this is a whitelist, not a hunt: find the container that holds BOTH the
+     map and the HUD, keep only the children carrying something this home still
+     needs, and hide the rest outright. Anything the app adds to that layer in
+     future is hidden by default rather than discovered later as a white
+     smudge. */
+  function hideTheWorld() {
+    var img = document.querySelector('img[alt="Zero World"], img[src*="zero-city"]');
+    var keep = [
+      document.querySelector('[aria-label*="day streak"]'),
+      document.querySelector('[aria-label^="Level "]'),
+      document.querySelector('button[aria-label="Settings"]'),
+      document.querySelector('img[alt="Zero"]'),
+      document.querySelector('div[class*="z-[90]"]'),
+      document.getElementById('nx-portfolio-dock'),
+      document.querySelector('nav[aria-label$="timeline"]'),
+    ].filter(Boolean);
+    if (!img || !keep.length) return;
+
+    // the layer that holds BOTH the world and the chrome
+    var root = img.parentElement;
+    while (root && !keep.some(function (k) { return root.contains(k); })) root = root.parentElement;
+    if (!root) return;
+
+    /* PRUNE, don't sweep. The chrome is not a sibling of the world — the app
+       stacks the map, the signage and the HUD inside the same
+       `absolute inset-0 pointer-events-none` layer, so hiding every child of
+       the root that has no keep in it hides nothing at all. Walk down instead,
+       and at each level hide the branches that lead to no keep. What survives
+       is exactly the paths to the things this home still uses. */
+    var hidden = 0;
+    (function prune(node, depth) {
+      if (depth > 7) return;
+      Array.prototype.slice.call(node.children).forEach(function (child) {
+        if (keep.indexOf(child) !== -1) return; // this IS one of the keeps
+        if (keep.some(function (k) { return child.contains(k); })) {
+          prune(child, depth + 1); // on the path to one — go deeper
+          return;
+        }
+        child.style.display = 'none';
+        child.dataset.nxHidden = '1';
+        hidden++;
+      });
+    })(root, 0);
+    return hidden;
   }
 
   /* Re-skin the chrome for a light ground. Everything Zero draws here is built
@@ -658,8 +739,7 @@
     lightChrome();
     installCtaCss();
 
-    var city = document.querySelector('img[src*="zero-city"]');
-    if (city) city.style.visibility = 'hidden';
+    hideTheWorld();
 
     // company logos come from the rail's own chips, so the marks always match
     LOGOS = {};
@@ -728,7 +808,7 @@
        and the SAME per-card widths, which is what keeps a node under the
        centre of its card at any scroll position. (A separately-scrolled rail
        synced by listener drifts by a frame on every flick.) */
-    var GAP = 36, PAD_X = 72;
+    var GAP = 44, PAD_X = 76;
 
     var scroller = styleEl(document.createElement('div'), {
       flex: '1 1 auto', overflowX: 'auto', overflowY: 'hidden',
@@ -779,7 +859,7 @@
        before anything renders, so a node's centre is
        PAD_X + Σ(widths and gaps before it) + its own half-width. No layout
        read, nothing to re-sync, and the rail cannot drift from the deck. */
-    var GOAL_W = 250, NODE_BOX = 26;
+    var GOAL_W = 260, NODE_BOX = 40;
     var W = items.map(function (it) {
       return it.status === 'current' ? GEO.current.w : GEO.other.w;
     });
@@ -790,8 +870,8 @@
     var railW = run + GOAL_W + PAD_X;
 
     var railRow = styleEl(document.createElement('div'), {
-      position: 'relative', width: railW + 'px', height: '64px', flexShrink: '0',
-      margin: '26px 0 30px',
+      position: 'relative', width: railW + 'px', height: '78px', flexShrink: '0',
+      margin: '28px 0 30px',
     });
 
     function line(x1, x2, colour, z) {
@@ -863,8 +943,8 @@
     goalBox.appendChild(goal);
     end.appendChild(goalBox);
     var goalLabel = styleEl(document.createElement('span'), {
-      font: '500 13px/1 ' + SANS, letterSpacing: '-0.01em', color: C.tx2,
-      whiteSpace: 'nowrap', marginTop: '9px',
+      font: '500 14px/1 ' + SANS, letterSpacing: '-0.01em', color: C.tx2,
+      whiteSpace: 'nowrap', marginTop: '10px',
     });
     goalLabel.textContent = 'The job portal opens';
     end.appendChild(goalLabel);

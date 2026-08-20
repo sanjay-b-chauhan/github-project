@@ -37,16 +37,18 @@
   var NX = window.NX;
   if (!NX || !NX.state.enabled || NX.state.cards) return;
 
-  var q = new URLSearchParams(location.search);
-  var ROUTE_ON = (q.get('route') || 'on').toLowerCase() !== 'off';
+  /* OFF BY DEFAULT, and no pill in the panel — Sanjay's call on 2026-08-20:
+     "remove the route pill and idea". The city home is the shipped screen
+     again.
 
-  NX.panelRow(3, function (row, go) {
-    return row('Route', [
-      { label: 'On', active: ROUTE_ON, onClick: function () { if (!ROUTE_ON) go({ route: null }); } },
-      { label: 'Off', active: !ROUTE_ON, onClick: function () { if (ROUTE_ON) go({ route: 'off' }); } },
-    ]);
-  });
-  if (!ROUTE_ON) return;
+     The work is kept rather than deleted, because everything it learned about
+     the map is worth more than the road itself: the plane's percent space, the
+     `--map-zoom` counter-scale, the computed pull-back framing, and the fact
+     that ten of the sixteen buildings carry no marker at all. `?route=on`
+     brings the whole thing back in one parameter if the idea is ever wanted
+     again. */
+  var q = new URLSearchParams(location.search);
+  if ((q.get('route') || 'off').toLowerCase() !== 'on') return;
 
   var GREEN = 'rgb(73, 186, 97)';
   var EASE = NX.EASE;
