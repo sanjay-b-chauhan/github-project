@@ -142,12 +142,33 @@
         withTraining.push({
           kind: 'training',
           category: item.category,
+          // every scenario this part contains, so the training can report what
+          // it is the groundwork FOR
+          part: rm.categories.filter(function (c) { return c.title === item.category; })[0],
           s: { title: 'Training', sequence_order: item.s.sequence_order - 0.5 },
           status: item.s.sequence_order <= done + 1 ? 'completed' : 'locked',
           away: item.away,
         });
       }
       withTraining.push(item);
+    });
+
+    /* THE DESTINATION IS A CARD. It was a mark at the end of the rail, which
+       said the road went somewhere without ever saying where — and the thing
+       the sixteen scenarios are FOR deserves more than an icon. Same footprint
+       as a scenario, so the deck ends on an object rather than trailing off. */
+    var left = out.length - done;
+    var partsLeft = rm.categories.filter(function (c) {
+      return c.scenarios.some(function (x) { return x.sequence_order > done; });
+    }).length;
+    withTraining.push({
+      kind: 'goal',
+      category: '',
+      left: left,
+      partsLeft: partsLeft,
+      s: { title: 'The job portal opens', sequence_order: 999 },
+      status: left > 0 ? 'locked' : 'completed',
+      away: left,
     });
     return withTraining;
   }
@@ -550,14 +571,15 @@
     title.textContent = item.category;
     mid.appendChild(title);
 
-    var sub = styleEl(document.createElement('p'), {
-      font: '400 15px/1.5 ' + SANS, color: C.tx3, textAlign: 'center',
-      margin: '0', maxWidth: '300px', flexShrink: '0',
-    });
-    sub.textContent = 'The groundwork for this part, before the first scenario in it.';
-    mid.appendChild(sub);
     card.appendChild(mid);
 
+    /* THE STATS ARE THE PART'S. A training has no XP, no duration and no
+       difficulty of its own in the fixture, and inventing three numbers for it
+       would be the only fiction on this screen. What it CAN say is what it is
+       the groundwork for — how many scenarios are in this part, how long they
+       run, and how hard they get — all read straight off the category. Same
+       three slots as a scenario card, so the eye compares them without
+       re-learning where anything is. */
     var bottom = styleEl(document.createElement('div'), {
       display: 'flex', flexDirection: 'column', alignItems: 'center',
       gap: g.band + 'px', width: '100%', flexShrink: '0',
@@ -565,6 +587,21 @@
     bottom.appendChild(styleEl(document.createElement('div'), {
       height: '1px', width: '100%', background: C.line2,
     }));
+
+    var scenarios = (item.part && item.part.scenarios) || [];
+    var minutes = scenarios.reduce(function (n, x) { return n + (x.estimated_minutes || 0); }, 0);
+    var hardest = scenarios.reduce(function (best, x) {
+      return (DIFFICULTY_LEVEL[x.difficulty] || 0) > (DIFFICULTY_LEVEL[best] || 0) ? x.difficulty : best;
+    }, 'Beginner');
+
+    var rows = styleEl(document.createElement('div'), {
+      display: 'flex', flexDirection: 'column', gap: g.gap + 'px', width: '100%',
+    });
+    rows.appendChild(metaRow('Scenarios', metaValue(String(scenarios.length), true), true));
+    rows.appendChild(metaRow('Time in this part', metaValue('~' + hhmm(minutes), true), true));
+    rows.appendChild(metaRow('Difficulty', difficultyDots(hardest, true), true));
+    bottom.appendChild(rows);
+
     var foot = styleEl(document.createElement('div'), {
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       borderRadius: '18px', width: '100%', gap: '9px', padding: g.cta + 'px 0',
@@ -579,6 +616,100 @@
     bottom.appendChild(foot);
     card.appendChild(bottom);
     return card;
+  }
+
+  /* ── the destination card ────────────────────────────────────────────────
+     The last object in the deck, and the reason for the other twenty. It wears
+     the PRODUCT's own job-portal mark, cloned out of the rail's milestone
+     button, so this card and that rail can never show two different marks for
+     the same place. Two stats, both counted from where you stand — a
+     destination's only honest facts are how far away it is. */
+  function buildGoal(item, index, rail) {
+    var g = GEO.other;
+    var open = item.status === 'completed';
+
+    var card = styleEl(document.createElement('article'), {
+      flex: '0 0 auto', width: g.w + 'px', height: g.h + 'px', scrollSnapAlign: 'center',
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      background: 'rgba(255,255,255,0.46)',
+      backdropFilter: 'blur(26px) saturate(1.45)',
+      WebkitBackdropFilter: 'blur(26px) saturate(1.45)',
+      borderRadius: g.r + 'px', padding: g.pad,
+      boxShadow: SHELL.other,
+      transition: 'background 320ms ease, box-shadow 320ms ease, transform 320ms ' + NX.EASE,
+    });
+    card.className = 'nx-card';
+    card.dataset.nxIdx = index;
+    card.dataset.nxState = item.status;
+    card.dataset.nxKind = 'goal';
+    card.setAttribute('aria-label', 'The job portal, ' + STATE_LABEL[item.status]);
+
+    var mid = styleEl(document.createElement('div'), {
+      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '22px',
+      flex: '1 1 auto', justifyContent: 'center', minHeight: '0', width: '100%',
+    });
+
+    var chip = styleEl(document.createElement('span'), {
+      display: 'inline-flex', alignItems: 'center', gap: '9px', flexShrink: '0',
+      padding: '9px 16px', borderRadius: '999px', background: C.card,
+      boxShadow: 'inset 0 0 0 1px ' + C.line + ', 0 10px 26px -16px rgba(13,13,13,0.35)',
+    });
+    var mark = jobPortalIcon(rail);
+    if (mark) {
+      mark.setAttribute('width', '15');
+      mark.setAttribute('height', '15');
+      chip.appendChild(mark);
+    }
+    var word = styleEl(document.createElement('span'), {
+      font: '400 11px/1 ' + MONO, letterSpacing: '0.14em', textTransform: 'uppercase',
+      color: C.tx3,
+    });
+    word.textContent = 'The destination';
+    chip.appendChild(word);
+    mid.appendChild(chip);
+
+    var title = styleEl(document.createElement('h3'), {
+      font: '400 40px/1.08 ' + SERIF, letterSpacing: '-0.02em',
+      color: open ? C.tx : C.tx2, textAlign: 'center', margin: '0', padding: '0 4px',
+      flexShrink: '0',
+    });
+    title.textContent = 'The job portal opens';
+    mid.appendChild(title);
+    card.appendChild(mid);
+
+    var bottom = styleEl(document.createElement('div'), {
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      gap: g.band + 'px', width: '100%', flexShrink: '0',
+    });
+    bottom.appendChild(styleEl(document.createElement('div'), {
+      height: '1px', width: '100%', background: C.line2,
+    }));
+    var rows = styleEl(document.createElement('div'), {
+      display: 'flex', flexDirection: 'column', gap: g.gap + 'px', width: '100%',
+    });
+    rows.appendChild(metaRow('Scenarios left', metaValue(String(item.left), true), true));
+    rows.appendChild(metaRow('Parts left', metaValue(String(item.partsLeft), true), true));
+    bottom.appendChild(rows);
+
+    var foot = styleEl(document.createElement('div'), {
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      borderRadius: '18px', width: '100%', gap: '9px', padding: g.cta + 'px 0',
+      background: open ? 'rgba(63,185,104,0.09)' : 'transparent',
+      boxShadow: 'inset 0 0 0 1.5px ' + (open ? 'rgba(63,185,104,0.32)' : C.line),
+    });
+    foot.innerHTML =
+      (open ? ICONS.check : ICONS.lock) +
+      '<span style="font:500 17px/1.3 ' + SANS + ';letter-spacing:-0.02em;color:' +
+      (open ? '#2c7d47' : C.tx3) + ';white-space:nowrap">' +
+      (open ? 'Open' : 'After all ' + (item.left + doneCountForGoal()) + ' scenarios') + '</span>';
+    bottom.appendChild(foot);
+    card.appendChild(bottom);
+    return card;
+  }
+
+  function doneCountForGoal() {
+    var rm = window.__NX_ROADMAP;
+    return rm ? rm.completedCount : 0;
   }
 
   function buildCard(item, index) {
@@ -1270,7 +1401,10 @@
        it out.) */
     var cards = [];
     items.forEach(function (item, i) {
-      var card = item.kind === 'training' ? buildTraining(item, i) : buildCard(item, i);
+      var card =
+        item.kind === 'training' ? buildTraining(item, i)
+        : item.kind === 'goal' ? buildGoal(item, i, rail)
+        : buildCard(item, i);
       /* Clicking a card brings it to the middle. Obvious in hindsight; the
          first pass could only be steered from the dots underneath it, which
          meant the biggest targets on the screen did nothing. The button inside
@@ -1295,15 +1429,14 @@
        before anything renders, so a node's centre is
        PAD_X + Σ(widths and gaps before it) + its own half-width. No layout
        read, nothing to re-sync, and the rail cannot drift from the deck. */
-    var GOAL_W = 260, NODE_BOX = 40;
+    var NODE_BOX = 40;
     var W = items.map(function (it) {
-      return it.status === 'current' && it.kind !== 'training' ? GEO.current.w : GEO.other.w;
+      return it.status === 'current' && !it.kind ? GEO.current.w : GEO.other.w;
     });
     var xs = [];
     var run = PAD_X;
     W.forEach(function (w) { xs.push(run + w / 2); run += w + GAP; });
-    var xGoal = run + GOAL_W / 2;
-    var railW = run + GOAL_W + PAD_X;
+    var railW = run - GAP + PAD_X;
 
     var railRow = styleEl(document.createElement('div'), {
       position: 'relative', width: railW + 'px', height: '78px', flexShrink: '0',
@@ -1318,7 +1451,7 @@
       });
     }
     // the whole road first, then the part of it you have walked over the top
-    railRow.appendChild(line(xs[0], xGoal, 'rgba(13,13,13,0.11)', 1));
+    railRow.appendChild(line(xs[0], xs[xs.length - 1], 'rgba(13,13,13,0.11)', 1));
     railRow.appendChild(line(xs[0], xs[currentIdx], 'rgba(63,185,104,0.8)', 2));
 
     var cells = [];
@@ -1333,7 +1466,13 @@
       });
       var node = document.createElement('span');
       node.className =
-        'nx-node nx-node-' + item.status + (item.kind === 'training' ? ' nx-node-training' : '');
+        'nx-node nx-node-' + item.status +
+        (item.kind === 'training' ? ' nx-node-training' : '') +
+        (item.kind === 'goal' ? ' nx-node-goal' : '');
+      if (item.kind === 'goal') {
+        var badge = jobPortalIcon(rail);
+        if (badge) node.appendChild(badge);
+      }
       box.appendChild(node);
       cell.appendChild(box);
 
@@ -1344,7 +1483,7 @@
       });
       // a training has no place in the numbering — the scenarios are what is
       // counted, and giving it a number would push every count off by five
-      num.textContent = item.kind === 'training'
+      num.textContent = item.kind
         ? ''
         : (item.s.sequence_order < 10 ? '0' : '') + item.s.sequence_order;
       cell.appendChild(num);
@@ -1356,6 +1495,7 @@
         (item.kind === 'training' ? 'Training, ' + item.category : item.s.title) +
           ', ' + STATE_LABEL[item.status]
       );
+      if (item.kind === 'goal') cell.style.cursor = 'pointer';
       cell.addEventListener('click', function () { scrollToIndex(i); });
       cell.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); scrollToIndex(i); }
@@ -1365,35 +1505,6 @@
       cells.push(cell);
     });
 
-    /* ── where the road goes ──────────────────────────────────────────────
-       Sixteen scenarios and then nothing is a list that stops. The journey has
-       a destination — the job portal is the reason for walking it — so the
-       rail runs one stop past the last card and ends there. It carries no card
-       because it is not a scenario.
-
-       The mark is the PRODUCT's own job-portal icon, lifted out of the rail's
-       milestone button at runtime rather than redrawn, so it cannot drift from
-       whatever the rail is showing. */
-    var end = styleEl(document.createElement('div'), {
-      position: 'absolute', left: xGoal + 'px', top: '0', transform: 'translateX(-50%)',
-      display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: '3',
-    });
-    var goalBox = styleEl(document.createElement('div'), {
-      height: NODE_BOX + 'px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-    });
-    var goal = document.createElement('span');
-    goal.className = 'nx-node nx-node-goal';
-    var badge = jobPortalIcon(rail);
-    if (badge) goal.appendChild(badge);
-    goalBox.appendChild(goal);
-    end.appendChild(goalBox);
-    var goalLabel = styleEl(document.createElement('span'), {
-      font: '500 14px/1 ' + SANS, letterSpacing: '-0.01em', color: C.tx2,
-      whiteSpace: 'nowrap', marginTop: '10px',
-    });
-    goalLabel.textContent = 'The job portal opens';
-    end.appendChild(goalLabel);
-    railRow.appendChild(end);
 
     /* Both rows in ONE scroll container: the deck and its rail have to move as
        a single object, and a rail synced to the deck by a scroll listener
