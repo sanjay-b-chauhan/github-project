@@ -6607,7 +6607,7 @@ function startPlan(stageId, stageNo){
   /* a stage that opens by telling you this goes on your portfolio HOLDS everything until you have
      read it and pressed the button. Previously the popup went up and the stage ran on underneath,
      so dismissing it revealed a voice note and a pad that had already arrived. */
-  if(stageId==='final' && !R_evalIntroShown){ R_evalIntroShown=true; evalEntryPopup(kickoff); return; }
+  if(stageId==='deploy' && !R_evalIntroShown){ R_evalIntroShown=true; evalEntryPopup(kickoff); return; }
   if(stageId==='present' && !R_presIntroShown){ R_presIntroShown=true; presEntryPopup(kickoff); return; }
   kickoff();
 }
@@ -6679,7 +6679,7 @@ function portfolioAdded(kind, onDone){
    +'  <div class="pe-top">'
    +'    <h2 class="pe-h">'+(isPres
         ? 'Your presentation is in your portfolio now.'
-        : 'Your final proposal is in your portfolio now.')+'</h2>'
+        : 'Your deployment record is in your portfolio now.')+'</h2>'
    +'    <p class="pe-s">'+(isPres
         ? 'The recording and the panel’s read sit with it. Open your portfolio any time to see what a recruiter would see.'
         : 'It sits there with Marcus’s review. Open your portfolio any time to see what a recruiter would see.')+'</p></div>'
@@ -8357,7 +8357,7 @@ function roomQA(){
      same pager — because it is the same thing you are looking at. */
   const fillPanel=function(){
     const mine=(typeof RES!=='undefined'?RES:[]).filter(function(r){ return r.kind==='mine' && /\.pdf$/i.test(r.t||''); });
-    const one=mine[mine.length-1] || {t:'final_proposal_v1.pdf'};
+    const one=mine[mine.length-1] || {t:'deployment_record_v1.md'};
     el.querySelector('#qasPT').textContent=one.t;
     el.querySelector('#qasPActs').innerHTML='<button class="dv-ic" title="Download" aria-label="Download">'+DL+'</button>'
       +'<button class="dv-ic" title="Open" aria-label="Open">'+HI.view+'</button>';
@@ -9519,8 +9519,8 @@ function planTime(val, srcEl){
     addReaction(u,'👍',250);                           // quick ack reaction
     const _sid=(STAGES[stageIdx]||{}).id;
     addMsg({type:'mgr',text: _sid==='present'
-      ? `${mins} minutes it is. Let me get Avery and Jordan in, and we'll start.`
-      : (_sid==='final'
+      ? `${mins} minutes it is. Let me get Dana in, and we'll start.`
+      : (_sid==='deploy'
       ? `${mins} minutes it is, clock's running. When your deliverable is ready, attach it below and I'll review it against the whole scenario.`
       : `${mins} minutes it is, clock's running. Build it, and upload it here when you're ready.`)},false);
     /* a live presentation is not a timed build, so the time you set scopes the session, not a clock
@@ -9581,7 +9581,7 @@ function startDo(stageId, planned){
 
 (function bootSeed(){
   const t=addTyping();
-  setTimeout(()=>{ t.remove(); startPlan('template', 1); },900);   // planning opens the stage; the greeting lives inside it
+  setTimeout(()=>{ t.remove(); startPlan(STAGES[0].id, 1); },900);   // planning opens the stage; the greeting lives inside it — ALWAYS by STAGES[0].id: a hardcoded stage id here crashed the whole boot when the roster changed (2026-08-21)
 })();
 
 /* ---- composer: a real contenteditable editor (numbered / bullet pointers you type inline) ---- */
@@ -9652,7 +9652,7 @@ plusBtn.onclick=e=>{e.stopPropagation();fileInput.click();};   // + opens the OS
 document.addEventListener('click',()=>attMenu.classList.remove('open'));
 attMenu.querySelectorAll('button').forEach(b=>b.onclick=()=>{attMenu.classList.remove('open');const kind=b.dataset.kind;
   if(kind==='camera'){startScreenshot('main');return;}
-  const name={image:'photo.jpg',video:'clip.mp4',file:'proposal_template.pdf'}[kind];addAttachment(kind,name);});
+  const name={image:'photo.jpg',video:'clip.mp4',file:'deployment_record_v1.md'}[kind];addAttachment(kind,name);});
 /* Connect to ZERO, clicking connects; the icon turns green in its connected state */
 let zeroConnected=false;
 document.getElementById('connectBtn').onclick=function(){
@@ -9792,17 +9792,17 @@ function send(v){
   if(q && !isSubmit){ const wasReq=reqAskActive; reqAskActive=false;
     marcusReply(wasReq?`About "${q}". ${v||'Can you explain this?'}`:`About this highlighted part: "${q}". ${v||'Can you explain this?'}`,{text: wasReq?respondRequirement(q):respondQuote(q)}); return; }   // a quote never swallows a submission (requirement asks answer differently)
   if(isSubmit){
-    if(scenarioComplete){ sayMarcus("We're all wrapped, the proposal's approved and presented. Nothing left to submit on this one."); return; }
+    if(scenarioComplete){ sayMarcus("We're all wrapped, the prototype's deployed, handed off and presented. Nothing left to submit on this one."); return; }
     docs.forEach(f=>addResource({kind:'mine',stage:stageIdx+1,t:f.name,s:'PDF · your submission',ic:'dragfile'}));   // every submitted file collects under My resources
     const fname=(docs[0]&&docs[0].name)||'your document';
     if(stageIdx===0 && !tmplReviewed){
       tmplReviewed=true;
-      reviewExperience(fname, 'template', ()=>{   // panel is already open + populated → Marcus gives the verdict
+      reviewExperience(fname, 'intmap', ()=>{   // panel is already open + populated → Marcus gives the verdict
         sayMarcus("Solid start, the shape's right, but one requirement in your plan isn't met, so it's not a pass yet. It's all in the <b>Feedback</b> panel. Want to resubmit, or are you good to go?",null,()=>{ addFeedbackPills(); anchorLastMgr(); });
       });
-    }else if(STAGES[stageIdx].id==='final'){   // the last submission gets the FULL evaluation, same arrival experience
+    }else if(STAGES[stageIdx].id==='deploy'){   // the deployment record gets the FULL evaluation, same arrival experience
       reviewExperience(fname, 'final', ()=>{
-        sayMarcus("Full review's in. You're at <b>Meets expectations</b>, the structure holds and the analysis is real. Two items carry a <b>Fix</b> tag, those are blockers, the rest is polish. Tap any item for the why and how I'd approach it.",null,()=>{ addFeedbackPills(); anchorLastMgr(); });
+        sayMarcus("Full review's in. You're at <b>Meets expectations</b>, the deploy is real and the record is reproducible. Two items carry a <b>Fix</b> tag, those are blockers for their on-call, the rest is polish. Tap any item for the why and how I'd approach it.",null,()=>{ addFeedbackPills(); anchorLastMgr(); });
       });
     }else{
       clearActionBar();   // an intermediate stage passes straight to POU — no feedback panel, just the read
@@ -10434,7 +10434,7 @@ const MANAGER={
   perspective:"What I care about is simple: I gave you a real task with a real reference and I want to see you work through it. You told me you're analytical and proactive, so I'm holding that claim against what you actually deliver. I'm not asking for perfect, I'm asking for a real attempt I can react to. Right now I'm still waiting.",
   relationship:{v:29, s:'Still waiting, the clock is ticking.', tips:["Reply fast. Don't leave him hanging.","Show progress before he asks.","Ask sharp, specific questions."]},
   trust:{v:27, s:"Your claims don't match your output yet.", tips:["Back claims with the data.","Ship output, not promises.","Clear the bar first try."]},
-  quote:'Build the template from the Uber proposal and drop it in front of me. That is the one thing that changes my read right now.'
+  quote:'Map their system before you write a line of code. That is the one thing that changes my read right now.'
 };
 const MGR_HEART='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 1 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg>';
 const MGR_SHIELD='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.6-3 8.2-7 10-4-1.8-7-5.4-7-10V6z"/><path d="M9.2 12l1.9 1.9L15 10"/></svg>';
@@ -10506,6 +10506,24 @@ const GRADE_LABEL=[null,'Below Expectation','Meets Expectations','Exceeds Expect
    to the exact sub-task it belongs to (miss key = 'reqIdx.subIdx'). Anything generic lands under "A few more things".
    Every feedback item carries a Content/Style tag plus a Why and an Approach (guides, never reveals the answer). */
 const STAGE_FEEDBACK={
+  intmap:{
+    below:{ tone:'warn',
+      miss:{ '0.1':{ kind:'content',
+        note:"The gate-only links aren't marked. Three of these five hops die the moment the doors close.",
+        why:"The offline boundary is the whole reason this project is hard. A map that hides it is a map of a different, easier project.",
+        approach:"Mark hops one and two as alive mid-flight and the other three as gate-only. The boundary is the most important pixel on the board." },
+        '1.0':{ kind:'content',
+        note:"Three boxes have no owner. The sync agent, the gateway, and the uplink all read as nobody's.",
+        why:"When this breaks at 2 a.m., the map is how someone finds out who to page.",
+        approach:"Label every box with the team that owns it: airline IFE, airline platform, or Netflix partner eng." } },
+      general:[
+        { kind:'style', t:"Name the export so a reviewer knows what it is",
+          note:"It came through as board 4.png. Give it a real name before anything goes up the chain.",
+          why:"Work reads by how it arrives. An untitled export says rushed.",
+          approach:"integration_map_seatback_to_cloud_v1. Project, artefact, version." } ],
+      more:[] },
+    meeting:{ tone:'ok', miss:{}, more:[] },
+  },
   deploy:{
     below:{ tone:'warn',
       miss:{ '1.1':{ kind:'content',
@@ -10770,7 +10788,7 @@ function stepFlow(){
      && composerEl && !composerEl.classList.contains('hidden')){
     _stepSubmitted[stageIdx]=true;
     try{
-      const nm=(STAGES[stageIdx].id==='final'?'final_proposal_v1.pdf':(STAGES[stageIdx].id||'work')+'_v1.pdf');
+      const nm=(STAGES[stageIdx].id==='deploy'?'deployment_record_v1.md':(STAGES[stageIdx].id||'work')+'_v1.pdf');
       addAttachment('file',nm); send(); return;
     }catch(e){}
   }
@@ -10828,10 +10846,10 @@ function dbgJump(what){
   else if(what==='pou'){ softReset(); planPhase='full'; ACTIVE.reqStatus=null; renderRail(); setMode('understand');
     composerEl.classList.remove('hidden','notepad'); timerRunning=false;
     startPOU(STAGES[stageIdx].id, celebrateStage); }   // straight into the back-and-forth voice check
-  else if(what==='feedback'){ if(!STAGE_FEEDBACK[STAGES[stageIdx].id]&&STAGES[stageIdx].id!=='final'){ openFeedback('deploy'); } else { openFeedback(STAGES[stageIdx].id==='final'?'final':STAGES[stageIdx].id); } addFeedbackPills(); }
+  else if(what==='feedback'){ if(!STAGE_FEEDBACK[STAGES[stageIdx].id]&&STAGES[stageIdx].id!=='deploy'){ openFeedback('intmap'); } else { openFeedback(STAGES[stageIdx].id==='final'?'final':STAGES[stageIdx].id); } addFeedbackPills(); }
   else if(what==='stageux'){ softReset(); planPhase='title'; ACTIVE.reqStatus=null; renderRail(); loadStage(0); startPlan(STAGES[0].id, 1); }   // launch the stage UX from the top (kickoff → planning)
   else if(what==='stagefb'){ softReset(); loadStage(0); tmplReviewed=false; planPhase='full'; ACTIVE.reqStatus=null; renderRail(); setMode('build'); composerEl.classList.remove('hidden','notepad'); timerRunning=false;
-    setTimeout(()=>{ addAttachment('file','proposal_template.pdf'); send(); }, 400); }   // straight to the reviewed-submission → stage feedback state
+    setTimeout(()=>{ addAttachment('file','deployment_record_v1.md'); send(); }, 400); }   // straight to the reviewed-submission → stage feedback state
   else if(what==='presenting'||what==='qa'||what==='rvw'||what==='report'){ softReset(); dbgRoom(what); }
   else if(what==='restart'){ location.reload(); }
 }
@@ -10868,7 +10886,7 @@ function markReqs(arr){ ACTIVE.reqStatus=arr; railBody.querySelectorAll('.req').
 function markReqsFromState(){}   /* left panel stays as-is, no green/yellow status dots; the mapping lives in the feedback panel itself */
 const FB_EXCL='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 7.5v6"/><path d="M12 16.8v.01"/></svg>';
 const PANEL_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><line x1="10" y1="5" x2="10" y2="19"/></svg>';
-let fbDocName='proposal_template.pdf';
+let fbDocName='deployment_record_v1.md';
 /* per-stage feedback = FIXES ONLY. What's right is said in the chat; the panel carries just the work.
    A requirement heading appears only when something under it needs improving, and only the missed
    sub-elements render beneath it (the done siblings stay out). Tap a fix → Why + Approach (as tags). */
@@ -10923,57 +10941,60 @@ const MK_X='<svg class="mk-x" viewBox="0 0 24 24" fill="none" stroke="currentCol
 const MK_T='<svg class="mk-t" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
 const EVAL_BANDS={
   below:{ rating:1, band:'Band 2 of 5', title:'Below Expectations',
-    summary:"This doesn't yet clear the bar for the scenario. Address the high-importance content gaps and resubmit.",
+    summary:"This doesn't yet clear the bar for their platform team. Address the Fix items and resubmit.",
     items:[
-      {id:'b1',section:'content',imp:'high',fix:true,resolved:false,t:"The recommendation isn't stated up front.",
-       why:"A decision-maker skims the opening; if the ask isn't there, the work is discounted before it's read.",
-       approach:"Open with one sentence: your recommendation and the single reason it's right. Make everything after it support that line."},
-      {id:'b2',section:'content',imp:'high',fix:true,resolved:false,t:"Revenue projection isn't tied to a stated assumption.",
-       why:"Numbers without a visible assumption read as guesses and invite pushback.",
-       approach:"Add a one-line assumption above the projection (growth rate, conversion, price), then show the number following from it."},
-      {id:'b3',section:'content',imp:'med',fix:false,resolved:false,t:"No risk or downside is acknowledged.",
-       why:"Naming a risk and how you'd handle it separates a confident recommendation from an optimistic one.",
-       approach:"Add a short Risks block: name the biggest risk, how likely it is, and the one action you'd take to reduce it."},
-      {id:'b4',section:'style',imp:'med',fix:false,resolved:false,t:"Charts are missing axis labels and units.",
-       why:"Unlabeled axes force the reader to guess the scale, undercutting strong data.",
-       approach:"Label both axes with units on every chart, and add a one-line takeaway caption under each."}
+      {id:'b1',section:'content',imp:'high',fix:true,resolved:false,t:"The record shows it built, not running.",
+       why:"Their platform team judges a deploy by what they can click. A record without the live preview is a promise, not a proof.",
+       approach:"Put the preview URL, the commit, the test run, and one endpoint response in one place, in that order."},
+      {id:'b2',section:'content',imp:'high',fix:true,resolved:false,t:"The environment variables aren't named.",
+       why:"A deploy nobody can reproduce is a deploy their on-call refuses to own.",
+       approach:"List every variable by name, values omitted, and say where each value comes from."},
+      {id:'b3',section:'content',imp:'med',fix:false,resolved:false,t:"There is no rollback step.",
+       why:"The first question an on-call asks is how to get back to the last good state.",
+       approach:"One line: promote the previous Vercel deployment, and how to confirm it took."},
+      {id:'b4',section:'style',imp:'med',fix:false,resolved:false,t:"The record reads like commit messages, not a document.",
+       why:"Their engineers read this without you in the room. Fragments make them guess.",
+       approach:"Full sentences under each section header from the template."}
     ]},
-  meeting:{ rating:2, band:'Band 3 of 5', title:'Meeting Expectations',
-    summary:"Solid work. This meets the bar for the scenario, and a couple of refinements would push it into the top tier.",
+  meeting:{ rating:2, band:'Band 3 of 5', title:'Meets Expectations',
+    summary:"Solid work. The deploy is real and reproducible, and a couple of gaps would push it into the top tier.",
     items:[
-      {id:'m1',section:'content',imp:'med',fix:false,resolved:false,t:"Supporting evidence is thinner in section 3.",
-       why:"Your strongest claim has the least data behind it, so tightening it removes the easiest line of attack.",
-       approach:"Bring one concrete data point or example into section 3 that directly backs the claim, and cut anything that doesn't."},
-      {id:'m2',section:'content',imp:'low',fix:false,resolved:false,t:"A second comparable would strengthen the positioning.",
-       why:"One benchmark supports the point; a second makes it hard to argue with.",
-       approach:"Add one more comparable company to the comparison and note how you're positioned against both."},
-      {id:'m3',section:'style',imp:'low',fix:false,resolved:false,t:"Section headings vary in capitalization.",
-       why:"Consistent heading case is a small signal of polish reviewers notice.",
-       approach:"Pick one heading case (sentence case is safest) and apply it consistently across every section."}
+      {id:'m1',section:'content',imp:'med',fix:true,resolved:false,t:"Environment variables are listed but two have no description.",
+       why:"Their platform team deploys this without you in the room, so a variable with no description is a variable someone guesses at.",
+       approach:"Name what each one controls and where the value comes from, and mark which ones are partner-supplied."},
+      {id:'m2',section:'content',imp:'low',fix:true,resolved:false,t:"The rollback step assumes the reader knows which branch is live.",
+       why:"An on-call at 2 a.m. has never seen this repo. The rollback has to work for them, not for you.",
+       approach:"Name the branch, name the deployment to promote, and say how to confirm it took."},
+      {id:'m3',section:'style',imp:'low',fix:false,resolved:false,t:"Commit references switch between short and full SHA.",
+       why:"Mixed references make the record look assembled from two drafts.",
+       approach:"Pick the short SHA everywhere, their tooling links from it either way."},
+      {id:'m4',section:'content',imp:'low',fix:false,resolved:false,t:"Fine to hand to their team once the two Fix items are closed.",
+       why:"The deploy is real, and the trace from commit to test run to response holds.",
+       approach:"Close the two Fix items, keep the rest as polish."}
     ]},
   exceptional:{ rating:4, band:'Band 5 of 5', title:'Exceptional',
-    summary:"There is nothing left for me to send back. This is the standard I would show a new hire and say, do it like this.",
+    summary:"There is nothing left for me to send back. This is the record I would show a new hire and say, do it like this.",
     items:[],
     cleared:[
-      "The recommendation leads, and everything under it earns its place.",
-      "Every number carries the assumption it rests on.",
-      "The risk is named, sized, and answered.",
-      "Charts are labelled and captioned, nothing to decode.",
-      "You marked what would change your mind."
+      "The preview, commit, test run, and response sit in one trace.",
+      "Every variable is named, described, and sourced.",
+      "The rollback is one line their on-call can run half asleep.",
+      "Every failure names its first check.",
+      "Their internal names are spelled out on first use."
     ]},
-  exceeding:{ rating:3, band:'Band 4 of 5', title:'Exceeding Expectations',
-    summary:"Excellent. This goes beyond what the scenario asked for, and only minor polish remains.",
+  exceeding:{ rating:3, band:'Band 4 of 5', title:'Exceeds Expectations',
+    summary:"Excellent. This goes beyond what the record asked for, and only minor polish remains.",
     items:[
-      {id:'e1',section:'content',imp:'low',fix:false,resolved:false,t:"Consider a 'what would change my mind' note on the recommendation.",
-       why:"Showing the boundary of your own conclusion reads as senior-level thinking.",
-       approach:"Add a single line naming the evidence that would make you reverse the recommendation, so readers see you stress-tested it."},
-      {id:'e2',section:'style',imp:'low',fix:false,resolved:false,t:"Reference the appendix from the main body.",
-       why:"A pointer helps the reader find your supporting depth when they want it.",
-       approach:"Add inline pointers like '(see Appendix A)' at the moments a reader would want the deeper detail."}
+      {id:'e1',section:'content',imp:'low',fix:false,resolved:false,t:"Consider a 'what breaks this first' note on the deploy.",
+       why:"Naming the weakest link before their on-call finds it reads as senior-level ownership.",
+       approach:"One line naming the most likely failure and its first check, above the rollback."},
+      {id:'e2',section:'style',imp:'low',fix:false,resolved:false,t:"Link the regression run from the record body.",
+       why:"A pointer saves their reviewer hunting for the proof when they want it.",
+       approach:"Inline link to offline_regression_results.txt where the test run is claimed."}
     ]}
 };
 let evalBand='meeting';
-const FINAL_EVAL={ doc:'final_proposal_v1.pdf',
+const FINAL_EVAL={ doc:'deployment_record_v1.md',
   get rating(){ return EVAL_BANDS[evalBand].rating; },
   get band(){ return EVAL_BANDS[evalBand].band; },
   get title(){ return EVAL_BANDS[evalBand].title; },
@@ -11166,7 +11187,7 @@ function cancelResubmit(){ pouComposer.classList.remove('dropmode'); addFeedback
 /* first submission on the evaluation stage: the file goes up, Marcus reads it, the verdict opens */
 function finalFirstUpload(){
   composerEl.classList.remove('dropmode');
-  const name='final_proposal_v1.pdf';
+  const name='deployment_record_v1.md';
   const turn=document.createElement('div'); turn.className='uturn';
   turn.innerHTML=comp({type:'subm',name:name,size:'PDF · your final deliverable'});
   place(turn); msgSpacer.style.height='0px'; anchorTop(turn);
@@ -11180,8 +11201,8 @@ let R_finalSubmitted=false;
 function doResubmitUpload(){
   pouComposer.classList.remove('dropmode');
   if(fbStage==='final'){   // final evaluation: recheck the open fixes in place so the tick morph plays
-    const turn=document.createElement('div');turn.className='uturn';turn.innerHTML=comp({type:'subm',name:'final_proposal_v2.pdf',size:'PDF · revised'});place(turn);msgSpacer.style.height='0px';anchorTop(turn);
-    addResource({kind:'mine',stage:stageIdx+1,t:'final_proposal_v2.pdf',s:'PDF · your resubmission',ic:'dragfile'});
+    const turn=document.createElement('div');turn.className='uturn';turn.innerHTML=comp({type:'subm',name:'deployment_record_v2.pdf',size:'PDF · revised'});place(turn);msgSpacer.style.height='0px';anchorTop(turn);
+    addResource({kind:'mine',stage:stageIdx+1,t:'deployment_record_v2.md',s:'MD · your resubmission',ic:'dragfile'});
     /* a real revision moves the verdict up a band, it does not just clear flags.
        The resubmission is read as a FRESH doc: cleared items don't come back as green ticks, they
        leave the panel entirely — what remains is only the next actionable list. */
@@ -11192,7 +11213,7 @@ function doResubmitUpload(){
     presTyping(function(){
       addMsg({type:'mgr',text:pick(["Got the new one. Reading it back to back with the last.","v2 is in. Let me take it from the top again.","Got it, reading this one fresh."])},true);
       setTimeout(function(){
-        scanPanel('final','final_proposal_v2.pdf', function(){
+        scanPanel('final','deployment_record_v2.md', function(){
           sayMarcus("Rechecked v2 like a fresh read. The calendar-sync cause leads the doc now and the metrics have real baselines, so the blockers are gone. What's in the panel is only what's left to act on. Take what makes the doc stronger.",null,()=>{ addFeedbackPills(); anchorLastMgr(); });
         });
       }, 520);
@@ -11200,9 +11221,9 @@ function doResubmitUpload(){
     return;
   }
   const v=fbState==='below'?'v2':'v3';
-  const turn=document.createElement('div');turn.className='uturn';turn.innerHTML=comp({type:'subm',name:`proposal_template_${v}.pdf`,size:'PDF · revised'});place(turn);msgSpacer.style.height='0px';anchorTop(turn);
-  addResource({kind:'mine',stage:stageIdx+1,t:`proposal_template_${v}.pdf`,s:'PDF · your resubmission',ic:'dragfile'});
-  reviewLoader(`proposal_template_${v}.pdf`, ()=>{
+  const turn=document.createElement('div');turn.className='uturn';turn.innerHTML=comp({type:'subm',name:`resubmission_${v}.pdf`,size:'PDF · revised'});place(turn);msgSpacer.style.height='0px';anchorTop(turn);
+  addResource({kind:'mine',stage:stageIdx+1,t:`resubmission_${v}.pdf`,s:'PDF · your resubmission',ic:'dragfile'});
+  reviewLoader(`resubmission_${v}.pdf`, ()=>{
     fbState='meeting';
     closeFeedback();                                                  // every fix is in → no more feedback, no push-to-exceeds
     sayMarcus("Much better, that clears every requirement. Really good job.",null,()=>{
@@ -11213,7 +11234,7 @@ function doResubmitUpload(){
   });
 }
 /* drop-zone wiring */
-function isFinalFirst(){ return (STAGES[stageIdx]||{}).id==='final' && !R_finalSubmitted && !fbActive; }
+function isFinalFirst(){ return (STAGES[stageIdx]||{}).id==='deploy' && !R_finalSubmitted && !fbActive; }
 (function(){const dz=document.getElementById('dropZone');
   dz.querySelector('.dz-ic').innerHTML=HI.dragfile; dz.querySelector('.dz-close').innerHTML=HI.x;
   const shot=()=>composerEl.classList.contains('shotmode');
@@ -11697,7 +11718,7 @@ const TESTS=[['Attach doc → feedback','__submit'],['Ask about the map','which 
   ['Video','__c:video'],['PDF','__c:pdf'],['Link','__c:link'],['Code','__c:code'],['Sources','__c:sources'],['Suggestions','__c:suggestions'],['Reasoning','__c:reasoning'],['Tool call','__c:tool']];
 document.getElementById('testgrid').innerHTML=TESTS.map(t=>`<button data-q="${t[1]}">${t[0]}</button>`).join('');
 document.querySelectorAll('#testgrid button').forEach(b=>b.onclick=()=>{const q=b.dataset.q;
-  if(q==='__submit'){addAttachment('file','proposal_template.pdf');send();}
+  if(q==='__submit'){addAttachment('file','integration_map_v1.png');send();}
   else if(q.startsWith('__c:')){addMsg(COMPS[q.slice(4)]);}
   else{send(q);}});
 /* component interactivity: reasoning collapse, suggestions send, code copy */
@@ -11728,7 +11749,7 @@ wire('rMaxw','vMaxw',x=>root.style.setProperty('--maxw',x+'px'),x=>x);
 if(/autostate=feedback/.test(location.search)){
   setTimeout(()=>{ document.getElementById('tourSkip')?.click(); }, 400);
   setTimeout(()=>{ dbgJump('skipplan'); }, 900);
-  setTimeout(()=>{ addAttachment('file','proposal_template.pdf'); send(); }, 1900);
+  setTimeout(()=>{ addAttachment('file','integration_map_v1.png'); send(); }, 1900);
   setTimeout(()=>{ if(!document.querySelector('.fb2-row')) dbgJump('feedback'); }, 12000);
   setTimeout(()=>{ document.querySelector('.fb2-row.expandable')?.click(); }, 13000);
 }
