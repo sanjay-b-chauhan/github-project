@@ -3872,12 +3872,19 @@ function voiceMeter(host,opt){
      Driven by gsap.ticker, never rAF or setInterval: the throttled preview
      pane kills both, and the ticker can be stepped by hand with ticker.tick(). */
   const W=opt.bar||3, GAP=opt.gap||3, STEP=W+GAP;
-  const MIN=opt.min||3, MAX=opt.max||32, SAMPLE_MS=opt.sampleMs||72;
+  const MIN=opt.min||3, MAX=opt.max||32, SAMPLE_MS=opt.sampleMs||118;
+  /* a new sample does not appear at its full height — it springs up to it.
+     K is the pull toward the target, D the damping: under-damped on purpose,
+     so each bar overshoots a touch and settles back. That overshoot is the
+     whole difference between a chart drawing itself and a voice being caught. */
+  const K=265, D=17;
   const row=document.createElement('div'); row.className='wrow';
   host.appendChild(row);
   /* one spare column so the row can slide a full step before it recycles */
   const N=Math.ceil((host.clientWidth||300)/STEP)+2;
-  const bars=[], buf=new Float32Array(N);
+  const bars=[], buf=new Float32Array(N),      /* the sample, taken once */
+        disp=new Float32Array(N),               /* what is on screen, chasing it */
+        vel=new Float32Array(N);                /* and how fast it is chasing */
   for(let i=0;i<N;i++){ const b=document.createElement('span'); row.appendChild(b); bars.push(b); }
   const rnd=(a,b)=>a+Math.random()*(b-a);
   let t=0, acc=0, inPhrase=true, ph=0, phLen=rnd(1.5,3.1), gap=0, amp=rnd(.74,1),
@@ -3907,9 +3914,9 @@ function voiceMeter(host,opt){
 
   function paint(){
     for(let i=0;i<N;i++){
-      const v=buf[i], b=bars[i];
+      const v=disp[i]<0?0:disp[i], b=bars[i];
       b.style.height=(MIN+v*(MAX-MIN)).toFixed(1)+'px';
-      b.style.opacity=(.36+v*.64).toFixed(2);
+      b.style.opacity=(.36+Math.min(1,v)*.64).toFixed(2);
     }
   }
 
@@ -3921,14 +3928,25 @@ function voiceMeter(host,opt){
     const ms=Math.min(50, Math.max(16.7, delta||16.7));
     const dt=ms/1000;
     t+=dt; acc+=ms;
-    let moved=false;
     while(acc>=SAMPLE_MS){
       acc-=SAMPLE_MS;
-      buf.copyWithin(0,1);              /* the tape moves: oldest falls off */
-      buf[N-1]=energy(SAMPLE_MS/1000);  /* the newest sample enters at the right */
-      moved=true;
+      /* the tape moves: oldest falls off, and what is on screen travels with
+         it, so a bar that has already settled never re-animates */
+      buf.copyWithin(0,1); disp.copyWithin(0,1); vel.copyWithin(0,1);
+      buf[N-1]=energy(SAMPLE_MS/1000);   /* the newest sample enters at the right */
+      disp[N-1]=buf[N-1]*.16;            /* ...but starts low and grows into it */
+      vel[N-1]=0;
     }
-    if(moved) paint();
+    /* every bar springs toward its own sample. Settled ones sit exactly on it,
+       so this costs nothing for the tail and animates only what is being born. */
+    for(let i=0;i<N;i++){
+      const d=buf[i]-disp[i];
+      if(d===0&&vel[i]===0) continue;
+      vel[i]+=d*K*dt-vel[i]*D*dt;
+      disp[i]+=vel[i]*dt;
+      if(Math.abs(buf[i]-disp[i])<.002&&Math.abs(vel[i])<.02){ disp[i]=buf[i]; vel[i]=0; }
+    }
+    paint();
     /* slide by the part-step we are into, so it glides instead of stepping */
     row.style.transform='translateX('+(-(acc/SAMPLE_MS)*STEP).toFixed(2)+'px)';
   }
