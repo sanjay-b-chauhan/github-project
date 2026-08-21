@@ -7880,7 +7880,7 @@ function roomJoining(){
   R.jt.push(setTimeout(function(){ roomCaption(PANEL[0].name,'Good to see you. Take a second, we are not in a rush.'); },2100));
   R.jt.push(setTimeout(function(){ land(1); },4600));
   R.jt.push(setTimeout(function(){ hideCap(); },5700));   /* everyone is in, the status line has done its job */
-  R.jt.push(setTimeout(function(){ roomCaption(PANEL[1].name,'Hey, I am Jordan. I will be listening for the product side of this.'); },5900));
+  R.jt.push(setTimeout(function(){ roomCaption(PANEL[1].name,'Hey, I am Dana. I will be listening for the partner side of this.'); },5900));
   R.jt.push(setTimeout(function(){
     roomCaption(PANEL[0].name,'Alright. Take us through what you found.');
   },8600));
@@ -7930,7 +7930,7 @@ function roomGreet(){  /* legacy direct entry */
   roomDock('greet');
   roomToast(PANEL[0].name+' is here');
   setTimeout(()=>roomToast(PANEL[1].name+' is here'),1500);
-  setTimeout(()=>roomCaption(PANEL[0].name, R.live?'Good to see you. When you’re ready, share your deck and take the floor — we’ll hold questions till the end.':'Relax, this one’s just practice. Share your deck whenever, and talk us through it.'),2000);
+  setTimeout(()=>roomCaption(PANEL[0].name, R.live?'Good to see you. When you’re ready, share your deck and take the floor. We’ll hold questions till the end.':'Relax, this one’s just practice. Share your deck whenever, and talk us through it.'),2000);
   setTimeout(()=>{
     const c=R.ov.querySelector('#rmShareCTA');
     if(c){ c.classList.add('show'); c.onclick=()=>roomStartPresenting(); }
@@ -8210,16 +8210,16 @@ function roomStop(){
   /* live runs do not go back to a room and wait: the panel is already reading,
      and the same two faces carry straight into the questions */
   setTimeout(()=>roomCaption(PANEL[0].name, R.live?'Strong open, and you named the number. I’d have brought the fix a beat sooner.':'Good energy. Your headline was there, just get to it faster next time.'),900);
-  setTimeout(()=>roomCaption(PANEL[1].name, R.live?'And you owned the risk instead of hiding it. That reads well.':'The calendar-sync point landed. Lean on it.'),3600);
+  setTimeout(()=>roomCaption(PANEL[1].name, R.live?'And you owned the risk instead of hiding it. That reads well.':'The cold-start answer landed. Lean on it.'),3600);
   setTimeout(()=>{ const p=R.ov.querySelector('#rmPrompt'); if(p){ p.innerHTML='<button class="rm-go" id="rmRead">'+(R.live?'Take their questions':'Send this to Marcus')+' '+PIC.arrow+'</button>'; p.classList.add('show'); p.querySelector('#rmRead').onclick=()=>{ if(R.live){ roomQA(); } else { roomFinish(); } }; } },5000);
 }
 
 /* ============ Q&A, proof of understanding, evaluation ============ */
 const QA_Q=[
-  {p:0,t:'You said sync lag drives most of it. What makes it the cause and not just something moving alongside?'},
-  {p:1,t:'Your target is 10 percent. Why 10 and not 8, where we started?'},
-  {p:0,t:'Walk me through how you got to the three million, and which assumption it rests on hardest.'},
-  {p:1,t:'If we shipped only one half of this next quarter, which half would you keep, and what would you tell the hosts you dropped?'}
+  {p:0,t:'You showed it answering with no viewing history at all. What does the cold start actually rank from, and why is that not just a random shelf?'},
+  {p:1,t:'What was your p95 on the seatback chip, and how close is that to the ceiling we signed?'},
+  {p:0,t:'Your regression suite passed offline. Which case does it rest on hardest, and what would a failure there look like on a seat screen?'},
+  {p:1,t:'If this misbehaves on a flight next month and none of us are in the room, what does their on-call actually do?'}
 ];
 /* Q&A happens in the room itself: they ask out loud, the captions carry it,
    and your mic only opens when the floor is yours. No side panel, no meter. */
@@ -8448,11 +8448,11 @@ function qasBind(){
   /* REAL-TIME TRANSCRIPT: what you are saying, as you say it. Two lines showing, scrolling itself
      past that so the newest words are the ones on screen. */
   const tx=el.querySelector('#qasTx');
-  const TX_SAY=("So the way I would think about it is, if we only shipped half of this next quarter, "
-    +"I would keep the calendar sync, because that is where the conflicts are actually coming from. "
-    +"It is the piece that moves the number. The prep nudges matter, but they are a second order fix, "
-    +"and I would rather land one thing properly than half land two. For the hosts we dropped, "
-    +"I would be straight with them about the order and give them a date.").split(' ');
+  const TX_SAY=("So the way I would think about it is, the first request on a fresh route has no history at all, "
+    +"so the endpoint falls back to route based ranking from the cached catalogue. It still answers inside "
+    +"the latency budget on the seatback chip, and if anything misses, the client keeps the cached rail order. "
+    +"I would rather ship one honest fallback than two clever ones we cannot test offline. "
+    +"And the record shows exactly how to roll it back if I am wrong.").split(' ');
   let txIv=null, txN=0;
   function txStart(){ if(!tx) return;
     txN=0; tx.textContent=''; tx.classList.add('on'); clearInterval(txIv);
@@ -9964,10 +9964,10 @@ const pouApp=document.getElementById('app'), pouComposer=document.querySelector(
 const pouRec=document.getElementById('pouRec'), pouMicBar=document.getElementById('pouMicBar'), pouHint=document.getElementById('pouHint');
 /* WHAT YOU ARE SAYING, AS YOU SAY IT. One engine, handed whichever transcript element is on screen,
    so the POU recorder and the Q&A recorder behave identically instead of one of them having it. */
-const TX_WORDS=("So the way I would think about it is, if we only shipped half of this next quarter, "
- +"I would keep the calendar sync, because that is where the conflicts are actually coming from. "
- +"It is the piece that moves the number. The prep nudges matter, but they are a second order fix, "
- +"and I would rather land one thing properly than half land two.").split(' ');
+const TX_WORDS=("So the way I would think about it is, everything here follows from the plane being offline, "
+ +"no login and a small cached catalogue on the partner's hardware. The pieces we own have to answer "
+ +"fast on the seatback chip, and the pieces we do not own have to be named, "
+ +"because those are the ones that break.").split(' ');
 function txEngine(el){
   let iv=null, n=0;
   return {
@@ -11126,7 +11126,7 @@ function evalAddToPortfolio(){
 function evalWalkthrough(){
   try{ closeFeedback(); }catch(e){}
   presTyping(function(){
-    addMsg({type:'mgr',text:"Let me take you through it. The two things holding this back are the root cause and the metrics, everything else is polish. Start with the calendar-sync point, the rest follows from it."},false);
+    addMsg({type:'mgr',text:"Let me take you through it. The two things holding this back are the env var descriptions and the rollback step, everything else is polish. Start with the env vars, their platform team can't fill in what isn't described."},false);
   },600);
 }
 function clearActionBar(){const bar=document.getElementById('actionBar');bar.classList.remove('show');bar.innerHTML='';
@@ -11152,7 +11152,7 @@ function handleImGood(){
       if(!fbActive){ try{ openFeedback('final'); }catch(e){} }   // it is about to point at the panel, so the panel is on screen
       const t=addTyping(false);
       setTimeout(()=>{ t.remove();
-        addMsg({type:'mgr',text:`I can't move this ahead yet. There's a minimum bar for anything that goes up the chain: <b>Meets expectations</b>. With the High items in the panel still open, this doesn't clear it. Knock those out and resend, and you're over the bar.`},false);
+        addMsg({type:'mgr',text:`I can't send this up the chain with open <b>Fix</b> items. Those two are what their on-call reaches for when a deploy goes sideways, so they're blockers, not polish. Close them and resend, and this goes straight through.`},false);
         setTimeout(nudgeOpenFixes,420);
       },700);
       return;   // pills stay, the path forward is Resubmit
@@ -11160,7 +11160,7 @@ function handleImGood(){
     clearActionBar(); closeFeedback();
     portfolioAdded('submission', function(){
       presTyping(function(){
-        addMsg({type:'mgr',text:"That's a clean pass, and it's on your portfolio now. Congratulations, genuinely. Last thing left is the room."},false);
+        addMsg({type:'mgr',text:"That's a clean pass, and it's on your portfolio now. Congratulations, genuinely. Two things left: the handoff deck, then the room."},false);
         /* no proof of understanding here: the work has just been evaluated in full, so asking
            you to explain it again is the one question nobody needs answered */
         setTimeout(stageContinuePill,900);
@@ -11189,7 +11189,7 @@ function finalFirstUpload(){
   composerEl.classList.remove('dropmode');
   const name='deployment_record_v1.md';
   const turn=document.createElement('div'); turn.className='uturn';
-  turn.innerHTML=comp({type:'subm',name:name,size:'PDF · your final deliverable'});
+  turn.innerHTML=comp({type:'subm',name:name,size:'Markdown · your final deliverable'});
   place(turn); msgSpacer.style.height='0px'; anchorTop(turn);
   try{ addResource({kind:'mine',stage:stageIdx+1,t:name,s:'PDF · your final deliverable',ic:'dragfile'}); }catch(e){}
   R_finalSubmitted=true;
@@ -11214,7 +11214,7 @@ function doResubmitUpload(){
       addMsg({type:'mgr',text:pick(["Got the new one. Reading it back to back with the last.","v2 is in. Let me take it from the top again.","Got it, reading this one fresh."])},true);
       setTimeout(function(){
         scanPanel('final','deployment_record_v2.md', function(){
-          sayMarcus("Rechecked v2 like a fresh read. The calendar-sync cause leads the doc now and the metrics have real baselines, so the blockers are gone. What's in the panel is only what's left to act on. Take what makes the doc stronger.",null,()=>{ addFeedbackPills(); anchorLastMgr(); });
+          sayMarcus("Rechecked v2 like a fresh read. The env vars carry real descriptions now and the rollback step names the deployment to promote, so the blockers are gone. What's in the panel is only what's left to act on. Take what makes the record stronger.",null,()=>{ addFeedbackPills(); anchorLastMgr(); });
         });
       }, 520);
     }, 600);
