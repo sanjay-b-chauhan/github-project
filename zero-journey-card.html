@@ -23,9 +23,9 @@
   cut at the transparent band under the wordmark (y=180 here, detected per
   file — the band is the seam the artwork leaves for exactly this).
 
-  Toggle the states on the page: ACTIVE (Continue + the journey bar),
-  LOCKED (the flat "Finish N more" plate + the Back-to-active pill under the
-  card) and COMPLETED (band / time / XP earned).
+  Toggle the states on the page: ACTIVE (Continue), LOCKED (the flat
+  "Finish N more" plate + the Back-to-active pill under the card) and
+  COMPLETED (band / time spent / XP earned).
 -->
 <style>
   /* ⚠️ THE RESET IS LOAD-BEARING, do not delete it as boilerplate.
@@ -126,11 +126,20 @@
     background:var(--gold-bg);box-shadow:var(--gold-ring)}
   .zc-xp span{font-family:'PPSupplyMono',monospace;font-size:18px;letter-spacing:-1.62px;color:#fff9d5}
 
-  /* the journey bar belongs to the ACTIVE stop only — on a locked card it
-     reads as that scenario's own progress, which it is not */
-  .zc-bar{margin-top:6px;height:5px;width:100%;overflow:hidden;border-radius:9999px;
-    background:rgba(255,255,255,.1)}
-  .zc-bar > i{display:block;height:100%;border-radius:9999px;background:var(--green)}
+  /* ── the DIFFICULTY meter ───────────────────────────────────────────────
+     Four lozenges, filled to the level, sitting between the label and the
+     word. The word alone made Beginner and Advanced look like the same
+     amount of information; the meter is what makes it a scale you can read
+     without reading. It is the row's only graphic, so it stays monochrome —
+     colour here would compete with the gold XP pill one row up. */
+  .zc-diff{display:flex;align-items:center;gap:5px;margin-right:10px}
+  .zc-diff i{display:block;width:16px;height:9px;border-radius:9999px;background:rgba(255,255,255,.22)}
+  .zc-diff i.on{background:#fff}
+
+  /* the green journey bar is GONE (2026-08-21): the card's job is this
+     scenario, and a bar reading the whole journey's completion under one
+     scenario's meta rows was answering a question nobody asked here. The
+     journey's progress lives on the rail, which is where you go to see it. */
 
   /* ── the way in ── */
   .zc-cta{width:100%;padding-top:2px}
@@ -228,12 +237,27 @@
     <div class="zc-meta-wrap">
       <div class="zc-divider"></div>
 
-      <!-- not-yet-done face: estimate, difficulty, where it sits -->
+      <!-- not-yet-done face: what it pays, what it costs you, how hard it is.
+           Reward first — it is the reason to press the button. "Earn XP upto"
+           because the number is a ceiling you can miss, not a fee we pay on
+           arrival, and saying so up front is what stops the report feeling
+           like a short-change. -->
       <div class="zc-meta" data-face="ahead">
-        <div class="zc-row"><span class="zc-label">Est. time</span><span class="zc-value">3h</span></div>
-        <div class="zc-row"><span class="zc-label">Difficulty</span><span class="zc-value">Intermediate</span></div>
-        <div class="zc-row"><span class="zc-label">Position</span><span class="zc-value">4 of 9</span></div>
-        <div class="zc-bar" data-only="current"><i style="width:33%"></i></div>
+        <div class="zc-row">
+          <span class="zc-label">Earn XP upto</span>
+          <span class="zc-xp">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="#ffd76b" aria-hidden><path d="M12 1.6c.6 4.6 1.9 6.9 4.4 8.1-2.5 1.2-3.8 3.5-4.4 8.1-.6-4.6-1.9-6.9-4.4-8.1 2.5-1.2 3.8-3.5 4.4-8.1z"/><path d="M18.6 14.2c.35 2.4 1 3.6 2.4 4.2-1.4.6-2.05 1.8-2.4 4.2-.35-2.4-1-3.6-2.4-4.2 1.4-.6 2.05-1.8 2.4-4.2z"/></svg>
+            <span>750</span>
+          </span>
+        </div>
+        <div class="zc-row"><span class="zc-label">Time</span><span class="zc-value">~1 hr</span></div>
+        <div class="zc-row">
+          <span class="zc-label">Difficulty</span>
+          <span class="zc-diff-wrap" style="display:flex;align-items:center">
+            <span class="zc-diff" aria-hidden><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span>
+            <span class="zc-value">Intermediate</span>
+          </span>
+        </div>
       </div>
 
       <!-- done face: how did it go -->
@@ -242,7 +266,7 @@
         <div class="zc-row"><span class="zc-label">Time spent</span><span class="zc-value">2h 55m</span></div>
         <div class="zc-row"><span class="zc-label">XP earned</span>
           <span class="zc-xp">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="#ffe06b" aria-hidden><path d="M12 2l2.6 6.5L21 9.6l-4.8 4.4 1.3 6.6L12 17.4 6.5 20.6l1.3-6.6L3 9.6l6.4-1.1z"/></svg>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="#ffd76b" aria-hidden><path d="M12 1.6c.6 4.6 1.9 6.9 4.4 8.1-2.5 1.2-3.8 3.5-4.4 8.1-.6-4.6-1.9-6.9-4.4-8.1 2.5-1.2 3.8-3.5 4.4-8.1z"/><path d="M18.6 14.2c.35 2.4 1 3.6 2.4 4.2-1.4.6-2.05 1.8-2.4 4.2-.35-2.4-1-3.6-2.4-4.2 1.4-.6 2.05-1.8 2.4-4.2z"/></svg>
             <span>640</span>
           </span>
         </div>
@@ -281,16 +305,17 @@
   const back = document.getElementById('back');
   const faceAhead = document.querySelector('[data-face="ahead"]');
   const faceDone  = document.querySelector('[data-face="done"]');
-  const bar       = document.querySelector('[data-only="current"]');
   const ctaOpen   = document.querySelector('[data-cta="open"]');
   const ctaLocked = document.querySelector('[data-cta="locked"]');
   const label     = ctaOpen.querySelector('.sbtn-label');
   const title     = document.querySelector('.zc-title');
 
+  /* Difficulty is a 4-step scale; the meter fills to the level so the word
+     and the graphic can never disagree. */
   const STATES = {
-    current:   {cta:'Continue',    pos:'4 of 9'},
-    locked:    {cta:'Continue',    pos:'8 of 9'},
-    completed: {cta:'View report', pos:'3 of 9'},
+    current:   {cta:'Continue',    xp:'750', time:'~1 hr',    diff:'Intermediate', level:3},
+    locked:    {cta:'Continue',    xp:'900', time:'~1 hr 30', diff:'Advanced',     level:4},
+    completed: {cta:'View report', xp:'750', time:'~1 hr',    diff:'Intermediate', level:3},
   };
 
   function show(state){
@@ -298,11 +323,14 @@
     card.classList.toggle('locked', state === 'locked');
     faceAhead.hidden = state === 'completed';
     faceDone.hidden  = state !== 'completed';
-    bar.hidden       = state !== 'current';
     ctaOpen.hidden   = state === 'locked';
     ctaLocked.hidden = state !== 'locked';
     label.textContent = s.cta;
-    faceAhead.querySelectorAll('.zc-value')[2].textContent = s.pos;
+    faceAhead.querySelector('.zc-xp span').textContent = s.xp;
+    faceAhead.querySelectorAll('.zc-value')[0].textContent = s.time;
+    faceAhead.querySelectorAll('.zc-value')[1].textContent = s.diff;
+    faceAhead.querySelectorAll('.zc-diff i')
+      .forEach((seg, i) => seg.classList.toggle('on', i < s.level));
     back.hidden = state === 'current';   /* only when you have moved off active */
   }
 
