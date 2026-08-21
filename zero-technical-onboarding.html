@@ -85,8 +85,14 @@ body.dark{
 .dsend svg{ width:17px; height:17px; }
 .drec{ display:flex; align-items:center; gap:16px; height:66px; padding:0 10px 0 22px;
   background:var(--field); border-radius:var(--pill); }
-.wave{ display:flex; align-items:center; gap:3px; height:34px; width:300px; }
-.wave span{ flex:1; height:3px; border-radius:999px; background:var(--tx-3); }
+.wave{ position:relative; overflow:hidden; height:34px; width:300px;
+  /* the oldest samples fade out as they run off the left, so the tape reads as
+     continuing past the edge rather than being chopped by it */
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 12%,#000 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 12%,#000 100%); }
+.wave .wrow{ position:absolute; right:0; top:0; height:100%; display:flex;
+  align-items:center; gap:3px; will-change:transform; }
+.wave span{ width:3px; flex:0 0 3px; height:3px; border-radius:999px; background:var(--tx-3); }
 .dtime{ font-size:14px; color:var(--tx-2); font-variant-numeric:tabular-nums; min-width:38px; }
 
 .dbg{ position:fixed; right:18px; bottom:18px; z-index:98; }
@@ -3843,34 +3849,42 @@ function showTranscript(final,interim){
 
    Driven by gsap.ticker, never rAF or setInterval: the throttled preview pane
    kills both, and the ticker can be stepped by hand with ticker.tick(). */
-function voiceMeter(bars,opt){
+function voiceMeter(host,opt){
   opt=opt||{};
-  const N=bars.length, MIN=opt.min||3, MAX=opt.max||32;
-  const lvl=new Float32Array(N), env=new Float32Array(N), gain=new Float32Array(N),
-        spd=new Float32Array(N), pa=new Float32Array(N), pb=new Float32Array(N), rel=new Float32Array(N);
+  /* ── the waveform, as a moving tape ──────────────────────────────────────
+     No microphone is ever opened (simulated mic only). The earlier version was
+     a spectrum: every bar animated in place, which reads as a visualiser, not
+     as something being recorded. A voice note does the opposite — each sample
+     is taken ONCE and then never changes, and the tape carries it leftwards
+     while the newest sample enters at the right.
+
+     So: one sample every SAMPLE_MS, pushed onto the right of a ring buffer,
+     the whole row translated by the fraction of a step elapsed so the motion
+     is continuous rather than a jump per sample. What you watch scroll past is
+     the actual shape of the sentence that was just spoken.
+
+     The sample's height is the speech model: a phrase envelope with real gaps
+     between phrases, a ~5Hz syllable beat, and a burst on every word the
+     transcript speaks. Silence writes a run of dots; a stressed word writes a
+     spike. Because the variation happens over TIME rather than across bars,
+     the dots-beside-spikes profile falls out on its own.
+
+     Driven by gsap.ticker, never rAF or setInterval: the throttled preview
+     pane kills both, and the ticker can be stepped by hand with ticker.tick(). */
+  const W=opt.bar||3, GAP=opt.gap||3, STEP=W+GAP;
+  const MIN=opt.min||3, MAX=opt.max||32, SAMPLE_MS=opt.sampleMs||72;
+  const row=document.createElement('div'); row.className='wrow';
+  host.appendChild(row);
+  /* one spare column so the row can slide a full step before it recycles */
+  const N=Math.ceil((host.clientWidth||300)/STEP)+2;
+  const bars=[], buf=new Float32Array(N);
+  for(let i=0;i<N;i++){ const b=document.createElement('span'); row.appendChild(b); bars.push(b); }
   const rnd=(a,b)=>a+Math.random()*(b-a);
-  for(let i=0;i<N;i++){
-    const d=Math.abs(i-(N-1)/2)/((N-1)/2||1);   /* 0 at the centre, 1 at the edges */
-    /* a GENTLE envelope, not a hill: the old centre-weighting was so strong it
-       ironed every bar into the same mid band, which is what made this read as
-       texture instead of a voice. The shape now comes from the bars, not the row. */
-    env[i]=1-d*d*.34;
-    /* each bar has a character it keeps: some are always dots, some always
-       spike. A real waveform is not one curve sampled 26 times. */
-    gain[i]=rnd(.5,1.5);
-    spd[i]=rnd(2.2,7.4);
-    rel[i]=rnd(8,17);
-    pa[i]=Math.random()*6.283; pb[i]=Math.random()*6.283;
-  }
-  let t=0, inPhrase=true, ph=0, phLen=rnd(1.5,3.1), gap=0, amp=rnd(.74,1), burst=0, live=true;
-  /* dt comes from the ticker's OWN delta argument (ms), not deltaRatio(): a
-     hand-stepped ticker.tick() leaves deltaRatio at ~0, which froze the whole
-     model dead at its first frame. A floor keeps a stepped tick moving. */
-  function tick(time,delta){
-    if(!live) return;
-    const dt=Math.min(.05, Math.max(.0167,(delta||16.7)/1000));
-    t+=dt;
-    /* the phrase machine: talk for a while, breathe, talk again */
+  let t=0, acc=0, inPhrase=true, ph=0, phLen=rnd(1.5,3.1), gap=0, amp=rnd(.74,1),
+      burst=0, live=true;
+
+  /* the level being recorded RIGHT NOW, which is what a sample captures */
+  function energy(dt){
     let e;
     if(inPhrase){
       ph+=dt;
@@ -3881,34 +3895,52 @@ function voiceMeter(bars,opt){
       gap-=dt; e=.02;
       if(gap<=0){ inPhrase=true; ph=0; phLen=rnd(1.4,3.2); amp=rnd(.72,1); }
     }
-    /* syllables: a free beat, plus whatever the transcript just spoke */
     burst=Math.max(0, burst-dt*5.2);
     const beat=Math.pow(Math.abs(Math.sin(t*Math.PI*5.2)),.5);
-    const E=e*(.24+.76*beat)*(.5+.5*burst);
+    /* the grain is per-SAMPLE now, not per-bar: two incommensurate wobbles and
+       a power curve, so most samples sit low and a few stand right up */
+    const w=(.5+.5*Math.sin(t*11.3))*.6+(.5+.5*Math.sin(t*19.7+1.7))*.4;
+    const n=Math.pow(w,1.9);
+    let v=e*(.2+.8*beat)*(.45+.55*burst)*(.1+1.6*n);
+    return v<0?0:v>1?1:v;
+  }
+
+  function paint(){
     for(let i=0;i<N;i++){
-      /* two incommensurate wobbles per bar, then a hard contrast curve: the
-         power push is what makes most bars sit down as dots while a few stand
-         right up, which is the shape of a real voice note */
-      const w=(.5+.5*Math.sin(t*spd[i]+pa[i]))*.62+(.5+.5*Math.sin(t*spd[i]*1.71+pb[i]))*.38;
-      const n=Math.pow(w,2.1);
-      let tgt=E*env[i]*gain[i]*(.08+1.5*n)+burst*.16*n*e;
-      if(tgt<0)tgt=0; if(tgt>1)tgt=1;
-      const k=tgt>lvl[i] ? Math.min(1,dt*34) : Math.min(1,dt*rel[i]);
-      lvl[i]+=(tgt-lvl[i])*k;
-      const b=bars[i];
-      b.style.height=(MIN+lvl[i]*(MAX-MIN)).toFixed(1)+'px';
-      b.style.opacity=(.38+lvl[i]*.62).toFixed(2);
+      const v=buf[i], b=bars[i];
+      b.style.height=(MIN+v*(MAX-MIN)).toFixed(1)+'px';
+      b.style.opacity=(.36+v*.64).toFixed(2);
     }
   }
+
+  /* dt comes from the ticker's OWN delta argument (ms), not deltaRatio(): a
+     hand-stepped ticker.tick() leaves deltaRatio at ~0, which froze the model
+     dead at its first frame. A floor keeps a stepped tick moving. */
+  function tick(time,delta){
+    if(!live) return;
+    const ms=Math.min(50, Math.max(16.7, delta||16.7));
+    const dt=ms/1000;
+    t+=dt; acc+=ms;
+    let moved=false;
+    while(acc>=SAMPLE_MS){
+      acc-=SAMPLE_MS;
+      buf.copyWithin(0,1);              /* the tape moves: oldest falls off */
+      buf[N-1]=energy(SAMPLE_MS/1000);  /* the newest sample enters at the right */
+      moved=true;
+    }
+    if(moved) paint();
+    /* slide by the part-step we are into, so it glides instead of stepping */
+    row.style.transform='translateX('+(-(acc/SAMPLE_MS)*STEP).toFixed(2)+'px)';
+  }
+  paint();
   gsap.ticker.add(tick);
   return {
-    /* the transcript calls this per word, so the bars move with the sentence */
-    word(w){ const n=Math.max(1,Math.min(4,Math.round((w||'').length/3))); burst=Math.min(1,.55+n*.14);
+    /* the transcript calls this per word, so the tape records the sentence */
+    word(w){ const n=Math.max(1,Math.min(4,Math.round((w||'').length/3))); burst=Math.min(1,.6+n*.13);
       if(!inPhrase){ inPhrase=true; ph=0; phLen=rnd(1.4,3.2); } },
-    /* punctuation is a breath: end the phrase early and let it fall */
+    /* punctuation is a breath: end the phrase early and let the tape go quiet */
     breath(){ if(inPhrase){ ph=Math.max(ph,phLen-.2); } },
-    stop(){ live=false; gsap.ticker.remove(tick);
-      bars.forEach(b=>{ b.style.height=MIN+'px'; b.style.opacity=''; }); }
+    stop(){ live=false; gsap.ticker.remove(tick); try{ row.remove(); }catch(e){} }
   };
 }
 /* paste a link, hit submit, and Zero goes and reads it */
@@ -3948,7 +3980,8 @@ function startRecording(onText){
   const cancel=mk('button','dghostbtn',I.x); cancel.setAttribute('aria-label','Cancel');
   const r=mk('div','drec');
   const wave=mk('div','wave');
-  const bars=[]; for(let i=0;i<26;i++){ const b=mk('span'); wave.appendChild(b); bars.push(b); }
+  /* the bars belong to the meter now: it decides how many fit and keeps them
+     moving, because the row scrolls rather than animating in place */
   const time=mk('div','dtime','0:00');
   const send=mk('button','dsend on',I.arrow); send.setAttribute('aria-label','Send');
   r.appendChild(wave); r.appendChild(time); r.appendChild(send);
@@ -3956,7 +3989,7 @@ function startRecording(onText){
   dockIn(wrap);
   sfx('press');
   let t0=Date.now(), heard='', live=true, sent=false, lastAt=Date.now(), idle=null, myRec=null;
-  const wav=voiceMeter(bars);
+  const wav=voiceMeter(wave);
   const tick=setInterval(()=>{ const s2=Math.floor((Date.now()-t0)/1000);
     time.textContent=Math.floor(s2/60)+':'+String(s2%60).padStart(2,'0'); },500);
   const stopAll=()=>{ live=false; wav.stop(); clearInterval(tick); clearInterval(idle);
@@ -4017,7 +4050,7 @@ function sayScripted(){
   const cancel=mk('button','dghostbtn',I.x); cancel.setAttribute('aria-label','Cancel');
   const r=mk('div','drec');
   const wave=mk('div','wave');
-  const bars=[]; for(let i2=0;i2<26;i2++){ const b=mk('span'); wave.appendChild(b); bars.push(b); }
+  /* see startRecording: the meter owns the bars */
   const time=mk('div','dtime','0:00');
   const send=mk('button','dsend on',I.arrow); send.setAttribute('aria-label','Send');
   r.appendChild(wave); r.appendChild(time); r.appendChild(send);
@@ -4026,7 +4059,7 @@ function sayScripted(){
   sfx('press');
   const t0=Date.now(); const words=text.split(' ');
   let live=true, i=0, timer=null;
-  const wav=voiceMeter(bars);
+  const wav=voiceMeter(wave);
   const tick=setInterval(()=>{ time.textContent=Math.floor((Date.now()-t0)/60000)+':'+String(Math.floor((Date.now()-t0)/1000)%60).padStart(2,'0'); },500);
   const teardown=()=>{ live=false; sayCancel=null; wav.stop(); clearInterval(tick);
     clearTimeout(timer); showTranscript('',''); dockClear&&dockClear(); };
