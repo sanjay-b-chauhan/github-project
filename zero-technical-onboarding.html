@@ -1572,7 +1572,11 @@ body.noico .vt .vsp{ display:none; }
 .vt.ghost .vtl{ color:var(--tx-4); }
 /* the fact itself is set big and plain — typography is the decoration */
 .vbig{ font-size:24px; line-height:1.18; letter-spacing:-.01em; font-weight:400;
-  color:#141416; }
+  color:#141416; overflow-wrap:anywhere; hyphens:auto; }
+/* a long single word (infrastructure, engineering) is wider than a small tile at
+   24px, and .vt crops its overflow — so the size steps down with the string */
+.vbig.long{ font-size:20px; line-height:1.2; }
+.vbig.xlong{ font-size:17px; line-height:1.24; }
 /* the inset wash: a quiet panel INSIDE a tile, one step back toward the page */
 .vwash{ background:#F0F0F0; border-radius:24px; corner-shape:squircle;
   border:1px solid rgba(13,13,13,.04); }
@@ -10965,10 +10969,10 @@ const VTILES=[
   html:()=>'<div class="vq big">“'+P.pull+'”</div>'},
  {key:'role', span:'s2', emoji:'🎯', label:'Going after', fall:true, cls:'metal',
   ready:()=>!!(P.role||P.roleGuess),
-  html:()=>'<span class="vseal">'+SEAL+'</span><div class="vbig">'+(P.role||P.roleGuess)+'</div>'},
+  html:()=>{ const v=P.role||P.roleGuess; return '<span class="vseal">'+SEAL+'</span><div class="vbig'+vbigCls(v)+'">'+v+'</div>'; }},
  {key:'company', span:'s2', emoji:'🏢', label:'Company type',
   ready:()=>!!P.companyKind,
-  html:()=>'<div class="vbig">'+P.companyKind+'</div>'},
+  html:()=>'<div class="vbig'+vbigCls(P.companyKind)+'">'+P.companyKind+'</div>'},
  {key:'dreams', span:'s2 r2', emoji:'✨', label:'Dream companies',
   ready:()=>!!P.dream,
   html:()=>{
@@ -10987,7 +10991,7 @@ const VTILES=[
     }).join('')+'</div>'; }},
  {key:'domain', span:'s2', emoji:'📊', label:'Drawn to',
   ready:()=>!!P.industry,
-  html:()=>'<div class="vbig">'+P.industry+'</div>'},
+  html:()=>'<div class="vbig'+vbigCls(P.industry)+'">'+P.industry+'</div>'},
  {key:'location', span:'s2', emoji:'📍', label:'Location',
   ready:()=>!!P.location,
   html:()=>{
@@ -11038,15 +11042,33 @@ function mvBeat(cb){
     cb();
   });
 }
+/* how big a plain fact can be set before a small tile crops it. The longest
+   word decides it, not the character count: "AI infrastructure" is short but
+   carries a 14-letter word that will not fit at 24px. */
+function vbigCls(t){
+  const str=String(t||''); 
+  const longest=str.split(/\s+/).reduce((a,w)=>Math.max(a,w.length),0);
+  if(longest>=13||str.length>=26) return ' xlong';
+  if(longest>=10||str.length>=18) return ' long';
+  return '';
+}
 function mvpLoad(host,label,fixed){
+  /* only ever ONE loader on screen. Jumping steps used to strand the previous
+     one, and a stranded fixed loader reads as a caption floating over whatever
+     replaced it. */
+  document.querySelectorAll('.mvload').forEach(n=>n.remove());
   const l=mk('div','mvload'+(fixed?' fix':''));
   l.innerHTML='<span class="mvsh"><i>'+label+'</i><em>'+label+'</em></span>';
   (host||document.body).appendChild(l);
   gsap.fromTo(l,{opacity:0},{opacity:1,duration:.4,ease:'power2.out'});
   const t0=Date.now();
+  let closed=false;
   return async function(min){
+    if(closed) return; closed=true;
     const left=(min||1200)-(Date.now()-t0);
     if(left>0) await wait(left);
+    /* if a step jump already took it, the tween has nothing to fade */
+    if(!l.isConnected) return;
     await new Promise(r=>gsap.to(l,{opacity:0,duration:.35,onComplete:r}));
     l.remove();
   };
@@ -11331,7 +11353,7 @@ ALIGN.forEach((st,i2)=>DBG_STEPS.push([st.label,()=>{ ALAT=i2; bornPanel();
 const dbgGoto0=dbgGoto;
 dbgGoto=function(i){
   try{ gsap.killTweensOf(['#vz','.pf3','#rmband','#scroll']); }catch(e){}
-  document.querySelectorAll('#vz,.pf3,#rmband,.rmfloat,.pfrip,#shCard,#pfStage,#wVid,#wzStage').forEach(n=>n.remove());
+  document.querySelectorAll('#vz,.pf3,#rmband,.rmfloat,.pfrip,#shCard,#pfStage,#wVid,#wzStage,.mvload,.mvbeat').forEach(n=>n.remove());
   document.body.classList.remove('pfmode','rmfull','noboard','rolesq','pfull','pfl-b','pfl-l','pfl-r','pfl-t','wzon','pfstory','noinput');
   const sc9=$('scroll');
   if(sc9){ sc9.classList.remove('vzcv'); sc9.style.overflowY=''; sc9.style.overscrollBehavior=''; sc9.scrollTop=0;
