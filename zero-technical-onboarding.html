@@ -86,7 +86,7 @@ body.dark{
 .drec{ display:flex; align-items:center; gap:16px; height:66px; padding:0 10px 0 22px;
   background:var(--field); border-radius:var(--pill); }
 .wave{ display:flex; align-items:center; gap:3px; height:34px; width:300px; }
-.wave span{ flex:1; height:5px; border-radius:2px; background:var(--tx-3); }
+.wave span{ flex:1; height:3px; border-radius:999px; background:var(--tx-3); }
 .dtime{ font-size:14px; color:var(--tx-2); font-variant-numeric:tabular-nums; min-width:38px; }
 
 .dbg{ position:fixed; right:18px; bottom:18px; z-index:98; }
@@ -3845,16 +3845,23 @@ function showTranscript(final,interim){
    kills both, and the ticker can be stepped by hand with ticker.tick(). */
 function voiceMeter(bars,opt){
   opt=opt||{};
-  const N=bars.length, MIN=opt.min||4, MAX=opt.max||30;
-  const lvl=new Float32Array(N), band=new Float32Array(N),
-        ph1=new Float32Array(N), ph2=new Float32Array(N), rel=new Float32Array(N);
-  for(let i=0;i<N;i++){
-    const d=Math.abs(i-(N-1)/2)/((N-1)/2||1);      /* 0 at the centre, 1 at the edges */
-    band[i]=Math.pow(1-d,1.4)*.87+.13;             /* the centre carries the body of the voice */
-    rel[i]=7+d*9;                                  /* highs fall away faster than lows */
-    ph1[i]=Math.random()*6.283; ph2[i]=Math.random()*6.283;
-  }
+  const N=bars.length, MIN=opt.min||3, MAX=opt.max||32;
+  const lvl=new Float32Array(N), env=new Float32Array(N), gain=new Float32Array(N),
+        spd=new Float32Array(N), pa=new Float32Array(N), pb=new Float32Array(N), rel=new Float32Array(N);
   const rnd=(a,b)=>a+Math.random()*(b-a);
+  for(let i=0;i<N;i++){
+    const d=Math.abs(i-(N-1)/2)/((N-1)/2||1);   /* 0 at the centre, 1 at the edges */
+    /* a GENTLE envelope, not a hill: the old centre-weighting was so strong it
+       ironed every bar into the same mid band, which is what made this read as
+       texture instead of a voice. The shape now comes from the bars, not the row. */
+    env[i]=1-d*d*.34;
+    /* each bar has a character it keeps: some are always dots, some always
+       spike. A real waveform is not one curve sampled 26 times. */
+    gain[i]=rnd(.5,1.5);
+    spd[i]=rnd(2.2,7.4);
+    rel[i]=rnd(8,17);
+    pa[i]=Math.random()*6.283; pb[i]=Math.random()*6.283;
+  }
   let t=0, inPhrase=true, ph=0, phLen=rnd(1.5,3.1), gap=0, amp=rnd(.74,1), burst=0, live=true;
   /* dt comes from the ticker's OWN delta argument (ms), not deltaRatio(): a
      hand-stepped ticker.tick() leaves deltaRatio at ~0, which froze the whole
@@ -3864,33 +3871,33 @@ function voiceMeter(bars,opt){
     const dt=Math.min(.05, Math.max(.0167,(delta||16.7)/1000));
     t+=dt;
     /* the phrase machine: talk for a while, breathe, talk again */
-    let env;
+    let e;
     if(inPhrase){
       ph+=dt;
       const inT=Math.min(1,ph/.16), outT=Math.min(1,Math.max(0,(phLen-ph)/.24));
-      env=Math.min(inT,outT)*amp;
+      e=Math.min(inT,outT)*amp;
       if(ph>=phLen){ inPhrase=false; gap=rnd(.16,.46); }
     } else {
-      gap-=dt; env=.03;
+      gap-=dt; e=.02;
       if(gap<=0){ inPhrase=true; ph=0; phLen=rnd(1.4,3.2); amp=rnd(.72,1); }
     }
     /* syllables: a free beat, plus whatever the transcript just spoke */
     burst=Math.max(0, burst-dt*5.2);
-    const beat=Math.pow(Math.abs(Math.sin(t*Math.PI*5.2)),.55);
-    const E=env*(.3+.7*beat)*(.55+.45*burst);
+    const beat=Math.pow(Math.abs(Math.sin(t*Math.PI*5.2)),.5);
+    const E=e*(.24+.76*beat)*(.5+.5*burst);
     for(let i=0;i<N;i++){
-      const L=band[i], fast=1.7+(1-L)*4.2;
-      const g=.5+.5*Math.sin(t*fast+ph1[i])*.6+.5*Math.sin(t*fast*1.63+ph2[i])*.4;
-      /* consonants live at the top of the spectrum, so the edges get the onset */
-      /* gain then clamp: without it the multipliers rarely all align and the
-         loud moments never reach the top of the meter */
-      let tgt=(E*(.2+.8*L)*(.46+.54*g)+burst*(1-L)*.4*env)*1.42;
+      /* two incommensurate wobbles per bar, then a hard contrast curve: the
+         power push is what makes most bars sit down as dots while a few stand
+         right up, which is the shape of a real voice note */
+      const w=(.5+.5*Math.sin(t*spd[i]+pa[i]))*.62+(.5+.5*Math.sin(t*spd[i]*1.71+pb[i]))*.38;
+      const n=Math.pow(w,2.1);
+      let tgt=E*env[i]*gain[i]*(.08+1.5*n)+burst*.16*n*e;
       if(tgt<0)tgt=0; if(tgt>1)tgt=1;
-      const k=tgt>lvl[i] ? Math.min(1,dt*30) : Math.min(1,dt*rel[i]);
+      const k=tgt>lvl[i] ? Math.min(1,dt*34) : Math.min(1,dt*rel[i]);
       lvl[i]+=(tgt-lvl[i])*k;
       const b=bars[i];
       b.style.height=(MIN+lvl[i]*(MAX-MIN)).toFixed(1)+'px';
-      b.style.opacity=(.42+lvl[i]*.58).toFixed(2);
+      b.style.opacity=(.38+lvl[i]*.62).toFixed(2);
     }
   }
   gsap.ticker.add(tick);
