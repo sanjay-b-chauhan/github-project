@@ -37,28 +37,24 @@
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { height: 100%; }
   body {
-    background: var(--black);
-    transition: background .48s ease;
+    background: var(--bone);
     font-family: var(--sans);
-    overflow: hidden;
+    overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
 
   /* ============ stage ============ */
-  #viewport { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
-  #stage { width: 1600px; height: 900px; position: relative; flex: none; transform-origin: center center; }
+  #viewport { display: block; }
+  #stage { width: 1600px; position: relative; }
   .slide {
-    position: absolute; inset: 0;
+    position: relative;
+    width: 1600px; height: 900px;
     overflow: hidden;
     padding: 72px 120px 112px;
     display: flex; flex-direction: column;
-    opacity: 0; visibility: hidden;
-    transition: opacity .48s ease, visibility 0s linear .48s;
   }
-  .slide.active { opacity: 1; visibility: visible; transition: opacity .48s ease; }
   .slide.dark  { background: var(--black); color: #f2f0ea; }
   .slide.light { background: var(--bone);  color: var(--ink); }
 
@@ -73,19 +69,6 @@
   @keyframes rise { to { opacity: 1; transform: none; } }
 
   /* ============ fixed chrome (never moves) ============ */
-  #chrome {
-    position: absolute; left: 120px; right: 120px; bottom: 50px;
-    display: flex; align-items: center;
-    z-index: 5;
-    font-family: var(--mono);
-    font-size: 12px;
-    letter-spacing: 0.04em;
-    color: #fff;
-    mix-blend-mode: difference;
-    opacity: .42;
-    pointer-events: none;
-  }
-  #chrome .wm-c { margin-left: auto; height: 17px; aspect-ratio: 333/96; align-self: center; color: #fff; }
 
   /* ============ brand marks ============ */
   svg.wm { display: block; fill: currentColor; flex: none; align-self: flex-start; }
@@ -134,7 +117,7 @@
   .mono { font-family: var(--mono); }
   .label, .source, .mtitle, .stage-n, .out,
   #s4 .tks-stats .cap, #s7 .cs, #s7 .step .sn, #s10 .tier .tl, #s10 .phase .pn,
-  #s11 .ch .cn, #s13 .tag, #chrome, #counter {
+  #s11 .ch .cn, #s13 .tag, #counter {
     text-transform: uppercase;
   }
 
@@ -473,21 +456,44 @@
     text-align: center; margin-top: 44px;
     font-family: var(--serif); font-size: 19px; letter-spacing: -0.01em; color: var(--ink);
   }
-  /* ============ moat · flywheel ============ */
-  #sm .headline { font-size: 38px; max-width: 780px; text-align: center; margin: 0 auto; }
-  #sm .comp { display: grid; grid-template-columns: 1fr auto 1fr; gap: 54px; align-items: center; margin-top: 46px; min-height: 0; }
-  #sm .side { display: flex; flex-direction: column; gap: 44px; }
-  #sm .side.l { text-align: right; align-items: flex-end; }
-  #sm .side.r { text-align: left; align-items: flex-start; }
-  #sm .mt { font-size: 16px; color: var(--ink); font-weight: 500; letter-spacing: -0.005em; }
-  #sm .md { font-size: 13.5px; color: var(--grey); line-height: 1.6; margin-top: 6px; max-width: 300px; }
-  #sm .fly { width: 470px; height: auto; display: block; }
-  #sm .fly .ring { fill: none; stroke: #cfc9bf; stroke-width: 1.5; }
-  #sm .fly .nd { fill: var(--ink); }
-  #sm .fly .ah { fill: #cfc9bf; }
-  #sm .fly .lb { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; fill: var(--ink); text-transform: uppercase; }
-  #sm .fly .ctr { font-family: var(--serif); font-size: 19px; letter-spacing: -0.01em; fill: var(--ink); }
-  #sm .ortho { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--grey-soft); text-align: center; margin-top: 40px; }
+  /* ============ agents at work ============ */
+  #sa .headline { font-size: 38px; max-width: 860px; text-align: center; margin: 0 auto; }
+  #sa .awrap { max-width: 1280px; width: 100%; margin: 40px auto 0; position: relative; }
+  #sa .agrid { display: flex; align-items: stretch; }
+  #sa .acell { flex: 1; display: flex; flex-direction: column; }
+  #sa .afeed { height: 40px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 2px; padding-bottom: 4px; }
+  #sa .afeed .ft { font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--grey); }
+  #sa .afeed .ft b { font-family: var(--sans); font-weight: 500; color: var(--ink); letter-spacing: -0.02em; }
+  #sa .afeed svg { display: block; }
+  #sa .acol {
+    flex: 1; background: var(--paper); border: 1.5px solid var(--ink); border-radius: 14px;
+    padding: 18px 16px 14px; display: flex; flex-direction: column; min-height: 236px;
+  }
+  #sa .aacr { font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); text-align: center; }
+  #sa .arole { font-size: 12px; color: var(--grey); text-align: center; margin-top: 5px; line-height: 1.45; height: 20px; }
+  #sa .anodes { display: flex; justify-content: center; gap: 10px; margin-top: 18px; }
+  #sa .anode { display: flex; flex-direction: column; align-items: center; gap: 7px; width: 74px; }
+  #sa .anode .ic {
+    width: 38px; height: 38px; border: 1.5px solid var(--ink); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink); background: var(--bone);
+  }
+  #sa .anode .nm { font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--grey); text-align: center; line-height: 1.4; }
+  #sa .aout { margin-top: auto; padding-top: 12px; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--grey-soft); text-align: center; }
+  #sa .aarr { flex: none; width: 44px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; margin-top: 40px; }
+  #sa .aarr .al { font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--grey-soft); }
+  #sa .loopband { position: relative; height: 46px; max-width: 1280px; margin: 0 auto; }
+  #sa .loopband svg { position: absolute; }
+  #sa .loopband .ll { position: absolute; font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--grey); }
+  #sa .evalbar {
+    max-width: 1280px; margin: 4px auto 0;
+    border: 1.5px solid var(--ink); border-radius: 12px; background: var(--ink);
+    padding: 13px 24px; display: flex; align-items: center; justify-content: center; gap: 14px;
+  }
+  #sa .evalbar .el { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #8d877d; flex: none; }
+  #sa .evalbar .et { font-size: 14px; color: var(--bone); letter-spacing: -0.005em; }
+  #sa .evalbar .et b { font-weight: 500; }
+
   /* ============ engines rework ============ */
   #s6 .fmt { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 26px; max-width: 480px; }
   #s6 .fchip { font-size: 13px; font-weight: 450; color: var(--ink); border: 1px solid var(--line); border-radius: 999px; padding: 7px 15px; }
@@ -499,9 +505,19 @@
   #s6 .mrow2 .mv { font-size: 14.5px; color: var(--ink); line-height: 1.55; }
   #s6 .mrow2 .mv span { color: var(--grey); }
 
+  .sfoot {
+    position: absolute; left: 120px; right: 120px; bottom: 46px;
+    display: flex; align-items: center;
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.09em; text-transform: uppercase;
+    color: var(--faint); pointer-events: none;
+  }
+  .dark .sfoot { color: #55514a; }
+  .sfoot svg.wm { margin-left: auto; height: 16px; aspect-ratio: 333/96; color: var(--ink); align-self: center; }
+  .dark .sfoot svg.wm { color: var(--bone); }
+
   /* ============ nav ============ */
   #hud {
-    position: fixed; left: 0; right: 0; bottom: 22px;
+    position: fixed; left: 0; right: 0; bottom: 14px;
     display: flex; align-items: center; justify-content: center; gap: 18px;
     z-index: 10; opacity: 0; transition: opacity .3s ease; pointer-events: none;
   }
@@ -540,7 +556,7 @@
     .rv { opacity: 1; transform: none; }
     .fade { opacity: 1; }
     .fadeh { opacity: 0.16; }
-    #hud, #chrome { display: none; }
+    #hud { display: none; }
   }
   @page { size: 1600px 900px; margin: 0; }
 </style>
@@ -780,6 +796,68 @@
       </div>
     </section>
 
+    <!-- AGENTS AT WORK -->
+    <section class="slide light" id="sa">
+      <span class="label eyebrow">Technology &middot; Inside the councils</span>
+      <div class="content">
+        <h2 class="headline rv" style="--d:1">How the agents actually work.</h2>
+        <div class="awrap">
+          <div class="agrid">
+            <div class="acell rv" style="--d:2">
+              <div class="afeed"><span class="ft">Industry radar &middot; real-time</span><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><path d="M5 0v11" stroke="#757067" stroke-width="1.3" stroke-dasharray="3 3"/><path d="M1 10l4 5 4-5" fill="none" stroke="#757067" stroke-width="1.3"/></svg></div>
+              <div class="acol">
+                <span class="aacr">CRC</span>
+                <p class="arole">Reads the industry, live.</p>
+                <div class="anodes"><div class="anode"><span class="ic"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.7" cy="6.7" r="4.4"/><path d="M10 10l4 4"/></svg></span><span class="nm">Web<br>researcher</span></div><div class="anode"><span class="ic"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h12l-4.6 5.2V12l-2.8 2V8.2z"/></svg></span><span class="nm">Source<br>curator</span></div><div class="anode"><span class="ic"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M5.4 8.2l1.8 1.8 3.4-3.9"/></svg></span><span class="nm">Fact<br>checker</span></div></div>
+                <div class="aout">Out &middot; research corpus</div>
+              </div>
+            </div>
+            <div class="aarr rv" style="--d:3"><span class="al">Corpus</span><svg width="26" height="10" viewBox="0 0 26 10" fill="none"><path d="M0 5h18" stroke="#cfc9bf" stroke-width="1.5"/><path d="M18 1l6 4-6 4" fill="none" stroke="#cfc9bf" stroke-width="1.5"/></svg></div>
+            <div class="acell rv" style="--d:3">
+              <div class="afeed"><span class="ft"><b>1,160+</b> live jobs</span><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><path d="M5 0v11" stroke="#757067" stroke-width="1.3" stroke-dasharray="3 3"/><path d="M1 10l4 5 4-5" fill="none" stroke="#757067" stroke-width="1.3"/></svg></div>
+              <div class="acol">
+                <span class="aacr">CDC</span>
+                <p class="arole">Designs against live job demand.</p>
+                <div class="anodes"><div class="anode"><span class="ic"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3.6C6.6 2.7 4.4 2.7 3 3.6v9c1.4-.9 3.6-.9 5 0 1.4-.9 3.6-.9 5 0v-9c-1.4-.9-3.6-.9-5 0z"/><path d="M8 3.6v9"/></svg></span><span class="nm">Concepts</span></div><div class="anode"><span class="ic"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 4.5a3.5 3.5 0 0 1-4.6 4.6L4.6 13.4l-2-2 4.3-4.3a3.5 3.5 0 0 1 4.6-4.6l-2.2 2.2 2 2z"/></svg></span><span class="nm">Tools &amp;<br>workflows</span></div><div class="anode"><span class="ic"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v12"/><path d="M4 3h8l-2 2.6 2 2.6H4"/></svg></span><span class="nm">Projects</span></div></div>
+                <div class="aout">Out &middot; designed curriculum</div>
+              </div>
+            </div>
+            <div class="aarr rv" style="--d:4"><span class="al">Path</span><svg width="26" height="10" viewBox="0 0 26 10" fill="none"><path d="M0 5h18" stroke="#cfc9bf" stroke-width="1.5"/><path d="M18 1l6 4-6 4" fill="none" stroke="#cfc9bf" stroke-width="1.5"/></svg></div>
+            <div class="acell rv" style="--d:4">
+              <div class="afeed"></div>
+              <div class="acol">
+                <span class="aacr">CIC</span>
+                <p class="arole">Builds the experience.</p>
+                <div class="anodes"><div class="anode"><span class="ic"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="5.8"/><circle cx="8" cy="8" r="2.2"/></svg></span><span class="nm">Checkpoint<br>designer</span></div><div class="anode"><span class="ic"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2l5.2 3v6L8 14l-5.2-3V5z"/><path d="M2.8 5L8 8l5.2-3M8 8v6"/></svg></span><span class="nm">Simulation<br>engineer</span></div><div class="anode"><span class="ic"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l1-3.6 6.8-6.8 2.6 2.6L6.6 12z"/><path d="M9.6 3.8l2.6 2.6"/></svg></span><span class="nm">Flow<br>writer</span></div></div>
+                <div class="aout">Out &middot; a playable scenario</div>
+              </div>
+            </div>
+            <div class="aarr rv" style="--d:5"><span class="al">Build</span><svg width="26" height="10" viewBox="0 0 26 10" fill="none"><path d="M0 5h18" stroke="#cfc9bf" stroke-width="1.5"/><path d="M18 1l6 4-6 4" fill="none" stroke="#cfc9bf" stroke-width="1.5"/></svg></div>
+            <div class="acell rv" style="--d:5">
+              <div class="afeed"></div>
+              <div class="acol">
+                <span class="aacr">CAC</span>
+                <p class="arole">Holds the quality bar.</p>
+                <div class="anodes"><div class="anode"><span class="ic"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8s2.4-3.8 6-3.8S14 8 14 8s-2.4 3.8-6 3.8S2 8 2 8z"/><circle cx="8" cy="8" r="1.7"/></svg></span><span class="nm">Audit<br>agents</span></div><div class="anode"><span class="ic"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2h5l3 3v9H4z"/><path d="M9 2v3h3M6 8h4M6 10.5h4"/></svg></span><span class="nm">Gap<br>reporter</span></div><div class="anode"><span class="ic"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12.6 8a4.6 4.6 0 1 1-1.3-3.2M12.6 2.6v3h-3"/></svg></span><span class="nm">Re-audit</span></div></div>
+                <div class="aout">Out &middot; approved for students</div>
+              </div>
+            </div>
+          </div>
+          <div class="loopband rv" style="--d:6">
+            <svg style="right: 12%; top: 4px;" width="360" height="36" viewBox="0 0 360 36" fill="none">
+              <path d="M348 0 v16 a8 8 0 0 1 -8 8 h-320 a8 8 0 0 1 -8 -8 v-8" stroke="#191816" stroke-width="1.5"/>
+              <path d="M6 10 h12 l-6 -9 z" fill="#191816"/>
+            </svg>
+            <span class="ll" style="right: 22%; top: 30px;">Gaps loop back to CIC &middot; fixed &middot; re-audited</span>
+          </div>
+          <div class="evalbar rv" style="--d:7">
+            <span class="el">The eval layer</span>
+            <p class="et">Every agent is scored on outcomes. <b>Miss the bar, get replaced.</b></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- 6 · CONTENT ENGINES -->
     <section class="slide light" id="s6">
       <span class="label eyebrow">Technology &middot; Content engines</span>
@@ -844,56 +922,6 @@
             </div>
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- MOAT · FLYWHEEL -->
-    <section class="slide light" id="sm">
-      <span class="label eyebrow">Technology &middot; The moat</span>
-      <div class="content">
-        <h2 class="headline rv" style="--d:1">A system that improves itself.</h2>
-        <div class="comp">
-          <div class="side l">
-            <div class="rv" style="--d:2">
-              <div class="mt">Evals set the bar</div>
-              <p class="md">Every agent is scored against outcome questions.</p>
-            </div>
-            <div class="rv" style="--d:3">
-              <div class="mt">Miss the bar, get replaced</div>
-              <p class="md">Better agents take the place of underperformers.</p>
-            </div>
-          </div>
-          <div class="rv" style="--d:1">
-            <svg class="fly" viewBox="0 0 560 460" aria-label="Improvement flywheel: real work produces signals, signals feed evals, evals breed better agents">
-              <circle class="ring" cx="280" cy="230" r="150"/>
-              <path class="ah" d="M386 336 l-14 2 6 -13 z"/>
-              <path class="ah" d="M174 336 l-2 -14 13 6 z"/>
-              <path class="ah" d="M174 124 l14 -2 -6 13 z"/>
-              <path class="ah" d="M386 124 l2 14 -13 -6 z"/>
-              <circle class="nd" cx="280" cy="80" r="5"/>
-              <circle class="nd" cx="430" cy="230" r="5"/>
-              <circle class="nd" cx="280" cy="380" r="5"/>
-              <circle class="nd" cx="130" cy="230" r="5"/>
-              <text class="lb" x="280" y="58" text-anchor="middle">Real work</text>
-              <text class="lb" x="446" y="234">Signals</text>
-              <text class="lb" x="280" y="410" text-anchor="middle">Evals</text>
-              <text class="lb" x="114" y="234" text-anchor="end">Better agents</text>
-              <text class="ctr" x="280" y="222" text-anchor="middle">Every learner</text>
-              <text class="ctr" x="280" y="248" text-anchor="middle">makes it better.</text>
-            </svg>
-          </div>
-          <div class="side r">
-            <div class="rv" style="--d:4">
-              <div class="mt">The data compounds</div>
-              <p class="md">Frontier labs pay armies for this data. Zero gets it as a byproduct.</p>
-            </div>
-            <div class="rv" style="--d:5">
-              <div class="mt">Calibrated to each person</div>
-              <p class="md">Training adjusts for as long as they keep learning.</p>
-            </div>
-          </div>
-        </div>
-        <p class="ortho rv" style="--d:6">Model-agnostic orchestration routes every task to the right model at the right cost</p>
       </div>
     </section>
 
@@ -1051,14 +1079,11 @@
       </div>
     </section>
 
-    <!-- fixed chrome -->
-    <div id="chrome">
-      <span>Confidential&nbsp;&nbsp;/&nbsp;&nbsp;08.2026</span>
-      <svg class="wm wm-c" viewBox="0 0 333 96" role="img" aria-label="zero"><use href="#wm"/></svg>
-    </div>
-
   </div>
 </div>
+
+
+
 
 <div id="hud">
   <button id="prev" aria-label="Previous slide">&#8592;</button>
@@ -1068,43 +1093,44 @@
 
 <script>
   const slides = [...document.querySelectorAll('.slide')];
-  let i = 0;
+  slides.forEach(s => s.insertAdjacentHTML('beforeend',
+    '<div class="sfoot"><span>Confidential / 08.2026</span><svg class="wm" viewBox="0 0 333 96" aria-hidden="true"><use href="#wm"/></svg></div>'));
+  let current = 0;
 
   function fit() {
-    const s = Math.min(innerWidth / 1600, innerHeight / 900);
-    document.getElementById('stage').style.transform = `scale(${s})`;
+    const z = Math.min(innerWidth / 1600, 1.15);
+    document.getElementById('stage').style.zoom = z;
   }
   addEventListener('resize', fit);
   if (window.visualViewport) visualViewport.addEventListener('resize', fit);
   fit(); setTimeout(fit, 250);
 
-  function show(n) {
-    i = Math.max(0, Math.min(slides.length - 1, n));
-    slides.forEach((s, k) => s.classList.toggle('active', k === i));
-    document.getElementById('counter').textContent =
-      String(i + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
-    const dark = slides[i].classList.contains('dark');
-    document.body.className = dark ? 'hud-dark' : 'hud-light';
-    document.body.style.background = dark ? '#131211' : '#f6f4f0';
-    document.getElementById('stage').classList.toggle('on-dark', dark);
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('active');
+        const i = slides.indexOf(e.target);
+        if (i >= 0) {
+          current = i;
+          document.getElementById('counter').textContent =
+            String(i + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
+          document.body.classList.toggle('hud-dark', e.target.classList.contains('dark'));
+        }
+      }
+    });
+  }, { threshold: 0.4 });
+  slides.forEach(s => io.observe(s));
+
+  function goTo(n) {
+    const i = Math.max(0, Math.min(slides.length - 1, n));
+    slides[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
-  show(0);
-
-  document.getElementById('prev').onclick = () => show(i - 1);
-  document.getElementById('next').onclick = () => show(i + 1);
+  document.getElementById('prev').onclick = () => goTo(current - 1);
+  document.getElementById('next').onclick = () => goTo(current + 1);
   addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); show(i + 1); }
-    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); show(i - 1); }
-    if (e.key === 'Home') show(0);
-    if (e.key === 'End') show(slides.length - 1);
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); goTo(current + 1); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); goTo(current - 1); }
+    if (e.key === 'Home') goTo(0);
+    if (e.key === 'End') goTo(slides.length - 1);
   });
-
-  let x0 = null;
-  addEventListener('touchstart', e => x0 = e.touches[0].clientX, {passive: true});
-  addEventListener('touchend', e => {
-    if (x0 === null) return;
-    const dx = e.changedTouches[0].clientX - x0;
-    if (Math.abs(dx) > 48) show(i + (dx < 0 ? 1 : -1));
-    x0 = null;
-  }, {passive: true});
 </script>
