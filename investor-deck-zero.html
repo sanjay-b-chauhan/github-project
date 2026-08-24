@@ -100,6 +100,20 @@
   .body { font-size: 17px; font-weight: 400; line-height: 1.66; color: var(--grey); letter-spacing: -0.005em; }
 
   /* eyebrow pinned to identical position on every slide */
+  .twm { position: absolute; top: 46px; right: 120px; height: 16px; aspect-ratio: 333/96; color: var(--ink); pointer-events: none; }
+  .dark .twm { color: var(--bone); }
+  .tconf {
+    position: absolute; top: 48px; left: 120px;
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.09em; text-transform: uppercase;
+    color: var(--faint); pointer-events: none;
+  }
+  .dark .tconf { color: #55514a; }
+  .cfoot {
+    position: absolute; left: 120px; right: 120px; bottom: 46px;
+    display: flex; align-items: center;
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.09em; text-transform: uppercase;
+    color: #55514a; pointer-events: none;
+  }
   .eyebrow { position: absolute; top: 48px; left: 120px; }
 
   /* numerals — Google Sans Flex, tight */
@@ -246,11 +260,6 @@
   #s5 .lead em { font-style: normal; color: var(--ink); }
   #s5 .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 44px; max-width: 1280px; width: 100%; margin-left: auto; margin-right: auto; }
   #s5 .stage-col { display: flex; flex-direction: column; background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 26px 26px 22px; position: relative; }
-    content: ''; position: absolute; right: 0; top: -3.25px;
-    border-top: 4px solid transparent; border-bottom: 4px solid transparent;
-    border-left: 6px solid #d9d4ca;
-  }
-  #s5 .stage-col:last-child .ln { display: none; }
   #s5 .stage-n { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; color: var(--faint); }
   #s5 .stage-t { font-family: var(--serif); font-size: 21px; letter-spacing: -0.016em; line-height: 1.26; margin-top: 12px; }
   #s5 .stage-d { font-size: 14px; line-height: 1.58; color: var(--grey); margin-top: 12px; max-width: 230px; }
@@ -264,37 +273,8 @@
   #s5 .out b { color: var(--ink); font-weight: 400; }
 
   /* ============ 6 · councils + engines ============ */
-  #s6 .headline { font-size: 38px; max-width: 800px; }
-  #s6 .halves { display: flex; gap: 64px; margin-top: 40px; min-height: 0; }
-  #s6 .half { flex: 1; display: flex; flex-direction: column; }
-  #s6 .half + .half { border-left: 1px solid var(--hairline); padding-left: 68px; }
-  #s6 .half > .label { margin-bottom: 13px; }
-  #s6 .half .kicker { font-size: 21px; max-width: 440px; }
 
   /* ============ 7 · evaluation + recruiters ============ */
-  #s7 .headline { font-size: 38px; max-width: 800px; }
-  #s7 .halves { display: flex; gap: 64px; margin-top: 40px; min-height: 0; }
-  #s7 .half { flex: 1; display: flex; flex-direction: column; }
-  #s7 .half + .half { border-left: 1px solid var(--hairline); padding-left: 68px; }
-  #s7 .half > .label { margin-bottom: 13px; }
-  #s7 .half .kicker { font-size: 21px; max-width: 420px; }
-  #s7 .half .body { font-size: 16px; margin-top: 16px; max-width: 450px; }
-  #s7 .panel {
-    margin-top: 26px; background: var(--paper); border: 1px solid var(--line);
-    border-radius: 20px; padding: 24px 28px;
-  }
-  #s7 .crit { display: flex; flex-direction: column; gap: 14px; }
-  #s7 .crit-row { display: flex; align-items: center; gap: 16px; }
-  #s7 .crit-row .cn { flex: none; width: 152px; font-size: 14px; color: var(--ink); }
-  #s7 .meter { flex: 1; height: 5px; border-radius: 3px; background: #e6e2da; overflow: hidden; }
-  #s7 .meter i { display: block; height: 100%; border-radius: 3px; background: var(--ink); }
-  #s7 .crit-row .cs { flex: none; width: 42px; text-align: right; font-family: var(--mono); font-size: 12.5px; color: var(--grey); }
-  #s7 .flowline { display: flex; flex-direction: column; margin-top: 22px; }
-  #s7 .step { display: flex; gap: 18px; padding: 15px 0; align-items: flex-start; }
-  #s7 .step + .step { border-top: 1px solid var(--hairline); }
-  #s7 .step .sn { flex: none; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.08em; color: var(--faint); width: 26px; padding-top: 4px; }
-  #s7 .step .st { font-size: 16px; color: var(--ink); font-weight: 450; }
-  #s7 .step .sd { font-size: 14px; color: var(--grey); line-height: 1.55; margin-top: 4px; }
 
   /* ============ 8 · experience ============ */
   #s8 .headline { font-size: 38px; max-width: 800px; }
@@ -422,59 +402,37 @@
 
 
   /* ============ agents graph (option B) ============ */
-  #sb .headline { font-size: 38px; max-width: 860px; text-align: center; margin: 0 auto; }
-  #sb .graph { position: relative; width: 1360px; height: 530px; margin: 30px auto 0; flex: none; }
-  #sb .glayer { position: absolute; inset: 0; }
-  #sb .gnode {
+  .gslide .headline { font-size: 38px; max-width: 860px; text-align: center; margin: 0 auto; }
+  #s6 .headline, #s7 .headline { font-size: 36px; max-width: 900px; text-align: center; margin: 0 auto; }
+  #s6 .content, #s7 .content { padding-top: 10px; }
+  .gslide .graph { position: relative; width: 1360px; height: 530px; margin: 30px auto 0; flex: none; }
+  .gslide .graph.g6 { height: 540px; }
+  .gslide .graph.g7 { height: 440px; }
+  .gslide .glayer { position: absolute; inset: 0; }
+  .gslide .gnode {
     position: absolute; background: var(--paper); border: 1.5px solid var(--ink); border-radius: 12px;
     padding: 10px 14px; display: flex; align-items: center; gap: 10px;
   }
-  #sb .gnode .gi { flex: none; width: 30px; height: 30px; border: 1.5px solid var(--ink); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--ink); background: var(--bone); }
-  #sb .gnode .gt { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); }
-  #sb .gnode .gs { font-size: 10.5px; color: var(--grey); margin-top: 2px; line-height: 1.3; }
-  #sb .gnode.trigger { border-radius: 24px 12px 12px 24px; }
-  #sb .gnode.outnode { background: var(--ink); border-color: var(--ink); }
-  #sb .gnode.outnode .gi { background: var(--ink); border-color: #55514a; color: var(--bone); }
-  #sb .gnode.outnode .gt { color: var(--bone); }
-  #sb .gnode.outnode .gs { color: #a09a90; }
-  #sb .gleaf { position: absolute; width: 84px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
-  #sb .gleaf .ic { width: 42px; height: 42px; border: 1.5px solid var(--ink); border-radius: 50%; background: var(--bone); display: flex; align-items: center; justify-content: center; color: var(--ink); }
-  #sb .gleaf .nm { font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--grey); text-align: center; line-height: 1.4; }
-  #sb .elabel { position: absolute; font-family: var(--mono); font-size: 9px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--grey-soft); }
-  #sb .evalbar {
+  .gslide .gnode .gi { flex: none; width: 30px; height: 30px; border: 1.5px solid var(--ink); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--ink); background: var(--bone); }
+  .gslide .gnode .gt { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); }
+  .gslide .gnode .gs { font-size: 10.5px; color: var(--grey); margin-top: 2px; line-height: 1.3; }
+  .gslide .gnode.trigger { border-radius: 24px 12px 12px 24px; }
+  .gslide .gnode.outnode { background: var(--ink); border-color: var(--ink); }
+  .gslide .gnode.outnode .gi { background: var(--ink); border-color: #55514a; color: var(--bone); }
+  .gslide .gnode.outnode .gt { color: var(--bone); }
+  .gslide .gnode.outnode .gs { color: #a09a90; }
+  .gslide .gleaf { position: absolute; width: 84px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .gslide .gleaf .ic { width: 42px; height: 42px; border: 1.5px solid var(--ink); border-radius: 50%; background: var(--bone); display: flex; align-items: center; justify-content: center; color: var(--ink); }
+  .gslide .gleaf .nm { font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--grey); text-align: center; line-height: 1.4; }
+  .gslide .elabel { position: absolute; font-family: var(--mono); font-size: 9px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--grey-soft); }
+  .gslide .evalbar {
     position: absolute; left: 0; right: 0; bottom: 0;
     border: 1.5px solid var(--ink); border-radius: 12px; background: var(--ink);
     padding: 12px 24px; display: flex; align-items: center; justify-content: center; gap: 14px;
   }
-  #sb .evalbar .el { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #8d877d; flex: none; }
-  #sb .evalbar .et { font-size: 14px; color: var(--bone); letter-spacing: -0.005em; }
-  #sb .evalbar .et b { font-weight: 500; }
-
-  /* ============ engines rework ============ */
-  #s6 .fmt { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 26px; max-width: 480px; }
-  #s6 .fchip { font-size: 13px; font-weight: 450; color: var(--ink); border: 1px solid var(--line); border-radius: 999px; padding: 7px 15px; }
-  #s6 .punch { font-family: var(--serif); font-size: 18px; letter-spacing: -0.01em; color: var(--grey); margin-top: 26px; max-width: 440px; line-height: 1.45; }
-  #s6 .mstack { margin-top: 26px; display: flex; flex-direction: column; }
-  #s6 .mrow2 { display: flex; gap: 18px; padding: 14px 0; align-items: baseline; }
-  #s6 .mrow2 + .mrow2 { border-top: 1px solid var(--hairline); }
-  #s6 .mrow2 .mn { flex: none; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--grey-soft); width: 26px; }
-  #s6 .mrow2 .mv { font-size: 14.5px; color: var(--ink); line-height: 1.55; }
-  #s6 .mrow2 .mv span { color: var(--grey); }
-
-  .twm { position: absolute; top: 46px; right: 120px; height: 16px; aspect-ratio: 333/96; color: var(--ink); pointer-events: none; }
-  .dark .twm { color: var(--bone); }
-  .tconf {
-    position: absolute; top: 48px; left: 120px;
-    font-family: var(--mono); font-size: 12px; letter-spacing: 0.09em; text-transform: uppercase;
-    color: var(--faint); pointer-events: none;
-  }
-  .dark .tconf { color: #55514a; }
-  .cfoot {
-    position: absolute; left: 120px; right: 120px; bottom: 46px;
-    display: flex; align-items: center;
-    font-family: var(--mono); font-size: 12px; letter-spacing: 0.09em; text-transform: uppercase;
-    color: #55514a; pointer-events: none;
-  }
+  .gslide .evalbar .el { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #8d877d; flex: none; }
+  .gslide .evalbar .et { font-size: 14px; color: var(--bone); letter-spacing: -0.005em; }
+  .gslide .evalbar .et b { font-weight: 500; }
 
   /* ============ live copy editing ============ */
   body.editing [data-ck] { outline: 1px dashed rgba(127,122,112,.55); outline-offset: 3px; border-radius: 2px; cursor: text; }
@@ -711,7 +669,7 @@
     </section>
 
     <!-- AGENTS GRAPH · OPTION B -->
-    <section class="slide light" id="sb">
+    <section class="slide light gslide" id="sb">
       <span class="label eyebrow">Technology &middot; Inside the councils</span>
       <div class="content">
         <h2 class="headline rv" style="--d:1">The agent pipeline, end to end.</h2>
@@ -729,67 +687,34 @@
     </section>
 
     <!-- 6 · CONTENT ENGINES -->
-    <section class="slide light" id="s6">
+    <section class="slide light gslide" id="s6">
       <span class="label eyebrow">Technology &middot; Content engines</span>
       <div class="content">
-        <h2 class="headline rv" style="--d:1">Two engines turn curriculum into product, on the fly.</h2>
-        <div class="halves">
-          <div class="half">
-            <span class="label rv" style="--d:2">Training generation guild</span>
-            <p class="kicker rv" style="--d:2">Any training, on any topic, generated the moment it&rsquo;s needed.</p>
-            <div class="fmt rv" style="--d:3">
-              <span class="fchip">Tool simulations</span>
-              <span class="fchip">Concept training</span>
-              <span class="fchip">Workflow training</span>
-              <span class="fchip">Communication training</span>
-              <span class="fchip">Mini games</span>
-              <span class="fchip">Co-worker training</span>
-            </div>
-            <p class="punch rv" style="--d:4">Six of fifteen formats shown. Think YouTube, but generated for exactly what you need to learn next.</p>
-          </div>
-          <div class="half">
-            <span class="label rv" style="--d:3">Media &amp; production wing</span>
-            <p class="kicker rv" style="--d:3">Every scenario ships with its own media, fully produced by agents.</p>
-            <div class="mstack">
-              <div class="mrow2 rv" style="--d:4"><span class="mn">01</span><p class="mv">Co-worker kick-off videos <span>that brief you like a real manager would.</span></p></div>
-              <div class="mrow2 rv" style="--d:5"><span class="mn">02</span><p class="mv">Intros and outros <span>for every stage of the scenario.</span></p></div>
-              <div class="mrow2 rv" style="--d:6"><span class="mn">03</span><p class="mv">A voice for every character <span>in the story you work inside.</span></p></div>
-            </div>
-            <p class="punch rv" style="--d:7">Adding a job role is a generation run, not a production project. The catalog grows without growing the team.</p>
+        <h2 class="headline rv" style="--d:1">Two engines turn curriculum into product, <b>on the fly.</b></h2>
+        <div class="graph g6 rv" style="--d:1">
+          <svg class="glayer" width="1360" height="540" viewBox="0 0 1360 540" fill="none"><path d="M168 215 h28 v-108 h58" stroke="#cfc9bf" stroke-width="1.5"/><path d="M248 102l8 5-8 5" fill="none" stroke="#cfc9bf" stroke-width="1.5"/><path d="M168 215 h28 v128 h58" stroke="#cfc9bf" stroke-width="1.5"/><path d="M248 338l8 5-8 5" fill="none" stroke="#cfc9bf" stroke-width="1.5"/><path d="M444 105 H1050" stroke="#c2bcb1" stroke-width="1.2" stroke-dasharray="3 4"/><path d="M444 345 H860" stroke="#c2bcb1" stroke-width="1.2" stroke-dasharray="3 4"/><path d="M1050 105 h40 v100 h62" stroke="#cfc9bf" stroke-width="1.5" fill="none"/><path d="M1150 200l8 5-8 5" fill="none" stroke="#cfc9bf" stroke-width="1.5"/><path d="M860 345 h190 v-115 h100" stroke="#cfc9bf" stroke-width="1.5" fill="none"/><path d="M1148 225l8 5-8 5" fill="none" stroke="#cfc9bf" stroke-width="1.5"/></svg>
+          <div class="gnode trigger rv" style="--d:2; left:0px; top:185px; width:168px;"><span class="gi"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3.6C6.6 2.7 4.4 2.7 3 3.6v9c1.4-.9 3.6-.9 5 0 1.4-.9 3.6-.9 5 0v-9c-1.4-.9-3.6-.9-5 0z"/><path d="M8 3.6v9"/></svg></span><span><div class="gt">Curriculum</div><div class="gs">from the councils</div></span></div><div class="gnode  rv" style="--d:3; left:262px; top:75px; width:182px;"><span class="gi"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="10" height="8" rx="2"/><path d="M8 5V2.5"/><circle cx="8" cy="2" r="0.8"/><circle cx="6" cy="9" r="0.8" fill="currentColor"/><circle cx="10" cy="9" r="0.8" fill="currentColor"/></svg></span><span><div class="gt">Training</div><div class="gs">Generation Guild</div></span></div><div class="gnode  rv" style="--d:3; left:262px; top:315px; width:182px;"><span class="gi"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="10" height="8" rx="2"/><path d="M8 5V2.5"/><circle cx="8" cy="2" r="0.8"/><circle cx="6" cy="9" r="0.8" fill="currentColor"/><circle cx="10" cy="9" r="0.8" fill="currentColor"/></svg></span><span><div class="gt">Media</div><div class="gs">Production Wing</div></span></div><div class="gnode outnode rv" style="--d:6; left:1160px; top:185px; width:200px;"><span class="gi"><svg class="orb" viewBox="0 0 293 293" width="18" height="18" aria-hidden="true"><use href="#orbmark"/></svg></span><span><div class="gt">A live scenario</div><div class="gs">training + media, assembled</div></span></div>
+          <div class="gleaf rv" style="--d:4; left:498px; top:84px;"><span class="ic"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 4.5a3.5 3.5 0 0 1-4.6 4.6L4.6 13.4l-2-2 4.3-4.3a3.5 3.5 0 0 1 4.6-4.6l-2.2 2.2 2 2z"/></svg></span><span class="nm">Tool<br>simulations</span></div><div class="gleaf rv" style="--d:4; left:594px; top:84px;"><span class="ic"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3.6C6.6 2.7 4.4 2.7 3 3.6v9c1.4-.9 3.6-.9 5 0 1.4-.9 3.6-.9 5 0v-9c-1.4-.9-3.6-.9-5 0z"/><path d="M8 3.6v9"/></svg></span><span class="nm">Concept<br>training</span></div><div class="gleaf rv" style="--d:4; left:690px; top:84px;"><span class="ic"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="3.5" cy="3.5" r="1.8"/><circle cx="12.5" cy="8" r="1.8"/><circle cx="4.5" cy="12.5" r="1.8"/><path d="M5.2 4.2l5.6 3M10.8 9l-4.6 2.8"/></svg></span><span class="nm">Workflow<br>training</span></div><div class="gleaf rv" style="--d:4; left:786px; top:84px;"><span class="ic"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 3h11v7.5H7L4 13.5v-3H2.5z"/></svg></span><span class="nm">Communication</span></div><div class="gleaf rv" style="--d:4; left:882px; top:84px;"><span class="ic"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="12" height="6.5" rx="3"/><path d="M5 7v3M3.5 8.5h3"/><circle cx="11" cy="7.5" r="0.8" fill="currentColor"/><circle cx="12.5" cy="9" r="0.8" fill="currentColor"/></svg></span><span class="nm">Mini<br>games</span></div><div class="gleaf rv" style="--d:4; left:978px; top:84px;"><span class="ic"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="5.2" r="2.6"/><path d="M3 13.5c.8-3 3-4.3 5-4.3s4.2 1.3 5 4.3"/></svg></span><span class="nm">Co-worker<br>training</span></div><div class="gleaf rv" style="--d:5; left:498px; top:324px;"><span class="ic"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="10" rx="2"/><path d="M6.8 6l3.4 2-3.4 2z" fill="currentColor" stroke="none"/></svg></span><span class="nm">Kick-off<br>videos</span></div><div class="gleaf rv" style="--d:5; left:594px; top:324px;"><span class="ic"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3" width="11" height="10" rx="1.5"/><path d="M5.2 3v10M10.8 3v10M2.5 6h2.7M2.5 10h2.7M10.8 6h2.7M10.8 10h2.7"/></svg></span><span class="nm">Intros &amp;<br>outros</span></div><div class="gleaf rv" style="--d:5; left:690px; top:324px;"><span class="ic"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="4" height="7" rx="2"/><path d="M3.8 7.5a4.2 4.2 0 0 0 8.4 0M8 11.7V14M6 14h4"/></svg></span><span class="nm">Character<br>voices</span></div>
+          <div class="evalbar rv" style="--d:7">
+            <span class="el">On demand</span>
+            <p class="et">Any training, on any topic, generated the moment it&rsquo;s needed. <b>Fifteen formats today.</b></p>
           </div>
         </div>
       </div>
     </section>
 
     <!-- 7 · EVALUATION + RECRUITERS -->
-    <section class="slide light" id="s7">
+    <section class="slide light gslide" id="s7">
       <span class="label eyebrow">Technology &middot; Proof &amp; placement</span>
       <div class="content">
-        <h2 class="headline rv" style="--d:1">We measure the work, then take it to market.</h2>
-        <div class="halves">
-          <div class="half">
-            <span class="label rv" style="--d:2">Evaluation &amp; feedback</span>
-            <p class="kicker rv" style="--d:2">Graded on evidence, not on answers.</p>
-            <p class="body rv" style="--d:3">Every decision, message, and artifact a student produces is scored against the criteria the councils set, and the feedback lands while the work is still open.</p>
-            <div class="panel rv" style="--d:4">
-              <div class="crit">
-                <div class="crit-row"><span class="cn">Problem framing</span><div class="meter"><i style="width:84%"></i></div><span class="cs">84</span></div>
-                <div class="crit-row"><span class="cn">Evidence quality</span><div class="meter"><i style="width:71%"></i></div><span class="cs">71</span></div>
-                <div class="crit-row"><span class="cn">Tool execution</span><div class="meter"><i style="width:92%"></i></div><span class="cs">92</span></div>
-                <div class="crit-row"><span class="cn">Communication</span><div class="meter"><i style="width:66%"></i></div><span class="cs">66</span></div>
-                <div class="crit-row"><span class="cn">Decision quality</span><div class="meter"><i style="width:78%"></i></div><span class="cs">78</span></div>
-              </div>
-            </div>
-          </div>
-          <div class="half">
-            <span class="label rv" style="--d:3">Agentic AI recruiters</span>
-            <p class="kicker rv" style="--d:3">The portfolio does the applying.</p>
-            <p class="body rv" style="--d:4">Recruiting agents read what a student proved, match it to open roles, and run the outreach. The system that trained the student now vouches for them, with evidence.</p>
-            <div class="flowline">
-              <div class="step rv" style="--d:5"><span class="sn">01</span><div><div class="st">Read the proof</div><p class="sd">Scored scenarios and portfolio artifacts become the candidate profile.</p></div></div>
-              <div class="step rv" style="--d:6"><span class="sn">02</span><div><div class="st">Match and pitch</div><p class="sd">Agents find roles that fit and put the evidence in front of employers.</p></div></div>
-              <div class="step rv" style="--d:7"><span class="sn">03</span><div><div class="st">Prepare and place</div><p class="sd">Interview prep runs in the same simulator the student trained in.</p></div></div>
-            </div>
+        <h2 class="headline rv" style="--d:1">We measure the work, <b>then take it to market.</b></h2>
+        <div class="graph g7 rv" style="--d:1">
+          <svg class="glayer" width="1360" height="440" viewBox="0 0 1360 440" fill="none"><path d="M168 123h64" stroke="#cfc9bf" stroke-width="1.5"/><path d="M232 118l8 5-8 5" fill="none" stroke="#cfc9bf" stroke-width="1.5"/><path d="M430 123h74" stroke="#cfc9bf" stroke-width="1.5"/><path d="M504 118l8 5-8 5" fill="none" stroke="#cfc9bf" stroke-width="1.5"/><path d="M692 123h72" stroke="#cfc9bf" stroke-width="1.5"/><path d="M764 118l8 5-8 5" fill="none" stroke="#cfc9bf" stroke-width="1.5"/><path d="M982 123h190" stroke="#cfc9bf" stroke-width="1.5"/><path d="M1172 118l8 5-8 5" fill="none" stroke="#cfc9bf" stroke-width="1.5"/><path d="M335 152 C 335 210, 275 230, 275 286" stroke="#c2bcb1" stroke-width="1.2" stroke-dasharray="3 4" fill="none"/><path d="M335 152 C 335 210, 335 230, 335 286" stroke="#c2bcb1" stroke-width="1.2" stroke-dasharray="3 4" fill="none"/><path d="M335 152 C 335 210, 395 230, 395 286" stroke="#c2bcb1" stroke-width="1.2" stroke-dasharray="3 4" fill="none"/><path d="M877 152 C 877 210, 817 230, 817 286" stroke="#c2bcb1" stroke-width="1.2" stroke-dasharray="3 4" fill="none"/><path d="M877 152 C 877 210, 877 230, 877 286" stroke="#c2bcb1" stroke-width="1.2" stroke-dasharray="3 4" fill="none"/><path d="M877 152 C 877 210, 937 230, 937 286" stroke="#c2bcb1" stroke-width="1.2" stroke-dasharray="3 4" fill="none"/></svg>
+          <div class="gnode trigger rv" style="--d:2; left:0px; top:96px; width:168px;"><span class="gi"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="5.2" r="2.6"/><path d="M3 13.5c.8-3 3-4.3 5-4.3s4.2 1.3 5 4.3"/></svg></span><span><div class="gt">Student work</div><div class="gs">real deliverables</div></span></div><div class="gnode  rv" style="--d:3; left:240px; top:96px; width:190px;"><span class="gi"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 11a5.5 5.5 0 0 1 11 0"/><path d="M8 11L11 6.8"/><circle cx="8" cy="11" r="1" fill="currentColor" stroke="none"/></svg></span><span><div class="gt">Evaluation</div><div class="gs">scored on evidence</div></span></div><div class="gnode  rv" style="--d:4; left:512px; top:96px; width:180px;"><span class="gi"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2h5l3 3v9H4z"/><path d="M9 2v3h3M6 8h4M6 10.5h4"/></svg></span><span><div class="gt">Portfolio</div><div class="gs">proof of work</div></span></div><div class="gnode  rv" style="--d:5; left:772px; top:96px; width:210px;"><span class="gi"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="10" height="8" rx="2"/><path d="M8 5V2.5"/><circle cx="8" cy="2" r="0.8"/><circle cx="6" cy="9" r="0.8" fill="currentColor"/><circle cx="10" cy="9" r="0.8" fill="currentColor"/></svg></span><span><div class="gt">Recruiting agents</div><div class="gs">take it to market</div></span></div><div class="gnode outnode rv" style="--d:6; left:1180px; top:96px; width:180px;"><span class="gi"><svg class="orb" viewBox="0 0 293 293" width="18" height="18" aria-hidden="true"><use href="#orbmark"/></svg></span><span><div class="gt">A hire</div><div class="gs">the outcome</div></span></div>
+          <div class="gleaf rv" style="--d:4; left:233px; top:290px;"><span class="ic"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M5.4 8.2l1.8 1.8 3.4-3.9"/></svg></span><span class="nm">Evidence<br>scoring</span></div><div class="gleaf rv" style="--d:4; left:293px; top:290px;"><span class="ic"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 3h11v7.5H7L4 13.5v-3H2.5z"/></svg></span><span class="nm">Inline<br>coaching</span></div><div class="gleaf rv" style="--d:4; left:353px; top:290px;"><span class="ic"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 11a5.5 5.5 0 0 1 11 0"/><path d="M8 11L11 6.8"/><circle cx="8" cy="11" r="1" fill="currentColor" stroke="none"/></svg></span><span class="nm">Skill<br>measurement</span></div><div class="gleaf rv" style="--d:6; left:775px; top:290px;"><span class="ic"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="5.8"/><circle cx="8" cy="8" r="2.2"/></svg></span><span class="nm">Role<br>matching</span></div><div class="gleaf rv" style="--d:6; left:835px; top:290px;"><span class="ic"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8l12-5.5L11 13l-3.3-3.2L2 8z"/><path d="M7.7 9.8L14 2.5"/></svg></span><span class="nm">Employer<br>outreach</span></div><div class="gleaf rv" style="--d:6; left:895px; top:290px;"><span class="ic"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="4" height="7" rx="2"/><path d="M3.8 7.5a4.2 4.2 0 0 0 8.4 0M8 11.7V14M6 14h4"/></svg></span><span class="nm">Interview<br>prep</span></div>
+          <div class="evalbar rv" style="--d:7">
+            <span class="el">The standard</span>
+            <p class="et">Graded on evidence, not on answers. <b>The system that trained the student now vouches for them.</b></p>
           </div>
         </div>
       </div>
