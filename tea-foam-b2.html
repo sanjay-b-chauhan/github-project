@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Tea® Foam</title>
+<style>
+:root{--cream:#EAE4D4;--red:#EA2201;--deep:#3C0D00;--rust:#7B1500;--dim:#8A7F6B}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{background:var(--cream);font-family:ui-monospace,"SF Mono",Menlo,monospace;
+     -webkit-user-select:none;user-select:none;touch-action:none}
+canvas{position:fixed;inset:0;display:block}
+.hud{position:fixed;z-index:5;pointer-events:none}
+.brand{top:28px;left:32px}
+.brand h1{font-family:Georgia,"Times New Roman",serif;font-weight:600;
+  font-size:44px;line-height:1;color:var(--red);letter-spacing:-.01em}
+.brand h1 sup{font-size:.42em;vertical-align:.62em;font-weight:400}
+.brand p{margin-top:8px;font-size:10px;letter-spacing:.14em;color:var(--dim)}
+.tag{bottom:30px;right:32px;font-size:10px;letter-spacing:.14em;color:var(--deep)}
+.hint{bottom:96px;left:50%;transform:translateX(-50%);font-size:10px;
+  letter-spacing:.14em;color:var(--dim);transition:opacity .8s;white-space:nowrap}
+.ctl{position:fixed;z-index:6;bottom:24px;left:32px;display:flex;align-items:center;gap:14px}
+.ctl label{font-size:10px;letter-spacing:.14em;color:var(--red)}
+.ctl output{font-size:10px;letter-spacing:.14em;color:var(--deep);min-width:118px}
+.ctl output b{color:var(--red);font-weight:400}
+input[type=range]{-webkit-appearance:none;appearance:none;width:min(240px,34vw);height:22px;background:transparent;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--deep);opacity:.9}
+input[type=range]::-moz-range-track{height:2px;background:var(--deep)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;
+  background:var(--red);margin-top:-7px;border:none}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--red);border:none}
+@media (max-width:640px){.brand h1{font-size:34px}.tag{display:none}.ctl{left:20px;bottom:20px}.brand{top:20px;left:20px}}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="hud brand"><h1>Tea<sup>&#174;</sup></h1><p>FOAM &#183; ONE VARIABLE, WHOLE SURFACE</p></div>
+<div class="hud tag">BOILED. NOT BREWED.</div>
+<div class="hud hint" id="hint">TAP TO POP &#183; DRAG TO STIR &#183; TILT TO SLOSH</div>
+<div class="ctl">
+  <label for="heat">HEAT</label>
+  <input id="heat" type="range" min="100" max="108" step="0.1" value="102">
+  <output id="read"></output>
+</div>
+<script>
+(()=>{
+"use strict";
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+const heatEl=document.getElementById('heat'),readEl=document.getElementById('read'),hintEl=document.getElementById('hint');
+let W=0,H=0,DPR=1,CX=0,CY=0,R=0;
+const TAU=Math.PI*2,rnd=(a=1,b)=>b===undefined?Math.random()*a:a+Math.random()*(b-a);
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+
+function resize(){
+  DPR=Math.min(devicePixelRatio||1,2);
+  W=innerWidth;H=innerHeight;
+  cv.width=W*DPR;cv.height=H*DPR;
+  cv.style.width=W+'px';cv.style.height=H+'px';
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  CX=W/2;CY=H/2+8;R=Math.min(W,H)*0.345;
+}
+addEventListener('resize',resize);resize();
+
+// ---------- heat ----------
+let heat=parseFloat(heatEl.value);
+const heatT=()=>(heat-100)/8;
+const VERBS=[[100,'CUT'],[102,'BOILED'],[104,'BLED'],[106,'BROKEN'],[108,'CRACKED']];
+function verb(){let v=VERBS[0][1];for(const[t,n]of VERBS)if(heat>=t-0.05)v=n;return v}
+function readout(){readEl.innerHTML=heat.toFixed(1).replace(/\.0$/,'')+'&#176; &#183; <b>'+verb()+'</b>'}
+heatEl.addEventListener('input',()=>{heat=parseFloat(heatEl.value);readout()});
+readout();
+
+// ---------- the liquid: a persistent velocity field ----------
+// stirring injects momentum; the vortex keeps rotating after you let go and spins down slowly.
+const FN=26;
+const field=new Float32Array(FN*FN*2);
+function fieldInject(x,y,vx,vy,rad){
+  const g0x=CX-R*1.02,g0y=CY-R*1.02,cell=(R*2.04)/(FN-1);
+  const i0=clamp(Math.floor((x-rad-g0x)/cell),0,FN-1),i1=clamp(Math.ceil((x+rad-g0x)/cell),0,FN-1);
+  const j0=clamp(Math.floor((y-rad-g0y)/cell),0,FN-1),j1=clamp(Math.ceil((y+rad-g0y)/cell),0,FN-1);
+  const r2=rad*rad;
+  for(let j=j0;j<=j1;j++)for(let i=i0;i<=i1;i++){
+    const px=g0x+i*cell,py=g0y+j*cell,dx=px-x,dy=py-y,d2=dx*dx+dy*dy;
+    if(d2>r2)continue;
+    const w=Math.exp(-d2/(r2*0.5)),k=(j*FN+i)*2;
+    field[k]+=vx*w;field[k+1]+=vy*w;
+  }
+}
+let grav={x:0,y:0},tiltOn=false;
+function fieldSample(x,y){
+  const g0x=CX-R*1.02,g0y=CY-R*1.02,cell=(R*2.04)/(FN-1);
+  let gx=(x-g0x)/cell,gy=(y-g0y)/cell;
+  gx=clamp(gx,0,FN-1.001);gy=clamp(gy,0,FN-1.001);
+  const i=Math.floor(gx),j=Math.floor(gy),fx=gx-i,fy=gy-j;
+  const k00=(j*FN+i)*2,k10=k00+2,k01=k00+FN*2,k11=k01+2;
+  return{
+    vx:(field[k00]*(1-fx)+field[k10]*fx)*(1-fy)+(field[k01]*(1-fx)+field[k11]*fx)*fy+grav.x*46,
+    vy:(field[k00+1]*(1-fx)+field[k10+1]*fx)*(1-fy)+(field[k01+1]*(1-fx)+field[k11+1]*fx)*fy+grav.y*46
+  };
+}
+function fieldStep(dt){
+  const decay=Math.exp(-0.55*dt);           // the vortex spins down over seconds, not instantly
+  for(let k=0;k<field.length;k++)field[k]*=decay;
+}
+
+// ---------- foam ----------
+const bubbles=[],ripples=[],mist=[],gaps=[],chain=[],tracers=[],sites=[];
+let spawnAcc=0,interacted=false,steamSeed=rnd(1000),skew={x:0,y:0};
+
+function newBubble(x,y,r,z){
+  return{x,y,vx:0,vy:0,r,tr:r,z,zr:rnd(0.5,1.4),age:0,
+    osc:0,oscV:0,phase:rnd(TAU),tint:rnd(-10,12),dead:false};
+}
+function spawnBubble(interior){
+  if(bubbles.length>340)return;
+  const a=rnd(TAU);
+  const d=interior?R*Math.sqrt(Math.random())*0.8:R*rnd(0.80,0.94);
+  const b=newBubble(CX+Math.cos(a)*d,CY+Math.sin(a)*d,rnd(1.2,2.6),1);
+  b.tr=rnd(2.5,interior?9:6);
+  bubbles.push(b);
+}
+for(let i=0;i<130;i++){spawnBubble(Math.random()<0.5);
+  const b=bubbles[bubbles.length-1];b.z=Math.random()*0.4;b.r=b.tr*rnd(0.6,1)}
+
+for(let i=0;i<44;i++)tracers.push({x:CX+rnd(-R*0.8,R*0.8),y:CY+rnd(-R*0.8,R*0.8),hist:[],still:0});
+
+function pop(b,cascade){
+  if(b.dead)return;b.dead=true;
+  const n=Math.round(6+b.r*0.7);
+  for(let i=0;i<n;i++){const a=rnd(TAU),s=rnd(0.3,1);
+    mist.push({x:b.x+Math.cos(a)*b.r*0.7,y:b.y+Math.sin(a)*b.r*0.7,
+      vx:Math.cos(a)*rnd(30,90)*s,vy:Math.sin(a)*rnd(30,90)*s,
+      r:rnd(0.5,1.8),life:rnd(0.2,0.5)});}
+  ripples.push({x:b.x,y:b.y,r:b.r*0.9,life:0.55,max:b.r*2.2+12});
+  // the vacated film leaves a gap the raft creeps back into
+  gaps.push({x:b.x,y:b.y,r:b.r,life:1.1});
+  // a pop shakes its immediate neighbours; touching big ones sometimes go in a cascade
+  for(const o of bubbles){if(o===b||o.dead)continue;
+    const dx=o.x-b.x,dy=o.y-b.y,d=Math.hypot(dx,dy);
+    if(d<b.r+o.r+6&&d>0.01){
+      o.oscV+=2.2*(1-d/(b.r+o.r+6));
+      if(cascade&&o.r>9&&Math.random()<0.22)chain.push({b:o,t:rnd(0.05,0.18)});
+    }}
+}
+
+// ---------- input ----------
+const ptr={down:false,x:0,y:0,dT:0,moved:0};
+function toXY(e){const r=cv.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+function enableTilt(){
+  try{
+    if(typeof DeviceOrientationEvent!=='undefined'&&DeviceOrientationEvent.requestPermission)
+      DeviceOrientationEvent.requestPermission().then(s=>{if(s==='granted')listenTilt()}).catch(()=>{});
+    else listenTilt();
+  }catch(e){}
+}
+let tiltBound=false;
+function listenTilt(){
+  if(tiltBound)return;tiltBound=true;
+  addEventListener('deviceorientation',e=>{
+    if(e.gamma==null||e.beta==null)return;
+    grav.x=clamp(e.gamma/28,-1,1);
+    grav.y=clamp((e.beta-42)/28,-1,1);
+    tiltOn=true;
+  });
+}
+cv.addEventListener('pointerdown',e=>{
+  const p=toXY(e);ptr.down=true;ptr.moved=0;ptr.dT=performance.now();
+  ptr.x=p.x;ptr.y=p.y;
+  cv.setPointerCapture(e.pointerId);
+  if(!interacted)enableTilt();
+});
+cv.addEventListener('pointermove',e=>{
+  if(!ptr.down)return;
+  const p=toXY(e),mx=p.x-ptr.x,my=p.y-ptr.y;
+  ptr.moved+=Math.hypot(mx,my);
+  // momentum goes into the LIQUID; the foam follows the liquid
+  fieldInject((p.x+ptr.x)/2,(p.y+ptr.y)/2,mx*15,my*15,86);
+  ptr.x=p.x;ptr.y=p.y;
+  if(!interacted&&ptr.moved>8){interacted=true;hintEl.style.opacity=0}
+});
+cv.addEventListener('pointerup',e=>{
+  if(!ptr.down)return;ptr.down=false;
+  const dur=performance.now()-ptr.dT;
+  if(ptr.moved<7&&dur<350){
+    let hit=null;
+    for(const b of bubbles){if(b.z>0.35||b.dead)continue;
+      const d=Math.hypot(b.x-ptr.x,b.y-ptr.y);
+      if(d<Math.max(b.r+6,14)&&(!hit||b.r>hit.r))hit=b}
+    if(hit)pop(hit,true);
+    else ripples.push({x:ptr.x,y:ptr.y,r:4,life:0.5,max:22});
+    if(!interacted){interacted=true;hintEl.style.opacity=0}
+  }
+});
+
+// ---------- simulation ----------
+function step(dt){
+  const h=heatT();
+  fieldStep(dt);
+
+  // boil sites: fixed nucleation spots on the bottom that vent columns of bubbles
+  const wantSites=h>0.4?Math.round(2+h*5):0;
+  for(let i=sites.length-1;i>=0;i--){sites[i].life-=dt;if(sites[i].life<=0)sites.splice(i,1)}
+  while(sites.length<wantSites){const a=rnd(TAU),d=R*Math.sqrt(Math.random())*0.65;
+    sites.push({x:CX+Math.cos(a)*d,y:CY+Math.sin(a)*d,life:rnd(3,9),acc:0})}
+  for(const s of sites){
+    s.acc+=dt*(1.5+h*7);
+    while(s.acc>1){s.acc-=1;
+      if(bubbles.length<340){
+        const b=newBubble(s.x+rnd(-6,6),s.y+rnd(-6,6),rnd(1.5,3),1);
+        b.tr=rnd(3,6+h*10);b.zr=rnd(1.2,2.2);bubbles.push(b)}
+      // a venting site stirs the liquid above it a little
+      fieldInject(s.x,s.y,rnd(-14,14),rnd(-14,14),40);
+    }}
+  // background nucleation at the walls
+  spawnAcc+=dt*(1.8+h*7);
+  while(spawnAcc>1){spawnAcc-=1;spawnBubble(false)}
+
+  // slosh readout for the highlight
+  const cs=fieldSample(CX,CY);
+  skew.x+=((cs.vx+grav.x*60)*-0.10-skew.x)*Math.min(1,dt*4);
+  skew.y+=((cs.vy+grav.y*60)*-0.10-skew.y)*Math.min(1,dt*4);
+
+  for(let i=gaps.length-1;i>=0;i--){gaps[i].life-=dt;if(gaps[i].life<=0)gaps.splice(i,1)}
+  for(let i=chain.length-1;i>=0;i--){const c=chain[i];c.t-=dt;
+    if(c.t<=0){chain.splice(i,1);if(!c.b.dead)pop(c.b,true)}}
+
+  for(const b of bubbles){
+    if(b.dead)continue;
+    b.age+=dt;b.phase+=dt*2;
+    // wobble oscillator (set ringing by merges and neighbour pops)
+    b.oscV+=(-30*b.osc-6*b.oscV)*dt;b.osc+=b.oscV*dt;
+    // rise
+    if(b.z>0){b.z-=dt*b.zr*(0.5+h*1.2);
+      if(b.z<=0){b.z=0;ripples.push({x:b.x,y:b.y,r:b.r*0.6,life:0.3,max:b.r*1.5+5});b.oscV+=1.5}}
+    if(b.r<b.tr)b.r+=dt*(1+h*3);
+    // the liquid carries the foam: relax bubble velocity toward the field.
+    // big bubbles have more inertia and follow more slowly.
+    const f=fieldSample(b.x,b.y),k=Math.min(6,14/(3+b.r));
+    b.vx+=(f.vx-b.vx)*Math.min(1,k*dt);
+    b.vy+=(f.vy-b.vy)*Math.min(1,k*dt);
+    // brownian jitter: real only for the small ones, scaled by heat
+    const jit=(3+h*30)*clamp(5/b.r,0.25,2);
+    b.vx+=(Math.random()-0.5)*jit*dt*2;
+    b.vy+=(Math.random()-0.5)*jit*dt*2;
+    // meniscus: near the wall, bubbles get drawn to the rim and sit there
+    const dx=b.x-CX,dy=b.y-CY,d=Math.hypot(dx,dy)||0.01;
+    const men=clamp((d/R-0.62)/0.3,0,1);
+    if(men>0&&b.z===0){b.vx+=dx/d*men*9*dt*10;b.vy+=dy/d*men*9*dt*10}
+    // gaps left by pops pull the raft back in
+    for(const g of gaps){const gx=g.x-b.x,gy=g.y-b.y,gd=Math.hypot(gx,gy);
+      if(gd<g.r+b.r+26&&gd>0.01){const f2=22*g.life*(1-gd/(g.r+b.r+26));
+        b.vx+=gx/gd*f2*dt*10;b.vy+=gy/gd*f2*dt*10}}
+  }
+
+  // pairwise: packing, cohesion, coarsening, coalescence
+  for(let i=0;i<bubbles.length;i++){const a=bubbles[i];if(a.z>0.5||a.dead)continue;
+    for(let j=i+1;j<bubbles.length;j++){const c=bubbles[j];if(c.z>0.5||c.dead)continue;
+      const dx=c.x-a.x,dy=c.y-a.y,sum=a.r+c.r;
+      if(Math.abs(dx)>sum+14||Math.abs(dy)>sum+14)continue;
+      const d=Math.hypot(dx,dy)||0.01,nx=dx/d,ny=dy/d;
+      if(d<sum*0.99){
+        const f=(sum*0.99-d)*16;
+        a.vx-=nx*f*dt;a.vy-=ny*f*dt;c.vx+=nx*f*dt;c.vy+=ny*f*dt;
+        // Ostwald ripening: the film between touching bubbles feeds the big one
+        if(a.r!==c.r){
+          const big=a.r>c.r?a:c,small=a.r>c.r?c:a;
+          const rate=dt*0.55*clamp(big.r/small.r-1,0,2);
+          small.r-=rate;small.tr=Math.min(small.tr,small.r);
+          big.tr=Math.min(27,big.tr+rate*0.35);
+          if(small.r<0.9)small.dead=true;
+        }
+        // coalescence: films rupture between two well-pressed bubbles
+        if(d<sum*0.72&&a.r>3.5&&c.r>3.5&&Math.random()<0.55*dt){
+          const big=a.r>c.r?a:c,small=a.r>c.r?c:a;
+          big.tr=Math.min(27,Math.hypot(big.r,small.r));
+          big.r=big.tr*0.92;
+          big.x=(big.x*big.r+small.x*small.r)/(big.r+small.r);
+          big.y=(big.y*big.r+small.y*small.r)/(big.r+small.r);
+          big.oscV+=3.2;                      // the merged bubble rings and settles
+          small.dead=true;
+          ripples.push({x:big.x,y:big.y,r:big.r*0.5,life:0.3,max:big.r*1.3});
+        }
+      }else if(d<sum+11){
+        const f=(1-(d-sum)/11)*12;            // short-range cohesion knits rafts
+        a.vx+=nx*f*dt;a.vy+=ny*f*dt;c.vx-=nx*f*dt;c.vy-=ny*f*dt}
+    }}
+
+  // sweep + integrate
+  for(let i=bubbles.length-1;i>=0;i--)if(bubbles[i].dead)bubbles.splice(i,1);
+  for(let i=bubbles.length-1;i>=0;i--){const b=bubbles[i];
+    b.x+=b.vx*dt;b.y+=b.vy*dt;
+    b.vx*=Math.exp(-2.0*dt);b.vy*=Math.exp(-2.0*dt);
+    const dx=b.x-CX,dy=b.y-CY,d=Math.hypot(dx,dy),lim=R*0.965-b.r;
+    if(d>lim){b.x-=dx/d*(d-lim);b.y-=dy/d*(d-lim)}
+    // film aging: every film thins and eventually gives way; heat accelerates it
+    const life=26-b.r*0.5;
+    if(b.z===0&&(b.age>life&&Math.random()<0.4*dt||b.r>16&&Math.random()<h*0.3*dt))
+      pop(b,b.r>11);
+  }
+
+  for(let i=ripples.length-1;i>=0;i--){const r=ripples[i];
+    r.life-=dt;r.r+=(r.max-r.r)*dt*6;if(r.life<=0)ripples.splice(i,1)}
+  for(let i=mist.length-1;i>=0;i--){const m=mist[i];
+    m.life-=dt;m.x+=m.vx*dt;m.y+=m.vy*dt;m.vx*=0.9;m.vy*=0.9;
+    if(m.life<=0)mist.splice(i,1)}
+
+  // milk tracers ride the same field — they make the vortex visible
+  for(const t of tracers){
+    const f=fieldSample(t.x,t.y);
+    const sp=Math.hypot(f.vx,f.vy);
+    t.x+=f.vx*dt;t.y+=f.vy*dt;
+    t.still=sp<3?t.still+dt:0;
+    const dx=t.x-CX,dy=t.y-CY,d=Math.hypot(dx,dy);
+    if(d>R*0.92||t.still>6){
+      t.x=CX+rnd(-R*0.7,R*0.7);t.y=CY+rnd(-R*0.7,R*0.7);t.hist.length=0;t.still=0}
+    t.hist.push(t.x,t.y);
+    if(t.hist.length>20)t.hist.splice(0,2);
+  }
+}
+
+// ---------- render ----------
+function draw(now){
+  const h=heatT();
+  ctx.fillStyle='#EAE4D4';ctx.fillRect(0,0,W,H);
+  ctx.save();ctx.translate(CX+16,CY+22);
+  ctx.fillStyle='rgba(60,13,0,0.16)';
+  ctx.beginPath();ctx.ellipse(0,0,R*1.10,R*1.06,0,0,TAU);ctx.fill();ctx.restore();
+  ctx.fillStyle='#EA2201';ctx.beginPath();ctx.arc(CX,CY,R*1.09,0,TAU);ctx.fill();
+  ctx.fillStyle='#C4300A';ctx.beginPath();ctx.arc(CX,CY,R*1.015,0,TAU);ctx.fill();
+
+  ctx.save();
+  ctx.beginPath();ctx.arc(CX,CY,R,0,TAU);ctx.clip();
+  const lx=CX+skew.x,ly=CY+skew.y,dark=h*0.5;
+  const g=ctx.createRadialGradient(lx-R*0.25,ly-R*0.3,R*0.1,CX,CY,R*1.05);
+  g.addColorStop(0,`rgb(${196-dark*26},${129-dark*22},${74-dark*16})`);
+  g.addColorStop(0.62,`rgb(${162-dark*24},${100-dark*18},${52-dark*12})`);
+  g.addColorStop(1,'#6E3E1B');
+  ctx.fillStyle=g;ctx.fillRect(CX-R,CY-R,R*2,R*2);
+
+  // milk streaks: tracer trails stretched along the flow
+  ctx.lineCap='round';ctx.lineJoin='round';
+  for(const t of tracers){
+    if(t.hist.length<6)continue;
+    ctx.strokeStyle='rgba(240,224,196,0.10)';
+    ctx.lineWidth=R*0.055;
+    ctx.beginPath();ctx.moveTo(t.hist[0],t.hist[1]);
+    for(let k=2;k<t.hist.length;k+=2)ctx.lineTo(t.hist[k],t.hist[k+1]);
+    ctx.stroke();
+  }
+  ctx.save();ctx.filter='blur(14px)';
+  ctx.fillStyle='rgba(246,233,210,0.10)';
+  ctx.beginPath();ctx.ellipse(lx-R*0.28,ly-R*0.34,R*0.42,R*0.30,-0.5,0,TAU);ctx.fill();
+  ctx.restore();
+
+  for(const b of bubbles)if(b.z>0)drawBubble(b);
+  for(const b of bubbles)if(b.z===0)drawBubble(b);
+
+  for(const r of ripples){
+    ctx.strokeStyle=`rgba(246,233,210,${0.45*r.life})`;
+    ctx.lineWidth=1.3;
+    ctx.beginPath();ctx.arc(r.x,r.y,r.r,0,TAU);ctx.stroke()}
+  for(const m of mist){
+    ctx.fillStyle=`rgba(246,233,210,${Math.min(0.8,m.life*1.8)})`;
+    ctx.beginPath();ctx.arc(m.x,m.y,m.r,0,TAU);ctx.fill()}
+  ctx.restore();
+
+  ctx.strokeStyle='rgba(246,233,210,0.35)';ctx.lineWidth=2;
+  ctx.beginPath();ctx.arc(CX,CY,R*1.075,-2.4,-0.6);ctx.stroke();
+
+  const sA=0.03+h*0.13;
+  ctx.save();ctx.filter='blur(6px)';ctx.lineCap='round';
+  for(let i=0;i<3;i++){
+    const ph=now*0.0004*(1+i*0.3)+steamSeed+i*2.4;
+    const bx=CX+(i-1)*R*0.34;
+    ctx.strokeStyle=`rgba(240,228,206,${sA*(1-i*0.2)})`;
+    ctx.lineWidth=16+i*8;
+    ctx.beginPath();
+    for(let k=0;k<=12;k++){const s=k/12;
+      const y=CY-R*0.5-s*(H*0.4),x=bx+Math.sin(ph+s*5)*R*0.12*(0.4+s);
+      k===0?ctx.moveTo(x,y):ctx.lineTo(x,y)}
+    ctx.stroke()}
+  ctx.restore();
+}
+function drawBubble(b){
+  const surf=b.z===0,sc=surf?1:(1-b.z*0.55),al=surf?1:(1-b.z)*0.6+0.05;
+  const wob=surf?b.osc*0.10:0;
+  const rx=b.r*sc*(1+wob),ry=b.r*sc*(1-wob);
+  if(rx<0.6)return;
+  ctx.save();ctx.globalAlpha=al;
+  const t=b.tint;
+  // the film is a dark ring; the interior is a lens over the liquid, slightly lighter
+  const g=ctx.createRadialGradient(b.x-rx*0.3,b.y-ry*0.35,rx*0.15,b.x,b.y,Math.max(rx,ry));
+  g.addColorStop(0,`rgba(${206+t},${152+t*0.7},${96+t*0.5},0.92)`);
+  g.addColorStop(0.72,`rgba(${152+t},${94+t*0.6},${46+t*0.4},0.94)`);
+  g.addColorStop(1,'rgba(88,48,20,0.97)');
+  ctx.fillStyle=g;
+  ctx.beginPath();ctx.ellipse(b.x,b.y,rx,ry,b.phase*0.15,0,TAU);ctx.fill();
+  ctx.strokeStyle='rgba(58,26,8,0.42)';
+  ctx.lineWidth=Math.min(1.5,rx*0.12);
+  ctx.stroke();
+  if(surf&&rx>2.6){
+    ctx.fillStyle='rgba(253,246,231,0.6)';
+    ctx.beginPath();ctx.arc(b.x-rx*0.32,b.y-ry*0.38,Math.max(0.6,rx*0.14),0,TAU);ctx.fill();
+    ctx.fillStyle='rgba(253,246,231,0.14)';
+    ctx.beginPath();ctx.arc(b.x+rx*0.3,b.y+ry*0.34,Math.max(0.5,rx*0.10),0,TAU);ctx.fill();
+  }
+  ctx.restore();
+}
+
+// ---------- loop ----------
+let last=performance.now();
+function frame(now){
+  const dt=Math.min(0.033,(now-last)/1000);last=now;
+  step(dt);draw(now);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
