@@ -48,25 +48,27 @@ body.zapp .zrail{display:flex}
 
 .zstage{position:fixed;inset:0;display:none}
 body.zapp .zstage{display:block}
-.zsheet{position:absolute;top:14px;bottom:14px;left:var(--rail);right:calc(292px + 14px);background:var(--sheet);border-radius:32px;display:flex;flex-direction:column;overflow:hidden;box-shadow:var(--sh2)}
-.zaside{position:absolute;top:14px;bottom:14px;right:14px;width:278px;overflow-y:auto;padding:14px 4px 20px}
+.zsheet{position:absolute;top:0;bottom:0;left:var(--rail);right:292px;display:flex;flex-direction:column;overflow:hidden}
+.zaside{position:absolute;top:0;bottom:0;right:0;width:292px;overflow-y:auto;padding:22px 18px 24px 0}
 
 /* sheet header */
-.zshead{flex-shrink:0;height:72px;display:flex;align-items:center;padding:0 26px;gap:14px}
+.zshead{flex-shrink:0;height:76px;display:flex;align-items:center;padding:0 24px;gap:14px}
 .zback{width:36px;height:36px;border-radius:99px;background:var(--card);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;color:var(--tx2);flex-shrink:0;transition:background .2s}
 .zback:hover{background:var(--field)}
-.zseg{margin:0 auto;display:flex;gap:2px;padding:3px;background:var(--field);border-radius:var(--pill)}
+.zseg{margin:0 auto;display:flex;gap:2px;padding:4px;background:var(--card);border-radius:var(--pill);box-shadow:var(--sh1)}
 .zseg button{height:30px;padding:0 15px;border-radius:var(--pill);font-size:13px;font-weight:500;color:var(--tx2);position:relative;white-space:nowrap;transition:background .2s,color .2s}
-.zseg button.on{background:var(--card);color:var(--tx);font-weight:600;box-shadow:var(--sh1)}
+.zseg button.on{background:var(--ink);color:var(--onink);font-weight:600}
 .zseg .zdot{position:absolute;top:4px;right:7px;width:5px;height:5px;border-radius:99px;background:var(--amb)}
 .zlevel{display:flex;align-items:center;gap:9px;flex-shrink:0}
 .zring{width:34px;height:34px;border-radius:99px;background:conic-gradient(#E8B93C 0turn 0.66turn,var(--field) 0.66turn 1turn);display:flex;align-items:center;justify-content:center}
-.zring::after{content:'';width:26px;height:26px;border-radius:99px;background:var(--sheet)}
+.zring::after{content:'';width:26px;height:26px;border-radius:99px;background:var(--bg)}
 .zring span{position:absolute;font-size:11px;font-weight:700}
 .zlevel .lv{line-height:1.1}
 .zlevel .lv b{display:block;font-size:12.5px;font-weight:700}
 .zlevel .lv i{display:block;font-size:9.5px;font-style:normal;color:var(--tx3);font-weight:600;letter-spacing:.04em}
-.zsbody{flex:1;overflow-y:auto;padding:0 26px 30px}
+.zsbody{flex:1;overflow-y:auto;padding:0 24px 40px}
+.zin{width:100%;max-width:1000px;min-width:0;margin:0 auto}
+.zin.wide{max-width:1180px}
 
 /* ══ type ══ */
 .zserif{font-family:var(--serif);font-weight:400;letter-spacing:-.028em}
@@ -135,7 +137,7 @@ body.zapp .zstage{display:block}
 .zjsave{margin-left:auto;color:var(--tx4);flex-shrink:0}
 .zjsave:hover{color:var(--tx)}
 .zjsave.on{color:var(--tx)}
-.zjd{flex:1;min-width:0;background:var(--card);border-radius:22px;padding:26px 28px;position:sticky;top:0;max-height:calc(100vh - 190px);overflow-y:auto;box-shadow:var(--sh1)}
+.zjd{flex:1;min-width:420px;background:var(--card);border-radius:22px;padding:26px 28px;position:sticky;top:0;max-height:calc(100vh - 210px);overflow-y:auto;box-shadow:var(--sh1)}
 .zjd .hd{display:flex;gap:18px;align-items:flex-start}
 .zjd .t{font-family:var(--serif);font-size:26px;letter-spacing:-.03em;line-height:1.15}
 .zjd .pay{font-family:var(--serif);font-size:22px;letter-spacing:-.02em;white-space:nowrap;margin-left:auto;padding-top:2px}
@@ -154,7 +156,7 @@ body.zapp .zstage{display:block}
 .zjd .g2{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}
 .zjd ul{font-size:13.5px;line-height:1.7;color:var(--tx2)}
 .zjd li{margin-left:17px;margin-bottom:5px}
-.zsteps{background:var(--wash);border-radius:16px;padding:6px 16px}
+.zsteps{background:var(--bg);border-radius:16px;padding:6px 16px}
 .zstep{display:flex;align-items:center;gap:11px;padding:11px 0;font-size:13px}
 .zstep+.zstep{box-shadow:0 -1px 0 var(--line2)}
 .zstep .mk{width:19px;height:19px;border-radius:99px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--tx4);color:transparent}
@@ -233,7 +235,7 @@ body:not(.zdark) .zbeats{background:var(--field)}
 /* build split */
 .zsplit{position:absolute;inset:76px 14px 14px;display:flex;gap:14px}
 .zsplit .l{flex:1;min-width:0;overflow-y:auto;padding:20px 6px 20px 12px;display:flex;flex-direction:column;justify-content:flex-end}
-.zsplit .r{width:50%;flex-shrink:0;background:var(--sheet);border-radius:28px;display:flex;flex-direction:column;overflow:hidden}
+.zsplit .r{width:50%;flex-shrink:0;background:var(--card);border-radius:28px;display:flex;flex-direction:column;overflow:hidden}
 .zrcap{display:flex;align-items:center;gap:8px;padding:18px 24px 12px;font-size:12px;color:var(--tx3);flex-shrink:0}
 .zrcap .live{width:6px;height:6px;border-radius:99px;background:var(--ok);animation:zp 1.6s infinite}
 .zrbody{flex:1;overflow-y:auto;padding:0 24px 24px}
@@ -293,8 +295,8 @@ body:not(.zdark) .zbeats{background:var(--field)}
 .zmenu button{display:block;width:100%;text-align:left;padding:8px 10px;border-radius:10px;font-size:12.5px;color:var(--tx)}
 .zmenu button:hover{background:var(--field)}
 .zmenu button.on{background:var(--field);font-weight:600}
-@media(max-width:1240px){.zaside{display:none}.zsheet{right:14px}}
-@media(max-width:900px){.zrail{display:none!important}.zsheet{left:14px}.zjcols{flex-direction:column}.zjlist{width:100%;flex-direction:row;overflow-x:auto}.zjc{width:250px;flex-shrink:0}.zjd{position:static;max-height:none}}
+@media(max-width:1240px){.zaside{display:none}.zsheet{right:0}}
+@media(max-width:900px){.zrail{display:none!important}.zsheet{left:0}.zjcols{flex-direction:column}.zjlist{width:100%;flex-direction:row;overflow-x:auto}.zjc{width:250px;flex-shrink:0}.zjd{position:static;max-height:none}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
@@ -781,8 +783,8 @@ function renderHome(){
   ?`I checked 96 postings this morning and none of them beat what you already have out.`
   :`Notion acknowledged your application at 11:20. Klarna is drafted but their form wants a start date I do not have. Spotify is held because they never posted a salary and your floor is ${S.brief.pay.replace(' per year','')}.`;
  const W=agentWork();const tab=S.agentTab;
- $('#zsbody').innerHTML=`
-  <h1 class="ztitle zarr" style="margin:14px 0 30px">${hello}</h1>
+ $('#zsbody').innerHTML=`<div class="zin">
+  <h1 class="ztitle zarr" style="margin:8px 0 28px">${hello}</h1>
   <div class="zsum zarr"><div class="big">${summary}</div><div class="sm">${detail}</div></div>
 
   <div class="zarr" style="margin-top:30px"><div class="zsecl">Needs you<button class="zbtn ghost sm" data-goto="apps">All applications</button></div>
@@ -802,7 +804,7 @@ function renderHome(){
     <div style="display:flex;gap:6px;flex-wrap:wrap">${briefChips()}</div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-top:18px"><div><div style="font-size:13.5px;font-weight:500">Apply for me, inside my brief</div><div style="font-size:12px;color:var(--tx3);margin-top:2px">Anything outside it still comes to you</div></div><button class="zsw" id="hauto"></button></div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px"><div><div style="font-size:13.5px;font-weight:500">Pause everything</div><div style="font-size:12px;color:var(--tx3);margin-top:2px">Stops new submissions, including anything mid-flight</div></div><button class="zsw" id="hpause"></button></div>
-   </div></div>`;
+   </div></div></div>`;
  $$('#zsbody [data-fix]').forEach(b=>b.onclick=()=>{const a=APPS.find(x=>x.id===b.dataset.fix);if(a.st==='needs')askStart(a);else{nav('jobs');selectJob(a.id)}});
  $$('#zsbody [data-open]').forEach(b=>b.onclick=()=>{nav('jobs');selectJob(b.dataset.open)});
  $$('#zsbody [data-tab]').forEach(b=>b.onclick=()=>{S.agentTab=b.dataset.tab;renderHome();arrive($('#zsbody'))});
@@ -831,14 +833,14 @@ function renderJobs(){
   if(S.filter==='saved'&&!SAVED[j.id])return false;
   if(q&&!(j.t+j.co+j.loc).toLowerCase().includes(q))return false;return true});
  if(list.length&&!list.find(j=>j.id===S.sel))S.sel=list[0].id;
- $('#zsbody').innerHTML=`
-  <div class="zarr" style="margin:6px 0 22px"><div class="zsecl">Companies hiring for your brief</div>
+ $('#zsbody').innerHTML=`<div class="zin wide">
+  <div class="zarr" style="margin:2px 0 22px"><div class="zsecl">Companies hiring for your brief</div>
    <div class="zcos">${COMPANIES.map(c=>`<div class="zco" data-co="${c[1]}" style="background:${c[3]}"><span class="n">${c[2]}</span><span class="pl">${fav(c[0])}${c[1]}</span></div>`).join('')}</div></div>
   <div class="zarr" style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
    <div style="display:flex;align-items:center;gap:8px;height:36px;padding:0 14px;background:var(--field);border-radius:99px;min-width:230px">${ic('search')}<input id="jq" placeholder="Search roles or companies" value="${S.q||''}" style="flex:1;font-size:13.5px"></div>
    <div class="ztabs">${[['all','All',JOBS.length],['fits','Fits your brief',JOBS.filter(j=>j.fit==='fits').length],['explore','Worth exploring',JOBS.filter(j=>j.fit==='explore').length],['saved','Saved',Object.values(SAVED).filter(Boolean).length]].map(f=>`<button class="${S.filter===f[0]?'on':''}" data-f="${f[0]}">${f[1]}<sup>${f[2]}</sup></button>`).join('')}</div>
    <span style="margin-left:auto;font-size:12px;color:var(--tx3)">${S.auto?'Applying for you':'Review mode'}</span></div>
-  <div class="zjcols zarr"><div class="zjlist">${list.length?list.map(jobCard).join(''):`<div class="zcard" style="padding:26px;text-align:center;font-size:13px;color:var(--tx3)">Nothing matches that.</div>`}</div><div class="zjd" id="zjd"></div></div>`;
+  <div class="zjcols zarr"><div class="zjlist">${list.length?list.map(jobCard).join(''):`<div class="zcard" style="padding:26px;text-align:center;font-size:13px;color:var(--tx3)">Nothing matches that.</div>`}</div><div class="zjd" id="zjd"></div></div></div>`;
  $('#jq').addEventListener('input',e=>{S.q=e.target.value;const sc=$('#zsbody').scrollTop;renderJobs();$('#zsbody').scrollTop=sc;$('#jq').focus()});
  $$('#zsbody [data-f]').forEach(b=>b.onclick=()=>{S.filter=b.dataset.f;renderJobs()});
  $$('#zsbody [data-j]').forEach(c=>c.onclick=e=>{if(e.target.closest('[data-save]'))return;selectJob(c.dataset.j)});
@@ -880,15 +882,15 @@ function renderApps(){
  const g={need:APPS.filter(a=>['needs','ask','ready'].includes(a.st)),flight:APPS.filter(a=>['subm','sent'].includes(a.st)),done:APPS.filter(a=>a.st==='conf'),held:APPS.filter(a=>['held','withdrawn','closed'].includes(a.st))};
  const tabs=[['need','Needs you',g.need.length],['flight','In flight',g.flight.length],['done','Confirmed',g.done.length],['held','Held',g.held.length]];
  const cur=g[S.appTab]||[];
- $('#zsbody').innerHTML=`
-  <h1 class="ztitle zarr" style="margin:14px 0 6px">Your applications</h1>
+ $('#zsbody').innerHTML=`<div class="zin">
+  <h1 class="ztitle zarr" style="margin:8px 0 6px">Your applications</h1>
   <div class="zarr" style="display:flex;justify-content:center;margin:18px 0 20px"><div class="ztabs">${tabs.map(t=>`<button class="${S.appTab===t[0]?'on':''}" data-at="${t[0]}">${t[1]}<sup>${t[2]}</sup></button>`).join('')}</div></div>
   <div class="zrows zarr">${cur.length?cur.map(a=>`<div class="zrow" data-app="${a.id}" style="cursor:pointer">
     <div class="zdate"><i>${a.up.includes(':')?'TODAY':'EARLIER'}</i><b>${a.up.replace(/[^0-9:]/g,'').slice(0,5)||'--'}</b></div>
     <div class="zlogo2 s40">${fav(a.dom)}</div>
     <div class="grow"><div class="t">${a.t}${a.out?`<span class="ztag ${a.out.src?'ok':'out'}">${a.out.t}</span>`:''}</div><div class="s">${a.co} · ${a.nx}</div></div>
     <span class="ztag ${ST[a.st][1]}">${ST[a.st][0]}</span>${ic('chevron-right')}</div>`).join('')
-   :`<div class="zrow"><div class="grow"><div class="t">Nothing here</div><div class="s">${S.appTab==='need'?'Nothing is waiting on you right now.':'Nothing in this state yet.'}</div></div></div>`}</div>`;
+   :`<div class="zrow"><div class="grow"><div class="t">Nothing here</div><div class="s">${S.appTab==='need'?'Nothing is waiting on you right now.':'Nothing in this state yet.'}</div></div></div>`}</div></div>`;
  $$('#zsbody [data-at]').forEach(b=>b.onclick=()=>{S.appTab=b.dataset.at;renderApps();arrive($('#zsbody'))});
  $$('#zsbody [data-app]').forEach(r=>r.onclick=()=>openApp(APPS.find(a=>a.id===r.dataset.app)));
  $('#zappdot').style.display=g.need.length?'':'none';icons()}
@@ -905,14 +907,14 @@ function applyEmployer(sh,e){if(!sh||!e)return;const rail=sh.querySelector('asid
 function renderPortfolio(){
  const emps=employersWhoSaw();
  if(window.emp&&!window.empCo&&emps.length)window.empCo=emps[0];
- $('#zsbody').innerHTML=`<div class="zarr" style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin:10px 0 18px">
+ $('#zsbody').innerHTML=`<div class="zin wide"><div class="zarr" style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin:6px 0 18px">
    <h1 class="ztitle" style="text-align:left">Your portfolio</h1>
    <div style="display:flex;gap:8px"><button class="zic" id="pfshare" title="Copy link">${ic('link')}</button><button class="zic" id="pfprev" title="See what an employer sees">${ic(window.emp?'pencil':'eye')}</button></div></div>
   ${window.emp?`<div class="zarr" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--card);border-radius:16px;padding:12px 16px;margin-bottom:14px">
    <span style="font-size:13.5px;font-weight:600">${emps.length?'What '+window.empCo.co+' sees':'Nobody has opened it yet'}</span>
    <div style="display:flex;gap:6px;flex-wrap:wrap">${emps.map(e=>`<button class="ztag ${window.empCo&&window.empCo.id===e.id?'dk':'out'}" data-emp="${e.id}" style="height:28px;padding:0 11px;cursor:pointer">${e.co}</button>`).join('')}</div>
    <button class="zic" id="pfexit" style="margin-left:auto">${ic('x')}</button></div>`:''}
-  <div class="zarr" id="pfmount" style="border-radius:24px;overflow:hidden;background:#F6F5F3"></div>`;
+  <div class="zarr" id="pfmount" style="border-radius:24px;overflow:hidden;background:#F6F5F3"></div></div>`;
  const sh=mountSnap($('#pfmount'),window.emp?'rec':'stu',{zoom:1});
  if(window.emp)applyEmployer(sh,window.empCo);
  $('#pfprev').onclick=()=>{window.emp=!window.emp;if(!window.emp)window.empCo=null;renderPortfolio()};
