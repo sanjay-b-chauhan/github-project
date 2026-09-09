@@ -302,7 +302,10 @@ body:not(.zdark) .zbackq:hover{color:var(--tx);background:var(--field)}
 .dlgft .zbtn.ghost{margin-right:auto}
 #pfrail{position:fixed;right:26px;top:96px;width:268px;z-index:15;display:none}
 body.zapp.pfpage #pfrail{display:block}
-@media(max-width:1360px){body.zapp.pfpage #pfrail{display:none}}
+/* the fixed rail needs (viewport-800)/2 > 294 to clear the centred column */
+@media(max-width:1400px){body.zapp.pfpage #pfrail{display:none}}
+.pfnarrow{display:none;margin-bottom:22px}
+@media(max-width:1400px){body.zapp.pfpage .pfnarrow{display:block}}
 .pfrailin{background:var(--card);border:1px solid var(--line2);border-radius:20px;padding:22px 22px 18px}
 .pfring{position:relative;width:44px;height:44px}
 .pfring svg{width:44px;height:44px}
@@ -405,6 +408,20 @@ body.zapp.pfpage #pfrail{display:block}
 .pmdocbody p{font-size:14px;line-height:1.75;color:var(--tx2);margin-top:14px}
 .pmdocbody b{color:var(--tx);font-weight:600}
 @media(max-width:700px){.pvis{flex:0 0 100%;max-width:none}.pfproj{flex-direction:column}}
+/* application pipeline */
+.pipe{display:flex;gap:8px;margin-top:22px}
+.pipestep{flex:1;text-align:left;padding:14px 16px 0;border-radius:14px;background:var(--card);border:1px solid var(--line2);transition:border-color .18s,background .18s;position:relative;overflow:hidden}
+.pipestep:hover{border-color:var(--line)}
+.pipestep.on{border-color:var(--tx4)}
+.pipestep.empty{opacity:.55}
+.pipestep .pn{display:block;font-family:var(--serif);font-size:26px;letter-spacing:-.03em;line-height:1}
+.pipestep .pl{display:block;font-size:12.5px;color:var(--tx3);margin-top:4px;margin-bottom:12px}
+.pipestep .pbar{position:absolute;left:0;right:0;bottom:0;height:3px;background:transparent;transition:background .2s}
+.pipestep.on .pbar{background:var(--ink)}
+.anext{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--tx2);margin-top:7px}
+.anext svg{width:12px;height:12px;color:var(--tx4)}
+.atime{font-size:11.5px;color:var(--tx4);margin-top:6px}
+@media(max-width:700px){.pipe{overflow-x:auto}.pipestep{min-width:120px}}
 /* build split */
 .zsplit{position:absolute;inset:76px 14px 14px;display:flex;gap:14px}
 .zsplit .l{flex:1;min-width:0;overflow-y:auto;padding:20px 6px 20px 12px;display:flex;flex-direction:column;justify-content:flex-end}
@@ -623,7 +640,7 @@ const S={page:'talk',auto:true,paused:false,sel:'klarna',filter:'all',view:'list
 const WELCOME=["You've been putting in the work.","Let's take that into the world.","I know your work. Now I need your terms.","Let's see what's possible."];
 let lineTok=0,beatT=null;
 function line(node,text,cb){const tok=++lineTok;node.innerHTML=text.split(' ').map(w=>`<span class="w">${w}</span>`).join(' ');const ws=$$('.w',node);ws.forEach((w,i)=>setTimeout(()=>w.classList.add('in'),50+i*36));setTimeout(()=>{ws.forEach(w=>w.classList.add('in'));if(tok===lineTok&&cb)cb()},60+ws.length*36+380)}
-function clearLine(){const q=$('#tq');q.style.transition='all .34s cubic-bezier(.55,.08,.68,.53)';q.style.opacity=0;q.style.transform='translateY(-26px)';q.style.filter='blur(9px)';$('#topts').classList.remove('in');return wait(360).then(()=>{q.style.transition='';q.style.opacity='';q.style.transform='';q.style.filter='';$('#topts').innerHTML=''})}
+function clearLine(sel){const q=$(sel||'#tq');q.style.transition='all .34s cubic-bezier(.55,.08,.68,.53)';q.style.opacity=0;q.style.transform='translateY(-26px)';q.style.filter='blur(9px)';const o=$('#topts');if(o&&!sel)o.classList.remove('in');return wait(360).then(()=>{q.style.transition='';q.style.opacity='';q.style.transform='';q.style.filter='';if(o&&!sel)o.innerHTML=''})}
 function beats(n,total){const b=$('#zbeats');b.innerHTML=Array.from({length:total},(_,i)=>`<i class="${i<n?'past':i===n?'on':''}"></i>`).join('')}
 function pills(items,cb,back){const o=$('#topts');
  o.innerHTML=items.map((t,i)=>`<button class="zopt" data-i="${i}">${t}</button>`).join('');icons();
@@ -747,6 +764,7 @@ async function runAuto(){
   $('#aq').innerHTML=`<span class="zshimmer" data-t="Scanning LinkedIn, Greenhouse, Lever and 6 careers pages" style="font-family:var(--f);font-size:16px;letter-spacing:-.016em">Scanning LinkedIn, Greenhouse, Lever and 6 careers pages</span>`;
   await wait(2100);enterApp('home')})}
 
+
 /* ═══ DATA ═══ */
 const JOBS=[
  {id:'klarna',t:'Business Analyst, Payments Operations',co:'Klarna',dom:'klarna.com',loc:'Toronto, Canada',mode:'Hybrid, 2 days',type:'Full time',pay:'CA$68,000 to 76,000',age:'2d',live:true,fit:'fits',
@@ -837,10 +855,7 @@ function stepsFor(j){return STEPS_BASE.map(s=>{
 function jobById(id){return JOBS.find(j=>j.id===id)}
 
 
-/* ═══ 6 JOBS ═══ */
-
-
-/* ═══ dialogs ═══ */
+/* ═══ dialogs and the send panel ═══ */
 function openDlg(h){$('#dbox').innerHTML=h;$('#zdlg').classList.add('on');icons()}
 function closeDlg(){$('#zdlg').classList.remove('on')}
 $('#zdlg').addEventListener('click',e=>{if(e.target.id==='zdlg')closeDlg()});
@@ -880,6 +895,16 @@ function openOverride(j){
   else toast('Applying once. Your rule stands.');
   const app=APPS.find(a=>a.id===j.id);if(app){app.st='subm';app.nx='Sending';app.up='now';app.ev.push(['now','You overrode your own hybrid rule for this role']);submit(app)}
   j.fit='fits';j.held='';closeDlg();renderJobs()})}
+function openHold(j){
+ openDlg(`<div class="zdt" style="font-size:22px">I am waiting on ${j.co}</div>
+  <div class="zsub" style="text-align:left;margin:10px 0 0">No salary is posted and your floor is ${S.brief.pay||'CA$60,000'}. I asked the recruiter on Monday and there is still no answer. An unknown essential is never a match, so I stopped rather than guess.</div>
+  <div style="display:flex;gap:10px;margin-top:22px;flex-wrap:wrap"><button class="zbtn dark" data-h="send">Send it, salary unknown</button><button class="zbtn line" data-h="chase">Chase them again</button><button class="zbtn ghost" onclick="closeDlg()">Keep holding</button></div>`);
+ $$('#dbox [data-h]').forEach(b=>b.onclick=()=>{
+  const app=APPS.find(a=>a.id===j.id);
+  if(b.dataset.h==='send'){if(app){app.st='subm';app.nx='Sending';app.up='now';app.ev.push(['now','You accepted the unknown salary and released the hold']);submit(app)}
+   j.held='';closeDlg();renderJobs();toast('Released. It goes out with your floor stated in the note.');return}
+  if(app){app.up='now';app.nx='Recruiter chased again';app.ev.push(['now','Chased the recruiter for a salary range a second time'])}
+  closeDlg();renderJobs();if(S.page==='apps')renderApps();toast('Chased. If there is no answer by Thursday I will tell you.')})}
 function openSend(j){
  const app=APPS.find(a=>a.id===j.id);
  openPanel('Send to '+j.co,'This is exactly what goes out. It never changes after sending.',
@@ -1069,6 +1094,7 @@ function renderPortfolio(){
    ${PFEDIT&&!window.emp?`<button class="pfic" data-editme title="Edit">${ic('pencil')}</button>`:''}
   </section>
 
+  ${window.emp?'':'<div id="pfrailn" class="pfnarrow zarr"></div>'}
   ${pfSection('projects','Work',proj,'Add work')}
   ${pfSection('experience','Experience',exp,'Add experience')}
   ${pfSection('credentials','Credentials',cred,'Add credential')}
@@ -1095,14 +1121,18 @@ function renderSuggestions(){
  const R=$('#pfrail');if(!R)return;
  const open=SUGGESTIONS.filter(s=>!s.done);
  R.classList.toggle('zhide',!!window.emp);
- R.innerHTML=`<div class="pfrailin">
+ const html=`<div class="pfrailin">
   <div class="pfring"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" fill="none" stroke="var(--line)" stroke-width="4"/><circle cx="22" cy="22" r="19" fill="none" stroke="var(--ok)" stroke-width="4" stroke-linecap="round" stroke-dasharray="${Math.round(119*(1-open.length/ (SUGGESTIONS.length||1)) + 45)} 200" transform="rotate(-90 22 22)"/></svg><b>${61+ (SUGGESTIONS.length-open.length)*8}%</b></div>
   <div style="margin-top:12px"><div style="font-size:15px;font-weight:600;letter-spacing:-.02em">Interview readiness</div><div style="font-size:12.5px;color:var(--tx3);margin-top:2px">${P_weeks()} at this pace</div></div>
   <div style="font-size:12.5px;font-weight:600;color:var(--tx3);margin:20px 0 10px">What would move it</div>
   ${open.length?open.map(s=>`<div class="pfsug"><p>${s.t}</p><div class="pfsugact"><button class="zbtn dark sm" data-sdone="${s.id}">Done</button><button class="zbtn ghost sm" data-sskip="${s.id}">Skip</button></div></div>`).join(''):`<div class="pfsug"><p style="color:var(--tx3)">Nothing left. This is as strong as it gets without new work.</p></div>`}
  </div>`;
- $$('#pfrail [data-sdone]').forEach(b=>b.onclick=()=>{const s=SUGGESTIONS.find(x=>x.id===b.dataset.sdone);s.done=true;renderSuggestions();toast('Nice. Readiness moved.')});
- $$('#pfrail [data-sskip]').forEach(b=>b.onclick=()=>{const s=SUGGESTIONS.find(x=>x.id===b.dataset.sskip);s.done=true;renderSuggestions()});
+ R.innerHTML=html;
+ // Below the width where a fixed rail fits beside the 800px column, the same
+ // panel renders inside the column instead of disappearing.
+ const N=$('#pfrailn');if(N)N.innerHTML=html;
+ $$('[data-sdone]').forEach(b=>b.onclick=()=>{const s=SUGGESTIONS.find(x=>x.id===b.dataset.sdone);s.done=true;renderSuggestions();toast('Nice. Readiness moved.')});
+ $$('[data-sskip]').forEach(b=>b.onclick=()=>{const s=SUGGESTIONS.find(x=>x.id===b.dataset.sskip);s.done=true;renderSuggestions()});
  icons()}
 function P_weeks(){const open=SUGGESTIONS.filter(s=>!s.done).length;return open>1?'4 to 6 weeks':open===1?'2 to 3 weeks':'Ready now'}
 
@@ -1209,7 +1239,7 @@ const ROUNDS=[
  {id:'r1',co:'Notion',dom:'notion.so',role:'Growth Analyst, Self-serve',round:'First round · 45 min',who:'Priya Raman, Growth lead',when:'Thursday 2:00pm',state:'invited'},
  {id:'r2',co:'Figma',dom:'figma.com',role:'Analyst, GTM Operations',round:'Take-home review · 30 min',who:'Dan Whitfield, GTM ops',when:'Monday 11:00am',state:'invited'},
 ];
-function renderRounds(){
+function renderRounds(compact){
  const inv=ROUNDS.filter(r=>r.state==='invited');const acc=ROUNDS.filter(r=>r.state==='accepted');const later=ROUNDS.filter(r=>r.state==='later');
  if(!ROUNDS.length)return'';
  const card=r=>`<div class="ivcard ${r.state}">
@@ -1219,7 +1249,7 @@ function renderRounds(){
    ${r.state==='invited'?`<div class="ivact"><button class="zbtn dark sm" data-acc="${r.id}">Accept</button><button class="zbtn line sm" data-later="${r.id}">Save for later</button><button class="zbtn ghost sm" data-dec="${r.id}">Decline</button></div>`
     :r.state==='accepted'?`<div class="ivact"><span class="ztag ok">${ic('check')}Accepted, in your calendar</span><button class="zbtn ghost sm" data-prep="${r.id}">What they will ask</button></div>`
     :`<div class="ivact"><span class="ztag amb">Saved. I will remind you Wednesday</span><button class="zbtn dark sm" data-acc="${r.id}">Accept now</button></div>`}</div>`;
- return`<div class="zarr" style="margin-top:34px"><div class="zsecl">Interviews<span style="font-size:13px;color:var(--tx3);font-weight:400">${inv.length?inv.length+' waiting on you':acc.length+' booked'}</span></div>
+ return`<div class="zarr" style="margin-top:${compact?20:34}px"><div class="zsecl">Interviews<span style="font-size:13px;color:var(--tx3);font-weight:400">${inv.length?inv.length+' waiting on you':acc.length+' booked'}</span></div>
   <div style="display:flex;flex-direction:column;gap:10px">${[...inv,...later,...acc].map(card).join('')}</div></div>`}
 function bindRounds(){
  $$('#zsbody [data-acc]').forEach(b=>b.onclick=()=>{const r=ROUNDS.find(x=>x.id===b.dataset.acc);r.state='accepted';
@@ -1371,31 +1401,56 @@ function openJobSheet(id){
    <div style="font-size:14px;font-weight:600;margin:26px 0 10px">About the role</div>
    <ul style="font-size:14px;line-height:1.7;color:var(--tx2)">${j.about.map(a=>`<li style="margin-left:17px;margin-bottom:5px">${a}</li>`).join('')}</ul>`,
   `<button class="zbtn ghost" data-a="not">Not for me</button><button class="zbtn line" data-a="save">${ic(SAVED[j.id]?'bookmark-check':'bookmark')}${SAVED[j.id]?'Saved':'Save'}</button>
-   ${j.fit==='explore'?'<button class="zbtn dark" data-a="consent">Yes, apply</button>':j.fit==='held'?'<button class="zbtn dark" data-a="override">Override my rule</button>':blocked?`<button class="zbtn dark" data-a="answer">Answer ${blocked.n.toLowerCase()}</button>`:`<button class="zbtn dark" data-a="apply">${S.auto?'Send now':'Review and send'}</button>`}`);
+   ${j.fit==='explore'?'<button class="zbtn dark" data-a="consent">Yes, apply</button>':j.fit==='held'?'<button class="zbtn dark" data-a="override">Override my rule</button>':j.held?'<button class="zbtn dark" data-a="hold">Decide on the hold</button>':blocked?`<button class="zbtn dark" data-a="answer">Answer ${blocked.n.toLowerCase()}</button>`:`<button class="zbtn dark" data-a="apply">${S.auto?'Send now':'Review and send'}</button>`}`);
  $$('#zpanel [data-a]').forEach(b=>b.onclick=()=>{const k=b.dataset.a;
   if(k==='save'){SAVED[j.id]=!SAVED[j.id];renderJobs();openJobSheet(id);return}
   if(k==='answer'){closePanel();askStart(APPS.find(a=>a.id===j.id)||{id:j.id,co:j.co,t:j.t,ev:[],st:'needs'});return}
-  if(k==='apply'){closePanel();openSend(j)}if(k==='consent'){closePanel();openConsent(j)}if(k==='override'){closePanel();openOverride(j)}
+  if(k==='apply'){closePanel();openSend(j)}if(k==='consent'){closePanel();openConsent(j)}if(k==='override'){closePanel();openOverride(j)}if(k==='hold'){closePanel();openHold(j)}
   if(k==='not'){closePanel();toast('Noted. One dismissal never rewrites your brief, but a pattern will.');JOBS.splice(JOBS.indexOf(j),1);renderJobs()}});
  icons()}
 
 /* ═══ APPLICATIONS ═══ */
+const STAGE=[
+ ['need','Needs you',a=>['needs','ask','ready'].includes(a.st)],
+ ['flight','In flight',a=>['subm','sent'].includes(a.st)],
+ ['reply','Replied',a=>a.st==='conf'],
+ ['held','Held',a=>['held','closed','withdrawn'].includes(a.st)],
+];
 function renderApps(){
- const g={need:APPS.filter(a=>['needs','ask','ready'].includes(a.st)),flight:APPS.filter(a=>['subm','sent'].includes(a.st)),done:APPS.filter(a=>a.st==='conf'),held:APPS.filter(a=>['held','withdrawn','closed'].includes(a.st))};
- const tabs=[['need','Needs you',g.need.length],['flight','In flight',g.flight.length],['done','Confirmed',g.done.length],['held','Held',g.held.length]];
- const cur=g[S.appTab]||[];
+ const groups={};STAGE.forEach(s=>groups[s[0]]=APPS.filter(s[2]));
+ const iv=ROUNDS.length;
+ if(!groups[S.appTab]||!groups[S.appTab].length){const first=STAGE.find(s=>groups[s[0]].length);if(first)S.appTab=first[0]}
+ const cur=groups[S.appTab]||[];
+ const total=APPS.length;
  $('#zsbody').innerHTML=`<div class="zin">
-  <h1 class="ztitle zarr" style="margin:8px 0 6px">Your applications</h1>
-  <div class="zarr" style="display:flex;justify-content:center;margin:18px 0 20px"><div class="ztabs">${tabs.map(t=>`<button class="${S.appTab===t[0]?'on':''}" data-at="${t[0]}">${t[1]}<sup>${t[2]}</sup></button>`).join('')}</div></div>
-  <div class="zrows zarr">${cur.length?cur.map(a=>`<div class="zrow" data-app="${a.id}" style="cursor:pointer">
-    <div class="zdate"><i>${a.up.includes(':')?'TODAY':'EARLIER'}</i><b>${a.up.replace(/[^0-9:]/g,'').slice(0,5)||'--'}</b></div>
-    <div class="zlogo2 s40">${fav(a.dom)}</div>
-    <div class="grow"><div class="t">${a.t}${a.out?`<span class="ztag ${a.out.src?'ok':'out'}">${a.out.t}</span>`:''}</div><div class="s">${a.co} · ${a.nx}</div></div>
-    <span class="ztag ${ST[a.st][1]}">${ST[a.st][0]}</span>${ic('chevron-right')}</div>`).join('')
-   :`<div class="zrow"><div class="grow"><div class="t">Nothing here</div><div class="s">${S.appTab==='need'?'Nothing is waiting on you right now.':'Nothing in this state yet.'}</div></div></div>`}</div></div>`;
+  <div class="zarr" style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:8px 0 6px">
+   <h1 class="ztitle" style="margin:0">Your applications</h1>
+   <span style="font-size:13px;color:var(--tx3)">${total} live · ${iv} interview${iv===1?'':'s'} booked</span></div>
+
+  <div class="pipe zarr">${STAGE.map((s,i)=>{const n=groups[s[0]].length;const on=S.appTab===s[0];
+   return`<button class="pipestep ${on?'on':''} ${n?'':'empty'}" data-at="${s[0]}">
+     <span class="pn">${n}</span><span class="pl">${s[1]}</span>
+     <span class="pbar"></span></button>`}).join('')}</div>
+
+  ${S.appTab==='need'&&iv?renderRounds(true):''}
+
+  <div class="zrows zarr" style="margin-top:20px">${cur.length?cur.map(a=>{
+    const j=JOBS.find(x=>x.id===a.id);
+    return`<div class="zrow" data-app="${a.id}" style="cursor:pointer">
+     <div class="zlogo2 s40">${fav(a.dom)}</div>
+     <div class="grow"><div class="t">${a.t}${a.out?`<span class="ztag ${a.out.src?'ok':'out'}">${a.out.t}</span>`:''}</div>
+      <div class="s">${a.co}${j?' · '+j.loc:''}${j&&j.pay!=='Not listed'?' · '+j.pay:''}</div>
+      <div class="anext">${ic('corner-down-right')}${a.nx}</div></div>
+     <div style="text-align:right;flex-shrink:0"><span class="ztag ${ST[a.st][1]}">${ST[a.st][0]}</span><div class="atime">${a.up}</div></div>
+     ${ic('chevron-right')}</div>`}).join('')
+   :`<div class="zcard" style="padding:48px 30px;text-align:center">
+      <div style="font-size:15px;font-weight:600">Nothing in ${STAGE.find(s=>s[0]===S.appTab)[1].toLowerCase()}</div>
+      <div style="font-size:13.5px;color:var(--tx3);margin-top:6px">${S.appTab==='need'?'Nothing is waiting on you right now.':S.appTab==='reply'?'No employer has replied yet. I will tell you the moment one does.':'Nothing here yet.'}</div></div>`}</div>
+ </div>`;
  $$('#zsbody [data-at]').forEach(b=>b.onclick=()=>{S.appTab=b.dataset.at;renderApps();arrive($('#zsbody'))});
  $$('#zsbody [data-app]').forEach(r=>r.onclick=()=>openApp(APPS.find(a=>a.id===r.dataset.app)));
- $('#zappdot').style.display=g.need.length?'':'none';icons()}
+ bindRounds();
+ $('#zappdot').style.display=groups.need.length?'':'none';icons()}
 
 /* ═══ PORTFOLIO helpers ═══ */
 function employersWhoSaw(){return APPS.filter(a=>['sent','conf','subm'].includes(a.st)).map(a=>({id:a.id,co:a.co,dom:a.dom,role:a.t,st:a.st}))}
