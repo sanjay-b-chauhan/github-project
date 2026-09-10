@@ -473,9 +473,26 @@ body.zapp.pfpage #pfrail{display:block}
 @keyframes bspin{to{transform:rotate(360deg)}}
 .bstep .bt{font-size:14px;font-weight:600;letter-spacing:-.015em}
 .bstep .bs{font-size:12.5px;color:var(--tx3);margin-top:3px;line-height:1.5;min-height:18px}
-.bcard.sendcard{position:static;transform:scale(.96);width:290px;flex-shrink:0}
-.bcard.sendcard.in{transform:none}
-#bopts{margin-top:30px}
+/* build: interaction left, the real portfolio assembling right */
+.zsplit .l.bl{justify-content:center;padding:20px 34px 20px 22px;gap:0}
+.bl .zq{text-align:left;margin:0 0 26px;max-width:14ch;text-wrap:balance}
+.bl .bsteps{width:100%;max-width:520px}
+.bl .zopts{justify-content:flex-start;margin:28px 0 0}
+.zsplit .r{background:var(--card);border:1px solid var(--line2)}
+.pfprevin{max-width:640px;margin:0 auto;padding-bottom:30px}
+.pfprevin .pfhero,.pfprevin .pfitem{border-color:var(--line)}
+.pfprevin .pfhero{background:var(--wash)}
+.pfprevin .pfitem{background:var(--wash)}
+.pfprevin .pfsec{margin-top:24px}
+@media(max-width:980px){.zsplit{flex-direction:column}.zsplit .r{width:100%;height:46vh;flex:none}.zsplit .l.bl{justify-content:flex-start}}
+/* the send snapshot is the real portfolio, not a stub */
+.sendcard{width:300px;padding:16px 18px 18px}
+.sendcard .pres{margin-top:14px}
+.sendstage{height:470px;transition:height .7s cubic-bezier(.625,.05,0,1),opacity .45s,transform .7s cubic-bezier(.625,.05,0,1),margin .7s}
+.sendstage.away{height:0;opacity:0;transform:scale(.82);margin:0;pointer-events:none}
+.sendcount{transition:opacity .35s,height .5s,margin .5s}
+.sendcount.away{opacity:0;height:0;overflow:hidden;margin:0}
+.sendtop{margin-top:34px}
 /* day one: honest empty states and live loaders */
 .zempty{background:var(--card);border:1px dashed var(--line);border-radius:16px;padding:22px 24px;font-size:13.5px;color:var(--tx3);line-height:1.55}
 .zempty b{color:var(--tx);font-weight:600;display:block;margin-bottom:3px;font-size:14px}
@@ -722,37 +739,41 @@ async function runGaps(){
  await say($('#tq'),S.gapAdds.length?`That is everything I did not have. ${S.gapAdds.length} thing${S.gapAdds.length===1?'':'s'} added.`:'That is everything I did not have.',1100);await clearLine();
  runBuild()}
 
-/* ═══ 3 BUILD: a real loader, then the portfolio ═══ */
-function bcardHTML(stage){const P=PF;
- return`<div class="sc-top"><div class="sc-av">${P.name.split(' ').map(x=>x[0]).join('')}</div><div><div class="sc-n">${P.name}</div><div class="sc-r">${stage>0?P.track+' · '+P.loc:'&nbsp;'}</div></div>${stage>1?`<span class="ztag ok" style="margin-left:auto">${P.rating}</span>`:''}</div>
-  ${stage>2?`<div class="sc-projs">${P.projects.slice(0,5).map(p=>`<div class="sc-p">${fav(p.dom)}<span>${p.co}</span></div>`).join('')}</div>`:'<div class="sc-line"></div><div class="sc-line s"></div>'}
-  ${stage>3?`<div class="sc-foot"><span class="ztag">${P.projects.length} ZERO scenarios</span>${P.experience.length?`<span class="ztag">${P.experience.length} experience</span>`:''}${P.credentials.length?`<span class="ztag">${P.credentials.length} credential${P.credentials.length===1?'':'s'}</span>`:''}</div>`:''}`}
+/* ═══ 3 BUILD: a real loader on the left, the real portfolio assembling on the right ═══ */
+function bcardHTML(){const P=PF;const p=P.projects[0];
+ return`<div class="sc-top"><div class="sc-av">${P.name.split(' ').map(x=>x[0]).join('')}</div><div style="min-width:0"><div class="sc-n">${P.name}</div><div class="sc-r">${P.track} · ${P.loc}</div></div><span class="ztag ok" style="margin-left:auto">${P.rating}</span></div>
+  ${p?presVisual(p,false):''}
+  <div class="sc-foot"><span class="ztag">${P.projects.length} ZERO scenarios</span>${P.experience.length?`<span class="ztag">${P.experience.length} experience</span>`:''}${P.credentials.length?`<span class="ztag">${P.credentials.length} credential${P.credentials.length===1?'':'s'}</span>`:''}</div>`}
+function mountPreview(){const host=$('#bpf');host.innerHTML=pfBody();
+ const ab=$('.pfabout',host);if(ab)ab.classList.add('zarr');
+ $$('[data-open]',host).forEach(c=>c.onclick=()=>openProject(c.dataset.open));icons()}
 async function runBuild(){
- S.page='build';$('#dstep').textContent='3 · Portfolio';document.body.classList.remove('zdark');document.body.classList.remove('zapp');$('#zflowhd').classList.remove('zhide');show('build');beats(0,1);$('#zbeats').innerHTML='';
+ S.page='build';$('#dstep').textContent='3 · Portfolio';document.body.classList.remove('zdark');document.body.classList.remove('zapp');$('#zflowhd').classList.remove('zhide');show('build');$('#zbeats').innerHTML='';
  const B=$('#s-build');const P=PF;const ex=P.projects.filter(p=>/Exceeds/.test(p.review)).length;
+ const told=S.gapAdds&&S.gapAdds.length?S.gapAdds.map(e=>e.kind==='experience'?(e.org==='You told me'?e.role:e.org):(e.issuer==='You told me'?e.t:e.issuer)).filter((v,i,a)=>a.indexOf(v)===i):[];
  const STEPS=[
-  ['Your ZERO scenarios',`${P.projects.length} finished with a review. Unfinished ones stay out.`,P.projects.length],
-  ['Manager reviews',`${ex} exceeds expectations, ${P.projects.length-ex} meets. Every one is labelled practice.`,P.projects.length],
-  ['What you told me',S.gapAdds&&S.gapAdds.length?`${S.gapAdds.length} added: ${S.gapAdds.map(e=>e.kind==='experience'?(e.org==='You told me'?e.role:e.org):(e.issuer==='You told me'?e.t:e.issuer)).filter((v,i,a)=>a.indexOf(v)===i).join(', ')}.`:'Nothing added. ZERO work only, and you can add more any time.',S.gapAdds?S.gapAdds.length:0],
-  ['How you work',`Written from your ${P.projects.length} reviews, in your voice. Yours to change.`,1],
+  ['Your ZERO scenarios',`${P.projects.length} finished with a review. Unfinished ones stay out.`,'.pfhero'],
+  ['Manager reviews',`${ex} exceeds expectations, ${P.projects.length-ex} meets. Every one is labelled practice.`,'[data-sec="projects"]'],
+  ['What you told me',told.length?`${told.length} added: ${told.join(', ')}.`:'Nothing added. ZERO work only, and you can add more any time.','[data-sec="experience"],[data-sec="credentials"],[data-sec="academics"]'],
+  ['How you work',`Written from your ${P.projects.length} reviews, in your voice. Yours to change.`,'.pfabout'],
  ];
- B.innerHTML=`<div class="bwrap"><h1 class="zq" id="bq" style="max-width:18ch"></h1>
-  <div class="bcol">
+ B.innerHTML=`<div class="zsplit"><div class="l bl">
+   <h1 class="zq" id="bq"></h1>
    <div class="bsteps" id="bsteps">${STEPS.map((s,i)=>`<div class="bstep" data-i="${i}"><span class="bmk">${ic('check')}</span><div style="flex:1;min-width:0"><div class="bt">${s[0]}</div><div class="bs"></div></div></div>`).join('')}</div>
-   <div class="sendcard bcard" id="bcard">${bcardHTML(0)}</div>
-  </div>
-  <div class="zopts" id="bopts"></div></div>`;icons();
+   <div class="zopts" id="bopts"></div></div>
+  <div class="r"><div class="zrcap"><span class="live" id="bdot"></span><span id="bcap">Building your portfolio</span></div><div class="zrbody" id="bpaper"><div class="pfprevin" id="bpf"></div></div></div></div>`;
+ mountPreview();
  await say($('#bq'),'Building your portfolio.',300);
- setTimeout(()=>$('#bcard').classList.add('in'),100);
+ const reveal=sel=>{const els=$$(sel,$('#bpf'));els.forEach((e,i)=>setTimeout(()=>{e.classList.add('in');if(i===0)e.scrollIntoView({behavior:'smooth',block:'start'})},i*160));return els.length};
  for(let i=0;i<STEPS.length;i++){const st=$(`#bsteps [data-i="${i}"]`);st.classList.add('live');st.querySelector('.bs').innerHTML=`<span class="zshim" data-t="Reading">Reading</span>`;
-  await wait(i===0?900:750);st.classList.remove('live');st.classList.add('done');st.querySelector('.bs').textContent=STEPS[i][1];
-  $('#bcard').innerHTML=bcardHTML(i+1);icons()}
- await wait(500);$('#bcard').innerHTML=bcardHTML(5);icons();
+  await wait(i===0?900:800);st.classList.remove('live');st.classList.add('done');st.querySelector('.bs').textContent=STEPS[i][1];reveal(STEPS[i][2]);
+  await wait(500)}
+ $$('#bpf .zarr').forEach(e=>e.classList.add('in'));
+ $('#bcap').textContent='Your portfolio';const d=$('#bdot');if(d)d.remove();$('#bpaper').scrollTo({top:0,behavior:'smooth'});
  await clearLine('#bq');await say($('#bq'),'This is what an employer sees.',200);
- const o=$('#bopts');const ask=()=>{o.innerHTML=`<button class="zopt" id="bok">This is me</button><button class="zopt" id="bedit">Change something</button>`;requestAnimationFrame(()=>requestAnimationFrame(()=>o.classList.add('in')));
-  $('#bok').onclick=()=>{$('#bok').classList.add('on');setTimeout(openTerms,420)};
-  $('#bedit').onclick=()=>{editMe(()=>{$('#bcard').innerHTML=bcardHTML(5);icons();toast('Changed. It goes out exactly like this.')})}};
- ask()}
+ const o=$('#bopts');o.innerHTML=`<button class="zopt" id="bok">This is me</button><button class="zopt" id="bedit">Change something</button>`;requestAnimationFrame(()=>requestAnimationFrame(()=>o.classList.add('in')));
+ $('#bok').onclick=()=>{$('#bok').classList.add('on');setTimeout(openTerms,420)};
+ $('#bedit').onclick=()=>{editMe(()=>{mountPreview();$$('#bpf .zarr').forEach(e=>e.classList.add('in'));toast('Changed. It goes out exactly like this.')})}}
 
 /* ═══ 4 TERMS: one pop-up, pre-filled from onboarding. Shown once. ═══ */
 function openTerms(){const b=S.brief;
@@ -1082,10 +1103,8 @@ function pfSection(key,title,body,addLabel){
 function pfItem(inner,editAttr){
  return`<div class="pfitem">${inner}${PFEDIT&&!window.emp?`<div class="pfedit"><button class="pfic" ${editAttr} title="Edit">${ic('pencil')}</button></div>`:''}</div>`}
 
-function renderPortfolio(){
- const emps=employersWhoSaw();
- if(window.emp&&!window.empCo&&emps.length)window.empCo=emps[0];
- const P=PF;
+/* hero + sections: the portfolio itself, shared by the Portfolio page and the build preview */
+function pfBody(){const P=PF;
  const proj=P.projects.map(p=>pfItem(`<div class="pfproj" data-open="${p.id}">
    <div class="pvis">${presVisual(p,false)}</div>
    <div style="flex:1;min-width:0">
@@ -1099,19 +1118,7 @@ function renderPortfolio(){
    <div class="pt">${c.t}</div><div class="ps">${c.issuer} · ${c.date}</div></div></div>`,`data-editc="${c.id}"`)).join('');
  const acad=P.academics.map(a=>pfItem(`<div class="pfrow"><div class="zlogo2 s40">${fav(a.dom)}</div><div style="flex:1;min-width:0">
    <div class="pt">${a.degree}</div><div class="ps">${a.school} · ${a.period} · GPA ${a.gpa}</div></div></div>`,`data-edita="${a.id}"`)).join('');
-
- $('#zsbody').innerHTML=`<div class="zin">
-  <div class="zarr pfbar">
-   <h1 class="ztitle" style="margin:0">${window.emp?'What '+(window.empCo?window.empCo.co:'an employer')+' sees':'Your portfolio'}</h1>
-   <div style="display:flex;gap:8px;align-items:center">
-    ${window.emp?'':`<button class="zbtn ${PFEDIT?'dark':'line'} sm" id="pfeditbtn">${ic(PFEDIT?'check':'pencil')}${PFEDIT?'Done editing':'Edit'}</button>`}
-    <button class="zic" id="pfshare" title="Copy link">${ic('link')}</button>
-    <button class="zic ${window.emp?'on':''}" id="pfprev" title="See it as an employer">${ic(window.emp?'pencil':'eye')}</button>
-   </div></div>
-
-  ${window.emp?`<div class="zarr pfemps">${emps.length?emps.map(e=>`<button class="ztag ${window.empCo&&window.empCo.id===e.id?'dk':'out'}" data-emp="${e.id}" style="height:30px;padding:0 12px;cursor:pointer">${e.co}</button>`).join(''):'<span class="ztag dsh">Nobody has opened it yet</span>'}<button class="zbtn ghost sm" id="pfexit" style="margin-left:auto">Back to your view</button></div>`:''}
-
-  <section class="pfhero zarr">
+ return`  <section class="pfhero zarr">
    <div class="pfav">RR</div>
    <div style="flex:1;min-width:0">
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h2 class="pfname">${P.name}</h2><span class="ztag ok">${ic('award')}${P.rating}</span></div>
@@ -1126,7 +1133,25 @@ function renderPortfolio(){
   ${pfSection('projects','Work',proj,'Add work')}
   ${pfSection('experience','Experience',exp,'Add experience')}
   ${pfSection('credentials','Credentials',cred,'Add credential')}
-  ${pfSection('academics','Education',acad,'Add education')}
+  ${pfSection('academics','Education',acad,'Add education')}`}
+
+function renderPortfolio(){
+ const emps=employersWhoSaw();
+ if(window.emp&&!window.empCo&&emps.length)window.empCo=emps[0];
+ const P=PF;
+
+ $('#zsbody').innerHTML=`<div class="zin">
+  <div class="zarr pfbar">
+   <h1 class="ztitle" style="margin:0">${window.emp?'What '+(window.empCo?window.empCo.co:'an employer')+' sees':'Your portfolio'}</h1>
+   <div style="display:flex;gap:8px;align-items:center">
+    ${window.emp?'':`<button class="zbtn ${PFEDIT?'dark':'line'} sm" id="pfeditbtn">${ic(PFEDIT?'check':'pencil')}${PFEDIT?'Done editing':'Edit'}</button>`}
+    <button class="zic" id="pfshare" title="Copy link">${ic('link')}</button>
+    <button class="zic ${window.emp?'on':''}" id="pfprev" title="See it as an employer">${ic(window.emp?'pencil':'eye')}</button>
+   </div></div>
+
+  ${window.emp?`<div class="zarr pfemps">${emps.length?emps.map(e=>`<button class="ztag ${window.empCo&&window.empCo.id===e.id?'dk':'out'}" data-emp="${e.id}" style="height:30px;padding:0 12px;cursor:pointer">${e.co}</button>`).join(''):'<span class="ztag dsh">Nobody has opened it yet</span>'}<button class="zbtn ghost sm" id="pfexit" style="margin-left:auto">Back to your view</button></div>`:''}
+
+  ${pfBody()}
   ${window.emp?'':`<div class="zarr" style="font-size:12.5px;color:var(--tx3);margin-top:28px">Practice work is always labelled. Employers never see anything you switch off.</div>`}
  </div>`;
  renderSuggestions();
@@ -1225,10 +1250,11 @@ const TOP3=[
 async function runSend(){
  S.page='send';$('#dstep').textContent='4 · Going out';document.body.classList.remove('zdark');document.body.classList.remove('zapp');$('#zflowhd').classList.remove('zhide');$('#zbeats').innerHTML='';show('send');
  const st=$('#s-send');const first=S.visit==='first';
+ $('#s-build').innerHTML='';// the hidden build preview must not keep five presenter videos playing
  st.innerHTML=`<div class="sendwrap">
   <div class="sendhead"><h1 class="zq" id="sendq" style="max-width:20ch"></h1><div class="sendsub" id="sendsub"></div></div>
-  <div class="sendstage">
-   <div class="sendcard" id="sendcard">${bcardHTML(5)}</div>
+  <div class="sendstage" id="sendstage">
+   <div class="sendcard" id="sendcard">${bcardHTML()}</div>
    <div class="sendorbit" id="sendorbit">${SEND_COS.map((c,i)=>`<div class="sendco" data-i="${i}">${fav(c[0])}</div>`).join('')}</div>
   </div>
   <div class="sendcount" id="sendcount"></div>
@@ -1248,10 +1274,13 @@ async function runSend(){
  $('#sendcount').innerHTML=counters.map(c=>`<div class="cnt"><b data-to="${c[0]}">0</b><span>${c[1]}</span></div>`).join('');
  $('#sendcount').classList.add('in');
  $$('#sendcount b').forEach(b=>{const to=+b.dataset.to;let n=0;const iv=setInterval(()=>{n++;b.textContent=n;if(n>=to)clearInterval(iv)},Math.max(60,700/to))});
- await wait(1400);
- await clearLine('#sendq');
+ await wait(1600);
+ // second beat: the orbit folds away, the three roles take the screen
+ $('#sendsub').classList.remove('in');await clearLine('#sendq');
+ $('#sendstage').classList.add('away');$('#sendcount').classList.add('away');
+ await wait(450);
  await new Promise(r=>line($('#sendq'),'Three roles from ZERO partners, on your pathway.',()=>setTimeout(r,200)));
- $('#sendsub').textContent='Open now, and your evidence lines up one to one. Say yes and I apply for you.';
+ $('#sendsub').textContent='It is with 12 recruiters at 6 companies. These three are open now, and your evidence lines up one to one.';$('#sendsub').classList.add('in');
  $('#sendtop').innerHTML=TOP3.map(t=>`<div class="top3" data-row="${t.id}"><div class="zlogo2 s40">${fav(t.dom)}</div>
    <div style="flex:1;min-width:0"><div class="t3t">${t.t}</div><div class="t3c">${t.co} · ${t.why}</div><div class="t3o">${ic('sparkles')}${t.odds}</div></div>
    <div style="display:flex;align-items:center;gap:8px;flex-shrink:0"><span style="font-size:12.5px;color:var(--tx3)">Can I apply for you?</span><button class="zbtn dark sm" data-apply="${t.id}">Yes</button></div></div>`).join('');
@@ -1270,7 +1299,7 @@ async function runSend(){
  $('#sendcta').innerHTML=`<button class="zbtn lg dark" id="sendgo">Take me in</button>`;$('#sendcta').classList.add('in');
  $('#sendgo').onclick=()=>{$('#zflowhd').classList.add('zhide');enterApp('home')}}
 function placeOrbit(){const o=$('#sendorbit');if(!o)return;const n=$$('.sendco',o).length;
- $$('.sendco',o).forEach((c,i)=>{const a=(i/n)*Math.PI*2-Math.PI/2;const rx=290,ry=176;
+ $$('.sendco',o).forEach((c,i)=>{const a=(i/n)*Math.PI*2-Math.PI/2;const rx=Math.min(300,innerWidth*.34),ry=215;
   c.style.left=`calc(50% + ${Math.cos(a)*rx}px)`;c.style.top=`calc(50% + ${Math.sin(a)*ry}px)`;c.style.transitionDelay=(i*40)+'ms'})}
 window.addEventListener('resize',()=>{if(S.page==='send')placeOrbit()});
 
