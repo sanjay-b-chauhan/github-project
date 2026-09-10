@@ -444,6 +444,47 @@ body.zapp.pfpage #pfrail{display:block}
 .zshim::after{content:attr(data-t);position:absolute;inset:0;background:linear-gradient(100deg,transparent 34%,#8be3a6 47%,#e9ffd4 53%,transparent 66%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:zsw 1.6s linear infinite}
 @keyframes zsw{from{background-position:130% 0}to{background-position:-130% 0}}
 
+/* unlock moment */
+#s-unlock{background:#0D0D0F}
+.ucard{width:min(560px,92vw);text-align:center;opacity:0;transform:translateY(16px);transition:all .7s cubic-bezier(.2,.6,.3,1)}
+.ucard.in{opacity:1;transform:none}
+.uchip{display:flex;justify-content:center;margin-bottom:26px}
+.uchip .ztag{height:28px;padding:0 12px;font-size:12px}
+/* extraction chips under the question */
+.zadd{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:26px;min-height:0}
+.zxt{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px 0 6px;border-radius:99px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#F4F4F3;font-size:14px;font-weight:500;opacity:0;transform:translateY(10px) scale(.96);transition:all .45s cubic-bezier(.2,.8,.3,1)}
+.zxt.in{opacity:1;transform:none}
+.zxtl{width:28px;height:28px;border-radius:99px;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--tx2);overflow:hidden}
+.zxtl img{width:15px;height:15px;border-radius:3px}
+.zxtl svg{width:14px;height:14px}
+.zxt>svg{width:14px;height:14px;color:#7EDC9A;stroke-width:2.4}
+/* build: a real loader in one column */
+#s-build{background:var(--bg)}
+.bwrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px 60px;overflow-y:auto}
+.bcol{display:flex;gap:18px;align-items:flex-start;width:min(760px,92vw);margin-top:34px}
+.bsteps{flex:1;min-width:0;background:var(--card);border:1px solid var(--line2);border-radius:20px;padding:6px 20px}
+.bstep{display:flex;gap:12px;align-items:flex-start;padding:13px 0;opacity:.45;transition:opacity .3s}
+.bstep+.bstep{box-shadow:0 -1px 0 var(--line2)}
+.bstep.live,.bstep.done{opacity:1}
+.bstep .bmk{width:20px;height:20px;border-radius:99px;border:1.5px solid var(--tx4);display:flex;align-items:center;justify-content:center;color:transparent;flex-shrink:0;margin-top:1px;transition:all .3s}
+.bstep.live .bmk{border-color:var(--ok);border-top-color:transparent;animation:bspin .8s linear infinite}
+.bstep.done .bmk{background:var(--ok);border-color:var(--ok);color:#fff}
+.bstep .bmk svg{width:11px;height:11px;stroke-width:3}
+@keyframes bspin{to{transform:rotate(360deg)}}
+.bstep .bt{font-size:14px;font-weight:600;letter-spacing:-.015em}
+.bstep .bs{font-size:12.5px;color:var(--tx3);margin-top:3px;line-height:1.5;min-height:18px}
+.bcard.sendcard{position:static;transform:scale(.96);width:290px;flex-shrink:0}
+.bcard.sendcard.in{transform:none}
+#bopts{margin-top:30px}
+/* day one: honest empty states and live loaders */
+.zempty{background:var(--card);border:1px dashed var(--line);border-radius:16px;padding:22px 24px;font-size:13.5px;color:var(--tx3);line-height:1.55}
+.zempty b{color:var(--tx);font-weight:600;display:block;margin-bottom:3px;font-size:14px}
+.zloadrow{display:flex;align-items:center;gap:10px;padding:16px 20px;border-radius:16px;border:1px dashed var(--line);font-size:13px;color:var(--tx3)}
+.zloadrow .live{width:6px;height:6px;border-radius:99px;background:var(--ok);animation:zp 1.6s infinite;flex-shrink:0}
+.zjc.new{animation:zin .6s cubic-bezier(.2,.6,.3,1)}
+@keyframes zin{from{opacity:0;transform:translateY(12px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+.pfempty{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border:1px dashed var(--line);border-radius:16px;padding:16px 20px;font-size:13.5px;color:var(--tx3)}
+
 /* overlays */
 .zovl{position:fixed;inset:0;z-index:80;background:rgba(20,19,18,.42);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .25s}
 .zovl.on{opacity:1;pointer-events:auto}
@@ -529,10 +570,10 @@ body.zapp.pfpage #pfrail{display:block}
 <div class="zveil" id="zveil"></div>
 
 <!-- flow screens -->
-<section class="zscr on" id="s-talk"><div class="zmid"><div style="width:100%;max-width:820px"><h1 class="zq" id="tq"></h1><div class="zopts" id="topts"></div></div></div><div class="ztr" id="ttr"><div class="in" id="ttrin"></div></div><div class="zdock" id="tdock"></div><button class="zbackq zhide" id="tback"><i data-lucide="arrow-left"></i>Back</button></section>
-<section class="zscr" id="s-build"><div class="zsplit"><div class="l"><div id="bthread"></div><div class="zqr" id="bqr"></div></div><div class="r"><div class="zrcap"><span class="live"></span><span id="bcap">Building your portfolio</span></div><div class="zrbody" id="bpaper"></div></div></div></section>
+<section class="zscr" id="s-unlock"></section>
+<section class="zscr on" id="s-talk"><div class="zmid"><div style="width:100%;max-width:820px"><h1 class="zq" id="tq"></h1><div class="zadd" id="tadd"></div><div class="zopts" id="topts"></div></div></div><div class="ztr" id="ttr"><div class="in" id="ttrin"></div></div><div class="zdock" id="tdock"></div><button class="zbackq zhide" id="tback"><i data-lucide="arrow-left"></i>Back</button></section>
+<section class="zscr" id="s-build"></section>
 <section class="zscr" id="s-send"></section>
-<section class="zscr" id="s-auto"><div class="zmid"><div style="width:100%;max-width:820px"><h1 class="zq" id="aq"></h1><div class="zopts" id="aopts"></div></div></div></section>
 
 <div id="pfrail"></div>
 <div class="zovl" id="zovl"></div>
@@ -543,86 +584,7 @@ body.zapp.pfpage #pfrail{display:block}
 <div class="zdbg"><div class="zmenu" id="zmenu"></div><button class="nav" id="dmenu"><i data-lucide="more-horizontal"></i></button><button class="nav" id="dprev"><i data-lucide="chevron-left"></i></button><button class="lbl" id="dstep">Welcome</button><button class="nav" id="dnext"><i data-lucide="chevron-right"></i></button></div>
 
 <script>
-const SNAP_CSS=`
-  /* ── ZERO Design System — self-hosted fonts ── */
-  
-  
-  
-  
-  
-  :host{
-    /* ── ZERO tokens ── */
-    --paper:rgb(255,255,255); --canvas:rgb(246,245,243); --cream:rgb(242,240,237);
-    --bg:rgb(255,255,255); --sunken:rgba(31,29,30,0.03); --pressed:rgba(31,29,30,0.08);
-    --line:rgba(31,29,30,0.12); --line-soft:rgba(31,29,30,0.06);
-    --ink:rgb(31,29,30); --ink-2:rgba(31,29,30,0.70); --ink-3:rgba(31,29,30,0.45);
-    --ink-4:rgba(31,29,30,0.30);
-    /* brand forest + green */
-    --forest:rgb(24,67,47); --green:rgb(20,135,74); --green-grad-a:#5FD079; --green-grad-b:#49BA61; --green-grad-c:#2E9A48;
-    --signal:rgb(0,166,86); --signal-ink:rgb(15,70,40); --signal-soft:rgb(211,238,221);
-    --mid:rgb(176,124,32); --ghost:rgba(31,29,30,0.32);
-    --sh-card:none;
-    --sh-hover:none;
-    --sh-modal:none;
-    --f-head:'Google Sans Flex','Inter Tight',ui-sans-serif,-apple-system,system-ui,sans-serif;
-    --f-body:'Google Sans Flex','Inter Tight',ui-sans-serif,-apple-system,system-ui,sans-serif;
-    --f-mono:'Google Sans Flex','Inter Tight',ui-sans-serif,-apple-system,system-ui,sans-serif;
-    --r:24px; --r-lg:32px; --content-w:1320px;
-    --ease-out:cubic-bezier(.22,1,.36,1); --ease-spring:cubic-bezier(.34,1.56,.64,1); --ease-apple:cubic-bezier(.32,.72,0,1); --ease-premium:cubic-bezier(.4,0,.2,1); --ease-butter:cubic-bezier(.16,1,.3,1);
-  }
-  *{ margin:0; padding:0; box-sizing:border-box; }
-  html{ scroll-behavior:smooth; }
-.pfsnap{ background:var(--canvas); font-family:var(--f-body); color:var(--ink); letter-spacing:-0.02em; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
-  ::-webkit-scrollbar{ width:8px; height:8px; }
-  ::-webkit-scrollbar-thumb{ background:rgba(0,0,0,.14); border-radius:999px; }
-  ::-webkit-scrollbar-track{ background:transparent; }
-  .noscroll::-webkit-scrollbar{ display:none; }
-  ::selection{ background:rgba(21,122,78,.12); }
-  .tnum{ font-variant-numeric:tabular-nums; }
-  .head{ font-family:var(--f-head); font-weight:700; letter-spacing:-0.025em; }
-  @keyframes riseUp{ from{transform:translateY(8px);} to{transform:translateY(0);} }
-  @keyframes heartPop{ 0%{transform:scale(1);} 25%{transform:scale(1.42);} 55%{transform:scale(.85);} 100%{transform:scale(1);} }
-  @keyframes ringBurst{ 0%{transform:translate(-50%,-50%) scale(.4);opacity:.5;} 100%{transform:translate(-50%,-50%) scale(2.6);opacity:0;} }
-  @keyframes tipIn{ from{opacity:0;transform:translateY(-4px);} to{opacity:1;transform:translateY(0);} }
-  @keyframes spinRing{ from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
-  @keyframes viewMorph{ 0%{opacity:.5;filter:blur(18px);transform:scale(.95) translateY(14px);} 45%{opacity:1;filter:blur(6px);} 100%{opacity:1;filter:blur(0);transform:none;} }
-  @keyframes modalPop{ 0%{opacity:.4;filter:blur(12px);transform:scale(.9) translateY(8px);} 50%{opacity:1;} 100%{opacity:1;filter:blur(0);transform:scale(1) translateY(0);} }
-  @keyframes overlayIn{ from{opacity:0;} to{opacity:1;} }
-  @keyframes shineSweep{ 0%{transform:translateX(-160%) skewX(-16deg);} 100%{transform:translateX(360%) skewX(-16deg);} }
-  .rise{ animation:riseUp .6s var(--ease-butter) both; }
-  .morph{ animation:viewMorph .66s var(--ease-butter) both; will-change:transform,filter,opacity; }
-  .pop{ animation:modalPop .54s var(--ease-butter) both; will-change:transform,filter,opacity; }
-  .lift{ transition:transform .24s var(--ease-apple), box-shadow .3s var(--ease-apple), border-color .22s var(--ease-apple), background .22s var(--ease-apple), opacity .2s var(--ease-apple); }
-  .shimmer{ background:linear-gradient(100deg, rgba(31,29,30,.05) 30%, rgba(20,135,74,.16) 50%, rgba(31,29,30,.05) 70%); background-size:200% 100%; animation:shimmerX 1.1s linear infinite; }
-  @keyframes shimmerX{ from{background-position:180% 0;} to{background-position:-20% 0;} }
-  @keyframes revealIn{ from{opacity:0; transform:translateY(7px);} to{opacity:1; transform:none;} }
-  @keyframes rowGlow{ 0%{background:rgba(0,166,86,.16);} 100%{background:transparent;} }
-  @keyframes tickPop{ 0%{transform:scale(.3);opacity:0;} 60%{transform:scale(1.18);} 100%{transform:scale(1);opacity:1;} }
-  @keyframes shakeX{ 0%,100%{transform:none;} 20%{transform:translateX(-4px);} 40%{transform:translateX(4px);} 60%{transform:translateX(-3px);} 80%{transform:translateX(2px);} }
-  @keyframes trlA{ 0%,30%{opacity:1} 36%,94%{opacity:0} 100%{opacity:1} }
-  @keyframes trlB{ 0%,30%{opacity:0} 36%,60%{opacity:1} 66%,100%{opacity:0} }
-  @keyframes trlC{ 0%,60%{opacity:0} 66%,94%{opacity:1} 100%{opacity:0} }
-  @keyframes trlCur{ 0%{left:22%;top:30%} 14%{left:44%;top:36%} 30%{left:44%;top:36%} 42%{left:58%;top:58%} 58%{left:30%;top:64%} 66%{left:30%;top:64%} 78%{left:52%;top:42%} 92%{left:38%;top:52%} 100%{left:22%;top:30%} }
-  @keyframes trlScrollA{ 0%,16%{transform:translateY(0)} 26%,100%{transform:translateY(-16px)} }
-  @keyframes sparklePulse{ 0%,100%{transform:scale(1); opacity:1;} 50%{transform:scale(1.3); opacity:.65;} }
-  @media (prefers-reduced-motion: reduce){ *{ animation:none !important; } }
-  @keyframes soundBar{ 0%,100%{transform:scaleY(.3);} 50%{transform:scaleY(1);} }
-
-.pfsnap{font-family:'Google Sans Flex','Inter Tight',ui-sans-serif,system-ui,sans-serif;letter-spacing:-0.02em;color:rgb(31,29,30);-webkit-font-smoothing:antialiased}
-.rv{opacity:0;transform:translateY(14px);filter:blur(6px);transition:opacity .6s cubic-bezier(.215,.61,.355,1),transform .6s cubic-bezier(.215,.61,.355,1),filter .6s cubic-bezier(.215,.61,.355,1)}
-.rv.in{opacity:1;transform:none;filter:none}
-.hl{box-shadow:0 0 0 3px rgba(74,222,128,.55);border-radius:20px;transition:box-shadow .4s}
-`;
-const SNAP_STU=`<div style="min-height: 100vh; background: rgb(246, 245, 243);"><div style="max-width: 1180px; margin: 0px auto; padding: 40px 40px 110px; display: flex; gap: 44px; align-items: flex-start;"><main class="rise" style="flex: 1 1 auto; min-width: 0px;"><div style="display: flex; gap: 18px; align-items: center;"><div style="flex-shrink: 0; position: relative; width: 74px; height: 74px; border-radius: 50%; cursor: pointer;"><span style="position: absolute; inset: 0px; border-radius: 50%; background: conic-gradient(rgb(143, 224, 163), rgb(217, 251, 122), rgb(73, 186, 97), rgb(46, 154, 72), rgb(143, 224, 163)); animation: auto ease 0s 1 normal none running none;"></span><span style="position: absolute; inset: 2.5px; border-radius: 50%; background: rgb(246, 245, 243);"></span><span style="position: absolute; inset: 5px; border-radius: 50%; overflow: hidden; background: rgba(31, 29, 30, 0.03);"><video src="https://portfolio-v2-five-blue-71.vercel.app/intro.mp4" loop="" playsinline="" preload="auto" style="width: 100%; height: 100%; object-fit: cover; display: block;"></video></span></div><div style="flex: 1 1 0%; min-width: 0px;"><h1 class="head" style="font-size: 26px; color: rgb(31, 29, 30); line-height: 1.1;">Ron Robinson</h1><div style="display: flex; align-items: center; gap: 12px; margin-top: 7px; flex-wrap: wrap;"><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; color: rgba(31, 29, 30, 0.7);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(31,29,30,0.45)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M4 7h16v13H4z"></path><path d="M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2"></path><path d="M4 12h16"></path></svg>Business Analyst</span><span style="width: 3px; height: 3px; border-radius: 50%; background: rgba(31, 29, 30, 0.45);"></span><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; color: rgba(31, 29, 30, 0.7);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(31,29,30,0.45)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M20 10c0 5-8 12-8 12s-8-7-8-12a8 8 0 0116 0z"></path><path d="M12 12a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"></path></svg>Toronto, Canada</span></div></div><div style="position: relative; flex-shrink: 0;"><div style="display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px; border-radius: 999px; border: 1px solid rgba(31, 29, 30, 0.12); cursor: default; background: rgb(255, 255, 255);"><svg width="10" height="20" viewBox="0 0 22 46" fill="none" aria-hidden="true" style="transform: scaleX(-1); color: rgb(31, 29, 30); display: block;"><path d="M0 44.2922C1.14739 43.1446 3.4424 36.2606 16.0631 39.7027C15.2982 43.1448 11.0147 48.8816 0 44.2922Z" fill="currentColor"></path><path d="M21.885 25.2823C22.5227 28.7501 20.8149 35.7034 8.88309 35.7721C9.49228 34.2682 9.17907 25.9342 21.885 25.2823Z" fill="currentColor"></path><path d="M20.2805 12.0451C21.8213 15.2166 22.0328 22.3744 10.5526 25.6274C10.738 24.0154 8.21024 16.0669 20.2805 12.0451Z" fill="currentColor"></path><path d="M9.08925 0C12.0529 1.9102 15.9507 7.91541 7.82985 16.6569C7.15072 15.1828 0.864008 9.70431 9.08925 0Z" fill="currentColor"></path></svg><span class="head" style="font-size: 15px; color: rgb(31, 29, 30); line-height: 1;">Proficient</span><svg width="10" height="20" viewBox="0 0 22 46" fill="none" aria-hidden="true" style="transform: none; color: rgb(31, 29, 30); display: block;"><path d="M0 44.2922C1.14739 43.1446 3.4424 36.2606 16.0631 39.7027C15.2982 43.1448 11.0147 48.8816 0 44.2922Z" fill="currentColor"></path><path d="M21.885 25.2823C22.5227 28.7501 20.8149 35.7034 8.88309 35.7721C9.49228 34.2682 9.17907 25.9342 21.885 25.2823Z" fill="currentColor"></path><path d="M20.2805 12.0451C21.8213 15.2166 22.0328 22.3744 10.5526 25.6274C10.738 24.0154 8.21024 16.0669 20.2805 12.0451Z" fill="currentColor"></path><path d="M9.08925 0C12.0529 1.9102 15.9507 7.91541 7.82985 16.6569C7.15072 15.1828 0.864008 9.70431 9.08925 0Z" fill="currentColor"></path></svg></div></div></div><div style="margin-top: 14px; max-width: 720px;"><div style="font-size: 14px; color: rgba(31, 29, 30, 0.7); line-height: 1.6;">I work best on a framed problem with data in hand. I build the model, isolate one driver, size the opportunity, and open the write-up with the recommendation. On a loose brief I still lean on a manager to help scope the question first.</div></div><div style="height: 36px;"></div><section><div style="margin-bottom: 12px;"><h2 style="font-family: var(--f-mono); font-weight: 500; font-size: 16px; letter-spacing: -0.02em; color: rgba(31, 29, 30, 0.3); line-height: 1.3;">Projects</h2></div><div><div><div><div data-snd-hover="true" style="display: flex; gap: 18px; align-items: stretch; border: 1px solid rgba(31, 29, 30, 0.06); border-radius: 18px; background: rgb(255, 255, 255); padding: 12px; margin-bottom: 12px; cursor: pointer; transition: border-color .2s var(--ease-apple);"><div style="flex: 0 0 30%; min-width: 0px; align-self: stretch; display: flex;"><div style="position: relative; width: 100%; display: flex;"><div style="position: relative; width: 100%; height: 100%; min-height: 150px; border-radius: 14px; overflow: hidden; background: linear-gradient(142deg, rgb(248, 250, 251) 0%, rgb(233, 238, 241) 100%); border: 1px solid rgba(31, 29, 30, 0.06);"><div style="position: absolute; inset: 11%; background: rgb(255, 255, 255); border-radius: 12px; border: 1px solid rgba(31, 29, 30, 0.06); padding: 14px 16px; display: flex; flex-direction: column;"><div style="display: flex; align-items: center; gap: 7px;"><img onerror="this.style.visibility='hidden'" src="https://www.google.com/s2/favicons?sz=64&domain=notion.so" alt="" style="width: 14px; height: 14px; border-radius: 4px; object-fit: contain;"><span style="font-size: 11px; color: rgba(31, 29, 30, 0.7); font-weight: 500;">Notion</span></div><div style="flex: 1 1 0%; display: flex; flex-direction: column; justify-content: center;"><div class="head" style="font-size: 16px; color: rgb(31, 29, 30); line-height: 1.18;">Signup Funnel Diagnosis</div><div style="width: 26px; height: 2px; background: rgb(31, 29, 30); margin-top: 8px; border-radius: 2px;"></div></div><span style="font-family: var(--f-mono); font-size: 8.5px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(31, 29, 30, 0.45);">ZERO · Case Study</span></div><div style="position: absolute; right: 6%; bottom: 8%; width: 26%; aspect-ratio: 1 / 1; border-radius: 12px; background: rgb(220, 220, 220); border: 2px solid rgb(255, 255, 255); overflow: hidden; box-shadow: rgba(0, 0, 0, 0.14) 0px 6px 18px;"><img onerror="this.style.visibility='hidden'" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" style="width: 100%; height: 100%; object-fit: cover;"></div><div style="position: absolute; inset: 0px; background: rgba(0, 0, 0, 0.26); opacity: 0; transition: opacity 0.16s; display: flex; align-items: center; justify-content: center; pointer-events: none;"><div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.6); display: flex; align-items: center; justify-content: center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="#fff" stroke="currentColor" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M6 4l14 8-14 8V4z"></path></svg></div></div></div></div></div><div style="flex: 1 1 0%; min-width: 0px; display: flex; flex-direction: column; padding: 4px 4px 2px 0px;"><h3 style="font-family: var(--f-body); font-weight: 600; letter-spacing: -0.01em; font-size: 15.5px; color: rgb(31, 29, 30); line-height: 1.35;">Signup funnel diagnosis and conversion recovery plan for Notion</h3><div style="margin-top: 4px;"><div style="margin-top: 2px;"><div style="font-size: 13.5px; color: rgba(31, 29, 30, 0.7); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">Broke the self-serve signup funnel into steps, pinned the biggest drop-off against benchmark, and named the three fixes that recover the most users.</div></div></div><div style="margin-top: auto; display: flex; align-items: center; gap: 7px; padding-top: 10px; flex-wrap: wrap;"><span style="display: inline-flex; align-items: center; gap: 7px; font-family: var(--f-mono); font-weight: 500; font-size: 11.5px; letter-spacing: 0px; color: rgba(31, 29, 30, 0.7); background: rgba(31, 29, 30, 0.03); border-radius: 999px; padding: 6px 14px; white-space: nowrap; cursor: pointer;"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(31,29,30,0.45)" stroke="rgba(31,29,30,0.45)" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M6 4l14 8-14 8V4z"></path></svg>Presentation · 4:12</span><span style="display: inline-flex; align-items: center; gap: 7px; font-family: var(--f-mono); font-weight: 500; font-size: 11.5px; letter-spacing: 0px; color: rgba(31, 29, 30, 0.7); background: rgba(31, 29, 30, 0.03); border-radius: 999px; padding: 6px 14px; white-space: nowrap; cursor: pointer;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(31,29,30,0.45)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"></path><path d="M14 3v5h5"></path></svg>recovery-plan.pdf</span></div></div></div></div></div><div><div><div data-snd-hover="true" style="display: flex; gap: 18px; align-items: stretch; border: 1px solid rgba(31, 29, 30, 0.06); border-radius: 18px; background: rgb(255, 255, 255); padding: 12px; margin-bottom: 12px; cursor: pointer; transition: border-color .2s var(--ease-apple);"><div style="flex: 0 0 30%; min-width: 0px; align-self: stretch; display: flex;"><div style="position: relative; width: 100%; display: flex;"><div style="position: relative; width: 100%; height: 100%; min-height: 150px; border-radius: 14px; overflow: hidden; background: linear-gradient(142deg, rgb(247, 251, 248) 0%, rgb(232, 241, 235) 100%); border: 1px solid rgba(31, 29, 30, 0.06);"><div style="position: absolute; inset: 11%; background: rgb(255, 255, 255); border-radius: 12px; border: 1px solid rgba(31, 29, 30, 0.06); padding: 14px 16px; display: flex; flex-direction: column;"><div style="display: flex; align-items: center; gap: 7px;"><img onerror="this.style.visibility='hidden'" src="https://www.google.com/s2/favicons?sz=64&domain=shopify.com" alt="" style="width: 14px; height: 14px; border-radius: 4px; object-fit: contain;"><span style="font-size: 11px; color: rgba(31, 29, 30, 0.7); font-weight: 500;">Shopify</span></div><div style="flex: 1 1 0%; display: flex; flex-direction: column; justify-content: center;"><div class="head" style="font-size: 16px; color: rgb(31, 29, 30); line-height: 1.18;">Support-Ticket Cost</div><div style="width: 26px; height: 2px; background: rgb(31, 29, 30); margin-top: 8px; border-radius: 2px;"></div></div><span style="font-family: var(--f-mono); font-size: 8.5px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(31, 29, 30, 0.45);">ZERO · Case Study</span></div><div style="position: absolute; right: 6%; bottom: 8%; width: 26%; aspect-ratio: 1 / 1; border-radius: 12px; background: rgb(220, 220, 220); border: 2px solid rgb(255, 255, 255); overflow: hidden; box-shadow: rgba(0, 0, 0, 0.14) 0px 6px 18px;"><img onerror="this.style.visibility='hidden'" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" style="width: 100%; height: 100%; object-fit: cover;"></div><div style="position: absolute; inset: 0px; background: rgba(0, 0, 0, 0.26); opacity: 0; transition: opacity 0.16s; display: flex; align-items: center; justify-content: center; pointer-events: none;"><div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.6); display: flex; align-items: center; justify-content: center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="#fff" stroke="currentColor" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M6 4l14 8-14 8V4z"></path></svg></div></div></div></div></div><div style="flex: 1 1 0%; min-width: 0px; display: flex; flex-direction: column; padding: 4px 4px 2px 0px;"><h3 style="font-family: var(--f-body); font-weight: 600; letter-spacing: -0.01em; font-size: 15.5px; color: rgb(31, 29, 30); line-height: 1.35;">Support-ticket cost model and automation priorities for Shopify</h3><div style="margin-top: 4px;"><div style="margin-top: 2px;"><div style="font-size: 13.5px; color: rgba(31, 29, 30, 0.7); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">Priced the fully-loaded cost of a support ticket, then showed which ticket types are worth automating first.</div></div></div><div style="margin-top: auto; display: flex; align-items: center; gap: 7px; padding-top: 10px; flex-wrap: wrap;"><span style="display: inline-flex; align-items: center; gap: 7px; font-family: var(--f-mono); font-weight: 500; font-size: 11.5px; letter-spacing: 0px; color: rgba(31, 29, 30, 0.7); background: rgba(31, 29, 30, 0.03); border-radius: 999px; padding: 6px 14px; white-space: nowrap; cursor: pointer;"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(31,29,30,0.45)" stroke="rgba(31,29,30,0.45)" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M6 4l14 8-14 8V4z"></path></svg>Presentation · 4:12</span><span style="display: inline-flex; align-items: center; gap: 7px; font-family: var(--f-mono); font-weight: 500; font-size: 11.5px; letter-spacing: 0px; color: rgba(31, 29, 30, 0.7); background: rgba(31, 29, 30, 0.03); border-radius: 999px; padding: 6px 14px; white-space: nowrap; cursor: pointer;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(31,29,30,0.45)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"></path><path d="M14 3v5h5"></path></svg>ticket-cost-model.xlsx</span></div></div></div></div></div><div><div><div data-snd-hover="true" style="display: flex; gap: 18px; align-items: stretch; border: 1px solid rgba(31, 29, 30, 0.06); border-radius: 18px; background: rgb(255, 255, 255); padding: 12px; margin-bottom: 12px; cursor: pointer; transition: border-color .2s var(--ease-apple);"><div style="flex: 0 0 30%; min-width: 0px; align-self: stretch; display: flex;"><div style="position: relative; width: 100%; display: flex;"><div style="position: relative; width: 100%; height: 100%; min-height: 150px; border-radius: 14px; overflow: hidden; background: linear-gradient(142deg, rgb(251, 248, 246) 0%, rgb(240, 233, 228) 100%); border: 1px solid rgba(31, 29, 30, 0.06);"><div style="position: absolute; inset: 11%; background: rgb(255, 255, 255); border-radius: 12px; border: 1px solid rgba(31, 29, 30, 0.06); padding: 14px 16px; display: flex; flex-direction: column;"><div style="display: flex; align-items: center; gap: 7px;"><img onerror="this.style.visibility='hidden'" src="https://www.google.com/s2/favicons?sz=64&domain=spotify.com" alt="" style="width: 14px; height: 14px; border-radius: 4px; object-fit: contain;"><span style="font-size: 11px; color: rgba(31, 29, 30, 0.7); font-weight: 500;">Spotify</span></div><div style="flex: 1 1 0%; display: flex; flex-direction: column; justify-content: center;"><div class="head" style="font-size: 16px; color: rgb(31, 29, 30); line-height: 1.18;">Early-Churn Analysis</div><div style="width: 26px; height: 2px; background: rgb(31, 29, 30); margin-top: 8px; border-radius: 2px;"></div></div><span style="font-family: var(--f-mono); font-size: 8.5px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(31, 29, 30, 0.45);">ZERO · Case Study</span></div><div style="position: absolute; right: 6%; bottom: 8%; width: 26%; aspect-ratio: 1 / 1; border-radius: 12px; background: rgb(220, 220, 220); border: 2px solid rgb(255, 255, 255); overflow: hidden; box-shadow: rgba(0, 0, 0, 0.14) 0px 6px 18px;"><img onerror="this.style.visibility='hidden'" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" style="width: 100%; height: 100%; object-fit: cover;"></div><div style="position: absolute; inset: 0px; background: rgba(0, 0, 0, 0.26); opacity: 0; transition: opacity 0.16s; display: flex; align-items: center; justify-content: center; pointer-events: none;"><div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.6); display: flex; align-items: center; justify-content: center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="#fff" stroke="currentColor" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M6 4l14 8-14 8V4z"></path></svg></div></div></div></div></div><div style="flex: 1 1 0%; min-width: 0px; display: flex; flex-direction: column; padding: 4px 4px 2px 0px;"><h3 style="font-family: var(--f-body); font-weight: 600; letter-spacing: -0.01em; font-size: 15.5px; color: rgb(31, 29, 30); line-height: 1.35;">Early-churn analysis and onboarding fix for Spotify</h3><div style="margin-top: 4px;"><div style="margin-top: 2px;"><div style="font-size: 13.5px; color: rgba(31, 29, 30, 0.7); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">Found the first-two-week churn cliff, isolated the accounts most at risk, and flagged the onboarding moment that loses them.</div></div></div><div style="margin-top: auto; display: flex; align-items: center; gap: 7px; padding-top: 10px; flex-wrap: wrap;"><span style="display: inline-flex; align-items: center; gap: 7px; font-family: var(--f-mono); font-weight: 500; font-size: 11.5px; letter-spacing: 0px; color: rgba(31, 29, 30, 0.7); background: rgba(31, 29, 30, 0.03); border-radius: 999px; padding: 6px 14px; white-space: nowrap; cursor: pointer;"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(31,29,30,0.45)" stroke="rgba(31,29,30,0.45)" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M6 4l14 8-14 8V4z"></path></svg>Presentation · 4:12</span><span style="display: inline-flex; align-items: center; gap: 7px; font-family: var(--f-mono); font-weight: 500; font-size: 11.5px; letter-spacing: 0px; color: rgba(31, 29, 30, 0.7); background: rgba(31, 29, 30, 0.03); border-radius: 999px; padding: 6px 14px; white-space: nowrap; cursor: pointer;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(31,29,30,0.45)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"></path><path d="M14 3v5h5"></path></svg>churn-analysis.pdf</span></div></div></div></div></div><button data-snd-hover="true" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 14px 18px; margin-bottom: 12px; border-radius: 18px; border: 1.5px solid rgba(31, 29, 30, 0.12); background: rgb(255, 255, 255); cursor: pointer; font-family: var(--f-body); font-size: 14px; font-weight: 600; color: rgb(31, 29, 30); transition: background .18s var(--ease-apple),border-color .2s var(--ease-apple);"><span style="display: flex;"><img onerror="this.style.visibility='hidden'" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" style="width: 26px; height: 26px; border-radius: 9px; object-fit: cover; border: 2px solid rgb(255, 255, 255); margin-left: 0px; position: relative; z-index: 9;"><img onerror="this.style.visibility='hidden'" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" style="width: 26px; height: 26px; border-radius: 9px; object-fit: cover; border: 2px solid rgb(255, 255, 255); margin-left: -9px; position: relative; z-index: 8;"></span>See 2 more projects<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(31,29,30,0.70)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0; transform: rotate(90deg);"><path d="M9 6l6 6-6 6"></path></svg></button></div><div style="margin-top: 4px;"><div style="display: flex; align-items: center; gap: 14px; padding: 14px 18px; margin: 14px 0px 0px; border-radius: 22px; border: 1.5px dashed rgba(31, 29, 30, 0.12);"><div style="flex: 1 1 0%; min-width: 0px;"><div style="font-family: var(--f-body); font-weight: 600; font-size: 14.5px; color: rgba(31, 29, 30, 0.45); line-height: 1.3;">Measurement system design</div><div style="font-size: 12.5px; color: rgba(31, 29, 30, 0.45); margin-top: 2px; line-height: 1.5;">Design a KPI architecture for a product team. Definitions, owners, review cadence.</div></div><span style="flex-shrink: 0; font-family: var(--f-mono); font-weight: 600; font-size: 10.5px; letter-spacing: 0px; color: rgba(31, 29, 30, 0.45); border: 1px dashed rgba(31, 29, 30, 0.12); border-radius: 999px; padding: 5px 11px;">Yet to do</span></div><div style="display: flex; align-items: center; gap: 14px; padding: 14px 18px; margin: 14px 0px 0px; border-radius: 22px; border: 1.5px dashed rgba(31, 29, 30, 0.12);"><div style="flex: 1 1 0%; min-width: 0px;"><div style="font-family: var(--f-body); font-weight: 600; font-size: 14.5px; color: rgba(31, 29, 30, 0.45); line-height: 1.3;">Open-ended strategy case</div><div style="font-size: 12.5px; color: rgba(31, 29, 30, 0.45); margin-top: 2px; line-height: 1.5;">Structure an ambiguous strategy question without a supplied dataset or framing.</div></div><span style="flex-shrink: 0; font-family: var(--f-mono); font-weight: 600; font-size: 10.5px; letter-spacing: 0px; color: rgba(31, 29, 30, 0.45); border: 1px dashed rgba(31, 29, 30, 0.12); border-radius: 999px; padding: 5px 11px;">Yet to do</span></div><div style="display: flex; align-items: center; gap: 14px; padding: 14px 18px; margin: 14px 0px 0px; border-radius: 22px; border: 1.5px dashed rgba(31, 29, 30, 0.12);"><div style="flex: 1 1 0%; min-width: 0px;"><div style="font-family: var(--f-body); font-weight: 600; font-size: 14.5px; color: rgba(31, 29, 30, 0.45); line-height: 1.3;">AI workflow evaluation</div><div style="font-size: 12.5px; color: rgba(31, 29, 30, 0.45); margin-top: 2px; line-height: 1.5;">Evaluate where an AI-enabled workflow helps a team and where it breaks.</div></div><span style="flex-shrink: 0; font-family: var(--f-mono); font-weight: 600; font-size: 10.5px; letter-spacing: 0px; color: rgba(31, 29, 30, 0.45); border: 1px dashed rgba(31, 29, 30, 0.12); border-radius: 999px; padding: 5px 11px;">Yet to do</span></div><div style="display: flex; align-items: center; gap: 14px; padding: 14px 18px; margin: 14px 0px 0px; border-radius: 22px; border: 1.5px dashed rgba(31, 29, 30, 0.12);"><div style="flex: 1 1 0%; min-width: 0px;"><div style="font-family: var(--f-body); font-weight: 600; font-size: 14.5px; color: rgba(31, 29, 30, 0.45); line-height: 1.3;">Pricing &amp; packaging review</div><div style="font-size: 12.5px; color: rgba(31, 29, 30, 0.45); margin-top: 2px; line-height: 1.5;">Re-price a product tier against usage data and competitor benchmarks.</div></div><span style="flex-shrink: 0; font-family: var(--f-mono); font-weight: 600; font-size: 10.5px; letter-spacing: 0px; color: rgba(31, 29, 30, 0.45); border: 1px dashed rgba(31, 29, 30, 0.12); border-radius: 999px; padding: 5px 11px;">Yet to do</span></div><div style="display: flex; align-items: center; gap: 14px; padding: 14px 18px; margin: 14px 0px 0px; border-radius: 22px; border: 1.5px dashed rgba(31, 29, 30, 0.12);"><div style="flex: 1 1 0%; min-width: 0px;"><div style="font-family: var(--f-body); font-weight: 600; font-size: 14.5px; color: rgba(31, 29, 30, 0.45); line-height: 1.3;">Market entry sizing</div><div style="font-size: 12.5px; color: rgba(31, 29, 30, 0.45); margin-top: 2px; line-height: 1.5;">Size a new market top-down and bottom-up, and reconcile the two.</div></div><span style="flex-shrink: 0; font-family: var(--f-mono); font-weight: 600; font-size: 10.5px; letter-spacing: 0px; color: rgba(31, 29, 30, 0.45); border: 1px dashed rgba(31, 29, 30, 0.12); border-radius: 999px; padding: 5px 11px;">Yet to do</span></div></div></section><div style="height: 36px;"></div><section><div id="sec-experience" style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 16px;"><h2 style="font-family: var(--f-mono); font-weight: 500; font-size: 16px; letter-spacing: -0.02em; color: rgba(31, 29, 30, 0.3); line-height: 1.3;">Experience</h2></div><div style="display: flex; flex-direction: column; gap: 22px;"><div><div style="display: flex; gap: 16px;"><div style="width: 40px; height: 40px; border-radius: 11px; border: 1px solid rgba(31, 29, 30, 0.06); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden;"><img onerror="this.style.visibility='hidden'" src="https://www.google.com/s2/favicons?sz=64&amp;domain=wealthsimple.com" alt="" style="width: 22px; height: 22px; border-radius: 6px; object-fit: contain;"></div><div style="flex: 1 1 0%; padding-top: 1px;"><div style="display: flex; align-items: center; gap: 9px;"><span style="font-size: 14.5px; font-weight: 600; color: rgb(31, 29, 30);">Wealthsimple</span><span style="font-size: 12px; color: rgba(31, 29, 30, 0.45); border: 1px solid rgba(31, 29, 30, 0.06); border-radius: 999px; padding: 2px 9px;">Internship</span></div><div style="margin-top: 6px;"><div style="font-size: 13.5px; font-weight: 500; color: rgb(31, 29, 30);">Data &amp; Analytics Intern</div><div style="font-size: 12px; color: rgba(31, 29, 30, 0.45); margin-top: 2px;">May 2024 – Aug 2024 · Toronto, Canada · Hybrid</div><div style="font-size: 13px; color: rgba(31, 29, 30, 0.7); line-height: 1.55; margin-top: 5px;">Supported the growth analytics team with funnel reporting and weekly KPI dashboards for the self-serve onboarding funnel.</div></div></div></div></div><div><div style="display: flex; gap: 16px;"><div style="width: 40px; height: 40px; border-radius: 11px; border: 1px solid rgba(31, 29, 30, 0.06); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden;"><img onerror="this.style.visibility='hidden'" src="https://www.google.com/s2/favicons?sz=64&amp;domain=torontomu.ca" alt="" style="width: 22px; height: 22px; border-radius: 6px; object-fit: contain;"></div><div style="flex: 1 1 0%; padding-top: 1px;"><div style="display: flex; align-items: center; gap: 9px;"><span style="font-size: 14.5px; font-weight: 600; color: rgb(31, 29, 30);">TMU Analytics Society</span><span style="font-size: 12px; color: rgba(31, 29, 30, 0.45); border: 1px solid rgba(31, 29, 30, 0.06); border-radius: 999px; padding: 2px 9px;">Part-time</span></div><div style="margin-top: 6px;"><div style="font-size: 13.5px; font-weight: 500; color: rgb(31, 29, 30);">Case Team Lead</div><div style="font-size: 12px; color: rgba(31, 29, 30, 0.45); margin-top: 2px;">Sep 2023 – Apr 2024 · Toronto, Canada · On-site</div><div style="font-size: 13px; color: rgba(31, 29, 30, 0.7); line-height: 1.55; margin-top: 5px;">Led a four-person case team to two regional finals and owned the quantitative modeling sections of each submission.</div></div></div></div></div></div></section><div style="height: 36px;"></div><section><div id="sec-credential" style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 16px;"><h2 style="font-family: var(--f-mono); font-weight: 500; font-size: 16px; letter-spacing: -0.02em; color: rgba(31, 29, 30, 0.3); line-height: 1.3;">Achievements &amp; credentials</h2></div><div style="display: flex; flex-direction: column; gap: 16px;"><div><div style="display: flex; gap: 16px; align-items: center;"><div style="width: 40px; height: 40px; border-radius: 11px; border: 1px solid rgba(31, 29, 30, 0.06); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden;"><img onerror="this.style.visibility='hidden'" src="https://www.google.com/s2/favicons?sz=64&amp;domain=google.com" alt="" style="width: 20px; height: 20px; border-radius: 5px; object-fit: contain;"></div><div><div style="font-size: 14px; font-weight: 600; color: rgb(31, 29, 30);">Google Data Analytics Professional Certificate</div><div style="font-size: 12.5px; color: rgba(31, 29, 30, 0.7); margin-top: 2px;">Google · Aug 2024</div></div></div></div><div><div style="display: flex; gap: 16px; align-items: center;"><div style="width: 40px; height: 40px; border-radius: 11px; border: 1px solid rgba(31, 29, 30, 0.06); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden;"><img onerror="this.style.visibility='hidden'" src="https://www.google.com/s2/favicons?sz=64&amp;domain=datacamp.com" alt="" style="width: 20px; height: 20px; border-radius: 5px; object-fit: contain;"></div><div><div style="font-size: 14px; font-weight: 600; color: rgb(31, 29, 30);">SQL for Data Analysis</div><div style="font-size: 12.5px; color: rgba(31, 29, 30, 0.7); margin-top: 2px;">DataCamp · Jun 2024</div></div></div></div></div></section><div style="height: 36px;"></div><section><div id="sec-academics" style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 16px;"><h2 style="font-family: var(--f-mono); font-weight: 500; font-size: 16px; letter-spacing: -0.02em; color: rgba(31, 29, 30, 0.3); line-height: 1.3;">Academics</h2></div><div style="display: flex; flex-direction: column; gap: 16px;"><div><div style="display: flex; gap: 16px; align-items: center;"><div style="width: 40px; height: 40px; border-radius: 11px; border: 1px solid rgba(31, 29, 30, 0.06); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden;"><img onerror="this.style.visibility='hidden'" src="https://www.google.com/s2/favicons?sz=64&amp;domain=torontomu.ca" alt="" style="width: 20px; height: 20px; border-radius: 5px; object-fit: contain;"></div><div style="flex: 1 1 0%;"><div style="font-size: 14px; font-weight: 600; color: rgb(31, 29, 30);">Bachelor of Commerce, Business Management</div><div style="font-size: 12.5px; color: rgba(31, 29, 30, 0.7); margin-top: 2px;">Toronto Metropolitan University · Sep 2021 – Apr 2025</div></div><div class="tnum" style="font-family: var(--f-body); font-weight: 600; font-size: 15px; color: rgb(31, 29, 30);">3.4/4.0</div></div></div></div></section></main><aside style="flex: 0 0 356px; width: 356px; position: static; top: 22px; align-self: flex-start;"><div class="morph" style="background: rgb(255, 255, 255); border: 1.5px solid rgba(0, 0, 0, 0.06); border-radius: 32px; display: flex; flex-direction: column; padding: 6px;"><div style="flex-shrink: 0; padding: 14px 16px 12px;"><div style="animation: revealIn .38s var(--ease-butter) backwards;"><div style="display: flex; align-items: center; gap: 14px;"><div style="position: relative; flex-shrink: 0; cursor: default;"><div style="position: relative; width: 50px; height: 50px; flex-shrink: 0;"><svg width="50" height="50" style="transform: rotate(-90deg);"><circle cx="25" cy="25" r="22.5" fill="none" stroke="rgba(31,29,30,.10)" stroke-width="5"></circle><circle cx="25" cy="25" r="22.5" fill="none" stroke="rgb(0,166,86)" stroke-width="5" stroke-linecap="round" stroke-dasharray="86.23671834103982 141.3716694115407" style="transition: stroke-dasharray .6s var(--ease-butter);"></circle><circle cx="25" cy="25" r="22.5" fill="none" stroke="rgba(0,166,86,.38)" stroke-width="5" stroke-linecap="round" stroke-dasharray="4.568583470577041 136.80308594096365" stroke-dashoffset="-88.73671834103982" style="transition: stroke-dasharray .6s var(--ease-butter);"></circle></svg><div style="position: absolute; inset: 0px; display: flex; align-items: center; justify-content: center;"><span class="tnum" style="font-size: 12px; font-weight: 700; color: rgb(31, 29, 30);">61%</span></div></div></div><div style="flex: 1 1 0%; min-width: 0px;"><div style="display: flex; align-items: center; gap: 8px; min-width: 0px;"><span style="font-size: 15.5px; font-weight: 600; color: rgb(31, 29, 30); letter-spacing: -0.01em;">Interview readiness</span><span style="display: inline-flex; align-items: center; gap: 5px; border: 1px solid rgba(31, 29, 30, 0.12); border-radius: 999px; padding: 3px 9px; font-size: 11px; font-weight: 600; color: rgba(31, 29, 30, 0.7); white-space: nowrap; flex-shrink: 0;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(31,29,30,0.45)" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v4.8l3 1.8"></path></svg>4–6 weeks</span></div><div style="font-size: 12.5px; color: rgba(31, 29, 30, 0.45); margin-top: 2px;">Business Analyst</div></div></div></div></div><div style="flex: 1 1 auto; min-height: 0px; background: rgb(255, 255, 255); border-radius: 26px; display: flex; flex-direction: column; overflow: hidden;"><div style="padding: 14px 22px 10px;"><div style="animation: revealIn .38s var(--ease-butter) backwards;"><div style="font-family: var(--f-mono); font-weight: 500; font-size: 16px; letter-spacing: -0.02em; color: rgba(31, 29, 30, 0.3); line-height: 1.3; margin-bottom: 12px;">Suggestions</div></div><div style="display: flex; flex-direction: column; padding-bottom: 2px;"><div style="animation: revealIn .38s var(--ease-butter) backwards;"><div style="display: grid; grid-template-rows: 1fr; opacity: 1; transition: grid-template-rows .45s var(--ease-butter), opacity .32s var(--ease-apple);"><div style="overflow: hidden;"><div style="position: relative; display: flex; align-items: flex-start; gap: 10px; padding: 9px 2px; margin: 0px -2px; border-radius: 10px; border-bottom: 1px solid rgba(31, 29, 30, 0.06); animation: auto ease 0s 1 normal none running none;"><span style="width: 15px; height: 15px; border-radius: 50%; border: 1.5px dashed rgba(31, 29, 30, 0.32); flex-shrink: 0; margin-top: 2px; transition: opacity 0.25s; opacity: 1;"></span><div style="flex: 1 1 0%; min-width: 0px;"><div style="font-size: 12.5px; color: rgb(31, 29, 30); line-height: 1.55; animation: auto ease 0s 1 normal none running none;">Your intro video is not landing well. Re-record it so it opens and closes clean.</div><div style="display: flex; align-items: center; gap: 10px; margin-top: 8px;"><button data-snd-hover="true" style="border: 1px solid rgba(31, 29, 30, 0.12); background: rgb(255, 255, 255); border-radius: 999px; padding: 4px 13px; font-family: var(--f-body); font-size: 11.5px; font-weight: 600; color: rgb(31, 29, 30); cursor: pointer;">Done</button><button style="border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; background: transparent; font-family: var(--f-body); font-size: 11.5px; font-weight: 600; color: rgba(31, 29, 30, 0.45); cursor: pointer; padding: 4px 2px;">Skip</button></div></div></div></div></div></div><div style="animation: revealIn .38s var(--ease-butter) backwards;"><div style="display: grid; grid-template-rows: 1fr; opacity: 1; transition: grid-template-rows .45s var(--ease-butter), opacity .32s var(--ease-apple);"><div style="overflow: hidden;"><div style="position: relative; display: flex; align-items: flex-start; gap: 10px; padding: 9px 2px; margin: 0px -2px; border-radius: 10px; border-bottom-width: medium; border-bottom-style: none; border-bottom-color: currentcolor; animation: auto ease 0s 1 normal none running none;"><span style="width: 15px; height: 15px; border-radius: 50%; border: 1.5px dashed rgba(31, 29, 30, 0.32); flex-shrink: 0; margin-top: 2px; transition: opacity 0.25s; opacity: 1;"></span><div style="flex: 1 1 0%; min-width: 0px;"><div style="font-size: 12.5px; color: rgb(31, 29, 30); line-height: 1.55; animation: auto ease 0s 1 normal none running none;">Your about me section is too short. Add one line on how you work.</div><div style="display: flex; align-items: center; gap: 10px; margin-top: 8px;"><button data-snd-hover="true" style="border: 1px solid rgba(31, 29, 30, 0.12); background: rgb(255, 255, 255); border-radius: 999px; padding: 4px 13px; font-family: var(--f-body); font-size: 11.5px; font-weight: 600; color: rgb(31, 29, 30); cursor: pointer;">Done</button><button style="border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; background: transparent; font-family: var(--f-body); font-size: 11.5px; font-weight: 600; color: rgba(31, 29, 30, 0.45); cursor: pointer; padding: 4px 2px;">Skip</button></div></div></div></div></div></div></div></div></div></div><div style="margin-top: 12px; display: flex; gap: 10px;"><button style="border: 1px solid rgba(31, 29, 30, 0.12); border-radius: 999px; cursor: pointer; background: rgb(255, 255, 255); color: rgb(31, 29, 30); font-weight: 600; letter-spacing: -0.01em; transition: transform 120ms var(--ease-out),background 140ms ease,opacity 140ms ease; flex: 1 1 0%; height: 48px; font-size: 13.5px; display: inline-flex; align-items: center; justify-content: center;">Edit portfolio</button><button style="border: 1px solid transparent; border-radius: 999px; cursor: pointer; background: rgb(31, 29, 30); color: rgb(255, 255, 255); font-weight: 600; letter-spacing: -0.01em; transition: transform 120ms var(--ease-out),background 140ms ease,opacity 140ms ease; flex: 0 0 auto; height: 48px; padding: 0px 20px 0px 8px; font-size: 13.5px; display: inline-flex; align-items: center; justify-content: center; gap: 9px;"><span style="width: 32px; height: 32px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: rgba(31, 29, 30, 0.03);"><img onerror="this.style.visibility='hidden'" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" style="width: 100%; height: 100%; object-fit: cover;"></span>Chat</button></div></aside></div></div>`;
-const SNAP_REC=`<div style="min-height: 100vh; background: rgb(246, 245, 243);"><div style="max-width: 1180px; margin: 0px auto; padding: 40px 40px 110px; display: flex; gap: 44px; align-items: flex-start;"><main class="rise" style="flex: 1 1 auto; min-width: 0px;"><div style="display: flex; gap: 18px; align-items: center;"><div style="flex-shrink: 0; position: relative; width: 74px; height: 74px; border-radius: 50%; cursor: pointer;"><span style="position: absolute; inset: 0px; border-radius: 50%; background: conic-gradient(rgb(143, 224, 163), rgb(217, 251, 122), rgb(73, 186, 97), rgb(46, 154, 72), rgb(143, 224, 163)); animation: auto ease 0s 1 normal none running none;"></span><span style="position: absolute; inset: 2.5px; border-radius: 50%; background: rgb(246, 245, 243);"></span><span style="position: absolute; inset: 5px; border-radius: 50%; overflow: hidden; background: rgba(31, 29, 30, 0.03);"><video src="https://portfolio-v2-five-blue-71.vercel.app/intro.mp4" loop="" playsinline="" preload="auto" style="width: 100%; height: 100%; object-fit: cover; display: block;"></video></span></div><div style="flex: 1 1 0%; min-width: 0px;"><h1 class="head" style="font-size: 26px; color: rgb(31, 29, 30); line-height: 1.1;">Ron Robinson</h1></div><div style="position: relative; flex-shrink: 0;"><div style="display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px; border-radius: 999px; border: 1px solid rgba(31, 29, 30, 0.12); cursor: default; background: rgb(255, 255, 255);"><svg width="10" height="20" viewBox="0 0 22 46" fill="none" aria-hidden="true" style="transform: scaleX(-1); color: rgb(31, 29, 30); display: block;"><path d="M0 44.2922C1.14739 43.1446 3.4424 36.2606 16.0631 39.7027C15.2982 43.1448 11.0147 48.8816 0 44.2922Z" fill="currentColor"></path><path d="M21.885 25.2823C22.5227 28.7501 20.8149 35.7034 8.88309 35.7721C9.49228 34.2682 9.17907 25.9342 21.885 25.2823Z" fill="currentColor"></path><path d="M20.2805 12.0451C21.8213 15.2166 22.0328 22.3744 10.5526 25.6274C10.738 24.0154 8.21024 16.0669 20.2805 12.0451Z" fill="currentColor"></path><path d="M9.08925 0C12.0529 1.9102 15.9507 7.91541 7.82985 16.6569C7.15072 15.1828 0.864008 9.70431 9.08925 0Z" fill="currentColor"></path></svg><span class="head" style="font-size: 15px; color: rgb(31, 29, 30); line-height: 1;">Proficient</span><svg width="10" height="20" viewBox="0 0 22 46" fill="none" aria-hidden="true" style="transform: none; color: rgb(31, 29, 30); display: block;"><path d="M0 44.2922C1.14739 43.1446 3.4424 36.2606 16.0631 39.7027C15.2982 43.1448 11.0147 48.8816 0 44.2922Z" fill="currentColor"></path><path d="M21.885 25.2823C22.5227 28.7501 20.8149 35.7034 8.88309 35.7721C9.49228 34.2682 9.17907 25.9342 21.885 25.2823Z" fill="currentColor"></path><path d="M20.2805 12.0451C21.8213 15.2166 22.0328 22.3744 10.5526 25.6274C10.738 24.0154 8.21024 16.0669 20.2805 12.0451Z" fill="currentColor"></path><path d="M9.08925 0C12.0529 1.9102 15.9507 7.91541 7.82985 16.6569C7.15072 15.1828 0.864008 9.70431 9.08925 0Z" fill="currentColor"></path></svg></div></div></div><div style="margin-top: 14px; max-width: 720px;"><div style="font-size: 14px; color: rgba(31, 29, 30, 0.7); line-height: 1.6;">I work best on a framed problem with data in hand. I build the model, isolate one driver, size the opportunity, and open the write-up with the recommendation. On a loose brief I still lean on a manager to help scope the question first.</div></div><div style="display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap;"><span style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(31, 29, 30, 0.12); background: rgb(255, 255, 255); font-size: 13.5px; font-weight: 600; color: rgb(31, 29, 30);">Communication<span style="width: 4px; height: 4px; border-radius: 50%; background: rgba(31, 29, 30, 0.12);"></span><span style="color: rgb(15, 70, 40);">Proficient</span></span><span style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(31, 29, 30, 0.12); background: rgb(255, 255, 255); font-size: 13.5px; font-weight: 600; color: rgb(31, 29, 30);">People skills<span style="width: 4px; height: 4px; border-radius: 50%; background: rgba(31, 29, 30, 0.12);"></span><span style="color: rgba(31, 29, 30, 0.45);">Developing</span></span></div><div style="height: 36px;"></div><section><div style="margin-bottom: 12px;"><h2 style="font-family: var(--f-mono); font-weight: 500; font-size: 16px; letter-spacing: -0.02em; color: rgba(31, 29, 30, 0.3); line-height: 1.3;">Projects</h2></div><div><div><div><div data-snd-hover="true" style="display: flex; gap: 18px; align-items: stretch; border: 1px solid rgba(31, 29, 30, 0.06); border-radius: 18px; background: rgb(255, 255, 255); padding: 12px; margin-bottom: 12px; cursor: pointer; transition: border-color .2s var(--ease-apple);"><div style="flex: 0 0 30%; min-width: 0px; align-self: stretch; display: flex;"><div style="position: relative; width: 100%; display: flex;"><div style="position: relative; width: 100%; height: 100%; min-height: 150px; border-radius: 14px; overflow: hidden; background: linear-gradient(142deg, rgb(248, 250, 251) 0%, rgb(233, 238, 241) 100%); border: 1px solid rgba(31, 29, 30, 0.06);"><div style="position: absolute; inset: 11%; background: rgb(255, 255, 255); border-radius: 12px; border: 1px solid rgba(31, 29, 30, 0.06); padding: 14px 16px; display: flex; flex-direction: column;"><div style="display: flex; align-items: center; gap: 7px;"><img onerror="this.style.visibility='hidden'" src="https://www.google.com/s2/favicons?sz=64&domain=notion.so" alt="" style="width: 14px; height: 14px; border-radius: 4px; object-fit: contain;"><span style="font-size: 11px; color: rgba(31, 29, 30, 0.7); font-weight: 500;">Notion</span></div><div style="flex: 1 1 0%; display: flex; flex-direction: column; justify-content: center;"><div class="head" style="font-size: 16px; color: rgb(31, 29, 30); line-height: 1.18;">Signup Funnel Diagnosis</div><div style="width: 26px; height: 2px; background: rgb(31, 29, 30); margin-top: 8px; border-radius: 2px;"></div></div><span style="font-family: var(--f-mono); font-size: 8.5px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(31, 29, 30, 0.45);">ZERO · Case Study</span></div><div style="position: absolute; right: 6%; bottom: 8%; width: 26%; aspect-ratio: 1 / 1; border-radius: 12px; background: rgb(220, 220, 220); border: 2px solid rgb(255, 255, 255); overflow: hidden; box-shadow: rgba(0, 0, 0, 0.14) 0px 6px 18px;"><img onerror="this.style.visibility='hidden'" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" style="width: 100%; height: 100%; object-fit: cover;"></div><div style="position: absolute; inset: 0px; background: rgba(0, 0, 0, 0.26); opacity: 0; transition: opacity 0.16s; display: flex; align-items: center; justify-content: center; pointer-events: none;"><div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.6); display: flex; align-items: center; justify-content: center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="#fff" stroke="currentColor" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M6 4l14 8-14 8V4z"></path></svg></div></div></div></div></div><div style="flex: 1 1 0%; min-width: 0px; display: flex; flex-direction: column; padding: 4px 4px 2px 0px;"><h3 style="font-family: var(--f-body); font-weight: 600; letter-spacing: -0.01em; font-size: 15.5px; color: rgb(31, 29, 30); line-height: 1.35;">Signup funnel diagnosis and conversion recovery plan for Notion</h3><div style="margin-top: 4px;"><div style="margin-top: 2px;"><div style="font-size: 13.5px; color: rgba(31, 29, 30, 0.7); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">Broke the self-serve signup funnel into steps, pinned the biggest drop-off against benchmark, and named the three fixes that recover the most users.</div></div></div><div style="margin-top: auto; display: flex; align-items: center; gap: 7px; padding-top: 10px; flex-wrap: wrap;"><span style="display: inline-flex; align-items: center; gap: 7px; font-family: var(--f-mono); font-weight: 500; font-size: 11.5px; letter-spacing: 0px; color: rgba(31, 29, 30, 0.7); background: rgba(31, 29, 30, 0.03); border-radius: 999px; padding: 6px 14px; white-space: nowrap; cursor: pointer;"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(31,29,30,0.45)" stroke="rgba(31,29,30,0.45)" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M6 4l14 8-14 8V4z"></path></svg>Presentation · 4:12</span><span style="display: inline-flex; align-items: center; gap: 7px; font-family: var(--f-mono); font-weight: 500; font-size: 11.5px; letter-spacing: 0px; color: rgba(31, 29, 30, 0.7); background: rgba(31, 29, 30, 0.03); border-radius: 999px; padding: 6px 14px; white-space: nowrap; cursor: pointer;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(31,29,30,0.45)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"></path><path d="M14 3v5h5"></path></svg>recovery-plan.pdf</span></div></div></div></div></div><div><div><div data-snd-hover="true" style="display: flex; gap: 18px; align-items: stretch; border: 1px solid rgba(31, 29, 30, 0.06); border-radius: 18px; background: rgb(255, 255, 255); padding: 12px; margin-bottom: 12px; cursor: pointer; transition: border-color .2s var(--ease-apple);"><div style="flex: 0 0 30%; min-width: 0px; align-self: stretch; display: flex;"><div style="position: relative; width: 100%; display: flex;"><div style="position: relative; width: 100%; height: 100%; min-height: 150px; border-radius: 14px; overflow: hidden; background: linear-gradient(142deg, rgb(247, 251, 248) 0%, rgb(232, 241, 235) 100%); border: 1px solid rgba(31, 29, 30, 0.06);"><div style="position: absolute; inset: 11%; background: rgb(255, 255, 255); border-radius: 12px; border: 1px solid rgba(31, 29, 30, 0.06); padding: 14px 16px; display: flex; flex-direction: column;"><div style="display: flex; align-items: center; gap: 7px;"><img onerror="this.style.visibility='hidden'" src="https://www.google.com/s2/favicons?sz=64&domain=shopify.com" alt="" style="width: 14px; height: 14px; border-radius: 4px; object-fit: contain;"><span style="font-size: 11px; color: rgba(31, 29, 30, 0.7); font-weight: 500;">Shopify</span></div><div style="flex: 1 1 0%; display: flex; flex-direction: column; justify-content: center;"><div class="head" style="font-size: 16px; color: rgb(31, 29, 30); line-height: 1.18;">Support-Ticket Cost</div><div style="width: 26px; height: 2px; background: rgb(31, 29, 30); margin-top: 8px; border-radius: 2px;"></div></div><span style="font-family: var(--f-mono); font-size: 8.5px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(31, 29, 30, 0.45);">ZERO · Case Study</span></div><div style="position: absolute; right: 6%; bottom: 8%; width: 26%; aspect-ratio: 1 / 1; border-radius: 12px; background: rgb(220, 220, 220); border: 2px solid rgb(255, 255, 255); overflow: hidden; box-shadow: rgba(0, 0, 0, 0.14) 0px 6px 18px;"><img onerror="this.style.visibility='hidden'" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" style="width: 100%; height: 100%; object-fit: cover;"></div><div style="position: absolute; inset: 0px; background: rgba(0, 0, 0, 0.26); opacity: 0; transition: opacity 0.16s; display: flex; align-items: center; justify-content: center; pointer-events: none;"><div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.6); display: flex; align-items: center; justify-content: center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="#fff" stroke="currentColor" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M6 4l14 8-14 8V4z"></path></svg></div></div></div></div></div><div style="flex: 1 1 0%; min-width: 0px; display: flex; flex-direction: column; padding: 4px 4px 2px 0px;"><h3 style="font-family: var(--f-body); font-weight: 600; letter-spacing: -0.01em; font-size: 15.5px; color: rgb(31, 29, 30); line-height: 1.35;">Support-ticket cost model and automation priorities for Shopify</h3><div style="margin-top: 4px;"><div style="margin-top: 2px;"><div style="font-size: 13.5px; color: rgba(31, 29, 30, 0.7); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">Priced the fully-loaded cost of a support ticket, then showed which ticket types are worth automating first.</div></div></div><div style="margin-top: auto; display: flex; align-items: center; gap: 7px; padding-top: 10px; flex-wrap: wrap;"><span style="display: inline-flex; align-items: center; gap: 7px; font-family: var(--f-mono); font-weight: 500; font-size: 11.5px; letter-spacing: 0px; color: rgba(31, 29, 30, 0.7); background: rgba(31, 29, 30, 0.03); border-radius: 999px; padding: 6px 14px; white-space: nowrap; cursor: pointer;"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(31,29,30,0.45)" stroke="rgba(31,29,30,0.45)" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M6 4l14 8-14 8V4z"></path></svg>Presentation · 4:12</span><span style="display: inline-flex; align-items: center; gap: 7px; font-family: var(--f-mono); font-weight: 500; font-size: 11.5px; letter-spacing: 0px; color: rgba(31, 29, 30, 0.7); background: rgba(31, 29, 30, 0.03); border-radius: 999px; padding: 6px 14px; white-space: nowrap; cursor: pointer;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(31,29,30,0.45)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"></path><path d="M14 3v5h5"></path></svg>ticket-cost-model.xlsx</span></div></div></div></div></div><div><div><div data-snd-hover="true" style="display: flex; gap: 18px; align-items: stretch; border: 1px solid rgba(31, 29, 30, 0.06); border-radius: 18px; background: rgb(255, 255, 255); padding: 12px; margin-bottom: 12px; cursor: pointer; transition: border-color .2s var(--ease-apple);"><div style="flex: 0 0 30%; min-width: 0px; align-self: stretch; display: flex;"><div style="position: relative; width: 100%; display: flex;"><div style="position: relative; width: 100%; height: 100%; min-height: 150px; border-radius: 14px; overflow: hidden; background: linear-gradient(142deg, rgb(251, 248, 246) 0%, rgb(240, 233, 228) 100%); border: 1px solid rgba(31, 29, 30, 0.06);"><div style="position: absolute; inset: 11%; background: rgb(255, 255, 255); border-radius: 12px; border: 1px solid rgba(31, 29, 30, 0.06); padding: 14px 16px; display: flex; flex-direction: column;"><div style="display: flex; align-items: center; gap: 7px;"><img onerror="this.style.visibility='hidden'" src="https://www.google.com/s2/favicons?sz=64&domain=spotify.com" alt="" style="width: 14px; height: 14px; border-radius: 4px; object-fit: contain;"><span style="font-size: 11px; color: rgba(31, 29, 30, 0.7); font-weight: 500;">Spotify</span></div><div style="flex: 1 1 0%; display: flex; flex-direction: column; justify-content: center;"><div class="head" style="font-size: 16px; color: rgb(31, 29, 30); line-height: 1.18;">Early-Churn Analysis</div><div style="width: 26px; height: 2px; background: rgb(31, 29, 30); margin-top: 8px; border-radius: 2px;"></div></div><span style="font-family: var(--f-mono); font-size: 8.5px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(31, 29, 30, 0.45);">ZERO · Case Study</span></div><div style="position: absolute; right: 6%; bottom: 8%; width: 26%; aspect-ratio: 1 / 1; border-radius: 12px; background: rgb(220, 220, 220); border: 2px solid rgb(255, 255, 255); overflow: hidden; box-shadow: rgba(0, 0, 0, 0.14) 0px 6px 18px;"><img onerror="this.style.visibility='hidden'" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" style="width: 100%; height: 100%; object-fit: cover;"></div><div style="position: absolute; inset: 0px; background: rgba(0, 0, 0, 0.26); opacity: 0; transition: opacity 0.16s; display: flex; align-items: center; justify-content: center; pointer-events: none;"><div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.6); display: flex; align-items: center; justify-content: center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="#fff" stroke="currentColor" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M6 4l14 8-14 8V4z"></path></svg></div></div></div></div></div><div style="flex: 1 1 0%; min-width: 0px; display: flex; flex-direction: column; padding: 4px 4px 2px 0px;"><h3 style="font-family: var(--f-body); font-weight: 600; letter-spacing: -0.01em; font-size: 15.5px; color: rgb(31, 29, 30); line-height: 1.35;">Early-churn analysis and onboarding fix for Spotify</h3><div style="margin-top: 4px;"><div style="margin-top: 2px;"><div style="font-size: 13.5px; color: rgba(31, 29, 30, 0.7); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">Found the first-two-week churn cliff, isolated the accounts most at risk, and flagged the onboarding moment that loses them.</div></div></div><div style="margin-top: auto; display: flex; align-items: center; gap: 7px; padding-top: 10px; flex-wrap: wrap;"><span style="display: inline-flex; align-items: center; gap: 7px; font-family: var(--f-mono); font-weight: 500; font-size: 11.5px; letter-spacing: 0px; color: rgba(31, 29, 30, 0.7); background: rgba(31, 29, 30, 0.03); border-radius: 999px; padding: 6px 14px; white-space: nowrap; cursor: pointer;"><svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(31,29,30,0.45)" stroke="rgba(31,29,30,0.45)" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M6 4l14 8-14 8V4z"></path></svg>Presentation · 4:12</span><span style="display: inline-flex; align-items: center; gap: 7px; font-family: var(--f-mono); font-weight: 500; font-size: 11.5px; letter-spacing: 0px; color: rgba(31, 29, 30, 0.7); background: rgba(31, 29, 30, 0.03); border-radius: 999px; padding: 6px 14px; white-space: nowrap; cursor: pointer;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(31,29,30,0.45)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"></path><path d="M14 3v5h5"></path></svg>churn-analysis.pdf</span></div></div></div></div></div><button data-snd-hover="true" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 14px 18px; margin-bottom: 12px; border-radius: 18px; border: 1.5px solid rgba(31, 29, 30, 0.12); background: rgb(255, 255, 255); cursor: pointer; font-family: var(--f-body); font-size: 14px; font-weight: 600; color: rgb(31, 29, 30); transition: background .18s var(--ease-apple),border-color .2s var(--ease-apple);"><span style="display: flex;"><img onerror="this.style.visibility='hidden'" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" style="width: 26px; height: 26px; border-radius: 9px; object-fit: cover; border: 2px solid rgb(255, 255, 255); margin-left: 0px; position: relative; z-index: 9;"><img onerror="this.style.visibility='hidden'" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" style="width: 26px; height: 26px; border-radius: 9px; object-fit: cover; border: 2px solid rgb(255, 255, 255); margin-left: -9px; position: relative; z-index: 8;"></span>See 2 more projects<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(31,29,30,0.70)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0; transform: rotate(90deg);"><path d="M9 6l6 6-6 6"></path></svg></button></div></section><div style="height: 36px;"></div><section><div id="sec-experience" style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 16px;"><h2 style="font-family: var(--f-mono); font-weight: 500; font-size: 16px; letter-spacing: -0.02em; color: rgba(31, 29, 30, 0.3); line-height: 1.3;">Experience</h2></div><div style="display: flex; flex-direction: column; gap: 22px;"><div><div style="display: flex; gap: 16px;"><div style="width: 40px; height: 40px; border-radius: 11px; border: 1px solid rgba(31, 29, 30, 0.06); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden;"><img onerror="this.style.visibility='hidden'" src="https://www.google.com/s2/favicons?sz=64&amp;domain=wealthsimple.com" alt="" style="width: 22px; height: 22px; border-radius: 6px; object-fit: contain;"></div><div style="flex: 1 1 0%; padding-top: 1px;"><div style="display: flex; align-items: center; gap: 9px;"><span style="font-size: 14.5px; font-weight: 600; color: rgb(31, 29, 30);">Wealthsimple</span><span style="font-size: 12px; color: rgba(31, 29, 30, 0.45); border: 1px solid rgba(31, 29, 30, 0.06); border-radius: 999px; padding: 2px 9px;">Internship</span></div><div style="margin-top: 6px;"><div style="font-size: 13.5px; font-weight: 500; color: rgb(31, 29, 30);">Data &amp; Analytics Intern</div><div style="font-size: 12px; color: rgba(31, 29, 30, 0.45); margin-top: 2px;">May 2024 – Aug 2024 · Toronto, Canada · Hybrid</div><div style="font-size: 13px; color: rgba(31, 29, 30, 0.7); line-height: 1.55; margin-top: 5px;">Supported the growth analytics team with funnel reporting and weekly KPI dashboards for the self-serve onboarding funnel.</div></div></div></div></div><div><div style="display: flex; gap: 16px;"><div style="width: 40px; height: 40px; border-radius: 11px; border: 1px solid rgba(31, 29, 30, 0.06); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden;"><img onerror="this.style.visibility='hidden'" src="https://www.google.com/s2/favicons?sz=64&amp;domain=torontomu.ca" alt="" style="width: 22px; height: 22px; border-radius: 6px; object-fit: contain;"></div><div style="flex: 1 1 0%; padding-top: 1px;"><div style="display: flex; align-items: center; gap: 9px;"><span style="font-size: 14.5px; font-weight: 600; color: rgb(31, 29, 30);">TMU Analytics Society</span><span style="font-size: 12px; color: rgba(31, 29, 30, 0.45); border: 1px solid rgba(31, 29, 30, 0.06); border-radius: 999px; padding: 2px 9px;">Part-time</span></div><div style="margin-top: 6px;"><div style="font-size: 13.5px; font-weight: 500; color: rgb(31, 29, 30);">Case Team Lead</div><div style="font-size: 12px; color: rgba(31, 29, 30, 0.45); margin-top: 2px;">Sep 2023 – Apr 2024 · Toronto, Canada · On-site</div><div style="font-size: 13px; color: rgba(31, 29, 30, 0.7); line-height: 1.55; margin-top: 5px;">Led a four-person case team to two regional finals and owned the quantitative modeling sections of each submission.</div></div></div></div></div></div></section><div style="height: 36px;"></div><section><div id="sec-credential" style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 16px;"><h2 style="font-family: var(--f-mono); font-weight: 500; font-size: 16px; letter-spacing: -0.02em; color: rgba(31, 29, 30, 0.3); line-height: 1.3;">Achievements &amp; credentials</h2></div><div style="display: flex; flex-direction: column; gap: 16px;"><div><div style="display: flex; gap: 16px; align-items: center;"><div style="width: 40px; height: 40px; border-radius: 11px; border: 1px solid rgba(31, 29, 30, 0.06); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden;"><img onerror="this.style.visibility='hidden'" src="https://www.google.com/s2/favicons?sz=64&amp;domain=google.com" alt="" style="width: 20px; height: 20px; border-radius: 5px; object-fit: contain;"></div><div><div style="font-size: 14px; font-weight: 600; color: rgb(31, 29, 30);">Google Data Analytics Professional Certificate</div><div style="font-size: 12.5px; color: rgba(31, 29, 30, 0.7); margin-top: 2px;">Google · Aug 2024</div></div></div></div><div><div style="display: flex; gap: 16px; align-items: center;"><div style="width: 40px; height: 40px; border-radius: 11px; border: 1px solid rgba(31, 29, 30, 0.06); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden;"><img onerror="this.style.visibility='hidden'" src="https://www.google.com/s2/favicons?sz=64&amp;domain=datacamp.com" alt="" style="width: 20px; height: 20px; border-radius: 5px; object-fit: contain;"></div><div><div style="font-size: 14px; font-weight: 600; color: rgb(31, 29, 30);">SQL for Data Analysis</div><div style="font-size: 12.5px; color: rgba(31, 29, 30, 0.7); margin-top: 2px;">DataCamp · Jun 2024</div></div></div></div></div></section><div style="height: 36px;"></div><section><div id="sec-academics" style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 16px;"><h2 style="font-family: var(--f-mono); font-weight: 500; font-size: 16px; letter-spacing: -0.02em; color: rgba(31, 29, 30, 0.3); line-height: 1.3;">Academics</h2></div><div style="display: flex; flex-direction: column; gap: 16px;"><div><div style="display: flex; gap: 16px; align-items: center;"><div style="width: 40px; height: 40px; border-radius: 11px; border: 1px solid rgba(31, 29, 30, 0.06); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden;"><img onerror="this.style.visibility='hidden'" src="https://www.google.com/s2/favicons?sz=64&amp;domain=torontomu.ca" alt="" style="width: 20px; height: 20px; border-radius: 5px; object-fit: contain;"></div><div style="flex: 1 1 0%;"><div style="font-size: 14px; font-weight: 600; color: rgb(31, 29, 30);">Bachelor of Commerce, Business Management</div><div style="font-size: 12.5px; color: rgba(31, 29, 30, 0.7); margin-top: 2px;">Toronto Metropolitan University · Sep 2021 – Apr 2025</div></div><div class="tnum" style="font-family: var(--f-body); font-weight: 600; font-size: 15px; color: rgb(31, 29, 30);">3.4/4.0</div></div></div></div></section></main><aside style="flex: 0 0 356px; width: 356px; position: sticky; top: 22px; align-self: flex-start;"><div class="morph" style="background: rgb(255, 255, 255); border: 1.5px solid rgba(0, 0, 0, 0.06); border-radius: 32px; display: flex; flex-direction: column; max-height: calc(-44px + 100vh); overflow: hidden; padding: 6px;"><div style="flex-shrink: 0; display: flex; align-items: center; gap: 11px; padding: 11px 12px 14px; border-bottom: 1px solid rgba(31, 29, 30, 0.06); margin: 0px 6px;"><div style="width: 38px; height: 38px; border-radius: 11px; background: rgba(31, 29, 30, 0.03); display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><img onerror="this.style.visibility='hidden'" src="https://www.google.com/s2/favicons?sz=64&amp;domain=ramp.com" alt="" style="width: 20px; height: 20px; border-radius: 5px; object-fit: contain;"></div><div style="min-width: 0px; flex: 1 1 0%;"><div style="font-size: 14.5px; font-weight: 600; color: rgb(31, 29, 30); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Business Analyst</div><div style="font-size: 12px; color: rgba(31, 29, 30, 0.7);">Strategy &amp; Operations · Ramp</div></div><button aria-label="Edit role requirements" title="Edit role requirements" class="lift" style="flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; background: rgba(31, 29, 30, 0.03); display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(31,29,30,0.70)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"></path></svg></button></div><div style="flex: 1 1 auto; min-height: 0px; background: rgb(255, 255, 255); border-radius: 26px; display: flex; flex-direction: column; overflow: hidden;"><div class="noscroll" style="flex: 1 1 auto; min-height: 0px; overflow-y: auto; padding: 22px 24px 8px;"><div style="animation: revealIn .4s var(--ease-butter) backwards; position: relative; z-index: 30;"><div class="head" style="font-size: 27px; color: rgb(31, 29, 30); line-height: 1.1;">Exceptional Fit</div></div><div style="height: 10px;"></div><div style="display: flex; flex-direction: column; padding-bottom: 8px;"><div style="animation: revealIn .38s var(--ease-butter) backwards;"><div style="display: flex; align-items: flex-start; gap: 10px; padding: 6px 0px;"><span style="width: 15px; height: 15px; border-radius: 50%; background: rgb(0, 166, 86); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M20 6L9 17l-5-5"></path></svg></span><span style="font-size: 12.5px; color: rgb(31, 29, 30); line-height: 1.5; flex: 1 1 0%;">Authorised to work in Canada, no sponsorship needed</span></div></div><div style="animation: revealIn .38s var(--ease-butter) backwards;"><div style="display: flex; align-items: flex-start; gap: 10px; padding: 6px 0px;"><span style="width: 15px; height: 15px; border-radius: 50%; background: rgb(0, 166, 86); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M20 6L9 17l-5-5"></path></svg></span><span style="font-size: 12.5px; color: rgb(31, 29, 30); line-height: 1.5; flex: 1 1 0%;">Salary expectation fits your posted band</span></div></div><div style="animation: revealIn .38s var(--ease-butter) backwards;"><div style="display: flex; align-items: flex-start; gap: 10px; padding: 6px 0px;"><span style="width: 15px; height: 15px; border-radius: 50%; background: rgb(0, 166, 86); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M20 6L9 17l-5-5"></path></svg></span><span style="font-size: 12.5px; color: rgb(31, 29, 30); line-height: 1.5; flex: 1 1 0%;">SQL for analysis and modelling. Developing, below the bar in your posting</span></div></div><div style="animation: revealIn .38s var(--ease-butter) backwards;"><div style="display: flex; align-items: flex-start; gap: 10px; padding: 6px 0px;"><span style="width: 15px; height: 15px; border-radius: 50%; background: rgb(0, 166, 86); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M20 6L9 17l-5-5"></path></svg></span><span style="font-size: 12.5px; color: rgb(31, 29, 30); line-height: 1.5; flex: 1 1 0%;">Tableau dashboarding, listed as your must-have. Advanced</span></div></div><div style="animation: revealIn .38s var(--ease-butter) backwards;"><div style="display: flex; align-items: flex-start; gap: 10px; padding: 6px 0px;"><span style="width: 15px; height: 15px; border-radius: 50%; background: rgb(0, 166, 86); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M20 6L9 17l-5-5"></path></svg></span><span style="font-size: 12.5px; color: rgb(31, 29, 30); line-height: 1.5; flex: 1 1 0%;">Clear written and spoken communication. Proficient across all five projects</span></div></div><div style="animation: revealIn .38s var(--ease-butter) backwards;"><div style="display: flex; align-items: flex-start; gap: 10px; padding: 6px 0px;"><span style="width: 15px; height: 15px; border-radius: 50%; flex-shrink: 0; margin-top: 2px; background: conic-gradient(rgb(0, 166, 86) 0deg, rgb(0, 166, 86) 50%, rgba(31, 29, 30, 0.12) 50%, rgba(31, 29, 30, 0.12) 100%); border: 1.5px solid rgb(255, 255, 255); box-shadow: rgba(31, 29, 30, 0.12) 0px 0px 0px 1px;"></span><span style="font-size: 12.5px; color: rgb(31, 29, 30); line-height: 1.5; flex: 1 1 0%;">Experience designing KPI architecture. His next scenario covers exactly this</span></div></div><div style="animation: revealIn .38s var(--ease-butter) backwards;"><div style="display: flex; align-items: flex-start; gap: 10px; padding: 6px 0px;"><span style="width: 15px; height: 15px; border-radius: 50%; border: 1.5px solid rgba(31, 29, 30, 0.12); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="rgba(31,29,30,0.45)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M18 6L6 18"></path><path d="M6 6l12 12"></path></svg></span><span style="font-size: 12.5px; color: rgba(31, 29, 30, 0.45); line-height: 1.5; flex: 1 1 0%;">Open-ended strategy casework, not yet demonstrated</span></div></div><div style="animation: revealIn .38s var(--ease-butter) backwards;"><div style="display: flex; align-items: flex-start; gap: 10px; padding: 6px 0px;"><span style="width: 15px; height: 15px; border-radius: 50%; border: 1.5px solid rgba(31, 29, 30, 0.12); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="rgba(31,29,30,0.45)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M18 6L6 18"></path><path d="M6 6l12 12"></path></svg></span><span style="font-size: 12.5px; color: rgba(31, 29, 30, 0.45); line-height: 1.5; flex: 1 1 0%;">Production SQL at scale, not yet demonstrated</span></div></div></div></div><div style="flex-shrink: 0; padding: 10px 20px 16px; background: rgb(255, 255, 255); display: flex; gap: 10px;"><button style="border: 1px solid rgba(31, 29, 30, 0.12); border-radius: 999px; cursor: pointer; background: transparent; color: rgb(31, 29, 30); font-weight: 600; letter-spacing: -0.01em; transition: transform 120ms var(--ease-out),background 140ms ease,opacity 140ms ease; flex: 0 0 auto; height: 46px; padding: 0px 18px; font-size: 13.5px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;"><span style="position: relative; display: inline-flex; align-items: center; justify-content: center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgb(31,29,30)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; flex-shrink: 0; animation: auto ease 0s 1 normal none running none;"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l8.8 8.8 8.8-8.8a5.5 5.5 0 000-7.8z"></path></svg></span>Shortlist</button><button style="border: 1px solid transparent; border-radius: 999px; cursor: pointer; background: rgb(31, 29, 30); color: rgb(255, 255, 255); font-weight: 600; letter-spacing: -0.01em; transition: transform 120ms var(--ease-out),background 140ms ease,opacity 140ms ease; flex: 1 1 0%; height: 46px; font-size: 13.5px;">Schedule interview</button></div></div></div></aside></div></div>`;
-function mountSnap(host,which,o){o=o||{};host.innerHTML='';const sh=host.shadowRoot||host.attachShadow({mode:'open'});sh.innerHTML=`<style>${SNAP_CSS}</style><div class="pfsnap" style="zoom:${o.zoom||1}">${which==='rec'?SNAP_REC:SNAP_STU}</div>`;const main=sh.querySelector('main');const aside=sh.querySelector('aside');if(o.hidden){[...main.children].forEach(e=>e.classList.add('rv'));if(aside)aside.classList.add('rv')}applyEdits(sh);return sh}
-function snapGroups(sh){const m=[...sh.querySelector('main').children];const a=sh.querySelector('aside');return[[m[0]],[m[1],m[2]],[m[3]],[m[4],m[5]],[m[6],m[7]],[m[8],m[9]],a?[a]:[]].filter(g=>g.length&&g[0])}
-function applyEdits(sh){const P=S.portfolio;const main=sh.querySelector('main');if(!main)return;
- if(P.lead==='shopify'){const cards=[...main.querySelectorAll('[style*="cursor: pointer"]')].filter(c=>c.textContent.includes('ZERO · Case Study'));const sh2=cards.find(c=>/Shopify/.test(c.textContent));if(sh2&&cards[0]&&sh2!==cards[0]){cards[0].parentElement.insertBefore(sh2,cards[0]);sh2.classList.add('hl');setTimeout(()=>sh2.classList.remove('hl'),1800)}}
- if(P.headline){const about=main.children[1];if(about&&!about.querySelector('.hlline')){about.insertAdjacentHTML('afterbegin',`<div class="hlline" style="font-family:'STK Bureau Serif',Georgia,serif;font-size:20px;line-height:1.3;color:rgb(31,29,30);margin-bottom:8px">${P.headline}</div>`)}}
- if(P.hideAcademics){const ac=main.children[9];if(ac)ac.style.display='none';const dv=main.children[8];if(dv)dv.style.display='none'}
- if(!P.showRail){const a=sh.querySelector('aside');if(a&&P.railHidden)a.style.display='none'}}
-
+/* the shadow-DOM portfolio snapshot was retired; the portfolio is native (_pf.js) */
 const $=(q,el=document)=>el.querySelector(q),$$=(q,el=document)=>[...el.querySelectorAll(q)];
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 const el=h=>{const d=document.createElement('div');d.innerHTML=h.trim();return d.firstElementChild};
@@ -632,33 +594,56 @@ const icons=()=>{if(window.lucide)lucide.createIcons()};
 const okr=(k,t,r)=>`<div class="zqi ${k}">${ic(k==='g'?'circle-check':k==='a'||k==='p'?'circle-alert':'circle-dashed')}<div><div>${t}</div>${r?`<span class="ev">${r}</span>`:''}</div></div>`;
 function toast(t){const x=$('#ztoast');x.textContent=t;x.classList.add('on');clearTimeout(x._t);x._t=setTimeout(()=>x.classList.remove('on'),3400)}
 function arrive(sc){$$('.zarr',sc).forEach((a,i)=>setTimeout(()=>a.classList.add('in'),50+i*60));setTimeout(()=>$$('.zarr',sc).forEach(a=>a.classList.add('in')),1400)}
-const S={page:'talk',auto:true,paused:false,sel:'klarna',filter:'all',view:'list',visit:'first',toured:false,agentTab:'now',appTab:'need',
+const S={page:'unlock',mode:'voice',auto:true,paused:false,sel:'klarna',filter:'all',view:'list',visit:'first',toured:false,agentTab:'now',appTab:'need',gapAdds:[],found:[],log:[],
  me:{name:'Ron Robinson',first:'Ron'},
- brief:{role:'Business analyst',place:'Toronto',companies:'Big product companies',mode:'Hybrid, 2 days at most',lang:'English',pay:'CA$60,000 per year',start:'',auth:'Yes',deal:['Hybrid, 2 days at most']},
+ brief:{role:'Business analyst',place:'Toronto',companies:'Big product companies',mode:'Hybrid, 2 days at most',lang:'English',pay:'CA$60,000 per year',start:'',auth:'',deal:['Hybrid, 2 days at most']},
  answers:{},portfolio:{lead:'notion',headline:'',hideAcademics:false}};
-/* ═══ 1 WELCOME ═══ */
-const WELCOME=["You've been putting in the work.","Let's take that into the world.","I know your work. Now I need your terms.","Let's see what's possible."];
+/* ═══ shared line / pills machinery ═══ */
 let lineTok=0,beatT=null;
 function line(node,text,cb){const tok=++lineTok;node.innerHTML=text.split(' ').map(w=>`<span class="w">${w}</span>`).join(' ');const ws=$$('.w',node);ws.forEach((w,i)=>setTimeout(()=>w.classList.add('in'),50+i*36));setTimeout(()=>{ws.forEach(w=>w.classList.add('in'));if(tok===lineTok&&cb)cb()},60+ws.length*36+380)}
+const say=(node,text,hold)=>new Promise(r=>line(node,text,()=>setTimeout(r,hold||900)));
 function clearLine(sel){const q=$(sel||'#tq');q.style.transition='all .34s cubic-bezier(.55,.08,.68,.53)';q.style.opacity=0;q.style.transform='translateY(-26px)';q.style.filter='blur(9px)';const o=$('#topts');if(o&&!sel)o.classList.remove('in');return wait(360).then(()=>{q.style.transition='';q.style.opacity='';q.style.transform='';q.style.filter='';if(o&&!sel)o.innerHTML=''})}
 function beats(n,total){const b=$('#zbeats');b.innerHTML=Array.from({length:total},(_,i)=>`<i class="${i<n?'past':i===n?'on':''}"></i>`).join('')}
 function pills(items,cb,back){const o=$('#topts');
  o.innerHTML=items.map((t,i)=>`<button class="zopt" data-i="${i}">${t}</button>`).join('');icons();
  requestAnimationFrame(()=>requestAnimationFrame(()=>o.classList.add('in')));setTimeout(()=>o.classList.add('in'),500);
  const choose=(i,label)=>{const b=$$('.zopt',o)[i];if(b){$$('.zopt',o).forEach(x=>{if(x!==b){x.style.opacity=0;x.style.filter='blur(6px)';x.style.transform='scale(.94)'}});b.classList.add('on')}
+  else o.classList.remove('in');
   setTimeout(()=>cb(i,label||(b?b.textContent:'')),380)};
  $$('[data-i]',o).forEach(b=>b.onclick=()=>choose(+b.dataset.i));
  const bk=$('#tback');bk.classList.toggle('zhide',!back);bk.onclick=back?()=>cb(-1,'back'):null;
  return choose}
+function darkFlow(step){document.body.classList.add('zdark');document.body.classList.remove('zapp');$('#zflowhd').classList.remove('zhide');$('#dstep').textContent=step}
 
-async function runWelcome(){
- S.page='talk';$('#dstep').textContent='1 · Welcome';document.body.classList.add('zdark');document.body.classList.remove('zapp');show('talk');
- $('#tdock').innerHTML='<button class="zbtn ghost" id="wskip" style="color:var(--tx3)">Skip</button>';$('#wskip').onclick=()=>{clearTimeout(beatT);lineTok++;runTalk()};
- for(let i=0;i<WELCOME.length;i++){beats(i,WELCOME.length);await new Promise(r=>{line($('#tq'),WELCOME[i],()=>{beatT=setTimeout(r,i<WELCOME.length-1?1500:400)})});if(i<WELCOME.length-1)await clearLine()}
- pills(['Set up my search'],()=>runTalk())}
+/* ═══ 0 UNLOCK: the moment inside ZERO ═══ */
+function runUnlock(){
+ S.page='unlock';darkFlow('0 · Unlocked');show('unlock');$('#zbeats').innerHTML='';
+ const U=$('#s-unlock');
+ U.innerHTML=`<div class="zmid"><div class="ucard" id="ucard">
+   <div class="uchip"><span class="ztag ok">${ic('check')}Scenario 3 · Meets expectations</span></div>
+   <h1 class="zq" id="uq" style="max-width:18ch"></h1>
+   <div class="zopts" id="uopts"></div></div></div>`;icons();
+ setTimeout(()=>$('#ucard').classList.add('in'),60);
+ line($('#uq'),'The job portal is open.',()=>{const o=$('#uopts');
+  o.innerHTML=`<button class="zopt" id="ugo">See the job portal</button><button class="zopt" id="uhome">Go home</button>`;requestAnimationFrame(()=>requestAnimationFrame(()=>o.classList.add('in')));
+  $('#ugo').onclick=()=>{$('#ugo').classList.add('on');setTimeout(runIntro,420)};
+  $('#uhome').onclick=async()=>{o.classList.remove('in');await clearLine('#uq');await say($('#uq'),'It stays open. Come back when you want.',600);
+   o.innerHTML=`<button class="zopt" id="ugo2">Open it now</button>`;requestAnimationFrame(()=>requestAnimationFrame(()=>o.classList.add('in')));
+   $('#ugo2').onclick=()=>{$('#ugo2').classList.add('on');setTimeout(runIntro,420)}}})}
 
+/* ═══ 1 INTRO: voice, no questions. Both modes share it. ═══ */
+const INTRO=["Three scenarios. Seven weeks of real work.","I watched all of it.","Now it goes to work for you.","We have optimised to get you hired."];
+async function runIntro(){
+ S.page='intro';darkFlow('1 · Intro');show('talk');$('#tdock').innerHTML='';$('#tadd').innerHTML='';setTranscript('');$('#tback').classList.add('zhide');
+ $('#tdock').innerHTML='<button class="zbtn ghost" id="wskip" style="color:var(--tx3)">Skip</button>';$('#wskip').onclick=()=>{clearTimeout(beatT);lineTok++;afterIntro()};
+ $('#tq').innerHTML='';
+ for(let i=0;i<INTRO.length;i++){beats(i,INTRO.length);await new Promise(r=>{line($('#tq'),INTRO[i],()=>{beatT=setTimeout(r,i===INTRO.length-1?1300:1500)})});if(i<INTRO.length-1)await clearLine()}
+ afterIntro()}
+async function afterIntro(){$('#tdock').innerHTML='';
+ if(S.mode==='intro'){pills(['Take me in'],async()=>{await clearLine();runBuild()});return}
+ await clearLine();await say($('#tq'),'Before it goes out, three things ZERO never saw.',900);await clearLine();runGaps()}
 
-/* ═══ talk dock ═══ */
+/* ═══ talk dock: mic, keyboard, live transcript ═══ */
 let waveT=null;
 function stopWave(){clearInterval(waveT);waveT=null}
 function setTranscript(h){$('#ttrin').innerHTML=h||''}
@@ -666,104 +651,120 @@ function talkDock(a,choose){
  const D=$('#tdock');let mode='voice';
  const render=()=>{
   if(mode==='voice')D.innerHTML=`<div class="din"><button class="zghost" id="tkey" title="Type instead">${ic('keyboard')}</button><button class="zmic" id="tmic">${ic('mic')}</button><span style="width:48px"></span></div>`;
-  else D.innerHTML=`<div class="din"><button class="zghost" id="tvoice" title="Speak instead">${ic('mic')}</button><div class="ztf"><input id="tinput" placeholder="Type your answer"><button class="ztfs" id="tsend">${ic('arrow-up')}</button></div></div>`;
+  else D.innerHTML=`<div class="din"><button class="zghost" id="tvoice" title="Speak instead">${ic('mic')}</button><div class="ztf"><input id="tinput" placeholder="Say it however you would"><button class="ztfs" id="tsend">${ic('arrow-up')}</button></div></div>`;
   icons();
-  const k=$('#tkey');if(k)k.onclick=()=>{mode='text';render();setTimeout(()=>$('#tinput').focus(),60)};
+  const k=$('#tkey');if(k)k.onclick=()=>{mode='text';render();setTimeout(()=>{const t=$('#tinput');if(t)t.focus()},60)};
   const v=$('#tvoice');if(v)v.onclick=()=>{mode='voice';render()};
   const m=$('#tmic');if(m)m.onclick=()=>speak(a,choose);
   const inp=$('#tinput');
   if(inp){inp.oninput=()=>$('#tsend').classList.toggle('on',inp.value.trim().length>0);
-   const send=()=>{const val=inp.value.trim();if(!val)return;setTranscript(`<b>${val}</b>`);D.innerHTML='';setTimeout(()=>{setTranscript('');choose(0,val)},700)};
+   const send=()=>{const val=inp.value.trim();if(!val)return;setTranscript(`<b>${val}</b>`);D.innerHTML='';setTimeout(()=>{choose(-2,val)},500)};
    $('#tsend').onclick=send;inp.onkeydown=e=>{if(e.key==='Enter')send()}}};
  render()}
 async function speak(a,choose){
- const D=$('#tdock');const said=a.say||a.o[0];const idx=a.sayIdx??0;
+ const D=$('#tdock');const said=a.say.text;
  D.innerHTML=`<div class="din"><div class="zrec"><span class="zwave" id="twave">${Array.from({length:26},()=>'<span></span>').join('')}</span><span class="ztime" id="ttime">0:00</span></div><button class="zmic rec" id="tstop">${ic('arrow-up')}</button></div>`;icons();
  const bars=$$('#twave span');let t=0;
  stopWave();waveT=setInterval(()=>{bars.forEach(b=>b.style.height=(4+Math.abs(Math.sin(Date.now()/90+Math.random()*3))*18)+'px');t+=0.1;$('#ttime').textContent='0:'+String(Math.floor(t)).padStart(2,'0')},100);
- const words=said.split(' ');let out='';
- const finish=()=>{stopWave();bars.forEach(b=>b.style.height='5px');D.innerHTML='';setTimeout(()=>{setTranscript('');choose(idx,said)},600)};
- $('#tstop').onclick=()=>{stopWave();finish()};
- for(let i=0;i<words.length;i++){await wait(150+words[i].length*22);out+=(i?' ':'')+words[i];setTranscript(`<b>${out}</b>`)}
- await wait(700);if($('#tstop'))finish()}
+ const words=said.split(' ');let out='';let done=false;
+ const finish=()=>{if(done)return;done=true;stopWave();D.innerHTML='';setTimeout(()=>choose(-3,said),500)};
+ $('#tstop').onclick=finish;
+ for(let i=0;i<words.length&&!done;i++){await wait(150+words[i].length*22);out+=(i?' ':'')+words[i];setTranscript(`<b>${out}</b>`)}
+ await wait(700);finish()}
 
-/* ═══ 2 TALK: only what ZERO does not already know (per handoff) ═══ */
-const ASK=[
- {k:'confirm',q:"Business analyst, Toronto, hybrid at most two days. Still right?",o:['Still right','Something changed'],say:'Yeah, that is still right',sayIdx:0},
- {k:'lang',q:'Which languages do you want to work in?',o:['English only','English and French','Any language I can manage'],v:['English','English and French','English, French working'],say:'English and French, my French is working level',sayIdx:1,
-  ack:['Then I skip the French-required postings.','That opens the French-required Toronto roles.','Noted.']},
- {k:'deal',q:"What will you not compromise on?",o:['No unpaid roles','No full-time travel','Nothing beyond hybrid'],multi:true,say:'I will not do unpaid roles',sayIdx:0,
-  ack:['A deal-breaker holds an application. It does not just reorder it.','A deal-breaker holds an application. It does not just reorder it.','Then hybrid is your only hard rule.']},
- {k:'pay',q:'What is your floor?',o:['CA$60,000 a year','CA$70,000 a year','Ask me each time'],v:['CA$60,000 per year','CA$70,000 per year','Ask me each time'],say:'Sixty thousand is my floor',sayIdx:0,
-  ack:['I hold that. Anything under it comes to you first.','I hold that. Two of the six roles I found drop out.','Then I bring you every salary and you decide.']},
- {k:'start',q:'When could you start?',o:['After graduation, May 2025','Two weeks from an offer','Now, part time until April'],v:['After graduation, May 2025','Two weeks from an offer','Now, part time until April'],say:'After I graduate, so May',sayIdx:0,
-  ack:['Saved. Every form asks this and now I can answer it.','Saved. Every form asks this and now I can answer it.','Saved. Every form asks this and now I can answer it.']},
- {k:'auth',q:'Are you authorised to work in Canada?',o:['Yes','I would need sponsorship','Skip for now'],v:['Yes','Needs sponsorship','Unknown, I will ask before applying'],say:'Yes, I am a citizen',sayIdx:0,
-  ack:['Good. No sponsorship filter needed.','Then I only bring you roles that sponsor.','I will ask again before anything goes out.']},
+/* ═══ 2 GAPS: only what ZERO has no evidence for ═══ */
+const GAPS=[
+ {k:'work',q:'Any work I have not seen? Internships, part-time, anything paid.',
+  o:[{t:'An internship',add:[{kind:'experience',org:'Wealthsimple',dom:'wealthsimple.com',role:'Data & Analytics Intern',period:'Summer 2024 · Toronto',desc:'Funnel reporting and weekly KPI dashboards for the growth analytics team.'}],ack:'Added. Wealthsimple sits under Experience now, and it is the first thing a Toronto recruiter will recognise.'},
+     {t:'A part-time job',add:[{kind:'experience',org:'Part-time role',dom:'',role:'Part-time work',period:'Add the dates in your portfolio',desc:''}],ack:'Added under Experience. Open your portfolio later and give it the name and dates.'},
+     {t:'Nothing yet',add:[],ack:'Then your ZERO work carries it. Five reviewed scenarios is more than most graduates have.'}],
+  say:{text:'I interned at Wealthsimple last summer on the data team, mostly funnel reporting and the weekly dashboards',
+   add:[{kind:'experience',org:'Wealthsimple',dom:'wealthsimple.com',role:'Data & Analytics Intern',period:'Summer 2024 · Toronto',desc:'Funnel reporting and weekly KPI dashboards for the growth analytics team.'}],
+   ack:'Added. Wealthsimple sits under Experience now, and it is the first thing a Toronto recruiter will recognise.'}},
+ {k:'cert',q:'Any certificates?',
+  o:[{t:'Google Data Analytics',add:[{kind:'credentials',t:'Google Data Analytics Professional Certificate',issuer:'Google',dom:'google.com',date:'Aug 2024'}],ack:'Added. Klarna and Figma both list it as a plus.'},
+     {t:'A SQL course',add:[{kind:'credentials',t:'SQL for Data Analysis',issuer:'DataCamp',dom:'datacamp.com',date:'Jun 2024'}],ack:'Added. SQL is the one gap ZERO could not show, so this matters.'},
+     {t:'None',add:[],ack:'Fine. Nothing here is required, and I never write in what you do not have.'}],
+  say:{text:'I finished the Google Data Analytics certificate in August, and a SQL course on DataCamp in June',
+   add:[{kind:'credentials',t:'Google Data Analytics Professional Certificate',issuer:'Google',dom:'google.com',date:'Aug 2024'},{kind:'credentials',t:'SQL for Data Analysis',issuer:'DataCamp',dom:'datacamp.com',date:'Jun 2024'}],
+   ack:'Both added. SQL is the one gap ZERO could not show, so the DataCamp one matters.'}},
+ {k:'own',q:'Anything you built or published outside ZERO?',
+  o:[{t:'A project',add:[{kind:'experience',org:'TMU Analytics Society',dom:'torontomu.ca',role:'Case Team Lead',period:'Sep 2023 to Apr 2024 · Toronto',desc:'Led a four-person case team to two regional finals and owned the quantitative modelling.'}],ack:'Added. Leading a team is the one thing your ZERO scenarios could not show.'},
+     {t:'An article',add:[{kind:'credentials',t:'Reading churn by cohort, not by month',issuer:'Published on Medium',dom:'medium.com',date:'Mar 2025'}],ack:'Added. Published writing goes under Credentials, and Spotify’s recruiter will read it.'},
+     {t:'Nothing yet',add:[],ack:'That is fine. Your Notion presentation already shows how you explain your work.'}],
+  say:{text:'I led the case team at the analytics society, and I wrote a piece on Medium about reading churn by cohort',
+   add:[{kind:'experience',org:'TMU Analytics Society',dom:'torontomu.ca',role:'Case Team Lead',period:'Sep 2023 to Apr 2024 · Toronto',desc:'Led a four-person case team to two regional finals and owned the quantitative modelling.'},{kind:'credentials',t:'Reading churn by cohort, not by month',issuer:'Published on Medium',dom:'medium.com',date:'Mar 2025'}],
+   ack:'Both added. Leading a team and published writing are the two things ZERO scenarios cannot show.'}},
 ];
-async function runTalk(){
- S.page='talk';$('#dstep').textContent='2 · Your terms';document.body.classList.add('zdark');document.body.classList.remove('zapp');show('talk');$('#tdock').innerHTML='';
- await clearLine();let i=0;
- while(i<ASK.length){const a=ASK[i];beats(i,ASK.length);let ack='';
-  const r=await new Promise(res=>{line($('#tq'),a.q);
-   const choose=pills(a.o,(idx,t)=>{if(idx===-1){res('back');return}
-    if(a.k==='confirm'){if(idx===1)ack='Tell me what changed and I will fix it in your brief.';res('ok');return}
-    const v=a.v?a.v[idx]:t;ack=a.ack?a.ack[idx]:'';
-    if(a.multi){if(t!=='Nothing beyond hybrid'&&!S.brief.deal.includes(t))S.brief.deal.push(t)}
-    else S.brief[a.k]=v;
-    S.answers[a.k]={value:v,src:'You told me, today'};res('ok')},i>0);
-   talkDock(a,choose)});
-  await clearLine();stopWave();$('#tdock').innerHTML='';setTranscript('');$('#tback').classList.add('zhide');
-  if(r==='back'){i=Math.max(0,i-1);continue}
-  if(ack){await new Promise(r2=>line($('#tq'),ack,()=>setTimeout(r2,900)));await clearLine()}
+function freeAdd(g,text){const t=text.replace(/^i\s+/i,'').replace(/\.$/,'');const cap=t.charAt(0).toUpperCase()+t.slice(1);
+ if(g.k==='cert'||g.k==='own')return[{kind:'credentials',t:cap,issuer:'You told me',dom:'',date:'Add the date'}];
+ return[{kind:'experience',org:'You told me',dom:'',role:cap,period:'Add the dates',desc:''}]}
+function chipFor(e){const n=e.kind==='experience'?`${e.org}${e.role?' · '+e.role:''}`:`${e.t}`;return`<span class="zxt">${e.dom?`<span class="zxtl">${fav(e.dom)}</span>`:`<span class="zxtl">${ic('sparkles')}</span>`}${n}${ic('check')}</span>`}
+async function showAdds(adds){const A=$('#tadd');A.innerHTML=adds.map(chipFor).join('');icons();
+ const cs=$$('.zxt',A);for(let i=0;i<cs.length;i++){await wait(220);cs[i].classList.add('in')}await wait(700)}
+async function runGaps(){
+ S.page='gaps';darkFlow('2 · What ZERO never saw');show('talk');$('#tdock').innerHTML='';$('#tadd').innerHTML='';
+ S.gapAdds=[];let i=0;
+ while(i<GAPS.length){const g=GAPS[i];beats(i,GAPS.length);let ack='',adds=[];
+  const r=await new Promise(res=>{line($('#tq'),g.q);
+   const choose=pills(g.o.map(o=>o.t),(idx,t)=>{if(idx===-1){res('back');return}
+    if(idx===-3){adds=g.say.add;ack=g.say.ack}
+    else if(idx===-2){adds=freeAdd(g,t);ack='Added as you said it. You can tidy the wording in your portfolio.'}
+    else{adds=g.o[idx].add;ack=g.o[idx].ack}
+    res('ok')},i>0);
+   talkDock(g,choose)});
+  stopWave();$('#tdock').innerHTML='';$('#tback').classList.add('zhide');
+  if(r==='back'){await clearLine();setTranscript('');i=Math.max(0,i-1);continue}
+  adds.forEach(e=>{S.gapAdds.push(e);pfAdd(e)});
+  await clearLine();if(adds.length){setTranscript('');await showAdds(adds)}else setTranscript('');
+  await say($('#tq'),ack,1100);$('#tadd').innerHTML='';await clearLine();
   i++}
- await new Promise(r=>line($('#tq'),'That is your brief. Now I build your portfolio.',()=>setTimeout(r,1200)));await clearLine();
+ await say($('#tq'),S.gapAdds.length?`That is everything I did not have. ${S.gapAdds.length} thing${S.gapAdds.length===1?'':'s'} added.`:'That is everything I did not have.',1100);await clearLine();
  runBuild()}
 
-/* ═══ 3 BUILD ═══ */
-const bthread=$('#bthread');
-async function bpush(node,d){await wait(d||0);bthread.appendChild(node);icons();requestAnimationFrame(()=>requestAnimationFrame(()=>node.classList.add('in')));setTimeout(()=>node.classList.add('in'),650);node.scrollIntoView({behavior:'smooth',block:'end'});return node}
-const zag=h=>el(`<div class="zmsg"><div class="zab">Z</div><div class="zbub">${h}</div></div>`);
-const zme=h=>el(`<div class="zmsg me"><div class="zbub">${h}</div></div>`);
-const zth=()=>el(`<div class="zmsg"><div class="zab">Z</div><div class="zthink"><i></i><i></i><i></i></div></div>`);
-function bq(items,cb){$('#bqr').innerHTML=items.map((t,i)=>`<button class="zbtn line sm" data-q="${i}">${t}</button>`).join('');icons();$$('#bqr [data-q]').forEach(b=>b.onclick=()=>{$('#bqr').innerHTML='';cb(+b.dataset.q,b.textContent)})}
+/* ═══ 3 BUILD: a real loader, then the portfolio ═══ */
+function bcardHTML(stage){const P=PF;
+ return`<div class="sc-top"><div class="sc-av">${P.name.split(' ').map(x=>x[0]).join('')}</div><div><div class="sc-n">${P.name}</div><div class="sc-r">${stage>0?P.track+' · '+P.loc:'&nbsp;'}</div></div>${stage>1?`<span class="ztag ok" style="margin-left:auto">${P.rating}</span>`:''}</div>
+  ${stage>2?`<div class="sc-projs">${P.projects.slice(0,5).map(p=>`<div class="sc-p">${fav(p.dom)}<span>${p.co}</span></div>`).join('')}</div>`:'<div class="sc-line"></div><div class="sc-line s"></div>'}
+  ${stage>3?`<div class="sc-foot"><span class="ztag">${P.projects.length} ZERO scenarios</span>${P.experience.length?`<span class="ztag">${P.experience.length} experience</span>`:''}${P.credentials.length?`<span class="ztag">${P.credentials.length} credential${P.credentials.length===1?'':'s'}</span>`:''}</div>`:''}`}
 async function runBuild(){
- S.page='build';$('#dstep').textContent='3 · Portfolio';document.body.classList.remove('zdark');document.body.classList.remove('zapp');show('build');beats(2,4);
- bthread.innerHTML='';$('#bqr').innerHTML='';$('#bcap').textContent='Building your portfolio';
- const mount=$('#bpaper');mount.innerHTML='<div id="pfbuild" style="border-radius:18px;overflow:hidden;background:#F6F5F3;border:1px solid var(--line2)"></div>';
- const sh=mountSnap($('#pfbuild'),'stu',{zoom:.58,hidden:true});const groups=snapGroups(sh);
- await bpush(zag(`Your ZERO record already has seven finished scenarios, three reviews and a verified rating. I am turning that into the page an employer sees.`),300);
- const names=['your name, track and verified rating','how you work, in your own words','your seven ZERO projects, Notion first','your Wealthsimple internship','your credentials','your degree','your interview readiness'];
- for(let i=0;i<groups.length;i++){
-  const m=await bpush(el(`<div class="zmsg"><div class="zab">Z</div><div class="zbub"><span class="zshimmer" data-t="Adding ${names[i]}">Adding ${names[i]}</span></div></div>`),i?420:800);
-  await wait(950);groups[i].forEach(g=>g.classList.add('in'));groups[i][0].scrollIntoView({behavior:'smooth',block:'nearest'});
-  m.querySelector('.zbub').innerHTML=`<span style="color:var(--tx3)">${ic('check')} ${names[i]}</span>`;icons()}
- $('#bcap').textContent='Your portfolio';
- await bpush(zag(`Notion leads because it is your only <b>Exceeds expectations</b>. Every project keeps its ZERO case-study label, so nothing here reads as paid experience. Does this sound like you?`),600);
- buildAsk()}
-function buildAsk(){bq(['Yes, this is right','Make changes'],i=>i===0?buildDone():buildChanges())}
-async function buildChanges(){await bpush(zme('Make changes'));await bpush(zag('What would you change?'),350);
- bq(['Lead with Shopify instead','Add a headline in my words','Hide my academics','That is everything'],async(i,t)=>{
-  if(i===3){buildDone();return}await bpush(zme(t));
-  if(i===0)S.portfolio.lead='shopify';if(i===1)S.portfolio.headline='I find the one number that changes the decision.';if(i===2)S.portfolio.hideAcademics=true;
-  const sh=$('#pfbuild').shadowRoot;applyEdits(sh);const m=sh.querySelector('main');const tgt=i===0?m.children[3]:i===1?m.children[1]:m.children[9];if(tgt)tgt.scrollIntoView({behavior:'smooth',block:'center'});
-  await bpush(zag(i===0?'Shopify leads now. Notion moves down with the rest.':i===1?'Added above your paragraph. It is your line, so tell me if it drifts.':'Hidden. Employers will not see it, and you can switch it back on any time.'),550);
-  buildChanges()})}
-async function buildDone(){await bpush(zme('Yes, this is right'));await bpush(zag(`<span class="ztag ok">${ic('check')}Saved</span><div style="margin-top:8px">That is your portfolio. It goes out with every application, and only the sections you keep on.</div>`),400);icons();await wait(1000);runSend()}
+ S.page='build';$('#dstep').textContent='3 · Portfolio';document.body.classList.remove('zdark');document.body.classList.remove('zapp');$('#zflowhd').classList.remove('zhide');show('build');beats(0,1);$('#zbeats').innerHTML='';
+ const B=$('#s-build');const P=PF;const ex=P.projects.filter(p=>/Exceeds/.test(p.review)).length;
+ const STEPS=[
+  ['Your ZERO scenarios',`${P.projects.length} finished with a review. Unfinished ones stay out.`,P.projects.length],
+  ['Manager reviews',`${ex} exceeds expectations, ${P.projects.length-ex} meets. Every one is labelled practice.`,P.projects.length],
+  ['What you told me',S.gapAdds&&S.gapAdds.length?`${S.gapAdds.length} added: ${S.gapAdds.map(e=>e.kind==='experience'?(e.org==='You told me'?e.role:e.org):(e.issuer==='You told me'?e.t:e.issuer)).filter((v,i,a)=>a.indexOf(v)===i).join(', ')}.`:'Nothing added. ZERO work only, and you can add more any time.',S.gapAdds?S.gapAdds.length:0],
+  ['How you work',`Written from your ${P.projects.length} reviews, in your voice. Yours to change.`,1],
+ ];
+ B.innerHTML=`<div class="bwrap"><h1 class="zq" id="bq" style="max-width:18ch"></h1>
+  <div class="bcol">
+   <div class="bsteps" id="bsteps">${STEPS.map((s,i)=>`<div class="bstep" data-i="${i}"><span class="bmk">${ic('check')}</span><div style="flex:1;min-width:0"><div class="bt">${s[0]}</div><div class="bs"></div></div></div>`).join('')}</div>
+   <div class="sendcard bcard" id="bcard">${bcardHTML(0)}</div>
+  </div>
+  <div class="zopts" id="bopts"></div></div>`;icons();
+ await say($('#bq'),'Building your portfolio.',300);
+ setTimeout(()=>$('#bcard').classList.add('in'),100);
+ for(let i=0;i<STEPS.length;i++){const st=$(`#bsteps [data-i="${i}"]`);st.classList.add('live');st.querySelector('.bs').innerHTML=`<span class="zshim" data-t="Reading">Reading</span>`;
+  await wait(i===0?900:750);st.classList.remove('live');st.classList.add('done');st.querySelector('.bs').textContent=STEPS[i][1];
+  $('#bcard').innerHTML=bcardHTML(i+1);icons()}
+ await wait(500);$('#bcard').innerHTML=bcardHTML(5);icons();
+ await clearLine('#bq');await say($('#bq'),'This is what an employer sees.',200);
+ const o=$('#bopts');const ask=()=>{o.innerHTML=`<button class="zopt" id="bok">This is me</button><button class="zopt" id="bedit">Change something</button>`;requestAnimationFrame(()=>requestAnimationFrame(()=>o.classList.add('in')));
+  $('#bok').onclick=()=>{$('#bok').classList.add('on');setTimeout(openTerms,420)};
+  $('#bedit').onclick=()=>{editMe(()=>{$('#bcard').innerHTML=bcardHTML(5);icons();toast('Changed. It goes out exactly like this.')})}};
+ ask()}
 
-/* ═══ 4 AUTO ═══ */
-async function runAuto(){
- S.page='auto';$('#dstep').textContent='4 · Auto-apply';show('auto');beats(3,4);
- await new Promise(r=>line($('#aq'),'Should I apply for you?',r));
- 
- const o=$('#aopts');o.innerHTML=`<button class="zopt" data-i="0">${ic('zap')}Yes, inside my brief</button><button class="zopt" data-i="1">Show me each one first</button>`;icons();
- requestAnimationFrame(()=>requestAnimationFrame(()=>o.classList.add('in')));
- $$('.zopt',o).forEach(b=>b.onclick=async()=>{S.auto=b.dataset.i==='0';$$('.zopt',o).forEach(x=>{if(x!==b){x.style.opacity=0;x.style.filter='blur(6px)'}});b.classList.add('on');
-  await wait(400);o.classList.remove('in');
-  await new Promise(r=>line($('#aq'),S.auto?'Auto-apply is on. Searching now.':'Review mode. Nothing goes out unread. Searching now.',()=>setTimeout(r,1200)));
-  $('#aq').innerHTML=`<span class="zshimmer" data-t="Scanning LinkedIn, Greenhouse, Lever and 6 careers pages" style="font-family:var(--f);font-size:16px;letter-spacing:-.016em">Scanning LinkedIn, Greenhouse, Lever and 6 careers pages</span>`;
-  await wait(2100);enterApp('home')})}
-
+/* ═══ 4 TERMS: one pop-up, pre-filled from onboarding. Shown once. ═══ */
+function openTerms(){const b=S.brief;
+ const F=[['Role','role',['Business analyst','Analyst or operations','Business analyst or customer success']],['Where','place',['Toronto','Toronto or remote','Anywhere in Canada']],['Work mode','mode',['Hybrid, 2 days at most','Hybrid, 3 days at most','Remote only']],['Salary floor','pay',['CA$60,000 per year','CA$70,000 per year','Ask me each time']],['Start date','start',['After graduation, May 2025','Two weeks from an offer','Now, part time until April']],['Work authorisation','auth',['Yes','Needs sponsorship','Ask me before applying']]];
+ openDlg(`<div class="zserif" style="font-size:24px;line-height:1.15">Still right?</div>
+  <div style="font-size:13px;color:var(--tx3);margin-top:6px">From your onboarding. Two things every form asks that it did not.</div>
+  <div style="margin-top:18px">${F.map(f=>`<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:600;color:var(--tx3);margin-bottom:7px;display:flex;align-items:center;gap:8px">${f[0]}${!b[f[1]]?'<span class="ztag amb" style="height:20px;font-size:10.5px">Forms ask this</span>':''}</div><div style="display:flex;gap:6px;flex-wrap:wrap" data-f="${f[1]}">${f[2].map(v=>`<button class="ztag ${b[f[1]]===v?'dk':'out'}" data-v="${v}" style="height:32px;padding:0 12px;font-size:13px;cursor:pointer">${v}</button>`).join('')}</div></div>`).join('')}</div>
+  <div class="dlgft"><button class="zbtn ghost" id="tlater">Decide the rest later</button><button class="zbtn dark" id="tsave">Save and send it out</button></div>`);
+ $$('#dbox [data-f] [data-v]').forEach(c=>c.onclick=()=>{$$('[data-v]',c.parentElement).forEach(x=>{x.className='ztag out'});c.className='ztag dk'});
+ const commit=()=>{F.forEach(f=>{const on=$(`#dbox [data-f="${f[1]}"] .ztag.dk`);if(on){S.brief[f[1]]=on.dataset.v;S.answers[f[1]]={value:on.dataset.v,src:'You confirmed it, today'}}});S.brief.deal=[S.brief.mode];
+  if(S.brief.start)JOBS.forEach(j=>{j.need=(j.need||[]).filter(n=>n!=='start')});closeDlg();runSend()};
+ $('#tsave').onclick=commit;$('#tlater').onclick=commit}
 
 /* ═══ DATA ═══ */
 const JOBS=[
@@ -821,7 +822,33 @@ const APPS=[
  {id:'wealthsimple',dom:'wealthsimple.com',t:'Business Operations Analyst',co:'Wealthsimple',st:'ask',up:'08:10',nx:'Three days in office breaks your rule',ev:[['08:10','Found on the Wealthsimple careers page'],['08:11','Blocked by your own rule: hybrid, two days at most']]},
 ];
 const ST={conf:['Confirmed','ok'],sent:['Submitted','ok'],subm:['Sending','out'],needs:['Needs you','amb'],held:['Held','dsh'],ask:['Your call','pur'],ready:['Ready to send','ok'],closed:['Closed by employer','dsh'],withdrawn:['Withdrawn','dsh'],unk:['Outcome unknown','amb']};
+/* one label, not two buckets: a role is on your pathway or near it */
+const FIT={fits:['Aligned with your pathway','ok','check'],explore:['Around your focus zone','pur','compass'],held:['Held','dsh','circle-pause']};
+const fitTag=j=>{const f=FIT[j.fit]||FIT.fits;return`<span class="ztag ${f[1]}">${ic(f[2])}${f[0]}</span>`};
+/* day one: what the agent is reasoning through, shown as it happens */
+const DAYONE=[
+ {t:'Reading Greenhouse. 84 postings since this morning.',m:'now'},
+ {t:'Skipped: Data Analyst at Shopify. San Francisco, and you are in Toronto.',m:'now'},
+ {t:'Skipped: BI Lead at Loblaw. Five years required, you have one.',m:'now'},
+ {t:'Kept: Analyst, Subscriber Retention at Spotify. No salary posted, asking the recruiter.',m:'now',found:'spotify'},
+ {t:'Reading LinkedIn. 212 postings.',m:'now'},
+ {t:'Kept: Business Operations Analyst at Wealthsimple. Three days in office, that is your call.',m:'now',found:'wealthsimple'},
+ {t:'Skipped: Product Analyst at Faire. Contract, and you said full time.',m:'now'},
+ {t:'Kept: Customer Success Associate at Intercom. Outside your role, near your evidence.',m:'now',found:'intercom'},
+ {t:'Reading Lever and 6 careers pages.',m:'now'},
+];
 function agentWork(){const p=S.paused,a=S.auto;const needs=APPS.filter(x=>['needs','ask','ready'].includes(x.st));
+ if(S.visit==='first'){const log=S.log.slice(-4).reverse();
+  return{
+  now:p?[{d:'wait',t:'Paused by you. Nothing is being read, drafted or sent.',m:'Now'}]
+    :(log.length?log.map((l,i)=>({d:i===0?'live':'done',t:l.t,m:i===0?'Now':'A moment ago'})):[{d:'live',t:'Opening Greenhouse, LinkedIn and Lever.',m:'Now'}]),
+  done:[{d:'done',t:'Sent your portfolio to 12 recruiters at 6 companies hiring for your brief',m:'Just now'},
+    {d:'done',t:'Applied to the three partner roles you said yes to',m:'Just now'},
+    {d:'done',t:`Built your portfolio from ${PF.projects.length} reviewed scenarios${S.gapAdds&&S.gapAdds.length?' and '+S.gapAdds.length+' things you told me':''}`,m:'Just now'}],
+  next:p?[{d:'wait',t:'Nothing until you resume',m:'Waiting on you'}]
+    :[{d:'',t:'Tell you the moment a recruiter opens your portfolio',m:'Usually within two days'},
+      {d:'',t:'Stop at the first form field I cannot answer and ask you',m:'When it happens'},
+      {d:'',t:a?'Send anything that clears every rule in your brief':'Bring you every role before it goes out',m:a?'Automatic':'Review mode'}]}}
  return{
  now:p?[{d:'wait',t:'Paused by you. Nothing is being read, drafted or sent.',m:'Since 11:32'}]
    :[{d:'live',t:'Reading 8 postings that went up on Greenhouse this hour',m:'Started 11:58'},
@@ -837,6 +864,7 @@ function agentWork(){const p=S.paused,a=S.auto;const needs=APPS.filter(x=>['need
      a?{d:'',t:'Send the next role that clears every rule in your brief',m:'Automatic'}:{d:'',t:'Send only what you approve',m:'Review mode'},
      {d:'',t:'Chase Spotify if the recruiter has not replied',m:'Thursday'}]}}
 const VIEWS=[['notion.so','Notion','Recruiter opened your portfolio. 6 minutes on the funnel diagnosis.','2h ago',true],['figma.com','Figma','Hiring manager opened your portfolio and your presentation.','Yesterday',true],['klarna.com','Klarna','Recruiter opened your profile, not your portfolio yet.','Yesterday',false]];
+const APPS_SEED=JSON.parse(JSON.stringify(APPS)),VIEWS_SEED=JSON.parse(JSON.stringify(VIEWS));
 
 /* ═══ helpers ═══ */
 function briefChips(){const b=S.brief;const out=[b.role,b.place,b.mode,b.lang,b.pay].filter(Boolean);
@@ -846,7 +874,7 @@ function briefChips(){const b=S.brief;const out=[b.role,b.place,b.mode,b.lang,b.
  +b.deal.filter(d=>d!==b.mode).map(d=>`<span class="ztag out">${d}</span>`).join('')}
 function stepsFor(j){return STEPS_BASE.map(s=>{
  let done=true,val='';
- if(s.k==='auth'){done=!!S.brief.auth&&S.brief.auth!=='Unknown, I will ask before applying';val=S.brief.auth}
+ if(s.k==='auth'){done=!!S.brief.auth&&!/ask me|unknown/i.test(S.brief.auth);val=S.brief.auth||'Their form asks for this'}
  if(s.k==='lang'){val=S.brief.lang}
  if(s.k==='start'){done=!!S.brief.start;val=S.brief.start||'Their form asks for this'}
  if(s.k==='pay'){done=!!S.brief.pay;val=S.brief.pay}
@@ -885,7 +913,7 @@ function openConsent(j){
   if(b.dataset.c==='brief'){S.brief.role='Business analyst or customer success';toast('Added. I will look for both from now on.')}
   else toast('Sending this one only. Your brief is unchanged.');
   const app=APPS.find(a=>a.id===j.id);if(app){app.st='subm';app.nx='Sending';app.up='now';app.ev.push(['now','You approved this out-of-brief role, one time']);submit(app)}
-  j.fit='fits';closeDlg();renderJobs()})}
+  j.fit='fits';closeDlg();rerender()})}
 function openOverride(j){
  openDlg(`<div class="zdt" style="font-size:22px">This breaks your own rule</div>
   <div class="zsub" style="text-align:left;margin:10px 0 0">You said hybrid, two days at most. ${j.co} wants three. I will never loosen your rule quietly, so this is your call.</div>
@@ -894,7 +922,7 @@ function openOverride(j){
   if(b.dataset.o==='2'){S.brief.mode='Hybrid, 3 days at most';S.brief.deal=S.brief.deal.map(d=>d.includes('Hybrid')?'Hybrid, 3 days at most':d);toast('Rule changed. I rechecked everything queued against it.')}
   else toast('Applying once. Your rule stands.');
   const app=APPS.find(a=>a.id===j.id);if(app){app.st='subm';app.nx='Sending';app.up='now';app.ev.push(['now','You overrode your own hybrid rule for this role']);submit(app)}
-  j.fit='fits';j.held='';closeDlg();renderJobs()})}
+  j.fit='fits';j.held='';closeDlg();rerender()})}
 function openHold(j){
  openDlg(`<div class="zdt" style="font-size:22px">I am waiting on ${j.co}</div>
   <div class="zsub" style="text-align:left;margin:10px 0 0">No salary is posted and your floor is ${S.brief.pay||'CA$60,000'}. I asked the recruiter on Monday and there is still no answer. An unknown essential is never a match, so I stopped rather than guess.</div>
@@ -902,9 +930,9 @@ function openHold(j){
  $$('#dbox [data-h]').forEach(b=>b.onclick=()=>{
   const app=APPS.find(a=>a.id===j.id);
   if(b.dataset.h==='send'){if(app){app.st='subm';app.nx='Sending';app.up='now';app.ev.push(['now','You accepted the unknown salary and released the hold']);submit(app)}
-   j.held='';closeDlg();renderJobs();toast('Released. It goes out with your floor stated in the note.');return}
+   j.held='';closeDlg();rerender();toast('Released. It goes out with your floor stated in the note.');return}
   if(app){app.up='now';app.nx='Recruiter chased again';app.ev.push(['now','Chased the recruiter for a salary range a second time'])}
-  closeDlg();renderJobs();if(S.page==='apps')renderApps();toast('Chased. If there is no answer by Thursday I will tell you.')})}
+  closeDlg();rerender();toast('Chased. If there is no answer by Thursday I will tell you.')})}
 function openSend(j){
  const app=APPS.find(a=>a.id===j.id);
  openPanel('Send to '+j.co,'This is exactly what goes out. It never changes after sending.',
@@ -915,11 +943,11 @@ function openSend(j){
   `<button class="zbtn ghost" onclick="closePanel()">Not now</button><button class="zbtn dark" id="dosend">Send it</button>`);
  $('#dosend').onclick=()=>{closePanel();if(app)submit(app)}}
 async function submit(a){
- a.st='subm';a.nx='In flight, duplicate lock held';a.up='now';renderApps();if(S.page==='home')renderHome();if(S.page==='jobs')renderJobs();
+ a.st='subm';a.nx='In flight, duplicate lock held';a.up='now';rerender();
  await wait(2000);a.st='sent';a.nx='Waiting for a receipt';a.up='now';a.ev.push(['now','Submitted. Snapshot of what went out stored']);
- renderApps();if(S.page==='home')renderHome();if(S.page==='jobs')renderJobs();
+ rerender();
  await wait(2600);a.st='conf';a.nx='No news yet';a.ev.push(['now',`Acknowledged by ${a.co}, reference ${a.id.slice(0,3).toUpperCase()}-${2100+a.t.length}`]);
- renderApps();if(S.page==='home')renderHome();if(S.page==='jobs')renderJobs()}
+ rerender()}
 
 
 /* ═══ 7 APPLICATIONS ═══ */
@@ -1043,14 +1071,14 @@ function openProject(id){
 
 function pfSection(key,title,body,addLabel){
  const on=PF.shared[key];
- if(window.emp&&!on)return'';
+ if(window.emp&&(!on||!body))return'';
  return`<section class="pfsec zarr" data-sec="${key}">
   <div class="pfhd"><h2>${title}</h2>
    ${window.emp?'':`<div class="pfacts">
      ${PFEDIT&&addLabel?`<button class="zbtn line sm" data-add="${key}">${ic('plus')}${addLabel}</button>`:''}
      ${PFEDIT?`<button class="pfshare ${on?'on':''}" data-share="${key}" title="${on?'Employers can see this':'Only you can see this'}">${ic(on?'eye':'eye-off')}</button>`:''}
    </div>`}</div>
-  ${body}</section>`}
+  ${body||`<div class="pfempty"><span>Nothing here yet.</span>${addLabel?`<button class="zbtn line sm" data-add="${key}">${ic('plus')}${addLabel}</button>`:''}</div>`}</section>`}
 function pfItem(inner,editAttr){
  return`<div class="pfitem">${inner}${PFEDIT&&!window.emp?`<div class="pfedit"><button class="pfic" ${editAttr} title="Edit">${ic('pencil')}</button></div>`:''}</div>`}
 
@@ -1138,13 +1166,22 @@ function P_weeks(){const open=SUGGESTIONS.filter(s=>!s.done).length;return open>
 
 /* ── editing dialogs ── */
 function field(label,id,val,ph,area){return`<label class="pffield"><span>${label}</span>${area?`<textarea id="${id}" rows="3" placeholder="${ph||''}">${val||''}</textarea>`:`<input id="${id}" value="${(val||'').replace(/"/g,'&quot;')}" placeholder="${ph||''}">`}</label>`}
-function editMe(){
+function editMe(after){
  openDlg(`<div class="zserif" style="font-size:22px">You</div>
   ${field('Name','f_name',PF.name)}${field('Track','f_track',PF.track)}${field('Location','f_loc',PF.loc)}
   ${field('Headline','f_head',PF.headline,'One line in your words')}
   ${field('About','f_about',PF.about,'',true)}
   <div class="dlgft"><button class="zbtn ghost" onclick="closeDlg()">Cancel</button><button class="zbtn dark" id="f_save">Save</button></div>`);
- $('#f_save').onclick=()=>{PF.name=$('#f_name').value;PF.track=$('#f_track').value;PF.loc=$('#f_loc').value;PF.headline=$('#f_head').value;PF.about=$('#f_about').value;closeDlg();renderPortfolio();toast('Saved.')}}
+ $('#f_save').onclick=()=>{PF.name=$('#f_name').value;PF.track=$('#f_track').value;PF.loc=$('#f_loc').value;PF.headline=$('#f_head').value;PF.about=$('#f_about').value;closeDlg();
+  if(after)after();else{renderPortfolio();toast('Saved.')}}}
+/* the gap conversation and the Add dialogs both land here */
+let PFN=100;
+function pfAdd(e){const id=e.kind[0]+(PFN++);const o=Object.assign({},e,{id});delete o.kind;
+ if(e.kind==='experience')PF.experience.push(o);else if(e.kind==='credentials')PF.credentials.push(o);else if(e.kind==='academics')PF.academics.push(o);return o}
+/* first run starts thin: ZERO work plus the degree from onboarding. The gap talk fills the rest. */
+const PF_SEED={experience:PF.experience.map(x=>Object.assign({},x)),credentials:PF.credentials.map(x=>Object.assign({},x))};
+function pfReset(full){PF.experience=full?PF_SEED.experience.map(x=>Object.assign({},x)):[];PF.credentials=full?PF_SEED.credentials.map(x=>Object.assign({},x)):[];PF.headline='';
+ SUGGESTIONS.forEach(s=>s.done=false)}
 function editProject(id){
  const p=PF.projects.find(x=>x.id===id);if(!p)return;
  openDlg(`<div class="zserif" style="font-size:22px">${p.co}</div>
@@ -1186,17 +1223,12 @@ const TOP3=[
  {id:'figma',co:'Figma',dom:'figma.com',t:'Analyst, Go-to-market Operations',why:'They want the recommendation, not the dashboard.',odds:'All three reviews say that is you'},
 ];
 async function runSend(){
- S.page='send';$('#dstep').textContent='4 · Going out';document.body.classList.remove('zdark');document.body.classList.remove('zapp');show('send');
- const st=$('#s-send');
+ S.page='send';$('#dstep').textContent='4 · Going out';document.body.classList.remove('zdark');document.body.classList.remove('zapp');$('#zflowhd').classList.remove('zhide');$('#zbeats').innerHTML='';show('send');
+ const st=$('#s-send');const first=S.visit==='first';
  st.innerHTML=`<div class="sendwrap">
   <div class="sendhead"><h1 class="zq" id="sendq" style="max-width:20ch"></h1><div class="sendsub" id="sendsub"></div></div>
   <div class="sendstage">
-   <div class="sendcard" id="sendcard">
-    <div class="sc-top"><div class="sc-av">RR</div><div><div class="sc-n">${PF.name}</div><div class="sc-r">${PF.track} · ${PF.loc}</div></div><span class="ztag ok" style="margin-left:auto">${PF.rating}</span></div>
-    <div class="sc-line"></div><div class="sc-line s"></div>
-    <div class="sc-projs">${PF.projects.slice(0,3).map(p=>`<div class="sc-p">${fav(p.dom)}<span>${p.co}</span></div>`).join('')}</div>
-    <div class="sc-foot"><span class="ztag">7 ZERO scenarios</span><span class="ztag ok">3 reviews</span></div>
-   </div>
+   <div class="sendcard" id="sendcard">${bcardHTML(5)}</div>
    <div class="sendorbit" id="sendorbit">${SEND_COS.map((c,i)=>`<div class="sendco" data-i="${i}">${fav(c[0])}</div>`).join('')}</div>
   </div>
   <div class="sendcount" id="sendcount"></div>
@@ -1210,24 +1242,32 @@ async function runSend(){
  await wait(500);
  $('#sendsub').textContent='Every recruiter hiring for your brief in Toronto and remote Canada.';$('#sendsub').classList.add('in');
  const cos=$$('#sendorbit .sendco');
- for(let i=0;i<cos.length;i++){setTimeout(()=>{cos[i].classList.add('in');const b=el('<span class="beam"></span>');$('#sendstage')||0;},i*95)}
+ for(let i=0;i<cos.length;i++)setTimeout(()=>cos[i].classList.add('in'),i*95);
  await wait(cos.length*95+300);
- const counters=[['12','recruiters'],['6','companies'],['2','opened it already']];
+ const counters=first?[['12','recruiters'],['6','companies']]:[['12','recruiters'],['6','companies'],['2','opened it already']];
  $('#sendcount').innerHTML=counters.map(c=>`<div class="cnt"><b data-to="${c[0]}">0</b><span>${c[1]}</span></div>`).join('');
  $('#sendcount').classList.add('in');
  $$('#sendcount b').forEach(b=>{const to=+b.dataset.to;let n=0;const iv=setInterval(()=>{n++;b.textContent=n;if(n>=to)clearInterval(iv)},Math.max(60,700/to))});
  await wait(1400);
  await clearLine('#sendq');
- await new Promise(r=>line($('#sendq'),'Three of them I would bet on.',()=>setTimeout(r,200)));
- $('#sendsub').textContent='Your evidence lines up with these one to one. Apply and I would expect a first round.';
- $('#sendtop').innerHTML=TOP3.map(t=>`<div class="top3"><div class="zlogo2 s40">${fav(t.dom)}</div>
+ await new Promise(r=>line($('#sendq'),'Three roles from ZERO partners, on your pathway.',()=>setTimeout(r,200)));
+ $('#sendsub').textContent='Open now, and your evidence lines up one to one. Say yes and I apply for you.';
+ $('#sendtop').innerHTML=TOP3.map(t=>`<div class="top3" data-row="${t.id}"><div class="zlogo2 s40">${fav(t.dom)}</div>
    <div style="flex:1;min-width:0"><div class="t3t">${t.t}</div><div class="t3c">${t.co} · ${t.why}</div><div class="t3o">${ic('sparkles')}${t.odds}</div></div>
-   <button class="zbtn dark sm" data-apply="${t.id}">Apply</button></div>`).join('');
+   <div style="display:flex;align-items:center;gap:8px;flex-shrink:0"><span style="font-size:12.5px;color:var(--tx3)">Can I apply for you?</span><button class="zbtn dark sm" data-apply="${t.id}">Yes</button></div></div>`).join('');
  $('#sendtop').classList.add('in');icons();
+ // bind before the pause: a visible Yes must never be inert
+ $$('#sendtop [data-apply]').forEach(b=>b.onclick=()=>{const id=b.dataset.apply;const wrap=b.parentElement;
+  wrap.innerHTML=`<span class="ztag ok">${ic('check')}Applying</span>`;icons();
+  if(first){const j=JOBS.find(x=>x.id===id);if(j&&!APPS.find(a=>a.id===id)){
+   // a form field the student deferred stops the application honestly instead of guessing
+   const blocked=(j.need||[]).includes('start')&&!S.brief.start;
+   APPS.push(blocked?{id,dom:j.dom,t:j.t,co:j.co,st:'needs',up:'now',nx:'Your start date',ev:[['now','You said yes on the way in'],['now','Stopped: their form needs a start date and I do not have one']]}
+    :{id,dom:j.dom,t:j.t,co:j.co,st:'subm',up:'now',nx:'Sending inside your brief',ev:[['now','You said yes on the way in'],['now','Built from your portfolio and your terms. Sending']]});
+   if(blocked){wrap.innerHTML=`<span class="ztag amb">${ic('circle-alert')}Needs your start date</span>`;icons();toast('Their form asks for a start date. It waits for you inside, nothing is guessed.');return}}}
+  toast('On it. It goes out with your portfolio and the terms you just confirmed.')});
  await wait(500);
  $('#sendcta').innerHTML=`<button class="zbtn lg dark" id="sendgo">Take me in</button>`;$('#sendcta').classList.add('in');
- $$('#sendtop [data-apply]').forEach(b=>b.onclick=()=>{b.textContent='Applied';b.classList.remove('dark');b.classList.add('line');b.disabled=true;
-  const a=APPS.find(x=>x.id===b.dataset.apply);if(a&&['ask','needs','held'].includes(a.st)===false){}toast('Queued. It goes out the moment every field is answered.')});
  $('#sendgo').onclick=()=>{$('#zflowhd').classList.add('zhide');enterApp('home')}}
 function placeOrbit(){const o=$('#sendorbit');if(!o)return;const n=$$('.sendco',o).length;
  $$('.sendco',o).forEach((c,i)=>{const a=(i/n)*Math.PI*2-Math.PI/2;const rx=290,ry=176;
@@ -1239,6 +1279,7 @@ const ROUNDS=[
  {id:'r1',co:'Notion',dom:'notion.so',role:'Growth Analyst, Self-serve',round:'First round · 45 min',who:'Priya Raman, Growth lead',when:'Thursday 2:00pm',state:'invited'},
  {id:'r2',co:'Figma',dom:'figma.com',role:'Analyst, GTM Operations',round:'Take-home review · 30 min',who:'Dan Whitfield, GTM ops',when:'Monday 11:00am',state:'invited'},
 ];
+const ROUNDS_SEED=JSON.parse(JSON.stringify(ROUNDS));
 function renderRounds(compact){
  const inv=ROUNDS.filter(r=>r.state==='invited');const acc=ROUNDS.filter(r=>r.state==='accepted');const later=ROUNDS.filter(r=>r.state==='later');
  if(!ROUNDS.length)return'';
@@ -1270,59 +1311,69 @@ function bindRounds(){
     ${okr('n','A question about their funnel','Prepare one. It is the part people skip')}`,
    `<button class="zbtn dark" onclick="closePanel()">Got it</button>`)});
 }
-function rerender(){if(S.page==='apps')renderApps();else if(S.page==='home')renderHome()}
+/* repaint only the page that is open; a timer must never swap the page under the user */
+function rerender(){if(S.page==='apps')renderApps();else if(S.page==='home')renderHome();else if(S.page==='jobs')renderJobs();else if(S.page==='portfolio')renderPortfolio()}
 
 /* ═══ shell nav ═══ */
 function show(id){$$('.zscr').forEach(s=>s.classList.toggle('on',s.id==='s-'+id));if(id)$('#zflowhd').classList.remove('zhide')}
 const PAGE_TITLE={home:'For you',jobs:'Explore',apps:'Applications',portfolio:'Portfolio'};
 function enterApp(p){const v=$('#zveil');v.classList.add('on');
- setTimeout(()=>{document.body.classList.remove('zdark');document.body.classList.add('zapp');$('#zflowhd').classList.add('zhide');$$('.zscr').forEach(s=>s.classList.remove('on'));nav(p)},360);
+ setTimeout(()=>{document.body.classList.remove('zdark');document.body.classList.add('zapp');$('#zflowhd').classList.add('zhide');$$('.zscr').forEach(s=>s.classList.remove('on'));nav(p);if(S.visit==='first')dayOne()},360);
  setTimeout(()=>v.classList.remove('on'),440);
- setTimeout(()=>{if(S.visit==='first'&&!S.toured)startTour()},1000)}
+ // the tour only starts if the student is still on For you; if they have already moved, it must not drag them back
+ setTimeout(()=>{if(S.visit==='first'&&!S.toured&&S.page==='home')startTour()},1000)}
 function nav(p){S.page=p;document.body.classList.toggle('pfpage',p==='portfolio');$$('#zseg button').forEach(b=>b.classList.toggle('on',b.dataset.nav===p));$('#dstep').textContent=PAGE_TITLE[p]||p;
  if(p==='home')renderHome();if(p==='jobs')renderJobs();if(p==='apps')renderApps();if(p==='portfolio')renderPortfolio();
- renderAside();$('#zsbody').scrollTop=0;arrive($('#zsbody'));location.hash='#/'+p;icons()}
+ $('#zsbody').scrollTop=0;arrive($('#zsbody'));location.hash='#/'+p;icons()}
 $$('#zseg button').forEach(b=>b.onclick=()=>{if(b.dataset.nav==='jobs')S.view='list';nav(b.dataset.nav)});
+function renderAside(){}
 
-/* ═══ right column: updates and what is happening ═══ */
-const NEWSFEED=[
- ['trending-up','Demand for business analysts in Toronto is up 18% this quarter','2h ago'],
- ['users','482 analyst roles were added across your sources in the last 24 hours','4h ago'],
- ['sparkles','Your peer Neha landed a Paid Media role at Netflix','Yesterday'],
-];
-function renderAside(){return;
- const A=$('#zaside');if(!A)return;
- const views=VIEWS.map(v=>`<div class="zupd"><div class="th">${fav(v[0])}</div><div style="flex:1;min-width:0"><div class="tx"><b>${v[1]}</b> ${v[2].replace(/^[A-Z]/,c=>c.toLowerCase())}</div><div class="tm">${v[3]}</div></div>${v[4]?'<span class="zdotlive"></span>':''}</div>`).join('');
- const news=NEWSFEED.map(n=>`<div class="zupd"><div class="th">${ic(n[0])}</div><div style="flex:1;min-width:0"><div class="tx">${n[1]}</div><div class="tm">${n[2]}</div></div></div>`).join('');
- A.innerHTML=`<div class="grp"><div class="gh"><span class="zminl">WHO LOOKED AT YOU</span><span class="zminl" style="color:var(--tx4)">THIS WEEK</span></div>${views}</div>
-  <div class="grp"><div class="gh"><span class="zminl">WHAT IS HAPPENING NOW</span></div>${news}</div>`;
- icons()}
+/* ═══ visit states and the day-one ticker ═══ */
+const VISITS=[['first','Day one'],['soon','A few days in'],['returning','Coming back'],['regular','Been here a while']];
+function seedVisit(v,keepPf){S.visit=v;clearInterval(S._tick);S._tick=null;S.log=[];
+ APPS.length=0;VIEWS.length=0;ROUNDS.length=0;
+ if(v==='first'){S.found=['notion','klarna','figma'];if(!keepPf){pfReset(false);S.gapAdds=[]}}
+ else{APPS_SEED.forEach(a=>APPS.push(JSON.parse(JSON.stringify(a))));VIEWS_SEED.forEach(x=>VIEWS.push(x.slice()));ROUNDS_SEED.forEach(r=>ROUNDS.push(Object.assign({},r)));S.found=JOBS.map(j=>j.id);pfReset(true);if(!S.brief.auth)S.brief.auth='Yes'}
+ S.toured=v!=='first'}
+const dayOneLive=()=>S.visit==='first'&&S.log.length<DAYONE.length;
+function dayOne(){if(S._tick||S.visit!=='first')return;
+ APPS.forEach(a=>{if(a.st==='subm')setTimeout(()=>{a.st='sent';a.nx='Waiting for a receipt';a.ev.push(['now','Submitted. Snapshot of what went out stored']);if(S.page==='apps')renderApps();if(S.page==='home')renderHome()},3000)});
+ S._tick=setInterval(()=>{if(S.paused)return;const k=S.log.length;if(k>=DAYONE.length){clearInterval(S._tick);return}
+  const it=DAYONE[k];S.log.push(it);
+  S.lastFound=null;
+  if(it.found&&!S.found.includes(it.found)){S.found.push(it.found);S.lastFound=it.found;const j=JOBS.find(x=>x.id===it.found);toast('Found: '+j.t+' at '+j.co)}
+  if(S.page==='home'||S.page==='jobs'){const sc=$('#zsbody').scrollTop;if(S.page==='home')renderHome();else renderJobs();$$('#zsbody .zarr').forEach(a=>a.classList.add('in'));$('#zsbody').scrollTop=sc}},3400)}
 
 /* ═══ FOR YOU ═══ */
 function renderHome(){
- const c={};APPS.forEach(a=>c[a.st]=(c[a.st]||0)+1);
  const needs=APPS.filter(a=>['needs','ask','ready'].includes(a.st));
- const V=S.visit;const NEW={first:6,returning:2,regular:0}[V];
- const hello=V==='first'?`Good morning, ${S.me.first}.`:V==='returning'?`Welcome back, ${S.me.first}.`:`Morning, ${S.me.first}.`;
+ const V=S.visit;const W=agentWork();const tab=S.agentTab;
+ const visible=JOBS.filter(j=>S.found.includes(j.id));
+ const NEW={first:visible.length,soon:6,returning:2,regular:0}[V];
+ const hello=V==='first'?`Welcome in, ${S.me.first}.`:V==='soon'?`Good morning, ${S.me.first}.`:V==='returning'?`Welcome back, ${S.me.first}.`:`Morning, ${S.me.first}.`;
  const summary=V==='first'
+  ?`Your portfolio is with 12 recruiters at 6 companies. ${APPS.length?APPS.length+' application'+(APPS.length===1?' is':'s are')+' on the way':'Nothing has gone out beyond that yet'}, and I am reading everything else.`
+  :V==='soon'
   ?`I read 412 postings since 6am. Six are worth your time, ${S.auto?'two went out on their own':'two are drafted and waiting for you'}, and ${needs.length} need a decision only you can make.`
   :V==='returning'
   ?`Since Tuesday: Notion acknowledged you, Figma opened your portfolio twice, and Klarna is still waiting on the one answer I cannot give them.`
   :`Nothing new overnight. ${needs.length?needs[0].co+' is still the only thing waiting on you.':'Everything is with the employers now.'}`;
- const detail=V==='regular'
+ const detail=V==='first'
+  ?`Most portfolios get opened within two days. I will tell you the moment one is, and I stop at the first form field I cannot answer.`
+  :V==='regular'
   ?`I checked 96 postings this morning and none of them beat what you already have out.`
   :`Notion acknowledged your application at 11:20. Klarna is drafted but their form wants a start date I do not have. Spotify is held because they never posted a salary and your floor is ${S.brief.pay.replace(' per year','')}.`;
- const W=agentWork();const tab=S.agentTab;
  $('#zsbody').innerHTML=`<div class="zin">
   <h1 class="ztitle zarr" style="margin:8px 0 24px">${hello}</h1>
   <div class="zsum zarr"><div class="big">${summary}</div><div class="sm">${detail}</div></div>
 
   <div class="zarr" style="margin-top:34px"><div class="zsecl">Needs you<button class="zbtn ghost sm" data-goto="apps">All applications</button></div>
    <div class="zrows">${needs.length?needs.map(a=>`<div class="zrow"><div class="zlogo2 s40">${fav(a.dom)}</div><div class="grow"><div class="t">${a.co} · ${a.nx}</div><div class="s">${a.t}</div></div><button class="zbtn dark sm" data-fix="${a.id}">${a.st==='needs'?'Answer':'Decide'}</button></div>`).join('')
-    :`<div class="zrow"><div class="grow"><div class="t">Nothing needs you</div><div class="s">I will interrupt only when a form asks something I cannot answer.</div></div></div>`}</div></div>
+    :`<div class="zempty"><b>Nothing yet.</b>${V==='first'?'The first form that asks what I do not know lands here. I never guess it.':'I will interrupt only when a form asks something I cannot answer.'}</div>`}</div></div>
 
-  ${NEW?`<div class="zarr" style="margin-top:34px"><div class="zsecl">${V==='first'?NEW+' roles I found for you':NEW+' new since Tuesday'}<button class="zbtn ghost sm" data-goto="jobs">Explore all</button></div>
-   <div class="zrows">${JOBS.slice(0,NEW===2?2:3).map(j=>`<div class="zrow" data-open="${j.id}" style="cursor:pointer"><div class="zlogo2 s40">${fav(j.dom)}</div><div class="grow"><div class="t">${j.t} ${j.fit==='explore'?'<span class="ztag pur">Worth exploring</span>':j.fit==='held'?'<span class="ztag dsh">Held</span>':'<span class="ztag ok">Fits your brief</span>'}</div><div class="s">${j.co} · ${j.loc} · ${j.pay}</div></div>${ic('chevron-right')}</div>`).join('')}</div></div>`:''}
+  ${NEW?`<div class="zarr" style="margin-top:34px"><div class="zsecl">${V==='first'?(visible.length>3?visible.length+' roles, and counting':'3 roles from ZERO partners'):V==='soon'?NEW+' roles I found for you':NEW+' new since Tuesday'}<button class="zbtn ghost sm" data-goto="jobs">Explore all</button></div>
+   <div class="zrows">${(V==='first'?visible:JOBS.slice(0,NEW===2?2:3)).map(j=>`<div class="zrow" data-open="${j.id}" style="cursor:pointer"><div class="zlogo2 s40">${fav(j.dom)}</div><div class="grow"><div class="t">${j.t} ${fitTag(j)}</div><div class="s">${j.co} · ${j.loc} · ${j.pay}</div></div>${ic('chevron-right')}</div>`).join('')}
+   ${dayOneLive()&&!S.paused?`<div class="zloadrow"><span class="live"></span>Reading ${296-S.log.length*18} more on Greenhouse, LinkedIn and Lever. Anything that clears your brief lands here.</div>`:''}</div></div>`:''}
 
   <div class="zarr" style="margin-top:34px" id="hagentcard"><div class="zsecl">Your agent<span class="ztag ${S.paused?'amb':S.auto?'ok':'out'}">${S.paused?'Paused':S.auto?'Applying for you':'Review mode'}</span></div>
    <div class="zcard" style="padding:18px 20px">
@@ -1331,8 +1382,9 @@ function renderHome(){
 
   ${renderRounds()}
 
-  <div class="zarr" style="margin-top:34px"><div class="zsecl">Who looked at you<span style="font-size:13px;color:var(--tx3);font-weight:400">this week</span></div>
-   <div class="zrows">${VIEWS.map(v=>`<div class="zrow"><div class="zlogo2 s40">${fav(v[0])}</div><div class="grow"><div class="t">${v[1]}</div><div class="s">${v[2]}</div></div><span style="font-size:12.5px;color:var(--tx3)">${v[3]}</span>${v[4]?'<span style="width:7px;height:7px;border-radius:99px;background:var(--ok)"></span>':''}</div>`).join('')}</div></div>
+  <div class="zarr" style="margin-top:34px"><div class="zsecl">Who looked at you<span style="font-size:13px;color:var(--tx3);font-weight:400">${V==='first'?'':'this week'}</span></div>
+   <div class="zrows">${VIEWS.length?VIEWS.map(v=>`<div class="zrow"><div class="zlogo2 s40">${fav(v[0])}</div><div class="grow"><div class="t">${v[1]}</div><div class="s">${v[2]}</div></div><span style="font-size:12.5px;color:var(--tx3)">${v[3]}</span>${v[4]?'<span style="width:7px;height:7px;border-radius:99px;background:var(--ok)"></span>':''}</div>`).join('')
+    :`<div class="zempty"><b>Nobody yet.</b>It went out ${V==='first'?'minutes':'days'} ago. Most portfolios are opened within two days, and you will see who, and for how long.</div>`}</div></div>
 
   <div class="zarr" style="margin-top:34px" id="hbriefcard"><div class="zsecl">Your search<button class="zbtn ghost sm" id="hedit">Edit</button></div>
    <div class="zcard" style="padding:20px 22px">
@@ -1351,27 +1403,30 @@ function renderHome(){
  bindRounds();$('#zappdot').style.display=needs.length?'':'none';icons()}
 
 /* ═══ EXPLORE ═══ */
-function jobCard(j){const s=SAVED[j.id];
- return`<div class="zjc" data-j="${j.id}">
+function jobCard(j,isNew){const s=SAVED[j.id];
+ return`<div class="zjc ${isNew?'new':''}" data-j="${j.id}">
   <div class="top"><div class="zlogo2 s40">${fav(j.dom)}</div><div style="min-width:0;flex:1">
    <div class="co">${j.co}${j.live?'<i></i>Actively hiring':''}</div>
    <div class="ti">${j.t}</div></div>
    <button class="zjsave ${s?'on':''}" data-save="${j.id}">${ic(s?'bookmark-check':'bookmark')}</button></div>
   <div class="lo">${j.loc} · ${j.mode} · ${j.pay==='Not listed'?'salary not listed':j.pay}</div>
-  <div class="tags">${j.fit==='explore'?'<span class="ztag pur">Worth exploring</span>':j.fit==='held'?'<span class="ztag dsh">Held</span>':'<span class="ztag ok">Fits your brief</span>'}${j.need&&j.need.includes('start')?'<span class="ztag amb">Needs your start date</span>':''}</div></div>`}
+  <div class="tags">${fitTag(j)}${j.need&&j.need.includes('start')?'<span class="ztag amb">Needs your start date</span>':''}</div></div>`}
 function renderJobs(){
  const q=(S.q||'').toLowerCase();
  const list=JOBS.filter(j=>{
+  if(!S.found.includes(j.id))return false;
   if(S.filter==='fits'&&j.fit!=='fits')return false;
   if(S.filter==='explore'&&j.fit!=='explore')return false;
   if(S.filter==='saved'&&!SAVED[j.id])return false;
   if(q&&!(j.t+j.co+j.loc).toLowerCase().includes(q))return false;return true});
+ const last=S.visit==='first'?S.lastFound:null;
  $('#zsbody').innerHTML=`<div class="zin">
-  <h1 class="ztitle zarr" style="margin:8px 0 20px">${list.length} role${list.length===1?'':'s'} worth your time</h1>
+  <h1 class="ztitle zarr" style="margin:8px 0 20px">${list.length} role${list.length===1?'':'s'} ${S.visit==='first'?'on your pathway':'worth your time'}</h1>
   <div class="zarr" style="display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap">
    <div style="display:flex;align-items:center;gap:9px;height:40px;padding:0 16px;background:var(--card);border:1px solid var(--line2);border-radius:99px;flex:1;min-width:200px">${ic('search')}<input id="jq" placeholder="Search roles or companies" value="${S.q||''}" style="flex:1;font-size:14px"></div>
-   <div class="ztabs">${[['all','All'],['fits','Fits'],['explore','Explore'],['saved','Saved']].map(f=>`<button class="${S.filter===f[0]?'on':''}" data-f="${f[0]}">${f[1]}</button>`).join('')}</div></div>
-  <div class="zjlist zarr">${list.length?list.map(jobCard).join(''):`<div class="zcard" style="padding:44px;text-align:center;font-size:14px;color:var(--tx3)">Nothing matches that. Clear the search or widen your brief and I will look again.</div>`}</div></div>`;
+   <div class="ztabs">${[['all','All'],['fits','Aligned'],['explore','Around'],['saved','Saved']].map(f=>`<button class="${S.filter===f[0]?'on':''}" data-f="${f[0]}">${f[1]}</button>`).join('')}</div></div>
+  <div class="zjlist zarr">${list.length?list.map(j=>jobCard(j,j.id===last)).join(''):`<div class="zempty" style="text-align:center;padding:40px">${S.filter==='saved'?'<b>Nothing saved.</b>The bookmark on any role keeps it here.':'<b>Nothing matches that.</b>Clear the search or widen your brief and I will look again.'}</div>`}
+   ${dayOneLive()&&!S.paused?`<div class="zloadrow"><span class="live"></span>Reading ${296-S.log.length*18} more on Greenhouse, LinkedIn and Lever.</div>`:''}</div></div>`;
  $('#jq').addEventListener('input',e=>{S.q=e.target.value;const sc=$('#zsbody').scrollTop;renderJobs();$('#zsbody').scrollTop=sc;$('#jq').focus()});
  $$('#zsbody [data-f]').forEach(b=>b.onclick=()=>{S.filter=b.dataset.f;renderJobs()});
  $$('#zsbody [data-j]').forEach(c=>c.onclick=e=>{if(e.target.closest('[data-save]'))return;selectJob(c.dataset.j)});
@@ -1385,9 +1440,9 @@ function openJobSheet(id){
  openPanel(j.t,`${j.co} · ${j.loc} · ${j.mode}`,
   `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
     <span style="font-family:var(--serif);font-size:20px;letter-spacing:-.02em">${j.pay==='Not listed'?'<span style="font-size:14px;color:var(--tx3);font-family:var(--f)">No salary listed</span>':j.pay}</span>
-    ${app2?`<span class="ztag ${ST[app2.st][1]}">${ST[app2.st][0]}</span>`:'<span class="ztag dsh">Example posting</span>'}</div>
+    ${app2?`<span class="ztag ${ST[app2.st][1]}">${ST[app2.st][0]}</span>`:fitTag(j)}</div>
    <div class="why ${j.fit==='explore'?'pur':''}" style="margin-top:20px;background:${j.fit==='explore'?'var(--purbg)':'var(--okbg)'};border-radius:16px;padding:18px 20px">
-    <div class="wt" style="font-size:12.5px;font-weight:600;color:${j.fit==='explore'?'var(--pur)':'var(--ok)'};display:flex;align-items:center;gap:7px;margin-bottom:7px">${ic(j.fit==='explore'?'sparkles':'check')}${j.fit==='explore'?'Why I am showing you something off brief':'Why I put this in front of you'}</div>
+    <div class="wt" style="font-size:12.5px;font-weight:600;color:${j.fit==='explore'?'var(--pur)':'var(--ok)'};display:flex;align-items:center;gap:7px;margin-bottom:7px">${ic(j.fit==='explore'?'compass':'check')}${j.fit==='explore'?'Why I am showing you something near your pathway':'Why I put this in front of you'}</div>
     <p style="font-size:14.5px;line-height:1.6">${j.why}</p>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px">${j.src.map(s=>`<span class="ztag" style="background:#fff">${ic('file-text')}${s}</span>`).join('')}</div></div>
    ${j.held?`<div style="margin-top:10px;background:var(--ambbg);border-radius:16px;padding:18px 20px"><div style="font-size:12.5px;font-weight:600;color:var(--amb);display:flex;align-items:center;gap:7px;margin-bottom:7px">${ic('circle-pause')}What is holding it</div><p style="font-size:14.5px;line-height:1.6">${j.held}</p></div>`:''}
@@ -1401,7 +1456,7 @@ function openJobSheet(id){
    <div style="font-size:14px;font-weight:600;margin:26px 0 10px">About the role</div>
    <ul style="font-size:14px;line-height:1.7;color:var(--tx2)">${j.about.map(a=>`<li style="margin-left:17px;margin-bottom:5px">${a}</li>`).join('')}</ul>`,
   `<button class="zbtn ghost" data-a="not">Not for me</button><button class="zbtn line" data-a="save">${ic(SAVED[j.id]?'bookmark-check':'bookmark')}${SAVED[j.id]?'Saved':'Save'}</button>
-   ${j.fit==='explore'?'<button class="zbtn dark" data-a="consent">Yes, apply</button>':j.fit==='held'?'<button class="zbtn dark" data-a="override">Override my rule</button>':j.held?'<button class="zbtn dark" data-a="hold">Decide on the hold</button>':blocked?`<button class="zbtn dark" data-a="answer">Answer ${blocked.n.toLowerCase()}</button>`:`<button class="zbtn dark" data-a="apply">${S.auto?'Send now':'Review and send'}</button>`}`);
+   ${app2&&['subm','sent','conf'].includes(app2.st)?`<span class="ztag ok" style="height:38px;padding:0 14px">${ic('check')}${ST[app2.st][0]}</span>`:j.fit==='explore'?'<button class="zbtn dark" data-a="consent">Yes, apply</button>':j.fit==='held'?'<button class="zbtn dark" data-a="override">Override my rule</button>':j.held?'<button class="zbtn dark" data-a="hold">Decide on the hold</button>':blocked?`<button class="zbtn dark" data-a="answer">Answer ${blocked.n.toLowerCase()}</button>`:`<button class="zbtn dark" data-a="apply">${S.auto?'Send now':'Review and send'}</button>`}`);
  $$('#zpanel [data-a]').forEach(b=>b.onclick=()=>{const k=b.dataset.a;
   if(k==='save'){SAVED[j.id]=!SAVED[j.id];renderJobs();openJobSheet(id);return}
   if(k==='answer'){closePanel();askStart(APPS.find(a=>a.id===j.id)||{id:j.id,co:j.co,t:j.t,ev:[],st:'needs'});return}
@@ -1416,16 +1471,18 @@ const STAGE=[
  ['reply','Replied',a=>a.st==='conf'],
  ['held','Held',a=>['held','closed','withdrawn'].includes(a.st)],
 ];
-function renderApps(){
+const STAGE_EMPTY={need:'Nothing is waiting on you. I stop here the first time a form asks what I do not know.',flight:'Nothing is in flight. Say yes to a role and it lands here while it sends.',reply:'No employer has replied yet. Portfolios are usually opened within two days, and I will tell you the moment one is.',held:'Nothing is held. A role lands here only when it breaks one of your rules or hides an essential.'};
+function renderApps(fromClick){
  const groups={};STAGE.forEach(s=>groups[s[0]]=APPS.filter(s[2]));
  const iv=ROUNDS.length;
- if(!groups[S.appTab]||!groups[S.appTab].length){const first=STAGE.find(s=>groups[s[0]].length);if(first)S.appTab=first[0]}
+ // arriving on the page lands on the first stage with something in it; a click on an empty stage is honoured and shows its empty state
+ if(!fromClick&&(!groups[S.appTab]||!groups[S.appTab].length)){const first=STAGE.find(s=>groups[s[0]].length);if(first)S.appTab=first[0]}
  const cur=groups[S.appTab]||[];
  const total=APPS.length;
  $('#zsbody').innerHTML=`<div class="zin">
   <div class="zarr" style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:8px 0 6px">
    <h1 class="ztitle" style="margin:0">Your applications</h1>
-   <span style="font-size:13px;color:var(--tx3)">${total} live · ${iv} interview${iv===1?'':'s'} booked</span></div>
+   <span style="font-size:13px;color:var(--tx3)">${total?total+' live':'Nothing live yet'}${iv?' · '+iv+' interview'+(iv===1?'':'s')+' booked':''}</span></div>
 
   <div class="pipe zarr">${STAGE.map((s,i)=>{const n=groups[s[0]].length;const on=S.appTab===s[0];
    return`<button class="pipestep ${on?'on':''} ${n?'':'empty'}" data-at="${s[0]}">
@@ -1443,11 +1500,9 @@ function renderApps(){
       <div class="anext">${ic('corner-down-right')}${a.nx}</div></div>
      <div style="text-align:right;flex-shrink:0"><span class="ztag ${ST[a.st][1]}">${ST[a.st][0]}</span><div class="atime">${a.up}</div></div>
      ${ic('chevron-right')}</div>`}).join('')
-   :`<div class="zcard" style="padding:48px 30px;text-align:center">
-      <div style="font-size:15px;font-weight:600">Nothing in ${STAGE.find(s=>s[0]===S.appTab)[1].toLowerCase()}</div>
-      <div style="font-size:13.5px;color:var(--tx3);margin-top:6px">${S.appTab==='need'?'Nothing is waiting on you right now.':S.appTab==='reply'?'No employer has replied yet. I will tell you the moment one does.':'Nothing here yet.'}</div></div>`}</div>
+   :`<div class="zempty" style="padding:40px 30px;text-align:center"><b>Nothing in ${STAGE.find(s=>s[0]===S.appTab)[1].toLowerCase()}.</b>${STAGE_EMPTY[S.appTab]}</div>`}</div>
  </div>`;
- $$('#zsbody [data-at]').forEach(b=>b.onclick=()=>{S.appTab=b.dataset.at;renderApps();arrive($('#zsbody'))});
+ $$('#zsbody [data-at]').forEach(b=>b.onclick=()=>{S.appTab=b.dataset.at;renderApps(true);arrive($('#zsbody'))});
  $$('#zsbody [data-app]').forEach(r=>r.onclick=()=>openApp(APPS.find(a=>a.id===r.dataset.app)));
  bindRounds();
  $('#zappdot').style.display=groups.need.length?'':'none';icons()}
@@ -1457,11 +1512,10 @@ function employersWhoSaw(){return APPS.filter(a=>['sent','conf','subm'].includes
 
 /* ═══ tour ═══ */
 const TOUR=[
- {sel:'#zseg',t:'Explore is the job board. Applications is what I already sent.',pos:'below'},
+ {sel:'#zseg',t:'Explore is every role I have found. Applications is what went out and where it stands.',pos:'below'},
  {sel:'.zsum',t:'My report. It is different every time you open this.',pos:'below'},
- {sel:'#hagentcard',t:'One agent. What it is doing, what it did, what it will do next.',pos:'below'},
+ {sel:'#hagentcard',t:'One agent. What it is doing right now, what it did, what it will do next.',pos:'below'},
  {sel:'#hbriefcard',t:'Switch me off here. Pause stops everything, including anything mid-flight.',pos:'above'},
- 
 ];
 let tourI=-1;
 function tourAt(i){tourI=i;const st=TOUR[i];const t=$(st.sel);const ring=$('#ztring'),card=$('#ztcard');
@@ -1484,22 +1538,28 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(tourI>=0)endTour
 window.addEventListener('resize',()=>{if(tourI>=0)tourAt(tourI)});
 
 /* ═══ demo menu ═══ */
+function startFlow(){endTour();closePanel();closeDlg();seedVisit('first');lineTok=0;runUnlock()}
 $('#dmenu').onclick=()=>{const m=$('#zmenu');m.classList.toggle('on');
- if(m.classList.contains('on')){m.innerHTML='<div class="h">VISIT</div>'+
-  [['first','First time here'],['returning','Coming back'],['regular','Been here a while']].map(v=>`<button class="${S.visit===v[0]?'on':''}" data-v="${v[0]}">${v[1]}</button>`).join('')+
-  '<div class="h">RUN</div><button data-r="tour">Replay the tour</button><button data-r="flow">Start from the welcome</button>';
-  $$('#zmenu [data-v]').forEach(b=>b.onclick=()=>{S.visit=b.dataset.v;S.toured=S.visit!=='first';m.classList.remove('on');nav('home');if(S.visit==='first')startTour();else endTour()});
+ if(m.classList.contains('on')){m.innerHTML='<div class="h">OPENING</div>'+
+  [['voice','Voice, asks what ZERO never saw'],['intro','Intro only, no questions']].map(v=>`<button class="${S.mode===v[0]?'on':''}" data-m="${v[0]}">${v[1]}</button>`).join('')+
+  '<div class="h">VISIT</div>'+VISITS.map(v=>`<button class="${S.visit===v[0]?'on':''}" data-v="${v[0]}">${v[1]}</button>`).join('')+
+  '<div class="h">RUN</div><button data-r="tour">Replay the tour</button><button data-r="flow">Start from the unlock</button>';
+  $$('#zmenu [data-m]').forEach(b=>b.onclick=()=>{S.mode=b.dataset.m;m.classList.remove('on');toast(S.mode==='voice'?'Voice opening. It asks for what ZERO never saw.':'Intro only. It builds from your ZERO record and nothing else.');if(!document.body.classList.contains('zapp'))startFlow()});
+  $$('#zmenu [data-v]').forEach(b=>b.onclick=()=>{seedVisit(b.dataset.v);m.classList.remove('on');
+   if(!document.body.classList.contains('zapp')){S.toured=true;enterApp('home')}else{nav('home');if(S.visit==='first')dayOne()}
+   if(S.visit==='first'){S.toured=false;startTour()}else endTour()});
   $$('#zmenu [data-r]').forEach(b=>b.onclick=()=>{m.classList.remove('on');
-   if(b.dataset.r==='tour'){nav('home');startTour()}
-   else{endTour();document.body.classList.add('zdark');document.body.classList.remove('zapp');$('#zflowhd').classList.remove('zhide');lineTok=0;S.toured=false;runWelcome()}})}};
+   if(b.dataset.r==='tour'){if(!document.body.classList.contains('zapp'))enterApp('home');else{nav('home');startTour()}}
+   else startFlow()})}};
 document.addEventListener('click',e=>{if(!e.target.closest('.zdbg'))$('#zmenu').classList.remove('on')});
-const FLOW=['welcome','talk','build','send','auto','home','jobs','apps','portfolio'];
-function goStep(d){const i=FLOW.indexOf(S.page==='talk'?(lineTok>0?'talk':'welcome'):S.page);const n=FLOW[Math.max(0,Math.min(FLOW.length-1,i+d))];
- if(n==='welcome'){document.body.classList.add('zdark');document.body.classList.remove('zapp');$('#zflowhd').classList.remove('zhide');lineTok=0;runWelcome()}
- else if(n==='talk'){document.body.classList.add('zdark');document.body.classList.remove('zapp');$('#zflowhd').classList.remove('zhide');runTalk()}
- else if(n==='build'){document.body.classList.remove('zapp');$('#zflowhd').classList.remove('zhide');runBuild()}
- else if(n==='send'){document.body.classList.remove('zdark');document.body.classList.remove('zapp');runSend()}
- else if(n==='auto'){document.body.classList.remove('zdark');document.body.classList.remove('zapp');runAuto()}
+const FLOW=['unlock','intro','gaps','build','send','home','jobs','apps','portfolio'];
+function goStep(d){const cur=FLOW.indexOf(S.page)<0?'home':S.page;const i=FLOW.indexOf(cur);const n=FLOW[Math.max(0,Math.min(FLOW.length-1,i+d))];
+ lineTok++;clearTimeout(beatT);stopWave();
+ if(n==='unlock')runUnlock();
+ else if(n==='intro')runIntro();
+ else if(n==='gaps'){if(S.mode==='intro'){S.mode='voice';toast('Switched to the voice opening for this step.')}runGaps()}
+ else if(n==='build')runBuild();
+ else if(n==='send')runSend();
  else{if(!document.body.classList.contains('zapp')){S.toured=true;enterApp(n)}else nav(n)}}
 $('#dprev').onclick=()=>goStep(-1);$('#dnext').onclick=()=>goStep(1);
 $('#dstep').onclick=()=>$('#dmenu').click();
@@ -1507,8 +1567,8 @@ $('#dstep').onclick=()=>$('#dmenu').click();
 /* ═══ boot ═══ */
 icons();
 const h=location.hash.replace('#/','');
-if(['home','jobs','apps','portfolio'].includes(h)){document.body.classList.remove('zdark');document.body.classList.add('zapp');$('#zflowhd').classList.add('zhide');$$('.zscr').forEach(s=>s.classList.remove('on'));S.toured=true;nav(h)}
-else runWelcome();
+if(['home','jobs','apps','portfolio'].includes(h)){seedVisit('soon');document.body.classList.remove('zdark');document.body.classList.add('zapp');$('#zflowhd').classList.add('zhide');$$('.zscr').forEach(s=>s.classList.remove('on'));S.toured=true;nav(h)}
+else{seedVisit('first');runUnlock()}
 
 </script>
 </body>
