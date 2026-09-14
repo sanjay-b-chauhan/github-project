@@ -534,7 +534,7 @@ body:not(.zdark) .zsnd{background:var(--field);color:var(--tx3)}
 .cq{position:absolute;left:0;right:0;top:96px;text-align:center;padding:0 24px;z-index:3}
 .cq .zq{max-width:24ch}
 .csub{font-size:15px;color:var(--tx3);margin-top:12px;opacity:0}
-.cstage{position:absolute;left:50%;top:57%;width:min(1180px,98vw);height:600px;transform:translate(-50%,-50%)}
+.cstage{position:absolute;left:50%;top:56%;width:min(1180px,98vw);height:min(680px,72vh);transform:translate(-50%,-50%)}
 .csheet{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(720px,92vw);text-align:center}
 .chero{display:flex;align-items:center;gap:16px;justify-content:center;opacity:0}
 .chero .pfav{width:60px;height:60px;font-size:21px}
@@ -875,7 +875,7 @@ async function runCine(){
  const P=PF;const first=S.visit==='first';
  const C=$('#s-cine');
  const COS=SEND_COS.slice(0,10);
- C.innerHTML=`<div class="cq"><h1 class="zq" id="cq"></h1><div class="csub" id="csub"></div></div>
+ C.innerHTML=`<div class="cq"><h1 class="zq" id="cq"></h1></div>
   <div class="cstage" id="cstage">
    <div class="csheet" id="csheet">
     <div class="chero" id="chero"><div class="pfav">${P.name.split(' ').map(x=>x[0]).join('')}</div><div><div class="n">${P.name}</div><div class="r">${P.track} · ${P.loc} · <span style="color:var(--ok);font-weight:600">${P.rating}</span></div></div></div>
@@ -884,7 +884,6 @@ async function runCine(){
    </div>
    <div class="cenv" id="cenv">${envHTML()}</div>
    ${COS.map((c,i)=>`<div class="cco" data-i="${i}" data-dom="${c[0]}"><span class="ring"></span>${fav(c[0])}<span class="chk">${ic('check')}</span><span class="nm">${c[1]}</span></div>`).join('')}
-   <div class="ccount" id="ccount"></div>
    <div class="crow" id="crow"></div>
   </div>
   <div class="ccta" id="ccta"><button class="zbtn lg dark" id="cgo">Take me in</button></div>`;icons();
@@ -905,11 +904,10 @@ async function runCine(){
  gsap.to(['#chero','#cchips'],{opacity:0,y:-10,duration:.4,ease:'power2.in'});
  gsap.fromTo('#cenv',{opacity:0,scale:.7,y:40},{opacity:1,scale:1,y:0,duration:.7,ease:'back.out(1.4)',delay:.45});
  await wait(900);
- const cos=$$('#s-cine .cco');const rx=Math.min(440,W()*.42),ry=Math.min(222,H()*.38);
+ const cos=$$('#s-cine .cco');const rx=Math.min(470,W()*.42),ry=Math.min(270,H()*.40);
  const pos=cos.map((c,i)=>{const a=(i/cos.length)*Math.PI*2-Math.PI/2;return{x:cx()+Math.cos(a)*rx,y:cy()+Math.sin(a)*ry}});
  cos.forEach((c,i)=>{gsap.set(c,{left:pos[i].x,top:pos[i].y,opacity:0,scale:.3});gsap.to(c,{opacity:1,scale:1,duration:.7,ease:'back.out(1.7)',delay:i*.07});gsap.to($('.nm',c),{opacity:1,duration:.4,delay:.5+i*.07})});
  await wait(cos.length*70+700);
- $('#csub').textContent='Every recruiter hiring for your brief in Toronto and remote Canada.';gsap.to('#csub',{opacity:1,duration:.5});
  // one pulse to each company, then its check
  for(let i=0;i<cos.length;i++){const c=cos[i];const p=pos[i];const dx=p.x-cx(),dy=p.y-cy();const len=Math.hypot(dx,dy),ang=Math.atan2(dy,dx)*180/Math.PI;
   const ln=el(`<div class="cline"></div>`);st.appendChild(ln);gsap.set(ln,{left:cx(),top:cy(),width:len-58,rotate:ang,scaleX:0,opacity:1});
@@ -920,16 +918,13 @@ async function runCine(){
    gsap.to($('.ring',c),{opacity:1,scale:1,duration:.45,ease:'back.out(2)'});gsap.to($('.chk',c),{opacity:1,scale:1,duration:.4,ease:'back.out(2.4)'});
    gsap.to(ln,{opacity:.35,duration:.6})}});
   await wait(230)}
- await wait(700);
- $('#ccount').innerHTML=[['12','recruiters'],['6','companies'],['3','open now']].map(c=>`<div class="cnt"><b data-to="${c[0]}">0</b><span>${c[1]}</span></div>`).join('');
- gsap.to('#ccount',{opacity:1,duration:.5});
- $$('#ccount b').forEach(b=>{const to=+b.dataset.to;const o={v:0};gsap.to(o,{v:to,duration:.9,ease:'power2.out',onUpdate:()=>b.textContent=Math.round(o.v)})});
- await wait(1800);
+ await wait(600);
+ await clearLine('#cq');await say($('#cq'),'With 12 recruiters at 6 companies.',1500);
  /* ── Phase C: the three that are open now ── */
- await clearLine('#cq');gsap.to('#csub',{opacity:0,duration:.3});
+ await clearLine('#cq');
  const keep=TOP3.map(t=>cos.find(c=>c.dataset.dom===t.dom));
  $$('#s-cine .cline').forEach(l=>gsap.to(l,{opacity:0,duration:.4}));
- gsap.to('#cenv',{opacity:0,scale:.6,duration:.45,ease:'power2.in'});gsap.to('#ccount',{opacity:0,duration:.3});
+ gsap.to('#cenv',{opacity:0,scale:.6,duration:.45,ease:'power2.in'});
  cos.filter(c=>!keep.includes(c)).forEach(c=>gsap.to(c,{opacity:0,scale:.4,duration:.5,ease:'power2.in'}));
  const row=$('#crow');row.innerHTML=TOP3.map(t=>`<div class="crole" data-role="${t.id}"><div class="t">${t.t}</div><div class="w">${t.co} · ${t.why}</div><div class="o">${ic('sparkles')}${t.odds}</div><div class="a">Can I apply for you?<button class="zbtn dark sm" data-apply="${t.id}">Yes</button><button class="zbtn ghost sm" data-skip="${t.id}">Not now</button></div></div>`).join('');icons();
  gsap.set(row,{opacity:0,y:20});
