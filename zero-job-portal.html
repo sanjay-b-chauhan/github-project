@@ -570,7 +570,7 @@ body:not(.zdark) .zsnd{background:var(--field);color:var(--tx3)}
 /* ══ For you: three panes, the agent in the middle ══ */
 .zsbody.home{padding:0 24px;overflow:hidden}
 .zhome{display:grid;grid-template-columns:300px minmax(0,1fr) 330px;gap:44px;max-width:none;margin:0;padding:0 16px;height:100%}
-.hin{max-width:760px;margin:0 auto;width:100%}
+.hin{max-width:720px;margin:0 auto;width:100%}
 .hl{padding-top:14px}
 .hgreet{font-family:var(--serif);font-size:30px;letter-spacing:-.03em;line-height:1.1}
 .hsnip{background:var(--card);border:1px solid var(--line2);border-radius:20px;padding:16px;margin-top:20px;cursor:pointer;transition:border-color .2s,transform .2s}
@@ -592,8 +592,8 @@ body:not(.zdark) .zsnd{background:var(--field);color:var(--tx3)}
 .hmsg .bd{min-width:0;flex:1}
 .hmsg .tx{font-size:15px;line-height:1.62}
 .hmsg .tx b{font-weight:600}
-.hmsg .tm{font-size:11.5px;color:var(--tx4);margin-top:6px}
-.hmsg.me{justify-content:flex-end;margin-left:auto}
+.hmsg .tm{display:none}
+.hmsg.me{justify-content:flex-end;margin-left:auto}.hmsg.me .bd{flex:0 1 auto;max-width:76%}
 .hmsg.me .tx{background:var(--field);padding:10px 15px;border-radius:16px 16px 4px 16px;font-size:14.5px}
 .hcard{background:var(--card);border:1px solid var(--line2);border-radius:18px;padding:16px 18px;margin-top:12px}
 .hcard .zrow{padding:12px 0;border:none;background:transparent;border-radius:0}
@@ -604,7 +604,7 @@ body:not(.zdark) .zsnd{background:var(--field);color:var(--tx3)}
 .hask .t{font-size:14.5px;font-weight:600;letter-spacing:-.02em}
 .hask .s{font-size:12.5px;color:var(--tx3);margin-top:2px}
 .hask .acts{display:flex;gap:8px;margin-left:auto;flex-shrink:0;align-items:center}
-.hcomp{flex-shrink:0;padding:10px 0 18px}.hcomp .hin{max-width:760px}
+.hcomp{flex-shrink:0;padding:10px 0 18px}.hcomp .hin{max-width:720px}
 .hcin{display:flex;align-items:center;gap:6px;height:58px;padding:0 8px 0 20px;background:var(--card);border:1px solid var(--line);border-radius:99px;box-shadow:var(--sh2)}
 .hcin input{flex:1;font-size:15px;min-width:0}
 .hcin .zic{width:40px;height:40px;border:none;background:transparent;color:var(--tx3)}
@@ -665,6 +665,20 @@ body:not(.zdark) .zsnd{background:var(--field);color:var(--tx3)}
 .task.ask .mk{border-color:var(--amb);border-style:dashed}
 .task .n{color:var(--tx3);font-size:12px;margin-top:2px}
 .task.run .t{color:var(--tx)}.task.done .t{color:var(--tx2)}
+/* explore: list + detail, like a job board should */
+.xsplit{display:grid;grid-template-columns:400px minmax(0,1fr);gap:16px;align-items:start}
+.xlist2{display:flex;flex-direction:column;gap:8px;max-height:calc(100vh - 330px);overflow-y:auto;padding-right:2px}
+.xr{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line2);border-radius:16px;padding:14px 16px;cursor:pointer;transition:border-color .18s,background .18s}
+.xr:hover{border-color:var(--line)}.xr.on{border-color:var(--ink);background:var(--wash)}
+.xr .t{font-size:14.5px;font-weight:600;letter-spacing:-.018em;line-height:1.3}.xr .m{font-size:12.5px;color:var(--tx3);margin-top:3px}
+.xr .tg{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.xr .grow{flex:1;min-width:0}
+.xr.new{animation:zin .6s cubic-bezier(.2,.6,.3,1)}
+.xdetail{background:var(--card);border:1px solid var(--line2);border-radius:22px;padding:26px 28px;max-height:calc(100vh - 330px);overflow-y:auto;position:sticky;top:0}
+.xdh{display:flex;gap:14px;align-items:flex-start}
+.xdh .t{font-family:var(--serif);font-size:26px;letter-spacing:-.028em;line-height:1.15}.xdh .m{font-size:13px;color:var(--tx3);margin-top:5px}
+.xda{display:flex;gap:8px;align-items:center;margin-top:18px;flex-wrap:wrap}
+@media(max-width:980px){.xsplit{grid-template-columns:1fr}.xlist2,.xdetail{max-height:none}.xdetail{position:static}}
+.xfil button:disabled{opacity:.4;pointer-events:none}
 /* explore: grid or list */
 .xview{display:inline-flex;gap:2px;background:var(--card);border:1px solid var(--line2);border-radius:99px;padding:3px}
 .xview button{width:32px;height:28px;border-radius:99px;display:flex;align-items:center;justify-content:center;color:var(--tx3)}
@@ -817,7 +831,7 @@ const icons=()=>{if(window.lucide)lucide.createIcons()};
 const okr=(k,t,r)=>`<div class="zqi ${k}">${ic(k==='g'?'circle-check':k==='a'||k==='p'?'circle-alert':'circle-dashed')}<div><div>${t}</div>${r?`<span class="ev">${r}</span>`:''}</div></div>`;
 function toast(t){const x=$('#ztoast');x.textContent=t;x.classList.add('on');clearTimeout(x._t);x._t=setTimeout(()=>x.classList.remove('on'),3400)}
 function arrive(sc){$$('.zarr',sc).forEach((a,i)=>setTimeout(()=>a.classList.add('in'),50+i*60));setTimeout(()=>$$('.zarr',sc).forEach(a=>a.classList.add('in')),1400)}
-const S={page:'unlock',mode:'voice',auto:false,xview:'grid',paused:false,sel:'klarna',filter:'all',view:'list',visit:'first',toured:false,agentTab:'now',appTab:'need',gapAdds:[],found:[],log:[],
+const S={page:'unlock',mode:'voice',auto:false,xview:'list',paused:false,sel:'klarna',filter:'all',view:'list',visit:'first',toured:false,agentTab:'now',appTab:'need',gapAdds:[],found:[],log:[],
  me:{name:'Ron Robinson',first:'Ron'},
  brief:{role:'Business analyst',place:'Toronto',companies:'Big product companies',mode:'Hybrid, 2 days at most',lang:'English',pay:'CA$60,000 per year',start:'',auth:'Yes',deal:['Hybrid, 2 days at most']},
  answers:{},portfolio:{lead:'notion',headline:'',hideAcademics:false}};
@@ -1533,7 +1547,7 @@ function seedLater(v){
   ROUNDS.push({id:'r4',co:'Klarna',dom:'klarna.com',role:'Business Analyst, Payments Operations',round:'Round two · 60 min',who:'Omar Haddad, Ops lead',when:'Tuesday 3:00pm',state:'accepted'});
   VIEWS.push(['notion.so','Notion','The Growth director opened your portfolio before the offer went out.','Yesterday',true],['klarna.com','Klarna','Omar opened your cost model twice.','Yesterday',true]);
  }}
-function seedVisit(v){S.visit=v;clearInterval(S._tick);S._tick=null;S.log=[];S.chat=[];S.co='';S.filter='all';
+function seedVisit(v){S.visit=v;const zb=$('#zsbody');if(zb)delete zb.dataset.visit;clearInterval(S._tick);S._tick=null;S.log=[];S.chat=[];S.co='';S.filter='all';
  APPS.length=0;VIEWS.length=0;ROUNDS.length=0;pfReset(true);
  if(v==='first'){S.found=['notion','klarna','figma']}
  else if(v==='interviews'||v==='outcome'){seedLater(v);S.found=JOBS.map(j=>j.id);S.brief.start=S.brief.start||'After graduation, May 2025';JOBS.forEach(j=>{j.need=(j.need||[]).filter(n=>n!=='start')})}
@@ -1557,21 +1571,21 @@ function apvCard(j,q){const a=APPS.find(x=>x.id===j.id);
  if(a&&a.st==='needs')return`<div class="apv"><div class="q">${j.co} asks for your start date.</div><div class="c">Their form needs it and I will not guess it.</div><div class="role"><div class="zlogo2">${fav(j.dom)}</div><div><div class="t">${j.t}</div><div class="s">${j.co} · ${j.loc} · ${payOf(j)}</div></div></div><div class="ch"><button class="zbtn dark" data-fix="${a.id}">Answer</button><button class="zbtn ghost" data-view="${j.id}">Look at it</button></div></div>`;
  return`<div class="apv"><div class="q">${q||'Apply to '+j.co+'?'}</div><div class="role"><div class="zlogo2">${fav(j.dom)}</div><div><div class="t">${j.t}</div><div class="s">${j.co} · ${j.loc} · ${payOf(j)}</div></div></div><div class="ch"><button class="zbtn dark" data-yes="${j.id}">Yes</button><button class="zbtn line" data-no="${j.id}">No</button><button class="zbtn ghost" data-view="${j.id}">Look at it</button></div></div>`}
 const receipts=()=>{const out=APPS.filter(a=>['subm','sent','conf'].includes(a.st));return out.length?`<div>${out.map(a=>`<span class="rcp">${ic('check')}${a.co} · ${ST[a.st][0]}</span>`).join('')}</div>`:''};
-function threadItems(){const V=S.visit;const items=[];const z=(html,tm)=>items.push({who:'z',html,tm});
+function threadItems(){const V=S.visit;const items=[];let n=0;const z=(html,k)=>items.push({who:'z',html,k:k||('s'+(n++))});
  const needs=APPS.filter(a=>['needs','ask','ready'].includes(a.st));
  const J=id=>JOBS.find(x=>x.id===id);
  if(V==='first'){
   z(`Your portfolio is with 12 recruiters at 6 companies. I am reading everything else now, and nothing goes out without your yes.`+receipts(),'Just now');
-  needs.forEach(a=>{const j=J(a.id);if(j)z(apvCard(j),'Just now')});
-  S.log.forEach(l=>{if(l.found){const j=J(l.found);if(j)z(apvCard(j,l.q),tmAgo(l.at))}});
+  needs.forEach(a=>{const j=J(a.id);if(j)z(apvCard(j),'apv'+j.id)});
+  S.log.forEach(l=>{if(l.found){const j=J(l.found);if(j)z(apvCard(j,l.q),'apv'+j.id)}});
  }else if(V==='soon'){
   z(`Since 6am: 412 postings read, six worth your time. Notion acknowledged you. Figma opened your portfolio twice.`+receipts(),'6:40am');
-  needs.forEach(a=>{const j=J(a.id);if(!j)return;const q=a.st==='needs'?null:j.fit==='explore'?'Outside your role. Apply?':j.fit==='held'?'Three days in office, your rule is two. Apply anyway?':'Apply?';z(apvCard(j,q),'Today')});
+  needs.forEach(a=>{const j=J(a.id);if(!j)return;const q=a.st==='needs'?null:j.fit==='explore'?'Outside your role. Apply?':j.fit==='held'?'Three days in office, your rule is two. Apply anyway?':'Apply?';z(apvCard(j,q),'apv'+j.id)});
   if(ROUNDS.length)z(`Two interviews. Accept and they go in your calendar.<div class="hcard" style="padding:4px 18px">${renderRounds(true,true)}</div>`,'Today');
  }else if(V==='interviews'){
   z(`Notion round one is done. Priya’s notes: <b>strong on the funnel, wanted the recommendation earlier.</b> Round two is likely.`,'Thursday');
   z(`Klarna read your cost model and sent this.<div class="hcard" style="padding:4px 18px">${renderRounds(true,true)}</div>`,'Tuesday');
-  const sp=APPS.find(a=>a.id==='spotify');if(sp&&sp.st==='ready'){const j=J('spotify');if(j)z(apvCard(j,'Spotify came back with CA$71,000. Apply?'),'Monday')}
+  const sp=APPS.find(a=>a.id==='spotify');if(sp&&sp.st==='ready'){const j=J('spotify');if(j)z(apvCard(j,'Spotify came back with CA$71,000. Apply?'),'apvspotify')}
  }else if(V==='outcome'){
   const n=APPS.find(a=>a.id==='notion');
   z(`Notion made an offer.<div class="hcard"><div style="display:flex;gap:14px;align-items:flex-start"><div class="zlogo2 s46">${fav('notion.so')}</div><div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:600;letter-spacing:-.02em">Growth Analyst, Self-serve</div><div style="font-size:13px;color:var(--tx3);margin-top:2px">Notion · Remote, Canada · starts June 2</div><div style="font-family:var(--serif);font-size:34px;letter-spacing:-.03em;margin-top:14px">CA$78,000 <span style="font-size:14px;font-family:var(--f);color:var(--ok);font-weight:600;letter-spacing:0">CA$18,000 above your floor</span></div></div></div>
@@ -1582,11 +1596,11 @@ function threadItems(){const V=S.visit;const items=[];const z=(html,tm)=>items.p
   z(`Klarna round two, Tuesday 3pm with Omar Haddad.<div class="hcard" style="padding:4px 18px">${renderRounds(true,true)}</div>`,'Friday');
  }else if(V==='returning'){
   z(`Since Tuesday: Notion acknowledged you, Figma opened your portfolio twice, Klarna still needs your start date.`+receipts(),'Today');
-  needs.forEach(a=>{const j=J(a.id);if(j)z(apvCard(j),'Since Tuesday')});
+  needs.forEach(a=>{const j=J(a.id);if(j)z(apvCard(j),'apv'+j.id)});
   if(ROUNDS.length)z(`Two interviews are waiting on you.<div class="hcard" style="padding:4px 18px">${renderRounds(true,true)}</div>`,'Yesterday');
  }else{
   z(`Nothing new overnight. ${needs.length?needs[0].co+' still needs you.':'Everything is with the employers now.'}`+receipts(),'7:10am');
-  needs.forEach(a=>{const j=J(a.id);if(j)z(apvCard(j),'Still waiting')});
+  needs.forEach(a=>{const j=J(a.id);if(j)z(apvCard(j),'apv'+j.id)});
  }
  S.chat.forEach(c=>items.push(c));
  return items}
@@ -1596,64 +1610,78 @@ function agentTasks(){const V=S.visit;
   S.log.forEach((l,i)=>{const last=i===S.log.length-1;t.push({task:l.task,n:l.n,st:l.st==='run'?(last&&dayOneLive()?'run':'done'):l.st==='ask'?(APPS.find(a=>a.id===l.found)?'done':'ask'):'done'})});
   if(!S.log.length)t.push({task:'Opening Greenhouse, LinkedIn and Lever',n:'',st:'run'});return t.reverse().slice(0,7)}
  return(NOWBY[V]||agentWork().now).map(i=>({task:i.t,n:i.m,st:i.d==='live'?'run':i.d==='wait'?'ask':'done'}))}
-function renderHome(){
- const V=S.visit;const hello=V==='first'?`Welcome in, ${S.me.first}.`:V==='soon'?`Good morning, ${S.me.first}.`:V==='returning'?`Welcome back, ${S.me.first}.`:`Morning, ${S.me.first}.`;
- const p0=PF.projects[0];const open=SUGGESTIONS.filter(s=>!s.done);
- const prevScroll=$('#zsbody .hthread')?$('#zsbody .hthread').scrollTop:null;
- const items=threadItems();const lastZ=items.length&&items[items.length-1].who==='z'?items.length-1:-1;
- const openAsk=S.visit==='first'&&S.log.some(l=>l.found&&!APPS.find(a=>a.id===l.found));
+function keyed(items){return items.map((m,i)=>Object.assign({k:m.k||(m.who==='me'?'me'+i:'z'+i)},m))}
+function msgHTML(m,streamIt){return m.who==='me'?`<div class="hmsg me" data-k="${m.k}"><div class="bd"><div class="tx">${m.html}</div></div></div>`:`<div class="hmsg" data-k="${m.k}"><div class="bd"><div class="tx">${streamIt?stream(m.html):m.html}</div></div></div>`}
+function homeState(){const openAsk=S.visit==='first'&&S.log.some(l=>l.found&&!APPS.find(a=>a.id===l.found));
  const waiting=APPS.some(a=>['needs','ask','ready'].includes(a.st))||openAsk;
  const running=dayOneLive()&&!S.paused&&!waiting;const lastRun=[...S.log].reverse().find(l=>l.st==='run');
- const cur=running?(lastRun||{task:'Opening Greenhouse, LinkedIn and Lever'}):null;
- const status=S.paused?['','Paused']:running?['run','Running']:waiting?['wait','Waiting on you']:['','Watching'];
- const apps=APPS.filter(a=>!['withdrawn','closed'].includes(a.st));
- $('#zsbody').innerHTML=`<div class="zhome">
-  <aside class="hl">
-   <div class="hgreet zarr">${hello}</div>
-   <div class="hsnip zarr" id="hsnip">
+ return{cur:running?(lastRun||{task:'Opening Greenhouse, LinkedIn and Lever'}):null,status:S.paused?['','Paused']:running?['run','Running']:waiting?['wait','Waiting on you']:['','Watching']}}
+function leftHTML(){const V=S.visit;const hello=V==='first'?`Welcome in, ${S.me.first}.`:V==='soon'?`Good morning, ${S.me.first}.`:V==='returning'?`Welcome back, ${S.me.first}.`:`Morning, ${S.me.first}.`;
+ const p0=PF.projects[0];const open=SUGGESTIONS.filter(s=>!s.done);
+ return`<div class="hgreet">${hello}</div>
+   <div class="hsnip" id="hsnip">
     <div class="row"><div class="pfav">${PF.name.split(' ').map(x=>x[0]).join('')}</div><div style="min-width:0"><div class="n">${PF.name}</div><div class="r">${PF.track} · <span style="color:var(--ok);font-weight:600">${PF.rating}</span></div></div></div>
     ${p0?presVisual(p0,false):''}
     <div class="hready"><div class="pfring"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" fill="none" stroke="var(--line)" stroke-width="4"/><circle cx="22" cy="22" r="19" fill="none" stroke="var(--ok)" stroke-width="4" stroke-linecap="round" stroke-dasharray="${Math.round(119*(1-open.length/(SUGGESTIONS.length||1))+45)} 200" transform="rotate(-90 22 22)"/></svg><b>${61+(SUGGESTIONS.length-open.length)*8}%</b></div><div>Interview readiness<div style="font-size:11.5px;color:var(--tx3);margin-top:2px">${open.length?open.length+' thing'+(open.length===1?'':'s')+' would move it':'As strong as it gets'}</div></div></div>
    </div>
-   ${ROUNDS.filter(r=>r.state==='accepted').length?`<div class="hlsec zarr"><div class="hh">In your calendar</div>${ROUNDS.filter(r=>r.state==='accepted').map(r=>`<div class="hup"><div class="zlogo2">${fav(r.dom)}</div><div><div>${r.co} · ${r.round.split(' · ')[0]}</div><div class="tm">${r.when}</div></div></div>`).join('')}</div>`:''}
-  </aside>
+   ${ROUNDS.filter(r=>r.state==='accepted').length?`<div class="hlsec"><div class="hh">In your calendar</div>${ROUNDS.filter(r=>r.state==='accepted').map(r=>`<div class="hup"><div class="zlogo2">${fav(r.dom)}</div><div><div>${r.co} · ${r.round.split(' · ')[0]}</div><div class="tm">${r.when}</div></div></div>`).join('')}</div>`:''}`}
+function rightHTML(){const V=S.visit;const st=homeState().status;const apps=APPS.filter(a=>!['withdrawn','closed'].includes(a.st));
+ return`<div class="hsec"><div class="agst"><span class="hh" style="margin:0">Agent</span><span class="st ${st[0]}"><i></i>${st[1]}</span></div>
+    ${agentTasks().map(k=>`<div class="task ${k.st}"><span class="mk">${k.st==='done'?ic('check'):''}</span><div><div class="t">${k.task}</div>${k.n?`<div class="n">${k.n}</div>`:''}</div></div>`).join('')}</div>
+   ${V!=='first'&&apps.length?`<div class="hsec"><div class="hh">Applications<button data-apps>See all</button></div>${apps.map(a=>`<div class="hup" data-app="${a.id}" style="cursor:pointer"><div class="zlogo2">${fav(a.dom)}</div><div style="flex:1;min-width:0"><div>${a.co}</div><div class="tm">${a.out?a.out.t:ST[a.st][0]}</div></div></div>`).join('')}</div>`:''}
+   ${VIEWS.length?`<div class="hsec"><div class="hh">Who looked at you</div>${VIEWS.map(v=>`<div class="hup"><div class="zlogo2">${fav(v[0])}</div><div><div><b style="font-weight:600">${v[1]}</b> ${v[2].replace(/^[A-Z]/,c=>c.toLowerCase())}</div><div class="tm">${v[3]}</div></div></div>`).join('')}</div>`:''}`}
+/* the thread is patched in place: existing messages stay put, changed cards swap, new ones append. No jumping. */
+function renderThread(){const wrap=$('#hthread .hin');if(!wrap)return;const items=keyed(threadItems());const lastZ=items.length&&items[items.length-1].who==='me'?-1:items.length-1;
+ const th=$('#hthread');const atBottom=th.scrollHeight-th.scrollTop-th.clientHeight<80;
+ const seen=new Set();let appended=false;
+ items.forEach((m,i)=>{seen.add(m.k);const ex=wrap.querySelector(`[data-k="${m.k}"]`);const html=msgHTML(m,i===lastZ&&S.streamLast);
+  if(!ex){const think=wrap.querySelector('.hthink');const node=el(html);if(think)wrap.insertBefore(node,think);else wrap.appendChild(node);appended=true}
+  else if(ex.dataset.h!==undefined&&ex.dataset.h===m.html)return;
+  else{const node=el(html);node.dataset.h=m.html;ex.replaceWith(node)}
+  const n=wrap.querySelector(`[data-k="${m.k}"]`);if(n)n.dataset.h=m.html});
+ $$('[data-k]',wrap).forEach(n=>{if(!seen.has(n.dataset.k))n.remove()});
+ const cur=homeState().cur;let think=wrap.querySelector('.hthink');
+ if(cur){const html=`<div class="hthink"><span class="dots"><i></i><i></i><i></i></span>${cur.task}${cur.n?' · '+cur.n:''}</div>`;if(!think){wrap.insertAdjacentHTML('beforeend',html)}else if(think.textContent.trim()!==(cur.task+(cur.n?' · '+cur.n:'')).trim())think.outerHTML=html}
+ else if(think)think.remove();
+ S.streamLast=false;
+ if(S.scrollEnd||(appended&&atBottom))th.scrollTop=th.scrollHeight;S.scrollEnd=false;
+ bindHome();bindRounds();icons()}
+function renderRight(){const r=$('#zsbody .hr');if(!r)return;const sc=r.scrollTop;r.innerHTML=rightHTML();r.scrollTop=sc;bindHome();icons()}
+function renderHome(){
+ const have=$('#zsbody .zhome')&&S.page==='home'&&$('#zsbody').dataset.visit===S.visit;
+ if(have){renderThread();renderRight();const l=$('#zsbody .hl');if(l){l.innerHTML=leftHTML();$('#hsnip').onclick=()=>nav('portfolio')}return}
+ $('#zsbody').dataset.visit=S.visit;
+ $('#zsbody').innerHTML=`<div class="zhome">
+  <aside class="hl">${leftHTML()}</aside>
   <section class="hc">
-   <div class="hthread" id="hthread"><div class="hin">${items.map((m,i)=>m.who==='me'?`<div class="hmsg me"><div class="bd"><div class="tx">${m.html}</div></div></div>`:`<div class="hmsg"><div class="bd"><div class="tx">${i===lastZ&&S.streamLast?stream(m.html):m.html}</div>${m.tm?`<div class="tm">${m.tm}</div>`:''}</div></div>`).join('')}
-    ${cur?`<div class="hthink"><span class="dots"><i></i><i></i><i></i></span>${cur.task}${cur.n?' · '+cur.n:''}</div>`:''}</div></div>
+   <div class="hthread" id="hthread"><div class="hin"></div></div>
    <div class="hcomp"><div class="hin"><div class="hcin"><input id="hin" placeholder="Ask me anything, or tell me what to change"><button class="zic" id="hmic" title="Speak">${ic('mic')}</button><button class="zic" id="hset" title="Preferences">${ic('sliders-horizontal')}</button><button class="go" id="hgo">${ic('arrow-up')}</button></div></div></div>
   </section>
-  <aside class="hr">
-   <div class="hsec zarr"><div class="agst"><span class="hh" style="margin:0">Agent</span><span class="st ${status[0]}"><i></i>${status[1]}</span></div>
-    ${agentTasks().map(k=>`<div class="task ${k.st}"><span class="mk">${k.st==='done'?ic('check'):''}</span><div><div class="t">${k.task}</div>${k.n?`<div class="n">${k.n}</div>`:''}</div></div>`).join('')}</div>
-   ${V!=='first'&&apps.length?`<div class="hsec zarr"><div class="hh">Applications<button data-apps>See all</button></div>${apps.map(a=>`<div class="hup" data-app="${a.id}" style="cursor:pointer"><div class="zlogo2">${fav(a.dom)}</div><div style="flex:1;min-width:0"><div>${a.co}</div><div class="tm">${a.out?a.out.t:ST[a.st][0]}</div></div></div>`).join('')}</div>`:''}
-   ${VIEWS.length?`<div class="hsec zarr"><div class="hh">Who looked at you</div>${VIEWS.map(v=>`<div class="hup"><div class="zlogo2">${fav(v[0])}</div><div><div><b style="font-weight:600">${v[1]}</b> ${v[2].replace(/^[A-Z]/,c=>c.toLowerCase())}</div><div class="tm">${v[3]}</div></div></div>`).join('')}</div>`:''}
-  </aside></div>`;
- S.streamLast=false;
- $$('#zsbody .zarr').forEach(a=>a.classList.add('in'));
- const th=$('#hthread');if(prevScroll!==null&&!S.scrollEnd)th.scrollTop=prevScroll;else th.scrollTop=th.scrollHeight;S.scrollEnd=false;
- bindHome();bindRounds();icons()}
+  <aside class="hr">${rightHTML()}</aside></div>`;
+ S.scrollEnd=true;renderThread();bindComposer();icons()}
 function bindHome(){
- $('#hsnip').onclick=()=>nav('portfolio');
+ const sn=$('#hsnip');if(sn)sn.onclick=()=>nav('portfolio');
  $$('#zsbody [data-fix]').forEach(b=>b.onclick=()=>{const a=APPS.find(x=>x.id===b.dataset.fix);if(a.st==='needs')askStart(a);else openJobSheet(a.id)});
  $$('#zsbody [data-apps]').forEach(b=>b.onclick=openApps);
  $$('#zsbody [data-app]').forEach(r=>r.onclick=()=>openApp(APPS.find(a=>a.id===r.dataset.app)));
  $$('#zsbody [data-view]').forEach(b=>b.onclick=()=>openJobSheet(b.dataset.view));
  $$('#zsbody [data-yes]').forEach(b=>b.onclick=()=>{const j=JOBS.find(x=>x.id===b.dataset.yes);let a=APPS.find(x=>x.id===j.id);
   if(!a){a={id:j.id,dom:j.dom,t:j.t,co:j.co,st:'subm',up:'now',nx:'Sending',ev:[['now','You said yes']]};APPS.push(a)}else{a.st='subm';a.nx='Sending';a.ev.push(['now','You said yes'])}
-  if(j.fit==='held'||j.held)a.ev.push(['now','Sent with your yes against the hold']);snd('tick');S.scrollEnd=false;submit(a)});
+  if(j.fit==='held'||j.held)a.ev.push(['now','Sent with your yes against the hold']);snd('tick');submit(a)});
  $$('#zsbody [data-no]').forEach(b=>b.onclick=()=>{const j=JOBS.find(x=>x.id===b.dataset.no);let a=APPS.find(x=>x.id===j.id);
   if(!a){a={id:j.id,dom:j.dom,t:j.t,co:j.co,st:'withdrawn',up:'now',nx:'You said no',ev:[['now','You said no']]};APPS.push(a)}else{a.st='withdrawn';a.nx='You said no'}renderHome()});
+ $$('#zsbody [data-offer]').forEach(b=>b.onclick=()=>{const k=b.dataset.offer;const n=APPS.find(a=>a.id==='notion');snd('tick');
+  if(k==='accept'){n.st='accepted';n.nx='You start June 2';n.ev.push(['now','You accepted. Notion has been told, and Klarna has been withdrawn with a note']);const kl=APPS.find(a=>a.id==='klarna');if(kl){kl.st='withdrawn';kl.nx='Withdrawn, with a note'}ROUNDS.length=0;S.chat.push({who:'z',html:'Told Notion yes. Klarna withdrawn with a short note, so the door stays open.'});S.streamLast=true;S.scrollEnd=true;renderHome();snd('chime');return}
+  if(k==='time'){S.chat.push({who:'z',html:'Asked Notion for a week. I will tell you the moment they answer.'});S.streamLast=true;S.scrollEnd=true;renderHome();return}
+  openDlg(`<div class="zserif" style="font-size:22px">Decline Notion?</div><div style="font-size:14px;color:var(--tx2);margin-top:8px">CA$18,000 above your floor, and the only offer on the table.</div><div class="dlgft"><button class="zbtn line" onclick="closeDlg()">Keep it</button><button class="zbtn dark" id="dodecl">Decline</button></div>`);
+  $('#dodecl').onclick=()=>{n.st='withdrawn';n.nx='You declined';closeDlg();S.chat.push({who:'z',html:'Declined, with a note that keeps the door open.'});S.streamLast=true;S.scrollEnd=true;renderHome()}});
+ $$('#zsbody [data-learn]').forEach(b=>b.onclick=()=>{S.learned=true;snd('tick');S.chat.push({who:'z',html:'Added an Amplitude scenario to your pathway.'});S.streamLast=true;S.scrollEnd=true;renderHome()})}
+function bindComposer(){
  $('#hset').onclick=openPrefs;
  const inp=$('#hin'),go=$('#hgo');inp.oninput=()=>go.classList.toggle('on',inp.value.trim().length>0);
- const send=()=>{const v=inp.value.trim();if(!v)return;inp.value='';go.classList.remove('on');S.chat.push({who:'me',html:v});S.scrollEnd=true;renderHome();agentReply(v)};
+ const send=()=>{const v=inp.value.trim();if(!v)return;inp.value='';go.classList.remove('on');S.chat.push({k:'m'+Date.now(),who:'me',html:v});S.scrollEnd=true;renderHome();agentReply(v)};
  go.onclick=send;inp.onkeydown=e=>{if(e.key==='Enter')send()};
- $('#hmic').onclick=()=>{inp.placeholder='Listening';$('#hmic').style.color='var(--ok)';setTimeout(()=>{inp.value='Only remote roles from now';inp.dispatchEvent(new Event('input'));inp.placeholder='Ask me anything, or tell me what to change';$('#hmic').style.color='';inp.focus()},1400)};
- $$('#zsbody [data-offer]').forEach(b=>b.onclick=()=>{const k=b.dataset.offer;const n=APPS.find(a=>a.id==='notion');snd('tick');
-  if(k==='accept'){n.st='accepted';n.nx='You start June 2';n.ev.push(['now','You accepted. Notion has been told, and Klarna has been withdrawn with a note']);const kl=APPS.find(a=>a.id==='klarna');if(kl){kl.st='withdrawn';kl.nx='Withdrawn, with a note'}ROUNDS.length=0;S.chat.push({who:'z',html:'Told Notion yes. Klarna withdrawn with a short note, so the door stays open.',tm:'Just now'});S.streamLast=true;S.scrollEnd=true;renderHome();snd('chime');return}
-  if(k==='time'){S.chat.push({who:'z',html:'Asked Notion for a week. I will tell you the moment they answer.',tm:'Just now'});S.streamLast=true;S.scrollEnd=true;renderHome();return}
-  openDlg(`<div class="zserif" style="font-size:22px">Decline Notion?</div><div style="font-size:14px;color:var(--tx2);margin-top:8px">CA$18,000 above your floor, and the only offer on the table.</div><div class="dlgft"><button class="zbtn line" onclick="closeDlg()">Keep it</button><button class="zbtn dark" id="dodecl">Decline</button></div>`);
-  $('#dodecl').onclick=()=>{n.st='withdrawn';n.nx='You declined';closeDlg();S.chat.push({who:'z',html:'Declined, with a note that keeps the door open.',tm:'Just now'});S.streamLast=true;S.scrollEnd=true;renderHome()}});
- $$('#zsbody [data-learn]').forEach(b=>b.onclick=()=>{S.learned=true;snd('tick');S.chat.push({who:'z',html:'Added an Amplitude scenario to your pathway.',tm:'Just now'});S.streamLast=true;S.scrollEnd=true;renderHome()})}
+ $('#hmic').onclick=()=>{inp.placeholder='Listening';$('#hmic').style.color='var(--ok)';setTimeout(()=>{inp.value='Only remote roles from now';inp.dispatchEvent(new Event('input'));inp.placeholder='Ask me anything, or tell me what to change';$('#hmic').style.color='';inp.focus()},1400)}}
 function agentReply(v){const t=v.toLowerCase();let r='',after=null;
  if(/pause|stop/.test(t)){S.paused=true;r='Paused. Nothing moves until you say so.'}
  else if(/resume|continue|go on|unpause/.test(t)){S.paused=false;r='Resumed.'}
@@ -1665,8 +1693,8 @@ function agentReply(v){const t=v.toLowerCase();let r='',after=null;
  else if(/find|more|look|search|wider|other/.test(t)){r='On it. I will widen to analyst and operations titles, and ask you before anything goes out.'}
  else if(/thank/.test(t))r='Any time.';
  else r='Noted. I will ask before it changes anything I send.';
- S.chat.push({who:'z',html:`<span class="hthink" style="padding:0"><span class="dots"><i></i><i></i><i></i></span></span>`,tm:''});S.scrollEnd=true;renderHome();
- setTimeout(()=>{S.chat[S.chat.length-1]={who:'z',html:r,tm:'Just now'};S.streamLast=true;S.scrollEnd=true;renderHome();snd('tick');if(after)setTimeout(after,600)},600+Math.min(900,r.length*6))}
+ const key='c'+Date.now();S.chat.push({k:key,who:'z',html:`<span class="hthink" style="padding:0"><span class="dots"><i></i><i></i><i></i></span></span>`});S.scrollEnd=true;renderHome();
+ setTimeout(()=>{S.chat[S.chat.length-1]={k:key,who:'z',html:r};S.streamLast=true;S.scrollEnd=true;renderHome();snd('tick');if(after)setTimeout(after,600)},600+Math.min(900,r.length*6))}
 function openPrefs(){
  openDlg(`<div class="zserif" style="font-size:22px">Your agent</div>
   <div style="font-size:14px;color:var(--tx2);margin-top:8px;line-height:1.5">It never applies on its own. Every role comes to you as a question first.</div>
@@ -1683,43 +1711,64 @@ function primaryAct(j){const a=APPS.find(x=>x.id===j.id);const steps=stepsFor(j)
  if(blocked)return`<button class="zbtn dark" data-a="answer">Answer ${blocked.n.toLowerCase()}</button>`;
  return`<button class="zbtn dark" data-a="apply">Apply</button>`}
 function applyLabel(j){const a=APPS.find(x=>x.id===j.id);if(a&&['subm','sent','conf','offer','accepted'].includes(a.st))return null;return j.fit==='explore'||j.fit==='held'||j.held?'Apply anyway':'Apply'}
+function jobRow(j,isNew){const s=SAVED[j.id];const a=APPS.find(x=>x.id===j.id);
+ return`<div class="xr ${S.sel===j.id?'on':''} ${isNew?'new':''}" data-j="${j.id}"><div class="zlogo2 s40">${fav(j.dom)}</div><div class="grow"><div class="t">${j.t}</div><div class="m">${j.co} · ${j.loc.split(',')[0]} · ${payOf(j)}</div><div class="tg">${fitTag(j)}${a?`<span class="ztag ${ST[a.st][1]}">${ST[a.st][0]}</span>`:''}${s?`<span class="ztag">${ic('bookmark-check')}Saved</span>`:''}</div></div></div>`}
 function jobCard(j,isNew){const s=SAVED[j.id];const a=APPS.find(x=>x.id===j.id);const lbl=applyLabel(j);
- const acts=`${lbl?`<button class="zbtn dark" data-a="apply">${lbl}</button>`:`<span class="ztag ok" style="height:36px;padding:0 14px">${ic('check')}${ST[a.st][0]}</span>`}<button class="zbtn line" data-a="view">Look</button>`;
- if(S.xview==='list')return`<div class="xl ${isNew?'new':''}" data-j="${j.id}"><div class="zlogo2 s40">${fav(j.dom)}</div><div class="grow"><div class="t">${j.t}</div><div class="m">${j.co} · ${j.loc.split(',')[0]} · ${payOf(j)} · ${j.short||''}</div></div>${fitTag(j)}<div class="acts">${acts}<button class="sv ${s?'on':''}" data-save="${j.id}" style="color:${s?'var(--tx)':'var(--tx4)'}">${ic(s?'bookmark-check':'bookmark')}</button></div></div>`;
  return`<div class="xc ${isNew?'new':''}" data-j="${j.id}">
   <button class="sv ${s?'on':''}" data-save="${j.id}" title="${s?'Saved':'Save'}">${ic(s?'bookmark-check':'bookmark')}</button>
   <div class="hd"><div class="zlogo2 s46">${fav(j.dom)}</div><div style="min-width:0"><div class="t">${j.t}</div><div class="m">${j.co} · ${j.loc.split(',')[0]}${j.loc.split(',')[0]===j.mode.split(',')[0]?'':' · '+j.mode.split(',')[0]} · ${payOf(j).replace(/,000/g,'k').replace('to ','to CA$')}</div></div></div>
   <div class="tags">${fitTag(j)}${(j.skills||[]).map(k=>`<span class="ztag">${k}</span>`).join('')}</div>
   <div class="why">${j.short||''}</div>
-  <div class="acts">${acts}</div></div>`}
+  <div class="acts">${lbl?`<button class="zbtn dark" data-a="apply">${lbl}</button>`:`<span class="ztag ok" style="height:36px;padding:0 14px">${ic('check')}${ST[a.st][0]}</span>`}<button class="zbtn line" data-a="view">Look</button></div></div>`}
+function jobDetailHTML(j){const steps=stepsFor(j);const done=steps.filter(s=>s.done).length;const blocked=steps.find(s=>!s.done);const a=APPS.find(x=>x.id===j.id);const lbl=applyLabel(j);
+ return`<div class="xdh"><div class="zlogo2 s46">${fav(j.dom)}</div><div style="flex:1;min-width:0"><div class="t">${j.t}</div><div class="m">${j.co} · ${j.loc} · ${j.mode} · ${j.type}</div></div></div>
+  <div class="xda">${lbl?`<button class="zbtn dark" data-a="apply">${lbl}</button>`:`<span class="ztag ok" style="height:38px;padding:0 14px">${ic('check')}${ST[a.st][0]}</span>`}<button class="zbtn line" data-a="save">${ic(SAVED[j.id]?'bookmark-check':'bookmark')}${SAVED[j.id]?'Saved':'Save'}</button><span style="margin-left:auto;font-family:var(--serif);font-size:22px;letter-spacing:-.02em">${j.pay==='Not listed'?'<span style="font-size:13px;font-family:var(--f);color:var(--tx3)">No salary listed</span>':j.pay}</span></div>
+  <div class="tags" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:16px">${fitTag(j)}${(j.skills||[]).map(k=>`<span class="ztag">${k}</span>`).join('')}</div>
+  <div class="why ${j.fit==='explore'?'pur':''}" style="margin-top:20px;background:${j.fit==='explore'?'var(--purbg)':'var(--okbg)'};border-radius:16px;padding:16px 18px">
+   <div style="font-size:12.5px;font-weight:600;color:${j.fit==='explore'?'var(--pur)':'var(--ok)'};display:flex;align-items:center;gap:7px;margin-bottom:6px">${ic(j.fit==='explore'?'compass':'check')}Why this role</div>
+   <p style="font-size:14.5px;line-height:1.6">${j.why}</p>
+   <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px">${j.src.map(s=>`<span class="ztag" style="background:#fff">${ic('file-text')}${s}</span>`).join('')}</div></div>
+  ${j.held?`<div style="margin-top:10px;background:var(--ambbg);border-radius:16px;padding:16px 18px"><div style="font-size:12.5px;font-weight:600;color:var(--amb);display:flex;align-items:center;gap:7px;margin-bottom:6px">${ic('circle-pause')}What is holding it</div><p style="font-size:14.5px;line-height:1.6">${j.held}</p></div>`:''}
+  <div style="font-size:14px;font-weight:600;margin:24px 0 8px">What this role needs</div>
+  ${j.req.map(r=>`<div class="zqi ${r[0]}">${ic(r[0]==='y'?'circle-check':r[0]==='p'?'circle-alert':'circle-dashed')}<div><div>${r[1]}</div><span class="ev">${r[2]}</span></div></div>`).join('')}
+  <div style="font-size:14px;font-weight:600;margin:24px 0 8px;display:flex;justify-content:space-between">Your application<span style="font-size:12.5px;color:var(--tx3);font-weight:400">${done} of ${steps.length} ready</span></div>
+  <div class="zbar" style="margin-bottom:12px"><i style="width:${Math.round(done/steps.length*100)}%"></i></div>
+  <div class="zsteps">${steps.map(s=>`<div class="zstep ${s.done?'done':'todo'}"><span class="mk">${ic('check')}</span><div class="sl"><div class="sn">${s.n}</div><div class="ss">${s.done?s.val:'Not answered. I will not guess it.'}</div></div>${s.done?'<span style="font-size:11.5px;color:var(--tx3)">Reused</span>':'<button class="zbtn line sm" data-a="answer">Answer</button>'}</div>`).join('')}</div>
+  <div style="font-size:14px;font-weight:600;margin:24px 0 8px">About the role</div>
+  <ul style="font-size:14px;line-height:1.7;color:var(--tx2)">${j.about.map(a=>`<li style="margin-left:17px;margin-bottom:5px">${a}</li>`).join('')}</ul>`}
+function visibleJobs(){const q=(S.q||'').toLowerCase();const found=JOBS.filter(j=>S.found.includes(j.id));
+ return found.filter(j=>{if(S.co&&j.dom!==S.co)return false;if(S.filter==='fits'&&j.fit!=='fits')return false;if(S.filter==='explore'&&j.fit!=='explore')return false;if(S.filter==='saved'&&!SAVED[j.id])return false;if(q&&!(j.t+j.co+j.loc).toLowerCase().includes(q))return false;return true})}
+function renderDetail(){const d=$('#xdetail');if(!d)return;const j=JOBS.find(x=>x.id===S.sel);
+ d.innerHTML=j?jobDetailHTML(j):`<div class="zempty" style="text-align:center;padding:40px"><b>Pick a role.</b>Its details open here.</div>`;
+ $$('#xdetail [data-a]').forEach(b=>b.onclick=()=>{const k=b.dataset.a;if(k==='save'){SAVED[j.id]=!SAVED[j.id];renderJobs();return}jobAction(k,j)});
+ $$('#zsbody .xr').forEach(r=>r.classList.toggle('on',r.dataset.j===S.sel));icons()}
 function renderJobs(){
- const q=(S.q||'').toLowerCase();const found=JOBS.filter(j=>S.found.includes(j.id));
+ const found=JOBS.filter(j=>S.found.includes(j.id));const list=visibleJobs();
  const cos=[];found.forEach(j=>{let c=cos.find(x=>x.dom===j.dom);if(!c){c={dom:j.dom,co:j.co,n:0,live:false};cos.push(c)}c.n++;c.live=c.live||j.live});
  const counts={all:found.length,fits:found.filter(j=>j.fit==='fits').length,explore:found.filter(j=>j.fit==='explore').length,saved:found.filter(j=>SAVED[j.id]).length};
- const list=found.filter(j=>{
-  if(S.co&&j.dom!==S.co)return false;
-  if(S.filter==='fits'&&j.fit!=='fits')return false;
-  if(S.filter==='explore'&&j.fit!=='explore')return false;
-  if(S.filter==='saved'&&!SAVED[j.id])return false;
-  if(q&&!(j.t+j.co+j.loc).toLowerCase().includes(q))return false;return true});
- const last=S.visit==='first'?S.lastFound:null;
- $('#zsbody').innerHTML=`<div class="zin wide" style="max-width:1000px">
-  <div class="zarr" style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:8px 0 18px"><h1 class="ztitle" style="margin:0">Explore</h1><span style="font-size:13px;color:var(--tx3)">${found.length} role${found.length===1?'':'s'} at ${cos.length} compan${cos.length===1?'y':'ies'}${dayOneLive()?', and counting':''}</span></div>
-  <div class="xcos zarr">${cos.map(c=>`<div class="xco ${S.co===c.dom?'on':''}" data-co="${c.dom}"><div class="lg">${fav(c.dom)}</div><span class="ct">${c.n} role${c.n===1?'':'s'}</span><div class="nm">${c.co}</div>${c.live?'<span class="live"></span>':''}</div>`).join('')}
+ if(!list.find(j=>j.id===S.sel))S.sel=list[0]?list[0].id:'';
+ const last=S.visit==='first'?S.lastFound:null;const sc=$('#zsbody').scrollTop;
+ $('#zsbody').innerHTML=`<div class="zin wide" style="max-width:1180px">
+  <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:8px 0 18px"><h1 class="ztitle" style="margin:0">Explore</h1><span style="font-size:13px;color:var(--tx3)">${found.length} role${found.length===1?'':'s'} at ${cos.length} compan${cos.length===1?'y':'ies'}${dayOneLive()?', and counting':''}</span></div>
+  <div class="xcos">${cos.map(c=>`<div class="xco ${S.co===c.dom?'on':''}" data-co="${c.dom}"><div class="lg">${fav(c.dom)}</div><span class="ct">${c.n} role${c.n===1?'':'s'}</span><div class="nm">${c.co}</div>${c.live?'<span class="live"></span>':''}</div>`).join('')}
    ${dayOneLive()?`<div class="xco" style="cursor:default;border-style:dashed"><div class="nm" style="left:38px;right:16px;bottom:auto;top:18px;font-weight:500;color:var(--tx3);font-size:12.5px;line-height:1.45">Reading ${296-S.log.length*18} more</div><span class="live" style="bottom:auto;top:20px;right:auto;left:16px"></span></div>`:''}</div>
-  <div class="zarr" style="display:flex;align-items:center;gap:10px;margin:14px 0 18px;flex-wrap:wrap">
-   <div class="xfil">${[['all','All'],['fits','Aligned'],['explore','Around'],['saved','Saved']].map(f=>`<button class="${S.filter===f[0]?'on':''}" data-f="${f[0]}">${f[1]}<sup>${counts[f[0]]}</sup></button>`).join('')}</div>
+  <div style="display:flex;align-items:center;gap:10px;margin:14px 0 18px;flex-wrap:wrap">
+   <div class="xfil">${[['all','All'],['fits','Aligned'],['explore','Around'],['saved','Saved']].map(f=>`<button class="${S.filter===f[0]?'on':''}" data-f="${f[0]}" ${counts[f[0]]===0&&f[0]!=='all'?'disabled':''}>${f[1]}<sup>${counts[f[0]]}</sup></button>`).join('')}</div>
    <div style="display:flex;align-items:center;gap:9px;height:36px;padding:0 14px;background:var(--card);border:1px solid var(--line2);border-radius:99px;flex:1;min-width:180px;margin-left:auto;max-width:300px">${ic('search')}<input id="jq" placeholder="Search roles or companies" value="${S.q||''}" style="flex:1;font-size:13.5px"></div>
-   <div class="xview"><button class="${S.xview!=='list'?'on':''}" data-xv="grid" title="Grid">${ic('layout-grid')}</button><button class="${S.xview==='list'?'on':''}" data-xv="list" title="List">${ic('list')}</button></div></div>
-  <div class="${S.xview==='list'?'xlist':'xgrid'} zarr">${list.length?list.map(j=>jobCard(j,j.id===last)).join(''):`<div class="zempty" style="grid-column:1/-1;text-align:center;padding:40px">${S.filter==='saved'?'<b>Nothing saved.</b>The bookmark on any role keeps it here.':S.co?'<b>Nothing else here yet.</b>I am still reading their careers page.':'<b>Nothing matches that.</b>Clear the search and I will look again.'}</div>`}</div></div>`;
- const keep=()=>$$('#zsbody .zarr').forEach(a=>a.classList.add('in'));keep();
- $('#jq').addEventListener('input',e=>{S.q=e.target.value;const sc=$('#zsbody').scrollTop;renderJobs();$('#zsbody').scrollTop=sc;$('#jq').focus()});
+   <div class="xview"><button class="${S.xview!=='grid'?'on':''}" data-xv="list" title="List">${ic('list')}</button><button class="${S.xview==='grid'?'on':''}" data-xv="grid" title="Grid">${ic('layout-grid')}</button></div></div>
+  ${S.xview==='grid'
+   ?`<div class="xgrid">${list.length?list.map(j=>jobCard(j,j.id===last)).join(''):`<div class="zempty" style="grid-column:1/-1;text-align:center;padding:40px"><b>Nothing matches that.</b>Clear the search and I will look again.</div>`}</div>`
+   :`<div class="xsplit"><div class="xlist2">${list.length?list.map(j=>jobRow(j,j.id===last)).join(''):`<div class="zempty" style="text-align:center;padding:40px"><b>Nothing matches that.</b>Clear the search and I will look again.</div>`}</div><div class="xdetail" id="xdetail"></div></div>`}
+  </div>`;
+ $('#zsbody').scrollTop=sc;
+ $('#jq').addEventListener('input',e=>{S.q=e.target.value;renderJobs();$('#jq').focus();$('#jq').setSelectionRange(99,99)});
  $$('#zsbody [data-f]').forEach(b=>b.onclick=()=>{S.filter=b.dataset.f;snd('tick');renderJobs()});
  $$('#zsbody [data-xv]').forEach(b=>b.onclick=()=>{S.xview=b.dataset.xv;snd('tick');renderJobs()});
  $$('#zsbody [data-co]').forEach(b=>b.onclick=()=>{S.co=S.co===b.dataset.co?'':b.dataset.co;snd('tick');renderJobs()});
  $$('#zsbody [data-save]').forEach(b=>b.onclick=e=>{e.stopPropagation();SAVED[b.dataset.save]=!SAVED[b.dataset.save];renderJobs();toast(SAVED[b.dataset.save]?'Saved.':'Removed from saved.')});
- $$('#zsbody [data-a]').forEach(b=>b.onclick=e=>{e.stopPropagation();const j=JOBS.find(x=>x.id===b.closest('[data-j]').dataset.j);jobAction(b.dataset.a,j)});
- icons()}
+ $$('#zsbody .xr').forEach(r=>r.onclick=()=>{S.sel=r.dataset.j;snd('tick');renderDetail();$('#xdetail').scrollTop=0});
+ $$('#zsbody .xc [data-a]').forEach(b=>b.onclick=e=>{e.stopPropagation();const j=JOBS.find(x=>x.id===b.closest('[data-j]').dataset.j);jobAction(b.dataset.a,j)});
+ renderDetail();icons()}
 function jobAction(k,j){
  if(k==='view')return openJobSheet(j.id);
  if(k==='answer')return askStart(APPS.find(a=>a.id===j.id)||{id:j.id,co:j.co,t:j.t,ev:[],st:'needs'});
