@@ -723,6 +723,274 @@ body:not(.zdark) .zsnd{background:var(--field);color:var(--tx3)}
 .xc .why .h.a{color:var(--amb)}
 .xc .acts{display:flex;gap:8px;align-items:center;margin-top:auto;padding-top:18px;flex-wrap:wrap}
 
+/* ══ the story ══ */
+/* Zero: a candy-lime jelly circle with a face. Blinks when idle, looks around when thinking, talks when replying. */
+.orb{--s:30px;position:relative;display:inline-block;width:var(--s);height:var(--s);border-radius:50%;flex-shrink:0;
+ background:radial-gradient(circle at 32% 26%,rgba(255,255,255,.95) 0 7%,rgba(255,255,255,0) 20%),radial-gradient(circle at 72% 80%,rgba(255,255,255,.4) 0 6%,rgba(255,255,255,0) 22%),radial-gradient(circle at 50% 58%,#D6FF7A 0%,#A6EC3F 52%,#6CC81E 100%);
+ box-shadow:inset 0 -4px 9px rgba(50,120,8,.38),inset 0 3px 6px rgba(255,255,255,.65),0 6px 16px -8px rgba(90,170,30,.7);animation:orbJelly 4.2s ease-in-out infinite}
+.orb.sm{--s:22px}.orb.md{--s:38px}.orb.big{--s:96px}
+.orb .eye{position:absolute;top:38%;width:calc(var(--s)*.1);height:calc(var(--s)*.16);border-radius:99px;background:#1A2A0A;animation:orbBlink 5s infinite}
+.orb .eye.l{left:32%}.orb .eye.r{right:32%}
+.orb .mouth{position:absolute;left:50%;top:60%;width:calc(var(--s)*.26);height:calc(var(--s)*.12);transform:translateX(-50%);border-radius:0 0 99px 99px;background:#1A2A0A;transform-origin:50% 0}
+.orb.think{animation:orbJelly 1.1s ease-in-out infinite}
+.orb.think .eye{animation:orbLook 1.6s ease-in-out infinite}
+.orb.talk .mouth{animation:orbTalk .26s ease-in-out infinite alternate}
+.orb.wait .eye{height:calc(var(--s)*.18)}
+@keyframes orbJelly{0%,100%{transform:scale(1,1)}30%{transform:scale(1.05,.95)}60%{transform:scale(.97,1.03)}}
+@keyframes orbBlink{0%,46%,50%,100%{transform:scaleY(1)}48%{transform:scaleY(.12)}}
+@keyframes orbLook{0%,100%{transform:translateX(0)}30%{transform:translateX(calc(var(--s)*-.05))}70%{transform:translateX(calc(var(--s)*.05))}}
+@keyframes orbTalk{from{transform:translateX(-50%) scaleY(.35)}to{transform:translateX(-50%) scaleY(1.1)}}
+
+/* thread layout: an agent turn has Zero in the gutter */
+.hthread .hin{padding-bottom:40px}
+.turn{position:relative;padding-left:0;margin:0 0 26px}
+.turn .tg{position:absolute;left:-50px;top:0}
+.turn:not(.act) .tg .orb{animation:none;filter:saturate(.75);opacity:.85}
+.turn .tb>*+*{margin-top:12px}
+@media(max-width:1500px){.turn{padding-left:44px}.turn .tg{left:0}}
+.hmsg.me{margin:0 0 26px}
+.bmark{height:0}
+
+/* pixel loader and shimmer label */
+.pix{display:inline-grid;grid-template-columns:repeat(3,3px);gap:2px;margin-right:9px;vertical-align:middle}
+.pix i{width:3px;height:3px;border-radius:.5px;background:var(--tx2);opacity:.2;animation:pixB 1s ease-in-out infinite}
+@keyframes pixB{0%,100%{opacity:.18}40%{opacity:1}}
+.shim{position:relative;color:var(--tx3)}
+.shim::after{content:attr(data-t);position:absolute;inset:0;color:transparent;background:linear-gradient(100deg,transparent 30%,var(--tx) 50%,transparent 70%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;animation:zsw 1.5s linear infinite}
+.clk{margin-left:8px;color:var(--tx4);font-variant-numeric:tabular-nums;font-size:13px}
+
+/* thinking trace and tool calls, collapsible */
+.think,.tools{font-size:14px}
+.thd{display:inline-flex;align-items:center;gap:6px;height:28px;color:var(--tx3);font-size:14px;border-radius:8px;padding:0 6px 0 0;transition:color .2s}
+.thd:hover{color:var(--tx)}
+.thd svg{width:15px;height:15px}.thd svg:last-child{width:14px;height:14px;transition:transform .25s}
+.think.open .thd svg:last-child,.tools.open .thd svg:last-child{transform:rotate(180deg)}
+.spk{display:inline-flex;color:var(--tx3)}
+.tsteps,.trows{display:none;margin:6px 0 2px 7px;padding-left:16px;box-shadow:inset 1px 0 0 var(--line)}
+.think.open .tsteps,.tools.open .trows{display:block}
+.tst,.trow{display:flex;align-items:center;gap:9px;padding:5px 0;color:var(--tx3);font-size:13.5px;opacity:0;transform:translateY(4px);transition:all .3s}
+.tst.on,.trow.on,.think.done .tst,.tools.done .trow{opacity:1;transform:none}
+.tst.ok,.trow.ok{color:var(--tx2)}
+.tmk{width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ok)}
+.tmk svg{width:13px;height:13px;stroke-width:2.6}
+.spin{width:11px;height:11px;border-radius:99px;border:1.6px solid var(--tx4);border-top-color:transparent;animation:bspin .7s linear infinite;display:block}
+.trow>svg{width:14px;height:14px;color:var(--tx3)}
+.trow b{font-weight:600;color:var(--tx)}
+.tchip{background:var(--field);border-radius:7px;padding:2px 8px;font-size:12.5px;color:var(--tx2)}
+
+/* the answer, streaming */
+.say{font-size:15.5px;line-height:1.65;color:var(--tx)}
+.say b{font-weight:600}
+.caret{display:inline-block;width:7px;height:15px;margin-left:2px;vertical-align:-2px;border-radius:2px;background:var(--tx);animation:zp .9s infinite}
+.srcchip{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;border-radius:7px;background:var(--field);font-size:12px;color:var(--tx2);vertical-align:1px}
+.srcchip img{width:12px;height:12px;border-radius:3px}
+.sayft{display:flex;align-items:center;gap:2px;margin-top:8px}
+.ib{width:30px;height:30px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;color:var(--tx3);transition:background .2s,color .2s}
+.ib:hover{background:var(--field);color:var(--tx)}.ib svg{width:15px;height:15px}
+.srcs{display:inline-flex;align-items:center;gap:7px;margin-left:8px;font-size:12.5px;color:var(--tx3)}
+.stack{display:inline-flex}.stack img{width:18px;height:18px;border-radius:99px;background:#fff;border:2px solid var(--bg);margin-left:-5px}.stack img:first-child{margin-left:0}
+.fups{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+.fup{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 10px 0 4px;border-radius:9px;font-size:14px;color:var(--tx2);transition:background .2s,color .2s}
+.fup:hover{background:var(--field);color:var(--tx)}.fup svg{width:14px;height:14px;color:var(--tx4)}
+
+/* the approval card */
+.zask{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 16px 12px;box-shadow:0 1px 2px rgba(26,25,23,.04),0 12px 32px -20px rgba(26,25,23,.28);overflow:hidden}
+.aq{display:flex;align-items:flex-start;gap:10px;font-size:15.5px;font-weight:600;letter-spacing:-.018em;line-height:1.35;padding:0 2px}
+.aq span{flex:1}.ax{margin:-5px -6px 0 0}
+.asub{font-size:13px;color:var(--tx3);margin:3px 2px 0}
+.aopts{display:flex;flex-direction:column;gap:2px;margin-top:12px}
+.aopt,.aoth{display:flex;align-items:center;gap:11px;min-height:44px;padding:8px 10px;border-radius:12px;text-align:left;font-size:14.5px;color:var(--tx);transition:background .15s}
+.aopt:hover,.aoth:hover{background:var(--wash)}
+.aopt.on{background:var(--field)}
+.rad{width:18px;height:18px;border-radius:99px;border:1.5px solid var(--tx4);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:transparent;transition:all .15s}
+.rad.box{border-radius:5px}
+.rad svg{width:11px;height:11px;stroke-width:3.2}
+.aopt.on .rad,.aoth.on .rad,.spi.on .rad{background:var(--ink);border-color:var(--ink);color:#fff}
+.alg{width:26px;height:26px;border-radius:8px;background:var(--wash);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.alg img{width:15px;height:15px}
+.al{flex:1;min-width:0;display:flex;flex-direction:column}
+.as{font-size:12.5px;color:var(--tx3);margin-top:1px}
+.aopt kbd{font:inherit;font-size:11px;color:var(--tx4);width:20px;height:20px;border-radius:6px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
+.aoth input{flex:1;font-size:14.5px}
+.aft{display:flex;align-items:center;gap:6px;margin-top:10px;padding-top:10px;box-shadow:0 -1px 0 var(--line2)}
+.apg{font-size:12.5px;color:var(--tx3)}
+
+/* time passing, and notifications */
+.tpill{display:flex;width:max-content;margin:6px auto 26px;align-items:center;gap:7px;height:30px;padding:0 13px;border-radius:99px;background:var(--field);font-size:12.5px;font-weight:500;color:var(--tx3)}
+.tpill.go{background:var(--ink);color:#fff;cursor:pointer;animation:goPulse 2s infinite}
+.tpill svg{width:13px;height:13px}
+@keyframes goPulse{0%,100%{box-shadow:0 0 0 0 rgba(26,25,23,.25)}50%{box-shadow:0 0 0 7px rgba(26,25,23,0)}}
+.note{display:flex;align-items:center;gap:10px;margin:0 0 20px;padding:10px 14px;border-radius:14px;background:var(--okbg);font-size:13.5px;color:var(--tx2)}
+.note img{width:18px;height:18px;border-radius:5px}.note b{color:var(--tx);font-weight:600}
+.znote{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:96;display:flex;align-items:center;gap:12px;min-width:360px;max-width:92vw;padding:12px 10px 12px 14px;border-radius:20px;background:var(--card);border:1px solid var(--line2);box-shadow:var(--sh3)}
+.znote .nl{width:34px;height:34px;border-radius:10px;background:var(--wash);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.znote .nl img{width:19px;height:19px}
+.znote .nt{font-size:14px;font-weight:600;letter-spacing:-.015em}.znote .ns{font-size:12.5px;color:var(--tx3);margin-top:1px}
+.znote>div:nth-child(3){flex:1}
+
+/* matches */
+.recs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.mrec{background:var(--card);border:1px solid var(--line2);border-radius:18px;padding:14px;text-align:left;transition:border-color .2s,transform .2s}
+.mrec:hover{border-color:var(--line);transform:translateY(-2px)}
+.rtop{display:flex;align-items:center;justify-content:space-between}
+.rt{font-size:14px;font-weight:600;letter-spacing:-.018em;line-height:1.3;margin-top:12px}
+.rm{font-size:12px;color:var(--tx3);margin-top:3px}
+.rw{font-size:12.5px;color:var(--tx2);margin-top:8px;line-height:1.45}
+.mring{position:relative;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.mring svg{position:absolute;inset:0;width:100%;height:100%}
+.mring b{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+@media(max-width:760px){.recs{grid-template-columns:1fr}}
+
+/* tailoring */
+.tailor{background:var(--card);border:1px solid var(--line2);border-radius:18px;padding:14px}
+.tseg{display:inline-flex;gap:2px;padding:3px;border-radius:12px;background:var(--field)}
+.tseg button{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 11px;border-radius:9px;font-size:13px;font-weight:500;color:var(--tx3)}
+.tseg button img{width:14px;height:14px;border-radius:3px}
+.tseg button.on{background:var(--card);color:var(--tx);box-shadow:0 1px 3px rgba(26,25,23,.12)}
+.thead{display:flex;gap:10px;align-items:baseline;margin:14px 4px 10px}
+.thead .tl{font-size:12px;color:var(--tx3);flex-shrink:0}.thead .tv{font-family:var(--serif);font-size:17px;letter-spacing:-.02em;line-height:1.3}
+.tlist{display:flex;flex-direction:column;gap:4px}
+.tp{display:flex;align-items:center;gap:11px;padding:8px 10px;border-radius:12px;background:var(--wash)}
+.tp:first-child{background:var(--okbg)}
+.tn{width:18px;font-size:12.5px;font-weight:600;color:var(--tx3);text-align:center;font-variant-numeric:tabular-nums}
+.tpt{flex:1;min-width:0;font-size:14px;font-weight:600;letter-spacing:-.015em;display:flex;flex-direction:column}
+.tps{font-size:12px;font-weight:400;color:var(--tx3)}
+.tmv{display:inline-flex;align-items:center;gap:3px;font-size:12px;color:var(--tx4)}
+.tmv.up{color:var(--ok);font-weight:600}.tmv svg{width:12px;height:12px;stroke-width:2.6}
+.twhy{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--tx2);margin:10px 4px 2px}
+.twhy svg{width:13px;height:13px;color:var(--ok)}
+
+.sending{background:var(--card);border:1px solid var(--line2);border-radius:18px;padding:6px 14px}
+.srow{display:flex;align-items:center;gap:11px;padding:10px 0;font-size:14px}
+.srow+.srow{box-shadow:0 -1px 0 var(--line2)}
+.srow>img{width:22px;height:22px;border-radius:6px}
+.sgl{flex:1;min-width:0;display:flex;flex-direction:column;font-weight:600;letter-spacing:-.015em}.sgs{font-size:12px;font-weight:400;color:var(--tx3)}
+.srow .st{font-size:12.5px;color:var(--tx3)}.srow.ok .st{color:var(--ok);font-weight:600}
+
+/* who looked */
+.looked{background:var(--card);border:1px solid var(--line2);border-radius:18px;padding:14px 16px}
+.lh{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.av{width:34px;height:34px;border-radius:99px;background:linear-gradient(150deg,#E8E2F8,#C9BDF0);color:#4B3A8C;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.av.xs{width:20px;height:20px;font-size:8.5px}
+.ln{font-size:14px;font-weight:600;letter-spacing:-.015em}.lr{font-size:12px;color:var(--tx3)}
+.lt{margin-left:auto;font-size:12px;color:var(--tx3)}
+.lrow{display:grid;grid-template-columns:170px 1fr 100px;align-items:center;gap:12px;padding:6px 0;font-size:13.5px}
+.lbar{height:6px;border-radius:99px;background:var(--field);overflow:hidden}.lbar i{display:block;height:100%;border-radius:99px;background:var(--ok)}
+.lval{font-size:12.5px;color:var(--tx3);text-align:right;font-variant-numeric:tabular-nums}
+
+/* schedule */
+.sched{position:relative;display:flex;gap:16px;background:var(--card);border:1px solid var(--line2);border-radius:18px;padding:16px}
+.sdate{width:58px;flex-shrink:0;height:66px;border-radius:14px;background:var(--wash);border:1px solid var(--line2);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.sdate .sd{font-size:11.5px;font-weight:600;color:#D14B3B}.sdate .sn{font-family:var(--serif);font-size:26px;line-height:1;margin-top:2px}
+.sbody{flex:1;min-width:0}
+.sr{font-size:12.5px;font-weight:600;color:var(--ok)}
+.stt{font-size:15px;font-weight:600;letter-spacing:-.018em;margin-top:2px;padding-right:130px}
+.smeta{display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-size:13px;color:var(--tx2);margin-top:6px}
+.smeta svg{width:13px;height:13px;color:var(--tx3)}.smeta .dot{width:3px;height:3px;border-radius:99px;background:var(--tx4);margin:0 3px}
+.scal{position:absolute;top:14px;right:14px}
+.sag{margin-top:14px;display:flex;flex-direction:column;gap:2px}
+.sai{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:13.5px}
+.si{width:20px;height:20px;border-radius:99px;background:var(--field);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;color:var(--tx2)}
+.sdur{margin-left:auto;font-size:12.5px;color:var(--tx3)}
+.sprep{margin-top:12px;background:var(--wash);border-radius:12px;padding:8px 10px}
+.sph{font-size:12px;font-weight:600;color:var(--tx3);padding:2px 2px 4px}
+.spi{display:flex;align-items:center;gap:10px;width:100%;padding:6px 2px;font-size:13.5px;text-align:left}
+
+/* the interview, live */
+.lvcard{background:#151513;border-radius:18px;padding:12px;color:#F4F4F3}
+.lvtop{display:flex;align-items:center;gap:10px;font-size:12.5px;margin-bottom:10px;padding:0 4px}
+.lrec{display:inline-flex;align-items:center;gap:6px;font-weight:600}.lrec i{width:7px;height:7px;border-radius:99px;background:#FF4D4D;animation:zp 1.2s infinite}
+.lvcard.done .lrec i{background:#7EDC9A;animation:none}
+.lvc{font-variant-numeric:tabular-nums;color:rgba(244,244,243,.6)}
+.lvw{display:inline-flex;align-items:center;gap:6px;color:rgba(244,244,243,.5)}.lvw svg{width:13px;height:13px}
+.lvtiles{display:grid;grid-template-columns:1fr 1.5fr;gap:8px}
+.lvt{position:relative;border-radius:12px;background:#24241F;aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:box-shadow .3s}
+.lvt.talk{box-shadow:0 0 0 2px #7EDC9A}
+.bigav{width:64px;height:64px;border-radius:99px;background:linear-gradient(150deg,#E8E2F8,#C9BDF0);color:#4B3A8C;font-size:20px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.lvt .pres{width:100%;height:100%;border:none;border-radius:0}
+.lvn{position:absolute;left:8px;bottom:8px;font-size:11.5px;padding:3px 8px;border-radius:7px;background:rgba(0,0,0,.55);color:#fff}
+.lvag{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;padding:0 2px}
+.lva{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:99px;background:rgba(255,255,255,.07);font-size:12px;color:rgba(244,244,243,.5)}
+.lva i{width:6px;height:6px;border-radius:99px;background:rgba(255,255,255,.25)}
+.lva.on{color:#fff}.lva.on i{background:#FFB23E;animation:zp 1s infinite}.lva.ok{color:rgba(244,244,243,.8)}.lva.ok i{background:#7EDC9A}
+.lvcap{min-height:22px;margin-top:10px;padding:0 4px;font-size:13.5px;color:rgba(244,244,243,.85);display:flex;align-items:center;gap:8px}
+.lvcap b{font-weight:600;color:#fff}.lvcap svg{width:14px;height:14px;color:#7EDC9A}
+
+/* the no */
+.rej{background:var(--card);border:1px solid var(--line2);border-radius:18px;padding:18px}
+.rq{font-family:var(--serif);font-size:19px;line-height:1.4;letter-spacing:-.02em}
+.rby{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--tx3);margin-top:10px}
+.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.rg{display:flex;gap:9px;padding:11px 12px;border-radius:12px;font-size:13.5px;line-height:1.45}
+.rg svg{width:16px;height:16px;flex-shrink:0;margin-top:1px}
+.rg.ok{background:var(--okbg)}.rg.ok svg{color:var(--ok)}.rg.amb{background:var(--ambbg)}.rg.amb svg{color:var(--amb)}
+.rk{font-size:12px;font-weight:600;color:var(--tx3);margin-bottom:1px}
+.racts{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+
+/* the offer */
+.offer{background:var(--card);border:1px solid var(--line2);border-radius:18px;padding:18px}
+.oh{display:flex;gap:12px;align-items:center}
+.ok2{font-size:12px;font-weight:600;color:var(--ok)}.ot{font-size:15px;font-weight:600;letter-spacing:-.018em}.om{font-size:12.5px;color:var(--tx3)}
+.oamt{font-family:var(--serif);font-size:40px;letter-spacing:-.03em;line-height:1;margin-top:18px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.oamt span{font-family:var(--f);font-size:13.5px;font-weight:600;color:var(--ok);letter-spacing:0}
+.obar{position:relative;height:8px;border-radius:99px;background:var(--field);margin:30px 0 34px}
+.obar .band{position:absolute;top:0;bottom:0;border-radius:99px;background:#CDEBD8}
+.obar .mk{position:absolute;top:-4px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;font-size:11.5px;color:var(--tx3);white-space:nowrap}
+.obar .mk i{width:2px;height:16px;border-radius:2px;background:var(--tx4);margin-bottom:4px}
+.obar .mk.you{color:var(--tx);font-weight:600}.obar .mk.you i{width:4px;background:var(--ink)}
+.obar .mk.med{top:-22px;flex-direction:column-reverse}.obar .mk.med i{margin:4px 0 0}
+.oex{display:flex;gap:6px;flex-wrap:wrap}
+
+/* right pane */
+.agst2{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--card);border:1px solid var(--line2)}
+.al2{font-size:13.5px;font-weight:600}.at2{font-size:12.5px;color:var(--tx3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
+.agst2.wait .al2{color:var(--amb)}.agst2.think .al2,.agst2.work .al2{color:var(--ok)}
+.ivrow{display:flex;align-items:center;gap:10px;padding:9px 0;font-size:13px}
+.ivrow+.ivrow{box-shadow:0 -1px 0 var(--line2)}
+.ivd{width:40px;height:44px;border-radius:11px;background:var(--card);border:1px solid var(--line2);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10.5px;color:#D14B3B;font-weight:600;flex-shrink:0}
+.ivd b{font-family:var(--serif);font-size:17px;color:var(--tx);font-weight:400;line-height:1;order:2;margin-top:1px}
+.ivx{flex:1;min-width:0;display:flex;flex-direction:column}.ivt2{font-size:12px;color:var(--tx3)}
+.ivrow.passed{opacity:.6}
+.hver{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:12.5px;font-weight:600;color:var(--tx2)}
+.hver img{width:14px;height:14px;border-radius:3px}.hver svg{width:14px;height:14px}
+.hcin .orb{margin-right:4px}
+#hmic.rec{color:var(--ok)}
+
+/* the moment it lands */
+.hired{position:fixed;inset:0;z-index:97;background:rgba(248,247,245,.94);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center}
+.hin2{text-align:center;display:flex;flex-direction:column;align-items:center;gap:20px}
+.hl1{font-family:var(--serif);font-size:clamp(40px,4vw,64px);letter-spacing:-.035em;line-height:1}
+.hco{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line2);border-radius:18px;padding:12px 18px;text-align:left}
+.hco .ht{font-size:15px;font-weight:600;letter-spacing:-.018em}.hco .hm{font-size:13px;color:var(--tx3)}
+
+/* cinematic: the three names under their bubbles */
+.cmatch{display:block;font-size:11px;color:var(--ok);font-weight:600;margin-top:1px}
+#csub2{opacity:0;font-family:var(--serif);font-size:clamp(20px,1.6vw,28px);color:var(--tx3);letter-spacing:-.02em;margin-top:8px}
+
+/* explore insights */
+.xins{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px}
+.xi{display:flex;align-items:center;gap:12px;background:var(--wash);border-radius:14px;padding:12px}
+.xbig{font-family:var(--serif);font-size:24px;letter-spacing:-.02em;min-width:52px;text-align:center}
+.xk{font-size:12px;color:var(--tx3)}.xv{font-size:13.5px;font-weight:600;letter-spacing:-.015em;margin-top:1px}
+.xsec{margin-top:22px}
+.xh{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;font-weight:600;margin-bottom:8px}
+.xh span{font-size:13px;font-weight:400;color:var(--tx3)}
+.xev{display:flex;gap:11px;align-items:center;padding:8px 0}
+.xet{font-size:14px;font-weight:600;letter-spacing:-.015em}.xes{font-size:12.5px;color:var(--tx3);margin-top:1px}
+.xgap{display:flex;gap:8px;align-items:flex-start;padding:10px 12px;border-radius:12px;background:var(--ambbg);font-size:13.5px;line-height:1.45;margin-bottom:6px}
+.xgap svg{width:15px;height:15px;color:var(--amb);flex-shrink:0;margin-top:1px}
+.xpay{position:relative;height:8px;border-radius:99px;background:var(--field);margin:14px 0 30px}
+.xpay .band{position:absolute;top:0;bottom:0;border-radius:99px;background:#CDEBD8}
+.xpay .mk{position:absolute;top:-4px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;font-size:11.5px;color:var(--tx3);white-space:nowrap}
+.xpay .mk i{width:2px;height:16px;border-radius:2px;background:var(--ink);margin-bottom:4px}
+.xord{display:flex;align-items:center;gap:11px;padding:8px 10px;border-radius:12px;background:var(--wash);margin-bottom:4px}
+.xord:first-child{background:var(--okbg)}
+.xr .mring{align-self:center}
+@media(max-width:980px){.xins{grid-template-columns:1fr}}
+/* portfolio versions */
+.pfvers{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 18px}
+.pfvers .twhy{margin:0}
+
 /* overlays */
 .zovl{position:fixed;inset:0;z-index:80;background:rgba(20,19,18,.42);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .25s}
 .zovl.on{opacity:1;pointer-events:auto}
@@ -977,33 +1245,30 @@ async function runCine(){
   await wait(230)}
  await wait(600);
  await clearLine('#cq');await say($('#cq'),'With 12 recruiters at 6 companies.',1500);
- /* ── Phase C: the three that are open now ── */
+ /* ── Phase C: three companies step forward, and Zero says it out loud ── */
  await clearLine('#cq');
  const keep=TOP3.map(t=>cos.find(c=>c.dataset.dom===t.dom));
  $$('#s-cine .cline').forEach(l=>gsap.to(l,{opacity:0,duration:.4}));
  gsap.to('#cenv',{opacity:0,scale:.6,duration:.45,ease:'power2.in'});
  cos.filter(c=>!keep.includes(c)).forEach(c=>gsap.to(c,{opacity:0,scale:.4,duration:.5,ease:'power2.in'}));
- const row=$('#crow');row.innerHTML=TOP3.map(t=>`<div class="crole" data-role="${t.id}"><div class="lg"></div><div class="t">${t.t}</div><div class="w">${t.co} · ${t.why}</div><div class="o">${ic('sparkles')}${t.odds}</div><div class="a">Can I apply for you?<button class="zbtn dark sm" data-apply="${t.id}">Yes</button><button class="zbtn ghost sm" data-skip="${t.id}">Not now</button></div></div>`).join('');icons();
- // the cards sit a fixed distance under the heading on any screen (GSAP owns the transform from here)
- const hb=$('.cq').getBoundingClientRect().bottom,st0=st.getBoundingClientRect().top;gsap.set(row,{top:Math.round(hb-st0)+64,xPercent:-50,yPercent:0,opacity:0,y:20});
- await wait(450);
- say($('#cq'),'Three of them are open now.',0);
- gsap.to(row,{opacity:1,y:0,duration:.6,ease:'power2.out',onComplete:()=>row.classList.add('in')});
- await wait(650);// measure the slots only once the row has settled
- const sr=st.getBoundingClientRect();
- keep.forEach((c,i)=>{const slot=$$('.crole .lg',row)[i].getBoundingClientRect();const x=slot.left-sr.left+slot.width/2,y=slot.top-sr.top+slot.height/2;
-  gsap.to(c,{left:x,top:y,scale:.6,duration:.8,ease:'power3.inOut',delay:i*.06});gsap.to($('.nm',c),{opacity:0,duration:.2});gsap.to($('.ring',c),{opacity:0,duration:.3})});
+ await wait(500);
+ const gap=Math.min(260,W()*.26);
+ keep.forEach((c,i)=>{const x=cx()+(i-1)*gap,y=cy()-10;
+  gsap.to(c,{left:x,top:y,scale:1.45,duration:.9,ease:'power3.inOut',delay:i*.07});
+  const m=CO[TOP3[i].id];const nm=$('.nm',c);nm.innerHTML=`${m.co}<span class="cmatch">${m.match}% match</span>`;gsap.to(nm,{opacity:1,duration:.4,delay:.6})});
  snd('rise');
- $$('#crow [data-apply]').forEach(b=>b.onclick=()=>{const id=b.dataset.apply;const wrap=b.parentElement;const j=JOBS.find(x=>x.id===id);snd('tick');
-  const blocked=(j.need||[]).includes('start')&&!S.brief.start;
-  wrap.innerHTML=blocked?`<span class="ztag amb">${ic('circle-alert')}Needs your start date</span>`:`<span class="ztag ok">${ic('check')}Applying</span>`;icons();
-  if(first&&j&&!APPS.find(a=>a.id===id))APPS.push(blocked?{id,dom:j.dom,t:j.t,co:j.co,st:'needs',up:'now',nx:'Your start date',ev:[['now','You said yes on the way in'],['now','Stopped: their form needs a start date and I do not have one']]}
-   :{id,dom:j.dom,t:j.t,co:j.co,st:'subm',up:'now',nx:'Sending inside your brief',ev:[['now','You said yes on the way in'],['now','Built from your portfolio and your terms. Sending']]});
-  toast(blocked?'Their form asks for a start date. It waits for you inside, nothing is guessed.':'On it. It goes out with your portfolio and your terms.')});
- $$('#crow [data-skip]').forEach(b=>b.onclick=()=>{b.parentElement.innerHTML=`<span class="ztag">Saved for later</span>`;SAVED[b.dataset.skip]=true});
- await wait(900);
+ const vo=new Audio('job-portal-three-waiting.mp3');vo.volume=1;
+ const q2=el(`<div class="csub" id="csub2"></div>`);$('.cq').appendChild(q2);
+ line($('#cq'),'These three companies are waiting for you.');
+ let asked=false;const ask=()=>{if(asked)return;asked=true;q2.textContent='Would you like to check them out?';gsap.to(q2,{opacity:1,y:0,duration:.5,ease:'power2.out'})};
+ gsap.set(q2,{y:6});
+ const cue=setInterval(()=>{if(vo.currentTime>=1.92)ask()},80);vo.addEventListener('timeupdate',()=>{if(vo.currentTime>=1.92)ask()});
+ vo.play().catch(()=>{});S.vo=vo;
+ await wait(2300);ask();clearInterval(cue);
+ await wait(600);
+ $('#ccta').innerHTML=`<button class="zbtn lg dark" id="cgo">Check them out</button>`;
  gsap.to('#ccta',{opacity:1,duration:.5});
- $('#cgo').onclick=()=>{snd('tick');$('#zflowhd').classList.add('zhide');enterApp('home')}}
+ $('#cgo').onclick=()=>{snd('tick');if(S.vo){S.vo.pause()}$('#zflowhd').classList.add('zhide');S.story.beat=0;S.story.played={};S.toured=true;enterApp('home')}}
 
 /* ═══ DATA ═══ */
 const JOBS=[
@@ -1325,7 +1590,7 @@ function pfItem(inner,editAttr){
 
 /* hero + sections: the portfolio itself, shared by the Portfolio page and the build preview */
 function pfBody(){const P=PF;
- const proj=P.projects.map(p=>pfItem(`<div class="pfproj" data-open="${p.id}">
+ const proj=pfOrdered(window.emp&&window.empCo&&TAILOR[window.empCo.id]?window.empCo.id:(S.pfFor||'master')).map(p=>pfItem(`<div class="pfproj" data-open="${p.id}">
    <div class="pvis">${presVisual(p,false)}</div>
    <div style="flex:1;min-width:0">
     <div class="pt">${p.t} for ${p.co}</div>
@@ -1343,7 +1608,7 @@ function pfBody(){const P=PF;
    <div style="flex:1;min-width:0">
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h2 class="pfname">${P.name}</h2><span class="ztag ok">${ic('award')}${P.rating}</span></div>
     <div class="ps" style="margin-top:4px">${P.track} · ${P.loc}</div>
-    ${P.headline?`<div class="pfheadline">${P.headline}</div>`:''}
+    ${(S.pfFor&&TAILOR[S.pfFor])?`<div class="pfheadline">${TAILOR[S.pfFor].head}</div>`:P.headline?`<div class="pfheadline">${P.headline}</div>`:''}
     ${PF.shared.about||window.emp===false?`<p class="pfabout">${P.about}</p>`:''}
    </div>
    ${PFEDIT&&!window.emp?`<button class="pfic" data-editme title="Edit">${ic('pencil')}</button>`:''}
@@ -1369,6 +1634,7 @@ function renderPortfolio(){
     <button class="zic ${window.emp?'on':''}" id="pfprev" title="See it as an employer">${ic(window.emp?'pencil':'eye')}</button>
    </div></div>
 
+  ${window.emp?'':`<div class="zarr pfvers"><div class="tseg">${['master','notion','figma','klarna'].map(k=>`<button class="${(S.pfFor||'master')===k?'on':''}" data-ver="${k}" type="button">${k==='master'?ic('layers'):fav(CO[k].dom)}${TAILOR[k].label}</button>`).join('')}</div>${S.pfFor&&TAILOR[S.pfFor]?`<div class="twhy">${ic('sparkles')}${TAILOR[S.pfFor].why}</div>`:''}</div>`}
   ${window.emp?`<div class="zarr pfemps">${emps.length?emps.map(e=>`<button class="ztag ${window.empCo&&window.empCo.id===e.id?'dk':'out'}" data-emp="${e.id}" style="height:30px;padding:0 12px;cursor:pointer">${e.co}</button>`).join(''):'<span class="ztag dsh">Nobody has opened it yet</span>'}<button class="zbtn ghost sm" id="pfexit" style="margin-left:auto">Back to your view</button></div>`:''}
 
   ${pfBody()}
@@ -1388,6 +1654,10 @@ function renderPortfolio(){
  $$('#zsbody [data-editc]').forEach(b=>b.onclick=()=>editEntry('credentials',b.dataset.editc));
  $$('#zsbody [data-edita]').forEach(b=>b.onclick=()=>editEntry('academics',b.dataset.edita));
  const me=$('#zsbody [data-editme]');if(me)me.onclick=editMe;
+ $$('#zsbody [data-ver]').forEach(b=>b.onclick=()=>{const k=b.dataset.ver==='master'?'':b.dataset.ver;if(k===(S.pfFor||''))return;snd('tick');
+  const before={};$$('#zsbody .pfproj').forEach(x=>before[x.dataset.open]=x.closest('.pfitem').getBoundingClientRect().top);
+  S.pfFor=k;renderPortfolio();$$('#zsbody .zarr').forEach(a=>a.classList.add('in'));
+  $$('#zsbody .pfproj').forEach(x=>{const it=x.closest('.pfitem');const dy=(before[x.dataset.open]||0)-it.getBoundingClientRect().top;if(dy)gsap.fromTo(it,{y:dy},{y:0,duration:.7,ease:'power3.inOut'})})});
  icons()}
 
 function renderSuggestions(){
@@ -1464,8 +1734,8 @@ function openAdd(kind){
 const SEND_COS=[['notion.so','Notion'],['figma.com','Figma'],['klarna.com','Klarna'],['spotify.com','Spotify'],['shopify.com','Shopify'],['stripe.com','Stripe'],['wealthsimple.com','Wealthsimple'],['intercom.com','Intercom'],['linear.app','Linear'],['ramp.com','Ramp'],['airbnb.com','Airbnb'],['slack.com','Slack']];
 const TOP3=[
  {id:'notion',co:'Notion',dom:'notion.so',t:'Growth Analyst, Self-serve',why:'You already did this job for them.',odds:'Strongest opening you have'},
- {id:'klarna',co:'Klarna',dom:'klarna.com',t:'Business Analyst, Payments Operations',why:'Same work as your Shopify cost model.',odds:'Your evidence lines up one to one'},
  {id:'figma',co:'Figma',dom:'figma.com',t:'Analyst, Go-to-market Operations',why:'They want the recommendation, not the dashboard.',odds:'All three reviews say that is you'},
+ {id:'klarna',co:'Klarna',dom:'klarna.com',t:'Business Analyst, Payments Operations',why:'Same work as your Shopify cost model.',odds:'Your evidence lines up one to one'},
 ];
 /* ═══════════ INTERVIEWS ═══════════ */
 const ROUNDS=[
@@ -1509,200 +1779,460 @@ function bindRounds(){
 /* repaint only the page that is open; a timer must never swap the page under the user */
 function rerender(){if(S.page==='home')renderHome();else if(S.page==='jobs')renderJobs();else if(S.page==='portfolio')renderPortfolio();$$('#zsbody .zarr').forEach(a=>a.classList.add('in'));if($('#zpanel.on')&&S.panel==='apps')openApps(true)}
 
+/* ═══════════ THE STORY: match → apply → liked → interview → no → next → offer ═══════════ */
+/* Every beat ends on a question. Nothing moves until the student answers. */
+
+/* project ids: p1 Notion funnel · p2 Shopify cost · p3 Spotify churn · p4 Netflix revenue · p5 Slack experiment */
+const TAILOR={
+ master:{label:'Your master',order:['p2','p3','p1','p4','p5'],head:'I work best on a framed problem with data in hand.'},
+ notion:{label:'For Notion',order:['p1','p5','p3','p2','p4'],head:'I find the drop-off that decides a growth quarter.',why:'Notion reads the funnel first, so your funnel diagnosis leads.'},
+ figma:{label:'For Figma',order:['p2','p4','p1','p3','p5'],head:'I size the opportunity before anyone builds.',why:'Figma wants sizing and a recommendation, so the cost model leads.'},
+ klarna:{label:'For Klarna',order:['p2','p4','p1','p5','p3'],head:'I price a process and say what to automate first.',why:'Klarna prices payment operations, the same shape as your Shopify work.'},
+};
+const pfOrdered=key=>{const t=TAILOR[key]||TAILOR.master;return t.order.map(id=>PF.projects.find(p=>p.id===id)).filter(Boolean)};
+const masterPos=id=>TAILOR.master.order.indexOf(id)+1;
+
+const CO={
+ notion:{id:'notion',co:'Notion',dom:'notion.so',role:'Growth Analyst, Self-serve',pay:'CA$72,000 to 84,000',match:94,
+  line:'You already solved their funnel in a ZERO scenario.',
+  who:'Priya Raman',first:'Priya',whoRole:'Growth lead',ini:'PR',
+  looked:[['Signup Funnel Diagnosis','6 min 12 s',.94],['Your presentation','Watched twice',.72],['recovery-plan.pdf','Opened',.4]],
+  likedLine:'Priya Raman, their Growth lead, watched your presentation twice and wants to talk.',
+  slots:[['Thursday','2:00 pm','18'],['Friday','10:30 am','19'],['Monday','9:00 am','22']],
+  round:'First round',len:45,where:'Google Meet',
+  agenda:[['Your funnel diagnosis','10 min'],['A live growth case','25 min'],['Your questions','10 min']],
+  prep:['Say your diagnosis in two minutes','Know their activation metric','Bring one question about self-serve'],
+  live:[['Priya','Walk me through how you sized the drop-off.'],['You','Sharing Signup Funnel Diagnosis'],['Priya','If activation fell 4 points next month, where would you look first?'],['Priya','That is the clearest sizing I have seen this week.']],
+  reject:{quote:'Your diagnosis was the strongest we saw. We went with someone who has more Amplitude experience.',worked:'Your funnel diagnosis, and how you explained it',cost:'Hands-on Amplitude',fix:'Add an Amplitude scenario to my pathway'},
+  offer:{n:80000,start:'June 2',extras:['Remote, Canada','20 days off','Equity'],range:[72000,84000],median:78000,counter:84000}},
+ figma:{id:'figma',co:'Figma',dom:'figma.com',role:'Analyst, Go-to-market Operations',pay:'CA$74,000 to 88,000',match:88,
+  line:'They want the recommendation, not the dashboard.',
+  who:'Dan Whitfield',first:'Dan',whoRole:'GTM operations lead',ini:'DW',
+  looked:[['Support-Ticket Cost','4 min 40 s',.86],['Revenue Decomposition','2 min 05 s',.5],['Your presentation','Watched once',.36]],
+  likedLine:'Dan Whitfield, their GTM operations lead, read your cost model end to end and wants a take-home review.',
+  slots:[['Monday','11:00 am','29'],['Tuesday','3:00 pm','30'],['Wednesday','9:30 am','1']],
+  round:'Take-home review',len:30,where:'Zoom',
+  agenda:[['Your cost model','10 min'],['The take-home','15 min'],['Your questions','5 min']],
+  prep:['Lead with the number, then the method','Have the three automation picks ready','Ask how they forecast pipeline'],
+  live:[['Dan','If the ticket cost doubled, what would you automate first?'],['You','Sharing Support-Ticket Cost'],['Dan','Walk me through the assumption you are least sure of.'],['Dan','You said what the number cannot carry. Nobody does that.']],
+  reject:{quote:'Strong model. We needed someone who has run a forecast pack before.',worked:'Your cost model and the automation picks',cost:'Forecasting practice',fix:'Add a forecasting scenario to my pathway'},
+  offer:{n:82000,start:'June 2',extras:['Remote, North America','Equity','CA$1,500 learning budget'],range:[74000,88000],median:80000,counter:86000}},
+ klarna:{id:'klarna',co:'Klarna',dom:'klarna.com',role:'Business Analyst, Payments Operations',pay:'CA$68,000 to 76,000',match:82,
+  line:'Same work as your Shopify cost model.',
+  who:'Maya Chen',first:'Maya',whoRole:'Recruiter',ini:'MC',
+  looked:[['Support-Ticket Cost','4 min 02 s',.8],['Your presentation','Watched once',.4],['ticket-cost-model.xlsx','Downloaded',.3]],
+  likedLine:'Maya Chen, their recruiter, read your cost model and wants a screening call.',
+  slots:[['Wednesday','10:00 am','24'],['Thursday','1:30 pm','25'],['Friday','4:00 pm','26']],
+  round:'Screening call',len:20,where:'Phone',
+  agenda:[['Your background','5 min'],['Your cost model','10 min'],['Logistics','5 min']],
+  prep:['Have your start date ready','Know the ticket cost number cold','Ask who you would report to'],
+  live:[['Maya','Tell me about the Shopify model in a minute.'],['You','Sharing Support-Ticket Cost'],['Maya','Hybrid two days works for the team.'],['Maya','I am moving you to the Ops lead.']],
+  reject:{quote:'Great fit on the work. The team needs someone who can start in April.',worked:'Your cost model',cost:'Start date',fix:'Update my start date'},
+  offer:{n:74000,start:'June 9',extras:['Toronto, hybrid','25 days off','Pension match'],range:[68000,76000],median:72000,counter:76000}},
+};
+
+/* insights for Explore, per role */
+const JOBX={
+ notion:{match:94,applicants:38,reply:'about 3 days',mgr:['Priya Raman','Growth lead'],odds:'High',
+  evidence:[['p1','Signup Funnel Diagnosis','Their exact problem, Exceeds expectations'],['p5','Experiment Read','You checked significance before shipping']],
+  gaps:['Amplitude is listed. ZERO has not seen you use it.']},
+ figma:{match:88,applicants:61,reply:'about 5 days',mgr:['Dan Whitfield','GTM operations lead'],odds:'High',
+  evidence:[['p2','Support-Ticket Cost','Opportunity sizing with a recommendation'],['p4','Revenue Decomposition','Split a slowdown into mix and price']],
+  gaps:['They ask for a weekly forecast pack. You have not built one yet.']},
+ klarna:{match:82,applicants:24,reply:'about 2 days',mgr:['Maya Chen','Recruiter'],odds:'Good',
+  evidence:[['p2','Support-Ticket Cost','Priced a process and picked what to automate'],['p1','Signup Funnel Diagnosis','Found the biggest drop-off against benchmark']],
+  gaps:['SQL is required. You have a DataCamp course, no ZERO evidence.']},
+ spotify:{match:79,applicants:112,reply:'slow, 2 weeks',mgr:['Hiring team','Subscriber retention'],odds:'Fair',
+  evidence:[['p3','Early-Churn Analysis','Found the first-two-week cliff this team owns']],
+  gaps:['No salary posted. Your floor is CA$60,000.']},
+ wealthsimple:{match:76,applicants:47,reply:'about 4 days',mgr:['Growth analytics','Your old team'],odds:'Good',
+  evidence:[['p1','Signup Funnel Diagnosis','Same self-serve funnel you reported on as an intern']],
+  gaps:['Three days in office. Your rule is two.']},
+ intercom:{match:71,applicants:29,reply:'about 3 days',mgr:['Customer success','Mid-market team'],odds:'Fair',
+  evidence:[['p1','Your Notion presentation','Explaining data to a non-technical room']],
+  gaps:['Outside your role.','CA$58,000 at the bottom, under your floor.']},
+};
+
+const dayOneLive=()=>false;
+const BEATS=[['match','Matched'],['apply','Applied'],['liked','Liked you'],['lined','Interview'],['result','Result'],['next','Next interview'],['offer','Offer']];
+
+/* ═══ atoms ═══ */
+const orbHTML=(cls='')=>`<span class="orb ${cls}"><i class="eye l"></i><i class="eye r"></i><i class="mouth"></i></span>`;
+const pixHTML=()=>`<span class="pix">${Array.from({length:9},(_,i)=>`<i style="animation-delay:${[0,3,6,1,4,7,2,5,8][i]*110}ms"></i>`).join('')}</span>`;
+const coChip=(dom,label)=>`<span class="srcchip">${fav(dom)}${label}</span>`;
+const fmtK=n=>'CA$'+n.toLocaleString('en-CA');
+const nameList=a=>a.length<2?a.join(''):a.slice(0,-1).join(', ')+' and '+a[a.length-1];
+function setOrb(state){$$('.turn.act .orb, .hr .orb').forEach(o=>{o.classList.remove('think','talk','wait');if(state)o.classList.add(state)})}
+
+/* agent status for the right pane */
+function setStatus(kind,text){S.agent={kind,text};const b=$('#agst');if(!b)return;
+ b.className='agst2 '+kind;$('#agsttx').textContent=text;$('#agstlb').textContent={think:'Thinking',work:'Working',wait:'Waiting on you',idle:'Idle',talk:'Replying'}[kind]||'Idle';
+ setOrb(kind==='think'||kind==='work'?'think':kind==='talk'?'talk':kind==='wait'?'wait':'')}
+
+/* thinking: pixel loader with a live clock, then an expandable trace */
+function thinkHTML(b,done){return`<div class="think ${done?'done':''}">
+  <button class="thd" type="button">${done?`<span class="spk">${ic('sparkles')}</span>Thought for ${b.secs}s${ic('chevron-down')}`:`${pixHTML()}<span class="shim" data-t="${b.label}">${b.label}</span><span class="clk">0.0s</span>`}</button>
+  <div class="tsteps">${(b.steps||[]).map(s=>`<div class="tst ${done?'ok':''}"><span class="tmk">${done?ic('check'):''}</span>${s}</div>`).join('')}</div></div>`}
+async function playThink(host,b,fast){setStatus('think',(b.steps&&b.steps[0])||b.label);
+ const n=el(thinkHTML(b,false));host.appendChild(n);icons();const clk=$('.clk',n);const t0=performance.now();
+ const tick=setInterval(()=>{clk.textContent=((performance.now()-t0)/1000*2.1).toFixed(1)+'s'},90);
+ await wait(fast?120:900);
+ n.classList.add('open');const rows=$$('.tst',n);
+ for(const r of rows){r.classList.add('on');r.querySelector('.tmk').innerHTML='<i class="spin"></i>';setStatus('think',r.textContent.trim());follow();await wait(fast?60:560);r.classList.add('ok');r.querySelector('.tmk').innerHTML=ic('check');icons()}
+ clearInterval(tick);await wait(fast?40:300);
+ const d=el(thinkHTML(b,true));n.replaceWith(d);icons();bindThink(d);return d}
+function bindThink(n){const h=$('.thd',n);if(h)h.onclick=()=>n.classList.toggle('open')}
+
+/* tool calls, like a coding agent's */
+function toolsHTML(b,done){return`<div class="tools ${done?'done':''}"><button class="thd" type="button">${done?`${ic('wrench')}${b.rows.length} tool calls${ic('chevron-down')}`:`${pixHTML()}<span class="shim" data-t="Working">Working</span>`}</button>
+ <div class="trows">${b.rows.map(r=>`<div class="trow ${done?'ok':''}"><span class="tmk">${done?ic('check'):''}</span>${ic(r[0])}<b>${r[1]}</b><span class="tchip">${r[2]}</span></div>`).join('')}</div></div>`}
+async function playTools(host,b,fast){setStatus('work',b.rows[0][1]+' '+b.rows[0][2]);
+ const n=el(toolsHTML(b,false));host.appendChild(n);icons();n.classList.add('open');
+ for(const r of $$('.trow',n)){r.classList.add('on');r.querySelector('.tmk').innerHTML='<i class="spin"></i>';setStatus('work',r.textContent.trim());follow();await wait(fast?60:620);r.classList.add('ok');r.querySelector('.tmk').innerHTML=ic('check');icons()}
+ await wait(fast?40:350);const d=el(toolsHTML(b,true));n.replaceWith(d);icons();bindThink(d);return d}
+
+/* streamed answer with inline sources and actions */
+function textHTML(b){return`<div class="say">${b.html}</div>${b.sources?`<div class="sayft"><button class="ib" title="Copy">${ic('copy')}</button><button class="ib" title="Retry">${ic('rotate-cw')}</button><button class="ib" title="Good">${ic('thumbs-up')}</button><button class="ib" title="Bad">${ic('thumbs-down')}</button><span class="srcs"><span class="stack">${b.sources.map(s=>fav(s[0])).join('')}</span>${b.sources.length} source${b.sources.length===1?'':'s'}</span></div>`:''}`}
+async function playText(host,b,fast){setStatus('talk','Writing');
+ const n=el(`<div class="blk">${textHTML(b)}</div>`);host.appendChild(n);icons();const say=$('.say',n);const ft=$('.sayft',n);if(ft)ft.style.opacity=0;
+ if(!fast){const toks=b.html.split(/(<[^>]+>[^<]*<\/[^>]+>|<[^>]+>|\s+)/).filter(x=>x!=='');say.innerHTML='';let buf='';
+  for(const t of toks){buf+=t;say.innerHTML=buf+'<span class="caret"></span>';if(!/^\s+$/.test(t)){follow();await wait(t.startsWith('<')?60:34)}}
+  say.innerHTML=b.html;icons()}
+ if(ft)gsap.to(ft,{opacity:1,duration:.3});return n}
+
+/* the approval card: the question, choices, Something else, Skip and Continue */
+function askHTML(b){const multi=!!b.multi;return`<div class="zask" role="group">
+  <div class="aq"><span>${b.q}</span>${b.skip?`<button class="ib ax" title="Not now">${ic('x')}</button>`:''}</div>
+  ${b.sub?`<div class="asub">${b.sub}</div>`:''}
+  ${(b.opts||[]).length?`<div class="aopts">${b.opts.map((o,i)=>`<button class="aopt ${o.on?'on':''}" data-v="${o.v}" type="button"><span class="rad ${multi?'box':''}">${ic('check')}</span>${o.logo?`<span class="alg">${fav(o.logo)}</span>`:''}<span class="al">${o.l}${o.s?`<span class="as">${o.s}</span>`:''}</span><kbd>${i+1}</kbd></button>`).join('')}
+   ${b.other?`<label class="aoth"><span class="rad">${ic('check')}</span><input placeholder="${b.other}"></label>`:''}</div>`:''}
+  <div class="aft">${b.pager?`<span class="apg">${b.pager}</span>`:''}<span style="flex:1"></span>${b.skip?`<button class="zbtn ghost sm" data-skip>${b.skip}</button>`:''}<button class="zbtn dark sm" data-go ${(b.opts||[]).length&&!b.opts.some(o=>o.on)?'disabled':''}>${b.go||'Continue'}</button></div></div>`}
+function playAsk(host,b){setStatus('wait',b.q);
+ return new Promise(res=>{const n=el(askHTML(b));host.appendChild(n);icons();gsap.from(n,{opacity:0,y:10,duration:.4,ease:'power2.out'});follow();
+  const go=$('[data-go]',n),inp=$('.aoth input',n);
+  const sel=()=>$$('.aopt.on',n).map(x=>x.dataset.v);
+  const upd=()=>{go.disabled=(b.opts||[]).length>0&&!sel().length&&!(inp&&inp.value.trim())};
+  $$('.aopt',n).forEach(o=>o.onclick=()=>{if(!b.multi)$$('.aopt',n).forEach(x=>x.classList.remove('on'));o.classList.toggle('on',b.multi?!o.classList.contains('on'):true);if(inp){inp.value='';$('.aoth',n).classList.remove('on')}snd('tick');upd()});
+  if(inp)inp.oninput=()=>{if(inp.value.trim()&&!b.multi)$$('.aopt',n).forEach(x=>x.classList.remove('on'));$('.aoth',n).classList.toggle('on',!!inp.value.trim());upd()};
+  const key=e=>{if(!document.body.contains(n)){document.removeEventListener('keydown',key);return}if(e.target.tagName==='INPUT')return;const k=+e.key;const os=$$('.aopt',n);if(k>=1&&k<=os.length){os[k-1].click();e.preventDefault()}if(e.key==='Enter'&&!go.disabled){go.click();e.preventDefault()}};
+  document.addEventListener('keydown',key);
+  const finish=v=>{document.removeEventListener('keydown',key);gsap.to(n,{opacity:0,height:0,marginTop:0,paddingTop:0,paddingBottom:0,duration:.35,ease:'power2.in',onComplete:()=>{n.remove();res(v)}})};
+  go.onclick=()=>{const other=inp&&inp.value.trim();snd('tick');finish(other?{other}:{v:b.multi?sel():sel()[0]})};
+  const sk=$('[data-skip]',n);if(sk)sk.onclick=()=>{if(b.onSkip)b.onSkip()};
+  const ax=$('.ax',n);if(ax)ax.onclick=()=>{if(b.onSkip)b.onSkip()}})}
+
+/* a notification that slides in over the page, and stays in the thread */
+function noteRow(b){return`<div class="note">${fav(b.dom)}<span><b>${b.title}</b>${b.sub?` · ${b.sub}`:''}</span></div>`}
+function notify(b){const x=el(`<div class="znote">${orbHTML('sm')}<div class="nl">${fav(b.dom)}</div><div style="min-width:0"><div class="nt">${b.title}</div><div class="ns">${b.sub||''}</div></div><button class="ib" title="Close">${ic('x')}</button></div>`);
+ document.body.appendChild(x);icons();snd('chime');gsap.fromTo(x,{y:-40,opacity:0},{y:0,opacity:1,duration:.55,ease:'back.out(1.6)'});
+ const close=()=>gsap.to(x,{y:-30,opacity:0,duration:.35,onComplete:()=>x.remove()});$('.ib',x).onclick=close;setTimeout(close,4200)}
+
+/* ═══ cards ═══ */
+const ring=(pct,sz=44)=>{const r=sz/2-4,c=2*Math.PI*r;return`<span class="mring" style="width:${sz}px;height:${sz}px"><svg viewBox="0 0 ${sz} ${sz}"><circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="var(--line)" stroke-width="3.5"/><circle class="arc" cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="var(--ok)" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="${(c*pct/100).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 ${sz/2} ${sz/2})"/></svg><b>${pct}</b></span>`};
+
+function recsHTML(){return`<div class="recs">${['notion','figma','klarna'].map(k=>{const c=CO[k];return`<button class="mrec" data-look="${k}" type="button">
+  <div class="rtop"><span class="zlogo2 s40">${fav(c.dom)}</span>${ring(c.match)}</div>
+  <div class="rt">${c.role}</div><div class="rm">${c.co} · ${c.pay.replace(/,000/g,'k').replace(' to ','–')}</div><div class="rw">${c.line}</div></button>`}).join('')}</div>`}
+
+function tailorHTML(keys,cur){const t=TAILOR[cur];return`<div class="tailor" data-cur="${cur}">
+  <div class="tth"><div class="tseg">${keys.map(k=>`<button class="${k===cur?'on':''}" data-tk="${k}" type="button">${fav(CO[k].dom)}${CO[k].co}</button>`).join('')}</div></div>
+  <div class="thead"><span class="tl">Headline</span><span class="tv">${t.head}</span></div>
+  <div class="tlist">${pfOrdered(cur).map((p,i)=>{const from=masterPos(p.id);const up=from-(i+1);return`<div class="tp" data-pid="${p.id}"><span class="tn">${i+1}</span><span class="zlogo2 s34">${fav(p.dom)}</span><span class="tpt">${p.short}<span class="tps">${p.co} · ${p.review}</span></span>${up>0?`<span class="tmv up">${ic('arrow-up')}from ${from}</span>`:up<0?`<span class="tmv">from ${from}</span>`:''}</div>`}).join('')}</div>
+  <div class="twhy">${ic('sparkles')}${t.why}</div></div>`}
+function flipTo(card,key){const before={};$$('.tp',card).forEach(r=>before[r.dataset.pid]=r.getBoundingClientRect().top);
+ const keys=$$('[data-tk]',card).map(b=>b.dataset.tk);const fresh=el(tailorHTML(keys,key));card.innerHTML=fresh.innerHTML;card.dataset.cur=key;icons();
+ $$('.tp',card).forEach(r=>{const dy=(before[r.dataset.pid]||0)-r.getBoundingClientRect().top;if(dy)gsap.fromTo(r,{y:dy},{y:0,duration:.7,ease:'power3.inOut'});if($('.tmv.up',r))gsap.fromTo($('.tmv.up',r),{opacity:0,x:-6},{opacity:1,x:0,duration:.4,delay:.55})});
+ gsap.fromTo($('.tv',card),{opacity:0},{opacity:1,duration:.4,delay:.2});bindTailor(card)}
+function bindTailor(card){$$('[data-tk]',card).forEach(b=>b.onclick=()=>{if(b.dataset.tk!==card.dataset.cur){snd('tick');flipTo(card,b.dataset.tk)}})}
+
+function sendingHTML(keys,done){return`<div class="sending">${keys.map(k=>`<div class="srow ${done?'ok':''}" data-s="${k}"><span class="tmk">${done?ic('check'):''}</span>${fav(CO[k].dom)}<span class="sgl">${CO[k].co}<span class="sgs">${TAILOR[k].label} · ${CO[k].role}</span></span><span class="st">${done?'Sent':'Queued'}</span></div>`).join('')}</div>`}
+async function playSending(n,fast){for(const r of $$('.srow',n)){r.querySelector('.tmk').innerHTML='<i class="spin"></i>';$('.st',r).textContent='Sending';setStatus('work','Sending to '+$('.sgl',r).firstChild.textContent);await wait(fast?60:700);r.classList.add('ok');r.querySelector('.tmk').innerHTML=ic('check');$('.st',r).textContent='Sent';icons();snd('land')}}
+
+function lookedHTML(c){return`<div class="looked"><div class="lh"><span class="av">${c.ini}</span><div><div class="ln">${c.who}</div><div class="lr">${c.whoRole}, ${c.co}</div></div><span class="lt">What ${c.first} opened</span></div>
+  ${c.looked.map(l=>`<div class="lrow"><span class="lk">${l[0]}</span><span class="lbar"><i style="width:${Math.round(l[2]*100)}%"></i></span><span class="lval">${l[1]}</span></div>`).join('')}</div>`}
+function playBars(n){$$('.lbar i',n).forEach((b,i)=>gsap.from(b,{width:0,duration:.9,ease:'power3.out',delay:.15+i*.12}))}
+
+function schedHTML(c,slot,compact){return`<div class="sched">
+  <div class="sdate"><span class="sd">${slot[0].slice(0,3)}</span><span class="sn">${slot[2]}</span></div>
+  <div class="sbody"><div class="sr">${c.round} · ${c.len} min</div><div class="stt">${c.co}, ${c.role}</div>
+   <div class="smeta">${ic('clock')}${slot[1]}<span class="dot"></span>${ic('video')}${c.where}<span class="dot"></span><span class="av xs">${c.ini}</span>${c.who}</div>
+   ${compact?'':`<div class="sag">${c.agenda.map((a,i)=>`<div class="sai"><span class="si">${i+1}</span>${a[0]}<span class="sdur">${a[1]}</span></div>`).join('')}</div>
+   <div class="sprep"><div class="sph">Before ${slot[0]}</div>${c.prep.map((p,i)=>`<button class="spi ${i===0?'on':''}" type="button"><span class="rad box">${ic('check')}</span>${p}</button>`).join('')}</div>`}
+  </div><span class="ztag ok scal">${ic('calendar-check')}In your calendar</span></div>`}
+function bindSched(n){$$('.spi',n).forEach(b=>b.onclick=()=>{b.classList.toggle('on');snd('tick')})}
+
+function liveHTML(c,done){return`<div class="lvcard ${done?'done':''}">
+  <div class="lvtop"><span class="lrec"><i></i>${done?'Finished':'Live'}</span><span class="lvc">${done?c.len-1+' min':'00:00'}</span><span style="flex:1"></span><span class="lvw">${ic('video')}${c.where}</span></div>
+  <div class="lvtiles"><div class="lvt them"><span class="bigav">${c.ini}</span><span class="lvn">${c.who}</span></div>
+   <div class="lvt you">${presVisual(PF.projects.find(p=>p.id===TAILOR[c.id].order[0]),false)}<span class="lvn">You · sharing your portfolio</span></div></div>
+  <div class="lvag">${c.agenda.map((a,i)=>`<span class="lva ${done?'ok':''}"><i></i>${a[0]}</span>`).join('')}</div>
+  <div class="lvcap">${done?`${ic('check')}Interview finished · ${c.len-1} min`:''}</div></div>`}
+async function playLive(n,c,fast){const clk=$('.lvc',n),cap=$('.lvcap',n),ag=$$('.lva',n);const total=(c.len-1)*60;const dur=fast?400:6800;const t0=performance.now();
+ setStatus('work','In the interview with '+c.first);
+ const tick=setInterval(()=>{const s=Math.min(total,Math.round((performance.now()-t0)/dur*total));clk.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+  const k=Math.min(ag.length-1,Math.floor((performance.now()-t0)/dur*ag.length));ag.forEach((a,i)=>{a.classList.toggle('ok',i<k);a.classList.toggle('on',i===k)})},80);
+ for(const l of c.live){cap.innerHTML=`<b>${l[0]}</b>${l[1]}`;$('.them',n).classList.toggle('talk',l[0]!=='You');$('.you',n).classList.toggle('talk',l[0]==='You');gsap.fromTo(cap,{opacity:0,y:4},{opacity:1,y:0,duration:.3});await wait(dur/c.live.length)}
+ clearInterval(tick);const d=el(liveHTML(c,true));n.replaceWith(d);icons();snd('land');return d}
+
+function rejectHTML(c,done){return`<div class="rej"><div class="rq">“${c.reject.quote}”</div><div class="rby"><span class="av xs">${c.ini}</span>${c.who}, ${c.whoRole}</div>
+  <div class="rgrid"><div class="rg ok">${ic('circle-check')}<div><div class="rk">What worked</div>${c.reject.worked}</div></div><div class="rg amb">${ic('circle-alert')}<div><div class="rk">What cost it</div>${c.reject.cost}</div></div></div>
+  <div class="racts">${done||S.fixed?`<span class="ztag ok" style="height:34px;padding:0 12px">${ic('check')}Added to your pathway</span>`:`<button class="zbtn line sm" data-fix2>${c.reject.fix}</button>`}<button class="zbtn ghost sm" data-fb>Ask ${c.first} for feedback</button></div></div>`}
+function bindReject(n){const f=$('[data-fix2]',n);if(f)f.onclick=()=>{S.fixed=true;snd('tick');f.outerHTML=`<span class="ztag ok" style="height:34px;padding:0 12px">${ic('check')}Added to your pathway</span>`;icons();toast('Added. Finish it and your next application carries it as evidence.')};
+ const b=$('[data-fb]',n);if(b)b.onclick=()=>{b.textContent='Asked';b.disabled=true;toast('Sent a short note asking for detailed feedback.')}}
+
+function offerHTML(c,amt){const o=c.offer;const lo=Math.min(60000,o.range[0])-4000,hi=o.range[1]+6000;const pos=v=>((v-lo)/(hi-lo)*100).toFixed(1);
+ return`<div class="offer"><div class="oh"><span class="zlogo2 s46">${fav(c.dom)}</span><div><div class="ok2">Offer</div><div class="ot">${c.role}</div><div class="om">${c.co} · starts ${o.start}</div></div></div>
+  <div class="oamt">${fmtK(amt)}<span>${fmtK(amt-60000)} above your floor</span></div>
+  <div class="obar"><span class="band" style="left:${pos(o.range[0])}%;width:${(pos(o.range[1])-pos(o.range[0])).toFixed(1)}%"></span><span class="mk floor" style="left:${pos(60000)}%"><i></i>Your floor</span><span class="mk med" style="left:${pos(o.median)}%"><i></i>Median</span><span class="mk you" style="left:${pos(amt)}%"><i></i>Offer</span></div>
+  <div class="oex">${o.extras.map(x=>`<span class="ztag">${x}</span>`).join('')}</div></div>`}
+
+/* ═══ story state ═══ */
+S.story={beat:0,ans:{},flags:{},picked:['notion','figma','klarna'],tok:0,played:{},chat:[]};
+const DEF={match:{v:['notion','figma','klarna']},send:{v:'all'},slot1:{v:'0'},join1:{v:'join'},next:{v:'next'},slot2:{v:'0'},join2:{v:'join'},offer:{v:'accept'},offer2:{v:'accept'}};
+const ANS=k=>S.story.ans[k]||DEF[k];
+const RANK=['notion','figma','klarna'];
+const c1=()=>CO[S.story.picked[0]||'notion'];
+const k2=()=>S.story.picked[1]||RANK.find(k=>k!==S.story.picked[0]);
+const c2=()=>CO[k2()];
+const inbound=()=>!S.story.picked[1];
+const slotOf=(c,k)=>{const a=ANS(k);return c.slots[a&&a.v!=null?+a.v:0]};
+const topP=k=>PF.projects.find(p=>p.id===TAILOR[k].order[0]);
+
+/* each beat is a list of blocks; a function block is built when it is reached, so it can read earlier answers */
+function beatDefs(i){const K=BEATS[i][0];
+ if(K==='match')return[
+  {t:'think',label:'Reading postings',secs:7,steps:['Read 412 postings on Greenhouse, LinkedIn and Lever','Dropped 391 outside your brief','Matched 21 against your five scenarios','Ranked them by evidence, not keywords']},
+  {t:'text',html:'<b>These three companies are waiting for you.</b> Notion is the strongest. You already solved their funnel in a ZERO scenario.',sources:[['notion.so'],['figma.com'],['klarna.com']]},
+  {t:'card',kind:'recs'},
+  {t:'ask',id:'match',q:'Which should I apply to?',multi:true,go:'Apply',opts:RANK.map(k=>({v:k,l:CO[k].co+' · '+CO[k].role,s:CO[k].match+'% match',logo:CO[k].dom,on:true})),
+   me:a=>a.other?a.other:'Apply to '+nameList(a.v.map(k=>CO[k].co)),after:a=>{if(a.v&&a.v.length)S.story.picked=RANK.filter(k=>a.v.includes(k))}}];
+ if(K==='apply')return[
+  ()=>{const n=S.story.picked.length;return{t:'tools',rows:[['file-search','Read',n+' job description'+(n===1?'':'s')],['list-checks','Matched','14 requirements to your evidence'],['arrow-up-down','Reordered','your projects for '+nameList(S.story.picked.map(k=>CO[k].co))],['pen-line','Rewrote',n+' headline'+(n===1?'':'s')],['paperclip','Attached','the files each one asked for']]}},
+  ()=>{const c=c1(),p=topP(c.id),pos=masterPos(p.id),n=S.story.picked.length;return{t:'text',html:`Same work, ${n===1?'one tailored version':n+' tailored versions'}. ${pos>1?`Your <b>${p.short}</b> was project ${pos} in your master portfolio. For ${c.co} it goes to the top.`:`For ${c.co} your <b>${p.short}</b> already leads.`}`}},
+  {t:'card',kind:'tailor'},
+  ()=>{const n=S.story.picked.length,names=nameList(S.story.picked.map(k=>CO[k].co));return{t:'ask',id:'send',q:`Send ${n===1?'it':'these'} to ${names}?`,go:'Send',
+   opts:[{v:'all',l:n===1?'Send it':'Send all '+n,s:'Each company gets its own version',on:true},{v:'look',l:'Let me look at each one first',s:'Opens your portfolio'}],
+   me:a=>a.v==='look'?'Let me look first':'Send them',leave:a=>a.v==='look'?()=>{S.pfFor=S.story.picked[0];nav('portfolio')}:null}},
+  {t:'card',kind:'sending',flag:'sent'},
+  {t:'wait',label:'Two days later'}];
+ if(K==='liked')return[
+  ()=>({t:'note',dom:c1().dom,title:`${c1().co} liked your portfolio`,sub:`${c1().who} spent ${c1().looked[0][1]} on it`,flag:'liked1'}),
+  ()=>({t:'text',html:c1().likedLine,sources:[[c1().dom]]}),
+  ()=>({t:'card',kind:'looked',c:c1()}),
+  ()=>{const c=c1();return{t:'ask',id:'slot1',q:`Accept the interview with ${c.first}?`,sub:`${c.round} · ${c.len} min · ${c.where}`,go:'Accept',
+   opts:c.slots.map((s,j)=>({v:String(j),l:`${s[0]}, ${s[1]}`,on:j===0})),other:'Suggest another time',
+   me:a=>a.other?`Could we do ${a.other}?`:`${c.slots[+a.v][0]} at ${c.slots[+a.v][1]} works`,flag:'slot1'}}];
+ if(K==='lined')return[
+  ()=>{const c=c1(),s=slotOf(c,'slot1'),a=ANS('slot1');return{t:'text',html:a.other?`I asked ${c.first} for ${a.other}. ${s[0]} at ${s[1]} was the closest she had, so I held it for you.`:`Booked for <b>${s[0]} at ${s[1]}</b>. ${c.first} has been told, and it is in your calendar.`}},
+  ()=>({t:'card',kind:'sched',c:c1(),slot:slotOf(c1(),'slot1')}),
+  ()=>({t:'follow',items:[`What will ${c1().first} ask?`,'Which project should I lead with?']}),
+  ()=>{const c=c1(),s=slotOf(c,'slot1');return{t:'ask',id:'join1',q:`${s[0]}, ${s[1]}. Ready when you are.`,go:'Join the interview',skip:'Practice first',onSkip:()=>openPrep(c),me:()=>'Join the interview'}}];
+ if(K==='result')return[
+  ()=>{const s=slotOf(c1(),'slot1');return{t:'time',text:`${s[0]} · ${s[1]}`}},
+  ()=>({t:'card',kind:'live',c:c1(),flag:'int1'}),
+  {t:'wait',label:'Four days later'},
+  ()=>({t:'note',dom:c1().dom,title:`${c1().co} replied`,sub:'Not this time',flag:'rej1'}),
+  ()=>({t:'text',html:`${c1().co} said no. It stings, and it is useful. Here is exactly why, in ${c1().first}’s words.`}),
+  ()=>({t:'card',kind:'reject',c:c1()}),
+  {t:'ask',id:'next',q:'Keep going?',go:'Yes, what is next',me:()=>'What is next?'}];
+ if(K==='next')return[
+  ()=>{const s=c2();return{t:'think',label:'Checking who opened your portfolio',secs:4,steps:[`${s.co} opened it twice this week`,`${s.first} read your ${s.looked[0][0]} end to end`,`Your ${s.co} version still holds after ${c1().co}’s feedback`]}},
+  ()=>({t:'note',dom:c2().dom,title:`${c2().co} liked your portfolio`,sub:`${c2().who} wants to talk`,flag:'liked2'}),
+  ()=>({t:'text',html:`${inbound()?`${c2().co} reached out on its own after seeing your work. `:''}${c2().likedLine}`,sources:[[c2().dom]]}),
+  ()=>({t:'card',kind:'looked',c:c2()}),
+  ()=>{const c=c2();return{t:'ask',id:'slot2',q:`Accept the ${c.round.toLowerCase()} with ${c.first}?`,sub:`${c.len} min · ${c.where}`,go:'Accept',
+   opts:c.slots.map((s,j)=>({v:String(j),l:`${s[0]}, ${s[1]}`,on:j===0})),other:'Suggest another time',
+   me:a=>a.other?`Could we do ${a.other}?`:`${c.slots[+a.v][0]} at ${c.slots[+a.v][1]} works`,flag:'slot2'}}];
+ if(K==='offer')return[
+  ()=>{const c=c2(),s=slotOf(c,'slot2');return{t:'text',html:`Booked for <b>${s[0]} at ${s[1]}</b>. Your ${topP(c.id).short} leads the ${c.co} version.`}},
+  ()=>({t:'card',kind:'sched',c:c2(),slot:slotOf(c2(),'slot2'),compact:true}),
+  ()=>({t:'ask',id:'join2',q:'Ready when you are.',go:'Join the interview',skip:'Practice first',onSkip:()=>openPrep(c2()),me:()=>'Join the interview'}),
+  ()=>{const s=slotOf(c2(),'slot2');return{t:'time',text:`${s[0]} · ${s[1]}`}},
+  ()=>({t:'card',kind:'live',c:c2(),flag:'int2'}),
+  {t:'wait',label:'Two days later'},
+  ()=>({t:'note',dom:c2().dom,title:`${c2().co} sent you an offer`,sub:fmtK(c2().offer.n),flag:'offer'}),
+  ()=>{const c=c2(),o=c.offer;return{t:'text',html:`<b>You got it.</b> ${c.co} wants you as their ${c.role}. The median for this role is ${fmtK(o.median)}, so this is a fair offer. Asking for ${fmtK(o.counter)} is reasonable, and I would.`,sources:[[c.dom]]}},
+  ()=>({t:'card',kind:'offer',c:c2(),amt:c2().offer.n}),
+  ()=>{const c=c2(),o=c.offer;return{t:'ask',id:'offer',q:`What should I tell ${c.first}?`,go:'Send',
+   opts:[{v:'accept',l:`Accept ${fmtK(o.n)}`,on:true},{v:'counter',l:`Ask for ${fmtK(o.counter)}`,s:'I write the note'},{v:'week',l:'Ask for a week to decide'}],
+   me:a=>a.v==='accept'?`Accept it`:a.v==='counter'?`Ask for ${fmtK(o.counter)}`:'Ask for a week'}},
+  ()=>{const c=c2(),o=c.offer,a=ANS('offer');if(a.v==='accept')return{t:'hired',amt:o.n};
+   const amt=a.v==='counter'?o.counter-2000:o.n;
+   return{t:'dyn',blocks:[
+    {t:'think',label:'Waiting on '+c.first,secs:3,steps:[a.v==='counter'?`Sent your note asking for ${fmtK(o.counter)}`:'Asked for a week, with the reason',c.first+' replied']},
+    {t:'text',html:a.v==='counter'?`${c.first} came back within the hour: <b>${fmtK(amt)}</b>. That is ${fmtK(amt-o.n)} more for one short note.`:`${c.first} said yes. You have until next Friday, and the offer holds at ${fmtK(amt)}.`},
+    {t:'card',kind:'offer',c,amt},
+    {t:'ask',id:'offer2',q:'Accept?',go:'Accept the offer',me:()=>`Accept ${fmtK(amt)}`},
+    {t:'hired',amt}]}}];
+ return[]}
+
+/* ═══ engine ═══ */
+const AGENT_T=['think','tools','text','card','ask','follow','dyn','hired'];
+function thread(){return $('#hthread .hin')}
+function turnHost(live){const w=thread();const last=w.lastElementChild;
+ if(last&&last.classList.contains('turn')){if(live){$$('.turn.act',w).forEach(t=>t.classList.remove('act'));last.classList.add('act')}return $('.tb',last)}
+ $$('.turn.act',w).forEach(t=>t.classList.remove('act'));
+ const t=el(`<div class="turn ${live?'act':''}"><span class="tg">${orbHTML()}</span><div class="tb"></div></div>`);w.appendChild(t);return $('.tb',t)}
+let userUp=false;
+function follow(){const th=$('#hthread');if(!th||userUp)return;th.scrollTo({top:th.scrollHeight,behavior:'smooth'})}
+function meBubble(text){thread().appendChild(el(`<div class="hmsg me"><div class="bd"><div class="tx">${text}</div></div></div>`))}
+function cardHTML(b,done){const P=S.story.picked;
+ if(b.kind==='recs')return recsHTML();
+ if(b.kind==='tailor')return tailorHTML(P,P[0]);
+ if(b.kind==='sending')return sendingHTML(P,done);
+ if(b.kind==='looked')return lookedHTML(b.c);
+ if(b.kind==='sched')return schedHTML(b.c,b.slot,b.compact);
+ if(b.kind==='live')return liveHTML(b.c,done);
+ if(b.kind==='reject')return rejectHTML(b.c,false);
+ if(b.kind==='offer')return offerHTML(b.c,b.amt);return''}
+function bindCard(n,b){
+ $$('[data-look]',n).forEach(x=>x.onclick=()=>openJobSheet(x.dataset.look));
+ if(b.kind==='tailor')bindTailor($('.tailor',n)||n);
+ if(b.kind==='sched')bindSched(n);
+ if(b.kind==='reject')bindReject(n)}
+function staticBlock(b){if(typeof b==='function')b=b();if(b.flag)S.story.flags[b.flag]=true;
+ if(b.t==='time'||b.t==='wait'){thread().appendChild(el(`<div class="tpill">${b.text||b.label}</div>`));return}
+ if(b.t==='note'){thread().appendChild(el(noteRow(b)));return}
+ if(b.t==='dyn'){b.blocks.forEach(staticBlock);return}
+ if(b.t==='hired'){S.story.flags.hired=true;const h=turnHost(false);h.appendChild(el(`<div class="blk"><div class="say"><b>Done. You start ${c2().offer.start}.</b> I told ${c2().first} yes and withdrew your other applications with a short note.</div></div>`));return}
+ if(b.t==='ask'){const a=ANS(b.id);if(b.after)b.after(a);if(b.flag)S.story.flags[b.flag]=true;meBubble(b.me?b.me(a):'Continue');return}
+ if(b.t==='follow')return;
+ const h=turnHost(false);
+ if(b.t==='think'){const n=el(thinkHTML(b,true));h.appendChild(n);bindThink(n)}
+ else if(b.t==='tools'){const n=el(toolsHTML(b,true));h.appendChild(n);bindThink(n)}
+ else if(b.t==='text')h.appendChild(el(`<div class="blk">${textHTML(b)}</div>`));
+ else if(b.t==='card'){const n=el(`<div class="blk cardw">${cardHTML(b,true)}</div>`);h.appendChild(n);bindCard(n,b)}}
+async function playBlock(b,fast,tok){if(typeof b==='function')b=b();const alive=()=>tok===S.story.tok;
+ if(b.t==='time'){thread().appendChild(el(`<div class="tpill">${b.text}</div>`));follow();return}
+ if(b.t==='wait'){setStatus('wait','Waiting for time to pass');const n=el(`<button class="tpill go" type="button">${ic('fast-forward')}${b.label}</button>`);thread().appendChild(n);icons();follow();
+  await new Promise(r=>n.onclick=()=>{snd('whoosh');n.classList.remove('go');n.innerHTML=b.label;r()});return}
+ if(b.t==='note'){if(b.flag)S.story.flags[b.flag]=true;syncStory();renderPanes();if(!fast)notify(b);thread().appendChild(el(noteRow(b)));follow();await wait(fast?0:700);return}
+ if(b.t==='dyn'){for(const x of b.blocks){if(!alive())return;await playBlock(x,fast,tok)}return}
+ if(b.t==='hired'){S.story.flags.hired=true;syncStory();renderPanes();const h=turnHost(true);h.appendChild(el(`<div class="blk"><div class="say"><b>Done. You start ${c2().offer.start}.</b> I told ${c2().first} yes and withdrew your other applications with a short note.</div></div>`));follow();celebrate(b.amt);setStatus('idle','You got the job');return}
+ if(b.t==='ask'){const h=turnHost(true);const a=await playAsk(h,b);if(!alive())return;
+  S.story.ans[b.id]=a;if(b.after)b.after(a);if(b.flag)S.story.flags[b.flag]=true;meBubble(b.me?b.me(a):'Continue');syncStory();renderPanes();follow();
+  const leave=b.leave&&b.leave(a);if(leave){delete S.story.ans[b.id];S.story.tok++;leave();throw 'leave'}return}
+ if(b.t==='follow'){const h=turnHost(true);const n=el(`<div class="fups">${b.items.map(x=>`<button class="fup" type="button">${ic('corner-down-right')}${x}</button>`).join('')}</div>`);h.appendChild(n);icons();$$('.fup',n).forEach(f=>f.onclick=()=>askAgent(f.textContent.trim()));follow();return}
+ const h=turnHost(true);
+ if(b.t==='think')await playThink(h,b,fast);
+ else if(b.t==='tools')await playTools(h,b,fast);
+ else if(b.t==='text')await playText(h,b,fast);
+ else if(b.t==='card'){const n=el(`<div class="blk cardw">${b.kind==='tailor'?tailorHTML(S.story.picked,'master'):cardHTML(b,false)}</div>`);h.appendChild(n);icons();gsap.from(n,{opacity:0,y:12,duration:.45,ease:'power2.out'});follow();
+  if(b.kind==='tailor'){await wait(fast?50:900);flipTo($('.tailor',n),S.story.picked[0]);await wait(fast?0:900)}
+  if(b.kind==='looked'&&!fast)playBars(n);
+  if(b.kind==='sending')await playSending(n,fast);
+  if(b.kind==='live'){const d=await playLive($('.lvcard',n),b.c,fast);d&&icons()}
+  bindCard(n,b);if(b.flag){S.story.flags[b.flag]=true;syncStory();renderPanes()}await wait(fast?0:350)}
+ if(b.flag){S.story.flags[b.flag]=true}}
+
+async function playStory(){S.story.tok++;const w=thread();if(!w)return;w.innerHTML='';userUp=false;S.story.flags={};
+ for(let i=0;i<S.story.beat;i++)beatDefs(i).forEach(staticBlock);
+ syncStory();renderPanes();icons();
+ const th=$('#hthread');const mark=el('<div class="bmark"></div>');w.appendChild(mark);th.scrollTop=Math.max(0,mark.offsetTop-24);
+ playStoryContinue()}
+/* play the current beat, then the next one, each waiting on the student's answer */
+async function playStoryContinue(){const tok=++S.story.tok;const i=S.story.beat;const fast=!!S.story.played[i];S.story.played[i]=true;renderPanes();syncNav();
+ try{for(const b of beatDefs(i)){if(tok!==S.story.tok)return;await playBlock(b,fast,tok)}}catch(e){if(e!=='leave')console.error(e);return}
+ if(tok!==S.story.tok)return;
+ if(i<BEATS.length-1){S.story.beat=i+1;playStoryContinue()}else{renderPanes();syncNav()}}
+
+/* derived state: applications, interviews and views follow the story, so Explore and the panels agree */
+function syncStory(){const f=S.story.flags,P=S.story.picked;APPS.length=0;ROUNDS.length=0;VIEWS.length=0;S.found=JOBS.map(j=>j.id);
+ const app=k=>{let a=APPS.find(x=>x.id===k);if(!a){const c=CO[k];a={id:k,dom:c.dom,t:c.role,co:c.co,st:'sent',up:'Sep 14',nx:'Waiting to hear',ev:[['Sep 14',`Sent your ${c.co} version`]]};APPS.push(a)}return a};
+ if(f.sent)P.forEach(app);
+ const A=c1(),B=c2();
+ if(f.liked1){const a=app(A.id);a.st='conf';a.out={t:'Liked you',src:true};a.nx=`${A.first} wants to talk`;VIEWS.push([A.dom,A.co,`${A.who} spent ${A.looked[0][1]} on your ${A.looked[0][0]}.`,f.rej1?'Last week':'Just now',!f.rej1])}
+ if(f.slot1){const s=slotOf(A,'slot1');const a=app(A.id);a.out={t:'Interview '+s[0],src:true};a.nx=`${A.round}, ${s[0]} ${s[1]}`;ROUNDS.push({id:'r1',co:A.co,dom:A.dom,day:s[0],date:s[2],time:s[1],round:A.round,state:f.rej1?'passed':f.int1?'done':'upcoming'})}
+ if(f.rej1){const a=app(A.id);a.st='rej';a.out={t:'Passed',src:true};a.nx=`Cost it: ${A.reject.cost}`}
+ if(f.liked2){const a=app(B.id);a.st='conf';a.out={t:'Liked you',src:true};a.nx=`${B.first} wants to talk`;VIEWS.unshift([B.dom,B.co,`${B.who} read your ${B.looked[0][0]} end to end.`,'Just now',true])}
+ if(f.slot2){const s=slotOf(B,'slot2');const a=app(B.id);a.out={t:'Interview '+s[0],src:true};ROUNDS.push({id:'r2',co:B.co,dom:B.dom,day:s[0],date:s[2],time:s[1],round:B.round,state:f.offer?'offer':f.int2?'done':'upcoming'})}
+ if(f.offer){const a=app(B.id);a.st='offer';a.out={t:'Offer · '+fmtK(B.offer.n),src:true};a.nx='Answer by Friday'}
+ if(f.hired){const a=app(B.id);a.st='accepted';a.out={t:'Hired',src:true};a.nx=`Starts ${B.offer.start}`;APPS.forEach(x=>{if(x.id!==B.id&&x.st!=='rej'){x.st='withdrawn';x.nx='Withdrawn with a note'}})}}
+
+function celebrate(amt){const c=c2();const x=el(`<div class="hired"><div class="uconf" id="hconf"></div><div class="hin2">${orbHTML('big talk')}
+  <div class="hl1">You got the job.</div><div class="hco"><span class="zlogo2 s46">${fav(c.dom)}</span><div><div class="ht">${c.role}</div><div class="hm">${c.co} · ${fmtK(amt)} · starts ${c.offer.start}</div></div></div>
+  <button class="zbtn dark lg" id="hback">Back to For you</button></div></div>`);document.body.appendChild(x);snd('chime');
+ const C=$('#hconf',x);const cols=['#0E8A4C','#E8B93C','#6A48C4','#1A1917','#FF6A4D','#8FE33A'];C.innerHTML=Array.from({length:90},(_,i)=>`<i style="background:${cols[i%cols.length]}"></i>`).join('');
+ gsap.fromTo(x,{opacity:0},{opacity:1,duration:.4});gsap.from('.hin2 > *',{opacity:0,y:18,duration:.6,stagger:.09,ease:'power3.out',delay:.15});
+ $$('i',C).forEach((p,i)=>{const a=Math.random()*Math.PI*2,d=200+Math.random()*420;gsap.fromTo(p,{x:0,y:0,opacity:1,rotate:0},{x:Math.cos(a)*d,y:Math.sin(a)*d+180,rotate:Math.random()*720-360,opacity:0,duration:1.6+Math.random(),ease:'power2.out',delay:.1+i*.006})});
+ $('#hback',x).onclick=()=>gsap.to(x,{opacity:0,duration:.3,onComplete:()=>x.remove()})}
+
+function openPrep(c){openPanel(`${c.round} with ${c.first}`,`${c.co} · ${c.len} min · ${c.where}`,
+ `<div style="font-size:14px;font-weight:600;margin:0 0 10px">What ${c.first} will probably ask</div>
+  ${okr('g','Walk me through your '+topP(c.id).short.toLowerCase(),'She opened it first, so expect it first')}
+  ${okr('g','How did you size it?','Say the number, then the method')}
+  ${okr('p','Where is your analysis thin?','Say it before they find it')}
+  ${okr('n','Your question for them','Prepare one. It is the part people skip')}
+  <div style="font-size:14px;font-weight:600;margin:22px 0 10px">Lead with</div>${presVisual(topP(c.id),true)}`,
+ `<button class="zbtn dark" onclick="closePanel()">Got it</button>`)}
+
+/* ═══ For you: left is you, middle is the conversation, right is what is moving ═══ */
+function focusKey(){const f=S.story.flags;return f.rej1?k2():S.story.picked[0]}
+function leftHTML(){const f=S.story.flags;const k=f.sent?focusKey():'master';const t=TAILOR[k];const p=pfOrdered(k)[0];const open=SUGGESTIONS.filter(s=>!s.done);
+ return`<div class="hgreet">${f.hired?'Congratulations, Ron.':'Welcome in, Ron.'}</div>
+  <div class="hsnip" id="hsnip">
+   <div class="row"><div class="pfav">RR</div><div style="min-width:0"><div class="n">${PF.name}</div><div class="r">${PF.track} · <span style="color:var(--ok);font-weight:600">${PF.rating}</span></div></div></div>
+   ${presVisual(p,false)}
+   <div class="hver">${k==='master'?`${ic('layers')}Your master portfolio`:`${fav(CO[k].dom)}Tailored for ${CO[k].co}`}</div>
+   <div class="hready"><div class="pfring"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" fill="none" stroke="var(--line)" stroke-width="4"/><circle cx="22" cy="22" r="19" fill="none" stroke="var(--ok)" stroke-width="4" stroke-linecap="round" stroke-dasharray="${Math.round(119*(1-open.length/(SUGGESTIONS.length||1))+45)} 200" transform="rotate(-90 22 22)"/></svg><b>${61+(SUGGESTIONS.length-open.length)*8}%</b></div><div>Interview readiness<div style="font-size:11.5px;color:var(--tx3);margin-top:2px">${open.length?open.length+' thing'+(open.length===1?'':'s')+' would move it':'As strong as it gets'}</div></div></div>
+  </div>`}
+const RSTATE={upcoming:['Upcoming','out'],done:['Waiting to hear','amb'],passed:['Passed','dsh'],offer:['Offer','ok']};
+function rightHTML(){const ag=S.agent||{kind:'idle',text:''};
+ return`<div class="hsec"><div class="agst2 ${ag.kind}" id="agst">${orbHTML('md')}<div style="min-width:0"><div class="al2" id="agstlb">${{think:'Thinking',work:'Working',wait:'Waiting on you',idle:'Idle',talk:'Replying'}[ag.kind]||'Idle'}</div><div class="at2" id="agsttx">${ag.text||''}</div></div></div></div>
+  ${ROUNDS.length?`<div class="hsec"><div class="hh">Interviews</div>${ROUNDS.map(r=>`<div class="ivrow ${r.state}"><span class="ivd"><b>${r.date}</b>${r.day.slice(0,3)}</span><span class="zlogo2 s34">${fav(r.dom)}</span><span class="ivx"><span>${r.co} · ${r.round}</span><span class="ivt2">${r.time}</span></span><span class="ztag ${RSTATE[r.state][1]}">${RSTATE[r.state][0]}</span></div>`).join('')}</div>`:''}
+  ${APPS.length?`<div class="hsec"><div class="hh">Applications<button data-apps>See all</button></div>${APPS.map(a=>`<div class="hup" data-app="${a.id}" style="cursor:pointer"><div class="zlogo2">${fav(a.dom)}</div><div style="flex:1;min-width:0"><div>${a.co}</div><div class="tm">${a.out?a.out.t:ST[a.st][0]}</div></div><span class="ztag ${ST[a.st][1]}">${ST[a.st][0]}</span></div>`).join('')}</div>`:''}
+  ${VIEWS.length?`<div class="hsec"><div class="hh">Who looked at you</div>${VIEWS.map(v=>`<div class="hup"><div class="zlogo2">${fav(v[0])}</div><div><div><b style="font-weight:600">${v[1]}</b> · ${v[2]}</div><div class="tm">${v[3]}</div></div></div>`).join('')}</div>`:''}`}
+function renderPanes(){const l=$('#zsbody .hl'),r=$('#zsbody .hr');if(!l||!r)return;
+ l.innerHTML=leftHTML();const sc=r.scrollTop;r.innerHTML=rightHTML();r.scrollTop=sc;icons();
+ $('#hsnip').onclick=()=>{S.pfFor=S.story.flags.sent?focusKey():'';nav('portfolio')};
+ $$('#zsbody .hr [data-apps]').forEach(b=>b.onclick=()=>openApps());
+ $$('#zsbody .hr [data-app]').forEach(x=>x.onclick=()=>openApp(APPS.find(a=>a.id===x.dataset.app)));
+ if(S.agent)setStatus(S.agent.kind,S.agent.text)}
+function renderHome(){
+ if($('#zsbody .zhome')&&$('#hthread .hin').children.length){renderPanes();return}
+ $('#zsbody').innerHTML=`<div class="zhome">
+  <aside class="hl"></aside>
+  <section class="hc">
+   <div class="hthread" id="hthread"><div class="hin"></div></div>
+   <div class="hcomp"><div class="hin"><div class="hcin">${orbHTML('sm')}<input id="hin" placeholder="Ask Zero anything"><button class="zic" id="hmic" title="Speak">${ic('mic')}</button><button class="go" id="hgo">${ic('arrow-up')}</button></div></div></div>
+  </section>
+  <aside class="hr"></aside></div>`;
+ const th=$('#hthread');th.addEventListener('wheel',e=>{if(e.deltaY<0)userUp=true;else if(th.scrollHeight-th.scrollTop-th.clientHeight<60)userUp=false},{passive:true});
+ bindComposer();playStory()}
+function bindComposer(){const inp=$('#hin'),go=$('#hgo');inp.oninput=()=>go.classList.toggle('on',inp.value.trim().length>0);
+ const send=()=>{const v=inp.value.trim();if(!v)return;inp.value='';go.classList.remove('on');askAgent(v)};
+ go.onclick=send;inp.onkeydown=e=>{if(e.key==='Enter')send()};
+ $('#hmic').onclick=()=>{inp.placeholder='Listening';$('#hmic').classList.add('rec');setTimeout(()=>{$('#hmic').classList.remove('rec');inp.placeholder='Ask Zero anything';inp.value='Which project should I lead with?';inp.dispatchEvent(new Event('input'));inp.focus()},1300)}}
+/* free questions get a real, contextual answer; they never move the story on their own */
+function replyFor(q){const t=q.toLowerCase(),f=S.story.flags;const c=f.rej1?c2():c1();const p=topP(c.id);
+ if(/ask|question|expect/.test(t))return{steps:[`Read ${c.co}’s interview notes on Glassdoor`,`Matched them to what ${c.first} opened`],html:`${c.first} opened your <b>${c.looked[0][0]}</b> first, so expect it first. Then a live case, then your questions. Say the number before the method.`};
+ if(/lead|project|portfolio|order/.test(t))return{steps:[`Compared ${c.co}’s brief to your five projects`],html:`Lead with <b>${p.short}</b>. It is project ${masterPos(p.id)} in your master portfolio and first in your ${c.co} version, because it is the closest thing to the job.`};
+ if(/salary|pay|money|offer/.test(t))return{steps:['Checked the posted range','Checked the median for Toronto'],html:`${c.co} posted ${c.pay}. The median is ${fmtK(c.offer.median)}. Your floor is CA$60,000, so anything they offer clears it.`};
+ if(/why|reject|no\b|passed/.test(t)&&f.rej1)return{steps:['Reread '+c1().first+'’s note'],html:`${c1().reject.cost}. Everything else landed. One ZERO scenario closes it before your next application.`};
+ if(/interview|when|schedule|calendar/.test(t))return{steps:['Checked your calendar'],html:ROUNDS.length?ROUNDS.map(r=>`${r.co}, ${r.round.toLowerCase()}: ${r.day} at ${r.time}`).join('. ')+'.':'Nothing booked yet. The first round usually follows within a week of someone opening your portfolio.'};
+ return{steps:['Checked your applications'],html:`Noted. I will keep that in mind, and I will ask before it changes anything I send.`}}
+async function askAgent(q){const pend=$('.zask');meBubble(q);follow();const r=replyFor(q);const h=turnHost(true);
+ await playThink(h,{label:'Thinking',secs:2,steps:r.steps},false);await playText(h,{html:r.html},false);
+ if(pend&&document.body.contains(pend))turnHost(true).appendChild(pend);follow();
+ const cur=$('.zask');setStatus(cur?'wait':'idle',cur?$('.aq span',cur).textContent:'')}
+
 /* ═══ shell nav ═══ */
 function show(id){$$('.zscr').forEach(s=>s.classList.toggle('on',s.id==='s-'+id));if(id)$('#zflowhd').classList.remove('zhide')}
 const PAGE_TITLE={home:'For you',jobs:'Explore',portfolio:'Portfolio'};
 function enterApp(p){const v=$('#zveil');v.classList.add('on');
- setTimeout(()=>{document.body.classList.remove('zdark');document.body.classList.add('zapp');$('#zflowhd').classList.add('zhide');$$('.zscr').forEach(s=>s.classList.remove('on'));$('#s-cine').innerHTML='';nav(p);if(S.visit==='first')dayOne()},360);
+ setTimeout(()=>{document.body.classList.remove('zdark');document.body.classList.add('zapp');$('#zflowhd').classList.add('zhide');$$('.zscr').forEach(s=>s.classList.remove('on'));$('#s-cine').innerHTML='';nav(p)},360);
  setTimeout(()=>v.classList.remove('on'),440);
- setTimeout(()=>{if(S.visit==='first'&&!S.toured&&S.page==='home')startTour()},1100)}
+}
 function nav(p){S.page=p;document.body.classList.toggle('pfpage',p==='portfolio');$('#zsbody').classList.toggle('home',p==='home');$$('#zseg button').forEach(b=>b.classList.toggle('on',b.dataset.nav===p));$('#dstep').textContent=PAGE_TITLE[p]||p;
  if(p==='home')renderHome();if(p==='jobs')renderJobs();if(p==='portfolio')renderPortfolio();
  $('#zsbody').scrollTop=0;arrive($('#zsbody'));location.hash='#/'+p;syncNav();icons()}
 $$('#zseg button').forEach(b=>b.onclick=()=>nav(b.dataset.nav));
 function renderAside(){}
 
-/* ═══ visit states and the day-one ticker ═══ */
-const VISITS=[['first','Day one'],['soon','A few days in'],['interviews','Interviews'],['outcome','Offer'],['returning','Coming back'],['regular','Been here a while']];
-const JOURNEY=[['unlock','Unlocked'],['intro','Intro'],['cine','Going out'],['first','Day one'],['soon','A few days in'],['interviews','Interviews'],['outcome','The offer']];
-/* later weeks: the rounds happen, then one offer and one honest no */
-function seedLater(v){
- const A=id=>JSON.parse(JSON.stringify(APPS_SEED.find(a=>a.id===id)));
- if(v==='interviews'){
-  const n=A('notion');n.st='conf';n.out={t:'Round one done',src:true};n.nx='Priya’s notes are in';n.up='Thu';n.ev.push(['Thu','First round with Priya Raman, 45 min'],['Thu','Notes: strong on the funnel, wanted the recommendation earlier']);
-  const f=A('figma');f.st='conf';f.out={t:'Take-home Monday',src:true};f.nx='Take-home review, Monday 11am';f.up='Fri';f.ev.push(['Fri','Take-home received. I drafted your notes']);
-  const k=A('klarna');k.st='sent';k.out={t:'Screening Wednesday',src:true};k.nx='Screening call, Wednesday 10am';k.up='Tue';k.ev=[['Mon','You answered the start date. Sent'],['Tue','Recruiter opened your portfolio, 4 minutes on the cost model'],['Tue','Invited to a screening call']];
-  const s=A('spotify');s.st='ready';s.nx='Recruiter replied: CA$71,000. Above your floor';s.up='Mon';s.ev.push(['Mon','Recruiter replied: CA$71,000 a year. Hold cleared, ready for your yes']);
-  APPS.push(n,f,k,s);
-  ROUNDS.push({id:'r1',co:'Notion',dom:'notion.so',role:'Growth Analyst, Self-serve',round:'First round · 45 min',who:'Priya Raman, Growth lead',when:'Thursday 2:00pm',state:'done',notes:'Strong on the funnel. She wanted the recommendation earlier. Round two is likely.'},
-   {id:'r2',co:'Figma',dom:'figma.com',role:'Analyst, GTM Operations',round:'Take-home review · 30 min',who:'Dan Whitfield, GTM ops',when:'Monday 11:00am',state:'accepted'},
-   {id:'r3',co:'Klarna',dom:'klarna.com',role:'Business Analyst, Payments Operations',round:'Screening call · 20 min',who:'Maya Chen, recruiter',when:'Wednesday 10:00am',state:'invited'});
-  VIEWS.push(['klarna.com','Klarna','Recruiter opened your portfolio. 4 minutes on the cost model.','Tuesday',true],['notion.so','Notion','Priya opened your presentation again after the round.','Thursday',true],['figma.com','Figma','Hiring manager opened your portfolio and your presentation.','Last week',false]);
- }else{
-  const n=A('notion');n.st='offer';n.out={t:'Offer · CA$78,000',src:true};n.nx='Answer by Friday';n.up='Today';n.ev.push(['Thu','First round with Priya Raman'],['Mon','Round two with the Growth director'],['Today','Offer: Growth Analyst, Self-serve, CA$78,000, starts June 2']);
-  const f=A('figma');f.st='rej';f.out={t:'Passed',src:true};f.nx='Their reason is logged';f.up='Yesterday';f.ev.push(['Mon','Take-home review with Dan Whitfield'],['Yesterday','Passed. Their words: went with a candidate with Amplitude experience']);
-  const k=A('klarna');k.st='conf';k.out={t:'Round two Tuesday',src:true};k.nx='Round two, Tuesday 3pm';k.up='Tue';k.ev=[['Wed','Screening call with Maya Chen'],['Fri','Invited to round two with the Ops lead']];
-  const s=A('spotify');s.st='closed';s.nx='Role filled before your yes';s.up='Monday';s.ev.push(['Mon','Closed by Spotify: the role was filled']);
-  APPS.push(n,f,k,s);
-  ROUNDS.push({id:'r4',co:'Klarna',dom:'klarna.com',role:'Business Analyst, Payments Operations',round:'Round two · 60 min',who:'Omar Haddad, Ops lead',when:'Tuesday 3:00pm',state:'accepted'});
-  VIEWS.push(['notion.so','Notion','The Growth director opened your portfolio before the offer went out.','Yesterday',true],['klarna.com','Klarna','Omar opened your cost model twice.','Yesterday',true]);
- }}
-function seedVisit(v){S.visit=v;const zb=$('#zsbody');if(zb)delete zb.dataset.visit;clearInterval(S._tick);S._tick=null;S.log=[];S.chat=[];S.co='';S.filter='all';
- APPS.length=0;VIEWS.length=0;ROUNDS.length=0;pfReset(true);
- if(v==='first'){S.found=['notion','klarna','figma']}
- else if(v==='interviews'||v==='outcome'){seedLater(v);S.found=JOBS.map(j=>j.id);S.brief.start=S.brief.start||'After graduation, May 2025';JOBS.forEach(j=>{j.need=(j.need||[]).filter(n=>n!=='start')})}
- else{APPS_SEED.forEach(a=>APPS.push(JSON.parse(JSON.stringify(a))));VIEWS_SEED.forEach(x=>VIEWS.push(x.slice()));ROUNDS_SEED.forEach(r=>ROUNDS.push(Object.assign({},r)));S.found=JOBS.map(j=>j.id);if(!S.brief.auth)S.brief.auth='Yes'}
- S.toured=v!=='first';if(window.syncNav)syncNav()}
-const dayOneLive=()=>S.visit==='first'&&S.log.length<DAYONE.length;
-function dayOne(){if(S._tick||S.visit!=='first')return;
- APPS.forEach(a=>{if(a.st==='subm')setTimeout(()=>{a.st='sent';a.nx='Waiting for a receipt';a.up='now';a.ev.push(['now','Submitted. Snapshot of what went out stored']);rerender()},3000)});
- S._tick=setInterval(()=>{if(S.paused)return;const k=S.log.length;if(k>=DAYONE.length){clearInterval(S._tick);S._tick=null;rerender();return}
-  const it=DAYONE[k];S.log.push(Object.assign({at:Date.now()},it));
-  if(it.found&&!S.found.includes(it.found)){S.found.push(it.found);S.lastFound=it.found;snd('tick');S.scrollEnd=true}
-  rerender()},3800)}
-
-/* ═══ FOR YOU: the agent asks before it acts ═══ */
-const tmAgo=t=>{if(!t)return'';const s=Math.round((Date.now()-t)/1000);return s<8?'Just now':s<60?s+'s ago':Math.round(s/60)+' min ago'};
+/* ═══ the journey: the unlock, the send, then the seven story beats ═══ */
+const JOURNEY=[['unlock','Unlocked'],['intro','Intro'],['cine','Going out'],...BEATS];
+function seedVisit(){S.visit='first';S.toured=true;S.story.ans={};S.story.flags={};S.story.played={};S.story.beat=0;S.story.picked=['notion','figma','klarna'];S.fixed=false;S.pfFor='';syncStory()}
 const payOf=j=>j.pay==='Not listed'?'salary not listed':j.pay;
-/* an approval card: the question first, then the role, then Yes / No. Nothing happens until one is pressed. */
-function apvCard(j,q){const a=APPS.find(x=>x.id===j.id);
- if(a&&['subm','sent','conf','offer','accepted'].includes(a.st))return`<div class="apv done"><div class="zlogo2">${fav(j.dom)}</div>Yes · ${ST[a.st][0]}, ${j.co}</div>`;
- if(a&&a.st==='withdrawn')return`<div class="apv done"><div class="zlogo2">${fav(j.dom)}</div>No · ${j.co} skipped</div>`;
- if(a&&a.st==='needs')return`<div class="apv"><div class="q">${j.co} asks for your start date.</div><div class="c">Their form needs it and I will not guess it.</div><div class="role"><div class="zlogo2">${fav(j.dom)}</div><div><div class="t">${j.t}</div><div class="s">${j.co} · ${j.loc} · ${payOf(j)}</div></div></div><div class="ch"><button class="zbtn dark" data-fix="${a.id}">Answer</button><button class="zbtn ghost" data-view="${j.id}">Look at it</button></div></div>`;
- return`<div class="apv"><div class="q">${q||'Apply to '+j.co+'?'}</div><div class="role"><div class="zlogo2">${fav(j.dom)}</div><div><div class="t">${j.t}</div><div class="s">${j.co} · ${j.loc} · ${payOf(j)}</div></div></div><div class="ch"><button class="zbtn dark" data-yes="${j.id}">Yes</button><button class="zbtn line" data-no="${j.id}">No</button><button class="zbtn ghost" data-view="${j.id}">Look at it</button></div></div>`}
-const receipts=()=>{const out=APPS.filter(a=>['subm','sent','conf'].includes(a.st));return out.length?`<div>${out.map(a=>`<span class="rcp">${ic('check')}${a.co} · ${ST[a.st][0]}</span>`).join('')}</div>`:''};
-function threadItems(){const V=S.visit;const items=[];let n=0;const z=(html,k)=>items.push({who:'z',html,k:k||('s'+(n++))});
- const needs=APPS.filter(a=>['needs','ask','ready'].includes(a.st));
- const J=id=>JOBS.find(x=>x.id===id);
- if(V==='first'){
-  z(`Your portfolio is with 12 recruiters at 6 companies. I am reading everything else now, and nothing goes out without your yes.`+receipts(),'Just now');
-  needs.forEach(a=>{const j=J(a.id);if(j)z(apvCard(j),'apv'+j.id)});
-  S.log.forEach(l=>{if(l.found){const j=J(l.found);if(j)z(apvCard(j,l.q),'apv'+j.id)}});
- }else if(V==='soon'){
-  z(`Since 6am: 412 postings read, six worth your time. Notion acknowledged you. Figma opened your portfolio twice.`+receipts(),'6:40am');
-  needs.forEach(a=>{const j=J(a.id);if(!j)return;const q=a.st==='needs'?null:j.fit==='explore'?'Outside your role. Apply?':j.fit==='held'?'Three days in office, your rule is two. Apply anyway?':'Apply?';z(apvCard(j,q),'apv'+j.id)});
-  if(ROUNDS.length)z(`Two interviews. Accept and they go in your calendar.<div class="hcard" style="padding:4px 18px">${renderRounds(true,true)}</div>`,'Today');
- }else if(V==='interviews'){
-  z(`Notion round one is done. Priya’s notes: <b>strong on the funnel, wanted the recommendation earlier.</b> Round two is likely.`,'Thursday');
-  z(`Klarna read your cost model and sent this.<div class="hcard" style="padding:4px 18px">${renderRounds(true,true)}</div>`,'Tuesday');
-  const sp=APPS.find(a=>a.id==='spotify');if(sp&&sp.st==='ready'){const j=J('spotify');if(j)z(apvCard(j,'Spotify came back with CA$71,000. Apply?'),'apvspotify')}
- }else if(V==='outcome'){
-  const n=APPS.find(a=>a.id==='notion');
-  z(`Notion made an offer.<div class="hcard"><div style="display:flex;gap:14px;align-items:flex-start"><div class="zlogo2 s46">${fav('notion.so')}</div><div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:600;letter-spacing:-.02em">Growth Analyst, Self-serve</div><div style="font-size:13px;color:var(--tx3);margin-top:2px">Notion · Remote, Canada · starts June 2</div><div style="font-family:var(--serif);font-size:34px;letter-spacing:-.03em;margin-top:14px">CA$78,000 <span style="font-size:14px;font-family:var(--f);color:var(--ok);font-weight:600;letter-spacing:0">CA$18,000 above your floor</span></div></div></div>
-   <div style="font-size:14px;line-height:1.55;color:var(--tx2);margin-top:14px">Klarna round two is Tuesday. Ask Notion for a week and they will say yes.</div>
-   <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">${n&&n.st==='accepted'?`<span class="ztag ok" style="height:36px;padding:0 14px">${ic('check')}Accepted. Notion has been told.</span>`:`<button class="zbtn dark" data-offer="accept">Accept</button><button class="zbtn line" data-offer="time">Ask for a week</button><button class="zbtn ghost" data-offer="decline">Decline</button>`}</div></div>`,'Today');
-  z(`Figma passed. Their words: <b>“went with a candidate with Amplitude experience.”</b><div class="hcard"><div style="font-size:14px;line-height:1.55;color:var(--tx2)">Second time Amplitude has come up. One ZERO scenario closes it.</div><div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">${S.learned?`<span class="ztag ok" style="height:34px;padding:0 12px">${ic('check')}Added to your pathway</span>`:`<button class="zbtn line" data-learn="amplitude">Add it to my pathway</button>`}<button class="zbtn ghost" data-app="figma">What Figma received</button></div></div>`,'Yesterday');
-  z(`Spotify filled the role before your yes.`,'Monday');
-  z(`Klarna round two, Tuesday 3pm with Omar Haddad.<div class="hcard" style="padding:4px 18px">${renderRounds(true,true)}</div>`,'Friday');
- }else if(V==='returning'){
-  z(`Since Tuesday: Notion acknowledged you, Figma opened your portfolio twice, Klarna still needs your start date.`+receipts(),'Today');
-  needs.forEach(a=>{const j=J(a.id);if(j)z(apvCard(j),'apv'+j.id)});
-  if(ROUNDS.length)z(`Two interviews are waiting on you.<div class="hcard" style="padding:4px 18px">${renderRounds(true,true)}</div>`,'Yesterday');
- }else{
-  z(`Nothing new overnight. ${needs.length?needs[0].co+' still needs you.':'Everything is with the employers now.'}`+receipts(),'7:10am');
-  needs.forEach(a=>{const j=J(a.id);if(j)z(apvCard(j),'apv'+j.id)});
- }
- S.chat.forEach(c=>items.push(c));
- return items}
-const stream=html=>html.replace(/^([^<]+)/,m=>m.split(' ').map((w,i)=>`<span class="w" style="animation-delay:${i*38}ms">${w}</span>`).join(' '));
-function agentTasks(){const V=S.visit;
- if(V==='first'){const t=[];APPS.filter(a=>['subm','sent'].includes(a.st)).forEach(a=>t.push({task:(a.st==='subm'?'Sending ':'Sent ')+a.co,n:a.st==='sent'?'Snapshot stored':'',st:a.st==='subm'?'run':'done'}));
-  S.log.forEach((l,i)=>{const last=i===S.log.length-1;t.push({task:l.task,n:l.n,st:l.st==='run'?(last&&dayOneLive()?'run':'done'):l.st==='ask'?(APPS.find(a=>a.id===l.found)?'done':'ask'):'done'})});
-  if(!S.log.length)t.push({task:'Opening Greenhouse, LinkedIn and Lever',n:'',st:'run'});return t.reverse().slice(0,7)}
- return(NOWBY[V]||agentWork().now).map(i=>({task:i.t,n:i.m,st:i.d==='live'?'run':i.d==='wait'?'ask':'done'}))}
-function keyed(items){return items.map((m,i)=>Object.assign({k:m.k||(m.who==='me'?'me'+i:'z'+i)},m))}
-function msgHTML(m,streamIt){return m.who==='me'?`<div class="hmsg me" data-k="${m.k}"><div class="bd"><div class="tx">${m.html}</div></div></div>`:`<div class="hmsg" data-k="${m.k}"><div class="bd"><div class="tx">${streamIt?stream(m.html):m.html}</div></div></div>`}
-function homeState(){const openAsk=S.visit==='first'&&S.log.some(l=>l.found&&!APPS.find(a=>a.id===l.found));
- const waiting=APPS.some(a=>['needs','ask','ready'].includes(a.st))||openAsk;
- const running=dayOneLive()&&!S.paused&&!waiting;const lastRun=[...S.log].reverse().find(l=>l.st==='run');
- return{cur:running?(lastRun||{task:'Opening Greenhouse, LinkedIn and Lever'}):null,status:S.paused?['','Paused']:running?['run','Running']:waiting?['wait','Waiting on you']:['','Watching']}}
-function leftHTML(){const V=S.visit;const hello=V==='first'?`Welcome in, ${S.me.first}.`:V==='soon'?`Good morning, ${S.me.first}.`:V==='returning'?`Welcome back, ${S.me.first}.`:`Morning, ${S.me.first}.`;
- const p0=PF.projects[0];const open=SUGGESTIONS.filter(s=>!s.done);
- return`<div class="hgreet">${hello}</div>
-   <div class="hsnip" id="hsnip">
-    <div class="row"><div class="pfav">${PF.name.split(' ').map(x=>x[0]).join('')}</div><div style="min-width:0"><div class="n">${PF.name}</div><div class="r">${PF.track} · <span style="color:var(--ok);font-weight:600">${PF.rating}</span></div></div></div>
-    ${p0?presVisual(p0,false):''}
-    <div class="hready"><div class="pfring"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" fill="none" stroke="var(--line)" stroke-width="4"/><circle cx="22" cy="22" r="19" fill="none" stroke="var(--ok)" stroke-width="4" stroke-linecap="round" stroke-dasharray="${Math.round(119*(1-open.length/(SUGGESTIONS.length||1))+45)} 200" transform="rotate(-90 22 22)"/></svg><b>${61+(SUGGESTIONS.length-open.length)*8}%</b></div><div>Interview readiness<div style="font-size:11.5px;color:var(--tx3);margin-top:2px">${open.length?open.length+' thing'+(open.length===1?'':'s')+' would move it':'As strong as it gets'}</div></div></div>
-   </div>
-   ${ROUNDS.filter(r=>r.state==='accepted').length?`<div class="hlsec"><div class="hh">In your calendar</div>${ROUNDS.filter(r=>r.state==='accepted').map(r=>`<div class="hup"><div class="zlogo2">${fav(r.dom)}</div><div><div>${r.co} · ${r.round.split(' · ')[0]}</div><div class="tm">${r.when}</div></div></div>`).join('')}</div>`:''}`}
-function rightHTML(){const V=S.visit;const st=homeState().status;const apps=APPS.filter(a=>!['withdrawn','closed'].includes(a.st));
- return`<div class="hsec"><div class="agst"><span class="hh" style="margin:0">Agent</span><span class="st ${st[0]}"><i></i>${st[1]}</span></div>
-    ${agentTasks().map(k=>`<div class="task ${k.st}"><span class="mk">${k.st==='done'?ic('check'):''}</span><div><div class="t">${k.task}</div>${k.n?`<div class="n">${k.n}</div>`:''}</div></div>`).join('')}</div>
-   ${V!=='first'&&apps.length?`<div class="hsec"><div class="hh">Applications<button data-apps>See all</button></div>${apps.map(a=>`<div class="hup" data-app="${a.id}" style="cursor:pointer"><div class="zlogo2">${fav(a.dom)}</div><div style="flex:1;min-width:0"><div>${a.co}</div><div class="tm">${a.out?a.out.t:ST[a.st][0]}</div></div></div>`).join('')}</div>`:''}
-   ${VIEWS.length?`<div class="hsec"><div class="hh">Who looked at you</div>${VIEWS.map(v=>`<div class="hup"><div class="zlogo2">${fav(v[0])}</div><div><div><b style="font-weight:600">${v[1]}</b> ${v[2].replace(/^[A-Z]/,c=>c.toLowerCase())}</div><div class="tm">${v[3]}</div></div></div>`).join('')}</div>`:''}`}
-/* the thread is patched in place: existing messages stay put, changed cards swap, new ones append. No jumping. */
-function renderThread(){const wrap=$('#hthread .hin');if(!wrap)return;const items=keyed(threadItems());const lastZ=items.length&&items[items.length-1].who==='me'?-1:items.length-1;
- const th=$('#hthread');const atBottom=th.scrollHeight-th.scrollTop-th.clientHeight<80;
- const seen=new Set();let appended=false;
- items.forEach((m,i)=>{seen.add(m.k);const ex=wrap.querySelector(`[data-k="${m.k}"]`);const html=msgHTML(m,i===lastZ&&S.streamLast);
-  if(!ex){const think=wrap.querySelector('.hthink');const node=el(html);if(think)wrap.insertBefore(node,think);else wrap.appendChild(node);appended=true}
-  else if(ex.dataset.h!==undefined&&ex.dataset.h===m.html)return;
-  else{const node=el(html);node.dataset.h=m.html;ex.replaceWith(node)}
-  const n=wrap.querySelector(`[data-k="${m.k}"]`);if(n)n.dataset.h=m.html});
- $$('[data-k]',wrap).forEach(n=>{if(!seen.has(n.dataset.k))n.remove()});
- const cur=homeState().cur;let think=wrap.querySelector('.hthink');
- if(cur){const html=`<div class="hthink"><span class="dots"><i></i><i></i><i></i></span>${cur.task}${cur.n?' · '+cur.n:''}</div>`;if(!think){wrap.insertAdjacentHTML('beforeend',html)}else if(think.textContent.trim()!==(cur.task+(cur.n?' · '+cur.n:'')).trim())think.outerHTML=html}
- else if(think)think.remove();
- S.streamLast=false;
- if(S.scrollEnd||(appended&&atBottom))th.scrollTop=th.scrollHeight;S.scrollEnd=false;
- bindHome();bindRounds();icons()}
-function renderRight(){const r=$('#zsbody .hr');if(!r)return;const sc=r.scrollTop;r.innerHTML=rightHTML();r.scrollTop=sc;bindHome();icons()}
-function renderHome(){
- const have=$('#zsbody .zhome')&&S.page==='home'&&$('#zsbody').dataset.visit===S.visit;
- if(have){renderThread();renderRight();const l=$('#zsbody .hl');if(l){l.innerHTML=leftHTML();$('#hsnip').onclick=()=>nav('portfolio')}return}
- $('#zsbody').dataset.visit=S.visit;
- $('#zsbody').innerHTML=`<div class="zhome">
-  <aside class="hl">${leftHTML()}</aside>
-  <section class="hc">
-   <div class="hthread" id="hthread"><div class="hin"></div></div>
-   <div class="hcomp"><div class="hin"><div class="hcin"><input id="hin" placeholder="Ask me anything, or tell me what to change"><button class="zic" id="hmic" title="Speak">${ic('mic')}</button><button class="zic" id="hset" title="Preferences">${ic('sliders-horizontal')}</button><button class="go" id="hgo">${ic('arrow-up')}</button></div></div></div>
-  </section>
-  <aside class="hr">${rightHTML()}</aside></div>`;
- S.scrollEnd=true;renderThread();bindComposer();icons()}
-function bindHome(){
- const sn=$('#hsnip');if(sn)sn.onclick=()=>nav('portfolio');
- $$('#zsbody [data-fix]').forEach(b=>b.onclick=()=>{const a=APPS.find(x=>x.id===b.dataset.fix);if(a.st==='needs')askStart(a);else openJobSheet(a.id)});
- $$('#zsbody [data-apps]').forEach(b=>b.onclick=openApps);
- $$('#zsbody [data-app]').forEach(r=>r.onclick=()=>openApp(APPS.find(a=>a.id===r.dataset.app)));
- $$('#zsbody [data-view]').forEach(b=>b.onclick=()=>openJobSheet(b.dataset.view));
- $$('#zsbody [data-yes]').forEach(b=>b.onclick=()=>{const j=JOBS.find(x=>x.id===b.dataset.yes);let a=APPS.find(x=>x.id===j.id);
-  if(!a){a={id:j.id,dom:j.dom,t:j.t,co:j.co,st:'subm',up:'now',nx:'Sending',ev:[['now','You said yes']]};APPS.push(a)}else{a.st='subm';a.nx='Sending';a.ev.push(['now','You said yes'])}
-  if(j.fit==='held'||j.held)a.ev.push(['now','Sent with your yes against the hold']);snd('tick');submit(a)});
- $$('#zsbody [data-no]').forEach(b=>b.onclick=()=>{const j=JOBS.find(x=>x.id===b.dataset.no);let a=APPS.find(x=>x.id===j.id);
-  if(!a){a={id:j.id,dom:j.dom,t:j.t,co:j.co,st:'withdrawn',up:'now',nx:'You said no',ev:[['now','You said no']]};APPS.push(a)}else{a.st='withdrawn';a.nx='You said no'}renderHome()});
- $$('#zsbody [data-offer]').forEach(b=>b.onclick=()=>{const k=b.dataset.offer;const n=APPS.find(a=>a.id==='notion');snd('tick');
-  if(k==='accept'){n.st='accepted';n.nx='You start June 2';n.ev.push(['now','You accepted. Notion has been told, and Klarna has been withdrawn with a note']);const kl=APPS.find(a=>a.id==='klarna');if(kl){kl.st='withdrawn';kl.nx='Withdrawn, with a note'}ROUNDS.length=0;S.chat.push({who:'z',html:'Told Notion yes. Klarna withdrawn with a short note, so the door stays open.'});S.streamLast=true;S.scrollEnd=true;renderHome();snd('chime');return}
-  if(k==='time'){S.chat.push({who:'z',html:'Asked Notion for a week. I will tell you the moment they answer.'});S.streamLast=true;S.scrollEnd=true;renderHome();return}
-  openDlg(`<div class="zserif" style="font-size:22px">Decline Notion?</div><div style="font-size:14px;color:var(--tx2);margin-top:8px">CA$18,000 above your floor, and the only offer on the table.</div><div class="dlgft"><button class="zbtn line" onclick="closeDlg()">Keep it</button><button class="zbtn dark" id="dodecl">Decline</button></div>`);
-  $('#dodecl').onclick=()=>{n.st='withdrawn';n.nx='You declined';closeDlg();S.chat.push({who:'z',html:'Declined, with a note that keeps the door open.'});S.streamLast=true;S.scrollEnd=true;renderHome()}});
- $$('#zsbody [data-learn]').forEach(b=>b.onclick=()=>{S.learned=true;snd('tick');S.chat.push({who:'z',html:'Added an Amplitude scenario to your pathway.'});S.streamLast=true;S.scrollEnd=true;renderHome()})}
-function bindComposer(){
- $('#hset').onclick=openPrefs;
- const inp=$('#hin'),go=$('#hgo');inp.oninput=()=>go.classList.toggle('on',inp.value.trim().length>0);
- const send=()=>{const v=inp.value.trim();if(!v)return;inp.value='';go.classList.remove('on');S.chat.push({k:'m'+Date.now(),who:'me',html:v});S.scrollEnd=true;renderHome();agentReply(v)};
- go.onclick=send;inp.onkeydown=e=>{if(e.key==='Enter')send()};
- $('#hmic').onclick=()=>{inp.placeholder='Listening';$('#hmic').style.color='var(--ok)';setTimeout(()=>{inp.value='Only remote roles from now';inp.dispatchEvent(new Event('input'));inp.placeholder='Ask me anything, or tell me what to change';$('#hmic').style.color='';inp.focus()},1400)}}
-function agentReply(v){const t=v.toLowerCase();let r='',after=null;
- if(/pause|stop/.test(t)){S.paused=true;r='Paused. Nothing moves until you say so.'}
- else if(/resume|continue|go on|unpause/.test(t)){S.paused=false;r='Resumed.'}
- else if(/remote/.test(t)){S.brief.mode='Remote only';S.brief.deal=['Remote only'];r='Remote only from now. Notion and Figma still fit. Klarna and Spotify are hybrid, so I will ask before either goes out.'}
- else if(/salary|pay|floor|money|\$/.test(t)){r=`Your floor is ${S.brief.pay}. Anything under it comes to you as a question, never straight out.`;after=openBrief}
- else if(/interview/.test(t)){r=ROUNDS.length?`${ROUNDS.length} interview${ROUNDS.length===1?'':'s'}: ${ROUNDS.map(x=>x.co+' '+x.when).join(', ')}.`:'No interviews yet. Most portfolios are opened within two days.'}
- else if(/notion/.test(t)){const a=APPS.find(x=>x.id==='notion');r=a?`Notion has your funnel diagnosis, the recommendation and your portfolio link. ${a.st==='conf'?'Acknowledged, reference GRW-2231.':'Submitted, waiting for a receipt.'}`:'Notion is open now and your funnel diagnosis was done on their exact problem. Want me to apply?'}
- else if(/what.*(doing|now)|status|update/.test(t)){r=S.log.length?`Right now: ${S.log[S.log.length-1].task}.`:'Right now I am reading Greenhouse, LinkedIn and Lever.'}
- else if(/find|more|look|search|wider|other/.test(t)){r='On it. I will widen to analyst and operations titles, and ask you before anything goes out.'}
- else if(/thank/.test(t))r='Any time.';
- else r='Noted. I will ask before it changes anything I send.';
- const key='c'+Date.now();S.chat.push({k:key,who:'z',html:`<span class="hthink" style="padding:0"><span class="dots"><i></i><i></i><i></i></span></span>`});S.scrollEnd=true;renderHome();
- setTimeout(()=>{S.chat[S.chat.length-1]={k:key,who:'z',html:r};S.streamLast=true;S.scrollEnd=true;renderHome();snd('tick');if(after)setTimeout(after,600)},600+Math.min(900,r.length*6))}
-function openPrefs(){
- openDlg(`<div class="zserif" style="font-size:22px">Your agent</div>
-  <div style="font-size:14px;color:var(--tx2);margin-top:8px;line-height:1.5">It never applies on its own. Every role comes to you as a question first.</div>
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-top:20px"><div><div style="font-size:13.5px;font-weight:500">Pause everything</div><div style="font-size:12px;color:var(--tx3);margin-top:2px">Stops reading and sending, including anything mid-flight</div></div><button class="zsw ${S.paused?'on':''}" id="ppause"></button></div>
-  <div style="margin-top:22px;padding-top:18px;box-shadow:0 -1px 0 var(--line2)"><div style="font-size:12px;font-weight:600;color:var(--tx3);margin-bottom:8px">Your terms</div><div style="display:flex;gap:6px;flex-wrap:wrap">${briefChips()}</div></div>
-  <div class="dlgft"><button class="zbtn ghost" id="pterms">Edit my terms</button><button class="zbtn dark" onclick="closeDlg()">Done</button></div>`);
- $('#ppause').onclick=()=>{S.paused=!S.paused;$('#ppause').classList.toggle('on',S.paused);toast(S.paused?'Paused.':'Resumed.');renderHome()};
- $('#pterms').onclick=()=>{closeDlg();openBrief()}}
 
 /* ═══ EXPLORE: the companies first, then the roles ═══ */
 function primaryAct(j){const a=APPS.find(x=>x.id===j.id);const steps=stepsFor(j);const blocked=steps.find(s=>!s.done);
@@ -1710,9 +2240,9 @@ function primaryAct(j){const a=APPS.find(x=>x.id===j.id);const steps=stepsFor(j)
  if(j.fit==='explore'||j.fit==='held'||j.held)return`<button class="zbtn dark" data-a="apply">Apply anyway</button>`;
  if(blocked)return`<button class="zbtn dark" data-a="answer">Answer ${blocked.n.toLowerCase()}</button>`;
  return`<button class="zbtn dark" data-a="apply">Apply</button>`}
-function applyLabel(j){const a=APPS.find(x=>x.id===j.id);if(a&&['subm','sent','conf','offer','accepted'].includes(a.st))return null;return j.fit==='explore'||j.fit==='held'||j.held?'Apply anyway':'Apply'}
+function applyLabel(j){const a=APPS.find(x=>x.id===j.id);if(a&&['subm','sent','conf','offer','accepted','rej','withdrawn','closed'].includes(a.st))return null;return j.fit==='explore'||j.fit==='held'||j.held?'Apply anyway':'Apply'}
 function jobRow(j,isNew){const s=SAVED[j.id];const a=APPS.find(x=>x.id===j.id);
- return`<div class="xr ${S.sel===j.id?'on':''} ${isNew?'new':''}" data-j="${j.id}"><div class="zlogo2 s40">${fav(j.dom)}</div><div class="grow"><div class="t">${j.t}</div><div class="m">${j.co} · ${j.loc.split(',')[0]} · ${payOf(j)}</div><div class="tg">${fitTag(j)}${a?`<span class="ztag ${ST[a.st][1]}">${ST[a.st][0]}</span>`:''}${s?`<span class="ztag">${ic('bookmark-check')}Saved</span>`:''}</div></div></div>`}
+ return`<div class="xr ${S.sel===j.id?'on':''} ${isNew?'new':''}" data-j="${j.id}"><div class="zlogo2 s40">${fav(j.dom)}</div><div class="grow"><div class="t">${j.t}</div><div class="m">${j.co} · ${j.loc.split(',')[0]} · ${payOf(j)}</div><div class="tg">${fitTag(j)}${a?`<span class="ztag ${ST[a.st][1]}">${ST[a.st][0]}</span>`:''}${s?`<span class="ztag">${ic('bookmark-check')}Saved</span>`:''}</div></div>${JOBX[j.id]?ring(JOBX[j.id].match,38):''}</div>`}
 function jobCard(j,isNew){const s=SAVED[j.id];const a=APPS.find(x=>x.id===j.id);const lbl=applyLabel(j);
  return`<div class="xc ${isNew?'new':''}" data-j="${j.id}">
   <button class="sv ${s?'on':''}" data-save="${j.id}" title="${s?'Saved':'Save'}">${ic(s?'bookmark-check':'bookmark')}</button>
@@ -1720,23 +2250,24 @@ function jobCard(j,isNew){const s=SAVED[j.id];const a=APPS.find(x=>x.id===j.id);
   <div class="tags">${fitTag(j)}${(j.skills||[]).map(k=>`<span class="ztag">${k}</span>`).join('')}</div>
   <div class="why">${j.short||''}</div>
   <div class="acts">${lbl?`<button class="zbtn dark" data-a="apply">${lbl}</button>`:`<span class="ztag ok" style="height:36px;padding:0 14px">${ic('check')}${ST[a.st][0]}</span>`}<button class="zbtn line" data-a="view">Look</button></div></div>`}
-function jobDetailHTML(j){const steps=stepsFor(j);const done=steps.filter(s=>s.done).length;const blocked=steps.find(s=>!s.done);const a=APPS.find(x=>x.id===j.id);const lbl=applyLabel(j);
- return`<div class="xdh"><div class="zlogo2 s46">${fav(j.dom)}</div><div style="flex:1;min-width:0"><div class="t">${j.t}</div><div class="m">${j.co} · ${j.loc} · ${j.mode} · ${j.type}</div></div></div>
-  <div class="xda">${lbl?`<button class="zbtn dark" data-a="apply">${lbl}</button>`:`<span class="ztag ok" style="height:38px;padding:0 14px">${ic('check')}${ST[a.st][0]}</span>`}<button class="zbtn line" data-a="save">${ic(SAVED[j.id]?'bookmark-check':'bookmark')}${SAVED[j.id]?'Saved':'Save'}</button><span style="margin-left:auto;font-family:var(--serif);font-size:22px;letter-spacing:-.02em">${j.pay==='Not listed'?'<span style="font-size:13px;font-family:var(--f);color:var(--tx3)">No salary listed</span>':j.pay}</span></div>
-  <div class="tags" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:16px">${fitTag(j)}${(j.skills||[]).map(k=>`<span class="ztag">${k}</span>`).join('')}</div>
-  <div class="why ${j.fit==='explore'?'pur':''}" style="margin-top:20px;background:${j.fit==='explore'?'var(--purbg)':'var(--okbg)'};border-radius:16px;padding:16px 18px">
-   <div style="font-size:12.5px;font-weight:600;color:${j.fit==='explore'?'var(--pur)':'var(--ok)'};display:flex;align-items:center;gap:7px;margin-bottom:6px">${ic(j.fit==='explore'?'compass':'check')}Why this role</div>
-   <p style="font-size:14.5px;line-height:1.6">${j.why}</p>
-   <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px">${j.src.map(s=>`<span class="ztag" style="background:#fff">${ic('file-text')}${s}</span>`).join('')}</div></div>
-  ${j.held?`<div style="margin-top:10px;background:var(--ambbg);border-radius:16px;padding:16px 18px"><div style="font-size:12.5px;font-weight:600;color:var(--amb);display:flex;align-items:center;gap:7px;margin-bottom:6px">${ic('circle-pause')}What is holding it</div><p style="font-size:14.5px;line-height:1.6">${j.held}</p></div>`:''}
-  <div style="font-size:14px;font-weight:600;margin:24px 0 8px">What this role needs</div>
-  ${j.req.map(r=>`<div class="zqi ${r[0]}">${ic(r[0]==='y'?'circle-check':r[0]==='p'?'circle-alert':'circle-dashed')}<div><div>${r[1]}</div><span class="ev">${r[2]}</span></div></div>`).join('')}
-  <div style="font-size:14px;font-weight:600;margin:24px 0 8px;display:flex;justify-content:space-between">Your application<span style="font-size:12.5px;color:var(--tx3);font-weight:400">${done} of ${steps.length} ready</span></div>
-  <div class="zbar" style="margin-bottom:12px"><i style="width:${Math.round(done/steps.length*100)}%"></i></div>
-  <div class="zsteps">${steps.map(s=>`<div class="zstep ${s.done?'done':'todo'}"><span class="mk">${ic('check')}</span><div class="sl"><div class="sn">${s.n}</div><div class="ss">${s.done?s.val:'Not answered. I will not guess it.'}</div></div>${s.done?'<span style="font-size:11.5px;color:var(--tx3)">Reused</span>':'<button class="zbtn line sm" data-a="answer">Answer</button>'}</div>`).join('')}</div>
-  <div style="font-size:14px;font-weight:600;margin:24px 0 8px">About the role</div>
-  <ul style="font-size:14px;line-height:1.7;color:var(--tx2)">${j.about.map(a=>`<li style="margin-left:17px;margin-bottom:5px">${a}</li>`).join('')}</ul>`}
-function visibleJobs(){const q=(S.q||'').toLowerCase();const found=JOBS.filter(j=>S.found.includes(j.id));
+function jobDetailHTML(j){const x=JOBX[j.id]||{match:70,applicants:40,reply:'about a week',mgr:['Hiring team',''],odds:'Fair',evidence:[],gaps:[]};const a=APPS.find(y=>y.id===j.id);const lbl=applyLabel(j);
+ const tk=TAILOR[j.id]?j.id:'master';const order=pfOrdered(tk);
+ const pay=j.pay.match(/([\d,]+)\D+([\d,]+)/);const lo=pay?+pay[1].replace(/,/g,''):0,hi=pay?+pay[2].replace(/,/g,''):0;
+ const min=52000,max=94000,pos=v=>((v-min)/(max-min)*100).toFixed(1);
+ return`<div class="xdh"><div class="zlogo2 s46">${fav(j.dom)}</div><div style="flex:1;min-width:0"><div class="t">${j.t}</div><div class="m">${j.co} · ${j.loc} · ${j.mode} · Posted ${j.age} ago</div></div></div>
+  <div class="xda">${lbl?`<button class="zbtn dark" data-a="apply">${lbl}</button>`:`<span class="ztag ${ST[a.st][1]}" style="height:38px;padding:0 14px">${ic('check')}${ST[a.st][0]}</span>`}<button class="zbtn line" data-a="save">${ic(SAVED[j.id]?'bookmark-check':'bookmark')}${SAVED[j.id]?'Saved':'Save'}</button></div>
+  <div class="xins">
+   <div class="xi">${ring(x.match,52)}<div><div class="xk">Match</div><div class="xv">${x.match>=90?'Your strongest':x.match>=80?'Strong':'Worth a look'}</div></div></div>
+   <div class="xi"><span class="xbig">${x.odds}</span><div><div class="xk">Interview odds</div><div class="xv">From your evidence</div></div></div>
+   <div class="xi"><span class="xbig">${x.applicants}</span><div><div class="xk">Applicants</div><div class="xv">Reply in ${x.reply}</div></div></div>
+  </div>
+  <div class="xsec"><div class="xh">Why you</div>${x.evidence.map(e=>{const p=PF.projects.find(q=>q.id===e[0]);return`<div class="xev">${p?`<span class="zlogo2 s34">${fav(p.dom)}</span>`:''}<div><div class="xet">${e[1]}</div><div class="xes">${e[2]}</div></div></div>`}).join('')}</div>
+  ${x.gaps.length?`<div class="xsec"><div class="xh">What is missing</div>${x.gaps.map(g=>`<div class="xgap">${ic('circle-alert')}${g}</div>`).join('')}</div>`:''}
+  ${pay?`<div class="xsec"><div class="xh">Pay<span>${j.pay}</span></div><div class="xpay"><span class="band" style="left:${pos(lo)}%;width:${(pos(hi)-pos(lo))}%"></span><span class="mk floor" style="left:${pos(60000)}%"><i></i>Your floor</span></div></div>`:`<div class="xsec"><div class="xh">Pay<span>Not posted</span></div><div class="xgap">${ic('circle-alert')}No range posted. I asked the recruiter before anything goes out.</div></div>`}
+  <div class="xsec"><div class="xh">Your portfolio for this role</div>${order.slice(0,3).map((p,i)=>{const up=masterPos(p.id)-(i+1);return`<div class="xord"><span class="tn">${i+1}</span><span class="zlogo2 s34">${fav(p.dom)}</span><span class="tpt">${p.short}<span class="tps">${p.co}</span></span>${up>0?`<span class="tmv up">${ic('arrow-up')}from ${masterPos(p.id)}</span>`:''}</div>`}).join('')}${TAILOR[tk].why?`<div class="twhy">${ic('sparkles')}${TAILOR[tk].why}</div>`:''}</div>
+  <div class="xsec"><div class="xh">Who you would meet</div><div class="xev"><span class="av">${x.mgr[0].split(' ').map(s=>s[0]).join('').slice(0,2)}</span><div><div class="xet">${x.mgr[0]}</div><div class="xes">${x.mgr[1]}</div></div></div></div>
+  <div class="xsec"><div class="xh">The role</div><ul style="font-size:14px;line-height:1.7;color:var(--tx2)">${j.about.map(v=>`<li style="margin-left:17px;margin-bottom:4px">${v}</li>`).join('')}</ul></div>`}
+function visibleJobs(){const q=(S.q||'').toLowerCase();const mt=j=>(JOBX[j.id]||{match:0}).match;const found=JOBS.filter(j=>S.found.includes(j.id)).sort((a,b)=>mt(b)-mt(a));
  return found.filter(j=>{if(S.co&&j.dom!==S.co)return false;if(S.filter==='fits'&&j.fit!=='fits')return false;if(S.filter==='explore'&&j.fit!=='explore')return false;if(S.filter==='saved'&&!SAVED[j.id])return false;if(q&&!(j.t+j.co+j.loc).toLowerCase().includes(q))return false;return true})}
 function renderDetail(){const d=$('#xdetail');if(!d)return;const j=JOBS.find(x=>x.id===S.sel);
  d.innerHTML=j?jobDetailHTML(j):`<div class="zempty" style="text-align:center;padding:40px"><b>Pick a role.</b>Its details open here.</div>`;
@@ -1818,8 +2349,7 @@ function openApps(fromClick){S.panel='apps';
  const cur=groups[S.appTab]||[];const iv=ROUNDS.length;
  openPanel('Your applications',`${APPS.length?APPS.length+' live':'Nothing live yet'}${iv?' · '+iv+' interview'+(iv===1?'':'s'):''}`,
   `<div class="pipe" style="margin-top:0">${STAGE.map(s=>{const n=groups[s[0]].length;return`<button class="pipestep ${S.appTab===s[0]?'on':''} ${n?'':'empty'}" data-at="${s[0]}"><span class="pn">${n}</span><span class="pl">${s[1]}</span><span class="pbar"></span></button>`}).join('')}</div>
-   ${S.appTab==='need'&&iv?renderRounds(true):''}
-   <div class="zrows" style="margin-top:18px">${cur.length?cur.map(a=>{const j=JOBS.find(x=>x.id===a.id);
+    <div class="zrows" style="margin-top:18px">${cur.length?cur.map(a=>{const j=JOBS.find(x=>x.id===a.id);
     return`<div class="zrow" data-app="${a.id}" style="cursor:pointer"><div class="zlogo2 s40">${fav(a.dom)}</div><div class="grow"><div class="t">${a.t}${a.out?`<span class="ztag ${a.out.src?'ok':'out'}">${a.out.t}</span>`:''}</div><div class="s">${a.co}${j?' · '+j.loc:''}</div><div class="anext">${ic('corner-down-right')}${a.nx}</div></div><div style="text-align:right;flex-shrink:0"><span class="ztag ${ST[a.st][1]}">${ST[a.st][0]}</span><div class="atime">${a.up}</div></div></div>`}).join('')
     :`<div class="zempty" style="text-align:center;padding:36px 24px"><b>Nothing in ${STAGE.find(s=>s[0]===S.appTab)[1].toLowerCase()}.</b>${STAGE_EMPTY[S.appTab]}</div>`}</div>`,
   `<button class="zbtn dark" onclick="closePanel()">Done</button>`);
@@ -1861,37 +2391,34 @@ function endTour(){tourI=-1;$('#ztring').classList.remove('on');$('#ztcard').cla
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(tourI>=0)endTour();closePanel();closeDlg()}});
 window.addEventListener('resize',()=>{if(tourI>=0)tourAt(tourI)});
 
-/* ═══ demo menu ═══ */
-function startFlow(){endTour();closePanel();closeDlg();seedVisit('first');lineTok=0;runUnlock()}
-$('#dmenu').onclick=()=>{const m=$('#zmenu');m.classList.toggle('on');
- if(m.classList.contains('on')){m.innerHTML='<div class="h">VISIT</div>'+VISITS.map(v=>`<button class="${S.visit===v[0]?'on':''}" data-v="${v[0]}">${v[1]}</button>`).join('')+
-  '<div class="h">RUN</div><button data-r="tour">Replay the tour</button><button data-r="cine">Replay the send</button><button data-r="flow">Start from the unlock</button>';
-  $$('#zmenu [data-v]').forEach(b=>b.onclick=()=>{seedVisit(b.dataset.v);m.classList.remove('on');
-   if(!document.body.classList.contains('zapp')){S.toured=true;enterApp('home')}else{nav('home');if(S.visit==='first')dayOne()}
-   if(S.visit==='first'){S.toured=false;startTour()}else endTour()});
-  $$('#zmenu [data-r]').forEach(b=>b.onclick=()=>{m.classList.remove('on');
-   if(b.dataset.r==='tour'){if(!document.body.classList.contains('zapp'))enterApp('home');else{nav('home');startTour()}}
-   else if(b.dataset.r==='cine'){endTour();closePanel();closeDlg();runCine()}
-   else startFlow()})}};
-document.addEventListener('click',e=>{if(!e.target.closest('.zdbg'))$('#zmenu').classList.remove('on')});
-function journeyIndex(){const inApp=document.body.classList.contains('zapp');const key=inApp?S.visit:S.page;const i=JOURNEY.findIndex(j=>j[0]===key);return i<0?3:i}
+/* ═══ demo menu and the bottom journey ═══ */
+function startFlow(){endTour();closePanel();closeDlg();seedVisit();lineTok=0;runUnlock()}
+function inApp(){return document.body.classList.contains('zapp')}
+function journeyIndex(){if(!inApp()){const i=JOURNEY.findIndex(j=>j[0]===S.page);return i<0?0:i}return 3+S.story.beat}
 function syncNav(){const i=journeyIndex();const d=$('#zjd');if(d)d.innerHTML=JOURNEY.map((_,k)=>`<i class="${k<i?'past':k===i?'on':''}"></i>`).join('');
- const inApp=document.body.classList.contains('zapp');$('#dstep').textContent=inApp&&S.page!=='home'?PAGE_TITLE[S.page]:JOURNEY[i][1];
- $('#dprev').disabled=i===0;$('#dnext').disabled=i===JOURNEY.length-1}
-function goStep(d){const i=journeyIndex();const n=JOURNEY[Math.max(0,Math.min(JOURNEY.length-1,i+d))][0];if(n===JOURNEY[i][0]&&document.body.classList.contains('zapp')&&S.page==='home')return;
- lineTok++;clearTimeout(beatT);endTour();closePanel();closeDlg();
- if(n==='unlock'){seedVisit('first');runUnlock()}else if(n==='intro'){seedVisit('first');runIntro()}else if(n==='cine'){seedVisit('first');runCine()}
- else{if(S.visit!==n||document.body.classList.contains('zapp'))seedVisit(n);// arriving from the send keeps the yeses you just gave
-  S.toured=true;if(!document.body.classList.contains('zapp'))enterApp('home');else{nav('home');if(n==='first')dayOne()}}
- syncNav()}
+ $('#dstep').textContent=inApp()&&S.page!=='home'?PAGE_TITLE[S.page]:JOURNEY[i][1];$('#dprev').disabled=i===0;$('#dnext').disabled=i===JOURNEY.length-1}
+function goBeat(b){S.story.tok++;lineTok++;clearTimeout(beatT);endTour();closePanel();closeDlg();$$('.znote,.hired').forEach(x=>x.remove());
+ S.story.beat=Math.max(0,Math.min(BEATS.length-1,b));
+ for(let i=0;i<S.story.beat;i++)S.story.played[i]=true;
+ if(!inApp()){S.toured=true;enterApp('home');return}
+ if(S.page!=='home'){nav('home');return}
+ const hin=$('#hthread .hin');if(hin)hin.innerHTML='';renderHome();syncNav()}
+function goStep(d){const i=journeyIndex()+d;if(i<0||i>=JOURNEY.length)return;const k=JOURNEY[i][0];
+ if(i<3){S.story.tok++;lineTok++;clearTimeout(beatT);$$('.znote,.hired').forEach(x=>x.remove());seedVisit();if(k==='unlock')runUnlock();else if(k==='intro')runIntro();else runCine();syncNav();return}
+ goBeat(i-3)}
 $('#dprev').onclick=()=>goStep(-1);$('#dnext').onclick=()=>goStep(1);
 $('#dstep').onclick=()=>$('#dmenu').click();
+$('#dmenu').onclick=()=>{const m=$('#zmenu');m.classList.toggle('on');
+ if(m.classList.contains('on')){m.innerHTML='<div class="h">JUMP TO</div>'+JOURNEY.map((j,i)=>`<button class="${journeyIndex()===i?'on':''}" data-j="${i}">${j[1]}</button>`).join('')+'<div class="h">RUN</div><button data-r="flow">Start from the unlock</button><button data-r="tour">Show the tour</button>';
+  $$('#zmenu [data-j]').forEach(b=>b.onclick=()=>{m.classList.remove('on');const i=+b.dataset.j;goStep(i-journeyIndex())});
+  $$('#zmenu [data-r]').forEach(b=>b.onclick=()=>{m.classList.remove('on');if(b.dataset.r==='tour'){if(!inApp())goBeat(S.story.beat);setTimeout(startTour,900)}else startFlow()})}};
+document.addEventListener('click',e=>{if(!e.target.closest('.zdbg'))$('#zmenu').classList.remove('on')});
 
 /* ═══ boot ═══ */
-icons();
+icons();seedVisit();
 const h=location.hash.replace('#/','');
-if(['home','jobs','portfolio'].includes(h)){seedVisit('soon');document.body.classList.remove('zdark');document.body.classList.add('zapp');$('#zflowhd').classList.add('zhide');$$('.zscr').forEach(s=>s.classList.remove('on'));S.toured=true;nav(h)}
-else{seedVisit('first');runUnlock()}
+if(['home','jobs','portfolio'].includes(h)){document.body.classList.remove('zdark');document.body.classList.add('zapp');$('#zflowhd').classList.add('zhide');$$('.zscr').forEach(s=>s.classList.remove('on'));nav(h)}
+else runUnlock();
 
 </script>
 </body>
