@@ -992,6 +992,45 @@ body:not(.zdark) .zsnd{background:var(--field);color:var(--tx3)}
 .pfvers{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 18px}
 .pfvers .twhy{margin:0}
 
+/* journey rail: done, now, next with how long it usually takes */
+.jny{margin-top:18px}
+.jh{font-size:12px;font-weight:600;color:var(--tx3);margin:0 0 6px 2px}
+.js{position:relative;display:flex;align-items:flex-start;gap:11px;width:100%;padding:8px 8px 8px 4px;border-radius:12px;text-align:left;transition:background .15s}
+.js:not(:disabled):hover{background:var(--card)}
+.js+.js::before{content:'';position:absolute;left:13px;top:-10px;height:16px;width:1.5px;background:var(--line)}
+.js.done+.js::before{background:var(--ok)}
+.jd{width:20px;height:20px;border-radius:99px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--tx4);background:var(--bg);margin-top:1px}
+.js.done .jd{background:var(--ok);border-color:var(--ok);color:#fff}.js.done .jd svg{width:11px;height:11px;stroke-width:3}
+.js.cur .jd{border-color:var(--ink);box-shadow:inset 0 0 0 4px var(--bg);background:var(--ink)}
+.jt{flex:1;min-width:0;display:flex;flex-direction:column}
+.jl{font-size:13.5px;font-weight:600;letter-spacing:-.015em;color:var(--tx)}
+.js.up .jl{color:var(--tx3);font-weight:500}
+.jf{font-size:12.5px;color:var(--tx3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.js.cur{background:var(--card);border:1px solid var(--line2)}
+.js.cur .jf{color:var(--tx2)}
+.jw{font-size:12px;color:var(--tx3);flex-shrink:0;margin-top:2px}
+.js:disabled{cursor:default}
+
+/* suggestions and status by the composer */
+.hsugg{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 8px}
+.sg{height:32px;padding:0 12px;border-radius:99px;background:var(--card);border:1px solid var(--line2);font-size:13px;color:var(--tx2);transition:border-color .15s,color .15s}
+.sg:hover{border-color:var(--line);color:var(--tx)}
+.sg:active{transform:scale(.97)}
+.hnarrow{display:none;align-items:center;gap:8px;font-size:12.5px;color:var(--tx2);margin:0 0 8px 4px}
+@media(max-width:1280px){.hnarrow{display:flex}}
+.hc{position:relative}
+.hjump{position:absolute;left:50%;bottom:150px;transform:translateX(-50%);z-index:4;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 13px;border-radius:99px;background:var(--card);border:1px solid var(--line);box-shadow:var(--sh2);font-size:12.5px;font-weight:600;color:var(--tx)}
+.hjump svg{width:14px;height:14px}
+
+/* one skip, top right */
+.zskip{height:34px;padding:0 14px;border-radius:99px;font-size:13px;font-weight:600;color:rgba(244,244,243,.72);background:rgba(255,255,255,.08)}
+body:not(.zdark) .zskip{color:var(--tx2);background:var(--field)}
+.zskip:hover{color:#fff}body:not(.zdark) .zskip:hover{color:var(--tx)}
+
+/* versions panel */
+.vpanel{border:none;padding:0}
+.vtop{margin-top:16px}
+
 :focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:8px}
 input:focus-visible{outline:none}
 /* overlays */
@@ -1046,7 +1085,7 @@ input:focus-visible{outline:none}
 <!-- flow chrome -->
 <div class="zflowhd" id="zflowhd">
   <svg class="zlogo" viewBox="0 0 373 136" xmlns="http://www.w3.org/2000/svg" aria-label="zero"> <path d="M303.572 115.999C294.465 115.999 286.219 113.845 278.834 109.538C271.45 105.23 265.604 99.4455 261.296 92.1841C256.988 84.9227 254.835 76.9228 254.835 68.1845C254.835 59.3231 256.988 51.3233 261.296 44.1849C265.604 37.0466 271.45 31.3236 278.834 27.016C286.219 22.7084 294.465 20.5546 303.572 20.5546C312.926 20.5546 321.233 22.7084 328.495 27.016C335.879 31.3236 341.664 37.1081 345.848 44.3695C350.156 51.5079 352.31 59.4462 352.31 68.1845C352.31 76.9228 350.156 84.9227 345.848 92.1841C341.664 99.4455 335.879 105.23 328.495 109.538C321.11 113.845 312.803 115.999 303.572 115.999ZM303.572 95.8763C308.864 95.8763 313.541 94.6456 317.603 92.1841C321.664 89.5995 324.864 86.215 327.202 82.0304C329.664 77.8459 330.895 73.2921 330.895 68.3691C330.895 63.3231 329.664 58.7078 327.202 54.5232C324.864 50.3387 321.664 47.0156 317.603 44.5542C313.541 41.9696 308.864 40.6773 303.572 40.6773C298.403 40.6773 293.726 41.9696 289.542 44.5542C285.48 47.0156 282.219 50.3387 279.757 54.5232C277.419 58.7078 276.25 63.3231 276.25 68.3691C276.25 73.2921 277.419 77.8459 279.757 82.0304C282.219 86.215 285.48 89.5995 289.542 92.1841C293.726 94.6456 298.403 95.8763 303.572 95.8763Z" fill="currentColor"/> <path d="M224.893 113.785H203.478V52.6503C203.478 36.2583 216.767 22.9699 233.159 22.9699H257.939V43.8311H232.313C228.215 43.8311 224.893 47.1532 224.893 51.2512V113.785Z" fill="currentColor"/> <path d="M152.213 115.998C142.982 115.998 134.675 113.968 127.29 109.906C119.906 105.722 114.06 99.9986 109.752 92.7372C105.568 85.4758 103.475 77.1067 103.475 67.6299C103.475 59.0147 105.383 51.0764 109.198 43.815C113.137 36.5536 118.614 30.769 125.629 26.4614C132.644 22.1538 140.767 20 149.998 20C159.351 20 167.351 22.0923 173.997 26.2768C180.643 30.3383 185.751 35.8151 189.32 42.7073C193.012 49.5995 194.858 57.2301 194.858 65.5992V73.1683H120.275L123.967 66.153C123.598 72.0606 124.583 77.3528 126.921 82.0297C129.26 86.7065 132.583 90.3988 136.89 93.1064C141.198 95.814 146.244 97.1679 152.028 97.1679C157.444 97.1679 162.305 95.9987 166.613 93.6602C171.043 91.1987 174.49 87.6296 176.951 82.9527L193.382 91.4449C189.443 99.3217 183.905 105.414 176.766 109.721C169.628 113.906 161.444 115.998 152.213 115.998ZM125.075 60.2454H173.443C173.074 56.0609 171.843 52.3687 169.751 49.1687C167.782 45.9688 165.074 43.5073 161.628 41.7842C158.182 39.9381 154.244 39.015 149.813 39.015C145.259 39.015 141.198 39.9996 137.629 41.9688C134.183 43.815 131.413 46.338 129.321 49.5379C127.229 52.7379 125.813 56.3071 125.075 60.2454Z" fill="currentColor"/> <path d="M98.8426 113.782H40.6897C33.9206 113.782 28.7515 112.059 25.1823 108.613C21.7362 105.044 20.0132 101.044 20.0132 96.6133C19.8901 92.6749 20.6286 89.2904 22.2285 86.4596C23.8285 83.6289 26.4131 81.0444 29.9822 78.7059L75.766 46.2142C76.7506 45.3527 77.2429 44.4296 77.2429 43.445C77.2429 42.5835 76.9353 42.0297 76.3199 41.7835C75.8276 41.4143 75.2122 41.2297 74.4738 41.2297H22.4131V22.9531H78.9045C85.6736 22.9531 90.7812 24.7377 94.2273 28.3068C97.7964 31.7529 99.581 35.6913 99.581 40.122C99.581 44.0604 98.781 47.4449 97.1811 50.2757C95.7042 53.1064 93.1811 55.691 89.612 58.0294L43.8282 90.7057C42.7205 91.4442 42.1666 92.3672 42.1666 93.4749C42.1666 94.2133 42.4128 94.7672 42.9051 95.1364C43.5205 95.3826 44.1974 95.5056 44.9358 95.5056H98.8426V113.782Z" fill="currentColor"/> </svg>
-  <div style="display:flex;align-items:center;gap:10px"><div class="zbeats" id="zbeats"></div><button class="zsnd" id="zsnd" title="Sound"><i data-lucide="volume-2"></i></button></div>
+  <div style="display:flex;align-items:center;gap:10px"><div class="zbeats" id="zbeats"></div><button class="zskip zhide" id="zskip" type="button">Skip</button><button class="zsnd" id="zsnd" title="Sound"><i data-lucide="volume-2"></i></button></div>
 </div>
 
 <!-- product chrome -->
@@ -1121,7 +1160,8 @@ function pills(items,cb,back){const o=$('#topts');
  $$('[data-i]',o).forEach(b=>b.onclick=()=>choose(+b.dataset.i));
  const bk=$('#tback');bk.classList.toggle('zhide',!back);bk.onclick=back?()=>cb(-1,'back'):null;
  return choose}
-function flowChrome(step,dark){document.body.classList.toggle('zdark',!!dark);document.body.classList.remove('zapp');$('#zflowhd').classList.remove('zhide');$('#zbeats').innerHTML='';if(window.syncNav)syncNav()}
+function setSkip(fn){const b=$('#zskip');if(!b)return;b.classList.toggle('zhide',!fn);b.onclick=fn?()=>{b.classList.add('zhide');snd('tick');fn()}:null}
+function flowChrome(step,dark){setSkip(null);document.body.classList.toggle('zdark',!!dark);document.body.classList.remove('zapp');$('#zflowhd').classList.remove('zhide');$('#zbeats').innerHTML='';if(window.syncNav)syncNav()}
 
 /* reduced motion: GSAP sequences run at speed, CSS already stops */
 if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches&&window.gsap)gsap.globalTimeline.timeScale(6);
@@ -1165,7 +1205,7 @@ const PARTNERS=['notion.so','klarna.com','figma.com','spotify.com','wealthsimple
 async function runIntro(){
  S.page='intro';flowChrome('1 · Intro',true);show('talk');$('#tdock').innerHTML='';$('#tadd').innerHTML='';$('#ttrin').innerHTML='';$('#tback').classList.add('zhide');$('#tq').innerHTML='';
  let skipped=false;
- $('#tdock').innerHTML='<button class="zbtn ghost" id="wskip" style="color:var(--tx3)">Skip</button>';$('#wskip').onclick=()=>{skipped=true;clearTimeout(beatT);lineTok++;$('#tadd').innerHTML='';runCine()};
+ setSkip(()=>{skipped=true;clearTimeout(beatT);lineTok++;$('#tadd').innerHTML='';$$('#topts .zopt').forEach(x=>x.remove());runCine()});
  const beat=(t,hold)=>new Promise(r=>{line($('#tq'),t,()=>{beatT=setTimeout(r,hold)})});
  const N=6;
  beats(0,N);await beat('You did the work. Three scenarios, three managers, every review kept.',1500);if(skipped)return;await clearLine();
@@ -1200,8 +1240,8 @@ function openTerms(after){const b=S.brief;
 /* ═══ 2 THE CINEMATIC: the portfolio assembles, then goes to the companies ═══ */
 function envHTML(){const P=PF;const p=P.projects[0];
  return`<div class="sc-top"><div class="sc-av">${P.name.split(' ').map(x=>x[0]).join('')}</div><div style="min-width:0"><div class="sc-n">${P.name}</div><div class="sc-r">${P.track}</div></div><span class="ztag ok" style="margin-left:auto">${P.rating}</span></div>${p?presVisual(p,false):''}`}
-async function runCine(){
- S.page='cine';flowChrome('2 · Going out',false);show('cine');$('#s-build')&&($('#s-build').innerHTML='');
+async function runCine(){const tok=S.cineTok=(S.cineTok||0)+1;
+ S.page='cine';flowChrome('2 · Going out',false);setSkip(()=>{S.cineTok++;if(S.vo)S.vo.pause();$('#zflowhd').classList.add('zhide');S.story.beat=0;S.story.played={};S.toured=true;enterApp('home')});show('cine');$('#s-build')&&($('#s-build').innerHTML='');
  const P=PF;const first=S.visit==='first';
  const C=$('#s-cine');
  const COS=SEND_COS.slice(0,10);
@@ -1219,25 +1259,25 @@ async function runCine(){
   <div class="ccta" id="ccta"><button class="zbtn lg dark" id="cgo">Take me in</button></div>`;icons();
  const st=$('#cstage');const W=()=>st.clientWidth,H=()=>st.clientHeight;const cx=()=>W()/2,cy=()=>H()/2;
  /* ── Phase A: assemble ── */
- await say($('#cq'),'Building your portfolio.',200);
+ await say($('#cq'),'Building your portfolio.',200);if(S.cineTok!==tok)return;
  gsap.to('#chero',{opacity:1,duration:.7,ease:'power2.out'});snd('tick');
  const fans=$$('#cfan .pres');const n=fans.length;
  gsap.set(fans,{opacity:0,y:60,rotate:0,x:0,scale:.9});
  fans.forEach((f,i)=>{const k=i-(n-1)/2;gsap.to(f,{opacity:1,y:Math.abs(k)*8,x:k*118,rotate:k*6,scale:1,duration:.8,ease:'back.out(1.3)',delay:.35+i*.14,onStart:()=>snd('tick')})});
- await wait(.35*1000+n*140+500);
+ await wait(.35*1000+n*140+500);if(S.cineTok!==tok)return;
  gsap.to('#cchips .ztag',{opacity:1,y:0,duration:.5,stagger:.08,ease:'power2.out'});
- await clearLine('#cq');await say($('#cq'),`${n} scenarios. ${n} reviews. Every one labelled practice.`,1400);
+ await clearLine('#cq');if(S.cineTok!==tok)return;await say($('#cq'),`${n} scenarios. ${n} reviews. Every one labelled practice.`,1400);if(S.cineTok!==tok)return;
  /* ── Phase B: goes out ── */
- await clearLine('#cq');say($('#cq'),'Going to the companies.',0);
+ await clearLine('#cq');if(S.cineTok!==tok)return;say($('#cq'),'Going to the companies.',0);
  snd('whoosh');
  gsap.to('#cfan .pres',{opacity:0,scale:.6,y:-20,x:0,rotate:0,duration:.55,stagger:.04,ease:'power3.in'});
  gsap.to(['#chero','#cchips'],{opacity:0,y:-10,duration:.4,ease:'power2.in'});
  gsap.fromTo('#cenv',{opacity:0,scale:.7,y:40},{opacity:1,scale:1,y:0,duration:.7,ease:'back.out(1.4)',delay:.45});
- await wait(900);
+ await wait(900);if(S.cineTok!==tok)return;
  const cos=$$('#s-cine .cco');const rx=Math.min(470,W()*.42),ry=Math.min(270,H()*.40);
  const pos=cos.map((c,i)=>{const a=(i/cos.length)*Math.PI*2-Math.PI/2;return{x:cx()+Math.cos(a)*rx,y:cy()+Math.sin(a)*ry}});
  cos.forEach((c,i)=>{gsap.set(c,{left:pos[i].x,top:pos[i].y,opacity:0,scale:.3});gsap.to(c,{opacity:1,scale:1,duration:.7,ease:'back.out(1.7)',delay:i*.07});gsap.to($('.nm',c),{opacity:1,duration:.4,delay:.5+i*.07})});
- await wait(cos.length*70+700);
+ await wait(cos.length*70+700);if(S.cineTok!==tok)return;
  // one pulse to each company, then its check
  for(let i=0;i<cos.length;i++){const c=cos[i];const p=pos[i];const dx=p.x-cx(),dy=p.y-cy();const len=Math.hypot(dx,dy),ang=Math.atan2(dy,dx)*180/Math.PI;
   const ln=el(`<div class="cline"></div>`);st.appendChild(ln);gsap.set(ln,{left:cx(),top:cy(),width:len-58,rotate:ang,scaleX:0,opacity:1});
@@ -1248,15 +1288,15 @@ async function runCine(){
    gsap.to($('.ring',c),{opacity:1,scale:1,duration:.45,ease:'back.out(2)'});gsap.to($('.chk',c),{opacity:1,scale:1,duration:.4,ease:'back.out(2.4)'});
    gsap.to(ln,{opacity:.35,duration:.6})}});
   await wait(230)}
- await wait(600);
- await clearLine('#cq');await say($('#cq'),'With 12 recruiters at 6 companies.',1500);
+ await wait(600);if(S.cineTok!==tok)return;
+ await clearLine('#cq');if(S.cineTok!==tok)return;await say($('#cq'),'With 12 recruiters at 6 companies.',1500);if(S.cineTok!==tok)return;
  /* ── Phase C: three companies step forward, and Zero says it out loud ── */
- await clearLine('#cq');
+ await clearLine('#cq');if(S.cineTok!==tok)return;
  const keep=TOP3.map(t=>cos.find(c=>c.dataset.dom===t.dom));
  $$('#s-cine .cline').forEach(l=>gsap.to(l,{opacity:0,duration:.4}));
  gsap.to('#cenv',{opacity:0,scale:.6,duration:.45,ease:'power2.in'});
  cos.filter(c=>!keep.includes(c)).forEach(c=>gsap.to(c,{opacity:0,scale:.4,duration:.5,ease:'power2.in'}));
- await wait(500);
+ await wait(500);if(S.cineTok!==tok)return;
  const gap=Math.min(260,W()*.26);
  keep.forEach((c,i)=>{const x=cx()+(i-1)*gap,y=cy()-10;
   gsap.to(c,{left:x,top:y,scale:1.45,duration:.9,ease:'power3.inOut',delay:i*.07});
@@ -1269,11 +1309,11 @@ async function runCine(){
  gsap.set(q2,{y:6});
  const cue=setInterval(()=>{if(vo.currentTime>=1.92)ask()},80);vo.addEventListener('timeupdate',()=>{if(vo.currentTime>=1.92)ask()});
  vo.play().catch(()=>{});S.vo=vo;
- await wait(2300);ask();clearInterval(cue);
- await wait(600);
+ await wait(2300);if(S.cineTok!==tok)return;ask();clearInterval(cue);
+ await wait(600);if(S.cineTok!==tok)return;
  $('#ccta').innerHTML=`<button class="zbtn lg dark" id="cgo">Check them out</button>`;
  gsap.to('#ccta',{opacity:1,duration:.5});
- $('#cgo').onclick=()=>{snd('tick');if(S.vo){S.vo.pause()}$('#zflowhd').classList.add('zhide');S.story.beat=0;S.story.played={};S.toured=true;enterApp('home')}}
+ setSkip(null);$('#cgo').onclick=()=>{snd('tick');if(S.vo){S.vo.pause()}$('#zflowhd').classList.add('zhide');S.story.beat=0;S.story.played={};S.toured=true;enterApp('home')}}
 
 /* ═══ DATA ═══ */
 const JOBS=[
@@ -1798,7 +1838,7 @@ const pfOrdered=key=>{const t=TAILOR[key]||TAILOR.master;return t.order.map(id=>
 const masterPos=id=>TAILOR.master.order.indexOf(id)+1;
 
 const CO={
- notion:{id:'notion',co:'Notion',dom:'notion.so',role:'Growth Analyst, Self-serve',pay:'CA$72,000 to 84,000',match:94,
+ notion:{id:'notion',gap:'hands-on Amplitude',co:'Notion',dom:'notion.so',role:'Growth Analyst, Self-serve',pay:'CA$72,000 to 84,000',match:94,
   line:'You already solved their funnel in a ZERO scenario.',
   who:'Priya Raman',first:'Priya',whoRole:'Growth lead',ini:'PR',
   looked:[['Signup Funnel Diagnosis','6 min 12 s',.94],['Your presentation','Watched twice',.72],['recovery-plan.pdf','Opened',.4]],
@@ -1810,7 +1850,7 @@ const CO={
   live:[['Priya','Walk me through how you sized the drop-off.'],['You','Sharing Signup Funnel Diagnosis'],['Priya','If activation fell 4 points next month, where would you look first?'],['Priya','That is the clearest sizing I have seen this week.']],
   reject:{quote:'Your diagnosis was the strongest we saw. We went with someone who has more Amplitude experience.',worked:'Your funnel diagnosis, and how you explained it',cost:'Hands-on Amplitude',fix:'Add an Amplitude scenario to my pathway'},
   offer:{n:80000,start:'June 2',extras:['Remote, Canada','20 days off','Equity'],range:[72000,84000],median:78000,counter:84000}},
- figma:{id:'figma',co:'Figma',dom:'figma.com',role:'Analyst, Go-to-market Operations',pay:'CA$74,000 to 88,000',match:88,
+ figma:{id:'figma',gap:'a weekly forecast pack',co:'Figma',dom:'figma.com',role:'Analyst, Go-to-market Operations',pay:'CA$74,000 to 88,000',match:88,
   line:'They want someone who writes the recommendation.',
   who:'Dan Whitfield',first:'Dan',whoRole:'GTM operations lead',ini:'DW',
   looked:[['Support-Ticket Cost','4 min 40 s',.86],['Revenue Decomposition','2 min 05 s',.5],['Your presentation','Watched once',.36]],
@@ -1822,7 +1862,7 @@ const CO={
   live:[['Dan','If the ticket cost doubled, what would you automate first?'],['You','Sharing Support-Ticket Cost'],['Dan','Walk me through the assumption you are least sure of.'],['Dan','You said what the number cannot tell us. That helps.']],
   reject:{quote:'Strong model. We needed someone who has run a forecast pack before.',worked:'Your cost model and the automation picks',cost:'Forecasting practice',fix:'Add a forecasting scenario to my pathway'},
   offer:{n:82000,start:'June 2',extras:['Remote, North America','Equity','CA$1,500 learning budget'],range:[74000,88000],median:80000,counter:86000}},
- klarna:{id:'klarna',co:'Klarna',dom:'klarna.com',role:'Business Analyst, Payments Operations',pay:'CA$68,000 to 76,000',match:82,
+ klarna:{id:'klarna',gap:'SQL',co:'Klarna',dom:'klarna.com',role:'Business Analyst, Payments Operations',pay:'CA$68,000 to 76,000',match:82,
   line:'Same work as your Shopify cost model.',
   who:'Maya Chen',first:'Maya',whoRole:'Recruiter',ini:'MC',
   looked:[['Support-Ticket Cost','4 min 02 s',.8],['Your presentation','Watched once',.4],['ticket-cost-model.xlsx','Downloaded',.3]],
@@ -1870,7 +1910,8 @@ const nameList=a=>a.length<2?a.join(''):a.slice(0,-1).join(', ')+' and '+a[a.len
 function setOrb(state){$$('.turn.act .orb, .hr .orb').forEach(o=>{o.classList.remove('think','talk','wait');if(state)o.classList.add(state)})}
 
 /* agent status for the right pane */
-function setStatus(kind,text){S.agent={kind,text};const b=$('#agst');if(!b)return;
+function setStatus(kind,text){S.agent={kind,text};const b=$('#agst');if(!b){const nt=$('#hnarrowtx');if(nt)nt.textContent=text||'';return}
+ {const nt=$('#hnarrowtx');if(nt)nt.textContent=({think:'Thinking',work:'Working',wait:'Waiting on you',idle:'Idle',talk:'Replying'}[kind]||'')+(text?' · '+text:'')}
  b.className='agst2 '+kind;$('#agsttx').textContent=text;$('#agstlb').textContent={think:'Thinking',work:'Working',wait:'Waiting on you',idle:'Idle',talk:'Replying'}[kind]||'Idle';
  setOrb(kind==='think'||kind==='work'?'think':kind==='talk'?'talk':kind==='wait'?'wait':'')}
 
@@ -1922,7 +1963,7 @@ function playAsk(host,b){setStatus('wait',b.q);
   const key=e=>{if(!document.body.contains(n)){document.removeEventListener('keydown',key);return}if(e.target.tagName==='INPUT')return;const k=+e.key;const os=$$('.aopt',n);if(k>=1&&k<=os.length){os[k-1].click();e.preventDefault()}if(e.key==='Enter'&&!go.disabled){go.click();e.preventDefault()}};
   document.addEventListener('keydown',key);
   const finish=v=>{document.removeEventListener('keydown',key);gsap.to(n,{opacity:0,height:0,marginTop:0,paddingTop:0,paddingBottom:0,duration:.35,ease:'power2.in',onComplete:()=>{n.remove();res(v)}})};
-  go.onclick=()=>{const other=inp&&inp.value.trim();snd('tick');finish(other?{other}:{v:b.multi?sel():sel()[0]})};
+  go.onclick=()=>{const other=inp&&inp.value.trim();snd('tick');const val=other?{other}:{v:b.multi?sel():sel()[0]};if(b.hold&&b.hold(val,finish))return;finish(val)};
   const sk=$('[data-skip]',n);if(sk)sk.onclick=()=>{if(b.onSkip)b.onSkip()};
   const ax=$('.ax',n);if(ax)ax.onclick=()=>{if(b.onSkip)b.onSkip()}})}
 
@@ -2016,8 +2057,8 @@ function beatDefs(i){const K=BEATS[i][0];
   ()=>{const c=c1(),p=topP(c.id),pos=masterPos(p.id),n=S.story.picked.length;return{t:'text',html:`I made ${n===1?'one version':n+' versions'} of your portfolio, one per company. ${pos>1?`Your <b>${p.short}</b> was project ${pos} in your master portfolio. For ${c.co} it goes to the top.`:`For ${c.co} your <b>${p.short}</b> already leads.`}`}},
   {t:'card',kind:'tailor'},
   ()=>{const n=S.story.picked.length,names=nameList(S.story.picked.map(k=>CO[k].co));return{t:'ask',id:'send',q:`Send ${n===1?'it':'these'} to ${names}?`,go:'Send',
-   opts:[{v:'all',l:n===1?'Send it':'Send all '+n,s:'Each company gets its own version',on:true},{v:'look',l:'Let me look at each one first',s:'Opens your portfolio'}],
-   me:a=>a.v==='look'?'Let me look first':'Send them',leave:a=>a.v==='look'?()=>{S.pfFor=S.story.picked[0];nav('portfolio')}:null}},
+   opts:[{v:'all',l:n===1?'Send it':'Send all '+n,s:'Each company gets its own version',on:true},{v:'look',l:'Let me look at each one first',s:'Opens beside this chat'}],
+   hold:(a,finish)=>{if(a.v!=='look')return false;openVersions(finish);return true},me:()=>'Send them'}},
   {t:'card',kind:'sending',flag:'sent'},
   {t:'wait',label:'Two days later'}];
  if(K==='liked')return[
@@ -2030,7 +2071,6 @@ function beatDefs(i){const K=BEATS[i][0];
  if(K==='lined')return[
   ()=>{const c=c1(),s=slotOf(c,'slot1'),a=ANS('slot1');return{t:'text',html:a.other?`I asked ${c.first} for ${a.other}. ${s[0]} at ${s[1]} was the closest she had, so I held it for you.`:`Booked for <b>${s[0]} at ${s[1]}</b>. ${c.first} has been told, and it is in your calendar.`}},
   ()=>({t:'card',kind:'sched',c:c1(),slot:slotOf(c1(),'slot1')}),
-  ()=>({t:'follow',items:[`What will ${c1().first} ask?`,'Which project should I lead with?']}),
   ()=>{const c=c1(),s=slotOf(c,'slot1');return{t:'ask',id:'join1',q:`${s[0]}, ${s[1]}. Ready when you are.`,go:'Join the interview',skip:'Practice first',onSkip:()=>openPrep(c),me:()=>'Join the interview'}}];
  if(K==='result')return[
   ()=>{const s=slotOf(c1(),'slot1');return{t:'time',text:`${s[0]} · ${s[1]}`}},
@@ -2071,6 +2111,16 @@ function beatDefs(i){const K=BEATS[i][0];
     {t:'hired',amt}]}}];
  return[]}
 
+function openVersions(finish){const P=S.story.picked;
+ openPanel('Your tailored versions','Same work. The order and the headline change per company.',
+  `<div class="tailor vpanel">${tailorHTML(P,P[0]).replace(/^<div class="tailor"[^>]*>/,'').replace(/<\/div>$/,'')}</div><div class="vtop" id="vtop">${presVisual(topP(P[0]),true)}</div>`,
+  `<button class="zbtn ghost" id="vclose">Keep looking</button><button class="zbtn dark" id="vsend">Send all ${P.length}</button>`);
+ const card=$('#pbody .tailor');card.dataset.cur=P[0];
+ const sync=()=>{$('#vtop').innerHTML=presVisual(topP(card.dataset.cur),true);icons()};
+ bindTailor(card);card.addEventListener('click',e=>{if(e.target.closest('[data-tk]'))setTimeout(sync,20)});
+ $('#vclose').onclick=()=>closePanel();
+ $('#vsend').onclick=()=>{closePanel();snd('tick');finish({v:'all'})}}
+
 /* ═══ engine ═══ */
 const AGENT_T=['think','tools','text','card','ask','follow','dyn','hired'];
 function thread(){return $('#hthread .hin')}
@@ -2079,7 +2129,8 @@ function turnHost(live){const w=thread();const last=w.lastElementChild;
  $$('.turn.act',w).forEach(t=>t.classList.remove('act'));
  const t=el(`<div class="turn ${live?'act':''}"><span class="tg">${orbHTML()}</span><div class="tb"></div></div>`);w.appendChild(t);return $('.tb',t)}
 let userUp=false;
-function follow(){const th=$('#hthread');if(!th||userUp)return;th.scrollTo({top:th.scrollHeight,behavior:'smooth'})}
+function follow(){const th=$('#hthread');if(!th)return;if(userUp){updJump();return}th.scrollTo({top:th.scrollHeight,behavior:'smooth'})}
+function updJump(){const th=$('#hthread'),j=$('#hjump');if(!th||!j)return;j.classList.toggle('zhide',th.scrollHeight-th.scrollTop-th.clientHeight<220)}
 function meBubble(text){thread().appendChild(el(`<div class="hmsg me"><div class="bd"><div class="tx">${text}</div></div></div>`))}
 function cardHTML(b,done){const P=S.story.picked;
  if(b.kind==='recs')return recsHTML();
@@ -2131,12 +2182,13 @@ async function playBlock(b,fast,tok){if(typeof b==='function')b=b();const alive=
  if(b.flag){S.story.flags[b.flag]=true}}
 
 async function playStory(){S.story.tok++;const w=thread();if(!w)return;w.innerHTML='';userUp=false;S.story.flags={};
- for(let i=0;i<S.story.beat;i++)beatDefs(i).forEach(staticBlock);
+ for(let i=0;i<S.story.beat;i++){w.appendChild(el(`<div class="bmark" data-beat="${i}"></div>`));beatDefs(i).forEach(staticBlock)}
  syncStory();renderPanes();icons();
- const th=$('#hthread');const mark=el('<div class="bmark"></div>');w.appendChild(mark);th.scrollTop=Math.max(0,mark.offsetTop-24);
+ const th=$('#hthread');th.scrollTop=th.scrollHeight;
  playStoryContinue()}
 /* play the current beat, then the next one, each waiting on the student's answer */
-async function playStoryContinue(){const tok=++S.story.tok;const i=S.story.beat;const fast=!!S.story.played[i];S.story.played[i]=true;renderPanes();syncNav();
+async function playStoryContinue(){renderSugg();const tok=++S.story.tok;const i=S.story.beat;const fast=!!S.story.played[i];S.story.played[i]=true;renderPanes();syncNav();
+ {const w=thread();if(w&&!w.querySelector(`.bmark[data-beat="${i}"]`)){const m=el(`<div class="bmark" data-beat="${i}"></div>`);w.appendChild(m);const th=$('#hthread');if(i>0)th.scrollTo({top:Math.max(0,m.offsetTop-16),behavior:fast?'auto':'smooth'})}}
  try{for(const b of beatDefs(i)){if(tok!==S.story.tok)return;await playBlock(b,fast,tok)}}catch(e){if(e!=='leave')console.error(e);return}
  if(tok!==S.story.tok)return;
  if(i<BEATS.length-1){S.story.beat=i+1;playStoryContinue()}else{renderPanes();syncNav()}}
@@ -2171,16 +2223,47 @@ function openPrep(c){openPanel(`${c.round} with ${c.first}`,`${c.co} · ${c.len}
   <div style="font-size:14px;font-weight:600;margin:22px 0 10px">Lead with</div>${presVisual(topP(c.id),true)}`,
  `<button class="zbtn dark" onclick="closePanel()">Got it</button>`)}
 
+/* ═══ the journey rail ═══ */
+const JSTEP=[['Matched','Right now'],['Applied','A minute'],['Liked you','Usually 2 days'],['Interview booked','Same day'],['Interview','Usually 4 days'],['Next interview','Usually a week'],['Offer','Usually 2 days']];
+function stepFact(i){const f=S.story.flags,A=c1(),B=c2(),s1=slotOf(A,'slot1'),s2=slotOf(B,'slot2');
+ return[
+  '3 roles on your pathway',
+  f.sent?'Sent to '+nameList(S.story.picked.map(k=>CO[k].co)):'',
+  f.liked1?`${A.who}, ${A.co}`:'',
+  f.slot1?`${s1[0].slice(0,3)} ${s1[2]}, ${s1[1]}`:'',
+  f.rej1?`${A.co} passed`:f.int1?'Waiting to hear':'',
+  f.slot2?`${B.co}, ${s2[0].slice(0,3)} ${s2[2]}`:f.liked2?`${B.co} wants to talk`:'',
+  f.hired?`Hired at ${B.co}`:f.offer?`${fmtK(B.offer.n)} from ${B.co}`:''][i]}
+function stepNow(i){const A=c1(),B=c2();return['Choose where I apply','Check the versions, then send',`Pick a time with ${A.first}`,'Prepare, then join',`Read why ${A.co} said no`,`Pick a time with ${B.first}`,`Answer ${B.first}`][i]}
+function journeyHTML(){const b=S.story.beat,hired=S.story.flags.hired;
+ return`<div class="jny"><div class="jh">Your job search</div>${JSTEP.map((s,i)=>{const st=hired||i<b?'done':i===b?'cur':'up';
+  return`<button class="js ${st}" data-jb="${i}" type="button" ${st==='up'?'disabled':''}><span class="jd">${st==='done'?ic('check'):''}</span><span class="jt"><span class="jl">${s[0]}</span>${st==='done'?`<span class="jf">${stepFact(i)}</span>`:st==='cur'?`<span class="jf">${stepNow(i)}</span>`:''}</span>${st==='up'?`<span class="jw">${s[1]}</span>`:''}</button>`}).join('')}</div>`}
+
+/* ═══ suggestions by the composer, per beat ═══ */
+function suggestions(){const A=c1(),B=c2(),f=S.story.flags;
+ if(f.hired)return['What happens before I start?','Tell Priya thank you'];
+ return[
+  [`Why is ${A.co} the strongest?`,'What does a 94% match mean?'],
+  [`Why did the ${A.co} order change?`,'What goes out with each one?'],
+  [`What did ${A.first} look at?`,'Which time is better?'],
+  [`What will ${A.first} ask?`,'Which project should I lead with?'],
+  [`Why did ${A.co} say no?`,'What should I fix first?'],
+  [`Who is ${B.who}?`,`What is a ${B.round.toLowerCase()}?`],
+  [`Is ${fmtK(B.offer.n)} fair?`,'What should I ask for?']][S.story.beat]||[]}
+function renderSugg(){const h=$('#hsugg');if(!h)return;const items=suggestions();
+ h.innerHTML=items.map(x=>`<button class="sg" type="button">${x}</button>`).join('');
+ $$('.sg',h).forEach(b=>b.onclick=()=>askAgent(b.textContent))}
+
 /* ═══ For you: left is you, middle is the conversation, right is what is moving ═══ */
 function focusKey(){const f=S.story.flags;return f.rej1?k2():S.story.picked[0]}
-function leftHTML(){const f=S.story.flags;const k=f.sent?focusKey():'master';const t=TAILOR[k];const p=pfOrdered(k)[0];const open=SUGGESTIONS.filter(s=>!s.done);
+function leftHTML(){const f=S.story.flags;const k=f.sent?focusKey():'master';const p=pfOrdered(k)[0];
  return`<div class="hgreet">${f.hired?'Congratulations, Ron.':'Welcome in, Ron.'}</div>
   <div class="hsnip" id="hsnip">
    <div class="row"><div class="pfav">RR</div><div style="min-width:0"><div class="n">${PF.name}</div><div class="r">${PF.track} · <span style="color:var(--ok);font-weight:600">${PF.rating}</span></div></div></div>
    ${presVisual(p,false)}
    <div class="hver">${k==='master'?`${ic('layers')}Your master portfolio`:`${fav(CO[k].dom)}Tailored for ${CO[k].co}`}</div>
-   <div class="hready"><div class="pfring"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" fill="none" stroke="var(--line)" stroke-width="4"/><circle cx="22" cy="22" r="19" fill="none" stroke="var(--ok)" stroke-width="4" stroke-linecap="round" stroke-dasharray="${Math.round(119*(1-open.length/(SUGGESTIONS.length||1))+45)} 200" transform="rotate(-90 22 22)"/></svg><b>${61+(SUGGESTIONS.length-open.length)*8}%</b></div><div>Interview readiness<div style="font-size:12px;color:var(--tx3);margin-top:2px">${open.length?open.length+' thing'+(open.length===1?'':'s')+' would move it':'As strong as it gets'}</div></div></div>
-  </div>`}
+  </div>
+  ${journeyHTML()}`}
 const RSTATE={upcoming:['Upcoming','out'],done:['Waiting to hear','amb'],passed:['Passed','dsh'],offer:['Offer','ok']};
 function rightHTML(){const ag=S.agent||{kind:'idle',text:''};
  return`<div class="hsec"><div class="agst2 ${ag.kind}" id="agst">${orbHTML('md')}<div style="min-width:0"><div class="al2" id="agstlb">${{think:'Thinking',work:'Working',wait:'Waiting on you',idle:'Idle',talk:'Replying'}[ag.kind]||'Idle'}</div><div class="at2" id="agsttx">${ag.text||''}</div></div></div></div>
@@ -2190,6 +2273,8 @@ function rightHTML(){const ag=S.agent||{kind:'idle',text:''};
 function renderPanes(){const l=$('#zsbody .hl'),r=$('#zsbody .hr');if(!l||!r)return;
  l.innerHTML=leftHTML();const sc=r.scrollTop;r.innerHTML=rightHTML();r.scrollTop=sc;icons();
  $('#hsnip').onclick=()=>{S.pfFor=S.story.flags.sent?focusKey():'';nav('portfolio')};
+ $$('#zsbody .js[data-jb]').forEach(b=>b.onclick=()=>{const m=$(`#hthread .bmark[data-beat="${b.dataset.jb}"]`);if(m){userUp=true;$('#hthread').scrollTo({top:Math.max(0,m.offsetTop-16),behavior:'smooth'});updJump()}});
+ renderSugg();
  $$('#zsbody .hr [data-apps]').forEach(b=>b.onclick=()=>openApps());
  $$('#zsbody .hr [data-app]').forEach(x=>x.onclick=()=>openApp(APPS.find(a=>a.id===x.dataset.app)));
  if(S.agent)setStatus(S.agent.kind,S.agent.text)}
@@ -2199,17 +2284,33 @@ function renderHome(){
   <aside class="hl"></aside>
   <section class="hc">
    <div class="hthread" id="hthread"><div class="hin"></div></div>
-   <div class="hcomp"><div class="hin"><div class="hcin">${orbHTML('sm')}<input id="hin" placeholder="Ask Zero anything"><button class="zic" id="hmic" title="Speak">${ic('mic')}</button><button class="go" id="hgo">${ic('arrow-up')}</button></div></div></div>
+   <button class="hjump zhide" id="hjump" type="button">${ic('arrow-down')}Latest</button>
+   <div class="hcomp"><div class="hin"><div class="hnarrow" id="hnarrow">${orbHTML('sm')}<span id="hnarrowtx"></span></div><div class="hsugg" id="hsugg"></div><div class="hcin">${orbHTML('sm')}<input id="hin" placeholder="Ask Zero anything"><button class="zic" id="hmic" title="Speak">${ic('mic')}</button><button class="go" id="hgo">${ic('arrow-up')}</button></div></div></div>
   </section>
   <aside class="hr"></aside></div>`;
- const th=$('#hthread');th.addEventListener('wheel',e=>{if(e.deltaY<0)userUp=true;else if(th.scrollHeight-th.scrollTop-th.clientHeight<60)userUp=false},{passive:true});
+ const th=$('#hthread');th.addEventListener('wheel',e=>{if(e.deltaY<0)userUp=true;else if(th.scrollHeight-th.scrollTop-th.clientHeight<60)userUp=false;updJump()},{passive:true});
+ th.addEventListener('scroll',updJump,{passive:true});
+ $('#hjump').onclick=()=>{userUp=false;th.scrollTo({top:th.scrollHeight,behavior:'smooth'});setTimeout(updJump,500)};
  bindComposer();playStory()}
 function bindComposer(){const inp=$('#hin'),go=$('#hgo');inp.oninput=()=>go.classList.toggle('on',inp.value.trim().length>0);
  const send=()=>{const v=inp.value.trim();if(!v)return;inp.value='';go.classList.remove('on');askAgent(v)};
  go.onclick=send;inp.onkeydown=e=>{if(e.key==='Enter')send()};
  $('#hmic').onclick=()=>{inp.placeholder='Listening';$('#hmic').classList.add('rec');setTimeout(()=>{$('#hmic').classList.remove('rec');inp.placeholder='Ask Zero anything';inp.value='Which project should I lead with?';inp.dispatchEvent(new Event('input'));inp.focus()},1300)}}
 /* free questions get a real, contextual answer; they never move the story on their own */
-function replyFor(q){const t=q.toLowerCase(),f=S.story.flags;const c=f.rej1?c2():c1();const p=topP(c.id);
+function replyFor(q){const t=q.toLowerCase(),f=S.story.flags;const c=f.rej1?c2():c1();const p=topP(c.id);const A=c1(),B=c2();
+ if(/strongest/.test(t))return{steps:[`Compared ${A.co}’s posting to your five scenarios`,'Weighted manager reviews'],html:`Your ${topP(A.id).short} was built on ${A.co}’s own funnel and got Exceeds expectations. No other role has evidence that close.`};
+ if(/94%|match mean/.test(t))return{steps:['Counted requirements you have evidence for'],html:`Of the 14 things ${A.co} lists, you have reviewed ZERO work for 13. The missing one is ${A.gap}.`};
+ if(/order change/.test(t))return{steps:[`Read ${A.co}’s job description`],html:`${TAILOR[A.id].why} It was project ${masterPos(topP(A.id).id)} in your master portfolio.`};
+ if(/goes out|with each/.test(t))return{steps:['Checked each form'],html:`Each company gets its version of your portfolio, the file its posting asked for, and your start date and work authorisation. Nothing else.`};
+ if(/look at/.test(t))return{steps:['Read the view log'],html:`${A.first} spent ${A.looked[0][1]} on your ${A.looked[0][0]}, ${A.looked[1][1].toLowerCase()} on ${A.looked[1][0].toLowerCase()}, and ${A.looked[2][1].toLowerCase()} ${A.looked[2][0]}.`};
+ if(/which time|better/.test(t))return{steps:['Checked your calendar'],html:`${A.slots[0][0]} at ${A.slots[0][1]} is soonest and your calendar is clear. Earlier rounds usually move faster.`};
+ if(/fix first/.test(t))return{steps:['Compared both rejections'],html:`${A.reject.cost}. One ZERO scenario covers it, and it helps with ${B.co} too.`};
+ if(/who is/.test(t))return{steps:[`Looked up ${B.who}`],html:`${B.who} is ${B.co}’s ${B.whoRole}. ${B.first} read your ${B.looked[0][0]} end to end before reaching out.`};
+ if(/take-home|screening|first round|what is a/.test(t))return{steps:[`Read ${B.co}’s interview notes`],html:`A ${B.round.toLowerCase()} is ${B.len} minutes on ${B.where}: ${B.agenda.map(x=>x[0].toLowerCase()).join(', ')}.`};
+ if(/fair/.test(t))return{steps:['Checked the posted range','Checked the median'],html:`Yes. ${B.co} posted ${B.pay} and the median is ${fmtK(B.offer.median)}. ${fmtK(B.offer.n)} sits above the median.`};
+ if(/ask for|negotiat/.test(t))return{steps:['Checked the top of the range'],html:`Ask for ${fmtK(B.offer.counter)}. It is inside their posted range, and the note can point to your ${topP(B.id).short}.`};
+ if(/before i start/.test(t))return{steps:['Read the offer letter'],html:`Sign the letter, send your start date confirmation, and I will withdraw the rest with a short note. Your first day is ${B.offer.start}.`};
+ if(/thank/.test(t)&&f.hired)return{steps:['Drafted a note'],html:`Sent ${A.first} a short thank-you. The door stays open for the next Growth role at ${A.co}.`};
  if(/ask|question|expect/.test(t))return{steps:[`Read ${c.co}’s interview notes on Glassdoor`,`Matched them to what ${c.first} opened`],html:`${c.first} opened your <b>${c.looked[0][0]}</b> first, so expect it first. Then a live case, then your questions. Say the number before the method.`};
  if(/lead|project|portfolio|order/.test(t))return{steps:[`Compared ${c.co}’s brief to your five projects`],html:`Lead with <b>${p.short}</b>. It is project ${masterPos(p.id)} in your master portfolio and first in your ${c.co} version, because it is the closest thing to the job.`};
  if(/salary|pay|money|offer/.test(t))return{steps:['Checked the posted range','Checked the median for Toronto'],html:`${c.co} posted ${c.pay}. The median is ${fmtK(c.offer.median)}. Your floor is CA$60,000, so anything they offer clears it.`};
