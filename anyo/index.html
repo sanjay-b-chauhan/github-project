@@ -806,6 +806,93 @@ video,img,canvas{-webkit-touch-callout:none;-webkit-user-select:none;user-select
 .bar.btm::before{background:#F4F4F4!important;box-shadow:0 -12px 16px -8px #F4F4F4!important}
 .srch{min-width:0}
 .bar.btm .cx{flex:none}
+
+/* ======================= b21: gestures everywhere ======================= */
+/* toasts: equal padding, one line */
+#app #toast{padding:0 18px!important;height:42px;font:400 14px/42px var(--ui)!important;gap:14px}
+#app #toast.act{padding:0 5px 0 18px!important}
+#app #toast .tu{height:32px;padding:0 14px;line-height:32px}
+/* your turn is warm; everything else stays neutral */
+#app .bdg.reply{background:#FFB940!important;box-shadow:0 0 0 calc(var(--bd)*.09) var(--bg),0 6px 14px -6px rgba(220,140,10,.55)!important}
+#app .bdg.reply svg{fill:#3B2500!important}
+/* focus: hold a face */
+#foc{position:absolute;inset:0;z-index:9;background:rgba(244,244,244,.7);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);opacity:0;visibility:hidden}
+#focArc{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
+#focArc text{font:400 11px var(--ui);letter-spacing:.08em;fill:#111114}
+#focCard{position:absolute;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:13;border-radius:28px;background:#FFFFFF;padding:18px 18px 16px;
+  box-shadow:0 24px 50px -24px rgba(0,0,0,.35),0 0 0 1px rgba(0,0,0,.03);transform:translateY(130%);font-family:var(--ui)}
+#focCard .fl{display:flex;align-items:center;gap:6px;font:400 13px/1 var(--ui);color:#8A8A8E;margin-bottom:8px}
+#focCard .fl svg{width:13px;height:13px;fill:#8A8A8E}
+#focCard .fs{font:400 17px/1.4 var(--ui);color:#111114;margin-bottom:16px}
+#focCard .fas{display:flex;justify-content:space-around}
+#focCard .fa{display:flex;flex-direction:column;align-items:center;gap:7px;font:400 13px/1 var(--ui);color:#6E6E73;width:76px}
+#focCard .fa i{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:#EEEEF0;transition:transform .2s,background .2s;font-style:normal}
+#focCard .fa svg{width:22px;height:22px;fill:none;stroke:#111114;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#focCard .fa.pri i{background:#111114} #focCard .fa.pri svg{stroke:#fff}
+#focCard .fa.hot i{transform:scale(1.18);background:#111114} #focCard .fa.hot svg{stroke:#fff}
+#focCard .fa.rm.hot i{background:#E5484D}
+/* swipe rows */
+#app .pr{display:block!important;position:relative;height:64px;padding:0!important;border-radius:20px;overflow:hidden;touch-action:pan-y}
+.prc{position:relative;z-index:1;display:flex;align-items:center;gap:14px;height:100%;padding:0 4px;background:#F4F4F4;will-change:transform}
+.rv{position:absolute;inset:0;display:flex;align-items:center;padding:0 22px;opacity:0}
+.rv svg{width:20px;height:20px;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.rv.r{background:#111114;justify-content:flex-start} .rv.r svg{stroke:#fff}
+.rv.l{background:#E6E6E8;justify-content:flex-end} .rv.l svg{stroke:#3A3A3F}
+#app .ib.hint{background:#E6E6E8!important} #app .ib.hint svg{stroke:#8A8A8E!important}
+/* activity inside the profile sheet */
+#pAct{margin-top:18px}
+.ar{position:relative;height:64px;border-radius:20px;overflow:hidden;touch-action:pan-y}
+.ar .prc{gap:12px}
+.ar .av{position:relative;width:40px;height:40px;flex:none}
+.ar .tx{flex:1;min-width:0}
+.ar .t1{font:400 15px/1.25 var(--ui);color:#111114;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ar .t2{font:400 13px/1.25 var(--ui);color:#8A8A8E;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.ar .tm{font:400 13px/1 var(--ui);color:#A0A0A6;flex:none}
+.ar .wd{height:30px;padding:0 12px;border-radius:99px;background:#E6E6E8;color:#3A3A3F;font:400 13px/30px var(--ui);flex:none}
+#meDot{position:absolute;right:0;top:0;width:12px;height:12px;border-radius:50%;background:#FF3B30;box-shadow:0 0 0 2.5px var(--bg);transform:scale(0);z-index:3}
+/* ===== how it works: three animated mockups, Next Next Start ===== */
+#how{position:absolute;inset:0;z-index:45;background:#F4F4F4;display:none;font-family:var(--ui);overflow:hidden}
+#howTrack{position:absolute;left:0;top:0;bottom:0;display:flex;will-change:transform;touch-action:pan-y}
+.hs{position:relative;width:100vw;height:100%;flex:none}
+@media (min-width:600px){.hs{width:390px}}
+.hs .ttl{position:absolute;left:28px;right:28px;top:calc(env(safe-area-inset-top,0px) + 12%);text-align:center;font:400 28px/1.2 var(--ui);color:#111114}
+.ms{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 12% + 88px);width:220px;height:400px;margin-left:-110px;border-radius:36px;background:#F4F4F4;overflow:hidden;
+  box-shadow:0 0 0 7px #fff,0 0 0 8px rgba(0,0,0,.06),0 30px 60px -28px rgba(0,0,0,.35)}
+.ms .mb{position:absolute;width:62px;height:62px;border-radius:50%;background:center 30%/cover;box-shadow:0 10px 18px -10px rgba(0,0,0,.4),inset 0 0 0 2px rgba(255,255,255,.6)}
+.ms .cam{position:absolute;inset:0;background:center/cover;border-radius:50%;opacity:0}
+.ms .fg{position:absolute;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:rgba(17,17,20,.18);box-shadow:0 0 0 2px rgba(255,255,255,.9);opacity:0;z-index:5}
+.ms .rb{position:absolute;left:50%;top:50%;width:62px;height:62px;margin:-31px 0 0 -31px;border-radius:50%;box-shadow:inset 0 0 0 3px #fff;opacity:0;z-index:4;display:grid;place-items:center}
+.ms .rb i{width:26px;height:26px;border-radius:7px;background:#FF3B4E;display:block}
+.ms .ln{position:absolute;left:14px;right:14px;top:18px;height:3px;border-radius:9px;background:rgba(255,255,255,.35);overflow:hidden;opacity:0;z-index:4}
+.ms .ln i{display:block;height:100%;width:0;background:#FF3B4E}
+.ms .pl{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);padding:8px 12px;border-radius:99px;background:#111114;color:#fff;font:400 11px/1 var(--ui);white-space:nowrap;opacity:0;z-index:6}
+.ms .dim{position:absolute;inset:0;background:rgba(244,244,244,.72);opacity:0;z-index:3}
+.ms .card{position:absolute;left:10px;right:10px;bottom:10px;height:120px;border-radius:22px;background:#fff;box-shadow:0 14px 30px -16px rgba(0,0,0,.35);transform:translateY(140%);z-index:6;padding:14px}
+.ms .card b{display:block;height:8px;border-radius:9px;background:#E6E6E8;margin-bottom:8px;font-weight:400}
+.ms .card .cr{display:flex;justify-content:space-around;margin-top:14px}
+.ms .card .cr i{width:30px;height:30px;border-radius:50%;background:#EEEEF0;display:block} .ms .card .cr i:first-child{background:#111114}
+#howDots{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 118px);display:flex;justify-content:center;gap:8px}
+#howDots span{width:7px;height:7px;border-radius:99px;background:#D4D4D8;transition:width .3s,background .3s}
+#howDots span.on{width:22px;background:#111114}
+#howGo{position:absolute;left:20px;right:20px;bottom:calc(env(safe-area-inset-bottom,0px) + 34px);height:56px;border-radius:99px;background:#111114;color:#fff;font:400 17px/56px var(--ui);text-align:center;z-index:2}
+#howSkip{position:absolute;right:18px;top:calc(env(safe-area-inset-top,0px) + 14px);height:40px;padding:0 10px;font:400 15px/40px var(--ui);color:#8A8A8E;z-index:2}
+/* the penguin says hello */
+#wel{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 96px);z-index:8;display:none;pointer-events:auto}
+#wel img{position:absolute;left:50%;bottom:0;width:132px;margin-left:-66px;filter:drop-shadow(0 14px 12px rgba(0,0,0,.14))}
+#wel .sb{position:absolute;left:36px;right:36px;bottom:176px;padding:14px 18px;border-radius:22px;background:#fff;font:400 16px/1.4 var(--ui);color:#111114;text-align:center;box-shadow:0 18px 36px -20px rgba(0,0,0,.35)}
+#wel .sb::after{content:"";position:absolute;left:50%;bottom:-7px;width:14px;height:14px;margin-left:-7px;background:#fff;transform:rotate(45deg);border-radius:3px}
+
+#empty .eb,#empty svg.arrow{display:none!important}
+
+/* camera: swipe hint at the top, their last video bottom-left, flip bottom-right */
+#camX{display:none!important}
+#last{left:22px!important;right:auto!important;bottom:calc(env(safe-area-inset-bottom,0px) + 30px)!important;width:54px!important;height:54px!important}
+#swHint{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:4;display:flex;flex-direction:column;align-items:center;gap:7px;pointer-events:none}
+@media (min-width:600px){#swHint{top:16px}}
+#swHint i{width:38px;height:5px;border-radius:99px;background:rgba(255,255,255,.8);display:block;font-style:normal}
+#swHint span{font:400 13px/1 var(--ui);color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.35)}
+#recBar{top:calc(env(safe-area-inset-top,0px) + 22px)!important}
+#segs{top:calc(env(safe-area-inset-top,0px) + 22px)!important}
 </style>
 </head>
 <body>
@@ -958,7 +1045,7 @@ video,img,canvas{-webkit-touch-callout:none;-webkit-user-select:none;user-select
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b20</div>
+  <div id="build">b21</div>
 </div>
   </div></div>
 </div>
@@ -1002,8 +1089,8 @@ const STYLES={
   blush:{label:'Blush',bg:'blush',ring:'hair',layout:'equal',float:false,liquid:false,accent:'blush'}
 };
 const DEF={shape:'circle',style:'cloud',size:100,gap:100,font:'UI',ts:100,names:'peek',tilt:false,sound:true,haptics:true,layout:'bubble',bg:'cloud',ring:'glass3d',float:false,liquid:false,accent:'blue'};
-let C={...DEF}; try{Object.assign(C,JSON.parse(store.get('anyo20.cfg')||'{}'))}catch(e){}
-function saveC(){store.set('anyo20.cfg',JSON.stringify(C));}
+let C={...DEF}; try{Object.assign(C,JSON.parse(store.get('anyo21.cfg')||'{}'))}catch(e){}
+function saveC(){store.set('anyo21.cfg',JSON.stringify(C));}
 function applyC(relayout=true){
   const [bg,dark]=BGS[C.bg]||BGS.paper;
   app.style.setProperty('--bg',bg); app.dataset.dark=dark?'1':'0'; app.dataset.bg=C.bg; app.dataset.ring=C.ring; app.dataset.shape=C.shape||'circle'; app.dataset.names=C.names;
@@ -1494,8 +1581,8 @@ function closeViewerEarly(){ const v=VW; if(!v)return closeStage(); if(!v.replay
 
 /* ================= ghost touch: gestures taught without words ================= */
 const coach={tap:false,hold:false,slide:false,fast:false,plus:false};
-try{Object.assign(coach,JSON.parse(store.get('anyo20.coach')||'{}'))}catch(e){}
-function coachDone(k){ if(coach[k])return; coach[k]=true; store.set('anyo20.coach',JSON.stringify(coach)); hideGhost(); }
+try{Object.assign(coach,JSON.parse(store.get('anyo21.coach')||'{}'))}catch(e){}
+function coachDone(k){ if(coach[k])return; coach[k]=true; store.set('anyo21.coach',JSON.stringify(coach)); hideGhost(); }
 let ghostTl=null;
 function hideGhost(){ if(ghostTl){ghostTl.kill();ghostTl=null;} gsap.to('#ghost',{opacity:0,duration:.2}); }
 function ghostBase(x,y,dark){ hideGhost(); const g=$('#ghost'); g.classList.toggle('dark',!!dark); gsap.set(g,{x,y,opacity:0,scale:1}); gsap.set('#ghP',{attr:{'stroke-dashoffset':207.3}}); gsap.set('#ghost .r',{opacity:0,scale:.8}); return g; }
@@ -1594,13 +1681,13 @@ function step3(){ const s=show('#o3'), box=$('#ppl'); box.innerHTML=''; picked=n
 $('#ppl').addEventListener('click',()=>hideGhost());
 $('#n3').onclick=()=>finishOnb(true);
 function finishOnb(fresh){
-  store.set('anyo20.onb','1'); hideGhost();
+  store.set('anyo21.onb','1'); hideGhost();
   if(fresh){ S.friends.forEach(f=>f.el&&f.el.remove()); S.friends=[];
     // the people you picked get an invite; nobody is your friend until they say yes
     const inv=POOL.filter(p=>picked.has(p.id)); S.suggest=inv.map(p=>({...p,pending:true})).concat(S.suggest.filter(x=>!picked.has(x.id)));
     inv.forEach((p,i)=>{ const sp=S.suggest.find(x=>x.id===p.id); sp.tm=setTimeout(()=>{ if(!sp.pending)return; S.suggest=S.suggest.filter(x=>x!==sp); acceptedBy({id:p.id,name:p.name,photo:p.photo,clip:p.clip,inbox:[],timers:[]}); },5000+i*2600); });
     S.requests=POOL.filter(p=>!picked.has(p.id)).slice(0,2).map(p=>({...p}));
-    Object.assign(coach,{tap:false,hold:false,slide:false,fast:false,plus:false}); store.set('anyo20.coach',JSON.stringify(coach)); }
+    Object.assign(coach,{tap:false,hold:false,slide:false,fast:false,plus:false}); store.set('anyo21.coach',JSON.stringify(coach)); }
   gsap.to(onb,{opacity:0,duration:.45,onComplete:()=>{ onb.style.display='none'; }});
   if(fresh){ layout(false); updReq(); }
   syncPanel(); coachNext();
@@ -1635,7 +1722,7 @@ function buildPanel(){ buildVersions();
   $('#mRead').onclick=()=>{ S.friends.forEach(f=>{ if(f.inbox.length){f.last=f.inbox[f.inbox.length-1]; f.inbox=[]; f.replyDue=true;} paint(f); }); };
   $('#mReq').onclick=()=>{ const used=new Set(S.friends.map(f=>f.id).concat(S.requests.map(r=>r.id))); const p=POOL.find(q=>!used.has(q.id)); if(!p)return; S.requests.push({...p}); updReq(); SFX.recv(); jelly($('#plus'),.8); };
   $('#mOnb').onclick=()=>{ $('#panel').classList.remove('open'); startOnboarding(1); };
-  $('#mReset').onclick=()=>{ ['anyo20.cfg','anyo20.onb','anyo20.coach'].forEach(k=>store.set(k,'')); try{['anyo20.cfg','anyo20.onb','anyo20.coach'].forEach(k=>localStorage.removeItem(k))}catch(e){} location.reload(); };
+  $('#mReset').onclick=()=>{ ['anyo21.cfg','anyo21.onb','anyo21.coach'].forEach(k=>store.set(k,'')); try{['anyo21.cfg','anyo21.onb','anyo21.coach'].forEach(k=>localStorage.removeItem(k))}catch(e){} location.reload(); };
   $('#pClose').onclick=()=>$('#panel').classList.remove('open');
 }
 function peekDemo(){ const f=S.friends[0]; if(!f||mode==='list')return; peekF=null; peek(f); setTimeout(()=>peek(null),1100); }
@@ -1722,7 +1809,7 @@ const _deliver=deliver; deliver=function(f){ _deliver(f); if(TUT&&f.id==='anyo')
   setTimeout(finishTutorial,6400); } };
 
 function startTutorial(){
-  closeAll(); store.set('anyo20.onb','');
+  closeAll(); store.set('anyo21.onb','');
   gsap.to('#onb',{opacity:0,duration:.35,onComplete:()=>{$('#onb').style.display='none';}});
   S.friends.forEach(f=>{ if(f.el)f.el.remove(); f.el=null; (f.timers||[]).forEach(clearTimeout); });
   TUT={step:'tap',keep:S.friends}; const t={...ANYO,inbox:[],timers:[]}; S.friends=[t]; layout(false);
@@ -1730,8 +1817,8 @@ function startTutorial(){
   setTimeout(()=>{ if(!TUT)return; const b=t.el.querySelector('.ball'); tip(b,'Tap to open'); ghostTap(centerOf(b).x,centerOf(b).y); },900);
 }
 function finishTutorial(){
-  if(!TUT)return; const keep=TUT.keep||[]; TUT=null; hideTip(); store.set('anyo20.onb','1');
-  Object.assign(coach,{tap:false,hold:false,slide:false,arrange:false,plus:false}); store.set('anyo20.coach',JSON.stringify(coach)); // practice does not count as learned
+  if(!TUT)return; const keep=TUT.keep||[]; TUT=null; hideTip(); store.set('anyo21.onb','1');
+  Object.assign(coach,{tap:false,hold:false,slide:false,arrange:false,plus:false}); store.set('anyo21.coach',JSON.stringify(coach)); // practice does not count as learned
   const t=byId('anyo'); if(t){ (t.timers||[]).forEach(clearTimeout); if(t.el){ const el=t.el; gsap.to(el,{scale:.85,opacity:0,duration:.35,ease:'power2.in',onComplete:()=>el.remove()}); } }
   S.friends=keep.filter(f=>f.id!=='anyo'); S.friends.forEach(f=>{f.el=null;f.d=undefined;f.cx=f.cy=undefined;});
   setTimeout(()=>{ layout(true); if(!S.friends.length){ openSheet(); setTimeout(()=>{ const b=$('#aBody .pill'); if(b&&addOn)tip(b,'Connect with your people',{pos:'above'}); },1400); } else coachNext(); },420);
@@ -1803,7 +1890,7 @@ $('#prHap').onclick=()=>{ C.haptics=!(C.haptics!==false); saveC(); fillProfile()
 $('#prPhoto').onclick=()=>startOnboarding(2);
 $('#prHow').onclick=()=>{ closeProfile(); setTimeout(startTutorial,480); };
 $('#prInv').onclick=()=>{ closeProfile(); setTimeout(openSheet,480); };
-$('#prOut').onclick=()=>{ ['anyo20.cfg','anyo20.onb','anyo20.coach','anyo.me'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); location.reload(); };
+$('#prOut').onclick=()=>{ ['anyo21.cfg','anyo21.onb','anyo21.coach','anyo.me'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); location.reload(); };
 
 /* ---------- prototype panel ---------- */
 function closeAll(){ if(sheetOn)closeSheet(); if(profOn)closeProfile(); if(editing)setEdit(false); if(cur&&smode)closeStage(); hideTip(); }
@@ -1819,7 +1906,7 @@ function buildPanel(){
   $('#mReq').onclick=()=>{ const used=new Set(S.friends.map(f=>f.id).concat(S.requests.map(r=>r.id))); const p=POOL.find(q2=>!used.has(q2.id)&&!S.pend[q2.id]); if(!p)return; S.requests.push({...p}); updReq(); SFX.recv(); jelly($('#plus'),.8); toast(`${p.name} wants to be friends`); if(addOn)renderAdd(); };
   $('#mNames').onclick=()=>{ if(S.friends.length<2)return; let i=0; const run=()=>{ if(i>=Math.min(4,S.friends.length)){ peek(null); return; } peekF=null; peek(S.friends[i++]); setTimeout(run,650); }; run(); };
   $('#mShake').onclick=shake;
-  $('#mReset').onclick=()=>{ ['anyo20.cfg','anyo20.onb','anyo20.coach','anyo.me'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); location.reload(); };
+  $('#mReset').onclick=()=>{ ['anyo21.cfg','anyo21.onb','anyo21.coach','anyo.me'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); location.reload(); };
   $('#pClose').onclick=()=>$('#panel').classList.remove('open');
 }
 function syncPanel(){ $$('#pPreset button').forEach(b=>b.classList.toggle('on',b.dataset.v===C.style)); const n=S.friends.filter(f=>f.id!=='anyo').length; $$('#pPeople button').forEach(b=>b.classList.toggle('on',+b.dataset.n===n)); }
@@ -1931,7 +2018,7 @@ $('#pHap').onclick=()=>{ C.haptics=!(C.haptics!==false); saveC(); fillProfile();
 $$('#pLays button').forEach(b=>b.onclick=()=>{ C.layout=b.dataset.v; saveC(); fillProfile(); SFX.tap(); layout(true); });
 $('#pOrb').onclick=()=>startOnboarding('photo');
 $('#pHow').onclick=()=>{ closeProfile(); setTimeout(startTutorial,480); };
-$('#pOut').onclick=()=>{ ['anyo20.cfg','anyo20.onb','anyo20.coach','anyo.me'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); location.reload(); };
+$('#pOut').onclick=()=>{ ['anyo21.cfg','anyo21.onb','anyo21.coach','anyo.me'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); location.reload(); };
 
 /* ---------- onboarding: one question per screen, one black button ---------- */
 const ob=$('#ob'); let obStack=[], obStream=null, obSolo=false;
@@ -2091,7 +2178,7 @@ function installNow(){ ac(); SFX.tap(); haptic(10);
   toast('Open this page in Safari or Chrome to install'); }
 function closeIos(){ gsap.to('#iosS',{opacity:0,duration:.25,onComplete:()=>{ const s2=$('#iosS'); s2.style.display='none'; s2.style.opacity=1; gsap.killTweensOf('#iosS .arrow'); }}); }
 $('#instGo').onclick=installNow; $('#iosOk').onclick=closeIos; $('#iosDim').onclick=closeIos;
-$('#instSkip').onclick=()=>{ try{sessionStorage.setItem('anyo.skipInst','1')}catch(e){} SFX.tap(); hideInstall(()=>{ if(store.get('anyo20.onb')!=='1')startOnboarding(1); else coachNext(); }); };
+$('#instSkip').onclick=()=>{ try{sessionStorage.setItem('anyo.skipInst','1')}catch(e){} SFX.tap(); hideInstall(()=>{ if(store.get('anyo21.onb')!=='1')startOnboarding(1); else coachNext(); }); };
 /* install lives in the profile too */
 (()=>{ if(IS_STANDALONE)return; const b=document.createElement('button'); b.className='rowx'; b.id='pInst'; b.textContent='Install App'; $('#pHow').parentNode.insertBefore(b,$('#pHow')); b.onclick=()=>{ closeProfile(); setTimeout(installNow,480); }; })();
 
@@ -2147,9 +2234,176 @@ async function flipCam(){ if(flipping)return; flipping=true; SFX.tap(); haptic(8
   gsap.fromTo('#flip',{scale:.88},{scale:1,duration:.35,ease:'expo.out'}); cam.style.opacity=0;
   await new Promise(r=>setTimeout(r,180)); stopCam(); await startCam(); flipping=false; }
 
+/* ======================= b21: gestures everywhere ======================= */
+/* coaching: once, in the tutorial only. no ghosts, no urging, no "hold anywhere" nags */
+const _tip21=tip; tip=function(t,text,opt={}){ if(opt.urge)return; if(/hold anywhere|hold to reply|keep your finger/i.test(text||''))return; _tip21(t,text,opt); };
+const _gh21=ghostHold; ghostHold=function(x,y){ if(TUT&&!TUT.ghosted){ TUT.ghosted=1; _gh21(x,y); } };
+ghostSlide=function(){}; ghostHoldRight=function(){};
+function coachNext(){ setTimeout(()=>{ if(TUT||busy||smode||editing||sheetOn||profOn||onbOpen()||FOC)return;
+  if(!S.friends.length&&S.requests.length){ tip($('#plus'),'Requests waiting',{pos:'above'}); return; }
+  if(!S.friends.length){ tip($('#plus'),'Add your people',{pos:'above'}); return; }
+  const a=S.friends.find(f=>f.inbox.length); if(a&&a.el&&!coach.tap){ tip(a.el.querySelector('.ball'),`${a.name} · tap to watch`); return; }
+  if(!coach.focus&&S.friends.length>=2){ const b=S.friends[0].el; if(b){ tip(b.querySelector('.ball'),'Hold a face for more'); coach.focus=true; store.set('anyo21.coach',JSON.stringify(coach)); } return; }
+  hideTip(); },700); }
+
+/* AI summaries (canned for the prototype) */
+const SUM=['asking if you are free Friday','showing the sunset from her roof','got the job and wants to celebrate','running late, saving you a seat','saying hi from the train','wants your honest take on a haircut','found the best ramen near you','missing you, call soon'];
+const _msg21=msg; msg=function(k,ago){ const m=_msg21(k,ago); m.sum=SUM[Math.abs(k)%SUM.length]; return m; };
+function summaryOf(f){ const n=f.inbox.length;
+  if(n){ const s=f.inbox.map((m,i)=>m.sum||SUM[(i+f.name.length)%SUM.length]); const list=s.length===1?s[0]:s.slice(0,-1).join(', ')+' and '+s[s.length-1];
+    return `${f.name} sent ${n===1?'a video':n+' videos'}: ${list}.`; }
+  const k=kindOf(f);
+  if(k==='reply')return `You watched ${f.name}'s video. It is your turn to reply.`;
+  if(k==='sent')return `You sent a video ${agoL(f.out.at)}. ${f.name} has not opened it yet.`;
+  if(k==='opened')return `${f.name} opened your video ${agoL(f.out.at)} and has not replied.`;
+  if(k==='sending')return `Sending to ${f.name}.`;
+  return `Nothing yet. Say hi to ${f.name}.`; }
+function agoL(t){ const d=now()-t; if(d<MIN)return'just now'; const u=d<H?[Math.floor(d/MIN),'minute']:d<D?[Math.floor(d/H),'hour']:d<W_?[Math.floor(d/D),'day']:[Math.floor(d/W_),'week']; return `${u[0]} ${u[1]}${u[0]>1?'s':''} ago`; }
+function arcOf(f){ const k=kindOf(f); if(f.inbox.length)return `${f.inbox.length} new · ${agoL(f.inbox[f.inbox.length-1].at)}`; if(k==='reply')return 'your turn';
+  if(k==='sent')return `sent ${agoL(f.out.at)}`; if(k==='opened')return `opened ${agoL(f.out.at)}`; return 'say hi'; }
+
+/* ---------- focus: hold a face, everything else steps back ---------- */
+let FOC=null;
+(()=>{ const f=document.createElement('div'); f.id='foc'; f.innerHTML='<svg id="focArc"></svg>'; $('#home').appendChild(f);
+  const c=document.createElement('div'); c.id='focCard'; c.innerHTML=`<div class="fl"><svg viewBox="0 0 24 24"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z"/></svg><span>Summary</span></div><div class="fs"></div>
+    <div class="fas"><button class="fa pri" data-a="watch"><i><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg></i><span>Watch</span></button>
+    <button class="fa" data-a="arrange"><i><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3"/></svg></i><span>Arrange</span></button>
+    <button class="fa rm" data-a="remove"><i><svg viewBox="0 0 24 24"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12"/></svg></i><span>Remove</span></button></div>`; $('#home').appendChild(c);
+  f.addEventListener('click',()=>closeFocus()); c.addEventListener('click',e=>{ const b=e.target.closest('.fa'); if(b)focusAct(b.dataset.a); }); })();
+function openFocus(f){ if(FOC||!f.el)return; FOC={f,drag:true,hot:null}; T=null; peek(null); hideTip(); haptic(40); SFX.pop();
+  const k=kindOf(f); $('#focCard .fa[data-a=watch] span').textContent=f.inbox.length?'Watch':'Reply';
+  $('#focCard .fs').textContent=summaryOf(f); f.el.style.zIndex=12;
+  gsap.to('#foc',{autoAlpha:1,duration:.3}); gsap.to('#focCard',{y:0,duration:.5,ease:'expo.out'}); gsap.to(f.el.querySelector('.flt'),{scale:1.16,duration:.45,ease:'expo.out'});
+  // status written around the face, like a ring of light
+  const c=centerOf(f.el.querySelector('.ball')), R=c.r*1.16+14, S2=R*2+40, svg=$('#focArc'); const txt=(arcOf(f)+'   ·   ').repeat(4);
+  svg.setAttribute('width',S2); svg.setAttribute('height',S2); svg.setAttribute('viewBox',`0 0 ${S2} ${S2}`); svg.style.left=(c.x-S2/2)+'px'; svg.style.top=(c.y-S2/2)+'px';
+  svg.innerHTML=`<defs><path id="arcP" d="M ${S2/2-R},${S2/2} a ${R},${R} 0 1,1 ${R*2},0 a ${R},${R} 0 1,1 ${-R*2},0"/></defs><text><textPath href="#arcP" textLength="${(2*Math.PI*R).toFixed(0)}" lengthAdjust="spacing">${txt}</textPath></text>`;
+  gsap.fromTo(svg,{rotation:-20,opacity:0,transformOrigin:'50% 50%'},{rotation:0,opacity:1,duration:.6,ease:'expo.out'}); gsap.to(svg,{rotation:'+=360',duration:40,repeat:-1,ease:'none',delay:.6});
+  // keep the finger down and drag the face onto an action
+  const x0=c.x, y0=c.y, a=app.getBoundingClientRect(); const wig=f.el.querySelector('.wig');
+  const mv=ev=>{ if(!FOC||!FOC.drag)return; const dx=ev.clientX-a.left-x0, dy=ev.clientY-a.top-y0; gsap.set(wig,{x:dx*.85,y:dy*.85});
+    let hot=null; $$('#focCard .fa').forEach(b=>{ const r=b.querySelector('i').getBoundingClientRect(); const d=Math.hypot(ev.clientX-(r.left+r.width/2),ev.clientY-(r.top+r.height/2)); if(d<48)hot=b; });
+    if(hot!==FOC.hot){ $$('#focCard .fa').forEach(b=>b.classList.toggle('hot',b===hot)); FOC.hot=hot; if(hot)haptic(12); } };
+  const up=()=>{ removeEventListener('pointermove',mv); removeEventListener('pointerup',up); removeEventListener('pointercancel',up); if(!FOC)return; FOC.drag=false;
+    gsap.to(wig,{x:0,y:0,duration:.45,ease:'expo.out'}); if(FOC.hot){ const a2=FOC.hot.dataset.a; FOC.hot.classList.remove('hot'); focusAct(a2); } };
+  addEventListener('pointermove',mv); addEventListener('pointerup',up); addEventListener('pointercancel',up); }
+function closeFocus(then){ if(!FOC){ then&&then(); return; } const f=FOC.f; FOC=null; gsap.killTweensOf('#focArc'); gsap.to('#foc',{autoAlpha:0,duration:.25}); gsap.to('#focCard',{y:'130%',duration:.35,ease:'power2.in'});
+  if(f.el){ gsap.to(f.el.querySelector('.flt'),{scale:1,duration:.4,ease:'expo.out',onComplete:()=>{ if(f.el)f.el.style.zIndex=''; }}); gsap.to(f.el.querySelector('.wig'),{x:0,y:0,duration:.3}); }
+  setTimeout(()=>then&&then(),220); }
+function focusAct(a){ if(!FOC)return; const f=FOC.f; SFX.tap(); haptic(14);
+  if(a==='watch')closeFocus(()=>openFriend(f));
+  if(a==='arrange')closeFocus(()=>setEdit(true));
+  if(a==='remove')closeFocus(()=>{ removeFriend(f); setTimeout(()=>toast(`Removed ${f.name}`,()=>{ shake(); }),350); }); }
+/* hold ~0.6s to focus (arrange now lives inside focus) */
+function holdRing(f){ killHold(); if(!f||!f.el)return; const svg=document.createElementNS('http://www.w3.org/2000/svg','svg'); svg.setAttribute('viewBox','0 0 100 100'); svg.classList.add('hring');
+  svg.innerHTML='<circle cx="50" cy="50" r="47" stroke-dasharray="295.3" stroke-dashoffset="295.3"/>'; f.el.querySelector('.flt').appendChild(svg);
+  const c=svg.querySelector('circle'); const tl=gsap.timeline(); tl.to(svg,{opacity:1,duration:.12,delay:.18}).to(c,{attr:{'stroke-dashoffset':0},duration:.42,ease:'power1.in'},'<');
+  HR={svg,tl,f,tm:setTimeout(()=>{ if(!T||T.f!==f||T.moved)return; killHold(true); openFocus(f); },620)}; }
+
+/* ---------- swipe rows: right = yes, left = no ---------- */
+const IC3={plus:'<path d="M12 5v14M5 12h14"/>',check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',x:'<path d="M7 7l10 10M17 7L7 17"/>',clock:'<circle cx="12" cy="12" r="8"/><path d="M12 8v4l2.5 2"/>',arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>'};
+function pRow(p){ const st=stateOf(p), ic=k=>`<svg viewBox="0 0 24 24">${IC3[k]}</svg>`; const b=(cls,a,k,l)=>`<button class="ib ${cls}" ${a?`data-a="${a}"`:''} aria-label="${l}">${ic(k)}</button>`;
+  const act=st==='incoming'?`<div class="acts">${b('den','decline','x','Decline')}${b('acc','accept','check','Accept')}</div>`:st==='requested'?b('req','cancel','x','Withdraw request'):st==='friend'?b('ok','','check','Friends'):b('add','add','plus','Send request');
+  return `<div class="pr" data-id="${p.id}" data-st="${st}"><div class="prc"><div class="av">${ballHTML(p.photo)}</div><div class="nm">${p.name}</div>${act}</div></div>`; }
+function fire(row,a){ const b=document.createElement('button'); b.dataset.a=a; b.style.display='none'; row.querySelector('.prc').appendChild(b); b.click(); }
+function swipeRows(root,onAct){ let S0=null;
+  root.addEventListener('pointerdown',e=>{ const row=e.target.closest('.pr,.ar'); if(!row||e.target.closest('button'))return; S0={row,x0:e.clientX,y0:e.clientY,dx:0,on:false,c:row.querySelector('.prc')}; });
+  addEventListener('pointermove',e=>{ if(!S0)return; const dx=e.clientX-S0.x0, dy=e.clientY-S0.y0;
+    if(!S0.on){ if(Math.abs(dx)>10&&Math.abs(dx)>Math.abs(dy)*1.3)S0.on=true; else if(Math.abs(dy)>10){ S0=null; return; } else return; }
+    const r=S0.row.querySelector('.rv.r'), l=S0.row.querySelector('.rv.l'); let x=dx; if(dx>0&&!r)x=dx*.15; if(dx<0&&!l)x=dx*.15; S0.dx=x;
+    gsap.set(S0.c,{x}); if(r)r.style.opacity=x>0?1:0; if(l)l.style.opacity=x<0?1:0;
+    const armed=Math.abs(x)>86; if(armed!==S0.armed){ S0.armed=armed; if(armed)haptic(12); gsap.to(S0.row.querySelectorAll('.rv svg'),{scale:armed?1.25:1,duration:.2}); } });
+  const end=()=>{ if(!S0)return; const s=S0; S0=null; if(!s.on)return;
+    if(Math.abs(s.dx)>86){ const dir=s.dx>0?'r':'l'; gsap.to(s.c,{x:s.dx>0?app.clientWidth:-app.clientWidth,duration:.25,ease:'power2.in',onComplete:()=>{ onAct(s.row,dir); coach.swipe=true; store.set('anyo21.coach',JSON.stringify(coach)); }}); }
+    else gsap.to(s.c,{x:0,duration:.35,ease:'expo.out'}); };
+  addEventListener('pointerup',end); addEventListener('pointercancel',end); }
+
+const _renderAdd=renderAdd; renderAdd=function(sk){ _renderAdd(sk); if(S.hidden)S.hidden.forEach(id=>{ const r=$(`#aBody .pr[data-id="${id}"][data-st="none"]`); if(r)r.remove(); });
+};
+
+/* ---------- activity: what happened, where you can act on it later ---------- */
+S.acts=[]; let actSeen=0;
+function addAct(kind,p,extra){ S.acts.unshift({kind,id:p.id,name:p.name,photo:p.photo,at:now(),extra}); gsap.to('#meDot',{scale:1,duration:.4,ease:'back.out(1.6)'}); if(profOn)renderAct(); }
+(()=>{ const d=document.createElement('div'); d.id='meDot'; $('#meBtn').appendChild(d); const pa=document.createElement('div'); pa.id='pAct'; $('#pUser').after(pa); })();
+function renderAct(){ const box=$('#pAct'); const pend=Object.keys(S.pend).map(person).filter(Boolean);
+  let h='';
+  if(pend.length)h+='<div class="lab">Sent requests</div>'+pend.map(p=>`<div class="ar" data-id="${p.id}" data-k="pend"><div class="prc"><div class="av">${ballHTML(p.photo)}</div><div class="tx"><div class="t1">${p.name}</div><div class="t2">Waiting</div></div><button class="ib req" data-w="${p.id}" aria-label="Withdraw"><svg viewBox="0 0 24 24">${IC3.x}</svg></button></div></div>`).join('');
+  const txt=a=>a.kind==='accepted'?[`${a.name} accepted your request`,'You can send a video now']:a.kind==='friends'?[`You and ${a.name} are friends`,'']:a.kind==='video'?[`${a.name} sent a video`,a.extra||'']:a.kind==='request'?[`Request sent to ${a.name}`,'']:[a.name,''];
+  h+='<div class="lab">Activity</div>'+(S.acts.length?S.acts.slice(0,20).map(a=>{ const [t1,t2]=txt(a); return `<div class="ar" data-id="${a.id}" data-k="${a.kind}"><div class="prc"><div class="av">${ballHTML(a.photo)}</div><div class="tx"><div class="t1">${t1}</div>${t2?`<div class="t2">${t2}</div>`:''}</div><span class="tm">${ago(a.at).toLowerCase()}</span></div></div>`; }).join(''):'<div class="lab" style="margin-top:4px">Nothing yet</div>');
+  box.innerHTML=h; }
+
+$('#pAct').addEventListener('click',e=>{ const w=e.target.closest('[data-w]'); if(w){ const p=person(w.dataset.w); cancelReq(p.id,true); SFX.cancel(); toast(`Withdrew request to ${p.name}`); renderAct(); return; }
+  const r=e.target.closest('.ar'); if(!r||r.dataset.k==='pend')return; const f=byId(r.dataset.id); if(f){ closeProfile(); setTimeout(()=>openFriend(f),450); } });
+const _openProfile21=openProfile; openProfile=function(){ renderAct(); gsap.to('#meDot',{scale:0,duration:.25}); _openProfile21(); };
+/* hooks that feed activity */
+acceptedBy=(o=>function(f){ const had=!!byId(f.id); o(f); if(!had)addAct('accepted',f); })(acceptedBy);
+receive=(o=>function(f){ o(f); const m=f.inbox[f.inbox.length-1]; addAct('video',f,m&&m.sum?m.sum[0].toUpperCase()+m.sum.slice(1):''); })(receive);
+$('#aBody').addEventListener('click',e=>{ const b=e.target.closest('[data-a]'); if(!b)return; const p=person(b.closest('.pr').dataset.id); if(!p)return;
+  if(b.dataset.a==='accept')setTimeout(()=>addAct('friends',p),700); if(b.dataset.a==='add')setTimeout(()=>addAct('request',p),700); },false);
+
+/* ---------- camera: portrait stream, never cropped into your face ---------- */
+async function oneX(stream){ const t=stream.getVideoTracks()[0]; if(!t||!t.getCapabilities)return; const c=t.getCapabilities(), s=t.getSettings?t.getSettings():{};
+  if(c.zoom&&typeof s.zoom==='number'&&s.zoom!==1&&c.zoom.min<=1&&c.zoom.max>=1){ try{ await t.applyConstraints({advanced:[{zoom:1}]}); }catch(e){} } }
+async function startCam(){ if(camStream)return true;
+  const base={width:{ideal:1080},height:{ideal:1920},aspectRatio:{ideal:9/16},frameRate:{ideal:30},resizeMode:'none'};
+  try{ let v={...base,facingMode:{ideal:facing}}; if(facing==='environment'){ const id=await pickBack(); if(id)v={...base,deviceId:{exact:id}}; }
+    try{ camStream=await navigator.mediaDevices.getUserMedia({video:v,audio:true}); }catch(e){ camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:facing}},audio:true}); }
+    await oneX(camStream); cam.srcObject=camStream; gsap.set(cam,{clearProps:'transform'}); cam.classList.toggle('back',facing!=='user'); await cam.play().catch(()=>{}); cam.style.opacity=1; return true;
+  }catch(e){ cam.style.opacity=0; return false; } }
+/* the reply arrow is warm; sent/opened carry their age */
+
+/* ======================= b21: how it works (watch, don't practise) + penguin welcome ======================= */
+(()=>{ const h=document.createElement('div'); h.id='how'; const ph=i=>`${MX(CLIPS[i][1])}-thumb-720-0.jpg`;
+  const bub=(x,y,i,sz=62)=>`<div class="mb" style="left:${x}px;top:${y}px;width:${sz}px;height:${sz}px;background-image:url(${ph(i)});${faceCSS(ph(i))}"></div>`;
+  h.innerHTML=`<button id="howSkip">Skip</button><div id="howTrack">
+   <div class="hs"><div class="ttl">Tap a friend</div><div class="ms" id="ms1">${bub(38,110,0)}${bub(120,110,2)}${bub(38,200,3)}${bub(120,200,5)}<div class="cam" style="background-image:url(img/hero.jpg)"></div><div class="fg"></div></div></div>
+   <div class="hs"><div class="ttl">Hold to record,<br>let go to send</div><div class="ms" id="ms2" style="background:url(${ph(0)}) center/cover"><div class="ln"><i></i></div><div class="rb"><i></i></div><div class="fg"></div><div class="pl">Sent to Saba</div></div></div>
+   <div class="hs"><div class="ttl">Hold a face for more</div><div class="ms" id="ms3">${bub(38,90,1)}${bub(120,90,4)}${bub(79,170,2,72)}${bub(38,260,6)}${bub(120,260,7)}<div class="dim"></div><div class="card"><b style="width:40%"></b><b></b><b style="width:70%"></b><div class="cr"><i></i><i></i><i></i></div></div><div class="fg"></div></div></div>
+  </div><div id="howDots"><span class="on"></span><span></span><span></span></div><button id="howGo">Next</button>`;
+  $('#app').appendChild(h);
+  const w=document.createElement('div'); w.id='wel'; w.innerHTML='<div class="sb" id="welT"></div><img src="img/peng-cut.png" alt="">'; $('#home').appendChild(w); w.onclick=()=>hideWel(); })();
+let HW=0, hwTl=null;
+function howW(){ return $('#how').clientWidth; }
+function howAnim(i){ if(hwTl)hwTl.kill(); const m=$('#ms'+(i+1)); const fg=m.querySelector('.fg'); gsap.set(m.querySelectorAll('*'),{clearProps:'opacity,transform,scale'});
+  if(i===0){ const b=m.querySelectorAll('.mb')[1], cam=m.querySelector('.cam'); gsap.set(cam,{opacity:0,left:120,top:110,width:62,height:62,borderRadius:'50%'});
+    hwTl=gsap.timeline({repeat:-1,repeatDelay:.6}).set(fg,{left:60,top:340,opacity:0}).to(fg,{opacity:1,left:151,top:141,duration:.8,ease:'power2.inOut'}).to(fg,{scale:.75,duration:.12}).to(fg,{scale:1,duration:.2})
+      .to(cam,{opacity:1,duration:.05},'-=.1').to(cam,{left:0,top:0,width:220,height:400,borderRadius:'0%',duration:.55,ease:'expo.inOut'}).to(fg,{opacity:0,duration:.2},'<').to({},{duration:1})
+      .to(cam,{left:120,top:110,width:62,height:62,borderRadius:'50%',duration:.45,ease:'power3.inOut'}).to(cam,{opacity:0,duration:.15}); }
+  if(i===1){ const rb=m.querySelector('.rb'), ln=m.querySelector('.ln'), li=ln.querySelector('i'), pl=m.querySelector('.pl');
+    hwTl=gsap.timeline({repeat:-1,repeatDelay:.7}).set(m,{clipPath:'circle(100% at 50% 50%)'}).set(li,{width:'0%'}).set(fg,{left:110,top:330,opacity:0}).to(fg,{opacity:1,left:110,top:200,duration:.7,ease:'power2.out'})
+      .to(fg,{scale:.8,duration:.15}).to(rb,{opacity:1,scale:1,duration:.25},'<').to(ln,{opacity:1,duration:.2},'<').to(li,{width:'70%',duration:1.8,ease:'none'})
+      .to(fg,{scale:1,opacity:0,duration:.2}).to(rb,{opacity:0,duration:.15},'<').to(ln,{opacity:0,duration:.15},'<').to(m,{clipPath:'circle(18% at 50% 88%)',duration:.5,ease:'power3.in'})
+      .to(pl,{opacity:1,duration:.2}).to({},{duration:1}).to(pl,{opacity:0,duration:.2}); }
+  if(i===2){ const bs=m.querySelectorAll('.mb'), hero=bs[2], dim=m.querySelector('.dim'), card=m.querySelector('.card');
+    hwTl=gsap.timeline({repeat:-1,repeatDelay:.6}).set(fg,{left:30,top:360,opacity:0}).set(hero,{zIndex:4}).to(fg,{opacity:1,left:115,top:206,duration:.8,ease:'power2.inOut'}).to(fg,{scale:.8,duration:.15})
+      .to({},{duration:.5}).to(dim,{opacity:1,duration:.3}).to(hero,{scale:1.18,duration:.4,ease:'expo.out'},'<').to(card,{y:0,duration:.5,ease:'expo.out'},'<').to(fg,{opacity:0,scale:1,duration:.2},'<')
+      .to({},{duration:1.4}).to(card,{y:'140%',duration:.35,ease:'power2.in'}).to(dim,{opacity:0,duration:.25},'<').to(hero,{scale:1,duration:.3},'<'); } }
+function howGo(i,instant){ HW=Math.max(0,Math.min(2,i)); gsap.to('#howTrack',{x:-HW*howW(),duration:instant?0:.5,ease:'expo.out'}); $$('#howDots span').forEach((d,k)=>d.classList.toggle('on',k===HW)); $('#howGo').textContent=HW===2?'Start':'Next'; howAnim(HW); }
+function showHow(){ closeAll(); const h=$('#how'); h.style.display='block'; gsap.set(h,{opacity:1}); $('#ob').style.display='none'; howGo(0,true); gsap.fromTo('.hs .ttl, .ms',{y:10,opacity:0},{y:0,opacity:1,duration:.5,stagger:.05,ease:'expo.out'}); }
+function endHow(){ if(hwTl)hwTl.kill(); store.set('anyo21.onb','1'); gsap.to('#how',{opacity:0,duration:.35,onComplete:()=>{ $('#how').style.display='none'; layout(true); setTimeout(showWel,250); }}); }
+$('#howGo').onclick=()=>{ SFX.tap(); haptic(8); if(HW<2)howGo(HW+1); else endHow(); }; $('#howSkip').onclick=()=>{ SFX.tap(); endHow(); };
+(()=>{ let x0=null,t0=0; const tr=$('#how'); tr.addEventListener('pointerdown',e=>{ if(e.target.closest('button'))return; x0=e.clientX; t0=now(); });
+  tr.addEventListener('pointermove',e=>{ if(x0===null)return; const dx=e.clientX-x0; gsap.set('#howTrack',{x:-HW*howW()+dx*.9}); });
+  const up=e=>{ if(x0===null)return; const dx=e.clientX-x0, v=dx/Math.max(1,now()-t0); x0=null; if(dx<-60||v<-.5)howGo(HW+1); else if(dx>60||v>.5)howGo(HW-1); else howGo(HW); };
+  tr.addEventListener('pointerup',up); tr.addEventListener('pointercancel',up); })();
+startTutorial=function(){ showHow(); };
+function showWel(){ const w=$('#wel'); const n=S.requests.length;
+  $('#welT').textContent=S.friends.length?`Hi ${S.me.name||'there'}! Your people are here. Tap a face to start.`:n?`Hi ${S.me.name||'there'}! ${n} friend${n>1?'s are':' is'} waiting for you. Tap + to say yes.`:`Hi ${S.me.name||'there'}! Your people will live here. Tap + to add them.`;
+  w.style.display='block'; gsap.fromTo('#wel img',{y:60,opacity:0},{y:0,opacity:1,duration:.7,ease:'expo.out'}); gsap.fromTo('#wel .sb',{y:10,opacity:0,scale:.96},{y:0,opacity:1,scale:1,duration:.5,ease:'expo.out',delay:.35});
+  gsap.to('#wel img',{rotation:4,duration:.35,yoyo:true,repeat:3,ease:'sine.inOut',delay:1.1,transformOrigin:'50% 100%'}); }
+function hideWel(){ const w=$('#wel'); if(w.style.display!=='block')return; gsap.to('#wel img',{y:60,opacity:0,duration:.35,ease:'power2.in'}); gsap.to('#wel .sb',{opacity:0,duration:.2,onComplete:()=>{ w.style.display='none'; coachNext(); }}); }
+$('#plus').addEventListener('click',hideWel,true);
+
+
+/* swipe hint lives at the top; it names the gesture once, then just stays as a grabber */
+(()=>{ const h=document.createElement('div'); h.id='swHint'; h.innerHTML='<i></i><span>Swipe down to close</span>'; $('#sw').appendChild(h); })();
+openStage=(o=>function(f){ o(f); const t=$('#swHint span'); gsap.killTweensOf(t); gsap.fromTo(t,{opacity:0,y:-4},{opacity:1,y:0,duration:.4,delay:.5}); gsap.to(t,{opacity:0,duration:.5,delay:2.8}); })(openStage);
+startRec=(o=>function(x,y){ o(x,y); gsap.to('#swHint',{opacity:0,duration:.2}); })(startRec);
+stopRecUI=(o=>function(i){ o(i); gsap.to('#swHint',{opacity:1,duration:.3,delay:.2}); })(stopRecUI);
+
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
-if(q.has('reset')){ ['anyo20.cfg','anyo20.onb','anyo20.coach'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); C={...DEF}; }
+if(q.has('reset')){ ['anyo21.cfg','anyo21.onb','anyo21.coach'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); C={...DEF}; }
 if(q.get('style')&&STYLES[q.get('style')]){ const s=STYLES[q.get('style')]; Object.assign(C,{style:q.get('style'),bg:s.bg,ring:s.ring,layout:s.layout,float:s.float,liquid:s.liquid,accent:s.accent}); }
 buildPanel();
 S.friends=[]; S.requests=[{...POOL[0]},{...POOL[1]}];
@@ -2157,7 +2411,7 @@ applyC(false);
 if(q.get('n'))setCount(+q.get('n'));
 if(q.has('panel'))$('#panel').classList.add('open');
 C.float=false; C.tilt=false; C.liquid=false; C.ring='glass3d'; if(!['grid','bubble','hive'].includes(C.layout))C.layout='grid'; applyC(false); syncTop();
-if(store.get('anyo20.onb')==='1'){ layout(false); S.friends.forEach((f,i)=>{ gsap.fromTo(f.el,{scale:.9,opacity:0},{scale:1,opacity:1,duration:.5,ease:'expo.out',delay:.04+i*.03}); }); coachNext(); }
+if(store.get('anyo21.onb')==='1'){ layout(false); S.friends.forEach((f,i)=>{ gsap.fromTo(f.el,{scale:.9,opacity:0},{scale:1,opacity:1,duration:.5,ease:'expo.out',delay:.04+i*.03}); }); coachNext(); }
 else { layout(false); let skip=false; try{skip=sessionStorage.getItem('anyo.skipInst')==='1'}catch(e){} if(!IS_STANDALONE&&IS_TOUCH&&!skip&&!q.has('noinstall'))showInstall(); else startOnboarding(1); }
 seedRequests(); updReq(); syncPanel();
 window.__anyo={S,C,layout,setCount,applyC,shake,receive,byId};
