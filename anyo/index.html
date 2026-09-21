@@ -1412,6 +1412,11 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
 #hello.arm .hRing circle{stroke:#E5484D}
 #hello.arm .hRec i{background:#E5484D!important}
 #hello .hGlow{position:absolute;left:0;right:0;bottom:0;height:40%;pointer-events:none;opacity:0;background:radial-gradient(120% 70% at 50% 100%,rgba(229,72,77,.45),transparent 70%)}
+
+/* b47: 2x pill = arrows + 2x, no pause icon on hold */
+#app #speed{display:flex!important;align-items:center;gap:6px;padding:0 14px!important;height:36px!important;width:auto!important;border-radius:99px!important;background:rgba(17,17,20,.55)!important;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#fff;font:400 15px/1 var(--ui)}
+#app #speed svg{width:16px!important;height:12px!important;fill:#fff}
+#vPause{display:none!important}
 </style>
 </head>
 <body translate="no" class="notranslate">
@@ -1565,7 +1570,7 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b46</div>
+  <div id="build">b47</div>
 </div>
   </div></div>
 </div>
@@ -3044,7 +3049,7 @@ function demoHome(){ S.acts=S.acts||[]; if(!S.friends.length)setCount(7); seedRe
    <div class="sp" data-p="screens"><div class="gr" id="smG">${[['install','Install app'],['onb','Onboarding'],['how','How it works'],['empty','Empty home'],['cam','Camera'],['view','Watching videos'],['focus','Hold a face'],['add','Add friends'],['rq','All requests'],['inv','Invite friends'],['prof','Profile'],['act','Activity'],['edit','Edit profile'],['toast','Undo toast'],['arrange','Arrange mode'],['anyo','Anyo first'],['ref','From invite link'],['cap','Photo capture'],['look','Make it yours']].map(([k,l])=>`<button data-g="${k}">${l}</button>`).join('')}</div></div>
    <div class="sp" data-p="look"><div class="sl">Layout</div><div class="ch" id="smL"><button data-v="grid">Grid</button><button data-v="bubble">Bubbles</button><button data-v="hive">Honeycomb</button></div>
     <div class="sl">Start over</div><div class="gr"><button data-z="onb">Replay onboarding</button><button data-z="wipe" class="red">Log out, wipe all</button></div>
-    <div class="hint">Triple tap anywhere to open this. Build b46.</div></div>
+    <div class="hint">Triple tap anywhere to open this. Build b47.</div></div>
   </div>`;
   app.appendChild(d); app.appendChild(s); })();
 let simOn=false, simWho=null;
@@ -3441,7 +3446,7 @@ applyTheme();
 /* b32c: phone mockup inside Anyo's welcome */
 (()=>{ const m=document.createElement('div'); m.id='anyoMock'; m.innerHTML='<img class="peng" src="img/peng-cut.png" alt="">'; $('#stage').appendChild(m); })();
 let mockI=-2;
-function mockFor(it,k){ if(it.script==='reply')return -1; const L=it.lines.length; return k>=L-2?1:0; }
+function mockFor(it,k){ if(it.script!=='hello')return -1; const L=it.lines.length; return k>=L-2?1:0; }
 function showMock(i){ if(i===mockI)return; mockI=i; const box=$('#anyoMock'), peng=box.querySelector('.peng'); if(hwTl)hwTl.kill();
   ['#ms1','#ms2','#ms3'].forEach(q=>{ const e=$(q); if(e&&e.parentNode===box)e.style.display='none'; });
   if(i<0){ peng.style.display='block'; gsap.fromTo(peng,{y:40,opacity:0,scale:.9},{y:0,opacity:1,scale:1,duration:.7,ease:'back.out(1.6)'}); gsap.to(peng,{y:-10,duration:.5,yoyo:true,repeat:-1,ease:'sine.inOut',delay:.7}); return; }
@@ -3687,7 +3692,7 @@ setTimeout(()=>{ if(!store.get('anyo40.req')){ S.requests=S.requests.filter(r=>F
 
 /* b41: viewer back to: tap = next (left edge = back), hold = pause, hold right = 2x. swipe down is quick and forgiving */
 viewerDown=function(e){ const a=app.getBoundingClientRect(), x=(e.clientX-a.left)/a.width, x0=e.clientX, y0=e.clientY, t0=now(), right=x>.66, left=x<.25; let held=false, swipe=false;
-  const hold=setTimeout(()=>{ held=true; if(!VW)return; if(right){ VW.rate=2; gsap.to('#speed',{opacity:1,duration:.2}); haptic(10); } else { VW.paused=true; flashV(PAUSEI,true); haptic(8); } },230);
+  const hold=setTimeout(()=>{ held=true; if(!VW)return; if(right){ VW.rate=2; gsap.to('#speed',{opacity:1,duration:.2}); haptic(10); } else { VW.paused=true; haptic(8); } },230);
   const mv=ev=>{ const dy=ev.clientY-y0, dx=ev.clientX-x0; if(!swipe&&dy>6&&dy>Math.abs(dx)){ clearTimeout(hold); if(held){ held=false; if(VW){ VW.rate=1; VW.paused=false; } gsap.to(['#speed','#vPause'],{opacity:0,duration:.15}); } swipe=true; if(VW)VW.paused=true; } if(swipe)dragStage(dy); };
   const up=ev=>{ removeEventListener('pointermove',mv); removeEventListener('pointerup',up); removeEventListener('pointercancel',up); clearTimeout(hold);
     if(swipe){ const dy=ev.clientY-y0; if(dy>70||dy/Math.max(1,now()-t0)>.35){ haptic(10); closeViewerEarly(); } else { gsap.to(sw,{y:0,scale:1,borderRadius:0,duration:.5,ease:'expo.out'}); if(VW)VW.paused=false; } return; }
@@ -3728,7 +3733,7 @@ holdRing=(o=>function(f){ if(f&&f.id==='anyo'&&anyoLocked()){ return; } o(f); })
   app.appendChild(d); })();
 const anyoS=$('#anyoS'); let anyoOn=false, ANYO_MODE=null;
 const pgNews=mkPage('pgNews',"What's new"); anyoS.appendChild(pgNews);
-const NEWS=[['b46','Swipe down to close an invite, slide away to cancel a hello'],['b45','Anyo has its own space: talk, report a bug, share an idea'],['b44','Your pet sits right beside you'],['b43','Hold to pause, hold on the right for 2x'],['b42','Invites carry a hello video'],['b41','Swipe down closes faster everywhere']];
+const NEWS=[['b47','Hold right shows a clean 2x, hold to pause without icons'],['b46','Swipe down to close an invite, slide away to cancel a hello'],['b45','Anyo has its own space: talk, report a bug, share an idea'],['b44','Your pet sits right beside you'],['b43','Hold to pause, hold on the right for 2x'],['b42','Invites carry a hello video'],['b41','Swipe down closes faster everywhere']];
 function openAnyoS(){ if(anyoOn||busy)return; anyoOn=true; hideCoach&&hideCoach(); $('#anyoHi').textContent=`Hey ${S.me.name||'you'}! What's up?`; anyoS.style.visibility='visible'; drawerOpen(anyoS); gsap.fromTo('#anyoS .scrIn > *',{opacity:0,y:8},{opacity:1,y:0,duration:.4,stagger:.04,ease:'expo.out',delay:.1}); }
 function closeAnyoS(then){ if(!anyoOn)return; anyoOn=false; drawerClose(anyoS,then); }
 dim.addEventListener('click',()=>{ if(anyoOn)closeAnyoS(); });
@@ -3763,6 +3768,7 @@ setTimeout(()=>{ const B=$('#build').textContent; if(store.get('anyo21.onb')==='
   addEventListener('pointerup',()=>gsap.to(h.querySelector('.hGlow'),{opacity:0,duration:.3}));
 })();
 
+$('#speed').innerHTML='<span>2x</span><svg viewBox="0 0 22 16"><path d="M0 0l10 8-10 8zM11 0l10 8-10 8z"/></svg>';
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
 if(q.has('reset')){ ['anyo21.cfg','anyo21.onb','anyo21.coach'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); C={...DEF}; }
