@@ -1446,6 +1446,12 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
 #invDone .tk{position:absolute;right:-10px;bottom:-6px;width:38px;height:38px;border-radius:50%;background:#111114;display:grid;place-items:center;z-index:3;box-shadow:0 0 0 3px #F4F4F4}
 #invDone .tk svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
 #invDone .t1{font:400 22px/1.25 var(--ui);color:#111114}
+
+/* b53: micro-interactions */
+.fxRing{position:absolute;border-radius:50%;pointer-events:none;z-index:9;border:2px solid rgba(17,17,20,.35)}
+.fxRing.recv{border-color:rgba(47,123,245,.55)}
+#fieldIn .bub.unread .ov{animation:ovBreathe 2.4s ease-in-out infinite}
+@keyframes ovBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 </style>
 </head>
 <body translate="no" class="notranslate">
@@ -1599,7 +1605,7 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b52</div>
+  <div id="build">b53</div>
 </div>
   </div></div>
 </div>
@@ -3078,7 +3084,7 @@ function demoHome(){ S.acts=S.acts||[]; if(!S.friends.length)setCount(7); seedRe
    <div class="sp" data-p="screens"><div class="gr" id="smG">${[['install','Install app'],['onb','Onboarding'],['how','How it works'],['empty','Empty home'],['cam','Camera'],['view','Watching videos'],['focus','Hold a face'],['add','Add friends'],['rq','All requests'],['inv','Invite friends'],['prof','Profile'],['act','Activity'],['edit','Edit profile'],['toast','Undo toast'],['arrange','Arrange mode'],['anyo','Anyo first'],['ref','From invite link'],['cap','Photo capture'],['look','Make it yours']].map(([k,l])=>`<button data-g="${k}">${l}</button>`).join('')}</div></div>
    <div class="sp" data-p="look"><div class="sl">Layout</div><div class="ch" id="smL"><button data-v="grid">Grid</button><button data-v="bubble">Bubbles</button><button data-v="hive">Honeycomb</button></div>
     <div class="sl">Start over</div><div class="gr"><button data-z="onb">Replay onboarding</button><button data-z="wipe" class="red">Log out, wipe all</button></div>
-    <div class="hint">Triple tap anywhere to open this. Build b52.</div></div>
+    <div class="hint">Triple tap anywhere to open this. Build b53.</div></div>
   </div>`;
   app.appendChild(d); app.appendChild(s); })();
 let simOn=false, simWho=null;
@@ -3762,7 +3768,7 @@ holdRing=(o=>function(f){ if(f&&f.id==='anyo'&&anyoLocked()){ return; } o(f); })
   app.appendChild(d); })();
 const anyoS=$('#anyoS'); let anyoOn=false, ANYO_MODE=null;
 const pgNews=mkPage('pgNews',"What's new"); anyoS.appendChild(pgNews);
-const NEWS=[['b52','New friends send you videos on their own, a few seconds after joining'],['b51','Invite sent moment is instant'],['b50','Their face stays with you while you record an invite'],['b49','Inviting is quicker: record a hello, see it land on their row'],['b48','Invites use the same camera: hold to record, drag down to cancel'],['b47','Hold right shows a clean 2x, hold to pause without icons'],['b46','Swipe down to close an invite, slide away to cancel a hello'],['b45','Anyo has its own space: talk, report a bug, share an idea'],['b44','Your pet sits right beside you'],['b43','Hold to pause, hold on the right for 2x'],['b42','Invites carry a hello video'],['b41','Swipe down closes faster everywhere']];
+const NEWS=[['b53','Everything squishes, wobbles and ripples a little more'],['b52','New friends send you videos on their own, a few seconds after joining'],['b51','Invite sent moment is instant'],['b50','Their face stays with you while you record an invite'],['b49','Inviting is quicker: record a hello, see it land on their row'],['b48','Invites use the same camera: hold to record, drag down to cancel'],['b47','Hold right shows a clean 2x, hold to pause without icons'],['b46','Swipe down to close an invite, slide away to cancel a hello'],['b45','Anyo has its own space: talk, report a bug, share an idea'],['b44','Your pet sits right beside you'],['b43','Hold to pause, hold on the right for 2x'],['b42','Invites carry a hello video'],['b41','Swipe down closes faster everywhere']];
 function openAnyoS(){ if(anyoOn||busy)return; anyoOn=true; hideCoach&&hideCoach(); $('#anyoHi').textContent=`Hey ${S.me.name||'you'}! What's up?`; anyoS.style.visibility='visible'; drawerOpen(anyoS); gsap.fromTo('#anyoS .scrIn > *',{opacity:0,y:8},{opacity:1,y:0,duration:.4,stagger:.04,ease:'expo.out',delay:.1}); }
 function closeAnyoS(then){ if(!anyoOn)return; anyoOn=false; drawerClose(anyoS,then); }
 dim.addEventListener('click',()=>{ if(anyoOn)closeAnyoS(); });
@@ -3841,6 +3847,35 @@ function liveFriend(id){ const pick=()=>[5,10,15,20][Math.floor(Math.random()*4)
   setTimeout(send,pick()); if(Math.random()<.6)setTimeout(send,pick()+20000+Math.random()*20000); }
 addFriends=(o=>function(list,...a){ const r=o(list,...a); (list||[]).forEach(f=>f&&f.id&&liveFriend(f.id)); return r; })(addFriends);
 acceptedBy=(o=>function(f){ const had=!!byId(f.id); o(f); if(!had)liveFriend(f.id); })(acceptedBy);
+
+
+/* ======================= b53: micro-interactions ======================= */
+/* real jelly: squash, stretch, settle with a wobble */
+jelly=function(el,k=1){ if(!el)return; const a=Math.min(1.4,Math.abs(k||1)); gsap.killTweensOf(el,'scaleX,scaleY,scale');
+  gsap.timeline().to(el,{scaleX:1+.14*a,scaleY:1-.12*a,duration:.1,ease:'power2.out'}).to(el,{scaleX:1-.06*a,scaleY:1+.08*a,duration:.12,ease:'power2.inOut'}).to(el,{scaleX:1,scaleY:1,duration:.75,ease:'elastic.out(1.1,.35)'}); };
+function ring(el,cls){ if(!el)return; const c=centerOf(el), r=document.createElement('div'); r.className='fxRing '+(cls||''); Object.assign(r.style,{left:(c.x-c.r)+'px',top:(c.y-c.r)+'px',width:c.r*2+'px',height:c.r*2+'px'}); app.appendChild(r);
+  gsap.fromTo(r,{scale:1,opacity:1},{scale:1.75,opacity:0,duration:.8,ease:'expo.out',onComplete:()=>r.remove()}); }
+/* sending: the bubble gulps the video, a ring ripples out */
+deliver=(o=>function(f){ o(f); if(f&&f.reqFor)return; setTimeout(()=>{ const b=srcBall(f); if(b){ ring(b); } },780); })(deliver);
+/* receiving: a soft blue ping and the count pops */
+receive=(o=>function(f){ o(f); const b=srcBall(f); if(b){ ring(b,'recv'); setTimeout(()=>ring(b,'recv'),180); } const bd=f.el&&f.el.querySelector('.bdg'); if(bd)gsap.fromTo(bd,{scale:.3},{scale:1,duration:.7,ease:'elastic.out(1.2,.4)',delay:.1}); })(receive);
+/* press: everything you can tap squishes and springs back */
+const PRESS='.ib,.fab,#plus .gbtn,#meBtn,.rowx,.invR,.bigpill,.pgH .bk,.pgH .dn,#sim button,.chG button,.lays button,.tg2,.cx,.obBk,.obFill button,#flip,#last';
+let pressEl=null;
+document.addEventListener('pointerdown',e=>{ const el=e.target.closest(PRESS); if(!el)return; pressEl=el; gsap.to(el,{scale:.92,duration:.12,ease:'power2.out',overwrite:'auto'}); },true);
+const unpress=()=>{ if(!pressEl)return; const el=pressEl; pressEl=null; gsap.to(el,{scale:1,duration:.6,ease:'elastic.out(1.1,.45)',overwrite:'auto'}); };
+document.addEventListener('pointerup',unpress,true); document.addEventListener('pointercancel',unpress,true);
+/* bubbles: a gentle press-in on the ball itself */
+document.addEventListener('pointerdown',e=>{ const b=e.target.closest('#fieldIn .bub'); if(!b||editing)return; const ball=b.querySelector('.ball'); gsap.to(ball,{scale:.95,duration:.14,ease:'power2.out',overwrite:'auto'});
+  const up=()=>{ gsap.to(ball,{scale:1,duration:.7,ease:'elastic.out(1,.4)',overwrite:'auto'}); removeEventListener('pointerup',up,true); removeEventListener('pointercancel',up,true); }; addEventListener('pointerup',up,true); addEventListener('pointercancel',up,true); },true);
+/* toggles: the knob squashes as it slides */
+document.addEventListener('click',e=>{ const t=e.target.closest('.tg2'); if(!t)return; const k=t.querySelector('span'); if(k)gsap.fromTo(k,{scaleX:1.35,scaleY:.85},{scaleX:1,scaleY:1,duration:.6,ease:'elastic.out(1.2,.4)'}); },true);
+/* accepting a request: their face does a happy hop */
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-a="accept"]'); if(!b)return; const av=b.closest('.pr')&&b.closest('.pr').querySelector('.av'); if(av)gsap.fromTo(av,{y:0},{y:-10,duration:.18,ease:'power2.out',yoyo:true,repeat:1,onComplete:()=>jelly(av,1)}); },true);
+/* drawers: the handle stretches as they arrive */
+drawerOpen=(o=>function(el,done){ o(el,done); const g=el.querySelector('.grab span'); if(g)gsap.fromTo(g,{scaleX:.4},{scaleX:1,duration:.8,delay:.25,ease:'elastic.out(1.2,.4)'}); })(drawerOpen);
+/* record: the moment you start, the screen breathes in */
+startRec=(o=>function(x,y){ o(x,y); gsap.fromTo(sw,{scale:1},{scale:.985,duration:.12,yoyo:true,repeat:1,ease:'power2.out'}); })(startRec);
 
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
