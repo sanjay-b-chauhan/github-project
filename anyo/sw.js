@@ -1,7 +1,7 @@
 // Anyo service worker: the app shell opens instantly, the page itself is always fetched fresh first.
-const V='anyo-v19';
+const V='anyo-v20';
 const SHELL=['app.html','manifest.webmanifest','img/glass.png','img/p-cream.jpg','img/peng-cut.png','img/hero.jpg','img/icon-192.png','img/icon-512.png','img/apple-touch-icon.png',
-  'img/p-cloud.jpg','img/p-wink.jpg','img/p-cool.jpg','img/p-headph.jpg','img/p-night.jpg'];
+  'img/p-cloud.jpg','img/p-wink.jpg','img/p-cool.jpg','img/p-headph.jpg','img/p-night.jpg','fonts/geist.woff2','fonts/fredoka.woff2'];
 self.addEventListener('install',e=>{ e.waitUntil(caches.open(V).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting())); });
 self.addEventListener('activate',e=>{ e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==V).map(k=>caches.delete(k)))).then(()=>self.clients.claim())); });
 self.addEventListener('fetch',e=>{
