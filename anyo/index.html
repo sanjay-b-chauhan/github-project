@@ -1404,6 +1404,14 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
 #pgNews .nw{padding:14px 4px;font:400 16px/1.4 var(--ui);color:#111114}
 #pgNews .nw small{display:block;color:#8A8A8E;font-size:13px;margin-bottom:4px}
 .bub[data-anyo="1"] .x{display:none!important}
+
+/* b46: hello screen can always be backed out of */
+#hello .hGrab{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 10px);display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
+#hello .hGrab i{width:38px;height:5px;border-radius:99px;background:rgba(0,0,0,.18);display:block}
+#hello .hGrab span{font:400 12px/1 var(--ui);color:#8A8A8E}
+#hello.arm .hRing circle{stroke:#E5484D}
+#hello.arm .hRec i{background:#E5484D!important}
+#hello .hGlow{position:absolute;left:0;right:0;bottom:0;height:40%;pointer-events:none;opacity:0;background:radial-gradient(120% 70% at 50% 100%,rgba(229,72,77,.45),transparent 70%)}
 </style>
 </head>
 <body translate="no" class="notranslate">
@@ -1557,7 +1565,7 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b45</div>
+  <div id="build">b46</div>
 </div>
   </div></div>
 </div>
@@ -3036,7 +3044,7 @@ function demoHome(){ S.acts=S.acts||[]; if(!S.friends.length)setCount(7); seedRe
    <div class="sp" data-p="screens"><div class="gr" id="smG">${[['install','Install app'],['onb','Onboarding'],['how','How it works'],['empty','Empty home'],['cam','Camera'],['view','Watching videos'],['focus','Hold a face'],['add','Add friends'],['rq','All requests'],['inv','Invite friends'],['prof','Profile'],['act','Activity'],['edit','Edit profile'],['toast','Undo toast'],['arrange','Arrange mode'],['anyo','Anyo first'],['ref','From invite link'],['cap','Photo capture'],['look','Make it yours']].map(([k,l])=>`<button data-g="${k}">${l}</button>`).join('')}</div></div>
    <div class="sp" data-p="look"><div class="sl">Layout</div><div class="ch" id="smL"><button data-v="grid">Grid</button><button data-v="bubble">Bubbles</button><button data-v="hive">Honeycomb</button></div>
     <div class="sl">Start over</div><div class="gr"><button data-z="onb">Replay onboarding</button><button data-z="wipe" class="red">Log out, wipe all</button></div>
-    <div class="hint">Triple tap anywhere to open this. Build b45.</div></div>
+    <div class="hint">Triple tap anywhere to open this. Build b46.</div></div>
   </div>`;
   app.appendChild(d); app.appendChild(s); })();
 let simOn=false, simWho=null;
@@ -3720,7 +3728,7 @@ holdRing=(o=>function(f){ if(f&&f.id==='anyo'&&anyoLocked()){ return; } o(f); })
   app.appendChild(d); })();
 const anyoS=$('#anyoS'); let anyoOn=false, ANYO_MODE=null;
 const pgNews=mkPage('pgNews',"What's new"); anyoS.appendChild(pgNews);
-const NEWS=[['b45','Anyo has its own space: talk, report a bug, share an idea'],['b44','Your pet sits right beside you'],['b43','Hold to pause, hold on the right for 2x'],['b42','Invites carry a hello video'],['b41','Swipe down closes faster everywhere']];
+const NEWS=[['b46','Swipe down to close an invite, slide away to cancel a hello'],['b45','Anyo has its own space: talk, report a bug, share an idea'],['b44','Your pet sits right beside you'],['b43','Hold to pause, hold on the right for 2x'],['b42','Invites carry a hello video'],['b41','Swipe down closes faster everywhere']];
 function openAnyoS(){ if(anyoOn||busy)return; anyoOn=true; hideCoach&&hideCoach(); $('#anyoHi').textContent=`Hey ${S.me.name||'you'}! What's up?`; anyoS.style.visibility='visible'; drawerOpen(anyoS); gsap.fromTo('#anyoS .scrIn > *',{opacity:0,y:8},{opacity:1,y:0,duration:.4,stagger:.04,ease:'expo.out',delay:.1}); }
 function closeAnyoS(then){ if(!anyoOn)return; anyoOn=false; drawerClose(anyoS,then); }
 dim.addEventListener('click',()=>{ if(anyoOn)closeAnyoS(); });
@@ -3736,6 +3744,24 @@ ANYO_LINES.news=()=>["Hey, it's Anyo.",'New in this update:',...NEWS.slice(0,3).
 deliver=(o=>function(f){ o(f); if(f.id==='anyo'&&anyoFree()){ const m=ANYO_MODE||'talk'; ANYO_MODE=null; setTimeout(()=>{ const g=byId('anyo'); if(!g)return; g.out=null; g.inbox.push(anyoMsg(m)); receive(g); },3200); } })(deliver);
 /* each new build: Anyo tells you what changed, once */
 setTimeout(()=>{ const B=$('#build').textContent; if(store.get('anyo21.onb')==='1'&&INTRO!=='hello'&&store.get('anyo45.news')!==B){ store.set('anyo45.news',B); const a=byId('anyo'); if(a&&!a.inbox.some(m=>m.script==='news')){ a.inbox.push(anyoMsg('news')); paint(a); } } },1500);
+
+
+/* b46: swipe down to close the invite; while recording, slide your finger away to cancel */
+(()=>{ const h=$('#hello'); h.insertAdjacentHTML('beforeend','<div class="hGrab"><i></i><span>Swipe down to close</span></div><div class="hGlow"></div>');
+  let y0=null,dy=0,t0=0,drag=false;
+  h.addEventListener('pointerdown',e=>{ if(e.target.closest('.hRec,.hx')||h.classList.contains('rec'))return; y0=e.clientY; dy=0; t0=now(); drag=false; });
+  addEventListener('pointermove',e=>{ if(y0==null||!HL)return; const d=e.clientY-y0; if(!drag&&d>6)drag=true; if(drag){ dy=Math.max(0,d); gsap.set(h,{y:dy*.9,scale:1-Math.min(.08,dy/2000),borderRadius:Math.min(40,dy*.3)}); } });
+  addEventListener('pointerup',()=>{ if(y0==null)return; y0=null; if(!drag)return; const v=dy/Math.max(1,now()-t0); if(dy>70||v>.35){ haptic(10); gsap.to(h,{y:h.clientHeight,opacity:0,duration:.3,ease:'power2.in',onComplete:()=>{ gsap.set(h,{y:0,scale:1,borderRadius:0,opacity:1}); closeHello(); }}); } else gsap.to(h,{y:0,scale:1,borderRadius:0,duration:.4,ease:'expo.out'}); });
+  /* slide away from the record button while holding = cancel */
+  const btn=h.querySelector('.hRec'); let bx=0,by=0,arm=false;
+  btn.addEventListener('pointerdown',e=>{ bx=e.clientX; by=e.clientY; arm=false; h.classList.remove('arm'); },true);
+  addEventListener('pointermove',e=>{ if(!h.classList.contains('rec'))return; const d=Math.hypot(e.clientX-bx,e.clientY-by), a=d>90; gsap.set(h.querySelector('.hGlow'),{opacity:Math.min(1,d/120)});
+    if(HL)HL.cancel=a; if(a!==arm){ arm=a; h.classList.toggle('arm',a); h.querySelector('.hHint').textContent=a?'Let go to cancel':'Let go to send'; haptic(a?20:8); } });
+  const cancelRec=()=>{ arm=false; if(HL){ HL.cancel=false; HL.t0=0; HL.tw&&HL.tw.kill(); } h.classList.remove('arm','rec'); gsap.to(h.querySelector('.hRing circle'),{attr:{'stroke-dashoffset':295.3},duration:.3}); gsap.to(h.querySelector('.hGlow'),{opacity:0,duration:.3}); h.querySelector('.hHint').textContent='Hold to record'; SFX.cancel&&SFX.cancel(); toast('Nothing sent'); };
+  helloSend=(o=>function(){ if(HL&&HL.cancel){ cancelRec(); return; } o(); })(helloSend);
+  addEventListener('pointerup',()=>{ if(!arm||!HL)return; if(!HL.t0)return; arm=false; h.classList.remove('arm','rec'); HL.t0=0; HL.tw&&HL.tw.kill(); gsap.to(h.querySelector('.hRing circle'),{attr:{'stroke-dashoffset':295.3},duration:.3}); gsap.to(h.querySelector('.hGlow'),{opacity:0,duration:.3}); h.querySelector('.hHint').textContent='Hold to record'; SFX.cancel&&SFX.cancel(); toast('Nothing sent'); },true);
+  addEventListener('pointerup',()=>gsap.to(h.querySelector('.hGlow'),{opacity:0,duration:.3}));
+})();
 
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
