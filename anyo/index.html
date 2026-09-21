@@ -779,6 +779,10 @@ input,textarea{font-size:max(16px,1em)}
 #done{left:auto!important;right:22px!important;margin-left:0!important;width:58px!important;height:58px!important;bottom:calc(env(safe-area-inset-bottom,0px) + 26px)!important}
 #layT{position:absolute;left:24px;bottom:calc(env(safe-area-inset-bottom,0px) + 26px);width:58px;height:58px;border-radius:50%;background:#E6E6E8;z-index:7;display:grid;place-items:center;transform:translateY(240%)}
 #layT svg{width:24px;height:24px;fill:#111114}
+
+/* b19: profile sheet has no close button; drag the handle or tap outside */
+#profS .bar.btm{display:none!important}
+#profS .scrIn{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 36px)!important}
 </style>
 </head>
 <body>
@@ -931,7 +935,7 @@ input,textarea{font-size:max(16px,1em)}
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b18</div>
+  <div id="build">b19</div>
 </div>
   </div></div>
 </div>
@@ -975,8 +979,8 @@ const STYLES={
   blush:{label:'Blush',bg:'blush',ring:'hair',layout:'equal',float:false,liquid:false,accent:'blush'}
 };
 const DEF={shape:'circle',style:'cloud',size:100,gap:100,font:'UI',ts:100,names:'peek',tilt:false,sound:true,haptics:true,layout:'bubble',bg:'cloud',ring:'glass3d',float:false,liquid:false,accent:'blue'};
-let C={...DEF}; try{Object.assign(C,JSON.parse(store.get('anyo18.cfg')||'{}'))}catch(e){}
-function saveC(){store.set('anyo18.cfg',JSON.stringify(C));}
+let C={...DEF}; try{Object.assign(C,JSON.parse(store.get('anyo19.cfg')||'{}'))}catch(e){}
+function saveC(){store.set('anyo19.cfg',JSON.stringify(C));}
 function applyC(relayout=true){
   const [bg,dark]=BGS[C.bg]||BGS.paper;
   app.style.setProperty('--bg',bg); app.dataset.dark=dark?'1':'0'; app.dataset.bg=C.bg; app.dataset.ring=C.ring; app.dataset.shape=C.shape||'circle'; app.dataset.names=C.names;
@@ -1467,8 +1471,8 @@ function closeViewerEarly(){ const v=VW; if(!v)return closeStage(); if(!v.replay
 
 /* ================= ghost touch: gestures taught without words ================= */
 const coach={tap:false,hold:false,slide:false,fast:false,plus:false};
-try{Object.assign(coach,JSON.parse(store.get('anyo18.coach')||'{}'))}catch(e){}
-function coachDone(k){ if(coach[k])return; coach[k]=true; store.set('anyo18.coach',JSON.stringify(coach)); hideGhost(); }
+try{Object.assign(coach,JSON.parse(store.get('anyo19.coach')||'{}'))}catch(e){}
+function coachDone(k){ if(coach[k])return; coach[k]=true; store.set('anyo19.coach',JSON.stringify(coach)); hideGhost(); }
 let ghostTl=null;
 function hideGhost(){ if(ghostTl){ghostTl.kill();ghostTl=null;} gsap.to('#ghost',{opacity:0,duration:.2}); }
 function ghostBase(x,y,dark){ hideGhost(); const g=$('#ghost'); g.classList.toggle('dark',!!dark); gsap.set(g,{x,y,opacity:0,scale:1}); gsap.set('#ghP',{attr:{'stroke-dashoffset':207.3}}); gsap.set('#ghost .r',{opacity:0,scale:.8}); return g; }
@@ -1567,13 +1571,13 @@ function step3(){ const s=show('#o3'), box=$('#ppl'); box.innerHTML=''; picked=n
 $('#ppl').addEventListener('click',()=>hideGhost());
 $('#n3').onclick=()=>finishOnb(true);
 function finishOnb(fresh){
-  store.set('anyo18.onb','1'); hideGhost();
+  store.set('anyo19.onb','1'); hideGhost();
   if(fresh){ S.friends.forEach(f=>f.el&&f.el.remove()); S.friends=[];
     // the people you picked get an invite; nobody is your friend until they say yes
     const inv=POOL.filter(p=>picked.has(p.id)); S.suggest=inv.map(p=>({...p,pending:true})).concat(S.suggest.filter(x=>!picked.has(x.id)));
     inv.forEach((p,i)=>{ const sp=S.suggest.find(x=>x.id===p.id); sp.tm=setTimeout(()=>{ if(!sp.pending)return; S.suggest=S.suggest.filter(x=>x!==sp); acceptedBy({id:p.id,name:p.name,photo:p.photo,clip:p.clip,inbox:[],timers:[]}); },5000+i*2600); });
     S.requests=POOL.filter(p=>!picked.has(p.id)).slice(0,2).map(p=>({...p}));
-    Object.assign(coach,{tap:false,hold:false,slide:false,fast:false,plus:false}); store.set('anyo18.coach',JSON.stringify(coach)); }
+    Object.assign(coach,{tap:false,hold:false,slide:false,fast:false,plus:false}); store.set('anyo19.coach',JSON.stringify(coach)); }
   gsap.to(onb,{opacity:0,duration:.45,onComplete:()=>{ onb.style.display='none'; }});
   if(fresh){ layout(false); updReq(); }
   syncPanel(); coachNext();
@@ -1608,7 +1612,7 @@ function buildPanel(){ buildVersions();
   $('#mRead').onclick=()=>{ S.friends.forEach(f=>{ if(f.inbox.length){f.last=f.inbox[f.inbox.length-1]; f.inbox=[]; f.replyDue=true;} paint(f); }); };
   $('#mReq').onclick=()=>{ const used=new Set(S.friends.map(f=>f.id).concat(S.requests.map(r=>r.id))); const p=POOL.find(q=>!used.has(q.id)); if(!p)return; S.requests.push({...p}); updReq(); SFX.recv(); jelly($('#plus'),.8); };
   $('#mOnb').onclick=()=>{ $('#panel').classList.remove('open'); startOnboarding(1); };
-  $('#mReset').onclick=()=>{ ['anyo18.cfg','anyo18.onb','anyo18.coach'].forEach(k=>store.set(k,'')); try{['anyo18.cfg','anyo18.onb','anyo18.coach'].forEach(k=>localStorage.removeItem(k))}catch(e){} location.reload(); };
+  $('#mReset').onclick=()=>{ ['anyo19.cfg','anyo19.onb','anyo19.coach'].forEach(k=>store.set(k,'')); try{['anyo19.cfg','anyo19.onb','anyo19.coach'].forEach(k=>localStorage.removeItem(k))}catch(e){} location.reload(); };
   $('#pClose').onclick=()=>$('#panel').classList.remove('open');
 }
 function peekDemo(){ const f=S.friends[0]; if(!f||mode==='list')return; peekF=null; peek(f); setTimeout(()=>peek(null),1100); }
@@ -1695,7 +1699,7 @@ const _deliver=deliver; deliver=function(f){ _deliver(f); if(TUT&&f.id==='anyo')
   setTimeout(finishTutorial,6400); } };
 
 function startTutorial(){
-  closeAll(); store.set('anyo18.onb','');
+  closeAll(); store.set('anyo19.onb','');
   gsap.to('#onb',{opacity:0,duration:.35,onComplete:()=>{$('#onb').style.display='none';}});
   S.friends.forEach(f=>{ if(f.el)f.el.remove(); f.el=null; (f.timers||[]).forEach(clearTimeout); });
   TUT={step:'tap',keep:S.friends}; const t={...ANYO,inbox:[],timers:[]}; S.friends=[t]; layout(false);
@@ -1703,8 +1707,8 @@ function startTutorial(){
   setTimeout(()=>{ if(!TUT)return; const b=t.el.querySelector('.ball'); tip(b,'Tap to open'); ghostTap(centerOf(b).x,centerOf(b).y); },900);
 }
 function finishTutorial(){
-  if(!TUT)return; const keep=TUT.keep||[]; TUT=null; hideTip(); store.set('anyo18.onb','1');
-  Object.assign(coach,{tap:false,hold:false,slide:false,arrange:false,plus:false}); store.set('anyo18.coach',JSON.stringify(coach)); // practice does not count as learned
+  if(!TUT)return; const keep=TUT.keep||[]; TUT=null; hideTip(); store.set('anyo19.onb','1');
+  Object.assign(coach,{tap:false,hold:false,slide:false,arrange:false,plus:false}); store.set('anyo19.coach',JSON.stringify(coach)); // practice does not count as learned
   const t=byId('anyo'); if(t){ (t.timers||[]).forEach(clearTimeout); if(t.el){ const el=t.el; gsap.to(el,{scale:.85,opacity:0,duration:.35,ease:'power2.in',onComplete:()=>el.remove()}); } }
   S.friends=keep.filter(f=>f.id!=='anyo'); S.friends.forEach(f=>{f.el=null;f.d=undefined;f.cx=f.cy=undefined;});
   setTimeout(()=>{ layout(true); if(!S.friends.length){ openSheet(); setTimeout(()=>{ const b=$('#aBody .pill'); if(b&&addOn)tip(b,'Connect with your people',{pos:'above'}); },1400); } else coachNext(); },420);
@@ -1776,7 +1780,7 @@ $('#prHap').onclick=()=>{ C.haptics=!(C.haptics!==false); saveC(); fillProfile()
 $('#prPhoto').onclick=()=>startOnboarding(2);
 $('#prHow').onclick=()=>{ closeProfile(); setTimeout(startTutorial,480); };
 $('#prInv').onclick=()=>{ closeProfile(); setTimeout(openSheet,480); };
-$('#prOut').onclick=()=>{ ['anyo18.cfg','anyo18.onb','anyo18.coach','anyo.me'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); location.reload(); };
+$('#prOut').onclick=()=>{ ['anyo19.cfg','anyo19.onb','anyo19.coach','anyo.me'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); location.reload(); };
 
 /* ---------- prototype panel ---------- */
 function closeAll(){ if(sheetOn)closeSheet(); if(profOn)closeProfile(); if(editing)setEdit(false); if(cur&&smode)closeStage(); hideTip(); }
@@ -1792,7 +1796,7 @@ function buildPanel(){
   $('#mReq').onclick=()=>{ const used=new Set(S.friends.map(f=>f.id).concat(S.requests.map(r=>r.id))); const p=POOL.find(q2=>!used.has(q2.id)&&!S.pend[q2.id]); if(!p)return; S.requests.push({...p}); updReq(); SFX.recv(); jelly($('#plus'),.8); toast(`${p.name} wants to be friends`); if(addOn)renderAdd(); };
   $('#mNames').onclick=()=>{ if(S.friends.length<2)return; let i=0; const run=()=>{ if(i>=Math.min(4,S.friends.length)){ peek(null); return; } peekF=null; peek(S.friends[i++]); setTimeout(run,650); }; run(); };
   $('#mShake').onclick=shake;
-  $('#mReset').onclick=()=>{ ['anyo18.cfg','anyo18.onb','anyo18.coach','anyo.me'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); location.reload(); };
+  $('#mReset').onclick=()=>{ ['anyo19.cfg','anyo19.onb','anyo19.coach','anyo.me'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); location.reload(); };
   $('#pClose').onclick=()=>$('#panel').classList.remove('open');
 }
 function syncPanel(){ $$('#pPreset button').forEach(b=>b.classList.toggle('on',b.dataset.v===C.style)); const n=S.friends.filter(f=>f.id!=='anyo').length; $$('#pPeople button').forEach(b=>b.classList.toggle('on',+b.dataset.n===n)); }
@@ -1904,7 +1908,7 @@ $('#pHap').onclick=()=>{ C.haptics=!(C.haptics!==false); saveC(); fillProfile();
 $$('#pLays button').forEach(b=>b.onclick=()=>{ C.layout=b.dataset.v; saveC(); fillProfile(); SFX.tap(); layout(true); });
 $('#pOrb').onclick=()=>startOnboarding('photo');
 $('#pHow').onclick=()=>{ closeProfile(); setTimeout(startTutorial,480); };
-$('#pOut').onclick=()=>{ ['anyo18.cfg','anyo18.onb','anyo18.coach','anyo.me'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); location.reload(); };
+$('#pOut').onclick=()=>{ ['anyo19.cfg','anyo19.onb','anyo19.coach','anyo.me'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); location.reload(); };
 
 /* ---------- onboarding: one question per screen, one black button ---------- */
 const ob=$('#ob'); let obStack=[], obStream=null, obSolo=false;
@@ -2064,7 +2068,7 @@ function installNow(){ ac(); SFX.tap(); haptic(10);
   toast('Open this page in Safari or Chrome to install'); }
 function closeIos(){ gsap.to('#iosS',{opacity:0,duration:.25,onComplete:()=>{ const s2=$('#iosS'); s2.style.display='none'; s2.style.opacity=1; gsap.killTweensOf('#iosS .arrow'); }}); }
 $('#instGo').onclick=installNow; $('#iosOk').onclick=closeIos; $('#iosDim').onclick=closeIos;
-$('#instSkip').onclick=()=>{ try{sessionStorage.setItem('anyo.skipInst','1')}catch(e){} SFX.tap(); hideInstall(()=>{ if(store.get('anyo18.onb')!=='1')startOnboarding(1); else coachNext(); }); };
+$('#instSkip').onclick=()=>{ try{sessionStorage.setItem('anyo.skipInst','1')}catch(e){} SFX.tap(); hideInstall(()=>{ if(store.get('anyo19.onb')!=='1')startOnboarding(1); else coachNext(); }); };
 /* install lives in the profile too */
 (()=>{ if(IS_STANDALONE)return; const b=document.createElement('button'); b.className='rowx'; b.id='pInst'; b.textContent='Install App'; $('#pHow').parentNode.insertBefore(b,$('#pHow')); b.onclick=()=>{ closeProfile(); setTimeout(installNow,480); }; })();
 
@@ -2101,7 +2105,7 @@ const _varied=variedSlots; variedSlots=function(n,b){ const r=_varied(n,b); r.sl
 
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
-if(q.has('reset')){ ['anyo18.cfg','anyo18.onb','anyo18.coach'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); C={...DEF}; }
+if(q.has('reset')){ ['anyo19.cfg','anyo19.onb','anyo19.coach'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); C={...DEF}; }
 if(q.get('style')&&STYLES[q.get('style')]){ const s=STYLES[q.get('style')]; Object.assign(C,{style:q.get('style'),bg:s.bg,ring:s.ring,layout:s.layout,float:s.float,liquid:s.liquid,accent:s.accent}); }
 buildPanel();
 S.friends=[]; S.requests=[{...POOL[0]},{...POOL[1]}];
@@ -2109,7 +2113,7 @@ applyC(false);
 if(q.get('n'))setCount(+q.get('n'));
 if(q.has('panel'))$('#panel').classList.add('open');
 C.float=false; C.tilt=false; C.liquid=false; C.ring='glass3d'; if(!['grid','bubble','hive'].includes(C.layout))C.layout='grid'; applyC(false); syncTop();
-if(store.get('anyo18.onb')==='1'){ layout(false); S.friends.forEach((f,i)=>{ gsap.fromTo(f.el,{scale:.9,opacity:0},{scale:1,opacity:1,duration:.5,ease:'expo.out',delay:.04+i*.03}); }); coachNext(); }
+if(store.get('anyo19.onb')==='1'){ layout(false); S.friends.forEach((f,i)=>{ gsap.fromTo(f.el,{scale:.9,opacity:0},{scale:1,opacity:1,duration:.5,ease:'expo.out',delay:.04+i*.03}); }); coachNext(); }
 else { layout(false); let skip=false; try{skip=sessionStorage.getItem('anyo.skipInst')==='1'}catch(e){} if(!IS_STANDALONE&&IS_TOUCH&&!skip&&!q.has('noinstall'))showInstall(); else startOnboarding(1); }
 seedRequests(); updReq(); syncPanel();
 window.__anyo={S,C,layout,setCount,applyC,shake,receive,byId};
