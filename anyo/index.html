@@ -764,6 +764,21 @@ input,textarea{font-size:max(16px,1em)}
 #profS #pOrb{margin-top:6px;width:104px;height:104px}
 .scr .ball::before,#meBtn .ball::before,#who .ball::before,#last .ball::before,#ob .ball::before{content:none!important;display:none!important}
 .scr .scrIn{overscroll-behavior:contain}
+
+/* ===== b18 ===== */
+#plane .decor{display:none!important}
+/* sheets: nothing scrolls under the handle or the bottom bar */
+.scr .grab{background:#FAFAFA;border-radius:28px 28px 0 0}
+.bar.btm::before{content:"";position:absolute;left:-16px;right:-16px;top:-14px;bottom:calc(-18px - env(safe-area-inset-bottom,0px));background:#FAFAFA;z-index:-1;box-shadow:0 -12px 16px -8px #FAFAFA}
+#addS::after,#profS::after{display:none!important}
+/* camera: ↓ to leave (or just swipe down), camera-flip icon, their last message bottom-right */
+#last{top:auto!important;left:auto!important;right:22px!important;bottom:calc(env(safe-area-inset-bottom,0px) + 100px)!important}
+#camX svg{width:20px;height:20px;fill:none;stroke-width:2.2;stroke-linejoin:round}
+#flip svg{width:24px!important;height:24px!important;stroke-width:1.8!important}
+/* arrange: layout on the left (tap to cycle), done on the right */
+#done{left:auto!important;right:22px!important;margin-left:0!important;width:58px!important;height:58px!important;bottom:calc(env(safe-area-inset-bottom,0px) + 26px)!important}
+#layT{position:absolute;left:24px;bottom:calc(env(safe-area-inset-bottom,0px) + 26px);width:58px;height:58px;border-radius:50%;background:#E6E6E8;z-index:7;display:grid;place-items:center;transform:translateY(240%)}
+#layT svg{width:24px;height:24px;fill:#111114}
 </style>
 </head>
 <body>
@@ -797,6 +812,7 @@ input,textarea{font-size:max(16px,1em)}
     </div>
     <button class="dockb" id="peng" aria-label="Arrange"><div class="gbtn"></div><div class="ph"></div></button>
     <button class="dockb" id="plus" aria-label="Add"><div class="gbtn"><svg viewBox="0 0 24 24" id="plusIco"><path d="M12 5v14M5 12h14"/></svg></div><div class="reqdot" id="reqdot"></div></button>
+    <button id="layT" aria-label="Layout"><svg viewBox="0 0 24 24"></svg></button>
     <button id="done" aria-label="Done"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
   </div>
 
@@ -890,9 +906,9 @@ input,textarea{font-size:max(16px,1em)}
     <div id="recEdge"></div>
     <div id="segs"></div>
     <div id="who"><div class="ball"><div class="ph"></div></div></div><div id="whoName"></div>
-    <button id="camX" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <button id="camX" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 9.5l6 6 6-6"/></svg></button>
     <div id="recBar"><span></span></div>
-    <button id="flip" aria-label="Flip"><svg viewBox="0 0 24 24"><path d="M4 10a8 8 0 0 1 14-3.5L20 8"/><path d="M20 4v4h-4"/><path d="M20 14a8 8 0 0 1-14 3.5L4 16"/><path d="M4 20v-4h4"/></svg></button>
+    <button id="flip" aria-label="Flip camera"><svg viewBox="0 0 24 24"><path d="M3 8.6A1.6 1.6 0 0 1 4.6 7H7.2l1.5-2.2h6.6L16.8 7h2.6A1.6 1.6 0 0 1 21 8.6v9.3a1.6 1.6 0 0 1-1.6 1.6H4.6A1.6 1.6 0 0 1 3 17.9z"/><path d="M8.8 12.6a3.3 3.3 0 0 1 5.9-1.7"/><path d="M15 9.4v1.8h-1.8"/><path d="M15.2 13.9a3.3 3.3 0 0 1-5.9 1.7"/><path d="M9 17.1v-1.8h1.8"/></svg></button>
     <div id="timer"><span class="rdot"></span><span id="tt">0:00</span></div>
     <div id="speed"><svg viewBox="0 0 22 16"><path d="M0 0l10 8-10 8zM11 0l10 8-10 8z"/></svg></div>
     <button id="last" class="bub" aria-label="Their last"><div class="ball"><div class="ph"></div><div class="ov"><svg viewBox="0 0 24 24"></svg></div></div></button>
@@ -915,7 +931,7 @@ input,textarea{font-size:max(16px,1em)}
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b17</div>
+  <div id="build">b18</div>
 </div>
   </div></div>
 </div>
@@ -959,8 +975,8 @@ const STYLES={
   blush:{label:'Blush',bg:'blush',ring:'hair',layout:'equal',float:false,liquid:false,accent:'blush'}
 };
 const DEF={shape:'circle',style:'cloud',size:100,gap:100,font:'UI',ts:100,names:'peek',tilt:false,sound:true,haptics:true,layout:'bubble',bg:'cloud',ring:'glass3d',float:false,liquid:false,accent:'blue'};
-let C={...DEF}; try{Object.assign(C,JSON.parse(store.get('anyo17.cfg')||'{}'))}catch(e){}
-function saveC(){store.set('anyo17.cfg',JSON.stringify(C));}
+let C={...DEF}; try{Object.assign(C,JSON.parse(store.get('anyo18.cfg')||'{}'))}catch(e){}
+function saveC(){store.set('anyo18.cfg',JSON.stringify(C));}
 function applyC(relayout=true){
   const [bg,dark]=BGS[C.bg]||BGS.paper;
   app.style.setProperty('--bg',bg); app.dataset.dark=dark?'1':'0'; app.dataset.bg=C.bg; app.dataset.ring=C.ring; app.dataset.shape=C.shape||'circle'; app.dataset.names=C.names;
@@ -1451,8 +1467,8 @@ function closeViewerEarly(){ const v=VW; if(!v)return closeStage(); if(!v.replay
 
 /* ================= ghost touch: gestures taught without words ================= */
 const coach={tap:false,hold:false,slide:false,fast:false,plus:false};
-try{Object.assign(coach,JSON.parse(store.get('anyo17.coach')||'{}'))}catch(e){}
-function coachDone(k){ if(coach[k])return; coach[k]=true; store.set('anyo17.coach',JSON.stringify(coach)); hideGhost(); }
+try{Object.assign(coach,JSON.parse(store.get('anyo18.coach')||'{}'))}catch(e){}
+function coachDone(k){ if(coach[k])return; coach[k]=true; store.set('anyo18.coach',JSON.stringify(coach)); hideGhost(); }
 let ghostTl=null;
 function hideGhost(){ if(ghostTl){ghostTl.kill();ghostTl=null;} gsap.to('#ghost',{opacity:0,duration:.2}); }
 function ghostBase(x,y,dark){ hideGhost(); const g=$('#ghost'); g.classList.toggle('dark',!!dark); gsap.set(g,{x,y,opacity:0,scale:1}); gsap.set('#ghP',{attr:{'stroke-dashoffset':207.3}}); gsap.set('#ghost .r',{opacity:0,scale:.8}); return g; }
@@ -1551,13 +1567,13 @@ function step3(){ const s=show('#o3'), box=$('#ppl'); box.innerHTML=''; picked=n
 $('#ppl').addEventListener('click',()=>hideGhost());
 $('#n3').onclick=()=>finishOnb(true);
 function finishOnb(fresh){
-  store.set('anyo17.onb','1'); hideGhost();
+  store.set('anyo18.onb','1'); hideGhost();
   if(fresh){ S.friends.forEach(f=>f.el&&f.el.remove()); S.friends=[];
     // the people you picked get an invite; nobody is your friend until they say yes
     const inv=POOL.filter(p=>picked.has(p.id)); S.suggest=inv.map(p=>({...p,pending:true})).concat(S.suggest.filter(x=>!picked.has(x.id)));
     inv.forEach((p,i)=>{ const sp=S.suggest.find(x=>x.id===p.id); sp.tm=setTimeout(()=>{ if(!sp.pending)return; S.suggest=S.suggest.filter(x=>x!==sp); acceptedBy({id:p.id,name:p.name,photo:p.photo,clip:p.clip,inbox:[],timers:[]}); },5000+i*2600); });
     S.requests=POOL.filter(p=>!picked.has(p.id)).slice(0,2).map(p=>({...p}));
-    Object.assign(coach,{tap:false,hold:false,slide:false,fast:false,plus:false}); store.set('anyo17.coach',JSON.stringify(coach)); }
+    Object.assign(coach,{tap:false,hold:false,slide:false,fast:false,plus:false}); store.set('anyo18.coach',JSON.stringify(coach)); }
   gsap.to(onb,{opacity:0,duration:.45,onComplete:()=>{ onb.style.display='none'; }});
   if(fresh){ layout(false); updReq(); }
   syncPanel(); coachNext();
@@ -1592,7 +1608,7 @@ function buildPanel(){ buildVersions();
   $('#mRead').onclick=()=>{ S.friends.forEach(f=>{ if(f.inbox.length){f.last=f.inbox[f.inbox.length-1]; f.inbox=[]; f.replyDue=true;} paint(f); }); };
   $('#mReq').onclick=()=>{ const used=new Set(S.friends.map(f=>f.id).concat(S.requests.map(r=>r.id))); const p=POOL.find(q=>!used.has(q.id)); if(!p)return; S.requests.push({...p}); updReq(); SFX.recv(); jelly($('#plus'),.8); };
   $('#mOnb').onclick=()=>{ $('#panel').classList.remove('open'); startOnboarding(1); };
-  $('#mReset').onclick=()=>{ ['anyo17.cfg','anyo17.onb','anyo17.coach'].forEach(k=>store.set(k,'')); try{['anyo17.cfg','anyo17.onb','anyo17.coach'].forEach(k=>localStorage.removeItem(k))}catch(e){} location.reload(); };
+  $('#mReset').onclick=()=>{ ['anyo18.cfg','anyo18.onb','anyo18.coach'].forEach(k=>store.set(k,'')); try{['anyo18.cfg','anyo18.onb','anyo18.coach'].forEach(k=>localStorage.removeItem(k))}catch(e){} location.reload(); };
   $('#pClose').onclick=()=>$('#panel').classList.remove('open');
 }
 function peekDemo(){ const f=S.friends[0]; if(!f||mode==='list')return; peekF=null; peek(f); setTimeout(()=>peek(null),1100); }
@@ -1679,7 +1695,7 @@ const _deliver=deliver; deliver=function(f){ _deliver(f); if(TUT&&f.id==='anyo')
   setTimeout(finishTutorial,6400); } };
 
 function startTutorial(){
-  closeAll(); store.set('anyo17.onb','');
+  closeAll(); store.set('anyo18.onb','');
   gsap.to('#onb',{opacity:0,duration:.35,onComplete:()=>{$('#onb').style.display='none';}});
   S.friends.forEach(f=>{ if(f.el)f.el.remove(); f.el=null; (f.timers||[]).forEach(clearTimeout); });
   TUT={step:'tap',keep:S.friends}; const t={...ANYO,inbox:[],timers:[]}; S.friends=[t]; layout(false);
@@ -1687,8 +1703,8 @@ function startTutorial(){
   setTimeout(()=>{ if(!TUT)return; const b=t.el.querySelector('.ball'); tip(b,'Tap to open'); ghostTap(centerOf(b).x,centerOf(b).y); },900);
 }
 function finishTutorial(){
-  if(!TUT)return; const keep=TUT.keep||[]; TUT=null; hideTip(); store.set('anyo17.onb','1');
-  Object.assign(coach,{tap:false,hold:false,slide:false,arrange:false,plus:false}); store.set('anyo17.coach',JSON.stringify(coach)); // practice does not count as learned
+  if(!TUT)return; const keep=TUT.keep||[]; TUT=null; hideTip(); store.set('anyo18.onb','1');
+  Object.assign(coach,{tap:false,hold:false,slide:false,arrange:false,plus:false}); store.set('anyo18.coach',JSON.stringify(coach)); // practice does not count as learned
   const t=byId('anyo'); if(t){ (t.timers||[]).forEach(clearTimeout); if(t.el){ const el=t.el; gsap.to(el,{scale:.85,opacity:0,duration:.35,ease:'power2.in',onComplete:()=>el.remove()}); } }
   S.friends=keep.filter(f=>f.id!=='anyo'); S.friends.forEach(f=>{f.el=null;f.d=undefined;f.cx=f.cy=undefined;});
   setTimeout(()=>{ layout(true); if(!S.friends.length){ openSheet(); setTimeout(()=>{ const b=$('#aBody .pill'); if(b&&addOn)tip(b,'Connect with your people',{pos:'above'}); },1400); } else coachNext(); },420);
@@ -1760,7 +1776,7 @@ $('#prHap').onclick=()=>{ C.haptics=!(C.haptics!==false); saveC(); fillProfile()
 $('#prPhoto').onclick=()=>startOnboarding(2);
 $('#prHow').onclick=()=>{ closeProfile(); setTimeout(startTutorial,480); };
 $('#prInv').onclick=()=>{ closeProfile(); setTimeout(openSheet,480); };
-$('#prOut').onclick=()=>{ ['anyo17.cfg','anyo17.onb','anyo17.coach','anyo.me'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); location.reload(); };
+$('#prOut').onclick=()=>{ ['anyo18.cfg','anyo18.onb','anyo18.coach','anyo.me'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); location.reload(); };
 
 /* ---------- prototype panel ---------- */
 function closeAll(){ if(sheetOn)closeSheet(); if(profOn)closeProfile(); if(editing)setEdit(false); if(cur&&smode)closeStage(); hideTip(); }
@@ -1776,7 +1792,7 @@ function buildPanel(){
   $('#mReq').onclick=()=>{ const used=new Set(S.friends.map(f=>f.id).concat(S.requests.map(r=>r.id))); const p=POOL.find(q2=>!used.has(q2.id)&&!S.pend[q2.id]); if(!p)return; S.requests.push({...p}); updReq(); SFX.recv(); jelly($('#plus'),.8); toast(`${p.name} wants to be friends`); if(addOn)renderAdd(); };
   $('#mNames').onclick=()=>{ if(S.friends.length<2)return; let i=0; const run=()=>{ if(i>=Math.min(4,S.friends.length)){ peek(null); return; } peekF=null; peek(S.friends[i++]); setTimeout(run,650); }; run(); };
   $('#mShake').onclick=shake;
-  $('#mReset').onclick=()=>{ ['anyo17.cfg','anyo17.onb','anyo17.coach','anyo.me'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); location.reload(); };
+  $('#mReset').onclick=()=>{ ['anyo18.cfg','anyo18.onb','anyo18.coach','anyo.me'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); location.reload(); };
   $('#pClose').onclick=()=>$('#panel').classList.remove('open');
 }
 function syncPanel(){ $$('#pPreset button').forEach(b=>b.classList.toggle('on',b.dataset.v===C.style)); const n=S.friends.filter(f=>f.id!=='anyo').length; $$('#pPeople button').forEach(b=>b.classList.toggle('on',+b.dataset.n===n)); }
@@ -1888,7 +1904,7 @@ $('#pHap').onclick=()=>{ C.haptics=!(C.haptics!==false); saveC(); fillProfile();
 $$('#pLays button').forEach(b=>b.onclick=()=>{ C.layout=b.dataset.v; saveC(); fillProfile(); SFX.tap(); layout(true); });
 $('#pOrb').onclick=()=>startOnboarding('photo');
 $('#pHow').onclick=()=>{ closeProfile(); setTimeout(startTutorial,480); };
-$('#pOut').onclick=()=>{ ['anyo17.cfg','anyo17.onb','anyo17.coach','anyo.me'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); location.reload(); };
+$('#pOut').onclick=()=>{ ['anyo18.cfg','anyo18.onb','anyo18.coach','anyo.me'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); location.reload(); };
 
 /* ---------- onboarding: one question per screen, one black button ---------- */
 const ob=$('#ob'); let obStack=[], obStream=null, obSolo=false;
@@ -2048,7 +2064,7 @@ function installNow(){ ac(); SFX.tap(); haptic(10);
   toast('Open this page in Safari or Chrome to install'); }
 function closeIos(){ gsap.to('#iosS',{opacity:0,duration:.25,onComplete:()=>{ const s2=$('#iosS'); s2.style.display='none'; s2.style.opacity=1; gsap.killTweensOf('#iosS .arrow'); }}); }
 $('#instGo').onclick=installNow; $('#iosOk').onclick=closeIos; $('#iosDim').onclick=closeIos;
-$('#instSkip').onclick=()=>{ try{sessionStorage.setItem('anyo.skipInst','1')}catch(e){} SFX.tap(); hideInstall(()=>{ if(store.get('anyo17.onb')!=='1')startOnboarding(1); else coachNext(); }); };
+$('#instSkip').onclick=()=>{ try{sessionStorage.setItem('anyo.skipInst','1')}catch(e){} SFX.tap(); hideInstall(()=>{ if(store.get('anyo18.onb')!=='1')startOnboarding(1); else coachNext(); }); };
 /* install lives in the profile too */
 (()=>{ if(IS_STANDALONE)return; const b=document.createElement('button'); b.className='rowx'; b.id='pInst'; b.textContent='Install App'; $('#pHow').parentNode.insertBefore(b,$('#pHow')); b.onclick=()=>{ closeProfile(); setTimeout(installNow,480); }; })();
 
@@ -2071,9 +2087,21 @@ function dragToClose(el,close){ const grab=el.querySelector('.grab'), inner=el.q
   [grab,inner].forEach(x=>x.addEventListener('pointerdown',down)); addEventListener('pointermove',move); addEventListener('pointerup',up); addEventListener('pointercancel',up); }
 dragToClose(addS,()=>closeSheet()); dragToClose(profS,()=>closeProfile());
 
+
+/* ======================= b18 ======================= */
+const LAYS=['grid','bubble','hive'], LAYI={grid:'<circle cx="7" cy="7" r="3"/><circle cx="17" cy="7" r="3"/><circle cx="7" cy="17" r="3"/><circle cx="17" cy="17" r="3"/>',
+  bubble:'<circle cx="9.5" cy="10" r="5.2"/><circle cx="18" cy="7" r="2.6"/><circle cx="17" cy="16.5" r="3.4"/><circle cx="6" cy="19" r="2"/>',
+  hive:'<circle cx="5.5" cy="8" r="2.6"/><circle cx="12" cy="8" r="2.6"/><circle cx="18.5" cy="8" r="2.6"/><circle cx="8.75" cy="14.5" r="2.6"/><circle cx="15.25" cy="14.5" r="2.6"/>'};
+$('#addS').appendChild($('#aBar')); { const pb=$('#profS .bar.btm'); if(pb)$('#profS').appendChild(pb); } // bars pin to the sheet, never scroll with the list
+function syncLayT(){ $('#layT svg').innerHTML=LAYI[C.layout]||LAYI.grid; }
+$('#layT').onclick=()=>{ C.layout=LAYS[(LAYS.indexOf(C.layout)+1)%3]; saveC(); syncLayT(); SFX.tick(); haptic(10); gsap.fromTo('#layT svg',{scale:.6,rotate:-30},{scale:1,rotate:0,duration:.45,ease:'expo.out'}); layout(true); };
+const _setEdit3=setEdit; setEdit=function(on){ _setEdit3(on); syncLayT(); gsap.to('#layT',{y:on?0:'240%',duration:on?.5:.3,ease:on?'expo.out':'power2.in'}); };
+/* bubble layout: after centering, nothing may leave the screen */
+const _varied=variedSlots; variedSlots=function(n,b){ const r=_varied(n,b); r.slots.forEach(p=>{ p.x=Math.max(20+p.r,Math.min(b.W-20-p.r,p.x)); p.y=Math.max(b.top+p.r,Math.min(b.bottom-p.r,p.y)); }); return r; };
+
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
-if(q.has('reset')){ ['anyo17.cfg','anyo17.onb','anyo17.coach'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); C={...DEF}; }
+if(q.has('reset')){ ['anyo18.cfg','anyo18.onb','anyo18.coach'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); C={...DEF}; }
 if(q.get('style')&&STYLES[q.get('style')]){ const s=STYLES[q.get('style')]; Object.assign(C,{style:q.get('style'),bg:s.bg,ring:s.ring,layout:s.layout,float:s.float,liquid:s.liquid,accent:s.accent}); }
 buildPanel();
 S.friends=[]; S.requests=[{...POOL[0]},{...POOL[1]}];
@@ -2081,7 +2109,7 @@ applyC(false);
 if(q.get('n'))setCount(+q.get('n'));
 if(q.has('panel'))$('#panel').classList.add('open');
 C.float=false; C.tilt=false; C.liquid=false; C.ring='glass3d'; if(!['grid','bubble','hive'].includes(C.layout))C.layout='grid'; applyC(false); syncTop();
-if(store.get('anyo17.onb')==='1'){ layout(false); S.friends.forEach((f,i)=>{ gsap.fromTo(f.el,{scale:.9,opacity:0},{scale:1,opacity:1,duration:.5,ease:'expo.out',delay:.04+i*.03}); }); coachNext(); }
+if(store.get('anyo18.onb')==='1'){ layout(false); S.friends.forEach((f,i)=>{ gsap.fromTo(f.el,{scale:.9,opacity:0},{scale:1,opacity:1,duration:.5,ease:'expo.out',delay:.04+i*.03}); }); coachNext(); }
 else { layout(false); let skip=false; try{skip=sessionStorage.getItem('anyo.skipInst')==='1'}catch(e){} if(!IS_STANDALONE&&IS_TOUCH&&!skip&&!q.has('noinstall'))showInstall(); else startOnboarding(1); }
 seedRequests(); updReq(); syncPanel();
 window.__anyo={S,C,layout,setCount,applyC,shake,receive,byId};
