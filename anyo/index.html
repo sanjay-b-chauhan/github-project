@@ -1066,6 +1066,36 @@ video,img,canvas{-webkit-touch-callout:none;-webkit-user-select:none;user-select
 #pgLook .ics button.on{color:#111114}
 #pgLook .ics button.on img{box-shadow:0 0 0 2px var(--plane),0 0 0 4px #111114}
 #pgLook .note{font:400 12px/1.4 var(--ui);color:#A0A0A6;margin:10px 2px 0}
+
+/* b28: onboarding QA fixes */
+#app #toast{z-index:350!important}
+#obSkip{top:calc(env(safe-area-inset-top,0px) + 20px)!important}
+@media (min-width:600px){#obSkip{top:28px!important}}
+#obNa .obIn{top:calc(30% + 20px)!important}
+#obName{font-size:30px!important}
+.chG{grid-template-columns:repeat(3,64px)!important;gap:18px 26px!important;margin-top:30px!important}
+.chG button{width:64px!important;height:64px!important}
+#pgLook .chG{grid-template-columns:repeat(5,52px)!important;gap:14px 16px!important}
+#pgLook .chG button{width:52px!important;height:52px!important}
+#obCh .chOrb{width:120px;height:120px}
+#obCh .obQ{top:12%!important}
+#obCh .chWrap{top:calc(12% + 58px)!important}
+#app.intro #plus{opacity:0!important;pointer-events:none!important}
+
+/* b28: Anyo asks the questions */
+#ob .obQ{display:none!important}
+#obAnyo{position:absolute;left:24px;right:24px;top:calc(env(safe-area-inset-top,0px) + 74px);display:none;flex-direction:column;align-items:center;z-index:3;pointer-events:none}
+@media (min-width:600px){#obAnyo{top:84px}}
+#obAnyo img{width:86px;height:86px;object-fit:contain;filter:drop-shadow(0 10px 14px rgba(0,0,0,.12))}
+#obAnyo .sb{position:relative;margin-top:14px;max-width:290px;padding:14px 20px;border-radius:24px;background:#fff;font:400 20px/1.3 var(--ui);color:#111114;text-align:center;box-shadow:0 10px 26px -14px rgba(0,0,0,.25);min-height:54px}
+#obAnyo .sb::before{content:"";position:absolute;left:50%;top:-7px;width:16px;height:16px;margin-left:-8px;background:#fff;transform:rotate(45deg);border-radius:3px}
+#obPh .obIn,#obCo .obIn,#obNa .obIn{top:calc(env(safe-area-inset-top,0px) + 290px)!important}
+#obCh .chWrap{top:calc(env(safe-area-inset-top,0px) + 258px)!important}
+#obCh .chOrb{width:96px!important;height:96px!important}
+#obCh .chG{margin-top:22px!important;gap:14px 24px!important}
+#obCh .chG button{width:58px!important;height:58px!important}
+#obCh .chG{grid-template-columns:repeat(3,58px)!important}
+#obCh .chSub{display:none}
 </style>
 </head>
 <body>
@@ -1218,7 +1248,7 @@ video,img,canvas{-webkit-touch-callout:none;-webkit-user-select:none;user-select
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b27</div>
+  <div id="build">b28</div>
 </div>
   </div></div>
 </div>
@@ -2561,7 +2591,7 @@ $('#howGo').onclick=()=>{ SFX.tap(); haptic(8); if(HW<2)howGo(HW+1); else endHow
   tr.addEventListener('pointerup',up); tr.addEventListener('pointercancel',up); })();
 startTutorial=function(){ showHow(); };
 function showWel(){ const w=$('#wel'); const n=S.requests.length;
-  $('#welT').textContent=S.friends.length?`Hi ${S.me.name||'there'}! Your people are here. Tap a face to start.`:n?`Hi ${S.me.name||'there'}! ${n} friend${n>1?'s are':' is'} waiting for you. Tap + to say yes.`:`Hi ${S.me.name||'there'}! Your people will live here. Tap + to add them.`;
+  $('#welT').textContent=S.friends.filter(f=>f.id!=='anyo').length?`Hi ${S.me.name||'there'}! Your people are here. Tap a face to start.`:n?`Hi ${S.me.name||'there'}! ${n} friend${n>1?'s are':' is'} waiting for you. Tap + to say yes.`:`Hi ${S.me.name||'there'}! Your people will live here. Tap + to add them.`;
   w.style.display='block'; gsap.fromTo('#wel img',{y:60,opacity:0},{y:0,opacity:1,duration:.7,ease:'expo.out'}); gsap.fromTo('#wel .sb',{y:10,opacity:0,scale:.96},{y:0,opacity:1,scale:1,duration:.5,ease:'expo.out',delay:.35});
   gsap.to('#wel img',{rotation:4,duration:.35,yoyo:true,repeat:3,ease:'sine.inOut',delay:1.1,transformOrigin:'50% 100%'}); }
 function hideWel(){ const w=$('#wel'); if(w.style.display!=='block')return; gsap.to('#wel img',{y:60,opacity:0,duration:.35,ease:'power2.in'}); gsap.to('#wel .sb',{opacity:0,duration:.2,onComplete:()=>{ w.style.display='none'; coachNext(); }}); }
@@ -2695,7 +2725,7 @@ function demoHome(){ S.acts=S.acts||[]; if(!S.friends.length)setCount(7); seedRe
    <div class="sp" data-p="screens"><div class="gr" id="smG">${[['install','Install app'],['onb','Onboarding'],['how','How it works'],['wel','Penguin welcome'],['empty','Empty home'],['cam','Camera'],['view','Watching videos'],['focus','Hold a face'],['add','Add friends'],['rq','All requests'],['inv','Invite friends'],['prof','Profile'],['act','Activity'],['edit','Edit profile'],['toast','Undo toast'],['arrange','Arrange mode'],['anyo','Anyo first'],['ref','From invite link'],['cap','Photo capture'],['look','Make it yours']].map(([k,l])=>`<button data-g="${k}">${l}</button>`).join('')}</div></div>
    <div class="sp" data-p="look"><div class="sl">Layout</div><div class="ch" id="smL"><button data-v="grid">Grid</button><button data-v="bubble">Bubbles</button><button data-v="hive">Honeycomb</button></div>
     <div class="sl">Start over</div><div class="gr"><button data-z="onb">Replay onboarding</button><button data-z="wipe" class="red">Log out, wipe all</button></div>
-    <div class="hint">Triple tap anywhere to open this. Build b27.</div></div>
+    <div class="hint">Triple tap anywhere to open this. Build b28.</div></div>
   </div>`;
   app.appendChild(d); app.appendChild(s); })();
 let simOn=false, simWho=null;
@@ -2889,6 +2919,27 @@ applyTheme();
 
 screen=(o=>function(g){ if(g==='anyo'){ closeAll(); hideOver(); anyoStart(); return; } if(g==='ref'){ store.set('anyo26.from','Sanjay'); closeAll(); hideOver(); startOnboarding(1); return; }
   if(g==='cap'){ closeAll(); openCapture(u=>{ S.me.photo=u; saveMe(); fillProfile(); }); return; } if(g==='look'){ closeAll(); setTimeout(()=>{ openProfile(); setTimeout(()=>pushPage(profS,pgLook,fillLook),600); },300); return; } o(g); })(screen);
+
+
+/* b28: onboarding QA fixes */
+life=(o=>function(f){ if(f&&(f.id==='anyo'||String(f.id).startsWith('ref-')))return; o(f); })(life);
+toast=(o=>function(m,u,ms){ if(INTRO&&INTRO!=='done'&&/Anyo/.test(m||''))u=null; return o(m,u,ms); })(toast);
+finishViewer=(o=>function(){ const v=VW; if(v&&v.f.id==='anyo'&&v.items.some(it=>it.script==='reply')&&v.items[v.items.length-1].script!=='reply'){ const r=v.items.filter(it=>it.script==='reply'); v.items=r; } return o(); })(finishViewer);
+anyoStart=(o=>function(){ o(); app.classList.add('intro'); const A=byId('anyo'); if(A){ A.photo=img('p-cream.jpg'); if(A.el){ const ph=A.el.querySelector('.ph'); if(ph)ph.style.backgroundImage=`url(${A.photo})`; } } })(anyoStart);
+startTutorial=anyoStart;
+anyoDone=(o=>function(){ app.classList.remove('intro'); o(); })(anyoDone);
+
+
+/* b28: onboarding is Anyo talking to you */
+(()=>{ const a=document.createElement('div'); a.id='obAnyo'; a.innerHTML='<img src="img/peng-cut.png" alt=""><div class="sb"></div>'; $('#ob').appendChild(a); })();
+const SAY={obPh:()=>"Hi, I'm Anyo! What's your number?",obCo:()=>'I just texted you a code.',obNa:()=>'What should I call you?',obCh:()=>obSolo?'Pick your look.':`Nice to meet you, ${S.me.name||'friend'}! Pick your look.`};
+let sayTm=null;
+function anyoSay(id){ const box=$('#obAnyo'), sb=box.querySelector('.sb'), f=SAY[id]; clearInterval(sayTm);
+  if(!f){ gsap.to(box,{opacity:0,duration:.2,onComplete:()=>{ if(!SAY[obCur])box.style.display='none'; }}); return; }
+  const t=f(); box.style.display='flex'; gsap.to(box,{opacity:1,duration:.2}); gsap.fromTo(box.querySelector('img'),{y:6,rotation:-6},{y:0,rotation:0,duration:.6,ease:'back.out(2)'});
+  let k=0; sb.textContent=''; sayTm=setInterval(()=>{ k+=2; sb.textContent=t.slice(0,k); if(k>=t.length){ clearInterval(sayTm); sb.textContent=t; } },28); SFX.peek&&SFX.peek(); }
+let obCur='';
+obShow=(o=>function(id,back){ obCur=id; o(id,back); anyoSay(id); })(obShow);
 
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
