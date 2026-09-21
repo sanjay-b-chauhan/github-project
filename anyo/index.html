@@ -750,6 +750,20 @@ input,textarea{font-size:max(16px,1em)}
 #iosS .arrow{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);width:34px;height:52px;margin-left:-17px}
 #iosS .arrow svg{width:34px;height:52px;stroke:#fff;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 2px 6px rgba(0,0,0,.35))}
 #iosS .ok{display:block;width:100%;height:50px;margin-top:8px;border-radius:99px;background:#111114;color:#fff;font:400 16px/50px var(--ui)}
+
+/* ===== b17: add friends + profile are drawer sheets over home, never pages ===== */
+#shDim{position:absolute;inset:0;z-index:17;background:rgba(10,10,14,.28);opacity:0;visibility:hidden}
+.scr{top:auto!important;left:0!important;right:0!important;bottom:0!important;border-radius:28px 28px 0 0;background:#FAFAFA!important;
+  box-shadow:0 -20px 50px -20px rgba(0,0,0,.28);clip-path:none!important;will-change:transform;overflow:hidden}
+#addS{height:88%}
+#profS{height:78%}
+.scr .grab{position:absolute;left:0;right:0;top:0;height:30px;z-index:4;display:grid;place-items:center;touch-action:none;cursor:grab}
+.scr .grab span{width:38px;height:5px;border-radius:99px;background:#D4D4D8}
+.scr .scrIn{padding-top:30px!important;padding-bottom:110px!important}
+#addS::after,#profS::after{background:linear-gradient(0deg,#FAFAFA 55%,rgba(250,250,250,0))!important}
+#profS #pOrb{margin-top:6px;width:104px;height:104px}
+.scr .ball::before,#meBtn .ball::before,#who .ball::before,#last .ball::before,#ob .ball::before{content:none!important;display:none!important}
+.scr .scrIn{overscroll-behavior:contain}
 </style>
 </head>
 <body>
@@ -815,13 +829,14 @@ input,textarea{font-size:max(16px,1em)}
 
   <div id="wm">anyo</div>
 
-  <div class="scr" id="addS"><div class="scrIn">
+  <div id="shDim"></div>
+  <div class="scr" id="addS"><div class="grab"><span></span></div><div class="scrIn">
     <div class="bar btm" id="aBar"><button class="cx" id="aX" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       <div class="srch" id="aS"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4" stroke-linecap="round"/></svg><input id="aIn" placeholder="Search" autocomplete="off" spellcheck="false"><button class="clr" id="aClr"><svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg></button></div><button class="cx" id="aInv" aria-label="Invite"><svg viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5"/><path d="M5 13v5.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V13"/></svg></button></div>
     <div id="aBody"></div>
   </div></div>
 
-  <div class="scr" id="profS"><div class="scrIn">
+  <div class="scr" id="profS"><div class="grab"><span></span></div><div class="scrIn">
     <div class="bar btm"><button class="cx" id="pX" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
     <button id="pOrb"><div class="ball"><div class="halo"></div><div class="ph" id="pPh"></div><div class="gl"></div></div></button>
     <input id="pName" maxlength="24" autocomplete="off" spellcheck="false" placeholder="Your name"><div id="pUser">@you</div>
@@ -900,7 +915,7 @@ input,textarea{font-size:max(16px,1em)}
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b16</div>
+  <div id="build">b17</div>
 </div>
   </div></div>
 </div>
@@ -944,8 +959,8 @@ const STYLES={
   blush:{label:'Blush',bg:'blush',ring:'hair',layout:'equal',float:false,liquid:false,accent:'blush'}
 };
 const DEF={shape:'circle',style:'cloud',size:100,gap:100,font:'UI',ts:100,names:'peek',tilt:false,sound:true,haptics:true,layout:'bubble',bg:'cloud',ring:'glass3d',float:false,liquid:false,accent:'blue'};
-let C={...DEF}; try{Object.assign(C,JSON.parse(store.get('anyo16.cfg')||'{}'))}catch(e){}
-function saveC(){store.set('anyo16.cfg',JSON.stringify(C));}
+let C={...DEF}; try{Object.assign(C,JSON.parse(store.get('anyo17.cfg')||'{}'))}catch(e){}
+function saveC(){store.set('anyo17.cfg',JSON.stringify(C));}
 function applyC(relayout=true){
   const [bg,dark]=BGS[C.bg]||BGS.paper;
   app.style.setProperty('--bg',bg); app.dataset.dark=dark?'1':'0'; app.dataset.bg=C.bg; app.dataset.ring=C.ring; app.dataset.shape=C.shape||'circle'; app.dataset.names=C.names;
@@ -1436,8 +1451,8 @@ function closeViewerEarly(){ const v=VW; if(!v)return closeStage(); if(!v.replay
 
 /* ================= ghost touch: gestures taught without words ================= */
 const coach={tap:false,hold:false,slide:false,fast:false,plus:false};
-try{Object.assign(coach,JSON.parse(store.get('anyo16.coach')||'{}'))}catch(e){}
-function coachDone(k){ if(coach[k])return; coach[k]=true; store.set('anyo16.coach',JSON.stringify(coach)); hideGhost(); }
+try{Object.assign(coach,JSON.parse(store.get('anyo17.coach')||'{}'))}catch(e){}
+function coachDone(k){ if(coach[k])return; coach[k]=true; store.set('anyo17.coach',JSON.stringify(coach)); hideGhost(); }
 let ghostTl=null;
 function hideGhost(){ if(ghostTl){ghostTl.kill();ghostTl=null;} gsap.to('#ghost',{opacity:0,duration:.2}); }
 function ghostBase(x,y,dark){ hideGhost(); const g=$('#ghost'); g.classList.toggle('dark',!!dark); gsap.set(g,{x,y,opacity:0,scale:1}); gsap.set('#ghP',{attr:{'stroke-dashoffset':207.3}}); gsap.set('#ghost .r',{opacity:0,scale:.8}); return g; }
@@ -1536,13 +1551,13 @@ function step3(){ const s=show('#o3'), box=$('#ppl'); box.innerHTML=''; picked=n
 $('#ppl').addEventListener('click',()=>hideGhost());
 $('#n3').onclick=()=>finishOnb(true);
 function finishOnb(fresh){
-  store.set('anyo16.onb','1'); hideGhost();
+  store.set('anyo17.onb','1'); hideGhost();
   if(fresh){ S.friends.forEach(f=>f.el&&f.el.remove()); S.friends=[];
     // the people you picked get an invite; nobody is your friend until they say yes
     const inv=POOL.filter(p=>picked.has(p.id)); S.suggest=inv.map(p=>({...p,pending:true})).concat(S.suggest.filter(x=>!picked.has(x.id)));
     inv.forEach((p,i)=>{ const sp=S.suggest.find(x=>x.id===p.id); sp.tm=setTimeout(()=>{ if(!sp.pending)return; S.suggest=S.suggest.filter(x=>x!==sp); acceptedBy({id:p.id,name:p.name,photo:p.photo,clip:p.clip,inbox:[],timers:[]}); },5000+i*2600); });
     S.requests=POOL.filter(p=>!picked.has(p.id)).slice(0,2).map(p=>({...p}));
-    Object.assign(coach,{tap:false,hold:false,slide:false,fast:false,plus:false}); store.set('anyo16.coach',JSON.stringify(coach)); }
+    Object.assign(coach,{tap:false,hold:false,slide:false,fast:false,plus:false}); store.set('anyo17.coach',JSON.stringify(coach)); }
   gsap.to(onb,{opacity:0,duration:.45,onComplete:()=>{ onb.style.display='none'; }});
   if(fresh){ layout(false); updReq(); }
   syncPanel(); coachNext();
@@ -1577,7 +1592,7 @@ function buildPanel(){ buildVersions();
   $('#mRead').onclick=()=>{ S.friends.forEach(f=>{ if(f.inbox.length){f.last=f.inbox[f.inbox.length-1]; f.inbox=[]; f.replyDue=true;} paint(f); }); };
   $('#mReq').onclick=()=>{ const used=new Set(S.friends.map(f=>f.id).concat(S.requests.map(r=>r.id))); const p=POOL.find(q=>!used.has(q.id)); if(!p)return; S.requests.push({...p}); updReq(); SFX.recv(); jelly($('#plus'),.8); };
   $('#mOnb').onclick=()=>{ $('#panel').classList.remove('open'); startOnboarding(1); };
-  $('#mReset').onclick=()=>{ ['anyo16.cfg','anyo16.onb','anyo16.coach'].forEach(k=>store.set(k,'')); try{['anyo16.cfg','anyo16.onb','anyo16.coach'].forEach(k=>localStorage.removeItem(k))}catch(e){} location.reload(); };
+  $('#mReset').onclick=()=>{ ['anyo17.cfg','anyo17.onb','anyo17.coach'].forEach(k=>store.set(k,'')); try{['anyo17.cfg','anyo17.onb','anyo17.coach'].forEach(k=>localStorage.removeItem(k))}catch(e){} location.reload(); };
   $('#pClose').onclick=()=>$('#panel').classList.remove('open');
 }
 function peekDemo(){ const f=S.friends[0]; if(!f||mode==='list')return; peekF=null; peek(f); setTimeout(()=>peek(null),1100); }
@@ -1664,7 +1679,7 @@ const _deliver=deliver; deliver=function(f){ _deliver(f); if(TUT&&f.id==='anyo')
   setTimeout(finishTutorial,6400); } };
 
 function startTutorial(){
-  closeAll(); store.set('anyo16.onb','');
+  closeAll(); store.set('anyo17.onb','');
   gsap.to('#onb',{opacity:0,duration:.35,onComplete:()=>{$('#onb').style.display='none';}});
   S.friends.forEach(f=>{ if(f.el)f.el.remove(); f.el=null; (f.timers||[]).forEach(clearTimeout); });
   TUT={step:'tap',keep:S.friends}; const t={...ANYO,inbox:[],timers:[]}; S.friends=[t]; layout(false);
@@ -1672,8 +1687,8 @@ function startTutorial(){
   setTimeout(()=>{ if(!TUT)return; const b=t.el.querySelector('.ball'); tip(b,'Tap to open'); ghostTap(centerOf(b).x,centerOf(b).y); },900);
 }
 function finishTutorial(){
-  if(!TUT)return; const keep=TUT.keep||[]; TUT=null; hideTip(); store.set('anyo16.onb','1');
-  Object.assign(coach,{tap:false,hold:false,slide:false,arrange:false,plus:false}); store.set('anyo16.coach',JSON.stringify(coach)); // practice does not count as learned
+  if(!TUT)return; const keep=TUT.keep||[]; TUT=null; hideTip(); store.set('anyo17.onb','1');
+  Object.assign(coach,{tap:false,hold:false,slide:false,arrange:false,plus:false}); store.set('anyo17.coach',JSON.stringify(coach)); // practice does not count as learned
   const t=byId('anyo'); if(t){ (t.timers||[]).forEach(clearTimeout); if(t.el){ const el=t.el; gsap.to(el,{scale:.85,opacity:0,duration:.35,ease:'power2.in',onComplete:()=>el.remove()}); } }
   S.friends=keep.filter(f=>f.id!=='anyo'); S.friends.forEach(f=>{f.el=null;f.d=undefined;f.cx=f.cy=undefined;});
   setTimeout(()=>{ layout(true); if(!S.friends.length){ openSheet(); setTimeout(()=>{ const b=$('#aBody .pill'); if(b&&addOn)tip(b,'Connect with your people',{pos:'above'}); },1400); } else coachNext(); },420);
@@ -1745,7 +1760,7 @@ $('#prHap').onclick=()=>{ C.haptics=!(C.haptics!==false); saveC(); fillProfile()
 $('#prPhoto').onclick=()=>startOnboarding(2);
 $('#prHow').onclick=()=>{ closeProfile(); setTimeout(startTutorial,480); };
 $('#prInv').onclick=()=>{ closeProfile(); setTimeout(openSheet,480); };
-$('#prOut').onclick=()=>{ ['anyo16.cfg','anyo16.onb','anyo16.coach','anyo.me'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); location.reload(); };
+$('#prOut').onclick=()=>{ ['anyo17.cfg','anyo17.onb','anyo17.coach','anyo.me'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); location.reload(); };
 
 /* ---------- prototype panel ---------- */
 function closeAll(){ if(sheetOn)closeSheet(); if(profOn)closeProfile(); if(editing)setEdit(false); if(cur&&smode)closeStage(); hideTip(); }
@@ -1761,7 +1776,7 @@ function buildPanel(){
   $('#mReq').onclick=()=>{ const used=new Set(S.friends.map(f=>f.id).concat(S.requests.map(r=>r.id))); const p=POOL.find(q2=>!used.has(q2.id)&&!S.pend[q2.id]); if(!p)return; S.requests.push({...p}); updReq(); SFX.recv(); jelly($('#plus'),.8); toast(`${p.name} wants to be friends`); if(addOn)renderAdd(); };
   $('#mNames').onclick=()=>{ if(S.friends.length<2)return; let i=0; const run=()=>{ if(i>=Math.min(4,S.friends.length)){ peek(null); return; } peekF=null; peek(S.friends[i++]); setTimeout(run,650); }; run(); };
   $('#mShake').onclick=shake;
-  $('#mReset').onclick=()=>{ ['anyo16.cfg','anyo16.onb','anyo16.coach','anyo.me'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); location.reload(); };
+  $('#mReset').onclick=()=>{ ['anyo17.cfg','anyo17.onb','anyo17.coach','anyo.me'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); location.reload(); };
   $('#pClose').onclick=()=>$('#panel').classList.remove('open');
 }
 function syncPanel(){ $$('#pPreset button').forEach(b=>b.classList.toggle('on',b.dataset.v===C.style)); const n=S.friends.filter(f=>f.id!=='anyo').length; $$('#pPeople button').forEach(b=>b.classList.toggle('on',+b.dataset.n===n)); }
@@ -1873,7 +1888,7 @@ $('#pHap').onclick=()=>{ C.haptics=!(C.haptics!==false); saveC(); fillProfile();
 $$('#pLays button').forEach(b=>b.onclick=()=>{ C.layout=b.dataset.v; saveC(); fillProfile(); SFX.tap(); layout(true); });
 $('#pOrb').onclick=()=>startOnboarding('photo');
 $('#pHow').onclick=()=>{ closeProfile(); setTimeout(startTutorial,480); };
-$('#pOut').onclick=()=>{ ['anyo16.cfg','anyo16.onb','anyo16.coach','anyo.me'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); location.reload(); };
+$('#pOut').onclick=()=>{ ['anyo17.cfg','anyo17.onb','anyo17.coach','anyo.me'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); location.reload(); };
 
 /* ---------- onboarding: one question per screen, one black button ---------- */
 const ob=$('#ob'); let obStack=[], obStream=null, obSolo=false;
@@ -2033,13 +2048,32 @@ function installNow(){ ac(); SFX.tap(); haptic(10);
   toast('Open this page in Safari or Chrome to install'); }
 function closeIos(){ gsap.to('#iosS',{opacity:0,duration:.25,onComplete:()=>{ const s2=$('#iosS'); s2.style.display='none'; s2.style.opacity=1; gsap.killTweensOf('#iosS .arrow'); }}); }
 $('#instGo').onclick=installNow; $('#iosOk').onclick=closeIos; $('#iosDim').onclick=closeIos;
-$('#instSkip').onclick=()=>{ try{sessionStorage.setItem('anyo.skipInst','1')}catch(e){} SFX.tap(); hideInstall(()=>{ if(store.get('anyo16.onb')!=='1')startOnboarding(1); else coachNext(); }); };
+$('#instSkip').onclick=()=>{ try{sessionStorage.setItem('anyo.skipInst','1')}catch(e){} SFX.tap(); hideInstall(()=>{ if(store.get('anyo17.onb')!=='1')startOnboarding(1); else coachNext(); }); };
 /* install lives in the profile too */
 (()=>{ if(IS_STANDALONE)return; const b=document.createElement('button'); b.className='rowx'; b.id='pInst'; b.textContent='Install App'; $('#pHow').parentNode.insertBefore(b,$('#pHow')); b.onclick=()=>{ closeProfile(); setTimeout(installNow,480); }; })();
 
+
+/* ======================= b17: drawers ======================= */
+const dim=$('#shDim');
+function drawerOpen(el,done){ el.style.visibility='visible'; gsap.fromTo(el,{yPercent:100},{yPercent:0,duration:.55,ease:'expo.out',onComplete:done}); gsap.to(dim,{autoAlpha:1,duration:.35}); SFX.open(); haptic(10); }
+function drawerClose(el,done){ gsap.to(el,{yPercent:100,duration:.38,ease:'power3.in',onComplete:()=>{ el.style.visibility='hidden'; gsap.set(el,{yPercent:0,y:0}); done&&done(); }}); gsap.to(dim,{autoAlpha:0,duration:.3}); SFX.close(); }
+function openSheet(){ if(addOn||busy)return; addOn=sheetOn=true; coachDone('plus'); if(editing)setEdit(false); hideGhost(); hideTip(); $('#aIn').value=''; renderAdd(true); gsap.set(addS,{clipPath:'none'});
+  drawerOpen(addS); setTimeout(()=>{ if(!addOn)return; renderAdd(); gsap.fromTo('#aBody > *',{opacity:0,y:6},{opacity:1,y:0,duration:.35,stagger:.025,ease:'expo.out'}); },600); }
+function closeSheet(){ if(!addOn)return; addOn=sheetOn=false; document.activeElement&&document.activeElement.blur(); drawerClose(addS,()=>{ flushNew(); coachNext(); }); }
+function openProfile(){ if(profOn||busy)return; profOn=true; hideTip(); fillProfile(); drawerOpen(profS); gsap.fromTo('#profS .scrIn > *',{opacity:0,y:8},{opacity:1,y:0,duration:.4,stagger:.03,ease:'expo.out',delay:.12}); }
+function closeProfile(){ if(!profOn)return; profOn=false; document.activeElement&&document.activeElement.blur(); saveMe(); drawerClose(profS,()=>coachNext()); }
+dim.addEventListener('click',()=>{ if(addOn)closeSheet(); else if(profOn)closeProfile(); });
+/* drag the handle (or the top of the list when it is scrolled to the top) to dismiss */
+function dragToClose(el,close){ const grab=el.querySelector('.grab'), inner=el.querySelector('.scrIn'); let y0=null,t0=0,dy=0;
+  const down=e=>{ if(e.target.closest('input,button:not(.grab)'))return; if(e.currentTarget===inner&&inner.scrollTop>0)return; y0=e.clientY; t0=now(); dy=0; };
+  const move=e=>{ if(y0===null)return; dy=Math.max(0,e.clientY-y0); if(dy>6){ gsap.set(el,{y:dy}); gsap.set(dim,{opacity:Math.max(0,1-dy/400)}); } };
+  const up=()=>{ if(y0===null)return; const v=dy/Math.max(1,now()-t0); y0=null; if(dy>110||v>.7){ close(); } else { gsap.to(el,{y:0,duration:.4,ease:'expo.out'}); gsap.to(dim,{opacity:1,duration:.3}); } };
+  [grab,inner].forEach(x=>x.addEventListener('pointerdown',down)); addEventListener('pointermove',move); addEventListener('pointerup',up); addEventListener('pointercancel',up); }
+dragToClose(addS,()=>closeSheet()); dragToClose(profS,()=>closeProfile());
+
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
-if(q.has('reset')){ ['anyo16.cfg','anyo16.onb','anyo16.coach'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); C={...DEF}; }
+if(q.has('reset')){ ['anyo17.cfg','anyo17.onb','anyo17.coach'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); C={...DEF}; }
 if(q.get('style')&&STYLES[q.get('style')]){ const s=STYLES[q.get('style')]; Object.assign(C,{style:q.get('style'),bg:s.bg,ring:s.ring,layout:s.layout,float:s.float,liquid:s.liquid,accent:s.accent}); }
 buildPanel();
 S.friends=[]; S.requests=[{...POOL[0]},{...POOL[1]}];
@@ -2047,7 +2081,7 @@ applyC(false);
 if(q.get('n'))setCount(+q.get('n'));
 if(q.has('panel'))$('#panel').classList.add('open');
 C.float=false; C.tilt=false; C.liquid=false; C.ring='glass3d'; if(!['grid','bubble','hive'].includes(C.layout))C.layout='grid'; applyC(false); syncTop();
-if(store.get('anyo16.onb')==='1'){ layout(false); S.friends.forEach((f,i)=>{ gsap.fromTo(f.el,{scale:.9,opacity:0},{scale:1,opacity:1,duration:.5,ease:'expo.out',delay:.04+i*.03}); }); coachNext(); }
+if(store.get('anyo17.onb')==='1'){ layout(false); S.friends.forEach((f,i)=>{ gsap.fromTo(f.el,{scale:.9,opacity:0},{scale:1,opacity:1,duration:.5,ease:'expo.out',delay:.04+i*.03}); }); coachNext(); }
 else { layout(false); let skip=false; try{skip=sessionStorage.getItem('anyo.skipInst')==='1'}catch(e){} if(!IS_STANDALONE&&IS_TOUCH&&!skip&&!q.has('noinstall'))showInstall(); else startOnboarding(1); }
 seedRequests(); updReq(); syncPanel();
 window.__anyo={S,C,layout,setCount,applyC,shake,receive,byId};
