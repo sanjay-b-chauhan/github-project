@@ -1096,6 +1096,29 @@ video,img,canvas{-webkit-touch-callout:none;-webkit-user-select:none;user-select
 #obCh .chG button{width:58px!important;height:58px!important}
 #obCh .chG{grid-template-columns:repeat(3,58px)!important}
 #obCh .chSub{display:none}
+
+/* ======================= b29: your face, your pet behind you ======================= */
+#wel{display:none!important}
+.petB{position:absolute;width:72%;height:72%;left:-30%;top:-36%;z-index:-1;animation:petBob 3.2s ease-in-out infinite;pointer-events:none}
+.petB .ball{position:absolute;inset:0}
+@keyframes petBob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-3px) rotate(3deg)}}
+#pOrb .petB{width:52%;height:52%;left:-18%;top:-16%}
+.meStack{position:relative;width:118px;height:118px;margin:0 auto}
+.meStack>.ball{position:absolute;inset:0}
+.meStack .petB{width:56%;height:56%;left:-22%;top:-20%}
+#obPic .picO{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 270px);width:150px;height:150px;margin-left:-75px;border-radius:50%}
+#obPic .picO .ball{position:absolute;inset:0}
+#obPic .picO .empty{position:absolute;inset:0;border-radius:50%;background:#111114;display:grid;place-items:center}
+#obPic .picO .empty svg{width:40px;height:40px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#obPic .gal{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 446px);text-align:center;font:400 15px/1 var(--ui);color:var(--acc)}
+#obPic .gal button{padding:10px 14px;color:inherit;font:inherit}
+#obCh .chWrap .meStack{width:104px;height:104px}
+#obCh .chWrap{top:calc(env(safe-area-inset-top,0px) + 296px)!important}
+#obCh .chG,#pgLook .petG{grid-template-columns:repeat(4,58px)!important;gap:14px 16px!important}
+#obCh .chG button,#pgLook .petG button{width:58px!important;height:58px!important}
+#pgLook .you{display:flex;align-items:center;gap:16px}
+#pgLook .you .meStack{width:84px;height:84px;margin:10px 0 0 22px}
+#pgLook .you button{height:36px;padding:0 16px;border-radius:99px;background:#E6E6E8;font:400 15px/36px var(--ui);color:#111114}
 </style>
 </head>
 <body>
@@ -1248,7 +1271,7 @@ video,img,canvas{-webkit-touch-callout:none;-webkit-user-select:none;user-select
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b28</div>
+  <div id="build">b29</div>
 </div>
   </div></div>
 </div>
@@ -2722,10 +2745,10 @@ function demoHome(){ S.acts=S.acts||[]; if(!S.friends.length)setCount(7); seedRe
    <div class="sp" data-p="states"><div class="sl">Whole home</div><div class="gr" id="smSc"><button data-s="fresh">Fresh, nothing new</button><button data-s="busy">Busy day, every state</button><button data-s="unread">Everyone sent videos</button><button data-s="reply">Your turn everywhere</button><button data-s="sent">Waiting on them</button><button data-s="opened">Opened, no reply</button></div>
     <div class="sl">One person</div><div class="who" id="smW"></div>
     <div class="gr" id="smK" style="margin-top:10px"><button data-k="v1">Sends a video</button><button data-k="v3">Sends 3 videos</button><button data-k="reply">Your turn</button><button data-k="sent">Sent, unopened</button><button data-k="opened">Opened</button><button data-k="sending">Sending now</button><button data-k="clear">Clear</button><button data-k="remove" class="red">Remove</button></div></div>
-   <div class="sp" data-p="screens"><div class="gr" id="smG">${[['install','Install app'],['onb','Onboarding'],['how','How it works'],['wel','Penguin welcome'],['empty','Empty home'],['cam','Camera'],['view','Watching videos'],['focus','Hold a face'],['add','Add friends'],['rq','All requests'],['inv','Invite friends'],['prof','Profile'],['act','Activity'],['edit','Edit profile'],['toast','Undo toast'],['arrange','Arrange mode'],['anyo','Anyo first'],['ref','From invite link'],['cap','Photo capture'],['look','Make it yours']].map(([k,l])=>`<button data-g="${k}">${l}</button>`).join('')}</div></div>
+   <div class="sp" data-p="screens"><div class="gr" id="smG">${[['install','Install app'],['onb','Onboarding'],['how','How it works'],['empty','Empty home'],['cam','Camera'],['view','Watching videos'],['focus','Hold a face'],['add','Add friends'],['rq','All requests'],['inv','Invite friends'],['prof','Profile'],['act','Activity'],['edit','Edit profile'],['toast','Undo toast'],['arrange','Arrange mode'],['anyo','Anyo first'],['ref','From invite link'],['cap','Photo capture'],['look','Make it yours']].map(([k,l])=>`<button data-g="${k}">${l}</button>`).join('')}</div></div>
    <div class="sp" data-p="look"><div class="sl">Layout</div><div class="ch" id="smL"><button data-v="grid">Grid</button><button data-v="bubble">Bubbles</button><button data-v="hive">Honeycomb</button></div>
     <div class="sl">Start over</div><div class="gr"><button data-z="onb">Replay onboarding</button><button data-z="wipe" class="red">Log out, wipe all</button></div>
-    <div class="hint">Triple tap anywhere to open this. Build b28.</div></div>
+    <div class="hint">Triple tap anywhere to open this. Build b29.</div></div>
   </div>`;
   app.appendChild(d); app.appendChild(s); })();
 let simOn=false, simWho=null;
@@ -2888,7 +2911,7 @@ function reqDelivered(f){ const id=f.id, p=person(id)||f; S.pend[id]=setTimeout(
   swapRow(id); addAct('request',p); SFX.sent(); haptic(20); }
 paint=(o=>function(f,a){ if(f&&f.reqFor)return; o(f,a); })(paint);
 closeStage=(o=>function(){ o(); setTimeout(()=>{ $('#swHint span').textContent='Swipe down to close'; },520); })(closeStage);
-$('#aBody').addEventListener('click',e=>{ const b=e.target.closest('[data-a="add"]'); if(!b)return; e.stopPropagation(); const r=b.closest('.pr'), p=person(r.dataset.id); if(!p)return; SFX.tap(); haptic(10); reqCamera(p,r); },true);
+$('#addS').addEventListener('click',e=>{ const b=e.target.closest('#aBody [data-a="add"]'); if(!b)return; e.stopImmediatePropagation(); e.stopPropagation(); const r=b.closest('.pr'), p=person(r.dataset.id); if(!p)return; SFX.tap(); haptic(10); reqCamera(p,r); },true);
 
 /* ---------- hold a face = wiggle, × to remove, drag to rearrange ---------- */
 holdRing=(o=>function(f){ o(f); if(HR){ clearTimeout(HR.tm); HR.tm=setTimeout(()=>{ if(!T||T.f!==f||T.moved)return; killHold(true); T=null; haptic(35); setEdit(true); },620); } })(holdRing);
@@ -2924,6 +2947,7 @@ screen=(o=>function(g){ if(g==='anyo'){ closeAll(); hideOver(); anyoStart(); ret
 /* b28: onboarding QA fixes */
 life=(o=>function(f){ if(f&&(f.id==='anyo'||String(f.id).startsWith('ref-')))return; o(f); })(life);
 toast=(o=>function(m,u,ms){ if(INTRO&&INTRO!=='done'&&/Anyo/.test(m||''))u=null; return o(m,u,ms); })(toast);
+toast=(o=>function(m,u,ms){ const mm=/^(Sending to|Sent to) (.+)$/.exec(m||''); if(mm){ const pid=Object.keys(S.pend).find(id=>{ const p=person(id); return p&&p.name===mm[2]; }); if(pid&&!byId(pid)){ m=`Request sent to ${mm[2]}`; u=null; } } return o(m,u,ms); })(toast);
 finishViewer=(o=>function(){ const v=VW; if(v&&v.f.id==='anyo'&&v.items.some(it=>it.script==='reply')&&v.items[v.items.length-1].script!=='reply'){ const r=v.items.filter(it=>it.script==='reply'); v.items=r; } return o(); })(finishViewer);
 anyoStart=(o=>function(){ o(); app.classList.add('intro'); const A=byId('anyo'); if(A){ A.photo=img('p-cream.jpg'); if(A.el){ const ph=A.el.querySelector('.ph'); if(ph)ph.style.backgroundImage=`url(${A.photo})`; } } })(anyoStart);
 startTutorial=anyoStart;
@@ -2940,6 +2964,43 @@ function anyoSay(id){ const box=$('#obAnyo'), sb=box.querySelector('.sb'), f=SAY
   let k=0; sb.textContent=''; sayTm=setInterval(()=>{ k+=2; sb.textContent=t.slice(0,k); if(k>=t.length){ clearInterval(sayTm); sb.textContent=t; } },28); SFX.peek&&SFX.peek(); }
 let obCur='';
 obShow=(o=>function(id,back){ obCur=id; o(id,back); anyoSay(id); })(obShow);
+
+
+/* ======================= b29: human photo first, then a pet that lives behind it ======================= */
+showWel=function(){};
+const petKey=()=>THEMES[C.theme]?C.theme:'ring';
+const petHTML=()=>`<div class="petB">${orbHTML(img(THEMES[petKey()].img))}</div>`;
+const isHuman=u=>!!u&&!/\/p-[a-z]+\.jpg/.test(u)&&!/peng/.test(u);
+function stackHTML(){ return `<div class="meStack">${petHTML()}${orbHTML(S.me.photo)}</div>`; }
+syncTop=(o=>function(){ o(); const b=$('#meBtn'); let pb=b.querySelector('.petB'); if(pb)pb.remove(); b.insertAdjacentHTML('afterbegin',petHTML()); })(syncTop);
+fillProfile=(o=>function(){ o(); const b=$('#pOrb'); const pb=b.querySelector('.petB'); if(pb)pb.remove(); b.insertAdjacentHTML('afterbegin',petHTML()); })(fillProfile);
+applyTheme=(o=>function(){ o(); try{ syncTop(); }catch(e){} })(applyTheme);
+
+/* step: your photo (required) */
+(()=>{ const o=document.createElement('div'); o.className='ob'; o.id='obPic'; o.innerHTML=`<button class="picO" id="picO"></button><div class="gal"><button id="picGal">Choose from gallery</button></div><input type="file" id="picFile" accept="image/*" hidden><button class="fab off" id="obPicGo"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>`; $('#ob').insertBefore(o,$('#obCh')); })();
+SAY.obPic=()=>`Hey ${S.me.name||'you'}! Let me see your face.`;
+SAY.obCh=()=>obSolo?'Pick your pet.':'Now pick a pet. It stays right behind you.';
+function paintPic(){ const has=isHuman(S.me.photo); $('#picO').innerHTML=has?orbHTML(S.me.photo):`<div class="empty">${CAMI}</div>`; $('#obPicGo').classList.toggle('off',!has); }
+$('#picO').onclick=()=>{ SFX.tap(); openCapture(u=>{ S.me.photo=u; saveMe(); paintPic(); gsap.fromTo('#picO',{scale:.9},{scale:1,duration:.6,ease:'expo.out'}); }); };
+$('#picGal').onclick=()=>$('#picFile').click();
+$('#picFile').onchange=e=>{ const f=e.target.files&&e.target.files[0]; if(!f)return; const im=new Image(); im.onload=()=>{ const s2=Math.min(im.width,im.height), cv=document.createElement('canvas'); cv.width=cv.height=480; cv.getContext('2d').drawImage(im,(im.width-s2)/2,(im.height-s2)/2,s2,s2,0,0,480,480); S.me.photo=cv.toDataURL('image/jpeg',.86); saveMe(); paintPic(); URL.revokeObjectURL(im.src); }; im.src=URL.createObjectURL(f); e.target.value=''; };
+$('#obPicGo').onclick=()=>{ if(!isHuman(S.me.photo))return; SFX.tap(); obShow('obCh'); chStep(); };
+$('#obNaGo').onclick=()=>{ const n=$('#obName').value.trim(); if(!n)return; S.me.name=n; S.me.user=slug(n); saveMe(); SFX.tap(); obShow('obPic'); paintPic(); gsap.fromTo('#picO',{scale:.9,opacity:0},{scale:1,opacity:1,duration:.6,ease:'expo.out'}); };
+
+/* step: your pet. picking it never touches your photo */
+function petPicker(box,onDone,noStack){ box.innerHTML=`${noStack?'':stackHTML()}<div class="chG petG">${Object.entries(THEMES).map(([k,t])=>`<button data-k="${k}" class="${petKey()===k?'on':''}">${orbHTML(img(t.img))}</button>`).join('')}</div>`;
+  box.querySelectorAll('.chG button').forEach(b=>b.onclick=()=>{ SFX.pop(); haptic(10); box.querySelectorAll('.chG button').forEach(x=>x.classList.toggle('on',x===b)); pickTheme(b.dataset.k);
+    const st=box.querySelector('.meStack'); if(st){ st.outerHTML=stackHTML(); gsap.fromTo(box.querySelector('.meStack .petB'),{scale:.4,y:10},{scale:1,y:0,duration:.6,ease:'back.out(2)'}); } onDone&&onDone(); }); }
+chStep=function(){ if(!C.theme)C.theme='ring'; petPicker($('#chBox')); gsap.fromTo('#chBox .meStack',{scale:.9,opacity:0},{scale:1,opacity:1,duration:.7,ease:'expo.out'}); gsap.fromTo('#chBox .chG button',{opacity:0,y:8},{opacity:1,y:0,duration:.45,stagger:.03,ease:'expo.out',delay:.15}); };
+/* change photo from profile = the photo step alone */
+startOnboarding=(o=>function(step){ if(step==='photo'||step===2){ closeAll(); ob.style.display='block'; gsap.set(ob,{opacity:1}); obStack=[]; $$('.ob').forEach(x=>{x.style.display='none'; x.dataset.on='';}); obSolo=true; obShow('obPic'); paintPic(); return; } o(step); })(startOnboarding);
+$('#obPicGo').addEventListener('click',e=>{ if(obSolo&&isHuman(S.me.photo)){ e.stopImmediatePropagation(); gsap.to(ob,{opacity:0,duration:.3,onComplete:()=>{ ob.style.display='none'; }}); syncTop(); if(profOn)fillProfile(); } },true);
+/* Make it yours: you, your pet, background, icon */
+fillLook=(o=>async function(p){ await o(p); const B=p.querySelector('.pgB'); const lab=B.querySelector('.lab'); lab.textContent='You'; const ch=$('#lkCh');
+  ch.innerHTML=''; const you=document.createElement('div'); you.className='you'; you.innerHTML=`${stackHTML()}<button id="lkPhoto">New photo</button>`; ch.appendChild(you);
+  const pl=document.createElement('div'); pl.className='lab'; pl.style.marginTop='28px'; pl.textContent='Pet'; ch.appendChild(pl); const pg=document.createElement('div'); ch.appendChild(pg);
+  petPicker(pg,()=>{ you.querySelector('.meStack').outerHTML=stackHTML(); syncLook(); },true);
+  $('#lkPhoto').onclick=()=>openCapture(u=>{ S.me.photo=u; saveMe(); you.querySelector('.meStack').outerHTML=stackHTML(); syncTop(); fillProfile(); }); })(fillLook);
 
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
