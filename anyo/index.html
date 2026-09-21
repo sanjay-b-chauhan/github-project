@@ -1386,6 +1386,24 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
 /* b44: pet sits mid-right, a little lower */
 #meBtn .petB{top:-12%!important;right:-42%!important}
 .meStack .petB,#obCh > .meStack .petB{top:-4%!important;right:-26%!important}
+
+/* b45 */
+#anyoMock img.mini{height:auto!important;width:66px!important;border-radius:0!important;box-shadow:none!important;display:block!important;background:none!important;place-items:initial}
+#vCoach .z2,#vCoach .z3{border:0!important}
+
+/* b45: Anyo's space */
+#anyoS{height:auto!important;max-height:78%}
+#anyoS .scrIn{position:relative!important;padding:36px 20px calc(env(safe-area-inset-bottom,0px) + 28px)!important}
+#anyoS .aH{display:flex;align-items:center;gap:12px;margin:4px 0 14px}
+#anyoS .aH img{width:64px;height:64px;object-fit:contain;flex:none}
+#anyoS .aH .sb{background:#fff;border-radius:22px;padding:12px 16px;font:400 17px/1.3 var(--ui);color:#111114;box-shadow:0 12px 28px -16px rgba(0,0,0,.25)}
+#anyoS .rowx .ic{width:40px;height:40px;border-radius:50%;background:#E6E6E8;display:grid;place-items:center;margin-right:12px;flex:none}
+#anyoS .rowx .ic svg{width:19px;height:19px;fill:none;stroke:#111114;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#anyoS .rowx{justify-content:flex-start}
+#anyoS .rowx .t{flex:1}
+#pgNews .nw{padding:14px 4px;font:400 16px/1.4 var(--ui);color:#111114}
+#pgNews .nw small{display:block;color:#8A8A8E;font-size:13px;margin-bottom:4px}
+.bub[data-anyo="1"] .x{display:none!important}
 </style>
 </head>
 <body translate="no" class="notranslate">
@@ -1539,7 +1557,7 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b44</div>
+  <div id="build">b45</div>
 </div>
   </div></div>
 </div>
@@ -2532,7 +2550,7 @@ $('#obBack').onclick=()=>{ if(obSolo){ endPhoto(); ob.style.display='none'; retu
 $('#ob1Go').onclick=()=>{ ac(); motionPerm(); SFX.tap(); obShow('obPh'); };
 $('#obPhone').addEventListener('input',e=>{ const d=e.target.value.replace(/\D/g,'').slice(0,10); e.target.value=d.replace(/^(\d{0,3})(\d{0,3})(\d{0,4}).*/,(m,a,b,c)=>[a,b,c].filter(Boolean).join(' ')); $('#obPhGo').classList.toggle('off',d.length<10); });
 $('#obPhGo').onclick=()=>{ const b=$('#obPhGo'); b.innerHTML='<span class="spin"></span>'; document.activeElement.blur(); setTimeout(()=>{ b.innerHTML='<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'; obShow('obCo'); autoCode(); },900); };
-function autoCode(){ const cells=$$('#obCode span'); cells.forEach(c=>{c.textContent='';c.classList.remove('f');}); const code='482916'; cells[0].classList.add('f');
+function autoCode(){ const cells=$$('#obCode span'); cells.forEach(c=>{c.textContent='';c.classList.remove('f');}); const code='230999'; cells[0].classList.add('f');
   code.split('').forEach((d,i)=>setTimeout(()=>{ cells[i].textContent=d; cells[i].classList.remove('f'); if(cells[i+1])cells[i+1].classList.add('f'); SFX.tick(); haptic(4);
     if(i===5)setTimeout(()=>{ gsap.to(cells,{scale:1.06,duration:.12,yoyo:true,repeat:1,stagger:.03}); SFX.sent(); setTimeout(()=>obShow('obNa'),650); },250); },1100+i*140)); }
 $('#obName').addEventListener('input',e=>$('#obNaGo').classList.toggle('off',e.target.value.trim().length<1));
@@ -3018,7 +3036,7 @@ function demoHome(){ S.acts=S.acts||[]; if(!S.friends.length)setCount(7); seedRe
    <div class="sp" data-p="screens"><div class="gr" id="smG">${[['install','Install app'],['onb','Onboarding'],['how','How it works'],['empty','Empty home'],['cam','Camera'],['view','Watching videos'],['focus','Hold a face'],['add','Add friends'],['rq','All requests'],['inv','Invite friends'],['prof','Profile'],['act','Activity'],['edit','Edit profile'],['toast','Undo toast'],['arrange','Arrange mode'],['anyo','Anyo first'],['ref','From invite link'],['cap','Photo capture'],['look','Make it yours']].map(([k,l])=>`<button data-g="${k}">${l}</button>`).join('')}</div></div>
    <div class="sp" data-p="look"><div class="sl">Layout</div><div class="ch" id="smL"><button data-v="grid">Grid</button><button data-v="bubble">Bubbles</button><button data-v="hive">Honeycomb</button></div>
     <div class="sl">Start over</div><div class="gr"><button data-z="onb">Replay onboarding</button><button data-z="wipe" class="red">Log out, wipe all</button></div>
-    <div class="hint">Triple tap anywhere to open this. Build b44.</div></div>
+    <div class="hint">Triple tap anywhere to open this. Build b45.</div></div>
   </div>`;
   app.appendChild(d); app.appendChild(s); })();
 let simOn=false, simWho=null;
@@ -3677,6 +3695,47 @@ function hideVCoach(){ const c=$('#vCoach'); store.set('anyo42.vcoach','1'); gsa
 $('#vCoach').addEventListener('pointerdown',e=>{ e.stopPropagation(); }); $('#vCoach').addEventListener('click',e=>{ e.stopPropagation(); SFX.tap(); haptic(8); hideVCoach(); });
 startViewer=(o=>function(f,items,replay){ o(f,items,replay); setTimeout(()=>{ if(VW&&!replay)showVCoach(); },650); })(startViewer);
 stopViewer=(o=>function(){ o(); const c=$('#vCoach'); if(c.style.display==='block'){ c.style.display='none'; } })(stopViewer);
+
+
+/* b45: the watch coach only appears on a friend's video (second one you open), never on Anyo's */
+startViewer=(o=>function(f,items,replay){ if(f.id!=='anyo'&&!replay)store.set('anyo45.views',String(+(store.get('anyo45.views')||0)+1)); o(f,items,replay); })(startViewer);
+showVCoach=(o=>function(){ if(VW&&VW.f.id==='anyo')return false; if(+(store.get('anyo45.views')||0)<2)return false; return o(); })(showVCoach);
+
+
+/* b45: Anyo stays. It's where you talk to Anyo, report bugs, share ideas, and hear what's new */
+const ANYO_KEEP_MS=7*D; const anyoFree=()=>INTRO==='done'||(!INTRO&&store.get('anyo21.onb')==='1');
+if(!store.get('anyo.introAt')&&store.get('anyo21.onb')==='1')store.set('anyo.introAt',String(now()));
+const anyoLocked=()=>now()-(+(store.get('anyo.introAt')||now()))<ANYO_KEEP_MS;
+removeFriend=(o=>function(f){ if(f&&f.id==='anyo'&&anyoLocked()){ toast('Anyo stays with you for now'); haptic(10); return; } o(f); })(removeFriend);
+anyoDone=(o=>function(){ o(); store.set('anyo.introAt',String(now())); })(anyoDone);
+paint=(o=>function(f,a){ o(f,a); if(f&&f.id==='anyo'&&f.el)f.el.dataset.anyo=anyoLocked()?'1':''; })(paint);
+holdRing=(o=>function(f){ if(f&&f.id==='anyo'&&anyoLocked()){ return; } o(f); })(holdRing);
+/* the drawer */
+(()=>{ const d=document.createElement('div'); d.className='scr'; d.id='anyoS'; d.innerHTML=`<div class="grab"><span></span></div><div class="scrIn">
+  <div class="aH"><img src="img/peng-cut.png" alt=""><div class="sb" id="anyoHi">Hey! What's up?</div></div>
+  <button class="rowx" data-m="talk"><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 7.5A1.5 1.5 0 0 1 5.5 6h9A1.5 1.5 0 0 1 16 7.5v9a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 4 16.5z"/><path d="M16 10.5l4-2.5v8l-4-2.5"/></svg></span><span class="t">Talk to Anyo</span>${CHEV}</button>
+  <button class="rowx" data-m="bug"><span class="ic"><svg viewBox="0 0 24 24"><path d="M9 9V7.5a3 3 0 0 1 6 0V9"/><rect x="7" y="9" width="10" height="11" rx="5"/><path d="M4 13h3M17 13h3M5 8l2.5 2M19 8l-2.5 2M5 19l2.5-2M19 19l-2.5-2"/></svg></span><span class="t">Report a bug</span>${CHEV}</button>
+  <button class="rowx" data-m="idea"><span class="ic"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z"/></svg></span><span class="t">Share an idea</span>${CHEV}</button>
+  <button class="rowx" data-m="news"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.2 5.8L20 9l-4.6 3.8L17 19l-5-3.3L7 19l1.6-6.2L4 9l5.8-.2z"/></svg></span><span class="t">What's new</span>${CHEV}</button></div>`;
+  app.appendChild(d); })();
+const anyoS=$('#anyoS'); let anyoOn=false, ANYO_MODE=null;
+const pgNews=mkPage('pgNews',"What's new"); anyoS.appendChild(pgNews);
+const NEWS=[['b45','Anyo has its own space: talk, report a bug, share an idea'],['b44','Your pet sits right beside you'],['b43','Hold to pause, hold on the right for 2x'],['b42','Invites carry a hello video'],['b41','Swipe down closes faster everywhere']];
+function openAnyoS(){ if(anyoOn||busy)return; anyoOn=true; hideCoach&&hideCoach(); $('#anyoHi').textContent=`Hey ${S.me.name||'you'}! What's up?`; anyoS.style.visibility='visible'; drawerOpen(anyoS); gsap.fromTo('#anyoS .scrIn > *',{opacity:0,y:8},{opacity:1,y:0,duration:.4,stagger:.04,ease:'expo.out',delay:.1}); }
+function closeAnyoS(then){ if(!anyoOn)return; anyoOn=false; drawerClose(anyoS,then); }
+dim.addEventListener('click',()=>{ if(anyoOn)closeAnyoS(); });
+pullToClose(anyoS,()=>closeAnyoS());
+anyoS.addEventListener('click',e=>{ const b=e.target.closest('.rowx[data-m]'); if(!b)return; const m=b.dataset.m; SFX.tap(); haptic(8);
+  if(m==='news'){ pushPage(anyoS,pgNews,p=>{ p.querySelector('.pgB').innerHTML=NEWS.map(([v,t])=>`<div class="nw"><small>${v}</small>${t}</div>`).join(''); }); return; }
+  ANYO_MODE=m; closeAnyoS(()=>{ const a=byId('anyo'); if(!a)return; openStage(a); enterCamera(a); const t=$('#swHint span'); setTimeout(()=>{ gsap.killTweensOf(t); t.textContent=m==='bug'?'Show Anyo the bug':m==='idea'?'Tell Anyo your idea':'Say anything to Anyo'; gsap.to(t,{opacity:1,duration:.3}); },80); }); });
+openFriend=(o=>function(f){ if(f&&f.id==='anyo'&&!f.inbox.length&&anyoFree()){ openAnyoS(); return; } o(f); })(openFriend);
+ANYO_LINES.talk=()=>['Got it!','I watch every single one.','Talk soon.'];
+ANYO_LINES.bug=()=>['Thanks for the report.','The team will look at it today.','You rock.'];
+ANYO_LINES.idea=()=>['Ooh, I like that.',"I'm passing it to the team."];
+ANYO_LINES.news=()=>["Hey, it's Anyo.",'New in this update:',...NEWS.slice(0,3).map(n=>n[1])];
+deliver=(o=>function(f){ o(f); if(f.id==='anyo'&&anyoFree()){ const m=ANYO_MODE||'talk'; ANYO_MODE=null; setTimeout(()=>{ const g=byId('anyo'); if(!g)return; g.out=null; g.inbox.push(anyoMsg(m)); receive(g); },3200); } })(deliver);
+/* each new build: Anyo tells you what changed, once */
+setTimeout(()=>{ const B=$('#build').textContent; if(store.get('anyo21.onb')==='1'&&INTRO!=='hello'&&store.get('anyo45.news')!==B){ store.set('anyo45.news',B); const a=byId('anyo'); if(a&&!a.inbox.some(m=>m.script==='news')){ a.inbox.push(anyoMsg('news')); paint(a); } } },1500);
 
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
