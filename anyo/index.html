@@ -1259,6 +1259,48 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
 #obPh .obIn,#obNa .obIn{padding:18px 0}
 #obPhone,#obName{min-height:44px;caret-color:#111114}
 #ob .fab,#ob .bk.obBk,#ob .obBk{transition:transform .2s ease-out}
+
+/* ======================= b36 ======================= */
+/* onboarding sits on a soft sky */
+#ob{background:#DCEBFA center/cover no-repeat!important}
+/* keyboard open: everything slides up, nothing collides */
+#ob .obIn,#obAnyo,#ob .obFill{transition:transform .3s cubic-bezier(.2,.9,.2,1),top .3s cubic-bezier(.2,.9,.2,1)}
+#ob.kb .obFill{opacity:0;pointer-events:none}
+/* selfie: big glass bubble */
+#obPic .picO{width:268px!important;height:268px!important;margin-left:-134px!important;top:calc(env(safe-area-inset-top,0px) + 222px)!important;overflow:visible!important;box-shadow:none!important}
+#obPic .picO .vwrap{position:absolute;inset:0;border-radius:50%;overflow:hidden;background:#1b1d24;box-shadow:0 26px 50px -24px rgba(0,0,0,.45)}
+#obPic .picO .vwrap video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+#obPic .picO .glassO{position:absolute;inset:0;border-radius:50%;background:url(img/glass.png) center/100% 100% no-repeat;pointer-events:none}
+.picBar{bottom:calc(env(safe-area-inset-bottom,0px) + 29px)!important}
+#picRedo{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 42px);margin:0!important}
+/* pet step: your orb up top, pets rise from the bottom */
+#obCh .chWrap{top:auto!important;bottom:calc(env(safe-area-inset-bottom,0px) + 132px)!important}
+#obCh > .meStack{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 230px);width:176px!important;height:176px!important;margin-left:-88px}
+#obCh .chG{margin-top:0!important}
+.chG button.on::after{box-shadow:0 0 0 3px #111114!important}
+/* profile: the pet sits on the right, nothing clipped */
+#pOrb .petB{left:auto!important;right:-26%!important;top:2%!important;width:48%!important;height:48%!important}
+#profS .scrIn{padding-top:40px!important}
+/* Anyo's video has a real background + a little Anyo */
+#anyoMock .mini{position:absolute;left:24px;bottom:calc(env(safe-area-inset-bottom,0px) + 126px);width:62px;filter:drop-shadow(0 8px 12px rgba(0,0,0,.18))}
+#anyoCap.light{left:96px!important;right:20px!important;text-align:left!important}
+#anyoCap.light div{background:#fff;border-radius:22px;padding:12px 16px;display:inline-block;font-size:18px!important;box-shadow:0 12px 28px -14px rgba(0,0,0,.25)}
+/* patterns: simple, neutral, and they actually show */
+#bgLayer.bgp-dots{background:#F4F4F4 radial-gradient(rgba(17,17,20,.14) 1.6px,transparent 1.9px) 0 0/20px 20px!important}
+#bgLayer.bgp-tiny{background:#F4F4F4 radial-gradient(rgba(17,17,20,.12) 1px,transparent 1.3px) 0 0/12px 12px!important}
+#bgLayer.bgp-grid{background:linear-gradient(rgba(17,17,20,.07) 1px,transparent 1px) 0 0/26px 26px,linear-gradient(90deg,rgba(17,17,20,.07) 1px,transparent 1px) 0 0/26px 26px,#F4F4F4!important}
+#pgLook .bgi button.bgp-dots{background:#F4F4F4 radial-gradient(rgba(17,17,20,.18) 1.6px,transparent 1.9px) 0 0/12px 12px!important}
+#pgLook .bgi button.bgp-tiny{background:#F4F4F4 radial-gradient(rgba(17,17,20,.16) 1px,transparent 1.3px) 0 0/8px 8px!important}
+#pgLook .bgi button.bgp-grid{background:linear-gradient(rgba(17,17,20,.09) 1px,transparent 1px) 0 0/14px 14px,linear-gradient(90deg,rgba(17,17,20,.09) 1px,transparent 1px) 0 0/14px 14px,#F4F4F4!important}
+#pgLook .bgi button.pat{color:#6E6E73!important}
+/* hello: minimal success, you and them connected */
+#hello .hDone{gap:18px}
+#hello .hDone .pair{display:flex;align-items:center;gap:0}
+#hello .hDone .pair .o{position:relative;width:64px;height:64px}
+#hello .hDone .pair .o .ball{position:absolute;inset:0}
+#hello .hDone .pair .ln{width:56px;height:2px;background:repeating-linear-gradient(90deg,#111114 0 6px,transparent 6px 11px);opacity:.35}
+#hello .hDone .ck{display:none!important}
+#hello .hDone .t1{font-size:20px!important}
 </style>
 </head>
 <body translate="no" class="notranslate">
@@ -1412,7 +1454,7 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b35</div>
+  <div id="build">b36</div>
 </div>
   </div></div>
 </div>
@@ -2889,7 +2931,7 @@ function demoHome(){ S.acts=S.acts||[]; if(!S.friends.length)setCount(7); seedRe
    <div class="sp" data-p="screens"><div class="gr" id="smG">${[['install','Install app'],['onb','Onboarding'],['how','How it works'],['empty','Empty home'],['cam','Camera'],['view','Watching videos'],['focus','Hold a face'],['add','Add friends'],['rq','All requests'],['inv','Invite friends'],['prof','Profile'],['act','Activity'],['edit','Edit profile'],['toast','Undo toast'],['arrange','Arrange mode'],['anyo','Anyo first'],['ref','From invite link'],['cap','Photo capture'],['look','Make it yours']].map(([k,l])=>`<button data-g="${k}">${l}</button>`).join('')}</div></div>
    <div class="sp" data-p="look"><div class="sl">Layout</div><div class="ch" id="smL"><button data-v="grid">Grid</button><button data-v="bubble">Bubbles</button><button data-v="hive">Honeycomb</button></div>
     <div class="sl">Start over</div><div class="gr"><button data-z="onb">Replay onboarding</button><button data-z="wipe" class="red">Log out, wipe all</button></div>
-    <div class="hint">Triple tap anywhere to open this. Build b35.</div></div>
+    <div class="hint">Triple tap anywhere to open this. Build b36.</div></div>
   </div>`;
   app.appendChild(d); app.appendChild(s); })();
 let simOn=false, simWho=null;
@@ -3335,6 +3377,81 @@ picLive=async function(){ picShot=false; $('#picShut').style.display='block'; $(
   catch(e){ toast('Camera is off. You can add a photo later'); $('#obPicGo').classList.remove('off'); $('#picShut').style.display='none'; } };
 paintPic=function(){ picLive(); };
 openHello=(o=>async function(p,row){ await o(p,row); if(HL&&HL.stream)oneX(HL.stream); })(openHello);
+
+
+/* ======================= b36 ======================= */
+const SKY=skyURL('clouds');
+$('#ob').style.backgroundImage=`url(${SKY})`;
+/* haptics on every touch that does something */
+document.addEventListener('pointerdown',e=>{ if(e.target.closest('button,.bub,.ib,.rowx,.invR,.ar,.pr'))haptic(6); },true);
+
+/* 1. keyboard: the field glides up above it, arrows ride on top of the keyboard */
+if(window.visualViewport){ const vv=window.visualViewport; const fit=()=>{ const kb=Math.max(0,innerHeight-vv.height-vv.offsetTop), on=kb>80, ob=$('#ob'); ob.classList.toggle('kb',on);
+  const cur=$('.ob[data-on="1"]'); const inp=cur&&cur.querySelector('.obIn'); $$('#ob .obIn').forEach(e=>{ if(e!==inp)e.style.transform=''; });
+  if(inp){ const r=inp.getBoundingClientRect(), a=app.getBoundingClientRect(), sx=a.width/app.offsetWidth, y=(r.top-a.top)/sx-(parseFloat(inp.style.transform.replace(/[^\d.-]/g,''))||0)*0;
+    const target=Math.max(150,(vv.height)*.36); const cy=(inp.offsetTop); inp.style.transform=on?`translateY(${Math.min(0,target-cy)}px)`:''; }
+  $('#obAnyo').style.transform=on?'translateY(-34px) scale(.9)':''; };
+  vv.addEventListener('resize',fit); vv.addEventListener('scroll',fit); obShow=(o=>function(id,back){ o(id,back); setTimeout(fit,450); })(obShow); }
+
+/* 2. selfie: big glass bubble, natural words, Redo lines up with the arrows */
+SAY.obPic=()=>`Let me see you, ${S.me.name||'friend'}.`;
+$('#obPic').appendChild($('#picRedo'));
+picLive=(o=>async function(){ await o(); const po=$('#picO'), v=po.querySelector('video'); if(!v)return; const w=document.createElement('div'); w.className='vwrap'; w.appendChild(v); po.innerHTML=''; po.appendChild(w); po.insertAdjacentHTML('beforeend','<div class="glassO"></div>'); v.play&&v.play().catch(()=>{}); })(picLive);
+paintPic=function(){ picLive(); };
+
+/* 3. pets: calm, no tilt. the pet simply fades in behind you */
+petPicker=function(box,onDone,noStack){ box.innerHTML=`${noStack?'':stackHTML()}<div class="chG petG">${Object.entries(THEMES).map(([k,t])=>`<button data-k="${k}" class="${petKey()===k?'on':''}">${orbHTML(img(t.img))}</button>`).join('')}</div>`;
+  box.querySelectorAll('.chG button').forEach(b=>b.onclick=()=>{ SFX.pop(); haptic(12); box.querySelectorAll('.chG button').forEach(x=>x.classList.toggle('on',x===b)); C.theme=b.dataset.k; saveC(); try{ syncTop(); }catch(e){}
+    const st=box.querySelector('.meStack')||(box.id==='chBox'?$('#obCh > .meStack'):null); if(st){ const pb=st.querySelector('.petB'); if(pb){ const n=document.createElement('div'); n.innerHTML=petHTML(); const np=n.firstChild; pb.replaceWith(np); gsap.fromTo(np,{opacity:0,scale:.86},{opacity:1,scale:1,duration:.45,ease:'power3.out'}); } }
+    if(box.id==='chBox'){ const sb=$('#obAnyo .sb'); sb.textContent=`Meet ${PETN[b.dataset.k]}. It stays right behind you.`; } onDone&&onDone(); }); };
+chStep=function(){ if(!C.theme)C.theme='ring'; petPicker($('#chBox')); const st=$('#chBox .meStack'); const old=$('#obCh > .meStack'); if(old)old.remove(); if(st)$('#obCh').appendChild(st);
+  gsap.fromTo('#chBox .chG button',{opacity:0,y:40},{opacity:1,y:0,duration:.55,stagger:.035,ease:'expo.out',delay:.25}); };
+/* fluid: the photo you just took shrinks into place, pets rise from below */
+function flyOrb(fromEl,toEl,html,dur,done){ const a=app.getBoundingClientRect(), sx=a.width/app.offsetWidth, r0=fromEl.getBoundingClientRect(), r1=toEl.getBoundingClientRect(); const f=document.createElement('div'); f.className='petFly'; f.innerHTML=html;
+  Object.assign(f.style,{left:(r0.left-a.left)/sx+'px',top:(r0.top-a.top)/sx+'px',width:r0.width/sx+'px',height:r0.height/sx+'px',zIndex:95}); app.appendChild(f);
+  gsap.to(f,{x:(r1.left-r0.left)/sx,y:(r1.top-r0.top)/sx,width:r1.width/sx,height:r1.height/sx,duration:dur,ease:'power3.inOut',onComplete:()=>{ done&&done(); gsap.to(f,{opacity:0,duration:.15,onComplete:()=>f.remove()}); }}); return f; }
+{ const g=$('#obPicGo'); const c=g.cloneNode(true); g.replaceWith(c); c.onclick=()=>{ if(c.classList.contains('off'))return; picStop(); SFX.tap(); haptic(12);
+    if(obSolo){ gsap.to(ob,{opacity:0,duration:.3,onComplete:()=>{ ob.style.display='none'; }}); syncTop(); if(profOn)fillProfile(); return; }
+    const from=$('#picO'); const html=isHuman(S.me.photo)?orbHTML(S.me.photo):from.innerHTML; const rect=from.getBoundingClientRect();
+    const ghost=document.createElement('div'); ghost.style.cssText=`position:absolute;visibility:hidden;left:0;top:0;width:${rect.width}px;height:${rect.height}px`;
+    obShow('obCh'); chStep(); const st=$('#obCh > .meStack'); if(!st)return; gsap.set(st,{opacity:0}); gsap.set($('#obCh'),{x:0});
+    flyOrb(from,st,`<div class="meStack" style="position:absolute;inset:0;width:100%;height:100%">${orbHTML(S.me.photo)}</div>`,.7,()=>{ gsap.set(st,{opacity:1}); const pb=st.querySelector('.petB'); if(pb)gsap.fromTo(pb,{opacity:0,scale:.8},{opacity:1,scale:1,duration:.45,ease:'power3.out'}); }); }; }
+/* Enter: you and your pet glide down into your spot on home */
+$('#obChGo').onclick=()=>{ SFX.tap(); haptic(14); saveMe(); saveC(); if(obSolo){ gsap.to(ob,{opacity:0,duration:.3,onComplete:()=>{ ob.style.display='none'; }}); if(profOn)fillProfile(); return; }
+  const st=$('#obCh > .meStack'), me=$('#meBtn'); syncTop();
+  if(st){ const html=`<div class="meStack" style="position:absolute;inset:0;width:100%;height:100%">${petHTML()}${orbHTML(S.me.photo)}</div>`; flyOrb(st,me,html,.85,()=>{ gsap.set(me,{opacity:1}); jelly(me.querySelector('.ball'),.9); }); st.style.opacity=0; }
+  anyoStart(); gsap.set(me,{opacity:st?0:1}); ob.style.display='block'; gsap.set(ob,{opacity:1});
+  gsap.to(ob,{opacity:0,duration:.45,delay:.15,onComplete:()=>{ ob.style.display='none'; gsap.set(ob,{opacity:1}); }}); };
+
+/* 4. Anyo's video: sky background + a little Anyo telling it */
+(()=>{ const m=document.createElement('img'); m.className='mini'; m.src='img/peng-cut.png'; $('#anyoMock').appendChild(m); })();
+playSeg=(o=>function(i){ o(i); const v=VW; if(!v)return; const it=v.items[i]; if(it&&it.type==='anyo'){ const kb=media.querySelector('.kb'); kb.style.backgroundImage=`url(${SKY})`; const mini=$('#anyoMock .mini'); gsap.killTweensOf(mini); gsap.fromTo(mini,{y:20,opacity:0},{y:0,opacity:1,duration:.5,ease:'back.out(1.6)'}); gsap.to(mini,{y:-5,duration:.8,yoyo:true,repeat:-1,ease:'sine.inOut',delay:.5}); } })(playSeg);
+/* 5. intro words: short and clear */
+const _cn36=coachNext; coachNext=function(){ if(INTRO&&INTRO!=='done'){ setTimeout(()=>{ const a=byId('anyo'); if(!a||!a.el||busy||smode||sheetOn||profOn||onbOpen())return; const b=a.el.querySelector('.ball');
+    if(a.inbox.length)anyoCoach(b,'Tap on me'); else if(INTRO==='hello')anyoCoach(b,'Tap on me and send me a hello'); else if(INTRO==='wait')anyoCoach(b,'Video sent to Anyo'); },450); return; } _cn36(); };
+toast=(o=>function(m,u,ms){ if(INTRO&&INTRO!=='done'&&/Anyo/.test(m||''))return; return o(m,u,ms); })(toast);
+anyoCoach=(o=>function(target,text,opt={}){ if(opt.above&&target&&target.nodeType){ const k=centerOf(target); const c=$('#aCoach'); o({x:k.x,y:0},text,{}); const ch=c.offsetHeight, cw=c.offsetWidth, W=app.clientWidth; gsap.set(c,{x:Math.max(14,Math.min(W-cw-14,k.x-cw+k.r)),y:k.y-k.r-ch-14}); return; } o(target,text,opt); })(anyoCoach);
+
+/* 6. hello: one screen, a quiet success: you and them, linked */
+helloSend=(o=>function(){ const p=HL&&HL.p; o(); if(!p)return; setTimeout(()=>{ const d=$('#hello .hDone'); d.innerHTML=`<div class="pair"><div class="o">${orbHTML(S.me.photo)}</div><div class="ln"></div><div class="o">${orbHTML(p.photo)}</div></div><div class="t1">Invite sent to ${p.name}</div><div class="t2">You'll see them here when they join.</div>`;
+  gsap.fromTo(d.querySelectorAll('.o'),{scale:.6,opacity:0},{scale:1,opacity:1,duration:.5,stagger:.08,ease:'back.out(1.8)'}); gsap.fromTo(d.querySelector('.ln'),{scaleX:0},{scaleX:1,duration:.5,delay:.2,ease:'power3.out'}); },570); })(helloSend);
+
+/* 7. backgrounds: plain colours, sky photos, and a few simple patterns that actually render */
+delete BGI.stripes; delete BGI.bubbles; delete BGI.sunset; const _g=BGI.grid; delete BGI.grid; BGI.tiny={label:'Tiny dots',pat:1}; BGI.grid=_g; BGI.dots.label='Dots';
+BGI.clouds.url=()=>SKY;
+
+/* 8. app icons worth unlocking */
+function iconArt(kind){ const P={sky:['#8EC5F5','#EEF6FD'],midnight:['#1B2140','#3A3F7A'],sunset:['#FF9F80','#FFE0C9'],mint:['#8FE3C4','#E9FBF3'],gold:['#F7C948','#FFF3C4']}[kind]; return new Promise(res=>{ if(!P){ res('img/icon-192.png'); return; }
+  const cv=document.createElement('canvas'); cv.width=cv.height=192; const x=cv.getContext('2d'); const g=x.createLinearGradient(0,0,0,192); g.addColorStop(0,P[0]); g.addColorStop(1,P[1]); x.fillStyle=g; x.fillRect(0,0,192,192);
+  const im=new Image(); im.onload=()=>{ const h=150, w=im.width*h/im.height; x.shadowColor='rgba(0,0,0,.18)'; x.shadowBlur=14; x.shadowOffsetY=8; x.drawImage(im,(192-w)/2,30,w,h); res(cv.toDataURL('image/png')); }; im.src='img/peng-cut.png'; }); }
+iconURL=function(kind){ return iconArt(kind); };
+ICONS.length=0; ICONS.push(['classic','Classic',0],['sky','Sky',0],['sunset','Sunset',10],['mint','Mint',25],['midnight','Midnight',50],['gold','Gold',100]);
+if(!ICONS.some(([k])=>k===C.icon)){ C.icon='classic'; saveC(); }
+applyTheme();
+
+
+openSheet=(o=>function(){ hideCoach(); o(); })(openSheet); openProfile=(o=>function(){ hideCoach(); o(); })(openProfile);
+closeSheet=(o=>function(){ o(); if(INTRO&&INTRO!=='done')setTimeout(coachNext,500); })(closeSheet); closeProfile=(o=>function(){ o(); if(INTRO&&INTRO!=='done')setTimeout(coachNext,500); })(closeProfile);
 
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
