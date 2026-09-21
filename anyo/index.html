@@ -1218,7 +1218,7 @@ video,img,canvas{-webkit-touch-callout:none;-webkit-user-select:none;user-select
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b26</div>
+  <div id="build">b27</div>
 </div>
   </div></div>
 </div>
@@ -2695,7 +2695,7 @@ function demoHome(){ S.acts=S.acts||[]; if(!S.friends.length)setCount(7); seedRe
    <div class="sp" data-p="screens"><div class="gr" id="smG">${[['install','Install app'],['onb','Onboarding'],['how','How it works'],['wel','Penguin welcome'],['empty','Empty home'],['cam','Camera'],['view','Watching videos'],['focus','Hold a face'],['add','Add friends'],['rq','All requests'],['inv','Invite friends'],['prof','Profile'],['act','Activity'],['edit','Edit profile'],['toast','Undo toast'],['arrange','Arrange mode'],['anyo','Anyo first'],['ref','From invite link'],['cap','Photo capture'],['look','Make it yours']].map(([k,l])=>`<button data-g="${k}">${l}</button>`).join('')}</div></div>
    <div class="sp" data-p="look"><div class="sl">Layout</div><div class="ch" id="smL"><button data-v="grid">Grid</button><button data-v="bubble">Bubbles</button><button data-v="hive">Honeycomb</button></div>
     <div class="sl">Start over</div><div class="gr"><button data-z="onb">Replay onboarding</button><button data-z="wipe" class="red">Log out, wipe all</button></div>
-    <div class="hint">Triple tap anywhere to open this. Build b26.</div></div>
+    <div class="hint">Triple tap anywhere to open this. Build b27.</div></div>
   </div>`;
   app.appendChild(d); app.appendChild(s); })();
 let simOn=false, simWho=null;
@@ -2832,7 +2832,7 @@ playSeg=(o=>function(i){ o(i); const v=VW; if(!v)return; const it=v.items[i]; co
   if(it&&it.type==='anyo'){ const vo=media.querySelector('.vo'), kb=media.querySelector('.kb'); vo.style.display='none'; $('#vid').style.display='none'; $('#vid').pause(); kb.style.display='block'; kb.style.backgroundImage=`url(${it.scene})`; gsap.killTweensOf(kb); gsap.fromTo(kb,{scale:1.04},{scale:1.16,duration:it.dur,ease:'sine.inOut'});
     if(!it.lines)Object.assign(it,anyoMsg(it.script,it.extra),{at:it.at}); cap.style.display='block'; cap.innerHTML=''; capIdx=-1; }
   else cap.style.display='none'; })(playSeg);
-gsap.ticker.add(()=>{ const sh=$('#swHint'); if(sh)sh.style.visibility=smode==='viewer'?'hidden':'visible'; const v=VW, cap=$('#anyoCap'); if(!v){ if(cap.style.display!=='none'&&smode!=='viewer'){ cap.style.display='none'; } return; } const it=v.items[v.i]; if(!it||it.type!=='anyo')return;
+gsap.ticker.add(()=>{ const sh=$('#swHint'); if(sh)sh.style.visibility=smode==='viewer'?'hidden':''; const v=VW, cap=$('#anyoCap'); if(!v){ if(cap.style.display!=='none'&&smode!=='viewer'){ cap.style.display='none'; } return; } const it=v.items[v.i]; if(!it||it.type!=='anyo')return;
   const k=Math.min(it.lines.length-1,Math.floor(v.t/(it.dur/it.lines.length))); if(k!==capIdx){ capIdx=k; cap.innerHTML=`<div>${it.lines[k]}</div>`; gsap.fromTo(cap.firstChild,{y:14,opacity:0},{y:0,opacity:1,duration:.45,ease:'expo.out'}); } });
 finishViewer=(o=>function(){ const v=VW; if(!v)return o(); const last=v.items[v.items.length-1];
   if(last.type==='anyo'&&last.script==='reply'){ const f=v.f; stopViewer(); $('#anyoCap').style.display='none'; f.last=last; f.inbox=[]; f.replyDue=false; paint(f,false); closeStage(); setTimeout(anyoDone,700); return; }
