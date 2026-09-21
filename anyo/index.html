@@ -1361,6 +1361,24 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
 #cGlow{position:absolute;left:0;right:0;bottom:0;height:46%;z-index:3;pointer-events:none;opacity:0;background:radial-gradient(120% 70% at 50% 100%,rgba(229,72,77,.55),rgba(229,72,77,.18) 45%,transparent 75%);box-shadow:inset 0 -4px 0 rgba(229,72,77,.0)}
 
 #pOrb .petB{top:34%!important;right:-30%!important;width:46%!important;height:46%!important}
+
+/* b42: camera placeholder is one seamless sky, alive */
+#camFb{background:linear-gradient(180deg,#7DB1E5 0%,#95C1EA 66%,#95C1EA 100%)!important;overflow:hidden}
+#camFb::before{content:"";position:absolute;inset:-10% -60% 30% -60%;background:radial-gradient(ellipse 150px 44px at 18% 30%,rgba(255,255,255,.6),transparent 70%),radial-gradient(ellipse 200px 56px at 58% 18%,rgba(255,255,255,.45),transparent 70%),radial-gradient(ellipse 130px 40px at 84% 42%,rgba(255,255,255,.5),transparent 70%),radial-gradient(ellipse 170px 50px at 36% 58%,rgba(255,255,255,.35),transparent 70%);filter:blur(6px);animation:fbDrift 38s linear infinite}
+#camFb::after{content:"";position:absolute;left:-20%;right:-20%;bottom:0;height:36%;background:url(img/hero.jpg) 45% 100%/auto 100% no-repeat;-webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 26%);mask-image:linear-gradient(180deg,transparent 0%,#000 26%);animation:fbBob 5.5s ease-in-out infinite;transform-origin:50% 100%}
+@keyframes fbDrift{from{transform:translateX(-18%)}to{transform:translateX(18%)}}
+@keyframes fbBob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(.6deg)}}
+/* video coach marks */
+#vCoach{position:absolute;inset:0;z-index:9;display:none;background:rgba(10,12,18,.55);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);font-family:var(--ui);color:#fff}
+#vCoach .z{position:absolute;top:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:0 8px}
+#vCoach .z1{left:0;width:25%} #vCoach .z2{left:25%;width:41%;border-left:1px dashed rgba(255,255,255,.25);border-right:1px dashed rgba(255,255,255,.25)} #vCoach .z3{left:66%;width:34%}
+#vCoach .hand{width:44px;height:44px;border-radius:50%;box-shadow:0 0 0 2px #fff;background:rgba(255,255,255,.18);position:relative}
+#vCoach .hand::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:2px solid rgba(255,255,255,.6);animation:vcP 1.6s ease-out infinite}
+@keyframes vcP{from{transform:scale(.7);opacity:1}to{transform:scale(1.4);opacity:0}}
+#vCoach b{font-weight:400;font-size:16px;display:block}
+#vCoach small{font-size:13px;opacity:.75;display:block;margin-top:2px}
+#vCoach .ok{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 48px);transform:translateX(-50%);height:46px;padding:0 26px;border-radius:99px;background:#fff;color:#111114;font:400 16px/46px var(--ui)}
+#vCoach .sd{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 64px);text-align:center;font-size:14px;opacity:.85}
 </style>
 </head>
 <body translate="no" class="notranslate">
@@ -1514,7 +1532,7 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b41</div>
+  <div id="build">b42</div>
 </div>
   </div></div>
 </div>
@@ -2993,7 +3011,7 @@ function demoHome(){ S.acts=S.acts||[]; if(!S.friends.length)setCount(7); seedRe
    <div class="sp" data-p="screens"><div class="gr" id="smG">${[['install','Install app'],['onb','Onboarding'],['how','How it works'],['empty','Empty home'],['cam','Camera'],['view','Watching videos'],['focus','Hold a face'],['add','Add friends'],['rq','All requests'],['inv','Invite friends'],['prof','Profile'],['act','Activity'],['edit','Edit profile'],['toast','Undo toast'],['arrange','Arrange mode'],['anyo','Anyo first'],['ref','From invite link'],['cap','Photo capture'],['look','Make it yours']].map(([k,l])=>`<button data-g="${k}">${l}</button>`).join('')}</div></div>
    <div class="sp" data-p="look"><div class="sl">Layout</div><div class="ch" id="smL"><button data-v="grid">Grid</button><button data-v="bubble">Bubbles</button><button data-v="hive">Honeycomb</button></div>
     <div class="sl">Start over</div><div class="gr"><button data-z="onb">Replay onboarding</button><button data-z="wipe" class="red">Log out, wipe all</button></div>
-    <div class="hint">Triple tap anywhere to open this. Build b41.</div></div>
+    <div class="hint">Triple tap anywhere to open this. Build b42.</div></div>
   </div>`;
   app.appendChild(d); app.appendChild(s); })();
 let simOn=false, simWho=null;
@@ -3643,6 +3661,18 @@ viewerDown=function(e){ const a=app.getBoundingClientRect(), x=(e.clientX-a.left
     if(held){ if(VW){ VW.rate=1; VW.paused=false; } gsap.to(['#speed','#vPause'],{opacity:0,duration:.2}); return; }
     if(!VW)return; haptic(6); if(left)prevSeg(); else nextSeg(); };
   addEventListener('pointermove',mv); addEventListener('pointerup',up); addEventListener('pointercancel',up); };
+
+
+/* b42: first video ever: show how to watch */
+(()=>{ const c=document.createElement('div'); c.id='vCoach'; c.innerHTML=`<div class="sd">Swipe down to close</div>
+  <div class="z z1"><div class="hand"></div><div><b>Tap</b><small>go back</small></div></div>
+  <div class="z z2"><div class="hand"></div><div><b>Tap</b><small>next video</small></div><div style="height:18px"></div><div><b>Hold</b><small>pause</small></div></div>
+  <div class="z z3"><div class="hand"></div><div><b>Hold</b><small>2x speed</small></div></div><button class="ok">Got it</button>`; $('#stage').appendChild(c); })();
+function showVCoach(){ if(store.get('anyo42.vcoach'))return false; const c=$('#vCoach'); c.style.display='block'; gsap.fromTo(c,{opacity:0},{opacity:1,duration:.3}); gsap.fromTo(c.querySelectorAll('.z > *,.ok,.sd'),{y:10,opacity:0},{y:0,opacity:1,duration:.45,stagger:.05,ease:'expo.out'}); if(VW)VW.paused=true; return true; }
+function hideVCoach(){ const c=$('#vCoach'); store.set('anyo42.vcoach','1'); gsap.to(c,{opacity:0,duration:.25,onComplete:()=>c.style.display='none'}); if(VW)VW.paused=false; }
+$('#vCoach').addEventListener('pointerdown',e=>{ e.stopPropagation(); }); $('#vCoach').addEventListener('click',e=>{ e.stopPropagation(); SFX.tap(); haptic(8); hideVCoach(); });
+startViewer=(o=>function(f,items,replay){ o(f,items,replay); setTimeout(()=>{ if(VW&&!replay)showVCoach(); },650); })(startViewer);
+stopViewer=(o=>function(){ o(); const c=$('#vCoach'); if(c.style.display==='block'){ c.style.display='none'; } })(stopViewer);
 
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
