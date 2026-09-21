@@ -1332,6 +1332,33 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
 #arcC .a .ball{position:absolute;inset:0}
 #arcC .a::after{content:"";position:absolute;left:12%;right:12%;bottom:-16px;height:14px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.14),transparent);opacity:var(--sh,1)}
 .ob1wm{top:calc(34% + 96px)!important}
+
+/* b40 */
+/* the pet always sits on the RIGHT of your photo */
+.petB{left:auto!important;right:-30%!important;top:-34%!important}
+#meBtn .petB{right:-34%!important;top:-38%!important}
+.meStack .petB,#obCh > .meStack .petB{left:auto!important;right:-22%!important;top:-20%!important}
+#pgLook .you .meStack{margin-left:6px!important}
+/* Anyo's video: clean phone, no outline, always fits */
+#anyoMock .ms{box-shadow:0 30px 60px -30px rgba(0,0,0,.3)!important;transform-origin:50% 0;scale:var(--ms,1)}
+/* viewer taps: pause glyph */
+#vPause{position:absolute;left:50%;top:50%;width:84px;height:84px;margin:-42px 0 0 -42px;border-radius:50%;background:rgba(255,255,255,.22);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);display:grid;place-items:center;z-index:7;opacity:0;pointer-events:none}
+#vPause svg{width:30px;height:30px;fill:#fff}
+/* invite sent: overlapping pair + drawn tick */
+#hello .hDone .pair{position:relative;width:118px;height:70px;display:block}
+#hello .hDone .pair .o{position:absolute;top:0;width:70px!important;height:70px!important}
+#hello .hDone .pair .o:first-child{left:0;z-index:2} #hello .hDone .pair .o:nth-child(2){left:48px}
+#hello .hDone .pair .ln{display:none}
+#hello .hDone .tk{position:absolute;right:-12px;bottom:-8px;width:34px;height:34px;border-radius:50%;background:#111114;display:grid;place-items:center;z-index:3;box-shadow:0 0 0 3px var(--plane)}
+#hello .hDone .tk svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+
+.pgB{overflow-x:hidden!important}
+#pgLook .ics{overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:4px 20px 6px!important;touch-action:pan-x;overscroll-behavior-x:contain}
+#pgLook .ics::-webkit-scrollbar{display:none}
+#pgLook .ics button{flex:none}
+#pgLook .bgi{touch-action:pan-x;overscroll-behavior-x:contain}
+
+#cGlow{position:absolute;left:0;right:0;bottom:0;height:46%;z-index:3;pointer-events:none;opacity:0;background:radial-gradient(120% 70% at 50% 100%,rgba(229,72,77,.55),rgba(229,72,77,.18) 45%,transparent 75%);box-shadow:inset 0 -4px 0 rgba(229,72,77,.0)}
 </style>
 </head>
 <body translate="no" class="notranslate">
@@ -1485,7 +1512,7 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b39</div>
+  <div id="build">b40</div>
 </div>
   </div></div>
 </div>
@@ -2860,7 +2887,7 @@ let PGC=null;
 function mkPage(id,title,right=''){ const p=document.createElement('div'); p.className='pg'; p.id=id;
   p.innerHTML=`<div class="pgH"><button class="bk" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button><span class="pgT">${title}</span>${right}</div><div class="pgB"></div>`;
   p.querySelector('.bk').onclick=()=>popPage();
-  let x0=null,y0=0; p.addEventListener('pointerdown',e=>{ if(e.target.closest('input'))return; x0=e.clientX; y0=e.clientY; });
+  let x0=null,y0=0; p.addEventListener('pointerdown',e=>{ if(e.target.closest('input,.bgi,.ics,.chG'))return; x0=e.clientX; y0=e.clientY; });
   p.addEventListener('pointermove',e=>{ if(x0==null)return; const dx=e.clientX-x0; if(Math.abs(e.clientY-y0)>40){x0=null;return;} if(dx>0)gsap.set(p,{x:dx*.9}); });
   const up=e=>{ if(x0==null)return; const dx=e.clientX-x0; x0=null; if(dx>90)popPage(); else gsap.to(p,{x:0,duration:.35,ease:'expo.out'}); };
   p.addEventListener('pointerup',up); p.addEventListener('pointercancel',up); return p; }
@@ -2962,7 +2989,7 @@ function demoHome(){ S.acts=S.acts||[]; if(!S.friends.length)setCount(7); seedRe
    <div class="sp" data-p="screens"><div class="gr" id="smG">${[['install','Install app'],['onb','Onboarding'],['how','How it works'],['empty','Empty home'],['cam','Camera'],['view','Watching videos'],['focus','Hold a face'],['add','Add friends'],['rq','All requests'],['inv','Invite friends'],['prof','Profile'],['act','Activity'],['edit','Edit profile'],['toast','Undo toast'],['arrange','Arrange mode'],['anyo','Anyo first'],['ref','From invite link'],['cap','Photo capture'],['look','Make it yours']].map(([k,l])=>`<button data-g="${k}">${l}</button>`).join('')}</div></div>
    <div class="sp" data-p="look"><div class="sl">Layout</div><div class="ch" id="smL"><button data-v="grid">Grid</button><button data-v="bubble">Bubbles</button><button data-v="hive">Honeycomb</button></div>
     <div class="sl">Start over</div><div class="gr"><button data-z="onb">Replay onboarding</button><button data-z="wipe" class="red">Log out, wipe all</button></div>
-    <div class="hint">Triple tap anywhere to open this. Build b39.</div></div>
+    <div class="hint">Triple tap anywhere to open this. Build b40.</div></div>
   </div>`;
   app.appendChild(d); app.appendChild(s); })();
 let simOn=false, simWho=null;
@@ -3550,6 +3577,57 @@ function softLogout(){ closeAll(); hideOver(); hideCoach&&hideCoach(); const kee
   C.theme=null; C.bgi=null; C.plane=null; C.icon='classic'; saveC(); store.set('anyo38.bgreset','1'); applyTheme(); layout(false); updReq(); syncTop();
   const o=$('#obName'); if(o)o.value=''; const ph=$('#obPhone'); if(ph)ph.value=''; window.scrollTo(0,0); startOnboarding(1); }
 $('#pOut').onclick=()=>{ SFX.tap(); softLogout(); };
+
+
+/* b40: keyboard never lingers into the next screen (it squeezed Anyo's video) */
+obShow=(o=>function(id,back){ if(id!=='obPh'&&id!=='obNa'){ try{ document.activeElement&&document.activeElement.blur(); }catch(e){} } o(id,back); })(obShow);
+anyoStart=(o=>function(){ try{ document.activeElement&&document.activeElement.blur(); }catch(e){} o(); })(anyoStart);
+playSeg=(o=>function(i){ o(i); const v=VW; if(v&&v.items[i]&&v.items[i].type==='anyo'){ const H=app.clientHeight; $('#anyoMock').style.setProperty('--ms',Math.max(.6,Math.min(1,(H-330)/400)).toFixed(3)); } })(playSeg);
+/* viewer: tap left or centre = pause, tap right = 2x. hold = pause while held. swipe down closes, swipe sideways skips */
+(()=>{ const p=document.createElement('div'); p.id='vPause'; $('#stage').appendChild(p); })();
+const PAUSEI='<svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1.5"/><rect x="14" y="5" width="4" height="14" rx="1.5"/></svg>', PLAYI='<svg viewBox="0 0 24 24"><path d="M8 5.5v13a1 1 0 0 0 1.5.9l10.2-6.5a1 1 0 0 0 0-1.7L9.5 4.6A1 1 0 0 0 8 5.5z"/></svg>';
+function flashV(html,keep){ const p=$('#vPause'); p.innerHTML=html; gsap.killTweensOf(p); gsap.fromTo(p,{opacity:0,scale:.8},{opacity:1,scale:1,duration:.25,ease:'back.out(1.6)'}); if(!keep)gsap.to(p,{opacity:0,duration:.3,delay:.5}); }
+viewerDown=function(e){ const a=app.getBoundingClientRect(), x=(e.clientX-a.left)/a.width, x0=e.clientX, y0=e.clientY, t0=now(), right=x>.66; let held=false, swipe=null; const wasPaused=VW&&VW.paused;
+  const hold=setTimeout(()=>{ held=true; if(VW)VW.paused=true; },260);
+  const mv=ev=>{ const dx=ev.clientX-x0, dy=ev.clientY-y0; if(!swipe&&!held&&(Math.abs(dy)>12||Math.abs(dx)>18)){ clearTimeout(hold); swipe=Math.abs(dy)>=Math.abs(dx)?'y':'x'; if(swipe==='y'&&VW)VW.paused=true; } if(swipe==='y')dragStage(dy); };
+  const up=ev=>{ removeEventListener('pointermove',mv); removeEventListener('pointerup',up); removeEventListener('pointercancel',up); clearTimeout(hold);
+    if(swipe==='y'){ const dy=ev.clientY-y0; if(dy>120||dy/Math.max(1,now()-t0)>.6)closeViewerEarly(); else { gsap.to(sw,{y:0,scale:1,borderRadius:0,duration:.6,ease:'expo.out'}); if(VW)VW.paused=false; } return; }
+    if(swipe==='x'){ if(!VW)return; if(ev.clientX-x0<0)nextSeg(); else prevSeg(); return; }
+    if(held){ if(VW)VW.paused=wasPaused; return; } if(!VW)return;
+    if(right){ VW.rate=VW.rate===2?1:2; gsap.to('#speed',{opacity:VW.rate===2?1:0,duration:.25}); haptic(10); SFX.tap(); }
+    else { VW.paused=!VW.paused; flashV(VW.paused?PAUSEI:PLAYI,VW.paused); haptic(8); if(!VW.paused)gsap.to('#vPause',{opacity:0,duration:.3,delay:.4}); } };
+  addEventListener('pointermove',mv); addEventListener('pointerup',up); addEventListener('pointercancel',up); };
+stopViewer=(o=>function(){ o(); gsap.set('#vPause',{opacity:0}); gsap.set('#speed',{opacity:0}); })(stopViewer);
+/* invite sent: the two of you overlap, a tick draws, done */
+helloSend=(o=>function(){ const p=HL&&HL.p; o(); if(!p)return; setTimeout(()=>{ const d=$('#hello .hDone'); d.innerHTML=`<div class="pair"><div class="o">${orbHTML(S.me.photo)}</div><div class="o">${orbHTML(p.photo)}</div><div class="tk"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" stroke-dasharray="24" stroke-dashoffset="24"/></svg></div></div><div class="t1">Invite sent to ${p.name}</div>`;
+  const os=d.querySelectorAll('.o'); gsap.fromTo(os[0],{x:24,opacity:0},{x:0,opacity:1,duration:.5,ease:'expo.out'}); gsap.fromTo(os[1],{x:-24,opacity:0},{x:0,opacity:1,duration:.5,ease:'expo.out'});
+  gsap.fromTo(d.querySelector('.tk'),{scale:0},{scale:1,duration:.45,delay:.35,ease:'back.out(2)'}); gsap.to(d.querySelector('.tk path'),{attr:{'stroke-dashoffset':0},duration:.4,delay:.55,ease:'power2.out'}); setTimeout(()=>haptic(18),600); },575); })(helloSend);
+/* first requests: Saba, Navid and Juli */
+const FIRST_REQ=['saba','navid','juli'];
+seedRequests=function(){ FIRST_REQ.forEach(id=>{ const p=POOL.find(q=>q.id===id); if(p&&!byId(id)&&!S.requests.some(r=>r.id===id)&&!S.pend[id])S.requests.push({...p}); }); updReq(); };
+anyoDone=(o=>function(){ S.requests=S.requests.filter(r=>FIRST_REQ.includes(r.id)); seedRequests(); o(); S.requests=S.requests.filter(r=>FIRST_REQ.includes(r.id)); updReq(); })(anyoDone);
+
+
+/* b40: pull any drawer down to close, from anywhere in it, when its list is at the top */
+function pullToClose(sheet,close){ let y0=null,x0=0,dy=0,drag=false,t0=0,sc=null;
+  const scroller=()=>{ const pg=[...sheet.querySelectorAll('.pg')].find(p=>p.style.visibility==='visible'); return pg?pg.querySelector('.pgB'):sheet.querySelector('.scrIn'); };
+  sheet.addEventListener('touchstart',e=>{ if(e.touches.length>1||e.target.closest('input,textarea,.bgi,.ics')){ y0=null; return; } sc=scroller(); y0=e.touches[0].clientY; x0=e.touches[0].clientX; dy=0; drag=false; t0=now(); },{passive:true});
+  sheet.addEventListener('touchmove',e=>{ if(y0==null)return; const t=e.touches[0], d=t.clientY-y0, dx=t.clientX-x0;
+    if(!drag){ if(d>8&&Math.abs(d)>Math.abs(dx)&&(!sc||sc.scrollTop<=0)){ drag=true; y0=t.clientY; } else if(Math.abs(d)>8||Math.abs(dx)>8){ if(!(d>0&&(!sc||sc.scrollTop<=0)))y0=null; return; } else return; }
+    dy=Math.max(0,t.clientY-y0); e.preventDefault(); gsap.set(sheet,{y:dy}); },{passive:false});
+  sheet.addEventListener('touchend',()=>{ if(!drag){ y0=null; return; } const v=dy/Math.max(1,now()-t0); drag=false; y0=null;
+    if(dy>110||v>.8){ const sw2=e=>{ e.stopPropagation(); e.preventDefault(); }; sheet.addEventListener('click',sw2,{capture:true,once:true}); setTimeout(()=>sheet.removeEventListener('click',sw2,true),400); close(); }
+    else gsap.to(sheet,{y:0,duration:.35,ease:'expo.out'}); });
+  sheet.addEventListener('touchcancel',()=>{ if(drag)gsap.to(sheet,{y:0,duration:.35,ease:'expo.out'}); drag=false; y0=null; }); }
+pullToClose(addS,()=>closeSheet()); pullToClose(profS,()=>closeProfile());
+
+
+/* b40: dragging toward cancel lights the bottom edge red */
+(()=>{ const g=document.createElement('div'); g.id='cGlow'; $('#sw').appendChild(g); })();
+recMove=(o=>function(x,y){ o(x,y); if(!R)return; const p=R.p||0; gsap.set('#cGlow',{opacity:R.armed?1:Math.min(.85,p*1.1)}); })(recMove);
+stopRecUI=(o=>function(i){ o(i); gsap.to('#cGlow',{opacity:0,duration:i?0:.3}); })(stopRecUI);
+/* first requests are exactly Saba, Navid, Juli on a fresh start */
+setTimeout(()=>{ if(!store.get('anyo40.req')){ S.requests=S.requests.filter(r=>FIRST_REQ.includes(r.id)); seedRequests(); store.set('anyo40.req','1'); } },0);
 
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
