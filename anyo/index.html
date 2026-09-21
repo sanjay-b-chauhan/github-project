@@ -986,6 +986,16 @@ video,img,canvas{-webkit-touch-callout:none;-webkit-user-select:none;user-select
 #sim .who button.on .a{box-shadow:0 0 0 2px #F4F4F4,0 0 0 4px #111114}
 #sim .who button.on{color:#111114}
 #sim .hint{font:400 12px/1.4 var(--ui);color:#A0A0A6;margin:14px 2px 0}
+
+/* b24: recording is white; red only means cancel. summaries are opt-in */
+#timer,#recEdge{display:none!important}
+#orb .dot{background:#fff!important;box-shadow:0 6px 20px -6px rgba(0,0,0,.35)!important}
+#recBar span{background:#fff}
+#xT{transition:background-color .15s}
+#focCard.nosum .fl,#focCard.nosum .fs,#focCard.nosum .fa[data-a=watch]{display:none!important}
+#focCard.nosum{padding-top:20px}
+#focCard.nosum .fas{justify-content:center;gap:40px}
+#focArc.nosum{display:none!important}
 </style>
 </head>
 <body>
@@ -1138,7 +1148,7 @@ video,img,canvas{-webkit-touch-callout:none;-webkit-user-select:none;user-select
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b23</div>
+  <div id="build">b24</div>
 </div>
   </div></div>
 </div>
@@ -2615,7 +2625,7 @@ function demoHome(){ S.acts=S.acts||[]; if(!S.friends.length)setCount(7); seedRe
    <div class="sp" data-p="screens"><div class="gr" id="smG">${[['install','Install app'],['onb','Onboarding'],['how','How it works'],['wel','Penguin welcome'],['empty','Empty home'],['cam','Camera'],['view','Watching videos'],['focus','Hold a face'],['add','Add friends'],['rq','All requests'],['inv','Invite friends'],['prof','Profile'],['act','Activity'],['edit','Edit profile'],['toast','Undo toast'],['arrange','Arrange mode']].map(([k,l])=>`<button data-g="${k}">${l}</button>`).join('')}</div></div>
    <div class="sp" data-p="look"><div class="sl">Layout</div><div class="ch" id="smL"><button data-v="grid">Grid</button><button data-v="bubble">Bubbles</button><button data-v="hive">Honeycomb</button></div>
     <div class="sl">Start over</div><div class="gr"><button data-z="onb">Replay onboarding</button><button data-z="wipe" class="red">Log out, wipe all</button></div>
-    <div class="hint">Triple tap anywhere to open this. Build b23.</div></div>
+    <div class="hint">Triple tap anywhere to open this. Build b24.</div></div>
   </div>`;
   app.appendChild(d); app.appendChild(s); })();
 let simOn=false, simWho=null;
@@ -2677,6 +2687,18 @@ $('#sim .simB').addEventListener('click',e=>{ const b=e.target.closest('button')
   if(D.v){ C.layout=D.v; applyC(); syncTop&&syncTop(); layout(true); syncSim(); try{ store.set('anyo21.cfg',JSON.stringify(C)); }catch(err){} return; }
   if(D.z==='onb'){ closeSim(); store.set('anyo21.onb',''); setTimeout(()=>screen('onb'),250); return; }
   if(D.z==='wipe'){ wipe(); location.reload(); } });
+
+
+/* b24: while recording nothing is red. dragging toward × fills it red, and the progress line turns red once armed */
+recMove=(o=>function(x,y){ o(x,y); if(!R)return; const p=R.p||0;
+  gsap.set('#xT',{backgroundColor:`rgba(${Math.round(mix(20,229,p))},${Math.round(mix(20,72,p))},${Math.round(mix(26,77,p))},${mix(.28,.95,p)})`});
+  gsap.set('#recBar span',{backgroundColor:R.armed?'#E5484D':'#fff'}); })(recMove);
+stopRecUI=(o=>function(i){ o(i); setTimeout(()=>{ gsap.set('#xT',{backgroundColor:'rgba(20,20,26,.28)'}); gsap.set('#recBar span',{backgroundColor:'#fff'}); },i?0:320); })(stopRecUI);
+/* summaries: off by default, then hold a face = Arrange or Remove */
+(()=>{ const r=document.createElement('div'); r.className='rowx'; r.innerHTML='<span>AI summaries</span><button class="tg2" id="pSum"><span></span></button>'; $('#pHap').closest('.rowx').after(r);
+  $('#pSum').onclick=()=>{ C.summary=!C.summary; saveC(); fillProfile(); haptic(12); }; })();
+fillProfile=(o=>function(){ o(); $('#pSum').classList.toggle('on',!!C.summary); })(fillProfile);
+openFocus=(o=>function(f){ const off=!C.summary; $('#focCard').classList.toggle('nosum',off); $('#focArc').classList.toggle('nosum',off); o(f); })(openFocus);
 
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
