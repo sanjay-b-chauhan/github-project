@@ -1417,6 +1417,15 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
 #app #speed{display:flex!important;align-items:center;gap:6px;padding:0 14px!important;height:36px!important;width:auto!important;border-radius:99px!important;background:rgba(17,17,20,.55)!important;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#fff;font:400 15px/1 var(--ui)}
 #app #speed svg{width:16px!important;height:12px!important;fill:#fff}
 #vPause{display:none!important}
+
+/* b48: invites use the same camera; the top just says who it's for */
+#swHint .hiTo{display:none;align-items:center;gap:8px;padding:0;background:none}
+#swHint .hiTo .o{position:relative;width:26px;height:26px}
+#swHint .hiTo .o .ball{position:absolute;inset:0}
+#swHint .hiTo b{font:400 15px/1 var(--ui);color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.35)}
+#swHint .hiTo svg{display:none;width:15px;height:15px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#swHint.hiOn > span{display:none!important}
+#swHint.hiOn .hiTo{display:flex}
 </style>
 </head>
 <body translate="no" class="notranslate">
@@ -1570,7 +1579,7 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b47</div>
+  <div id="build">b48</div>
 </div>
   </div></div>
 </div>
@@ -3049,7 +3058,7 @@ function demoHome(){ S.acts=S.acts||[]; if(!S.friends.length)setCount(7); seedRe
    <div class="sp" data-p="screens"><div class="gr" id="smG">${[['install','Install app'],['onb','Onboarding'],['how','How it works'],['empty','Empty home'],['cam','Camera'],['view','Watching videos'],['focus','Hold a face'],['add','Add friends'],['rq','All requests'],['inv','Invite friends'],['prof','Profile'],['act','Activity'],['edit','Edit profile'],['toast','Undo toast'],['arrange','Arrange mode'],['anyo','Anyo first'],['ref','From invite link'],['cap','Photo capture'],['look','Make it yours']].map(([k,l])=>`<button data-g="${k}">${l}</button>`).join('')}</div></div>
    <div class="sp" data-p="look"><div class="sl">Layout</div><div class="ch" id="smL"><button data-v="grid">Grid</button><button data-v="bubble">Bubbles</button><button data-v="hive">Honeycomb</button></div>
     <div class="sl">Start over</div><div class="gr"><button data-z="onb">Replay onboarding</button><button data-z="wipe" class="red">Log out, wipe all</button></div>
-    <div class="hint">Triple tap anywhere to open this. Build b47.</div></div>
+    <div class="hint">Triple tap anywhere to open this. Build b48.</div></div>
   </div>`;
   app.appendChild(d); app.appendChild(s); })();
 let simOn=false, simWho=null;
@@ -3733,7 +3742,7 @@ holdRing=(o=>function(f){ if(f&&f.id==='anyo'&&anyoLocked()){ return; } o(f); })
   app.appendChild(d); })();
 const anyoS=$('#anyoS'); let anyoOn=false, ANYO_MODE=null;
 const pgNews=mkPage('pgNews',"What's new"); anyoS.appendChild(pgNews);
-const NEWS=[['b47','Hold right shows a clean 2x, hold to pause without icons'],['b46','Swipe down to close an invite, slide away to cancel a hello'],['b45','Anyo has its own space: talk, report a bug, share an idea'],['b44','Your pet sits right beside you'],['b43','Hold to pause, hold on the right for 2x'],['b42','Invites carry a hello video'],['b41','Swipe down closes faster everywhere']];
+const NEWS=[['b48','Invites use the same camera: hold to record, drag down to cancel'],['b47','Hold right shows a clean 2x, hold to pause without icons'],['b46','Swipe down to close an invite, slide away to cancel a hello'],['b45','Anyo has its own space: talk, report a bug, share an idea'],['b44','Your pet sits right beside you'],['b43','Hold to pause, hold on the right for 2x'],['b42','Invites carry a hello video'],['b41','Swipe down closes faster everywhere']];
 function openAnyoS(){ if(anyoOn||busy)return; anyoOn=true; hideCoach&&hideCoach(); $('#anyoHi').textContent=`Hey ${S.me.name||'you'}! What's up?`; anyoS.style.visibility='visible'; drawerOpen(anyoS); gsap.fromTo('#anyoS .scrIn > *',{opacity:0,y:8},{opacity:1,y:0,duration:.4,stagger:.04,ease:'expo.out',delay:.1}); }
 function closeAnyoS(then){ if(!anyoOn)return; anyoOn=false; drawerClose(anyoS,then); }
 dim.addEventListener('click',()=>{ if(anyoOn)closeAnyoS(); });
@@ -3769,6 +3778,20 @@ setTimeout(()=>{ const B=$('#build').textContent; if(store.get('anyo21.onb')==='
 })();
 
 $('#speed').innerHTML='<span>2x</span><svg viewBox="0 0 22 16"><path d="M0 0l10 8-10 8zM11 0l10 8-10 8z"/></svg>';
+
+/* b48: invite = the normal camera. hold anywhere to record, drag down to × to cancel, swipe down to close */
+(()=>{ const t=document.createElement('div'); t.className='hiTo'; $('#swHint').appendChild(t); })();
+reqCamera=function(p,row){ const pf={id:p.id,name:p.name,photo:p.photo,clip:p.clip,inbox:[],timers:[],reqFor:true,el:row}; openStage(pf); enterCamera(pf);
+  const h=$('#swHint'); h.querySelector('.hiTo').innerHTML=`<div class="o">${orbHTML(p.photo)}</div><b>Say hi to ${p.name}</b>${PLANE}`; h.classList.add('hiOn'); gsap.fromTo(h.querySelector('.hiTo'),{y:-8,opacity:0},{y:0,opacity:1,duration:.4,ease:'expo.out',delay:.3}); };
+closeStage=(o=>function(){ o(); setTimeout(()=>$('#swHint').classList.remove('hiOn'),520); })(closeStage);
+sendVideo=(o=>function(){ const f=cur; o(); if(f&&f.reqFor)setTimeout(()=>$('#swHint').classList.remove('hiOn'),600); })(sendVideo);
+reqDelivered=(o=>function(f){ o(f); setTimeout(()=>toast(`Invite sent to ${f.name}`),350); })(reqDelivered);
+toast=(o=>function(m,u,ms){ if(/^Request sent to /.test(m||''))return; return o(m,u,ms); })(toast);
+
+
+/* b48: once the camera is fully open, drop the reveal mask so no edge ever shows what's behind */
+openStage=(o=>function(f){ o(f); setTimeout(()=>{ if(cur&&smode){ stage.style.webkitMaskImage='none'; stage.style.maskImage='none'; } },720); })(openStage);
+
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
 if(q.has('reset')){ ['anyo21.cfg','anyo21.onb','anyo21.coach'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}}); C={...DEF}; }
