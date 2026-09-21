@@ -1359,6 +1359,8 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
 #pgLook .bgi{touch-action:pan-x;overscroll-behavior-x:contain}
 
 #cGlow{position:absolute;left:0;right:0;bottom:0;height:46%;z-index:3;pointer-events:none;opacity:0;background:radial-gradient(120% 70% at 50% 100%,rgba(229,72,77,.55),rgba(229,72,77,.18) 45%,transparent 75%);box-shadow:inset 0 -4px 0 rgba(229,72,77,.0)}
+
+#pOrb .petB{top:34%!important;right:-30%!important;width:46%!important;height:46%!important}
 </style>
 </head>
 <body translate="no" class="notranslate">
@@ -1512,7 +1514,7 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b40</div>
+  <div id="build">b41</div>
 </div>
   </div></div>
 </div>
@@ -1963,14 +1965,16 @@ function flipCam(){ facing=facing==='user'?'environment':'user'; SFX.tap(); hapt
 $('#last').addEventListener('pointerdown',e=>e.stopPropagation()); $('#last').addEventListener('click',e=>{e.stopPropagation(); if(smode==='camera'&&cur&&cur.last){SFX.open(); startViewer(cur,[cur.last],true);} });
 stage.addEventListener('pointerdown',e=>{ if(busy||!cur)return; ac(); const a=app.getBoundingClientRect(), sx=a.width/app.offsetWidth, x0=e.clientX, y0=e.clientY, t0=now(); let swipe=false, holding=false;
   if(smode==='viewer'){ viewerDown(e); return; } if(smode!=='camera')return;
-  const hold=setTimeout(()=>{holding=true; hideGhost(); startRec((e.clientX-a.left)/sx,(e.clientY-a.top)/sx);},140);
-  const mv=ev=>{ const dx=ev.clientX-x0, dy=ev.clientY-y0; if(holding){recMove((ev.clientX-a.left)/sx,(ev.clientY-a.top)/sx);return;} if(!swipe&&Math.hypot(dx,dy)>10){clearTimeout(hold);swipe=true;} if(swipe)dragStage(dy); };
+  const hold=setTimeout(()=>{holding=true; hideGhost(); startRec((e.clientX-a.left)/sx,(e.clientY-a.top)/sx);},190);
+  const mv=ev=>{ const dx=ev.clientX-x0, dy=ev.clientY-y0;
+    if(holding&&R&&now()-R.t0<450&&dy>26&&dy>Math.abs(dx)*1.4){ holding=false; try{R.rec&&R.rec.state!=='inactive'&&R.rec.stop()}catch(err){} clearInterval(R.iv); R=null; stopRecUI(true); swipe=true; }
+    if(holding){recMove((ev.clientX-a.left)/sx,(ev.clientY-a.top)/sx);return;} if(!swipe&&Math.hypot(dx,dy)>6){clearTimeout(hold);swipe=true;} if(swipe)dragStage(dy); };
   const up=ev=>{ removeEventListener('pointermove',mv); removeEventListener('pointerup',up); removeEventListener('pointercancel',up); clearTimeout(hold);
     if(holding){endRec(ev.type==='pointercancel');return;} if(swipe){releaseStage(ev.clientY-y0,(ev.clientY-y0)/Math.max(1,now()-t0));return;}
     const tn=now(); if(tn-lastTap<320){flipCam();lastTap=0;} else lastTap=tn; };
   addEventListener('pointermove',mv); addEventListener('pointerup',up); addEventListener('pointercancel',up); });
 function dragStage(dy){ const d=Math.max(0,dy); gsap.set(sw,{y:d*.85,scale:1-Math.min(.35,d/app.clientHeight*.5),borderRadius:Math.min(60,d*.4)}); }
-function releaseStage(dy,vel){ if(dy>120||vel>.6){haptic(10);closeStage();} else gsap.to(sw,{y:0,scale:1,borderRadius:0,duration:.6,ease:'expo.out'}); }
+function releaseStage(dy,vel){ if(dy>70||vel>.35){haptic(10);closeStage();} else gsap.to(sw,{y:0,scale:1,borderRadius:0,duration:.6,ease:'expo.out'}); }
 function xCenter(){ const a=app.getBoundingClientRect(), sx=a.width/app.offsetWidth, r=$('#xT').getBoundingClientRect(); return {x:(r.left-a.left+r.width/2)/sx,y:(r.top-a.top+r.height/2)/sx}; }
 function startRec(x,y){ R={t0:now(),armed:false,x0:x,y0:y,p:0}; SFX.rec(); haptic(20);
   gsap.killTweensOf(['#orb','#orb .dot','#orb .xx','#xT']);
@@ -2664,7 +2668,7 @@ dim.addEventListener('click',()=>{ if(addOn)closeSheet(); else if(profOn)closePr
 function dragToClose(el,close){ const grab=el.querySelector('.grab'), inner=el.querySelector('.scrIn'); let y0=null,t0=0,dy=0;
   const down=e=>{ if(e.target.closest('input,button:not(.grab)'))return; if(e.currentTarget===inner&&inner.scrollTop>0)return; y0=e.clientY; t0=now(); dy=0; };
   const move=e=>{ if(y0===null)return; dy=Math.max(0,e.clientY-y0); if(dy>6){ gsap.set(el,{y:dy}); gsap.set(dim,{opacity:Math.max(0,1-dy/400)}); } };
-  const up=()=>{ if(y0===null)return; const v=dy/Math.max(1,now()-t0); y0=null; if(dy>110||v>.7){ close(); } else { gsap.to(el,{y:0,duration:.4,ease:'expo.out'}); gsap.to(dim,{opacity:1,duration:.3}); } };
+  const up=()=>{ if(y0===null)return; const v=dy/Math.max(1,now()-t0); y0=null; if(dy>70||v>.45){ close(); } else { gsap.to(el,{y:0,duration:.4,ease:'expo.out'}); gsap.to(dim,{opacity:1,duration:.3}); } };
   [grab,inner].forEach(x=>x.addEventListener('pointerdown',down)); addEventListener('pointermove',move); addEventListener('pointerup',up); addEventListener('pointercancel',up); }
 dragToClose(addS,()=>closeSheet()); dragToClose(profS,()=>closeProfile());
 
@@ -2989,7 +2993,7 @@ function demoHome(){ S.acts=S.acts||[]; if(!S.friends.length)setCount(7); seedRe
    <div class="sp" data-p="screens"><div class="gr" id="smG">${[['install','Install app'],['onb','Onboarding'],['how','How it works'],['empty','Empty home'],['cam','Camera'],['view','Watching videos'],['focus','Hold a face'],['add','Add friends'],['rq','All requests'],['inv','Invite friends'],['prof','Profile'],['act','Activity'],['edit','Edit profile'],['toast','Undo toast'],['arrange','Arrange mode'],['anyo','Anyo first'],['ref','From invite link'],['cap','Photo capture'],['look','Make it yours']].map(([k,l])=>`<button data-g="${k}">${l}</button>`).join('')}</div></div>
    <div class="sp" data-p="look"><div class="sl">Layout</div><div class="ch" id="smL"><button data-v="grid">Grid</button><button data-v="bubble">Bubbles</button><button data-v="hive">Honeycomb</button></div>
     <div class="sl">Start over</div><div class="gr"><button data-z="onb">Replay onboarding</button><button data-z="wipe" class="red">Log out, wipe all</button></div>
-    <div class="hint">Triple tap anywhere to open this. Build b40.</div></div>
+    <div class="hint">Triple tap anywhere to open this. Build b41.</div></div>
   </div>`;
   app.appendChild(d); app.appendChild(s); })();
 let simOn=false, simWho=null;
@@ -3613,10 +3617,10 @@ function pullToClose(sheet,close){ let y0=null,x0=0,dy=0,drag=false,t0=0,sc=null
   const scroller=()=>{ const pg=[...sheet.querySelectorAll('.pg')].find(p=>p.style.visibility==='visible'); return pg?pg.querySelector('.pgB'):sheet.querySelector('.scrIn'); };
   sheet.addEventListener('touchstart',e=>{ if(e.touches.length>1||e.target.closest('input,textarea,.bgi,.ics')){ y0=null; return; } sc=scroller(); y0=e.touches[0].clientY; x0=e.touches[0].clientX; dy=0; drag=false; t0=now(); },{passive:true});
   sheet.addEventListener('touchmove',e=>{ if(y0==null)return; const t=e.touches[0], d=t.clientY-y0, dx=t.clientX-x0;
-    if(!drag){ if(d>8&&Math.abs(d)>Math.abs(dx)&&(!sc||sc.scrollTop<=0)){ drag=true; y0=t.clientY; } else if(Math.abs(d)>8||Math.abs(dx)>8){ if(!(d>0&&(!sc||sc.scrollTop<=0)))y0=null; return; } else return; }
+    if(!drag){ if(d>5&&Math.abs(d)>Math.abs(dx)&&(!sc||sc.scrollTop<=0)){ drag=true; y0=t.clientY; } else if(Math.abs(d)>8||Math.abs(dx)>8){ if(!(d>0&&(!sc||sc.scrollTop<=0)))y0=null; return; } else return; }
     dy=Math.max(0,t.clientY-y0); e.preventDefault(); gsap.set(sheet,{y:dy}); },{passive:false});
   sheet.addEventListener('touchend',()=>{ if(!drag){ y0=null; return; } const v=dy/Math.max(1,now()-t0); drag=false; y0=null;
-    if(dy>110||v>.8){ const sw2=e=>{ e.stopPropagation(); e.preventDefault(); }; sheet.addEventListener('click',sw2,{capture:true,once:true}); setTimeout(()=>sheet.removeEventListener('click',sw2,true),400); close(); }
+    if(dy>70||v>.45){ const sw2=e=>{ e.stopPropagation(); e.preventDefault(); }; sheet.addEventListener('click',sw2,{capture:true,once:true}); setTimeout(()=>sheet.removeEventListener('click',sw2,true),400); close(); }
     else gsap.to(sheet,{y:0,duration:.35,ease:'expo.out'}); });
   sheet.addEventListener('touchcancel',()=>{ if(drag)gsap.to(sheet,{y:0,duration:.35,ease:'expo.out'}); drag=false; y0=null; }); }
 pullToClose(addS,()=>closeSheet()); pullToClose(profS,()=>closeProfile());
@@ -3628,6 +3632,17 @@ recMove=(o=>function(x,y){ o(x,y); if(!R)return; const p=R.p||0; gsap.set('#cGlo
 stopRecUI=(o=>function(i){ o(i); gsap.to('#cGlow',{opacity:0,duration:i?0:.3}); })(stopRecUI);
 /* first requests are exactly Saba, Navid, Juli on a fresh start */
 setTimeout(()=>{ if(!store.get('anyo40.req')){ S.requests=S.requests.filter(r=>FIRST_REQ.includes(r.id)); seedRequests(); store.set('anyo40.req','1'); } },0);
+
+
+/* b41: viewer back to: tap = next (left edge = back), hold = pause, hold right = 2x. swipe down is quick and forgiving */
+viewerDown=function(e){ const a=app.getBoundingClientRect(), x=(e.clientX-a.left)/a.width, x0=e.clientX, y0=e.clientY, t0=now(), right=x>.66, left=x<.25; let held=false, swipe=false;
+  const hold=setTimeout(()=>{ held=true; if(!VW)return; if(right){ VW.rate=2; gsap.to('#speed',{opacity:1,duration:.2}); haptic(10); } else { VW.paused=true; flashV(PAUSEI,true); haptic(8); } },230);
+  const mv=ev=>{ const dy=ev.clientY-y0, dx=ev.clientX-x0; if(!swipe&&dy>6&&dy>Math.abs(dx)){ clearTimeout(hold); if(held){ held=false; if(VW){ VW.rate=1; VW.paused=false; } gsap.to(['#speed','#vPause'],{opacity:0,duration:.15}); } swipe=true; if(VW)VW.paused=true; } if(swipe)dragStage(dy); };
+  const up=ev=>{ removeEventListener('pointermove',mv); removeEventListener('pointerup',up); removeEventListener('pointercancel',up); clearTimeout(hold);
+    if(swipe){ const dy=ev.clientY-y0; if(dy>70||dy/Math.max(1,now()-t0)>.35){ haptic(10); closeViewerEarly(); } else { gsap.to(sw,{y:0,scale:1,borderRadius:0,duration:.5,ease:'expo.out'}); if(VW)VW.paused=false; } return; }
+    if(held){ if(VW){ VW.rate=1; VW.paused=false; } gsap.to(['#speed','#vPause'],{opacity:0,duration:.2}); return; }
+    if(!VW)return; haptic(6); if(left)prevSeg(); else nextSeg(); };
+  addEventListener('pointermove',mv); addEventListener('pointerup',up); addEventListener('pointercancel',up); };
 
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
