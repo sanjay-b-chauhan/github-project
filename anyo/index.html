@@ -1515,6 +1515,22 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
 /* b60: peek centred */
 #peek.pull{text-align:center!important}
 #peek.pull small{margin-left:auto;margin-right:auto}
+
+/* b61 */
+#anyoS .rowx[data-m=watch] .ic{background:#2F7BF5}
+#anyoS .rowx[data-m=watch] .ic svg{stroke:none;fill:#fff}
+
+/* b61: the video morphs into its bubble (no clipping) */
+#sw.mo{right:auto!important;bottom:auto!important;overflow:hidden;will-change:left,top,width,height,border-radius}
+#swRim{position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:8;opacity:0;
+  background:radial-gradient(circle at 30% 22%,rgba(255,255,255,.55),rgba(255,255,255,0) 32%),conic-gradient(from 20deg,rgba(255,130,210,.55),rgba(130,220,255,.55),rgba(255,240,150,.5),rgba(160,255,210,.5),rgba(200,160,255,.55),rgba(255,130,210,.55));
+  -webkit-mask:radial-gradient(closest-side,transparent 80%,#000 97%,transparent 100%);mask:radial-gradient(closest-side,transparent 80%,#000 97%,transparent 100%);mix-blend-mode:screen}
+#sw.fx{filter:url(#bwarp)}
+
+/* b61b: no RGB, no distortion. the morphing card simply becomes a glass bubble */
+#sw.fx{filter:none!important}
+#swRim{background:url(img/glass.png) center/100% 100% no-repeat!important;-webkit-mask:none!important;mask:none!important;mix-blend-mode:normal!important}
+#sw.mo{background:#DDE8F4!important}
 </style>
 </head>
 <body translate="no" class="notranslate">
@@ -1668,7 +1684,7 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b60</div>
+  <div id="build">b61</div>
 </div>
   </div></div>
 </div>
@@ -2097,7 +2113,7 @@ function receive(f){ prefetch(f); if(mode==='alive')setTimeout(()=>layout(true),
 /* ================= stage ================= */
 const stage=$('#stage'), sw=$('#sw'), cam=$('#cam'), media=$('#media');
 let camStream=null, facing='user', smode=null, cur=null, clip={r:0,x:0,y:0};
-const setClip=()=>{ const r=Math.max(0,clip.r), m=`radial-gradient(circle ${r}px at ${clip.x}px ${clip.y}px, #000 ${Math.max(0,r-16)}px, transparent ${r}px)`; stage.style.clipPath='none'; stage.style.webkitMaskImage=m; stage.style.maskImage=m; };
+var MORPH_ON=true; const setClip=()=>{ if(MORPH_ON){ stage.style.clipPath='none'; stage.style.webkitMaskImage='none'; stage.style.maskImage='none'; return; } const r=Math.max(0,clip.r); stage.style.webkitMaskImage='none'; stage.style.maskImage='none'; stage.style.clipPath=`circle(${r}px at ${clip.x}px ${clip.y}px)`; };
 const fullR=()=>Math.hypot(app.clientWidth,app.clientHeight);
 async function startCam(){ if(camStream)return true; try{ camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:720},height:{ideal:1280}},audio:true}); cam.srcObject=camStream; cam.classList.toggle('back',facing!=='user'); await cam.play().catch(()=>{}); cam.style.opacity=1; return true; }catch(e){ cam.style.opacity=0; return false; } }
 function stopCam(){ if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;cam.srcObject=null;} }
@@ -3147,7 +3163,7 @@ function demoHome(){ S.acts=S.acts||[]; if(!S.friends.length)setCount(7); seedRe
    <div class="sp" data-p="screens"><div class="gr" id="smG">${[['install','Install app'],['onb','Onboarding'],['how','How it works'],['empty','Empty home'],['cam','Camera'],['view','Watching videos'],['focus','Hold a face'],['add','Add friends'],['rq','All requests'],['inv','Invite friends'],['prof','Profile'],['act','Activity'],['edit','Edit profile'],['toast','Undo toast'],['arrange','Arrange mode'],['anyo','Anyo first'],['ref','From invite link'],['cap','Photo capture'],['look','Make it yours']].map(([k,l])=>`<button data-g="${k}">${l}</button>`).join('')}</div></div>
    <div class="sp" data-p="look"><div class="sl">Layout</div><div class="ch" id="smL"><button data-v="grid">Grid</button><button data-v="bubble">Bubbles</button><button data-v="hive">Honeycomb</button></div>
     <div class="sl">Start over</div><div class="gr"><button data-z="onb">Replay onboarding</button><button data-z="wipe" class="red">Log out, wipe all</button></div>
-    <div class="hint">Triple tap anywhere to open this. Build b60.</div></div>
+    <div class="hint">Triple tap anywhere to open this. Build b61.</div></div>
   </div>`;
   app.appendChild(d); app.appendChild(s); })();
 let simOn=false, simWho=null;
@@ -3824,7 +3840,7 @@ holdRing=(o=>function(f){ if(f&&f.id==='anyo'&&anyoLocked()){ return; } o(f); })
 /* the drawer */
 (()=>{ const d=document.createElement('div'); d.className='scr'; d.id='anyoS'; d.innerHTML=`<div class="grab"><span></span></div><div class="scrIn">
   <div class="aH"><img src="img/peng-cut.png" alt=""><div class="sb" id="anyoHi">Hey! What's up?</div></div>
-  <button class="rowx" data-m="talk"><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 7.5A1.5 1.5 0 0 1 5.5 6h9A1.5 1.5 0 0 1 16 7.5v9a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 4 16.5z"/><path d="M16 10.5l4-2.5v8l-4-2.5"/></svg></span><span class="t">Talk to Anyo</span>${CHEV}</button>
+  <button class="rowx" data-m="talk"><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 7.5A1.5 1.5 0 0 1 5.5 6h9A1.5 1.5 0 0 1 16 7.5v9a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 4 16.5z"/><path d="M16 10.5l4-2.5v8l-4-2.5"/></svg></span><span class="t">Talk with me</span>${CHEV}</button>
   <button class="rowx" data-m="bug"><span class="ic"><svg viewBox="0 0 24 24"><path d="M9 9V7.5a3 3 0 0 1 6 0V9"/><rect x="7" y="9" width="10" height="11" rx="5"/><path d="M4 13h3M17 13h3M5 8l2.5 2M19 8l-2.5 2M5 19l2.5-2M19 19l-2.5-2"/></svg></span><span class="t">Report a bug</span>${CHEV}</button>
   <button class="rowx" data-m="idea"><span class="ic"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z"/></svg></span><span class="t">Share an idea</span>${CHEV}</button>
   <button class="rowx" data-m="news"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.2 5.8L20 9l-4.6 3.8L17 19l-5-3.3L7 19l1.6-6.2L4 9l5.8-.2z"/></svg></span><span class="t">What's new</span>${CHEV}</button></div>`;
@@ -4061,6 +4077,49 @@ HOWS[0][0]="Life's too short for texting. Your people send you videos. Tap a fac
 /* b60: any touch clears the coach tip, so it never stacks with the peek */
 document.addEventListener('pointerdown',()=>{ try{ hideTip(); }catch(e){} },true);
 peekPull=(o=>function(f){ try{ hideTip(); }catch(e){} o(f); })(peekPull);
+
+
+/* b61: crisp circle edges (no blur), springy snap back; mask/clip always cleared when fully open */
+const clearClip=()=>{ stage.style.clipPath='none'; stage.style.webkitMaskImage='none'; stage.style.maskImage='none'; };
+openStage=(o=>function(f){ o(f); setTimeout(()=>{ if(cur&&smode)clearClip(); },720); })(openStage);
+snapBack=function(){ gsap.to(sw,{x:0,y:0,scale:1,borderRadius:0,duration:.7,ease:'back.out(1.3)'}); gsap.to(clip,{r:fullR(),x:app.clientWidth/2,y:app.clientHeight/2,duration:.6,ease:'expo.out',onUpdate:setClip,onComplete:clearClip}); };
+/* Anyo always opens its space after onboarding; new messages show as the first row */
+(()=>{ const b=document.createElement('button'); b.className='rowx'; b.dataset.m='watch'; b.style.display='none'; b.innerHTML=`<span class="ic"><svg viewBox="0 0 24 24"><path d="M8 5.5v13a1 1 0 0 0 1.5.9l10.2-6.5a1 1 0 0 0 0-1.7L9.5 4.6A1 1 0 0 0 8 5.5z"/></svg></span><span class="t">New from Anyo</span>${CHEV}`; const first=$('#anyoS .rowx[data-m="talk"]'); first.parentNode.insertBefore(b,first); })();
+openAnyoS=(o=>function(){ const a=byId('anyo'), w=$('#anyoS .rowx[data-m="watch"]'); if(w){ const n=a?a.inbox.length:0; w.style.display=n?'':'none'; w.querySelector('.t').textContent=n>1?`${n} new from Anyo`:'New from Anyo'; } o(); })(openAnyoS);
+anyoS.addEventListener('click',e=>{ const b=e.target.closest('.rowx[data-m="watch"]'); if(!b)return; e.stopImmediatePropagation(); SFX.tap(); closeAnyoS(()=>{ const a=byId('anyo'); if(!a||!a.inbox.length)return; openStage(a); startViewer(a,[...a.inbox]); }); },true);
+openFriend=(o=>function(f){ if(f&&f.id==='anyo'&&anyoFree()&&!ANYO_WATCH){ openAnyoS(); return; } o(f); })(openFriend);
+let ANYO_WATCH=false;
+/* replies from Anyo land home, never trap you in the camera */
+finishViewer=(o=>function(){ const v=VW; if(v&&v.f.id==='anyo'&&anyoFree()){ const f=v.f; stopViewer(); $('#anyoCap').style.display='none'; f.last=v.items[v.items.length-1]; f.inbox=[]; f.replyDue=false; paint(f,false); closeStage(); return; } o(); })(finishViewer);
+/* the + is always there once you're in */
+setTimeout(()=>{ if(!INTRO||INTRO==='done')app.classList.remove('intro'); },0);
+
+
+/* ======================= b61: shared-element morph, bubble <-> video ======================= */
+(()=>{ const ns='http://www.w3.org/2000/svg'; const svg=document.createElementNS(ns,'svg'); svg.setAttribute('width','0'); svg.setAttribute('height','0'); svg.style.position='absolute';
+  svg.innerHTML=`<filter id="bwarp" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="2" seed="4" result="n"/><feDisplacementMap id="bwD" in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G" result="d"/><feColorMatrix in="d" type="matrix" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0" result="r"/><feOffset id="bwR" in="r" dx="0" result="ro"/><feColorMatrix in="d" type="matrix" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0" result="g"/><feColorMatrix in="d" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0" result="b"/><feOffset id="bwB" in="b" dx="0" result="bo"/><feBlend in="ro" in2="g" mode="screen" result="rg"/><feBlend in="rg" in2="bo" mode="screen"/></filter>`;
+  document.body.appendChild(svg); const r=document.createElement('div'); r.id='swRim'; sw.appendChild(r); })();
+const FX={k:0}; const fxApply=()=>{ const k=FX.k; $('#bwD').setAttribute('scale',(k*28).toFixed(1)); $('#bwR').setAttribute('dx',(k*5).toFixed(1)); $('#bwB').setAttribute('dx',(-k*5).toFixed(1)); };
+function fxPulse(dur){ return; sw.classList.add('fx'); gsap.killTweensOf(FX); gsap.timeline({onComplete:()=>{ FX.k=0; fxApply(); sw.classList.remove('fx'); }}).to(FX,{k:1,duration:dur*.45,ease:'power2.out',onUpdate:fxApply}).to(FX,{k:0,duration:dur*.55,ease:'power2.in',onUpdate:fxApply}); }
+const FULLB=()=>({left:0,top:0,width:app.clientWidth,height:app.clientHeight,borderRadius:0});
+function bubbleBox(f){ const b=f?srcBall(f):null; if(!b)return null; const R=b.getBoundingClientRect(); if(!R.width)return null; const c=centerOf(b); return {left:c.x-c.r,top:c.y-c.r,width:c.r*2,height:c.r*2,borderRadius:c.r}; }
+function curBox(){ const a=app.getBoundingClientRect(), sx=a.width/app.offsetWidth, R=sw.getBoundingClientRect(); return {left:(R.left-a.left)/sx,top:(R.top-a.top)/sx,width:R.width/sx,height:R.height/sx}; }
+function moSet(bx){ sw.classList.add('mo'); gsap.set(sw,{x:0,y:0,scale:1,...bx}); }
+function moReset(){ sw.classList.remove('mo'); gsap.set(sw,{clearProps:'left,top,width,height,borderRadius,x,y,scale'}); gsap.set('#swRim',{opacity:0}); }
+const rimTo=(o,d)=>gsap.to('#swRim',{opacity:o,duration:d,ease:'power2.out'});
+/* open: the bubble grows into the video */
+openStage=(o=>function(f){ o(f); const bx=bubbleBox(f); gsap.killTweensOf(sw); if(!bx){ moReset(); return; } moSet(bx); gsap.set('#swRim',{opacity:1}); fxPulse(.6);
+  gsap.to(sw,{...FULLB(),duration:.62,ease:'expo.out',onComplete:moReset}); rimTo(0,.5); })(openStage);
+/* drag: the card becomes a bubble while it heads home */
+dragStage=function(dy){ const d=Math.max(0,dy), W=app.clientWidth, H=app.clientHeight, e=1-Math.pow(1-Math.min(1,d/340),2); const o=originOf(); const D=Math.max(o.r*2.2,W*.42);
+  const w=W+(D-W)*e, h=H+(D-H)*e, cx=W/2+(o.x-W/2)*e, cy=H/2+(o.y-H/2)*e; moSet({left:cx-w/2,top:cy-h/2,width:w,height:h,borderRadius:Math.min(w,h)/2*e}); gsap.set('#swRim',{opacity:e*.9}); };
+snapBack=function(){ const bx=curBox(); moSet(bx); gsap.to(sw,{...FULLB(),duration:.7,ease:'back.out(1.2)',onComplete:moReset}); rimTo(0,.4); };
+/* close: whatever shape it is now, it flies into its bubble and becomes it */
+closeStage=(o=>function(){ const f=cur, from=curBox(); o(); gsap.killTweensOf(sw); const to=bubbleBox(f)||{left:app.clientWidth/2-24,top:app.clientHeight/2-24,width:48,height:48,borderRadius:24};
+  moSet(from); rimTo(1,.25); fxPulse(.5); gsap.to(sw,{...to,duration:.5,ease:'power3.inOut',onComplete:()=>{ setTimeout(moReset,60); }}); })(closeStage);
+/* send: the camera shrinks into their bubble the same way */
+sendVideo=(o=>function(){ const f=cur, from=curBox(); o(); gsap.killTweensOf(sw); const to=bubbleBox(f)||{left:app.clientWidth/2-24,top:app.clientHeight/2-24,width:48,height:48,borderRadius:24};
+  moSet(from); rimTo(1,.3); fxPulse(.55); gsap.to(sw,{...to,duration:.55,ease:'power3.in',onComplete:()=>{ setTimeout(moReset,80); }}); })(sendVideo);
 
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
