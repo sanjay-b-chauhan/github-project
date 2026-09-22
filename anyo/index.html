@@ -1473,6 +1473,10 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
 #pgLook .ics button.locked .icw img{filter:saturate(.75) brightness(.97)}
 #pgLook .ics .lk{position:absolute!important;left:auto!important;top:auto!important;right:-5px;top:-5px!important;bottom:auto!important;width:26px!important;height:26px!important;border-radius:50%!important;background:#111114!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;display:grid;place-items:center;box-shadow:0 0 0 2.5px #F4F4F4;z-index:2}
 #pgLook .ics .lk svg{width:13px!important;height:13px!important;stroke:#fff!important}
+
+/* b56: Fill for me is always there, even with the keyboard open */
+@media (max-height:560px){ #ob .obFill{display:block!important;top:calc(env(safe-area-inset-top,0px) + 222px)!important} }
+#ob.kb .obFill{opacity:1!important;pointer-events:auto!important}
 </style>
 </head>
 <body translate="no" class="notranslate">
@@ -1626,7 +1630,7 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b55</div>
+  <div id="build">b56</div>
 </div>
   </div></div>
 </div>
@@ -3105,7 +3109,7 @@ function demoHome(){ S.acts=S.acts||[]; if(!S.friends.length)setCount(7); seedRe
    <div class="sp" data-p="screens"><div class="gr" id="smG">${[['install','Install app'],['onb','Onboarding'],['how','How it works'],['empty','Empty home'],['cam','Camera'],['view','Watching videos'],['focus','Hold a face'],['add','Add friends'],['rq','All requests'],['inv','Invite friends'],['prof','Profile'],['act','Activity'],['edit','Edit profile'],['toast','Undo toast'],['arrange','Arrange mode'],['anyo','Anyo first'],['ref','From invite link'],['cap','Photo capture'],['look','Make it yours']].map(([k,l])=>`<button data-g="${k}">${l}</button>`).join('')}</div></div>
    <div class="sp" data-p="look"><div class="sl">Layout</div><div class="ch" id="smL"><button data-v="grid">Grid</button><button data-v="bubble">Bubbles</button><button data-v="hive">Honeycomb</button></div>
     <div class="sl">Start over</div><div class="gr"><button data-z="onb">Replay onboarding</button><button data-z="wipe" class="red">Log out, wipe all</button></div>
-    <div class="hint">Triple tap anywhere to open this. Build b55.</div></div>
+    <div class="hint">Triple tap anywhere to open this. Build b56.</div></div>
   </div>`;
   app.appendChild(d); app.appendChild(s); })();
 let simOn=false, simWho=null;
@@ -3936,6 +3940,12 @@ if(!ICONS.some(([k])=>k===C.icon)){ C.icon='classic'; saveC(); }
 fillLook=(o=>async function(p){ await o(p); const B=p.querySelector('.pgB'); const you=B.querySelector('.you'); if(you)you.remove(); const labs=[...B.querySelectorAll('.lab')]; if(labs[0]&&labs[0].textContent==='You')labs[0].remove();
   const box=$('#lkIc'); if(box){ box.querySelectorAll('button').forEach(b=>{ const img=b.querySelector('img'); if(img&&!img.parentNode.classList.contains('icw')){ const w=document.createElement('span'); w.className='icw'; img.replaceWith(w); w.appendChild(img); const lk=b.querySelector('.lk'); if(lk)b.appendChild(lk); } }); } })(fillLook);
 applyIcon();
+
+
+/* b56: don't pop the keyboard on arrival, so Fill for me is the first thing you see; tap the field to type */
+obShow=(o=>function(id,back){ o(id,back); if(id==='obPh'||id==='obNa'){ setTimeout(()=>{ const a=document.activeElement; if(a&&(a.id==='obPhone'||a.id==='obName')&&!a.dataset.user)a.blur(); },480); } })(obShow);
+['#obPhone','#obName'].forEach(q=>{ const i=$(q); i.addEventListener('pointerdown',()=>{ i.dataset.user='1'; }); });
+$$('.obFill button').forEach(b=>b.addEventListener('pointerdown',e=>e.preventDefault()));
 
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
