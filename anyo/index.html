@@ -1684,7 +1684,7 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b61</div>
+  <div id="build">b62</div>
 </div>
   </div></div>
 </div>
@@ -3163,7 +3163,7 @@ function demoHome(){ S.acts=S.acts||[]; if(!S.friends.length)setCount(7); seedRe
    <div class="sp" data-p="screens"><div class="gr" id="smG">${[['install','Install app'],['onb','Onboarding'],['how','How it works'],['empty','Empty home'],['cam','Camera'],['view','Watching videos'],['focus','Hold a face'],['add','Add friends'],['rq','All requests'],['inv','Invite friends'],['prof','Profile'],['act','Activity'],['edit','Edit profile'],['toast','Undo toast'],['arrange','Arrange mode'],['anyo','Anyo first'],['ref','From invite link'],['cap','Photo capture'],['look','Make it yours']].map(([k,l])=>`<button data-g="${k}">${l}</button>`).join('')}</div></div>
    <div class="sp" data-p="look"><div class="sl">Layout</div><div class="ch" id="smL"><button data-v="grid">Grid</button><button data-v="bubble">Bubbles</button><button data-v="hive">Honeycomb</button></div>
     <div class="sl">Start over</div><div class="gr"><button data-z="onb">Replay onboarding</button><button data-z="wipe" class="red">Log out, wipe all</button></div>
-    <div class="hint">Triple tap anywhere to open this. Build b61.</div></div>
+    <div class="hint">Triple tap anywhere to open this. Build b62.</div></div>
   </div>`;
   app.appendChild(d); app.appendChild(s); })();
 let simOn=false, simWho=null;
@@ -4120,6 +4120,30 @@ closeStage=(o=>function(){ const f=cur, from=curBox(); o(); gsap.killTweensOf(sw
 /* send: the camera shrinks into their bubble the same way */
 sendVideo=(o=>function(){ const f=cur, from=curBox(); o(); gsap.killTweensOf(sw); const to=bubbleBox(f)||{left:app.clientWidth/2-24,top:app.clientHeight/2-24,width:48,height:48,borderRadius:24};
   moSet(from); rimTo(1,.3); fxPulse(.55); gsap.to(sw,{...to,duration:.55,ease:'power3.in',onComplete:()=>{ setTimeout(moReset,80); }}); })(sendVideo);
+
+const closeStageBase=closeStage, sendVideoBase=sendVideo;
+
+/* ======================= b62: always a perfect circle; accept = watch their hello, land on home ======================= */
+const AW=()=>app.clientWidth, AH=()=>app.clientHeight;
+const circleAt=(cx,cy,d)=>({left:cx-d/2,top:cy-d/2,width:d,height:d,borderRadius:d/2});
+function toBubble(from,to,dur,ease,done){ moSet(from); const cx=from.left+from.width/2, cy=from.top+from.height/2, d=Math.min(from.width,from.height);
+  const tl=gsap.timeline({onComplete:()=>{ done&&done(); }});
+  if(Math.abs(from.width-from.height)>2||(from.borderRadius||0)<d/2-1) tl.to(sw,{...circleAt(cx,cy,d),duration:dur*.32,ease:'power2.out'});
+  tl.to(sw,{...to,duration:dur*.68,ease}); tl.to('#swRim',{opacity:1,duration:dur*.3},0); return tl; }
+function fromBubble(from,dur){ moSet(from); gsap.set('#swRim',{opacity:1}); const W=AW(), H=AH();
+  gsap.timeline({onComplete:moReset}).to(sw,{...circleAt(W/2,H/2,W),duration:dur*.55,ease:'expo.out'}).to('#swRim',{opacity:0,duration:dur*.3},'<.15').to(sw,{left:0,top:0,width:W,height:H,borderRadius:0,duration:dur*.45,ease:'power2.out'}); }
+openStage=(o=>function(f){ o(f); gsap.killTweensOf(sw); const bx=bubbleBox(f); if(!bx){ moReset(); return; } fromBubble(bx,.7); })(openStage);
+dragStage=function(dy){ const d=Math.max(0,dy), W=AW(), H=AH(), e=Math.min(1,d/360), o=originOf();
+  const e1=Math.min(1,e/.3), e2=Math.max(0,(e-.3)/.7), q2=1-Math.pow(1-e2,2);
+  if(e2<=0){ const h=H+(W-H)*e1; moSet({left:0,top:H/2-h/2,width:W,height:h,borderRadius:(W/2)*e1}); gsap.set('#swRim',{opacity:0}); return; }
+  const D=W+(Math.max(o.r*2.2,W*.36)-W)*q2, cx=W/2+(o.x-W/2)*q2, cy=H/2+(o.y-H/2)*q2; moSet(circleAt(cx,cy,D)); gsap.set('#swRim',{opacity:q2*.9}); };
+snapBack=function(){ const bx=curBox(); moSet({...bx,borderRadius:parseFloat(getComputedStyle(sw).borderRadius)||0}); gsap.to(sw,{left:0,top:0,width:AW(),height:AH(),borderRadius:0,duration:.6,ease:'back.out(1.15)',onComplete:moReset}); gsap.to('#swRim',{opacity:0,duration:.3}); };
+closeStage=function(){ const f=cur, from={...curBox(),borderRadius:parseFloat(getComputedStyle(sw).borderRadius)||0}; closeStageBase(); gsap.killTweensOf(sw); const to=bubbleBox(f)||circleAt(AW()/2,AH()/2,48); toBubble(from,to,.44,'power3.inOut',()=>{ stage.style.visibility='hidden'; moReset(); }); };
+
+sendVideo=function(){ const f=cur, from={...curBox(),borderRadius:0}; sendVideoBase(); gsap.killTweensOf(sw); const to=bubbleBox(f)||circleAt(AW()/2,AH()/2,48); toBubble(from,to,.5,'power3.in',()=>{ stage.style.visibility='hidden'; moReset(); }); };
+/* accepting: one at a time. they land on home, their hello plays, swipe down lands on their bubble */
+document.addEventListener('click',e=>{ const b=e.target.closest('#aBody [data-a="accept"],#pgRq [data-a="accept"]'); if(!b)return; const r=b.closest('.pr'); if(!r)return; const id=r.dataset.id;
+  setTimeout(()=>{ if(addOn){ if(PGC)popPage(true); closeSheet(); } setTimeout(()=>{ const f=byId(id); if(f&&f.inbox.length&&!cur)openFriend(f); },950); },800); },true);
 
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
