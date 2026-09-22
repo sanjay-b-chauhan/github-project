@@ -1452,6 +1452,27 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
 .fxRing.recv{border-color:rgba(47,123,245,.55)}
 #fieldIn .bub.unread .ov{animation:ovBreathe 2.4s ease-in-out infinite}
 @keyframes ovBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+
+/* ======================= b55 ======================= */
+#app.noPet .petB{display:none!important}
+/* the press squish must never fight the toggle knob */
+.tg2 span{transform:none}
+.tg2.on span{transform:translateX(20px)!important}
+/* rows scroll sideways with soft faded edges, never clipped */
+#pgLook .petG,#pgLook .bgi,#pgLook .ics{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;scrollbar-width:none;gap:14px!important;padding:12px 22px!important;margin:0 -20px!important;touch-action:pan-x;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 22px,#000 calc(100% - 22px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 22px,#000 calc(100% - 22px),transparent 100%)}
+#pgLook .petG::-webkit-scrollbar{display:none}
+#pgLook .petG button{flex:none!important;width:64px!important;height:64px!important}
+#pgLook .chG{grid-template-columns:none!important}
+/* app icons: real art, Apple-style gloss, locked ones still look worth it */
+#pgLook .ics button{flex:none;position:relative;display:flex;flex-direction:column;align-items:center;gap:8px}
+#pgLook .ics .icw{position:relative;width:68px;height:68px;border-radius:24%;overflow:hidden;box-shadow:0 12px 22px -12px rgba(0,0,0,.4),0 0 0 1px rgba(0,0,0,.06)}
+#pgLook .ics .icw img{width:100%;height:100%;border-radius:0!important;box-shadow:none!important;display:block}
+#pgLook .ics .icw::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(160deg,rgba(255,255,255,.45) 0%,rgba(255,255,255,0) 38%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.5);pointer-events:none}
+#pgLook .ics button.on .icw{box-shadow:0 0 0 2px #F4F4F4,0 0 0 4px #111114,0 12px 22px -12px rgba(0,0,0,.4)}
+#pgLook .ics button.locked .icw img{filter:saturate(.75) brightness(.97)}
+#pgLook .ics .lk{position:absolute!important;left:auto!important;top:auto!important;right:-5px;top:-5px!important;bottom:auto!important;width:26px!important;height:26px!important;border-radius:50%!important;background:#111114!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;display:grid;place-items:center;box-shadow:0 0 0 2.5px #F4F4F4;z-index:2}
+#pgLook .ics .lk svg{width:13px!important;height:13px!important;stroke:#fff!important}
 </style>
 </head>
 <body translate="no" class="notranslate">
@@ -1605,7 +1626,7 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b54</div>
+  <div id="build">b55</div>
 </div>
   </div></div>
 </div>
@@ -3037,7 +3058,7 @@ pgInv.querySelector('.pgB').addEventListener('click',e=>{ const c=e.target.close
   else if(navigator.share)navigator.share({title:'Anyo',text:invText(),url:invURL()}).catch(()=>{}); else $('#ivCopy').click(); });
 
 /* ---------- add sheet: invite on top, three requests, View all opens the full list ---------- */
-const INVROW=`<button class="invR" data-go="inv"><span class="ic"><svg viewBox="0 0 24 24">${IC4.share}</svg></span><span class="tx"><span class="t1">Invite friends</span><span class="t2">Send your link on WhatsApp, Messages, anywhere</span></span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>`;
+const INVROW=`<button class="invR" data-go="inv"><span class="ic"><svg viewBox="0 0 24 24">${IC4.share}</svg></span><span class="tx"><span class="t1">Invite your friends to Anyo</span></span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>`;
 const _ra23=renderAdd; renderAdd=function(sk){ _ra23(sk); if(sk||($('#aIn').value||'').trim())return; const body=$('#aBody');
   const rq=$$('#aBody .pr[data-st="incoming"]'); if(rq.length>3){ rq.slice(3).forEach(r=>r.remove()); const lab=$$('#aBody .lab').find(l=>l.textContent==='Requests'); if(lab){ lab.classList.add('labR'); lab.innerHTML=`<span>Requests</span>${VA('rq',S.requests.length)}`; } }
   body.insertAdjacentHTML('afterbegin',INVROW); };
@@ -3084,7 +3105,7 @@ function demoHome(){ S.acts=S.acts||[]; if(!S.friends.length)setCount(7); seedRe
    <div class="sp" data-p="screens"><div class="gr" id="smG">${[['install','Install app'],['onb','Onboarding'],['how','How it works'],['empty','Empty home'],['cam','Camera'],['view','Watching videos'],['focus','Hold a face'],['add','Add friends'],['rq','All requests'],['inv','Invite friends'],['prof','Profile'],['act','Activity'],['edit','Edit profile'],['toast','Undo toast'],['arrange','Arrange mode'],['anyo','Anyo first'],['ref','From invite link'],['cap','Photo capture'],['look','Make it yours']].map(([k,l])=>`<button data-g="${k}">${l}</button>`).join('')}</div></div>
    <div class="sp" data-p="look"><div class="sl">Layout</div><div class="ch" id="smL"><button data-v="grid">Grid</button><button data-v="bubble">Bubbles</button><button data-v="hive">Honeycomb</button></div>
     <div class="sl">Start over</div><div class="gr"><button data-z="onb">Replay onboarding</button><button data-z="wipe" class="red">Log out, wipe all</button></div>
-    <div class="hint">Triple tap anywhere to open this. Build b54.</div></div>
+    <div class="hint">Triple tap anywhere to open this. Build b55.</div></div>
   </div>`;
   app.appendChild(d); app.appendChild(s); })();
 let simOn=false, simWho=null;
@@ -3282,7 +3303,7 @@ screen=(o=>function(g){ if(g==='anyo'){ closeAll(); hideOver(); anyoStart(); ret
 
 /* b28: onboarding QA fixes */
 life=(o=>function(f){ if(f&&(f.id==='anyo'||String(f.id).startsWith('ref-')))return; o(f); })(life);
-toast=(o=>function(m,u,ms){ if(INTRO&&INTRO!=='done'&&/Anyo/.test(m||''))u=null; return o(m,u,ms); })(toast);
+toast=(o=>function(m,u,ms){ if(INTRO&&INTRO!=='done'&&(/Anyo/.test(m||'')&&m!=='Video sent to Anyo'))u=null; return o(m,u,ms); })(toast);
 toast=(o=>function(m,u,ms){ const mm=/^(Sending to|Sent to) (.+)$/.exec(m||''); if(mm){ const pid=Object.keys(S.pend).find(id=>{ const p=person(id); return p&&p.name===mm[2]; }); if(pid&&!byId(pid)){ m=`Request sent to ${mm[2]}`; u=null; } } return o(m,u,ms); })(toast);
 finishViewer=(o=>function(){ const v=VW; if(v&&v.f.id==='anyo'&&v.items.some(it=>it.script==='reply')&&v.items[v.items.length-1].script!=='reply'){ const r=v.items.filter(it=>it.script==='reply'); v.items=r; } return o(); })(finishViewer);
 anyoStart=(o=>function(){ o(); app.classList.add('intro'); const A=byId('anyo'); if(A){ A.photo=img('p-cream.jpg'); if(A.el){ const ph=A.el.querySelector('.ph'); if(ph)ph.style.backgroundImage=`url(${A.photo})`; } } })(anyoStart);
@@ -3582,7 +3603,7 @@ playSeg=(o=>function(i){ o(i); const v=VW; if(!v)return; const it=v.items[i]; if
 /* 5. intro words: short and clear */
 const _cn36=coachNext; coachNext=function(){ if(INTRO&&INTRO!=='done'){ setTimeout(()=>{ const a=byId('anyo'); if(!a||!a.el||busy||smode||sheetOn||profOn||onbOpen())return; const b=a.el.querySelector('.ball');
     if(a.inbox.length)anyoCoach(b,'Tap on me'); else if(INTRO==='hello')anyoCoach(b,'Tap on me and send me a hello'); else if(INTRO==='wait')anyoCoach(b,'Video sent to Anyo'); },450); return; } _cn36(); };
-toast=(o=>function(m,u,ms){ if(INTRO&&INTRO!=='done'&&/Anyo/.test(m||''))return; return o(m,u,ms); })(toast);
+toast=(o=>function(m,u,ms){ if(INTRO&&INTRO!=='done'&&(/Anyo/.test(m||'')&&m!=='Video sent to Anyo'))return; return o(m,u,ms); })(toast);
 anyoCoach=(o=>function(target,text,opt={}){ if(opt.above&&target&&target.nodeType){ const k=centerOf(target); const c=$('#aCoach'); o({x:k.x,y:0},text,{}); const ch=c.offsetHeight, cw=c.offsetWidth, W=app.clientWidth; gsap.set(c,{x:Math.max(14,Math.min(W-cw-14,k.x-cw+k.r)),y:k.y-k.r-ch-14}); return; } o(target,text,opt); })(anyoCoach);
 
 /* 6. hello: one screen, a quiet success: you and them, linked */
@@ -3768,7 +3789,7 @@ holdRing=(o=>function(f){ if(f&&f.id==='anyo'&&anyoLocked()){ return; } o(f); })
   app.appendChild(d); })();
 const anyoS=$('#anyoS'); let anyoOn=false, ANYO_MODE=null;
 const pgNews=mkPage('pgNews',"What's new"); anyoS.appendChild(pgNews);
-const NEWS=[['b54','Sending is back to the smooth glide'],['b53','Buttons and toggles spring back when you press them'],['b52','New friends send you videos on their own, a few seconds after joining'],['b51','Invite sent moment is instant'],['b50','Their face stays with you while you record an invite'],['b49','Inviting is quicker: record a hello, see it land on their row'],['b48','Invites use the same camera: hold to record, drag down to cancel'],['b47','Hold right shows a clean 2x, hold to pause without icons'],['b46','Swipe down to close an invite, slide away to cancel a hello'],['b45','Anyo has its own space: talk, report a bug, share an idea'],['b44','Your pet sits right beside you'],['b43','Hold to pause, hold on the right for 2x'],['b42','Invites carry a hello video'],['b41','Swipe down closes faster everywhere']];
+const NEWS=[['b55','New app icons to unlock, and a switch to hide your pet'],['b54','Sending is back to the smooth glide'],['b53','Buttons and toggles spring back when you press them'],['b52','New friends send you videos on their own, a few seconds after joining'],['b51','Invite sent moment is instant'],['b50','Their face stays with you while you record an invite'],['b49','Inviting is quicker: record a hello, see it land on their row'],['b48','Invites use the same camera: hold to record, drag down to cancel'],['b47','Hold right shows a clean 2x, hold to pause without icons'],['b46','Swipe down to close an invite, slide away to cancel a hello'],['b45','Anyo has its own space: talk, report a bug, share an idea'],['b44','Your pet sits right beside you'],['b43','Hold to pause, hold on the right for 2x'],['b42','Invites carry a hello video'],['b41','Swipe down closes faster everywhere']];
 function openAnyoS(){ if(anyoOn||busy)return; anyoOn=true; hideCoach&&hideCoach(); $('#anyoHi').textContent=`Hey ${S.me.name||'you'}! What's up?`; anyoS.style.visibility='visible'; drawerOpen(anyoS); gsap.fromTo('#anyoS .scrIn > *',{opacity:0,y:8},{opacity:1,y:0,duration:.4,stagger:.04,ease:'expo.out',delay:.1}); }
 function closeAnyoS(then){ if(!anyoOn)return; anyoOn=false; drawerClose(anyoS,then); }
 dim.addEventListener('click',()=>{ if(anyoOn)closeAnyoS(); });
@@ -3858,7 +3879,7 @@ function ring(el,cls){ if(!el)return; const c=centerOf(el), r=document.createEle
 /* sending: the bubble gulps the video, a ring ripples out */
 
 /* receiving: a soft blue ping and the count pops */
-receive=(o=>function(f){ o(f); const b=srcBall(f); if(b){ ring(b,'recv'); setTimeout(()=>ring(b,'recv'),180); } const bd=f.el&&f.el.querySelector('.bdg'); if(bd)gsap.fromTo(bd,{scale:.3},{scale:1,duration:.7,ease:'elastic.out(1.2,.4)',delay:.1}); })(receive);
+receive=(o=>function(f){ o(f); const b=srcBall(f); if(b){ ring(b,'recv'); setTimeout(()=>ring(b,'recv'),180); } setTimeout(()=>{ const bd=f.el&&f.el.querySelector('.bdg'); if(bd&&/cnt2|sent|opened|reply/.test(bd.className))gsap.fromTo(bd,{scale:.3},{scale:1,duration:.7,ease:'elastic.out(1.2,.4)'}); },60); })(receive);
 /* press: everything you can tap squishes and springs back */
 const PRESS='.ib,.fab,#plus .gbtn,#meBtn,.rowx,.invR,.bigpill,.pgH .bk,.pgH .dn,#sim button,.chG button,.lays button,.tg2,.cx,.obBk,.obFill button,#flip,#last';
 let pressEl=null;
@@ -3869,7 +3890,7 @@ document.addEventListener('pointerup',unpress,true); document.addEventListener('
 document.addEventListener('pointerdown',e=>{ const b=e.target.closest('#fieldIn .bub'); if(!b||editing)return; const ball=b.querySelector('.ball'); gsap.to(ball,{scale:.95,duration:.14,ease:'power2.out',overwrite:'auto'});
   const up=()=>{ gsap.to(ball,{scale:1,duration:.7,ease:'elastic.out(1,.4)',overwrite:'auto'}); removeEventListener('pointerup',up,true); removeEventListener('pointercancel',up,true); }; addEventListener('pointerup',up,true); addEventListener('pointercancel',up,true); },true);
 /* toggles: the knob squashes as it slides */
-document.addEventListener('click',e=>{ const t=e.target.closest('.tg2'); if(!t)return; const k=t.querySelector('span'); if(k)gsap.fromTo(k,{scaleX:1.35,scaleY:.85},{scaleX:1,scaleY:1,duration:.6,ease:'elastic.out(1.2,.4)'}); },true);
+
 /* accepting a request: their face does a happy hop */
 document.addEventListener('click',e=>{ const b=e.target.closest('[data-a="accept"]'); if(!b)return; const av=b.closest('.pr')&&b.closest('.pr').querySelector('.av'); if(av)gsap.fromTo(av,{y:0},{y:-10,duration:.18,ease:'power2.out',yoyo:true,repeat:1,onComplete:()=>jelly(av,1)}); },true);
 /* drawers: the handle stretches as they arrive */
@@ -3880,6 +3901,41 @@ startRec=(o=>function(x,y){ o(x,y); gsap.fromTo(sw,{scale:1},{scale:.985,duratio
 
 /* b54: send goes back to the smooth version: no gulp, no send ripple */
 jelly=function(el,k=1){ if(!el)return; gsap.fromTo(el,{scale:1+.045*Math.sign(k||1)},{scale:1,duration:.45,ease:'power3.out',overwrite:'auto'}); };
+
+
+/* ======================= b55 ======================= */
+/* A. pet on/off (global, for the dev too) */
+function applyPet(){ app.classList.toggle('noPet',C.pet===false); }
+(()=>{ const r=document.createElement('div'); r.className='rowx'; r.innerHTML='<span>Pet</span><button class="tg2" id="pPet"><span></span></button>'; const at=$('#pSum')&&$('#pSum').closest('.rowx'); if(at)at.after(r);
+  $('#pPet').onclick=()=>{ C.pet=C.pet===false; saveC(); applyPet(); fillProfile(); haptic(10); }; })();
+fillProfile=(o=>function(){ o(); const t=$('#pPet'); if(t)t.classList.toggle('on',C.pet!==false); })(fillProfile);
+(()=>{ const box=$('#sim [data-p="look"]'); if(box){ const g=document.createElement('div'); g.innerHTML='<div class="sl">Pet</div><div class="ch" id="smPet"><button data-pet="1">On</button><button data-pet="0">Off</button></div>'; box.insertBefore(g,box.children[2]||null);
+  g.addEventListener('click',e=>{ const b=e.target.closest('[data-pet]'); if(!b)return; e.stopPropagation(); C.pet=b.dataset.pet==='1'; saveC(); applyPet(); $$('#smPet button').forEach(x=>x.classList.toggle('on',x===b)); }); } })();
+applyPet();
+/* B. Anyo's first video: a warm hello, then how Anyo works */
+ANYO_LINES.hello=n=>[`Hey ${n||'you'}, welcome!`,"I'm Anyo. So excited to see you.",'Your close ones send you videos.','Tap a face to watch. Tap again for the next.','Hold anywhere to record yourself.','Swipe down any time to close.','Now send me one!'];
+mockFor=function(it,k){ if(it.script!=='hello')return -1; if(k<2||k>=6)return -1; return k===4?1:0; };
+/* C. after sending to Anyo: a normal toast, not a floating bubble */
+let sentToast=false;
+coachNext=(o=>function(){ if(INTRO==='wait'){ hideCoach(); if(!sentToast){ sentToast=true; toast('Video sent to Anyo'); } return; } o(); })(coachNext);
+/* E. friends' videos arrive one by one, naturally spaced */
+let liveAt=0;
+liveFriend=function(id){ const t0=now(); liveAt=Math.max(t0+2000,liveAt+6000+Math.random()*5000); const d1=liveAt-t0;
+  const send=()=>{ const g=byId(id); if(!g||id==='anyo'||String(id).startsWith('ref-')||g.inbox.length>=3)return; g.inbox.push(msg(Math.floor(Math.random()*8),0)); g.out=null; g.replyDue=false; receive(g); };
+  setTimeout(send,d1); if(Math.random()<.5){ liveAt+=12000+Math.random()*10000; setTimeout(send,liveAt-t0); } };
+/* F. Anyo steps aside once you have people; sizes follow the order after you rearrange */
+function anyoLast(){ const i=S.friends.findIndex(f=>f.id==='anyo'); if(i>=0&&S.friends.length>1&&i!==S.friends.length-1){ const [a]=S.friends.splice(i,1); S.friends.push(a); return true; } return false; }
+addFriends=(o=>function(list,...a){ const r=o(list,...a); setTimeout(()=>{ if(anyoLast())layout(true); },700); return r; })(addFriends);
+acceptedBy=(o=>function(f){ o(f); setTimeout(()=>{ if(anyoLast())layout(true); },700); })(acceptedBy);
+setTimeout(()=>{ if(anyoLast())layout(false); },0);
+startDrag=(o=>function(f,e){ o(f,e); const up=()=>{ removeEventListener('pointerup',up); removeEventListener('pointercancel',up); setTimeout(()=>layout(true),80); }; addEventListener('pointerup',up); addEventListener('pointercancel',up); })(startDrag);
+/* I/J/K. Make it yours = pet, background, icon. photo lives in Edit profile */
+ICONS.length=0; ICONS.push(['classic','Classic',0],['sky','Sky',0],['wink','Wink',10],['heart','Heart',25],['night','Night',40],['shades','Shades',60],['headph','Beats',80],['holo','Holo',100]);
+iconURL=function(k){ return Promise.resolve(`img/ic-${ICONS.some(x=>x[0]===k)?k:'classic'}.png`); };
+if(!ICONS.some(([k])=>k===C.icon)){ C.icon='classic'; saveC(); }
+fillLook=(o=>async function(p){ await o(p); const B=p.querySelector('.pgB'); const you=B.querySelector('.you'); if(you)you.remove(); const labs=[...B.querySelectorAll('.lab')]; if(labs[0]&&labs[0].textContent==='You')labs[0].remove();
+  const box=$('#lkIc'); if(box){ box.querySelectorAll('button').forEach(b=>{ const img=b.querySelector('img'); if(img&&!img.parentNode.classList.contains('icw')){ const w=document.createElement('span'); w.className='icw'; img.replaceWith(w); w.appendChild(img); const lk=b.querySelector('.lk'); if(lk)b.appendChild(lk); } }); } })(fillLook);
+applyIcon();
 
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
