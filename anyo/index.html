@@ -1580,6 +1580,11 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
 #obPerm .pm,#obPerm .prow{background:none!important;box-shadow:none!important;padding:10px 4px!important}
 /* code step gets a Next arrow instead of auto-advancing */
 #obCo .fab{display:grid}
+
+/* b70: the morph never shows a rim, never an oval, never a dark box */
+#swRim{display:none!important}
+#sw.mx{background:transparent!important;will-change:transform,clip-path;overflow:hidden}
+#mxPic{position:absolute;display:none;z-index:7;pointer-events:none;background:#DDE3EA center 30%/cover no-repeat;border-radius:0!important;box-shadow:none!important;inset:auto}
 </style>
 </head>
 <body translate="no" class="notranslate">
@@ -1733,7 +1738,7 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b69</div>
+  <div id="build">b70</div>
 </div>
   </div></div>
 </div>
@@ -3212,7 +3217,7 @@ function demoHome(){ S.acts=S.acts||[]; if(!S.friends.length)setCount(7); seedRe
    <div class="sp" data-p="screens"><div class="gr" id="smG">${[['install','Install app'],['onb','Onboarding'],['how','How it works'],['empty','Empty home'],['cam','Camera'],['view','Watching videos'],['focus','Hold a face'],['add','Add friends'],['rq','All requests'],['inv','Invite friends'],['prof','Profile'],['act','Activity'],['edit','Edit profile'],['toast','Undo toast'],['arrange','Arrange mode'],['anyo','Anyo first'],['ref','From invite link'],['cap','Photo capture'],['look','Make it yours']].map(([k,l])=>`<button data-g="${k}">${l}</button>`).join('')}</div></div>
    <div class="sp" data-p="look"><div class="sl">Layout</div><div class="ch" id="smL"><button data-v="grid">Grid</button><button data-v="bubble">Bubbles</button><button data-v="hive">Honeycomb</button></div>
     <div class="sl">Start over</div><div class="gr"><button data-z="onb">Replay onboarding</button><button data-z="wipe" class="red">Log out, wipe all</button></div>
-    <div class="hint">Triple tap anywhere to open this. Build b69.</div></div>
+    <div class="hint">Triple tap anywhere to open this. Build b70.</div></div>
   </div>`;
   app.appendChild(d); app.appendChild(s); })();
 let simOn=false, simWho=null;
@@ -4193,7 +4198,10 @@ closeStage=function(){ const f=cur, from={...curBox(),borderRadius:parseFloat(ge
 sendVideo=function(){ const f=cur, from={...curBox(),borderRadius:0}; sendVideoBase(); gsap.killTweensOf(sw); const to=bubbleBox(f)||circleAt(AW()/2,AH()/2,48); toBubble(from,to,.5,'power3.in',()=>{ stage.style.visibility='hidden'; moReset(); }); };
 /* accepting: one at a time. they land on home, their hello plays, swipe down lands on their bubble */
 document.addEventListener('click',e=>{ const b=e.target.closest('#aBody [data-a="accept"],#pgRq [data-a="accept"]'); if(!b)return; const r=b.closest('.pr'); if(!r)return; const id=r.dataset.id;
-  setTimeout(()=>{ if(addOn){ if(PGC)popPage(true); closeSheet(); } setTimeout(()=>{ const f=byId(id); if(f&&f.inbox.length&&!cur)openFriend(f); },950); },800); },true);
+  setTimeout(()=>{ const row=document.querySelector(`#aBody .pr[data-id="${id}"],#pgRq .pr[data-id="${id}"]`)||r; const av=row.querySelector('.av .ball')||row.querySelector('.av')||row.querySelector('.ball');
+    flushNew(); setTimeout(()=>{ const f=byId(id); if(!f||!f.inbox.length||cur)return; ACC_FROM=gOf(av); ACC_EL=av; const aph=av&&(av.querySelector('.ph')||av); ACC_PH=aph&&aph.style.cssText||''; openFriend(f);
+      /* once the video covers everything, the drawer quietly goes away underneath, so closing lands on home */
+      setTimeout(()=>{ if(PGC)popPage(true); if(addOn)closeSheet(); if(profOn)closeProfile(); },700); },180); },800); },true);
 
 
 /* ======================= b63: one continuous morph, tuned curves ======================= */
@@ -4334,6 +4342,73 @@ document.addEventListener('visibilitychange',()=>{ if(document.hidden)return; co
 /* permissions: never say Blocked */
 permMark=(o=>function(k,state){ o(k,state==='denied'?'prompt':state); })(permMark);
 toast=(o=>function(m,u,ms){ if(/^Blocked\. You can allow|^Notifications are off for now/.test(m||''))return; return o(m,u,ms); })(toast);
+
+
+/* ======================= b70: one morph, one number =======================
+   Every frame is a pure function of a single progress p in [0,1]:
+     centre, width, height and roundness all interpolate linearly in p, so the shape changes the whole way
+     (a circle at 0, the full screen at 1, a capsule at 0.2, a soft card at 0.8) with no stop in the middle.
+   p itself is driven by a damped spring (real physics, not a timed ease), so a flick carries its speed in.
+   Rendering is compositor-only: one uniform scale + translate on the whole video (content keeps its
+   proportions, like iOS), and a clip-path inset whose corner radius is always circular, so it can never go oval. */
+const NOOPT={kill(){}}; morph=()=>NOOPT; morphCircle=()=>NOOPT; fromBubble=()=>{}; toBubble=()=>NOOPT; moSet=()=>{}; moReset=()=>{}; mpOpen=()=>{}; mpClose=()=>NOOPT; mpApply=()=>{}; mpDone=()=>{}; fxPulse=()=>{};
+
+let ACC_FROM=null, ACC_EL=null, ACC_PH='';
+const G={p:0,v:0,run:null,cur:null,drag:null};
+const gFull=()=>({cx:AW()/2,cy:AH()/2,w:AW(),h:AH(),rho:0});
+function gOf(el){ if(!el)return null; const R=el.getBoundingClientRect(); if(!R.width)return null; const c=centerOf(el); return {cx:c.x,cy:c.y,w:c.r*2,h:c.r*2,rho:1}; }
+const gMix=(a,b,t)=>({cx:lerp(a.cx,b.cx,t),cy:lerp(a.cy,b.cy,t),w:Math.max(2,lerp(a.w,b.w,t)),h:Math.max(2,lerp(a.h,b.h,t)),rho:Math.min(1,Math.max(0,lerp(a.rho,b.rho,t)))});
+const MXP=(()=>{ const d=document.createElement('div'); d.id='mxPic'; sw.appendChild(d); return d; })();
+function mxPic(f){ const b=f?srcBall(f):null, ph=b&&b.querySelector('.ph'); MXP.style.cssText=ph&&ph.style.cssText?ph.style.cssText:(f&&f.photo?`background-image:url(${f.photo});${faceCSS(f.photo)}`:''); MXP.style.opacity=0; }
+function gApply(g,op,pic){ const W=AW(), H=AH(), s=Math.max(g.w/W,g.h/H), lw=g.w/s, lh=g.h/s, r=g.rho*Math.min(g.w,g.h)/2;
+  const L=Math.max(lw,lh); MXP.style.left=((W-L)/2)+'px'; MXP.style.top=((H-L)/2)+'px'; MXP.style.width=MXP.style.height=L+'px'; MXP.style.opacity=pic==null?0:pic; MXP.style.display='block';
+  sw.classList.add('mx'); gsap.set(sw,{left:0,top:0,width:W,height:H,borderRadius:0,x:g.cx-W/2,y:g.cy-H/2,scale:s,transformOrigin:'50% 50%',opacity:op==null?1:op});
+  const cp=`inset(${((H-lh)/2).toFixed(2)}px ${((W-lw)/2).toFixed(2)}px round ${(r/s).toFixed(2)}px)`; sw.style.clipPath=cp; sw.style.webkitClipPath=cp; G.cur=g; }
+function gClear(){ gsap.set(sw,{clearProps:'left,top,width,height,borderRadius,x,y,scale,opacity,transformOrigin,filter,transform'}); sw.style.clipPath=''; sw.style.webkitClipPath=''; sw.classList.remove('mx','mo'); MXP.style.display='none'; G.cur=null; G.pic=0; }
+function gStop(){ if(G.run){ gsap.ticker.remove(G.run); G.run=null; } }
+/* damped harmonic oscillator on p: response = period of the undamped spring (s), damping = zeta */
+function gRun(o){ gStop(); const from=o.from; let to=o.to; G.p=0; G.v=o.v0||0; const w0=2*Math.PI/o.response, k=w0*w0, c=2*o.damping*w0; let last=performance.now();
+  const tick=()=>{ const t=performance.now(); let dt=Math.min(.05,(t-last)/1000); last=t;
+    while(dt>1e-6){ const h=Math.min(dt,1/240); G.v+=(-k*(G.p-1)-c*G.v)*h; G.p+=G.v*h; dt-=h; }
+    if(o.live){ const L=o.live(); if(L)to=L; }
+    const fin=(Math.abs(1-G.p)<.0015&&Math.abs(G.v)<.03)||(o.endAt&&G.p>=o.endAt); const p=fin?1:G.p;
+    const fr=o.frame?o.frame(p):1; const op=Array.isArray(fr)?fr[0]:fr, pc=Array.isArray(fr)?fr[1]:0; G.pic=pc; gApply(gMix(from,to,p),op,pc);
+    if(fin){ gStop(); o.done&&o.done(); } };
+  G.run=tick; gsap.ticker.add(tick); tick(); }
+/* finger tracking, in app units, with velocity from the last 90ms */
+const TR={x0:0,y0:0,x:0,y:0,s:[],up:0};
+const trPt=e=>{ const a=app.getBoundingClientRect(), sx=a.width/app.offsetWidth||1; return {x:(e.clientX-a.left)/sx,y:(e.clientY-a.top)/sx,t:performance.now()}; };
+window.addEventListener('pointerdown',e=>{ if(!e.target.closest||!e.target.closest('#stage'))return; const q=trPt(e); TR.x0=TR.x=q.x; TR.y0=TR.y=q.y; TR.s=[q]; G.drag=null; },true);
+window.addEventListener('pointermove',e=>{ if(!TR.s.length)return; const q=trPt(e); TR.x=q.x; TR.y=q.y; TR.s.push(q); while(TR.s.length>2&&q.t-TR.s[0].t>90)TR.s.shift(); },true);
+window.addEventListener('pointerup',()=>{ TR.up=performance.now(); },true);
+function trVel(){ const S=TR.s; if(S.length<2||performance.now()-TR.up>140)return {x:0,y:0}; const a=S[0], b=S[S.length-1], dt=Math.max(8,b.t-a.t); return {x:(b.x-a.x)/dt*1000,y:(b.y-a.y)/dt*1000}; }
+/* initial dp/dt from the flick: finger speed along the path, over the path length */
+function flickV(from,to){ if(!to)return 0; const dx=to.cx-from.cx, dy=to.cy-from.cy, d=Math.hypot(dx,dy); if(d<20)return 0; const v=trVel(); return Math.max(0,Math.min(7,(v.x*dx+v.y*dy)/d/d)); }
+function grabClip(){ const fns=gsap.getTweensOf(clip).map(t=>t.vars.onComplete).filter(Boolean); gsap.killTweensOf(clip); return ()=>fns.forEach(fn=>{ try{ fn(); }catch(e){} }); }
+const FADE0=.86;
+const landOp=p=>p<FADE0?1:Math.max(0,1-(p-FADE0)/(1-FADE0-.012));
+/* open: the bubble (or the face in the request list) becomes the video */
+openStage=(o=>function(f){ const srcEl=ACC_EL||(f?srcBall(f):null), src=ACC_FROM||gOf(srcEl); ACC_FROM=null; ACC_EL=null;
+  o(f); gsap.killTweensOf(sw); gsap.killTweensOf(MP); gStop(); gClear(); G.drag=null; if(!src){ sw.classList.remove('morphing'); return; }
+  sw.classList.add('morphing'); mxPic(f&&!ACC_PH?f:null); if(ACC_PH){ MXP.style.cssText=ACC_PH; ACC_PH=''; } gApply(src,1,1); if(srcEl)srcEl.style.visibility='hidden';
+  gRun({from:src,to:gFull(),response:.46,damping:.88,frame:p=>[1,p<.7?1:Math.max(0,1-(p-.7)/.25)],
+    done:()=>{ if(srcEl)srcEl.style.visibility=''; gClear(); sw.classList.remove('morphing'); }}); })(openStage);
+/* drag: the video stays under your finger, and shrinks toward its bubble's shape as you pull */
+dragStage=function(dy){ if(!cur)return; if(!G.drag){ gStop(); G.drag=true; sw.classList.add('morphing'); if(!TR.s.length){ TR.x0=TR.x=AW()/2; TR.y0=AH()/2; } }
+  const H=AH(), d=Math.max(0,TR.s.length?TR.y-TR.y0:dy); if(G.drag===true){ G.drag={to:landTo(cur)}; mxPic(cur); const b=landBall(cur); if(b)b.style.visibility='hidden'; }
+  const e=.88*(1-Math.exp(-d/(H*.5))); G.pic=Math.min(1,e/.18); gApply(gMix(gFull(),G.drag.to,e),1,G.pic); };
+snapBack=function(){ const from=G.cur||gFull(), p0=G.pic||0, b=cur&&landBall(cur); G.drag=null; gRun({from,to:gFull(),response:.4,damping:.82,frame:p=>[1,p0*Math.max(0,1-p/.6)],done:()=>{ if(b)b.style.visibility=''; gClear(); sw.classList.remove('morphing'); }}); };
+/* close + send: from wherever it is right now into the bubble, tracking the bubble live if home re-flows */
+function landBall(f){ if(!f)return null; if(f.reqFor){ const b=f.el&&f.el.querySelector&&f.el.querySelector('.ball'); return b&&b.isConnected&&b.getBoundingClientRect().width?b:null; } return byId(f.id)?srcBall(f):null; }
+function landTo(f){ return gOf(landBall(f))||{cx:AW()/2,cy:AH()*.5,w:64,h:64,rho:1}; }
+function landIn(f,base,resp){ const from=G.cur||gFull(), p0=G.pic||0; G.drag=null; gStop(); sw.classList.add('morphing'); if(!p0)mxPic(f); base(); gsap.killTweensOf(sw); gsap.killTweensOf(MP); const fin=grabClip();
+  const ball=()=>landBall(f), b0=ball(); if(b0)b0.style.visibility='hidden';
+  const to0=landTo(f); gApply(from,1,p0);
+  gRun({from,to:to0,live:()=>gOf(ball()),response:resp,damping:1,endAt:.994,v0:flickV(from,to0),
+    frame:p=>{ const b=ball(); if(b&&p>=.95)b.style.visibility=''; return [b?(p<.95?1:Math.max(0,1-(p-.95)/.04)):landOp(p),Math.min(1,p0+p/.22)]; },
+    done:()=>{ const b=ball(); if(b)b.style.visibility=''; stage.style.visibility='hidden'; gClear(); sw.classList.remove('morphing'); fin(); }}); }
+closeStage=function(){ if(!cur)return; landIn(cur,closeStageBase,.42); };
+sendVideo=function(){ if(!cur)return; landIn(cur,sendVideoBase,.46); };
 
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
