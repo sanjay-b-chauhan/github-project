@@ -1477,6 +1477,28 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
 /* b56: Fill for me is always there, even with the keyboard open */
 @media (max-height:560px){ #ob .obFill{display:block!important;top:calc(env(safe-area-inset-top,0px) + 222px)!important} }
 #ob.kb .obFill{opacity:1!important;pointer-events:auto!important}
+
+/* ======================= b57: clean app ======================= */
+#pAct,#meDot{display:none!important}
+#pSnd,#pHap,#pPet{display:none!important}
+.rowx:has(#pSnd),.rowx:has(#pHap),.rowx:has(#pPet){display:none!important}
+#pgLook .petG,#pgLook .lab:first-child{display:none!important}
+#sim #smPet{display:none}
+/* how it works: a small slideshow popup */
+#howPop{position:absolute;inset:0;z-index:85;display:none;align-items:center;justify-content:center;background:rgba(20,20,26,.28);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);font-family:var(--ui)}
+#howPop .card{position:relative;width:86%;max-width:340px;border-radius:32px;background:#F4F4F4;padding:22px 20px 18px;box-shadow:0 30px 60px -24px rgba(0,0,0,.35);overflow:hidden}
+#howPop .stage{position:relative;height:300px;margin:0 auto 14px;width:170px}
+#howPop .stage .ms{top:0!important;left:0!important;margin:0!important;transform:scale(.75);transform-origin:0 0;box-shadow:0 18px 36px -18px rgba(0,0,0,.35)!important}
+#howPop .stage .ic3{position:absolute;inset:0;display:grid;place-items:center}
+#howPop .t{font:400 20px/1.3 var(--ui);color:#111114;text-align:center;min-height:52px}
+#howPop .dots{display:flex;justify-content:center;gap:6px;margin:12px 0 14px}
+#howPop .dots i{width:6px;height:6px;border-radius:99px;background:#CFCFD4;transition:width .3s}
+#howPop .dots i.on{width:18px;background:#111114}
+#howPop .go{display:block;width:100%;height:50px;border-radius:99px;background:#111114;color:#fff;font:400 16px/50px var(--ui)}
+#howPop .x{position:absolute;right:12px;top:12px;width:36px;height:36px;border-radius:50%;background:#E6E6E8;display:grid;place-items:center;z-index:2}
+#howPop .x svg{width:16px;height:16px;fill:none;stroke:#111114;stroke-width:2.2;stroke-linecap:round}
+/* the pull-down peek */
+#peek.pull{white-space:nowrap;max-width:86%;overflow:hidden;text-overflow:ellipsis}
 </style>
 </head>
 <body translate="no" class="notranslate">
@@ -1630,7 +1652,7 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b56</div>
+  <div id="build">b57</div>
 </div>
   </div></div>
 </div>
@@ -2068,7 +2090,7 @@ function openStage(f){ busy=true; cur=f; closePM(); peek(null); const c=centerOf
   gsap.to(clip,{r:fullR(),duration:.6,ease:'expo.inOut',onUpdate:setClip,onComplete:()=>{busy=false;stage.style.clipPath='none';}}); SFX.open(); haptic(10); }
 function closeStage(){ if(!cur)return; if(mode==='alive')setTimeout(()=>layout(true),560); busy=true; const f=cur; stopRecUI(true); stopViewer(); hideGhost();
   const b=byId(f.id)?srcBall(f):null, tgt=b?centerOf(b):{x:app.clientWidth/2,y:app.clientHeight/2,r:0};
-  const vis=sw.getBoundingClientRect(), a=app.getBoundingClientRect(); clip={r:fullR(),x:vis.left-a.left+vis.width/2,y:vis.top-a.top+vis.height/2}; setClip(); SFX.close();
+  const vis=sw.getBoundingClientRect(), a=app.getBoundingClientRect(), sx0=a.width/app.offsetWidth; clip={r:Math.min(fullR(),(clip&&clip.r<fullR()-2?clip.r:vis.width/sx0*.5)),x:(vis.left-a.left)/sx0+vis.width/sx0/2,y:(vis.top-a.top)/sx0+vis.height/sx0/2}; setClip(); SFX.close();
   gsap.to(sw,{x:0,y:0,scale:.6,duration:.5,ease:'power3.inOut'});
   gsap.to(clip,{r:tgt.r,x:tgt.x,y:tgt.y,duration:.5,ease:'power3.inOut',onUpdate:setClip,onComplete:()=>{ stage.style.visibility='hidden'; busy=false; stopCam(); smode=null; cur=null; if(b)jelly(b,.6); paint(f); coachNext(); }}); }
 function openFriend(f){ openStage(f); if(f.inbox.length)startViewer(f,[...f.inbox]); else enterCamera(f); }
@@ -3109,7 +3131,7 @@ function demoHome(){ S.acts=S.acts||[]; if(!S.friends.length)setCount(7); seedRe
    <div class="sp" data-p="screens"><div class="gr" id="smG">${[['install','Install app'],['onb','Onboarding'],['how','How it works'],['empty','Empty home'],['cam','Camera'],['view','Watching videos'],['focus','Hold a face'],['add','Add friends'],['rq','All requests'],['inv','Invite friends'],['prof','Profile'],['act','Activity'],['edit','Edit profile'],['toast','Undo toast'],['arrange','Arrange mode'],['anyo','Anyo first'],['ref','From invite link'],['cap','Photo capture'],['look','Make it yours']].map(([k,l])=>`<button data-g="${k}">${l}</button>`).join('')}</div></div>
    <div class="sp" data-p="look"><div class="sl">Layout</div><div class="ch" id="smL"><button data-v="grid">Grid</button><button data-v="bubble">Bubbles</button><button data-v="hive">Honeycomb</button></div>
     <div class="sl">Start over</div><div class="gr"><button data-z="onb">Replay onboarding</button><button data-z="wipe" class="red">Log out, wipe all</button></div>
-    <div class="hint">Triple tap anywhere to open this. Build b56.</div></div>
+    <div class="hint">Triple tap anywhere to open this. Build b57.</div></div>
   </div>`;
   app.appendChild(d); app.appendChild(s); })();
 let simOn=false, simWho=null;
@@ -3793,7 +3815,7 @@ holdRing=(o=>function(f){ if(f&&f.id==='anyo'&&anyoLocked()){ return; } o(f); })
   app.appendChild(d); })();
 const anyoS=$('#anyoS'); let anyoOn=false, ANYO_MODE=null;
 const pgNews=mkPage('pgNews',"What's new"); anyoS.appendChild(pgNews);
-const NEWS=[['b55','New app icons to unlock, and a switch to hide your pet'],['b54','Sending is back to the smooth glide'],['b53','Buttons and toggles spring back when you press them'],['b52','New friends send you videos on their own, a few seconds after joining'],['b51','Invite sent moment is instant'],['b50','Their face stays with you while you record an invite'],['b49','Inviting is quicker: record a hello, see it land on their row'],['b48','Invites use the same camera: hold to record, drag down to cancel'],['b47','Hold right shows a clean 2x, hold to pause without icons'],['b46','Swipe down to close an invite, slide away to cancel a hello'],['b45','Anyo has its own space: talk, report a bug, share an idea'],['b44','Your pet sits right beside you'],['b43','Hold to pause, hold on the right for 2x'],['b42','Invites carry a hello video'],['b41','Swipe down closes faster everywhere']];
+const NEWS=[['b57','Pull a face down a little to see who and what'],['b56','Fill for me always shows'],['b55','New app icons to unlock, and a switch to hide your pet'],['b54','Sending is back to the smooth glide'],['b53','Buttons and toggles spring back when you press them'],['b52','New friends send you videos on their own, a few seconds after joining'],['b51','Invite sent moment is instant'],['b50','Their face stays with you while you record an invite'],['b49','Inviting is quicker: record a hello, see it land on their row'],['b48','Invites use the same camera: hold to record, drag down to cancel'],['b47','Hold right shows a clean 2x, hold to pause without icons'],['b46','Swipe down to close an invite, slide away to cancel a hello'],['b45','Anyo has its own space: talk, report a bug, share an idea'],['b44','Your pet sits right beside you'],['b43','Hold to pause, hold on the right for 2x'],['b42','Invites carry a hello video'],['b41','Swipe down closes faster everywhere']];
 function openAnyoS(){ if(anyoOn||busy)return; anyoOn=true; hideCoach&&hideCoach(); $('#anyoHi').textContent=`Hey ${S.me.name||'you'}! What's up?`; anyoS.style.visibility='visible'; drawerOpen(anyoS); gsap.fromTo('#anyoS .scrIn > *',{opacity:0,y:8},{opacity:1,y:0,duration:.4,stagger:.04,ease:'expo.out',delay:.1}); }
 function closeAnyoS(then){ if(!anyoOn)return; anyoOn=false; drawerClose(anyoS,then); }
 dim.addEventListener('click',()=>{ if(anyoOn)closeAnyoS(); });
@@ -3946,6 +3968,59 @@ applyIcon();
 obShow=(o=>function(id,back){ o(id,back); if(id==='obPh'||id==='obNa'){ setTimeout(()=>{ const a=document.activeElement; if(a&&(a.id==='obPhone'||a.id==='obName')&&!a.dataset.user)a.blur(); },480); } })(obShow);
 ['#obPhone','#obName'].forEach(q=>{ const i=$(q); i.addEventListener('pointerdown',()=>{ i.dataset.user='1'; }); });
 $$('.obFill button').forEach(b=>b.addEventListener('pointerdown',e=>e.preventDefault()));
+
+
+/* ======================= b57: clean app ======================= */
+C.pet=false; applyPet&&applyPet();
+/* onboarding: phone → code → name → your face → Anyo. no pet step */
+{ const g=$('#obPicGo'); const c=g.cloneNode(true); g.replaceWith(c); c.onclick=()=>{ if(c.classList.contains('off'))return; picStop(); SFX.tap(); haptic(12); saveMe(); saveC();
+    if(obSolo){ gsap.to(ob,{opacity:0,duration:.3,onComplete:()=>{ ob.style.display='none'; }}); syncTop(); if(profOn)fillProfile(); return; }
+    const from=$('#picO'), me=$('#meBtn'); syncTop(); flyOrb(from,me,`<div style="position:absolute;inset:0">${orbHTML(S.me.photo)}</div>`,.85,()=>{ gsap.set(me,{opacity:1}); jelly(me.querySelector('.ball'),.9); });
+    anyoStart(); gsap.set(me,{opacity:0}); ob.style.display='block'; gsap.set(ob,{opacity:1}); gsap.to(ob,{opacity:0,duration:.45,delay:.15,onComplete:()=>{ ob.style.display='none'; gsap.set(ob,{opacity:1}); }}); }; }
+/* how it works: popup slideshow from Settings */
+(()=>{ const d=document.createElement('div'); d.id='howPop'; d.innerHTML=`<div class="card"><button class="x" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg></button><div class="stage"></div><div class="t"></div><div class="dots"><i></i><i></i><i></i></div><button class="go">Next</button></div>`; app.appendChild(d); })();
+const HOWS=[['Your close ones send you videos. Tap a face to watch.',0],['Hold anywhere to record. Let go to send.',1],['Swipe down to close. Hold a face to rearrange.',-1]];
+let howI=0;
+function howShow(i){ howI=i; const d=$('#howPop'), st=d.querySelector('.stage'); if(hwTl)hwTl.kill(); ['#ms1','#ms2','#ms3'].forEach(q=>{ const e=$(q); if(e&&e.parentNode===st){ e.style.display='none'; } });
+  const [t,m]=HOWS[i]; d.querySelector('.t').textContent=t; st.querySelectorAll('.ic3').forEach(e=>e.remove());
+  if(m>=0){ const ms=$('#ms'+(m+1)); st.appendChild(ms); ms.style.display='block'; howAnim(m); } else st.insertAdjacentHTML('beforeend',`<div class="ic3"><img src="img/peng-cut.png" style="width:120px" alt=""></div>`);
+  d.querySelectorAll('.dots i').forEach((e,k)=>e.classList.toggle('on',k===i)); d.querySelector('.go').textContent=i===HOWS.length-1?'Got it':'Next';
+  gsap.fromTo([st,d.querySelector('.t')],{opacity:0,x:24},{opacity:1,x:0,duration:.4,ease:'expo.out'}); }
+function openHow(){ const d=$('#howPop'); d.style.display='flex'; gsap.fromTo(d,{opacity:0},{opacity:1,duration:.25}); gsap.fromTo(d.querySelector('.card'),{scale:.9,y:20},{scale:1,y:0,duration:.5,ease:'back.out(1.4)'}); howShow(0); }
+function closeHow(){ const d=$('#howPop'); if(hwTl)hwTl.kill(); ['#ms1','#ms2'].forEach(q=>{ const e=$(q); if(e)$('#anyoMock').appendChild(e); }); gsap.to(d,{opacity:0,duration:.2,onComplete:()=>d.style.display='none'}); }
+$('#howPop .go').onclick=()=>{ SFX.tap(); if(howI<HOWS.length-1)howShow(howI+1); else closeHow(); };
+$('#howPop .x').onclick=()=>{ SFX.tap(); closeHow(); };
+$('#howPop').addEventListener('click',e=>{ if(e.target.id==='howPop')closeHow(); });
+{ const b=$('#pHow'); const c=b.cloneNode(true); b.replaceWith(c); c.onclick=()=>{ closeProfile(); setTimeout(openHow,420); }; }
+/* accepting a request: their hello video is waiting in their bubble */
+const ACC_IN=new Set();
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-a="accept"]'); if(!b)return; const r=b.closest('.pr'); if(r)ACC_IN.add(r.dataset.id); },true);
+addFriends=(o=>function(list,...a){ (list||[]).forEach(f=>{ if(f&&ACC_IN.has(f.id)){ ACC_IN.delete(f.id); f.inbox=f.inbox||[]; if(!f.inbox.length){ const m=msg(0,0); m.sum='says hi and wants you on Anyo'; f.inbox.push(m); } } }); return o(list,...a); })(addFriends);
+/* Make it yours: background + icon only; picking a background shows it live above the sheet */
+pushPage=(o=>function(sheet,p,fill){ o(sheet,p,fill); if(p&&p.id==='pgLook'){ gsap.to(profS,{height:'64%',duration:.45,ease:'expo.out'}); gsap.to(dim,{opacity:0,duration:.3}); } })(pushPage);
+popPage=(o=>function(inst){ const was=PGC&&PGC.p&&PGC.p.id==='pgLook'; o(inst); if(was){ gsap.to(profS,{height:'78%',duration:.4,ease:'expo.out'}); if(profOn)gsap.to(dim,{opacity:1,duration:.3}); } })(popPage);
+closeProfile=(o=>function(){ o(); setTimeout(()=>gsap.set(profS,{height:'78%'}),450); })(closeProfile);
+/* swipe down on a video: it shrinks into a circle as you pull, and flies home to its bubble */
+dragStage=function(dy){ const d=Math.max(0,dy), W=app.clientWidth, H=app.clientHeight; gsap.set(sw,{y:d*.85,scale:1-Math.min(.35,d/H*.5),borderRadius:Math.min(60,d*.4)});
+  const k=Math.min(1,d/220); clip={x:W/2,y:H/2+d*.85,r:fullR()*(1-k)+W*.46*k}; setClip(); };
+/* round everywhere: the tab icon is a circle too */
+applyIcon=(o=>async function(){ await o(); const u=await iconURL(C.icon||'classic'); const im=new Image(); im.onload=()=>{ const cv=document.createElement('canvas'); cv.width=cv.height=128; const x=cv.getContext('2d'); x.beginPath(); x.arc(64,64,64,0,Math.PI*2); x.clip(); x.drawImage(im,0,0,128,128); $$('link[rel="icon"]').forEach(l=>l.href=cv.toDataURL('image/png')); }; im.src=u; })(applyIcon);
+if(!$('link[rel="icon"]')){ const l=document.createElement('link'); l.rel='icon'; document.head.appendChild(l); } applyIcon();
+/* bubble states: tap = open, hold = rearrange, pull down a little = who + what */
+function peekPull(f){ const pk=$('#peek'), b=srcBall(f); if(!b)return; const c=centerOf(b); const m=f.inbox[0]; const what=m?(m.sum||(m.lines&&m.lines[0])||'new video'):f.out?(f.out.status==='opened'?'watched yours':'hasn\'t watched yet'):f.replyDue?'your turn':'';
+  pk.classList.add('pull'); pk.textContent=what?`${f.name} · ${what}`:f.name; const w=pk.offsetWidth; gsap.killTweensOf(pk); gsap.set(pk,{x:Math.max(10,Math.min(app.clientWidth-w-10,c.x-w/2)),y:c.y-c.r-pk.offsetHeight-12});
+  gsap.fromTo(pk,{opacity:0,scale:.7},{opacity:1,scale:1,duration:.4,ease:'back.out(1.8)'}); haptic(10); SFX.peek&&SFX.peek(); clearTimeout(pk._t); pk._t=setTimeout(()=>{ gsap.to(pk,{opacity:0,scale:.8,duration:.2}); pk.classList.remove('pull'); },2400); }
+touchStart=function(e,f){ T={x0:e.clientX,y0:e.clientY,f,start:f,moved:false,t0:now()}; const t=T;
+  t.hold=setTimeout(()=>{ if(T!==t||t.moved||!f)return; if(f.id==='anyo'&&anyoLocked&&anyoLocked())return; T=null; haptic(35); setEdit(true); },620);
+  const wig=f&&f.el?f.el.querySelector('.wig'):null;
+  const mv=ev=>{ if(T!==t)return; const dx=ev.clientX-t.x0, dy=ev.clientY-t.y0;
+    if(!t.moved&&f&&dy>8&&dy>Math.abs(dx)*1.2&&!field.classList.contains('scroll')){ t.moved=true; t.pull=true; clearTimeout(t.hold); }
+    else if(!t.moved&&Math.hypot(dx,dy)>12){ t.moved=true; clearTimeout(t.hold); }
+    if(t.pull&&wig)gsap.set(wig,{y:Math.min(34,Math.max(0,dy)*.45)}); };
+  const up=ev=>{ removeEventListener('pointermove',mv); removeEventListener('pointerup',up); removeEventListener('pointercancel',up); if(T!==t)return; T=null; clearTimeout(t.hold);
+    if(t.pull&&f){ if(wig)gsap.to(wig,{y:0,duration:.7,ease:'elastic.out(1.1,.4)'}); peekPull(f); return; }
+    if(!t.moved&&f&&ev.type==='pointerup'&&!pinch){ SFX.tap(); haptic(8); openFriend(f); } };
+  addEventListener('pointermove',mv); addEventListener('pointerup',up); addEventListener('pointercancel',up); };
 
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
