@@ -1511,6 +1511,10 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
 
 /* b59: tagline */
 .ob1tag{position:absolute;left:0;right:0;top:calc(34% + 170px);text-align:center;font:400 16px/1.3 var(--ui);color:#8A8A8E}
+
+/* b60: peek centred */
+#peek.pull{text-align:center!important}
+#peek.pull small{margin-left:auto;margin-right:auto}
 </style>
 </head>
 <body translate="no" class="notranslate">
@@ -1664,7 +1668,7 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b59</div>
+  <div id="build">b60</div>
 </div>
   </div></div>
 </div>
@@ -3143,7 +3147,7 @@ function demoHome(){ S.acts=S.acts||[]; if(!S.friends.length)setCount(7); seedRe
    <div class="sp" data-p="screens"><div class="gr" id="smG">${[['install','Install app'],['onb','Onboarding'],['how','How it works'],['empty','Empty home'],['cam','Camera'],['view','Watching videos'],['focus','Hold a face'],['add','Add friends'],['rq','All requests'],['inv','Invite friends'],['prof','Profile'],['act','Activity'],['edit','Edit profile'],['toast','Undo toast'],['arrange','Arrange mode'],['anyo','Anyo first'],['ref','From invite link'],['cap','Photo capture'],['look','Make it yours']].map(([k,l])=>`<button data-g="${k}">${l}</button>`).join('')}</div></div>
    <div class="sp" data-p="look"><div class="sl">Layout</div><div class="ch" id="smL"><button data-v="grid">Grid</button><button data-v="bubble">Bubbles</button><button data-v="hive">Honeycomb</button></div>
     <div class="sl">Start over</div><div class="gr"><button data-z="onb">Replay onboarding</button><button data-z="wipe" class="red">Log out, wipe all</button></div>
-    <div class="hint">Triple tap anywhere to open this. Build b59.</div></div>
+    <div class="hint">Triple tap anywhere to open this. Build b60.</div></div>
   </div>`;
   app.appendChild(d); app.appendChild(s); })();
 let simOn=false, simWho=null;
@@ -4052,6 +4056,11 @@ peekPull=(o=>function(f){ o(f); const pk=$('#peek'), b=srcBall(f); if(!b)return;
 (()=>{ const t=document.createElement('div'); t.className='ob1tag'; t.textContent="Life's too short for texting."; $('#ob1').appendChild(t); })();
 ANYO_LINES.hello=n=>[`Hey ${n||'you'}, welcome!`,"I'm Anyo. Life's too short for texting.",'Your close ones send you videos.','Tap a face to watch. Tap again for the next.','Hold anywhere to record yourself.','Swipe down any time to close.','Now send me one!'];
 HOWS[0][0]="Life's too short for texting. Your people send you videos. Tap a face to watch.";
+
+
+/* b60: any touch clears the coach tip, so it never stacks with the peek */
+document.addEventListener('pointerdown',()=>{ try{ hideTip(); }catch(e){} },true);
+peekPull=(o=>function(f){ try{ hideTip(); }catch(e){} o(f); })(peekPull);
 
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
