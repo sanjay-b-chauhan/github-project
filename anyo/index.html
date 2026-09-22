@@ -1531,6 +1531,19 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
 #sw.fx{filter:none!important}
 #swRim{background:url(img/glass.png) center/100% 100% no-repeat!important;-webkit-mask:none!important;mask:none!important;mix-blend-mode:normal!important}
 #sw.mo{background:#DDE8F4!important}
+
+/* b65: controls blur away while the video changes shape */
+#swHint,#last,#flip,#segs,#speed,#invWho,#who{transition:opacity .28s ease,filter .32s ease}
+#sw.morphing #swHint,#sw.morphing #last,#sw.morphing #flip,#sw.morphing #segs,#sw.morphing #speed,#sw.morphing #invWho,#sw.morphing #xT,#sw.morphing #timer,#sw.morphing .topfade,#sw.morphing .btmfade{opacity:0!important;filter:blur(12px)!important;transition:opacity .16s ease,filter .16s ease!important}
+
+/* b65b: profile cleanup */
+.rowx:has(#pSum){display:none!important}
+#pgEd .dn{width:40px;height:40px;padding:0!important;border-radius:50%!important;display:grid;place-items:center;font-size:0!important;opacity:0;transform:scale(.6);pointer-events:none;transition:opacity .25s,transform .35s cubic-bezier(.3,1.6,.5,1)}
+#pgEd .dn.show{opacity:1;transform:scale(1);pointer-events:auto}
+#pgEd .dn svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+#pgLook .rowx.layRow{padding:0 2px;margin-top:4px}
+
+#pgLook .lab.layLab{display:block!important}
 </style>
 </head>
 <body translate="no" class="notranslate">
@@ -1684,7 +1697,7 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b64</div>
+  <div id="build">b66</div>
 </div>
   </div></div>
 </div>
@@ -3163,7 +3176,7 @@ function demoHome(){ S.acts=S.acts||[]; if(!S.friends.length)setCount(7); seedRe
    <div class="sp" data-p="screens"><div class="gr" id="smG">${[['install','Install app'],['onb','Onboarding'],['how','How it works'],['empty','Empty home'],['cam','Camera'],['view','Watching videos'],['focus','Hold a face'],['add','Add friends'],['rq','All requests'],['inv','Invite friends'],['prof','Profile'],['act','Activity'],['edit','Edit profile'],['toast','Undo toast'],['arrange','Arrange mode'],['anyo','Anyo first'],['ref','From invite link'],['cap','Photo capture'],['look','Make it yours']].map(([k,l])=>`<button data-g="${k}">${l}</button>`).join('')}</div></div>
    <div class="sp" data-p="look"><div class="sl">Layout</div><div class="ch" id="smL"><button data-v="grid">Grid</button><button data-v="bubble">Bubbles</button><button data-v="hive">Honeycomb</button></div>
     <div class="sl">Start over</div><div class="gr"><button data-z="onb">Replay onboarding</button><button data-z="wipe" class="red">Log out, wipe all</button></div>
-    <div class="hint">Triple tap anywhere to open this. Build b64.</div></div>
+    <div class="hint">Triple tap anywhere to open this. Build b66.</div></div>
   </div>`;
   app.appendChild(d); app.appendChild(s); })();
 let simOn=false, simWho=null;
@@ -4187,6 +4200,68 @@ peekPull=(o=>function(f){ o(f); blurIn($('#peek'),.28,8); })(peekPull);
 anyoCoach=(o=>function(t,x,opt){ o(t,x,opt); blurIn($('#aCoach'),.3,8); })(anyoCoach);
 invDone=(o=>function(p){ o(p); blurIn($('#invDone .pair'),.35,10); blurIn($('#invDone .t1'),.35,8); })(invDone);
 howShow=(o=>function(i){ o(i); blurIn($('#howPop .stage'),.3,8); blurIn($('#howPop .t'),.3,6); })(howShow);
+
+
+/* ======================= b65: first-morph curves; circle mid-flight; controls blur ======================= */
+const EZs=gsap.parseEase('power2.inOut');
+function morphCircle(from,to,dur,geo,dir,done){ const fr=parseFloat(getComputedStyle(sw).borderRadius)||0; moSet(from); const st={p:0}, W=AW();
+  const fc={x:from.left+from.width/2,y:from.top+from.height/2}, tc={x:to.left+to.width/2,y:to.top+to.height/2};
+  return gsap.to(st,{p:1,duration:dur,ease:'none',onUpdate:()=>{ const p=st.p, g=geo(p);
+      const s0=dir==='close'&&Math.abs(from.width-from.height)<4?1:0; const s=dir==='close'?Math.max(s0,EZs(Math.min(1,p/.45))):1-EZs(Math.max(0,(p-.55)/.45));   // 1 = perfect circle
+      const w=lerp(from.width,to.width,g), hRaw=lerp(from.height,to.height,g), h=lerp(hRaw,w,s), cx=lerp(fc.x,tc.x,g), cy=lerp(fc.y,tc.y,g);
+      const rad=dir==='close'?lerp(Math.min(fr,Math.min(w,h)/2),Math.min(w,h)/2,s):Math.min(w,h)/2*s;
+      gsap.set(sw,{left:cx-w/2,top:cy-h/2,width:w,height:h,borderRadius:rad}); gsap.set('#swRim',{opacity:s*.85}); },onComplete:done}); }
+openStage=(o=>function(f){ o(f); gsap.killTweensOf(sw); gsap.set(sw,{clearProps:'filter'}); const bx=bubbleBox(f); if(!bx){ moReset(); return; }
+  sw.classList.add('morphing'); morph(bx,{left:0,top:0,width:AW(),height:AH(),borderRadius:0},.62,gsap.parseEase('expo.out'),gsap.parseEase('expo.out'),()=>{ moReset(); });
+  setTimeout(()=>sw.classList.remove('morphing'),380); })(openStage);
+closeStage=function(){ const f=cur, from=curBox(); sw.classList.add('morphing'); closeStageBase(); gsap.killTweensOf(sw); gsap.set(sw,{clearProps:'filter'}); const to=bubbleBox(f)||circleAt(AW()/2,AH()/2,48);
+  morphCircle(from,to,.46,gsap.parseEase('power3.inOut'),'close',()=>{ stage.style.visibility='hidden'; moReset(); sw.classList.remove('morphing'); }); };
+sendVideo=function(){ const f=cur, from=curBox(); sw.classList.add('morphing'); sendVideoBase(); gsap.killTweensOf(sw); gsap.set(sw,{clearProps:'filter'}); const to=bubbleBox(f)||circleAt(AW()/2,AH()/2,48);
+  morphCircle(from,to,.5,gsap.parseEase('power3.in'),'close',()=>{ stage.style.visibility='hidden'; moReset(); sw.classList.remove('morphing'); }); };
+/* dragging: controls blur out as soon as you pull; back in if it snaps back */
+dragStage=(o=>function(dy){ if(dy>6)sw.classList.add('morphing'); o(dy); })(dragStage);
+snapBack=(o=>function(){ o(); setTimeout(()=>sw.classList.remove('morphing'),250); })(snapBack);
+
+
+/* b65b: Edit profile saves with a tick that only appears once something changed; layout lives in Make it yours; no AI summaries */
+C.summary=false;
+(()=>{ const d=pgEd.querySelector('.dn'); d.innerHTML='<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'; d.setAttribute('aria-label','Save'); })();
+let edSnap='';
+const edNow=()=>JSON.stringify([S.me.name||'',S.me.user||'',S.me.email||'',(S.me.photo||'').length]);
+const edSync=()=>pgEd.querySelector('.dn').classList.toggle('show',edNow()!==edSnap);
+pushPage=(o=>function(sheet,p,fill){ if(p===pgEd){ edSnap=edNow(); } o(sheet,p,fill); if(p===pgEd)setTimeout(edSync,0); })(pushPage);
+['#pNameE','#pUserIn','#pEmail'].forEach(q=>{ const i=$(q); if(i)i.addEventListener('input',()=>setTimeout(()=>{ if(q==='#pEmail'){ S.me.email=i.value.trim(); saveMe(); } edSync(); },0)); });
+pgEd.querySelector('.dn').addEventListener('click',()=>{ if(!pgEd.querySelector('.dn').classList.contains('show'))return; saveMe(); edSnap=edNow(); haptic(12); SFX.sent&&SFX.sent(); toast('Saved'); },true);
+/* layout moves into Make it yours */
+fillLook=(o=>async function(p){ await o(p); const row=LAYROW; const B=p.querySelector('.pgB'); if(row&&B){ row.classList.add('layRow'); let lab=B.querySelector('.lab.layLab'); if(!lab){ lab=document.createElement('div'); lab.className='lab layLab'; lab.textContent='Home layout'; } B.prepend(row); B.prepend(lab); } })(fillLook);
+popPage=(o=>function(inst){ const was=PGC&&PGC.p===pgLook; o(inst); if(was){ const row=$('#pLays')&&$('#pLays').closest('.rowx'); const lab=pgLook.querySelector('.lab.layLab'); setTimeout(()=>{ if(row)row.style.display=''; },0); } })(popPage);
+const LAYROW=$('#pLays')&&$('#pLays').closest('.rowx'); if(LAYROW){ LAYROW.remove(); LAYROW.classList.add('layRow'); }
+
+
+/* ======================= b66: iOS-style morph. the video scales as one piece, rounds into a circle, cross-fades into its bubble ======================= */
+const MP={dx:0,dy:0,s:1,h:0,r:0,o:1};
+function mpApply(){ const W=AW(), H=AH(), h=MP.h||H; sw.classList.add('mo'); gsap.set(sw,{left:0,top:(H-h)/2,width:W,height:h,borderRadius:MP.r,x:MP.dx,y:MP.dy,scale:MP.s,transformOrigin:'50% 50%',opacity:MP.o}); gsap.set('#swRim',{opacity:Math.min(1,MP.r/(W/2))*.8}); }
+function mpFull(){ MP.dx=0; MP.dy=0; MP.s=1; MP.h=AH(); MP.r=0; MP.o=1; }
+function mpTarget(f){ const W=AW(), H=AH(), b=f?srcBall(f):null; let c=null; if(b&&b.getBoundingClientRect().width)c=centerOf(b); if(!c)c={x:W/2,y:H*.6,r:24}; return {dx:c.x-W/2,dy:c.y-H/2,s:(c.r*2)/W,h:W,r:W/2,o:0}; }
+function mpDone(){ gsap.killTweensOf(MP); sw.classList.remove('mo'); gsap.set(sw,{clearProps:'left,top,width,height,borderRadius,x,y,scale,opacity,transformOrigin,filter'}); gsap.set('#swRim',{opacity:0}); mpFull(); }
+/* close: from wherever your finger left it, fly home with momentum; round early; fade into the bubble at the end */
+function mpClose(f,dur,done){ gsap.killTweensOf(MP); const t=mpTarget(f), W=AW();
+  const tl=gsap.timeline({onUpdate:mpApply,onComplete:()=>{ done&&done(); }});
+  tl.to(MP,{dx:t.dx,dy:t.dy,s:t.s,duration:dur,ease:'expo.out'},0)
+    .to(MP,{h:W,r:W/2,duration:dur*.5,ease:'power2.out'},0)
+    .to(MP,{o:0,duration:dur*.38,ease:'power1.in'},dur*.62);
+  const b=f?srcBall(f):null; if(b)setTimeout(()=>jelly(b,.9),dur*900); return tl; }
+function mpOpen(f,dur){ const t=mpTarget(f); if(!f||!srcBall(f)){ mpDone(); return; } gsap.killTweensOf(MP); Object.assign(MP,{dx:t.dx,dy:t.dy,s:t.s,h:AW(),r:AW()/2,o:0}); mpApply();
+  gsap.timeline({onUpdate:mpApply,onComplete:mpDone}).to(MP,{dx:0,dy:0,s:1,duration:dur,ease:'expo.out'},0).to(MP,{h:AH(),r:0,duration:dur*.8,ease:'power2.inOut'},0).to(MP,{o:1,duration:dur*.25,ease:'power1.out'},0); }
+openStage=(o=>function(f){ o(f); gsap.killTweensOf(sw); gsap.set(sw,{clearProps:'filter'}); sw.classList.add('morphing'); mpOpen(f,.55); setTimeout(()=>sw.classList.remove('morphing'),360); })(openStage);
+dragStage=function(dy){ const d=Math.max(0,dy), W=AW(), H=AH(); if(d>6)sw.classList.add('morphing'); const e=Math.min(1,d/360), q=1-Math.pow(1-e,2), k=Math.min(1,e/.4), t=mpTarget(cur);
+  MP.dx=t.dx*q*.85; MP.dy=d*.35+(t.dy-d*.35)*q*.6; MP.s=1-(1-Math.max(t.s,.42))*q; MP.h=H+(W-H)*k; MP.r=(W/2)*k; MP.o=1; mpApply(); };
+snapBack=function(){ gsap.killTweensOf(MP); gsap.to(MP,{dx:0,dy:0,s:1,h:AH(),r:0,o:1,duration:.45,ease:'expo.out',onUpdate:mpApply,onComplete:()=>{ mpDone(); sw.classList.remove('morphing'); }}); };
+closeStage=function(){ const f=cur; if(!sw.classList.contains('mo'))mpFull(); sw.classList.add('morphing'); closeStageBase(); gsap.killTweensOf(sw);
+  mpClose(f,.5,()=>{ stage.style.visibility='hidden'; mpDone(); sw.classList.remove('morphing'); }); };
+sendVideo=function(){ const f=cur; mpFull(); sw.classList.add('morphing'); sendVideoBase(); gsap.killTweensOf(sw);
+  mpClose(f,.52,()=>{ stage.style.visibility='hidden'; mpDone(); sw.classList.remove('morphing'); }); };
+mpFull();
 
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
