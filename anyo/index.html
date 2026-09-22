@@ -1575,6 +1575,32 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
 #obPerm .prow .go svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
 #obPerm .all{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 492px);text-align:center}
 #obPerm .all button{height:40px;padding:0 18px;border-radius:99px;background:rgba(0,0,0,.05);font:400 15px/40px var(--ui);color:#111114}
+
+/* ======================= b68: permissions as three clear steps, no surfaces ======================= */
+#obPerm .perms{top:calc(env(safe-area-inset-top,0px) + 226px)!important;gap:6px!important}
+#obPerm .prow{background:none!important;box-shadow:none!important;padding:12px 4px!important;gap:14px!important;border-radius:22px;position:relative;cursor:pointer}
+#obPerm .prow .num{width:18px;flex:none;font:400 13px/1 var(--ui);color:#A0A0A6;text-align:center}
+#obPerm .prow .ic{width:56px!important;height:56px!important;background:none!important;box-shadow:inset 0 0 0 1.5px #DADADF}
+#obPerm .prow .ic svg{width:24px!important;height:24px!important;stroke:#8A8A8E!important}
+#obPerm .prow.now .ic{background:#111114!important;box-shadow:0 12px 24px -12px rgba(0,0,0,.45)}
+#obPerm .prow.now .ic svg{stroke:#fff!important}
+#obPerm .prow.now .num{color:#111114}
+#obPerm .prow.ok .ic{background:#111114!important;box-shadow:none}
+#obPerm .prow.ok .ic svg{stroke:#fff!important}
+#obPerm .prow .t1{font-size:18px!important}
+#obPerm .prow .go{display:none!important}
+#obPerm .prow .st{width:26px;height:26px;border-radius:50%;flex:none;display:grid;place-items:center;opacity:0;transform:scale(.4);transition:all .35s cubic-bezier(.3,1.6,.5,1);background:#111114}
+#obPerm .prow .st svg{width:14px;height:14px;fill:none;stroke:#fff;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}
+#obPerm .prow.ok .st{opacity:1;transform:scale(1)}
+#obPerm .prow.now .ic::after{content:"";position:absolute;inset:-6px;border-radius:50%;box-shadow:0 0 0 2px rgba(17,17,20,.18);animation:permPulse 1.8s ease-out infinite}
+#obPerm .prow .ic{position:relative}
+@keyframes permPulse{from{transform:scale(.9);opacity:1}to{transform:scale(1.25);opacity:0}}
+#obPerm .all,#obPermGo{display:none!important}
+#obPerm .permCta{position:absolute;left:92px;right:20px;bottom:calc(env(safe-area-inset-bottom,0px) + 26px);height:58px;border-radius:99px;background:#111114;color:#fff;font:400 17px/58px var(--ui);display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 16px 30px -16px rgba(0,0,0,.45)}
+#obPerm .permCta svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+#obPerm .permLater{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 96px);text-align:center}
+#obPerm .permLater button{padding:10px 16px;font:400 15px/1 var(--ui);color:#8A8A8E;background:none}
+#obPerm .obBk,#obPerm ~ .obBk{}
 </style>
 </head>
 <body translate="no" class="notranslate">
@@ -1728,7 +1754,7 @@ svg.logo{display:inline-block;height:.78em;width:auto;vertical-align:middle;over
   </div>
 
   <div class="ghost" id="ghost"><div class="r"></div><div class="d"></div><svg viewBox="0 0 74 74"><circle id="ghP" cx="37" cy="37" r="33" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg></div>
-  <div id="build">b67</div>
+  <div id="build">b68</div>
 </div>
   </div></div>
 </div>
@@ -3207,7 +3233,7 @@ function demoHome(){ S.acts=S.acts||[]; if(!S.friends.length)setCount(7); seedRe
    <div class="sp" data-p="screens"><div class="gr" id="smG">${[['install','Install app'],['onb','Onboarding'],['how','How it works'],['empty','Empty home'],['cam','Camera'],['view','Watching videos'],['focus','Hold a face'],['add','Add friends'],['rq','All requests'],['inv','Invite friends'],['prof','Profile'],['act','Activity'],['edit','Edit profile'],['toast','Undo toast'],['arrange','Arrange mode'],['anyo','Anyo first'],['ref','From invite link'],['cap','Photo capture'],['look','Make it yours']].map(([k,l])=>`<button data-g="${k}">${l}</button>`).join('')}</div></div>
    <div class="sp" data-p="look"><div class="sl">Layout</div><div class="ch" id="smL"><button data-v="grid">Grid</button><button data-v="bubble">Bubbles</button><button data-v="hive">Honeycomb</button></div>
     <div class="sl">Start over</div><div class="gr"><button data-z="onb">Replay onboarding</button><button data-z="wipe" class="red">Log out, wipe all</button></div>
-    <div class="hint">Triple tap anywhere to open this. Build b67.</div></div>
+    <div class="hint">Triple tap anywhere to open this. Build b68.</div></div>
   </div>`;
   app.appendChild(d); app.appendChild(s); })();
 let simOn=false, simWho=null;
@@ -4315,6 +4341,22 @@ $('#obPerm').addEventListener('click',e=>{ const b=e.target.closest('.prow .go')
 $('#permAll').onclick=async()=>{ SFX.tap(); for(const k of ['cam','mic','ntf']){ const r=$(`#obPerm .prow[data-k="${k}"]`); if(!r.classList.contains('ok'))await permAsk(k); } };
 $('#obPermGo').onclick=()=>{ SFX.tap(); haptic(10); obShow('obPic'); paintPic(); gsap.fromTo('#picO',{scale:.9,opacity:0},{scale:1,opacity:1,duration:.6,ease:'expo.out'}); };
 $('#obNaGo').onclick=()=>{ const n=$('#obName').value.trim(); if(!n)return; S.me.name=n; S.me.user=slug(n); saveMe(); SFX.tap(); obShow('obPerm'); permCheck(); gsap.fromTo('#obPerm .prow',{y:18,opacity:0},{y:0,opacity:1,duration:.5,stagger:.07,ease:'expo.out',delay:.1}); };
+
+
+/* ======================= b68: permissions = 1, 2, 3 ======================= */
+(()=>{ const rows=$$('#obPerm .prow'); rows.forEach((r,i)=>{ r.insertAdjacentHTML('afterbegin',`<span class="num">${i+1}</span>`); r.insertAdjacentHTML('beforeend','<span class="st"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>'); });
+  const o=$('#obPerm'); o.insertAdjacentHTML('beforeend','<div class="permLater"><button id="permLater">Maybe later</button></div><button class="permCta" id="permCta"><span>Allow all</span><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>'); })();
+const PERM_SUB={cam:'To record your videos',mic:'So your people hear you',ntf:'Know when a video lands'};
+function permNow(){ const rows=$$('#obPerm .prow'); const nx=rows.find(r=>!r.classList.contains('ok')); rows.forEach(r=>r.classList.toggle('now',r===nx)); $('#permCta span').textContent=nx?(rows.filter(r=>r.classList.contains('ok')).length?'Allow the rest':'Allow all'):'Continue'; }
+permMark=function(k,state){ const r=$(`#obPerm .prow[data-k="${k}"]`); if(!r)return; const was=r.classList.contains('ok'); r.classList.toggle('ok',state==='granted'); r.classList.remove('no');
+  r.querySelector('.t2').textContent=state==='granted'?'Allowed':PERM_SUB[k]; if(state==='granted'&&!was){ gsap.fromTo(r.querySelector('.ic'),{scale:.85},{scale:1,duration:.5,ease:'back.out(2)'}); haptic(12); } permNow(); };
+permAsk=(o=>async function(k){ const r=$(`#obPerm .prow[data-k="${k}"]`); try{ await o(k); }catch(e){} if(r&&!r.classList.contains('ok')){ r.querySelector('.t2').textContent='Tap to allow'; permNow(); } })(permAsk);
+toast=(o=>function(m,u,ms){ if(/^Blocked\. You can allow|^Notifications are off for now/.test(m||''))return; return o(m,u,ms); })(toast);
+$('#obPerm').addEventListener('click',e=>{ const r=e.target.closest('.prow'); if(!r||r.classList.contains('ok'))return; SFX.tap(); permAsk(r.dataset.k); });
+const permNext=()=>{ SFX.tap(); haptic(10); obShow('obPic'); paintPic(); gsap.fromTo('#picO',{scale:.9,opacity:0},{scale:1,opacity:1,duration:.6,ease:'expo.out'}); };
+$('#permCta').onclick=async()=>{ const rows=$$('#obPerm .prow'); if(rows.every(r=>r.classList.contains('ok')))return permNext(); SFX.tap(); for(const r of rows){ if(!r.classList.contains('ok'))await permAsk(r.dataset.k); } setTimeout(permNext,500); };
+$('#permLater').onclick=permNext;
+permCheck=(o=>async function(){ await o(); permNow(); })(permCheck);
 
 /* ================= boot ================= */
 const q=new URLSearchParams(location.search);
