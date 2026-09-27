@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en" class="loading">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sanjay Chauhan · Designer and builder</title>
+<meta name="description" content="Sanjay Chauhan, designer and builder from Valdara, Rajasthan. Third generation builder: my grandfather built with wood, my father builds with concrete, I build with pixels.">
+<meta name="theme-color" content="#050404">
+<meta property="og:title" content="Sanjay Chauhan · Designer and builder">
+<meta property="og:description" content="I shoot. I design. I build. Third generation builder from Valdara, Rajasthan.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23050404'/%3E%3Cg fill='%23ff5c00' transform='translate(8 14) scale(.1132)'%3E%3Cpath d='M0.25 141.85L122.96 212.7C126.25 189 138.75 168.25 156.74 154.19L34.03 83.35ZM178.4 141.67C188.83 137.45 200.23 135.12 212.18 135.12C224.12 135.12 235.52 137.45 245.96 141.67V0H178.4ZM267.61 154.19C285.59 168.25 298.1 189 301.39 212.69L424.09 141.85L390.31 83.35Z'/%3E%3Cpath d='M0 233.45H424.1V301.01H0Z'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Devanagari:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preload" href="assets/brand/telgra.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/style.css">
+<script>
+  (function () {
+    var h = document.documentElement;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) h.classList.add('reduced');
+    if (matchMedia('(hover: none)').matches) h.classList.add('touch');
+  })();
+</script>
+<script type="importmap">
+{"imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/",
+  "lenis":"https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.mjs"
+}}
+</script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="sun" viewBox="0 0 424.098 301.009"><path fill="currentColor" d="M0.252134 141.854L122.955 212.697C126.245 189.001 138.753 168.254 156.741 154.192L34.0322 83.3457L0.252134 141.854ZM178.395 141.668C188.826 137.445 200.229 135.12 212.175 135.12C224.12 135.12 235.523 137.445 245.955 141.668V2.95315e-06L178.395 0L178.395 141.668ZM267.606 154.189C285.594 168.251 298.102 188.998 301.394 212.694L424.091 141.854L390.311 83.3457L267.606 154.189Z"/><path fill="currentColor" d="M0 233.45H424.098V301.009H0V233.45Z"/></symbol>
+  <symbol id="arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+
+<canvas id="gl" aria-hidden="true"></canvas>
+
+<div id="loader" role="status" aria-live="polite">
+  <div class="ld-mark">
+    <svg class="ld-ring" viewBox="0 0 168 168" aria-hidden="true"><circle class="ld-track" cx="84" cy="84" r="80"/><circle class="ld-arc" cx="84" cy="84" r="80"/></svg>
+    <svg class="ld-logo" id="ldLogo" aria-hidden="true"><use href="#sun"/></svg>
+  </div>
+  <p class="ld-count"><span id="ldCount">0</span></p>
+  <p class="ld-greet" id="ldGreet">khamma ghani</p>
+  <div class="ld-enter" id="ldEnter">
+    <button class="pill solid" id="enterSound" type="button">Enter with sound</button>
+    <button class="pill" id="enterQuiet" type="button">Enter quietly</button>
+  </div>
+</div>
+
+<header class="nav" id="nav">
+  <a class="brand" href="#hello" data-go="0" aria-label="Sanjay Chauhan, back to the top">
+    <svg class="brand-mark" aria-hidden="true"><use href="#sun"/></svg>
+    <span class="brand-t">Sanjay Chauhan</span>
+  </a>
+  <nav class="nav-r" aria-label="Main">
+    <a class="nav-link" href="#work" data-go="2">Work</a>
+    <button class="nav-link" id="aboutBtn" type="button">About</button>
+    <a class="nav-link" href="#contact" data-go="7">Contact</a>
+    <button class="snd" id="snd" type="button" aria-pressed="false" aria-label="Sound"><i></i><i></i><i></i><i></i></button>
+  </nav>
+</header>
+
+<nav class="thread" id="thread" aria-label="Sections">
+  <span class="thread-line" aria-hidden="true"><i id="threadFill"></i></span>
+  <span class="thread-bob" id="threadBob" aria-hidden="true"></span>
+  <ol id="threadList"></ol>
+</nav>
+
+<div class="index" id="index" aria-hidden="true"><b id="idxNum">01</b><span>/ 06</span><em id="idxName">Hello</em></div>
+
+<a class="pill cta" id="cta" href="#contact" data-go="7">Get in touch</a>
+
+<main id="ov">
+  <section class="ov ov-hello" id="hello" aria-labelledby="helloH">
+    <h1 id="helloH" class="sr-only">Sanjay Chauhan, designer and builder</h1>
+    <div class="hello-bl">
+      <p class="hello-line"><span>I shoot.</span> <span>I design.</span> <span>I build.</span></p>
+      <p class="micro dim">Designer from Valdara, Rajasthan</p>
+    </div>
+    <div class="hello-br">
+      <p class="micro dim">Worked with</p>
+      <ul class="clients"><li>ZERO</li><li>Manish Malhotra</li><li>LimeRoad</li><li>MG Motors</li><li>Peppermint Robotics</li></ul>
+    </div>
+    <p class="hint micro" id="hint"><span>Scroll</span><i></i></p>
+  </section>
+
+  <section class="ov ov-do" id="do" aria-labelledby="doH">
+    <div class="do-in">
+      <p class="micro orange" id="doH">Thinker. Doer.</p>
+      <ol class="skills" id="skills"></ol>
+    </div>
+  </section>
+
+  <section class="ov ov-work" id="work" aria-labelledby="wkTitle">
+    <div class="work-info">
+      <p class="micro"><span id="wkCount">01 / 11</span><span class="dot"></span><span id="wkKind" class="dim"></span></p>
+      <h2 class="work-title" id="wkTitle">Work</h2>
+      <p class="work-line" id="wkLine"></p>
+      <div class="work-ctl">
+        <button class="pill" id="wkOpen" type="button">Open case</button>
+        <button class="arrow prev" id="wkPrev" type="button" aria-label="Previous project"><svg><use href="#arrow"/></svg></button>
+        <button class="arrow next" id="wkNext" type="button" aria-label="Next project"><svg><use href="#arrow"/></svg></button>
+      </div>
+    </div>
+    <p class="sr-only" id="wkLive" aria-live="polite"></p>
+  </section>
+
+  <section class="ov ov-journey" id="journey" aria-labelledby="jH">
+    <div class="j-in">
+      <p class="micro orange" id="jH">Desert, city, Dubai.</p>
+      <h2 class="city" id="city"><span class="on">Dubai</span><span>Mumbai</span><span>Valdara</span></h2>
+      <p class="city-cap" id="cityCap"><span class="on">The skyline.</span><span>The city.</span><span>The desert. Where it started.</span></p>
+    </div>
+    <ol class="j-steps" id="jSteps" aria-hidden="true"><li class="on">Dubai</li><li>Mumbai</li><li>Valdara</li></ol>
+  </section>
+
+  <section class="ov ov-roots" id="roots" aria-labelledby="rH">
+    <div class="r-in">
+      <p class="micro orange">Suthar family · Valdara, Rajasthan</p>
+      <h2 class="r-h" id="rH">Third generation builder.</h2>
+      <ol class="gens" id="gens">
+        <li><b>My grandfather</b> built with wood.</li>
+        <li><b>My father</b> builds with concrete.</li>
+        <li><b>I</b> build with pixels.</li>
+      </ol>
+    </div>
+    <div class="cube-labels" aria-hidden="true">
+      <span class="cube-label" data-k="0">Wood</span>
+      <span class="cube-label" data-k="1">Concrete</span>
+      <span class="cube-label" data-k="2">Pixels</span>
+    </div>
+  </section>
+
+  <section class="ov ov-build" id="contact" aria-labelledby="bH">
+    <div class="b-in">
+      <p class="micro orange">For Vishwakarma, our father</p>
+      <h2 class="b-h" id="bH">Work is worship.</h2>
+      <p class="b-deva" lang="hi">कर्म ही पूजा है</p>
+      <p class="b-line">Let's build something.</p>
+      <a class="pill solid mail" href="mailto:chauhansanjayofficial@gmail.com">chauhansanjayofficial@gmail.com</a>
+      <ul class="links">
+        <li><a href="https://linkedin.com/in/sanjaybchauhan" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li><a href="https://instagram.com/sanjay.b.chauhan" target="_blank" rel="noopener">Instagram</a></li>
+        <li><a href="https://x.com/whossanjay" target="_blank" rel="noopener">X</a></li>
+      </ul>
+      <p class="colophon">Statue and tools modelled with Higgsfield from original images. Built by hand in Three.js. Sound made in the browser.</p>
+    </div>
+  </section>
+</main>
+
+<div class="chip" id="chip" aria-hidden="true"><span id="chipT">Open</span></div>
+
+<div id="case" class="case" role="dialog" aria-modal="true" aria-labelledby="caseTitle" hidden>
+  <div class="case-slats" id="slats" aria-hidden="true"></div>
+  <div class="case-in">
+    <button class="case-x" id="caseX" type="button">Close</button>
+    <div class="case-media" id="caseMedia"></div>
+    <div class="case-body">
+      <p class="micro orange" id="caseKind"></p>
+      <h2 class="case-title" id="caseTitle"></h2>
+      <p class="case-line" id="caseLine"></p>
+      <ol class="case-did" id="caseDid"></ol>
+      <p class="case-credit" id="caseCredit"></p>
+      <div class="case-cta" id="caseCta"></div>
+      <div class="case-nav">
+        <button type="button" id="casePrev" class="micro">Previous</button>
+        <button type="button" id="caseNext" class="micro">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<aside id="about" class="about" role="dialog" aria-modal="true" aria-labelledby="aboutTitle" hidden>
+  <div class="about-back" id="aboutBack"></div>
+  <div class="about-in">
+    <button class="about-x" id="aboutX" type="button">Close</button>
+    <p class="micro orange">About</p>
+    <h2 id="aboutTitle" class="about-h">Designer and builder from Valdara, Rajasthan.</h2>
+    <p class="about-lead">Senior Product Designer at ZERO. I come from a Suthar family of builders: my grandfather built with wood, my father builds with concrete, and I build with pixels.</p>
+    <div class="about-grid">
+      <div>
+        <p class="micro dim">Experience</p>
+        <ul class="xp" id="xp"></ul>
+      </div>
+      <div>
+        <p class="micro dim">What I do</p>
+        <p class="about-p">I shoot. Websites, apps, branding, motion, 3D, web dev and AI. Thinker and doer.</p>
+        <p class="micro dim">Worked with</p>
+        <p class="about-p">Manish Malhotra, LimeRoad, MG Motors, Peppermint Robotics, Intent and ZERO.</p>
+        <p class="micro dim">Languages</p>
+        <p class="about-p">Marwadi, Hindi, Marathi, English.</p>
+      </div>
+    </div>
+    <a class="pill solid" href="mailto:chauhansanjayofficial@gmail.com">Email me</a>
+  </div>
+</aside>
+
+<div id="scroll" aria-hidden="true"></div>
+
+<noscript>
+  <div class="nojs">
+    <h1>Sanjay Chauhan</h1>
+    <p>Designer and builder from Valdara, Rajasthan. My grandfather built with wood. My father builds with concrete. I build with pixels.</p>
+    <p>Work: Why Zero, ZERO app, ZERO Job Portal, ZERO Workspace, Curio, anyo, Tea®, Stack FX.</p>
+    <p><a href="mailto:chauhansanjayofficial@gmail.com">chauhansanjayofficial@gmail.com</a></p>
+  </div>
+</noscript>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
