@@ -41,38 +41,36 @@ input::placeholder{color:var(--ink3)}
 .row{display:flex;align-items:center;gap:12px}
 .hide{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 
-/* frame: the guide on the canvas, the product in a sheet */
-.app{display:grid;grid-template-columns:332px minmax(0,1fr);height:100dvh}
-.guide{display:flex;flex-direction:column;min-height:0;padding:26px 14px 18px 26px;overflow-y:auto}
-.stagewrap{min-width:0;min-height:0;padding:14px 14px 14px 4px}
+/* frame: a slim strip on the canvas (who you are, the date), the product in a sheet */
+.app{display:flex;flex-direction:column;height:100dvh}
+.strip{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:16px;flex-shrink:0;height:60px;padding:0 22px}
+.strip-l{display:flex;align-items:center;gap:10px;min-width:0}
+.strip-r{display:flex;justify-content:flex-end}
+.modes{display:flex;padding:3px;border-radius:99px;background:var(--well2);box-shadow:inset 0 0 0 1px var(--line)}
+.modes button{position:relative;display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 16px 0 6px;border-radius:99px;color:var(--ink2);white-space:nowrap;transition:background-color .12s var(--e),color .12s var(--e)}
+.modes button .av{width:24px;height:24px}
+.modes button.on{background:#fff;color:var(--ink);box-shadow:0 0 0 1px var(--line),0 8px 16px -12px rgba(19,20,23,.5)}
+.dot{position:absolute;top:2px;right:4px;width:9px;height:9px;border-radius:99px;background:var(--lime);box-shadow:0 0 0 2px var(--canvas),inset 0 0 0 1px rgba(19,20,23,.3)}
+.tabs .dot{top:4px;right:4px;box-shadow:0 0 0 2px #fff,inset 0 0 0 1px rgba(19,20,23,.3)}
+.live{width:8px;height:8px;border-radius:99px;background:var(--ink4)}
+.live.go{background:var(--good);animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.3}}
+.stagewrap{flex:1;min-width:0;min-height:0;padding:0 14px 14px}
 .sheet{position:relative;display:flex;flex-direction:column;height:100%;background:var(--sheet);border-radius:28px;box-shadow:0 0 0 1px rgba(19,20,23,.05),0 1px 2px rgba(19,20,23,.04),0 40px 70px -50px rgba(19,20,23,.35);overflow:hidden}
-.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-shrink:0;height:68px;padding:0 28px}
+.top{display:flex;align-items:center;gap:20px;flex-shrink:0;height:68px;padding:0 28px}
 .top .zlogo{width:58px;height:auto;display:block}
 .top .zlogo path{fill:var(--ink)}
+.tabs{display:flex;gap:2px;margin-right:auto}
+.tabs button{position:relative;height:36px;padding:0 14px;border-radius:99px;color:var(--ink3);white-space:nowrap;transition:background-color .12s var(--e),color .12s var(--e)}
+.tabs button:hover{color:var(--ink)}
+.tabs button.on{background:var(--well2);color:var(--ink)}
+.top .who{margin-left:auto}
 .body{flex:1;min-height:0;overflow-y:auto;padding:4px 28px 56px}
-.page{max-width:1080px;margin:0 auto}
-.page.in{animation:in .32s var(--e) both}
+.page{max-width:1120px;margin:0 auto}
+.page.in{animation:in .28s var(--e) both}
 @keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-
-/* the guide */
-.g-head{display:flex;align-items:center;gap:12px;padding:0 12px}
-.steps{display:flex;flex-direction:column;gap:2px;margin-top:22px}
-.st{display:grid;grid-template-columns:24px minmax(0,1fr) auto;align-items:center;gap:12px;width:100%;padding:8px 12px;border-radius:14px;transition:background-color .12s var(--e)}
-.st:hover{background:rgba(19,20,23,.04)}
-.st .n{display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:99px;background:var(--well2);font-size:13px;line-height:18px;color:var(--ink3);letter-spacing:0;box-shadow:inset 0 0 0 1px var(--line)}
-.st .n svg{width:14px;height:14px;stroke-width:2.25}
-.st .t{color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.st.done .n{background:var(--ink);color:#fff;box-shadow:none}
-.st.done .t{color:var(--ink2)}
-.st.on{background:#fff;box-shadow:0 0 0 1px var(--line),0 8px 18px -14px rgba(19,20,23,.3)}
-.st.on .n{background:var(--lime);color:var(--ink);box-shadow:inset 0 0 0 1px rgba(19,20,23,.12)}
-.st.on .t{color:var(--ink)}
-.g-now{padding:10px 12px 18px 48px}
-.g-now .try{display:flex;align-items:flex-start;gap:8px;margin-top:12px;color:var(--ink)}
-.g-now .try svg{margin-top:3px}
-.g-now .next{margin-top:16px}
-.g-foot{margin-top:auto;padding:18px 12px 0}
-.g-bar{display:none}
+.flash{animation:flash 2s var(--e)}
+@keyframes flash{0%,30%{outline:3px solid #B7F06A;outline-offset:3px}100%{outline:3px solid rgba(183,240,106,0);outline-offset:3px}}
 
 /* buttons: the key is the site's key */
 .k,.s{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:99px;white-space:nowrap;flex-shrink:0;transition:transform .12s var(--e),filter .12s var(--e),background-color .12s var(--e),box-shadow .12s var(--e)}
@@ -254,30 +252,35 @@ button.rule:hover{box-shadow:inset 0 0 0 1px var(--line2);background:var(--well)
 .tb tbody tr>*:first-child{border-radius:14px 0 0 14px}
 .tb tbody tr>*:last-child{border-radius:0 14px 14px 0}
 
-/* the pointer: try this */
-.ptr{position:fixed;z-index:50;left:0;top:0;display:none;align-items:center;gap:6px;height:30px;padding:0 10px 0 12px;border-radius:99px;background:var(--ink);color:#fff;font-size:13px;line-height:18px;white-space:nowrap;pointer-events:none;box-shadow:0 10px 20px -10px rgba(19,20,23,.6)}
-.ptr.on{display:flex;animation:bob 1s ease-in-out infinite alternate}
-.ptr svg{width:14px;height:14px;stroke-width:2.25}
-@keyframes bob{from{translate:0 0}to{translate:6px 0}}
-.ptr.up.on{animation-name:bobv}
-@keyframes bobv{from{translate:0 0}to{translate:0 6px}}
-.ptr.rt{padding:0 12px 0 10px}
-.ptr.rt.on{animation-name:bobr}
-@keyframes bobr{from{translate:6px 0}to{translate:0 0}}
+/* matches, portfolio, rules and role pages */
+.title{padding:12px 0 24px}
+.title .sub{margin-top:6px}
+.list{display:flex;flex-direction:column;gap:8px}
+.item{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;background:#fff;box-shadow:inset 0 0 0 1px var(--line)}
+.item.soft{background:var(--well)}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.pick .acts{margin-top:4px}
+.sw{position:relative;width:44px;height:26px;border-radius:99px;background:var(--ink4);flex-shrink:0;transition:background-color .12s var(--e)}
+.sw::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:99px;background:#fff;transition:transform .18s var(--e)}
+.sw.on{background:var(--ink)}
+.sw.on::after{transform:translateX(18px)}
+.newm{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding:16px 20px;border-radius:20px;background:var(--well);box-shadow:inset 0 0 0 1px var(--line)}
 
 @media(max-width:1024px){
   body{overflow:auto}
-  .app{display:block;height:auto}
-  .guide{position:sticky;top:0;z-index:40;padding:10px 12px;background:var(--canvas);overflow:visible}
-  .g-head,.steps,.g-foot{display:none}
-  .g-bar{display:flex;flex-direction:column;gap:10px;padding:14px 16px;border-radius:20px;background:#fff;box-shadow:0 0 0 1px var(--line),0 12px 24px -18px rgba(19,20,23,.4)}
+  .app{height:auto;min-height:100dvh}
+  .strip{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'m m' 'l r';height:auto;padding:10px 12px 6px;gap:6px 8px}
+  .modes{grid-area:m;justify-self:center}
+  .strip-l{grid-area:l}
+  .strip-r{grid-area:r}
   .stagewrap{padding:0 8px 8px}
   .sheet{height:auto;min-height:80dvh;border-radius:24px}
+  .top{height:auto;min-height:60px;padding:10px 16px;flex-wrap:wrap;gap:8px 12px}
+  .tabs{order:3;flex-basis:100%;overflow-x:auto;margin:0}
   .body{overflow:visible;padding:4px 16px 48px}
-  .top{padding:0 16px}
   .home,.rc{grid-template-columns:minmax(0,1fr);gap:32px}
   .side{position:static}
-  .picks,.rules{grid-template-columns:minmax(0,1fr)}
+  .picks,.rules,.cols{grid-template-columns:minmax(0,1fr)}
   .teams{grid-template-columns:repeat(3,minmax(0,1fr))}
   .path{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:24px}
 }
@@ -289,7 +292,8 @@ button.rule:hover{box-shadow:inset 0 0 0 1px var(--line2);background:var(--well)
   .trk li{font-size:13px}
   .trk li span{display:none}
   .trk li.now span{display:block;white-space:nowrap}
-  .hero{flex-wrap:wrap}
+  .hero,.title.row{flex-wrap:wrap}
+  .hero>.grow,.title.row>.grow{flex-basis:100%}
   .lane>.row{flex-wrap:wrap}
   .lane .pay{flex-basis:100%;padding-left:60px;text-align:left}
   .stat{flex-wrap:wrap}
@@ -299,15 +303,16 @@ button.rule:hover{box-shadow:inset 0 0 0 1px var(--line2);background:var(--well)
   .k,.s,.x{height:48px}
 }
 @media(prefers-reduced-motion:reduce){
-  .page.in,.ptr.on,.conf i,.orb .l,.orb .r{animation:none}
-  .team .res,.k,.s,.x,.st,.pick,.slot{transition:none}
+  .page.in,.conf i,.orb .l,.orb .r{animation:none}
+  .team .res,.k,.s,.x,.pick,.slot,.sw::after{transition:none}
+  .flash,.live.go{animation:none}
 }
 
 </style>
 </head>
 <body>
 <div class="app">
-  <aside class="guide" id="guide" aria-label="Walkthrough"></aside>
+  <div class="strip" id="strip"></div>
   <div class="stagewrap">
     <div class="sheet">
       <header class="top" id="top"></header>
@@ -315,10 +320,10 @@ button.rule:hover{box-shadow:inset 0 0 0 1px var(--line2);background:var(--well)
     </div>
   </div>
 </div>
-<div class="ptr" id="ptr" aria-hidden="true"></div>
 <template id="wordmark"><svg class="zlogo" viewBox="0 0 373 136" xmlns="http://www.w3.org/2000/svg" aria-label="zero"> <path d="M303.572 115.999C294.465 115.999 286.219 113.845 278.834 109.538C271.45 105.23 265.604 99.4455 261.296 92.1841C256.988 84.9227 254.835 76.9228 254.835 68.1845C254.835 59.3231 256.988 51.3233 261.296 44.1849C265.604 37.0466 271.45 31.3236 278.834 27.016C286.219 22.7084 294.465 20.5546 303.572 20.5546C312.926 20.5546 321.233 22.7084 328.495 27.016C335.879 31.3236 341.664 37.1081 345.848 44.3695C350.156 51.5079 352.31 59.4462 352.31 68.1845C352.31 76.9228 350.156 84.9227 345.848 92.1841C341.664 99.4455 335.879 105.23 328.495 109.538C321.11 113.845 312.803 115.999 303.572 115.999ZM303.572 95.8763C308.864 95.8763 313.541 94.6456 317.603 92.1841C321.664 89.5995 324.864 86.215 327.202 82.0304C329.664 77.8459 330.895 73.2921 330.895 68.3691C330.895 63.3231 329.664 58.7078 327.202 54.5232C324.864 50.3387 321.664 47.0156 317.603 44.5542C313.541 41.9696 308.864 40.6773 303.572 40.6773C298.403 40.6773 293.726 41.9696 289.542 44.5542C285.48 47.0156 282.219 50.3387 279.757 54.5232C277.419 58.7078 276.25 63.3231 276.25 68.3691C276.25 73.2921 277.419 77.8459 279.757 82.0304C282.219 86.215 285.48 89.5995 289.542 92.1841C293.726 94.6456 298.403 95.8763 303.572 95.8763Z" fill="currentColor"/> <path d="M224.893 113.785H203.478V52.6503C203.478 36.2583 216.767 22.9699 233.159 22.9699H257.939V43.8311H232.313C228.215 43.8311 224.893 47.1532 224.893 51.2512V113.785Z" fill="currentColor"/> <path d="M152.213 115.998C142.982 115.998 134.675 113.968 127.29 109.906C119.906 105.722 114.06 99.9986 109.752 92.7372C105.568 85.4758 103.475 77.1067 103.475 67.6299C103.475 59.0147 105.383 51.0764 109.198 43.815C113.137 36.5536 118.614 30.769 125.629 26.4614C132.644 22.1538 140.767 20 149.998 20C159.351 20 167.351 22.0923 173.997 26.2768C180.643 30.3383 185.751 35.8151 189.32 42.7073C193.012 49.5995 194.858 57.2301 194.858 65.5992V73.1683H120.275L123.967 66.153C123.598 72.0606 124.583 77.3528 126.921 82.0297C129.26 86.7065 132.583 90.3988 136.89 93.1064C141.198 95.814 146.244 97.1679 152.028 97.1679C157.444 97.1679 162.305 95.9987 166.613 93.6602C171.043 91.1987 174.49 87.6296 176.951 82.9527L193.382 91.4449C189.443 99.3217 183.905 105.414 176.766 109.721C169.628 113.906 161.444 115.998 152.213 115.998ZM125.075 60.2454H173.443C173.074 56.0609 171.843 52.3687 169.751 49.1687C167.782 45.9688 165.074 43.5073 161.628 41.7842C158.182 39.9381 154.244 39.015 149.813 39.015C145.259 39.015 141.198 39.9996 137.629 41.9688C134.183 43.815 131.413 46.338 129.321 49.5379C127.229 52.7379 125.813 56.3071 125.075 60.2454Z" fill="currentColor"/> <path d="M98.8426 113.782H40.6897C33.9206 113.782 28.7515 112.059 25.1823 108.613C21.7362 105.044 20.0132 101.044 20.0132 96.6133C19.8901 92.6749 20.6286 89.2904 22.2285 86.4596C23.8285 83.6289 26.4131 81.0444 29.9822 78.7059L75.766 46.2142C76.7506 45.3527 77.2429 44.4296 77.2429 43.445C77.2429 42.5835 76.9353 42.0297 76.3199 41.7835C75.8276 41.4143 75.2122 41.2297 74.4738 41.2297H22.4131V22.9531H78.9045C85.6736 22.9531 90.7812 24.7377 94.2273 28.3068C97.7964 31.7529 99.581 35.6913 99.581 40.122C99.581 44.0604 98.781 47.4449 97.1811 50.2757C95.7042 53.1064 93.1811 55.691 89.612 58.0294L43.8282 90.7057C42.7205 91.4442 42.1666 92.3672 42.1666 93.4749C42.1666 94.2133 42.4128 94.7672 42.9051 95.1364C43.5205 95.3826 44.1974 95.5056 44.9358 95.5056H98.8426V113.782Z" fill="currentColor"/> </svg></template>
 <script>
-/* ZERO Job Portal, the story build: one student, from portfolio ready to hired. */
+/* ZERO Job Portal: one live state, two sides. The student side (Ron) and the recruiter side (Priya at Notion)
+   read and write the same introductions. Whichever side you are not on is played for you, on a clock. */
 const $=(q,e=document)=>e.querySelector(q),$$=(q,e=document)=>[...e.querySelectorAll(q)];
 const fav=d=>`<img src="https://www.google.com/s2/favicons?sz=128&domain=${d}" alt="">`;
 const ic=n=>`<i data-lucide="${n}"></i>`;
@@ -328,237 +333,317 @@ const av=(ini,tone='',k='')=>`<span class="av ${tone?'tone-'+tone:''} ${k}">${in
 const orb=(k='')=>`<span class="orb ${k}" role="img" aria-label="Zero"><i class="l"></i><i class="r"></i><i class="mo"></i></span>`;
 const chip=(t,k='')=>`<span class="c ${k}">${t}</span>`;
 const btn=(t,k,a,id='',x='')=>`<button class="${k}" type="button" data-a="${a}" data-id="${id}" ${x}>${t}</button>`;
+const DAY=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const fmt=d=>`${DAY[d.getDay()]} ${d.getDate()} ${MON[d.getMonth()]}`;
+const addBiz=(d,n)=>{const x=new Date(d);while(n>0){x.setDate(x.getDate()+1);if(x.getDay()%6)n--}return x};
 
 const R={
  notion:{id:'notion',co:'Notion',dom:'notion.so',role:'Growth Analyst, Self-serve',place:'Remote, Canada',pay:'CA$72,000 to 84,000',who:'Priya Raman',first:'Priya',job:'Growth lead',ini:'PR',tone:'a',she:'she',her:'her',
-  ev:[['y','You solved their exact funnel problem'],['y','You check significance before shipping'],['n','No Amplitude in your work yet']]},
+  ev:[['y','You solved their exact funnel problem'],['y','You check significance before shipping'],['n','No Amplitude in your work yet']],
+  looked:[['Signup Funnel Diagnosis','6 minutes',94],['Your presentation','Watched twice',70],['recovery-plan.pdf','Opened',36]],
+  offer:{amount:'CA$78,000',start:'Mon 23 Nov',extras:['Remote, Canada','Equity','20 days off'],median:'CA$78,000',top:'CA$84,000',counter:'CA$82,000'}},
  figma:{id:'figma',co:'Figma',dom:'figma.com',role:'Analyst, Go-to-market Operations',place:'Remote, North America',pay:'CA$74,000 to 88,000',who:'Dan Whitfield',first:'Dan',job:'GTM operations lead',ini:'DW',tone:'c',she:'he',her:'his',
-  ev:[['y','You size an opportunity end to end'],['y','You always write the recommendation'],['n','No forecast pack in your work yet']]},
+  ev:[['y','You size an opportunity end to end'],['y','You always write the recommendation'],['n','No forecast pack in your work yet']],
+  looked:[['Support-Ticket Cost','5 minutes',88],['Revenue Decomposition','2 minutes',48],['Your presentation','Watched once',34]],
+  offer:{amount:'CA$82,000',start:'Mon 30 Nov',extras:['Remote, North America','Equity','CA$1,500 learning budget'],median:'CA$80,000',top:'CA$88,000',counter:'CA$86,000'}},
  klarna:{id:'klarna',co:'Klarna',dom:'klarna.com',role:'Business Analyst, Payments Operations',place:'Toronto, hybrid 2 days',pay:'CA$68,000 to 76,000',who:'Maya Chen',first:'Maya',job:'Recruiter',ini:'MC',tone:'b',she:'she',her:'her',
-  ev:[['y','You priced a process like theirs'],['y','You found the biggest drop-off'],['n','No graded SQL yet']]},
+  ev:[['y','You priced a process like theirs'],['y','You found the biggest drop-off'],['n','No graded SQL yet']],
+  looked:[['Support-Ticket Cost','4 minutes',80],['Your presentation','Watched once',40],['ticket-cost-model.xlsx','Downloaded',30]]},
+ spotify:{id:'spotify',co:'Spotify',dom:'spotify.com',role:'Analyst, Subscriber Retention',place:'Toronto, hybrid 2 days',pay:'CA$66,000 to 74,000',who:'Leah Okafor',first:'Leah',job:'Recruiter',ini:'LO',tone:'d',she:'she',her:'her',
+  ev:[['y','Your churn work is the problem they own'],['y','The salary is posted now, above your floor'],['n','No graded SQL yet']],
+  looked:[['Early-Churn Analysis','3 minutes',70],['Your presentation','Watched once',36]]},
 };
-const WORK=[['Signup Funnel Diagnosis','Notion','notion.so','Exceeds expectations'],['Support-Ticket Cost','Shopify','shopify.com','Meets expectations'],['Early-Churn Analysis','Spotify','spotify.com','Meets expectations']];
+const WORK=[['Signup Funnel Diagnosis','Notion','notion.so','Exceeds expectations','Broke a self-serve signup funnel into steps and sized what three fixes would recover.'],['Support-Ticket Cost','Shopify','shopify.com','Meets expectations','Built the full cost of a support ticket and picked what to automate first.'],['Early-Churn Analysis','Spotify','spotify.com','Meets expectations','Found where new subscribers leave in their first two weeks, and why.']];
 const TEAMS=[['notion.so','Notion',9,'g','1 fits',''],['figma.com','Figma',7,'g','1 fits',''],['klarna.com','Klarna',6,'g','1 fits',''],['spotify.com','Spotify',8,'w','Held','No salary posted'],['wealthsimple.com','Wealthsimple',5,'','Skipped','Hidden by you'],['intercom.com','Intercom',6,'','None fit','Outside your role']];
-const SLOTS={notion:[['Thu 22 Oct','2:00 pm'],['Fri 23 Oct','10:30 am'],['Mon 26 Oct','9:00 am']],figma:[['Thu 29 Oct','11:00 am'],['Fri 30 Oct','3:00 pm'],['Mon 2 Nov','9:30 am']]};
 const TR=['Sent','Opened','Asked to meet','Interview','Offer'];
-const fresh=()=>({ch:0,edit:'',searched:false,pick:{notion:true,figma:true,klarna:true},pinned:false,sent:false,open:'',
- rules:{role:'Business analyst',where:'Toronto, or remote in Canada',office:'2 days at most',pay:'CA$60,000',start:'4 January',hide:'Wealthsimple'},
- n:{intro:'',slot:0,booked:false},f:{intro:'',slot:0,booked:false},fix:false,offer:'',ask:'',log:{},
- rc:{sel:'ron',view:'list',st:{},mode:'',why:{},line:{}}});
-let S=fresh();
+const AT={sent:0,opened:1,asked:2,accepted:2,booked:3,met:3,offer:4,hired:4};
+const LIVE=['sent','opened','asked','accepted','booked','met','offer'];
+const fresh=()=>({mode:'student',tab:{student:'home',recruiter:'students'},first:'ready',edit:'',searched:false,paused:false,now:new Date(2026,9,12),
+ pick:{notion:true,figma:true,klarna:true},rules:{role:'Business analyst',where:'Toronto, or remote in Canada',office:'2 days at most',pay:'CA$60,000',start:'4 January',hide:'Wealthsimple'},vis:true,
+ co:{notion:{st:'new'},figma:{st:'new'},klarna:{st:'new'},spotify:{st:'held'}},open:'',fix:false,hired:'',masked:true,
+ slog:[],rlog:[],dots:{},tdot:{},flash:'',pend:'',
+ rc:{sel:'amara',view:'list',st:{},when:{},mode:'',why:{},line:{},must:[1,1,1,0,0]}});
+let S=fresh(),timer=0;
+const today=()=>fmt(S.now);
+const tick=n=>{S.now=addBiz(S.now,n)};
+const rel=d=>d===today()?'today':'on '+d;
+const C=k=>S.co[k];
+function slog(k,icon,text){S.slog.unshift({dom:R[k]?R[k].dom:'zero',icon,text,date:today()});S.flash=R[k]?k:'';if(S.mode!=='student')S.dots.student=true;else if(S.tab.student!=='home')S.tdot.home=true}
+function rlog(dom,icon,text){S.rlog.unshift({dom,icon,text,date:today()});if(S.mode!=='recruiter')S.dots.recruiter=true}
 
-/* ═══ the story: eleven steps, each with one thing to try ═══ */
-const CH=[
- {k:'ready',t:'Portfolio ready',d:'Mon 12 Oct',g:'You are Ron. You just finished your last scenario, so your portfolio is ready and Zero can introduce you to hiring teams.',try:'Press Start my search.',target:'[data-a="start"]'},
- {k:'rules',t:'Your rules',d:'Mon 12 Oct',g:'Zero only brings you roles that pass every rule. They came from your onboarding, so you check them once.',try:'Tap a rule to change it, then press These are right.',target:'[data-a="rulesok"]'},
- {k:'search',t:'Zero reads the roles',d:'Mon 12 Oct',g:'Zero reads every open role at the six teams hiring on ZERO and checks each one against your rules. You do nothing here.',try:'Watch, then press See my matches.',target:'[data-a="tomatches"]'},
- {k:'matches',t:'Three matches',d:'Mon 12 Oct',g:'Three roles passed. Each card says why it fits, using your graded work. Nothing is sent until you press the button.',try:'Press Send my work to 3 teams.',target:'[data-a="send"]',done:()=>S.sent,after:'Sent. Your work is with three people, and each row shows where it stands.',next:'Two days later'},
- {k:'opened',t:'Teams open it',d:'Wed 14 Oct',g:'Two days on. You can see who opened your work and when to expect a reply. Nothing needs you.',try:'Press See what Priya looked at.',target:'[data-a="open"][data-id="notion"]',done:()=>S.open==='notion',after:'That is what Priya read, and for how long. Now see the same moment from her side.',next:'See Notion’s side'},
- {k:'priya',t:'Priya at Notion',d:'Mon 19 Oct',g:'Now you are Priya, growth lead at Notion. Every Monday she gets a short batch of students, each judged against her brief.',try:'Read Ron’s evidence, then press Ask to meet Ron.',target:'[data-r="ask"]',up:true,done:()=>S.rc.st.ron==='asked',after:'Request sent. Ron’s full name stays hidden until he says yes.',next:'Back to Ron'},
- {k:'invite',t:'Notion wants to meet',d:'Mon 19 Oct',g:'Priya’s request arrives. Saying yes shares your name and email with her. Then you pick a time.',try:'Press Accept introduction, pick a time, then Confirm.',target:()=>S.n.intro==='accepted'?'[data-a="book"]':'[data-a="accept"]',done:()=>S.n.booked||S.n.intro==='declined',after:'Booked. It is in your calendar and Priya has been told.',next:'Interview week'},
- {k:'interview',t:'Interview day',d:'Wed 21 Oct',g:'The day before, Zero gives you what Priya is likely to ask. It comes from the rubric Notion scores this role on.',try:'Read the three questions.',target:null,done:()=>true,next:'After the interview'},
- {k:'result',t:'A no, then a yes',d:'Tue 27 Oct',g:'Notion said no, and Priya gave a reason. Zero turns it into one scenario that closes the gap. The same day, Dan at Figma asks to meet you.',try:'Accept Figma and pick a time. Then add the Amplitude scenario.',target:()=>!S.f.intro?'[data-a="accept"]':!S.f.booked?'[data-a="book"]':'[data-a="fix"]',done:()=>S.f.booked&&S.fix,after:'Booked with Dan. Two interviews follow over the next two weeks.',next:'Two weeks later'},
- {k:'offer',t:'The offer',d:'Mon 9 Nov',g:'Figma makes an offer. Zero shows how it compares, and never answers for you.',try:'Press Accept offer, then confirm.',target:()=>S.offer==='confirm'?'[data-a="acceptyes"]':'[data-a="acceptoffer"]',up:()=>S.offer==='confirm'},
- {k:'hired',t:'Hired',d:'Tue 10 Nov',g:'That is the whole path. 29 days from portfolio to offer, and nothing went out without your yes.',try:'Press Start over to run it again.',target:'.mid [data-g="restart"]'},
-];
-const cur=()=>CH[S.ch];
-const isDone=c=>c.done?c.done():false;
-const idx=k=>CH.findIndex(c=>c.k===k);
-function ensure(n){if(n>2)S.searched=true;if(n>3)S.sent=true;if(n>5&&!S.rc.st.ron)S.rc.st.ron='asked';if(n>6&&!S.n.booked){S.n.intro='accepted';S.n.booked=true}if(n>8){S.fix=true;S.f.intro='accepted';S.f.booked=true}}
-function go(n){n=Math.max(0,Math.min(CH.length-1,n));clearTimeout(S.timer);S.ch=n;ensure(n);S.open='';S.edit='';if(CH[n].k==='priya'&&S.rc.st.ron!=='asked')S.rc.sel='ron';render(true)}
-function note(t,dom,icon){const k=cur().k;(S.log[k]=S.log[k]||[]).unshift([dom,icon,t,'Just now'])}
+/* ═══ what can happen. Each one changes the shared state and writes to both logs. ═══ */
+const E={
+ send(k){const c=C(k);c.st='sent';c.sent=today();c.reply=fmt(addBiz(S.now,5));slog(k,'send',`Sent your work to ${R[k].who}`);if(k==='notion')rlog('ron','user-plus','Ron R. joined this week’s batch')},
+ open(k){const c=C(k);c.st='opened';c.opened=today();slog(k,'eye',`${R[k].who} opened your work`)},
+ ask(k){const c=C(k);c.st='asked';c.asked=today();c.slot=0;c.slots=[[addBiz(S.now,3),'2:00 pm'],[addBiz(S.now,4),'10:30 am'],[addBiz(S.now,5),'9:00 am']];slog(k,'user-plus',`${R[k].who} asked to meet you`);if(k==='notion')rlog('ron','send','You asked to meet Ron R.')},
+ accept(k){C(k).st='accepted';slog(k,'check',`You said yes. ${R[k].first} has your name`);if(k==='notion')rlog('ron','check','Ron Robinson said yes')},
+ decline(k){const c=C(k);c.at=2;c.st='declined';slog(k,'x',`You declined ${R[k].co}`);if(k==='notion')rlog('ron','x','Ron R. declined your request')},
+ book(k){const c=C(k);c.st='booked';const s=c.slots[c.slot];slog(k,'calendar',`Booked ${fmt(s[0])}, ${s[1]}`);if(k==='notion')rlog('ron','calendar',`Ron booked ${fmt(s[0])}, ${s[1]}`)},
+ met(k){const c=C(k),s=c.slots[c.slot];if(s[0]>S.now)S.now=new Date(s[0]);c.st='met';c.metOn=today();slog(k,'video',`You met ${R[k].first} for 45 minutes`);if(k==='notion')rlog('ron','video','You met Ron Robinson for 45 minutes')},
+ pass(k,why,line){const c=C(k);c.at=AT[c.st]||1;c.st='passed';c.why=why;c.line=line;c.told=today();slog(k,'x',`${R[k].co} passed${line?', with a reason':''}`);if(k==='notion')rlog('ron','x','You passed on Ron R.')},
+ offer(k,amount){const c=C(k);c.st='offer';c.amount=amount||R[k].offer.amount;c.by=fmt(addBiz(S.now,4));c.ui='';slog(k,'file-text',`${R[k].who} sent an offer`);if(k==='notion')rlog('ron','file-text',`You offered Ron ${c.amount}`)},
+ hire(k){const c=C(k);c.st='hired';S.hired=k;Object.keys(S.co).forEach(x=>{const o=C(x);if(x!==k&&LIVE.includes(o.st)){o.at=AT[o.st];o.st='withdrawn'}});slog(k,'party-popper',`You accepted. You start ${R[k].offer.start}`);if(k==='notion')rlog('ron','party-popper','Ron Robinson accepted your offer');else if(C('notion').st==='withdrawn')rlog('ron','log-out','Ron R. accepted another offer')},
+ refuse(k){const c=C(k);c.at=4;c.st='offerDeclined';slog(k,'x','You declined the offer');if(k==='notion')rlog('ron','x','Ron Robinson declined your offer')},
+ noreply(k){const c=C(k);c.at=1;c.st='noreply';slog(k,'clock',`Zero stopped waiting on ${R[k].co}`)},
+ closed(k){const c=C(k);c.at=AT[c.st]||1;c.st='closed';slog(k,'x',`${R[k].co} closed the role`)},
+ match(k){C(k).st='new';slog(k,'sparkles',`New match. ${R[k].co} posted a salary`);if(S.mode==='student'&&S.tab.student!=='matches')S.tdot.matches=true},
+};
 
-/* ═══ the guide ═══ */
-function guideHTML(){const c=cur(),done=isDone(c);
- const body=done&&c.after?c.after:c.g;const tryText=done&&c.next?`Press ${c.next}.`:c.try;
- const next=c.next?`<button class="${done?'k':'s'} sm next" id="gnext" type="button" data-g="next">${c.next}${ic('arrow-right')}</button>`:'';
- return`<div class="g-head"><div><p class="i">How Ron gets a job</p><p class="m">One story, start to end. ${CH.length} steps.</p></div></div>
-  <ol class="steps">${CH.map((x,i)=>`<li><button class="st ${i<S.ch?'done':i===S.ch?'on':''}" type="button" data-g="${i}" ${i===S.ch?'aria-current="step"':''}><span class="n">${i<S.ch?ic('check'):i+1}</span><span class="t">${x.t}</span><span class="m">${x.d.slice(4)}</span></button>${i===S.ch?`<div class="g-now"><p>${body}</p><p class="try">${ic('mouse-pointer-click')}<span>${tryText}</span></p>${S.pinned&&c.k==='matches'&&!S.sent?'<p class="m" style="margin-top:8px">This story follows Notion and Figma, so those two stay in.</p>':''}${next}</div>`:''}</li>`).join('')}</ol>
-  <div class="g-foot">${S.ch?`<button class="x" type="button" data-g="restart">${ic('rotate-ccw')}Start over</button>`:''}</div>
-  <div class="g-bar"><div class="row"><span class="c">Step ${S.ch+1} of ${CH.length}</span><p class="i grow">${c.t}</p></div><p>${body}</p><p class="row i">${ic('mouse-pointer-click')}<span>${tryText}</span></p><div class="acts">${S.ch?`<button class="s sm" type="button" data-g="prev">Back</button>`:''}${c.next?`<button class="${done?'k':'s'} sm" type="button" data-g="next">${c.next}</button>`:''}</div></div>`}
-function topHTML(){const c=cur();const mark=$('#wordmark').innerHTML;
- return c.k==='priya'?`<div class="row">${mark}<span class="m">for hiring teams</span></div><div class="row">${lg('notion.so','xs')}<span class="i">Notion</span>${av('PR','a')}</div>`
-  :`${mark}<div class="row"><span class="m">${c.d}</span>${av('RR','e')}</div>`}
+/* ═══ the clock: the side you are not on is played for you ═══ */
+function nextAuto(){if(S.paused||S.first!=='done')return null;const st=k=>C(k).st,has=(...a)=>Object.keys(S.co).some(k=>a.includes(st(k)));
+ const ev=(key,ms,days,run)=>({key,ms,run:()=>{tick(days);run()}});
+ if(S.mode==='student'){if(S.hired||has('asked','accepted','offer'))return null;
+  if(st('notion')==='sent')return ev('n-open',2600,1,()=>E.open('notion'));
+  if(st('klarna')==='sent')return ev('k-open',2400,1,()=>E.open('klarna'));
+  if(st('spotify')==='held')return ev('s-match',2400,1,()=>E.match('spotify'));
+  if(st('figma')==='sent')return ev('f-open',2600,1,()=>{S.slog.unshift({dom:'figma.com',icon:'mail',text:'Zero emailed Dan for an update',date:today()});E.open('figma')});
+  if(st('spotify')==='sent')return ev('s-open',2400,1,()=>E.open('spotify'));
+  if(st('notion')==='opened')return ev('n-ask',3200,1,()=>E.ask('notion'));
+  if(st('notion')==='booked')return ev('n-met',4200,0,()=>E.met('notion'));
+  if(st('notion')==='met')return ev('n-pass',5200,2,()=>E.pass('notion','Needs a required skill','Your diagnosis was the strongest we saw. We went with someone who has more Amplitude experience.'));
+  const nDone=!LIVE.includes(st('notion'));
+  if(nDone&&st('klarna')==='opened')return ev('k-quiet',2600,0,()=>E.noreply('klarna'));
+  if(nDone&&st('spotify')==='opened')return ev('s-closed',2400,0,()=>E.closed('spotify'));
+  if(nDone&&st('figma')==='opened')return ev('f-ask',3000,1,()=>E.ask('figma'));
+  if(st('figma')==='booked')return ev('f-met',4200,0,()=>E.met('figma'));
+  if(st('figma')==='met')return ev('f-offer',4600,3,()=>E.offer('figma'));
+  return null}
+ if(st('notion')==='asked')return ev('r-yes',3600,1,()=>{E.accept('notion');E.book('notion')});
+ if(st('notion')==='booked')return ev('r-met',4200,0,()=>E.met('notion'));
+ if(st('notion')==='offer')return ev('r-hire',4600,2,()=>E.hire('notion'));
+ const o=ST.find(s=>s.id!=='ron'&&S.rc.st[s.id]==='asked');
+ if(o)return ev('o-'+o.id,3600,1,()=>{S.rc.st[o.id]='booked';S.rc.when[o.id]=`${fmt(addBiz(S.now,3))}, 11:00 am`;rlog(o.id,'calendar',`${o.name} said yes and picked a time`);S.flash=o.id});
+ return null}
+function schedule(){const e=nextAuto();if(!e){clearTimeout(timer);S.pend='';return}if(S.pend===e.key)return;clearTimeout(timer);S.pend=e.key;timer=setTimeout(()=>{S.pend='';e.run();render()},e.ms)}
 
-/* ═══ first run: ready, rules, search, matches ═══ */
+/* ═══ student: first run ═══ */
 function readyHTML(){return`<div class="mid">${orb()}<h1 class="h">Your portfolio is ready.</h1><p class="sub">Three graded case studies. Zero can now introduce you to hiring teams, and nothing goes out without your yes.</p>
   <div class="fan">${WORK.map(w=>`<div class="cs"><div class="row">${lg(w[2],'sm')}<span class="m">ZERO scenario for ${w[1]}</span></div><div><p class="i">${w[0]}</p><p class="m">${w[3]}</p></div></div>`).join('')}</div>
-  <div class="acts">${btn('Start my search','k','start')}</div></div>`}
+  <div class="acts">${btn('Start my search','k','first','rules')}</div></div>`}
 const RULES=[['role','briefcase-business','Role',''],['where','map-pin','Where',''],['office','building-2','Days in the office',''],['pay','banknote','Salary floor','Private. Teams never see it.'],['start','calendar','Earliest start',''],['hide','eye-off','Hidden from','Where you interned.']];
-function rulesHTML(){return`<div class="mid">${orb()}<h1 class="h">These are your rules.</h1><p class="sub">Zero only brings you roles that pass all six.</p>
-  <div class="rules">${RULES.map(r=>{const on=S.edit===r[0];return`<${on?'div':'button type="button" data-a="rule" data-id="'+r[0]+'"'} class="rule"><div class="row"><span class="ico">${ic(r[1])}</span><span class="m">${r[2]}</span>${on?'':`<span class="edit">${ic('pencil')}</span>`}</div><div>${on?`<label class="hide" for="ruleIn">${r[2]}</label><input id="ruleIn" data-id="${r[0]}" value="${S.rules[r[0]]}" autocomplete="off">`:`<p class="i">${S.rules[r[0]]}</p>`}${r[3]?`<p class="m">${r[3]}</p>`:''}</div></${on?'div':'button'}>`}).join('')}</div>
-  <div class="acts">${btn('These are right','k','rulesok')}</div></div>`}
+const ruleTiles=()=>`<div class="rules">${RULES.map(r=>{const on=S.edit===r[0];return`<${on?'div':'button type="button" data-a="rule" data-id="'+r[0]+'"'} class="rule"><div class="row"><span class="ico">${ic(r[1])}</span><span class="m">${r[2]}</span>${on?'':`<span class="edit">${ic('pencil')}</span>`}</div><div>${on?`<label class="hide" for="ruleIn">${r[2]}</label><input id="ruleIn" data-id="${r[0]}" value="${S.rules[r[0]]}" autocomplete="off">`:`<p class="i">${S.rules[r[0]]}</p>`}${r[3]?`<p class="m">${r[3]}</p>`:''}</div></${on?'div':'button'}>`}).join('')}</div>`;
+function rulesHTML(){return`<div class="mid">${orb()}<h1 class="h">These are your rules.</h1><p class="sub">Zero only brings you roles that pass all six. Tap one to change it.</p>${ruleTiles()}<div class="acts">${btn('These are right','k','first','search')}</div></div>`}
 function searchHTML(){const d=S.searched;return`<div class="mid">${orb()}<h1 class="h">${d?'Three roles pass every rule.':'Reading every open role.'}</h1><p class="sub" id="tally">${d?'41 roles read at 6 hiring teams.':'Six teams are hiring on ZERO this week.'}</p>
   <div class="teams">${TEAMS.map(t=>`<div class="team ${d?'done':''} ${t[3]==='g'?'':'off'}">${lg(t[0])}<div><p class="i">${t[1]}</p><p class="m">${t[2]} open roles</p></div><div class="res">${chip((t[3]==='g'?ic('check'):'')+t[4],t[3])}<span class="m">${t[5]||'Passes all six'}</span></div></div>`).join('')}</div>
-  <div class="acts" id="searchgo" ${d?'':'hidden'}>${btn('See my matches','k','tomatches')}</div></div>`}
-function runSearch(){if(S.searched)return;const tiles=$$('.team');let i=0;const step=()=>{if(cur().k!=='search')return;if(i<tiles.length){tiles[i++].classList.add('done');S.timer=setTimeout(step,430)}else{S.searched=true;$('.mid .h').textContent='Three roles pass every rule.';$('#tally').textContent='41 roles read at 6 hiring teams.';$('#searchgo').hidden=false;point()}};S.timer=setTimeout(step,700)}
-function matchesHTML(){const n=Object.values(S.pick).filter(Boolean).length;
+  <div class="acts" id="searchgo" ${d?'':'hidden'}>${btn('See my matches','k','first','matches')}</div></div>`}
+function runSearch(){if(S.searched||S.searching)return;S.searching=true;let i=0;const step=()=>{const tiles=$$('.team');if(S.first!=='search'||S.mode!=='student'||!tiles.length){S.searching=false;return}if(i<tiles.length){for(let j=0;j<=i;j++)tiles[j].classList.add('done');i++;setTimeout(step,430)}else{S.searched=true;S.searching=false;render()}};setTimeout(step,700)}
+const evList=r=>`<ul class="ev">${r.ev.map(e=>`<li class="${e[0]}">${ic(e[0]==='y'?'check':'circle-dashed')}<span>${e[1]}</span></li>`).join('')}</ul>`;
+const toLine=r=>`<div class="to">${av(r.ini,r.tone)}<div><p class="i">${r.who}</p><p class="m">${r.job}. Gets your work.</p></div></div>`;
+function picksHTML(){const ids=['notion','figma','klarna'],n=ids.filter(k=>S.pick[k]).length;
  return`<div class="mid">${orb()}<h1 class="h">Three teams fit your work.</h1><p class="sub">They see your work first. Your name stays hidden until you both say yes.</p>
-  <div class="picks">${Object.values(R).map(r=>`<div class="pick ${S.pick[r.id]?'on':''}"><button class="tick" type="button" role="checkbox" aria-checked="${S.pick[r.id]}" aria-label="Send to ${r.co}" data-a="pick" data-id="${r.id}">${ic('check')}</button>
-   ${lg(r.dom)}<div><h2 class="i">${r.role}</h2><p class="m">${r.co} · ${r.place}</p></div><p class="i">${r.pay}</p>
-   <ul class="ev">${r.ev.map(e=>`<li class="${e[0]}">${ic(e[0]==='y'?'check':'circle-dashed')}<span>${e[1]}</span></li>`).join('')}</ul>
-   <div class="to">${av(r.ini,r.tone)}<div><p class="i">${r.who}</p><p class="m">${r.job}. Gets your work.</p></div></div></div>`).join('')}</div>
-  <div class="acts">${btn(`Send my work to ${n} team${n===1?'':'s'}`,'k','send','',n?'':'disabled')}</div></div>`}
+  <div class="picks">${ids.map(k=>{const r=R[k];return`<div class="pick ${S.pick[k]?'on':''}"><button class="tick" type="button" role="checkbox" aria-checked="${S.pick[k]}" aria-label="Send to ${r.co}" data-a="pick" data-id="${k}">${ic('check')}</button>${lg(r.dom)}<div><h2 class="i">${r.role}</h2><p class="m">${r.co} · ${r.place}</p></div><p class="i">${r.pay}</p>${evList(r)}${toLine(r)}</div>`}).join('')}</div>
+  <div class="acts">${btn(`Send my work to ${n} team${n===1?'':'s'}`,'k','sendall','',n?'':'disabled')}</div></div>`}
 
-/* ═══ home: one line, the introductions, the log ═══ */
-function lanes(){const k=cur().k,L=[];const P=id=>S.pick[id];
- const add=(id,at,stat,when,o={})=>{if(P(id))L.push({id,at,stat,when,...o})};
- if(k==='matches')Object.values(R).forEach(r=>add(r.id,0,`Sent just now. ${r.first} usually opens new work within 2 days.`,'Reply by Mon 19 Oct'));
- if(k==='opened'){add('notion',1,'Priya opened it yesterday. Six minutes on your funnel work.','Reply by Mon 19 Oct',{body:laneOpen('notion')});add('klarna',1,'Maya opened it this morning.','Reply by Tue 20 Oct');add('figma',0,'Not opened yet. Zero asks Dan on Friday.','Sent 2 days ago')}
- if(k==='invite'){const n=S.n,sl=SLOTS.notion[n.slot];
-  if(n.intro==='declined')add('notion',2,'You declined. Priya has been told, with thanks.','',{end:'Declined'});
-  else if(n.booked)add('notion',3,`First round with Priya. ${sl[0]}, ${sl[1]}.`,'45 minutes on Google Meet');
-  else add('notion',2,n.intro==='accepted'?'Priya has your name. Pick a time below.':'Priya read your funnel work twice and wants to talk.','Asked today',{need:true,body:n.intro==='accepted'?slotsHTML('notion'):introHTML('notion')});
-  add('figma',1,'Dan opened it on Friday, after Zero asked.','Reply by Thu 22 Oct');add('klarna',1,'Opened 5 days ago. No reply yet.','Zero asks Maya again on Wed')}
- if(k==='interview'){add('notion',3,'First round with Priya. Tomorrow, 2:00 pm.','45 minutes on Google Meet',{need:true,body:prepHTML()});add('figma',1,'Dan replied. He is reading your cost model this week.','Reply by Mon 26 Oct');add('klarna',1,'No reply in 9 days. Zero has asked twice.','Zero stops waiting on Mon 26 Oct')}
- if(k==='result'){const f=S.f,sl=SLOTS.figma[f.slot];
-  if(f.intro==='declined')add('figma',2,'You declined. Dan has been told, with thanks.','',{end:'Declined'});
-  else if(f.booked)add('figma',3,`Take-home review with Dan. ${sl[0]}, ${sl[1]}.`,'30 minutes on Zoom');
-  else add('figma',2,f.intro==='accepted'?'Dan has your name. Pick a time below.':'Dan read your cost model end to end and wants to talk.','Asked today',{need:true,body:f.intro==='accepted'?slotsHTML('figma'):introHTML('figma')});
-  add('notion',3,'Notion passed after your interview.','Told you Mon 26 Oct',{end:'Passed',body:reasonHTML()});add('klarna',1,'No reply after 14 days. Zero asked twice, then stopped.','',{end:'No reply'})}
- if(k==='offer'){if(S.offer==='declined')add('figma',4,'You declined the offer. Dan has been told, with thanks.','',{end:'Declined'});else add('figma',4,S.offer==='asked'?`You asked for ${S.ask}. Dan has until Friday.`:'Dan sent an offer this morning.',S.offer==='asked'?'Waiting on Dan':'Answer by Fri 13 Nov',{need:true,body:offerHTML()});
-  add('notion',3,'Passed after your interview. Priya gave a reason.','',{end:'Passed'});add('klarna',1,'No reply after 14 days.','',{end:'No reply'})}
- return L}
-function heroLine(){const k=cur().k,n=S.n,f=S.f;const count=Object.values(S.pick).filter(Boolean).length;
- if(k==='matches')return[`Your work is with ${['no','one','two','three'][count]} team${count===1?'':'s'}.`,'Nothing needs you now. Zero checks on them every morning.'];
- if(k==='opened')return['Nothing needs you today.','Notion and Klarna opened your work. Figma has not yet.'];
- if(k==='invite')return n.intro==='declined'?['You declined Notion.','Figma and Klarna still have your work.']:n.booked?[`You meet Priya on ${SLOTS.notion[n.slot][0]} at ${SLOTS.notion[n.slot][1]}.`,'The day before, Zero sends what she is likely to ask.']:n.intro==='accepted'?['Priya has your name now.','Pick a time that works.']:['Notion wants to meet you.','Say yes and Priya gets your name. Then you pick a time.'];
- if(k==='interview')return['You meet Priya tomorrow at 2:00 pm.','Here is what she is likely to ask.'];
- if(k==='result')return f.intro==='declined'?['You declined Figma.','Notion said no and told you why.']:f.booked?[`You meet Dan on ${SLOTS.figma[f.slot][0]} at ${SLOTS.figma[f.slot][1]}.`,S.fix?'The Amplitude scenario is on your pathway.':'Notion said no and told you why.']:f.intro==='accepted'?['Dan has your name now.','Pick a time that works.']:['Notion said no, and told you why.','Figma wants to meet you.'];
- return S.offer==='declined'?['You declined Figma’s offer.','Zero is watching the other teams again.']:S.offer==='asked'?[`You asked Figma for ${S.ask}.`,'Dan has until Friday. The offer stays open.']:['Figma made you an offer.','It runs until Fri 13 Nov. Nothing is answered without you.']}
-const LOG={
- matches:[['notion.so','send','Sent your work to Priya Raman','Just now'],['figma.com','send','Sent your work to Dan Whitfield','Just now'],['klarna.com','send','Sent your work to Maya Chen','Just now'],['spotify.com','pause','Held Spotify. No salary posted','9:12 am'],['wealthsimple.com','eye-off','Skipped Wealthsimple. You are hidden','9:10 am'],['zero','search','Read 41 roles at 6 teams','9:10 am']],
- opened:[['klarna.com','eye','Maya Chen opened your work','Today, 9:02 am'],['notion.so','eye','Priya Raman opened your work','Yesterday'],['zero','search','Read 12 new roles. None passed','Yesterday'],['zero','send','Sent your work to three teams','Mon 12 Oct']],
- invite:[['notion.so','user-plus','Priya Raman asked to meet you','Today, 8:40 am'],['figma.com','eye','Dan Whitfield opened your work','Fri 16 Oct'],['figma.com','mail','Zero emailed Dan for an update','Fri 16 Oct'],['klarna.com','eye','Maya Chen opened your work','Wed 14 Oct']],
- interview:[['zero','list-checks','Built your prep from Notion’s rubric','Today, 9:00 am'],['figma.com','message-circle','Dan replied. He is reading your work','Yesterday'],['klarna.com','mail','Zero emailed Maya again','Yesterday'],['notion.so','calendar','Booked your first round','Mon 19 Oct']],
- result:[['figma.com','user-plus','Dan Whitfield asked to meet you','Today, 9:15 am'],['notion.so','x','Notion passed, with a reason','Yesterday'],['klarna.com','clock','Zero stopped waiting on Klarna','Yesterday'],['notion.so','video','You met Priya for 45 minutes','Thu 22 Oct']],
- offer:[['figma.com','file-text','Dan Whitfield sent an offer','Today, 10:05 am'],['figma.com','video','Final round with Dan and his team','Thu 5 Nov'],['figma.com','video','Take-home review with Dan','Thu 29 Oct'],['zero','plus','Added the Amplitude scenario','Tue 27 Oct']],
-};
-const pickedDom=d=>{const r=Object.values(R).find(x=>x.dom===d);return!r||S.pick[r.id]};
-function logHTML(){const k=cur().k;const rows=[...(S.log[k]||[]),...LOG[k]].filter(e=>pickedDom(e[0]));
- return`<ul class="log">${rows.map(e=>`<li><span class="badge">${e[0]==='zero'?orb('xs'):lg(e[0],'sm')}<b>${ic(e[1])}</b></span><div><p class="i">${e[2]}</p><p class="m">${e[3]}</p></div></li>`).join('')}</ul>`}
+/* ═══ student: home ═══ */
+function laneOf(k){const c=C(k),r=R[k],st=c.st,s=c.slots&&c.slots[c.slot],sd=s?`${fmt(s[0])}, ${s[1]}`:'';const L={id:k,at:AT[st]??c.at??0};
+ if(st==='sent')return{...L,stat:`Sent ${rel(c.sent)}. ${r.first} usually opens new work within 2 days.`,when:`Reply by ${c.reply}`};
+ if(st==='opened')return{...L,stat:`${r.first} opened it ${rel(c.opened)}.`,when:`Reply by ${c.reply}`,body:lookedHTML(k)};
+ if(st==='asked')return{...L,need:true,stat:`${r.first} read your work and wants to talk.`,when:`Asked ${rel(c.asked)}`,body:introHTML(k)};
+ if(st==='accepted')return{...L,need:true,stat:`${r.first} has your name. Pick a time below.`,body:slotsHTML(k)};
+ if(st==='booked')return{...L,stat:`You meet ${r.first} on ${sd}.`,when:'45 minutes on Google Meet',body:k==='notion'||k==='figma'?prepHTML(k):''};
+ if(st==='met')return{...L,stat:`You met ${r.first} ${rel(c.metOn)}. ${r.co} is deciding.`,when:'Most teams decide within 3 days'};
+ if(st==='offer')return{...L,need:true,stat:c.ui==='asked'?`You asked for ${c.ask}. ${r.first} has until ${c.by}.`:`${r.first} sent an offer.`,when:c.ui==='asked'?`Waiting on ${r.first}`:`Answer by ${c.by}`,body:offerHTML(k)};
+ if(st==='hired')return{...L,won:true,stat:`You accepted. You start ${r.offer.start}.`,chip:chip(ic('check')+'Hired','g')};
+ const end={passed:['Passed',`${r.co} passed${c.at>=3?' after your interview':''}.`,c.told?`Told you ${rel(c.told)}`:''],noreply:['No reply','No reply after 14 days. Zero asked twice, then stopped.',''],declined:['Declined','You declined. '+r.first+' has been told, with thanks.',''],offerDeclined:['Declined','You declined the offer. '+r.first+' has been told, with thanks.',''],closed:['Role closed',`${r.co} filled the role internally.`,''],withdrawn:['Withdrawn','Zero withdrew you after you accepted another offer.','']}[st];
+ return{...L,at:c.at,end:end[0],stat:end[1],when:end[2],body:st==='passed'?reasonHTML(k):''}}
 function laneHTML(l){const r=R[l.id],closed=!!l.end;
- return`<article class="lane ${l.need?'need':''} ${closed?'closed':''}"><div class="row">${lg(r.dom)}<div class="grow"><h2 class="i">${r.role}</h2><p class="m">${r.co} · ${r.place}</p></div><div class="pay"><p class="i">${r.pay}</p><p class="m">a year</p></div></div>
-  <ol class="trk" aria-label="Where it stands">${TR.map((t,i)=>`<li class="${i<l.at?'done':i===l.at?(closed?'end':'now'):''}"${i===l.at?' aria-current="step"':''}><span>${t}</span></li>`).join('')}</ol>
-  <div class="stat">${av(r.ini,r.tone)}<p class="grow ${closed?'':'i'}">${l.stat}</p>${l.end?chip(l.end):''}${l.when?`<p class="m">${l.when}</p>`:''}</div>
+ return`<article class="lane ${l.need?'need':''} ${closed?'closed':''} ${S.flash===l.id?'flash':''}"><div class="row">${lg(r.dom)}<div class="grow"><h2 class="i">${r.role}</h2><p class="m">${r.co} · ${r.place}</p></div><div class="pay"><p class="i">${r.pay}</p><p class="m">a year</p></div></div>
+  <ol class="trk" aria-label="Where it stands">${TR.map((t,i)=>`<li class="${l.won||i<l.at?'done':i===l.at?(closed?'end':'now'):''}"${i===l.at?' aria-current="step"':''}><span>${t}</span></li>`).join('')}</ol>
+  <div class="stat">${av(r.ini,r.tone)}<p class="grow ${closed?'':'i'}">${l.stat}</p>${l.end?chip(l.end):l.chip||''}${l.when?`<p class="m">${l.when}</p>`:''}</div>
   ${l.body?`<div class="more">${l.body}</div>`:''}</article>`}
-function homeHTML(){const h=heroLine();const L=lanes();
- return`<div class="hero">${orb()}<div><h1 class="h">${h[0]}</h1><p class="sub">${h[1]}</p></div></div>
-  <div class="home"><section><h2 class="lab">Your introductions</h2><div class="lanes">${L.map(laneHTML).join('')}</div></section>
-  <aside class="side"><h2 class="lab">What happened</h2>${logHTML()}</aside></div>`}
-function laneOpen(id){if(S.open!==id)return`${btn(`See what Priya looked at${ic('chevron-down')}`,'s sm','open',id)}`;
- return`<h3 class="lab">What Priya looked at</h3><ul class="bars">${[['Signup Funnel Diagnosis','6 minutes',94],['Your presentation','Watched twice',70],['recovery-plan.pdf','Opened',36]].map(b=>`<li><span class="i">${b[0]}</span><span class="m">${b[1]}</span><span class="bar"><i style="width:${b[2]}%"></i></span></li>`).join('')}</ul>`}
-function introHTML(id){const r=R[id];return`<p class="row m">${ic('lock-open')}<span>On yes, ${r.first} gets your name and email, and you get ${r.her} calendar.</span></p><div class="acts" style="margin-top:16px">${btn('Accept introduction','k','accept',id)}${btn('Decline','s','decline',id)}</div>`}
-function slotsHTML(id){const st=id==='figma'?S.f:S.n,sl=SLOTS[id];
- return`<div class="slots" role="radiogroup" aria-label="Times ${R[id].first} offered">${sl.map((x,i)=>`<button type="button" role="radio" aria-checked="${i===st.slot}" class="slot ${i===st.slot?'on':''}" data-a="slot" data-id="${id}" data-i="${i}"><span class="i">${x[0]}</span><span class="m">${x[1]}</span></button>`).join('')}</div>
-  <div class="acts" style="margin-top:16px">${btn(`Confirm ${sl[st.slot][0]}, ${sl[st.slot][1]}`,'k','book',id)}<span class="m">Toronto time</span></div>`}
-function prepHTML(){return`<div class="two"><div><h3 class="lab">How the 45 minutes run</h3><ul class="kv"><li><span class="i">Your funnel diagnosis</span><span>10 min</span></li><li><span class="i">A live growth case</span><span>25 min</span></li><li><span class="i">Your questions</span><span>10 min</span></li></ul></div>
-  <div><h3 class="lab">Priya is likely to ask</h3><ul class="ev"><li>${ic('message-circle')}<span class="i">How did you size the drop-off?</span></li><li>${ic('message-circle')}<span class="i">If activation fell 4 points, where would you look first?</span></li><li>${ic('message-circle')}<span class="i">What would you change about self-serve signup?</span></li></ul></div></div>`}
-function reasonHTML(){return`<figure class="quote"><blockquote>“Your diagnosis was the strongest we saw. We went with someone who has more Amplitude experience.”</blockquote><figcaption>${av('PR','a','xs')}<span class="m">Priya Raman, Growth lead</span></figcaption></figure>
-  <div class="acts" style="margin-top:16px">${S.fix?chip(ic('check')+'Amplitude Funnel Analysis is on your pathway','g'):btn('Add the Amplitude scenario','s','fix')}<span class="m">About 3 hours. It closes the gap Priya named.</span></div>`}
-function offerHTML(){const m=S.offer;
- const foot=m==='confirm'?`<p class="i grow">Accept CA$82,000 from Figma? Zero tells Dan and withdraws you everywhere else.</p>${btn('Yes, accept','k','acceptyes')}${btn('Not yet','s','offerback')}`
-  :m==='counter'?`<label class="field grow" for="askIn"><span class="m">Ask for</span><input id="askIn" value="CA$86,000" autocomplete="off"></label>${btn('Send the ask','k','asksend')}${btn('Back','s','offerback')}`
-  :m==='declining'?`<p class="i grow">Decline Figma’s offer? This cannot be undone.</p>${btn('Yes, decline','k','declineyes')}${btn('Keep it open','s','offerback')}`
-  :m==='asked'?`${btn('Accept CA$82,000 as it stands','s','acceptoffer')}<span class="m">Dan usually answers within 2 days.</span>`
-  :`${btn('Accept offer','k','acceptoffer')}${btn('Ask for changes','s','counter')}${btn('Decline','s','declineoffer')}`;
- return`<p class="fig">CA$82,000 a year</p><div class="chips" style="margin-top:12px">${['Starts Mon 30 Nov','Remote, North America','Equity','CA$1,500 learning budget'].map(x=>chip(x)).join('')}</div>
-  <p style="margin-top:12px">${m==='counter'?'Their range tops out at CA$88,000, and your cost model is why Dan moved you forward. CA$86,000 is a fair ask.':'Their range was CA$74,000 to 88,000. The median for this role in Toronto is CA$80,000.'}</p>
+function lookedHTML(k){const r=R[k];if(S.open!==k)return btn(`See what ${r.first} looked at${ic('chevron-down')}`,'s sm','look',k);
+ return`<h3 class="lab">What ${r.first} looked at</h3><ul class="bars">${r.looked.map(b=>`<li><span class="i">${b[0]}</span><span class="m">${b[1]}</span><span class="bar"><i style="width:${b[2]}%"></i></span></li>`).join('')}</ul>`}
+function introHTML(k){const r=R[k];return`<p class="row m">${ic('lock-open')}<span>On yes, ${r.first} gets your name and email, and you get ${r.her} calendar.</span></p><div class="acts" style="margin-top:16px">${btn('Accept introduction','k','accept',k)}${btn('Decline','s','decline',k)}</div>`}
+function slotsHTML(k){const c=C(k);return`<div class="slots" role="radiogroup" aria-label="Times ${R[k].first} offered">${c.slots.map((x,i)=>`<button type="button" role="radio" aria-checked="${i===c.slot}" class="slot ${i===c.slot?'on':''}" data-a="slot" data-id="${k}" data-i="${i}"><span class="i">${fmt(x[0])}</span><span class="m">${x[1]}</span></button>`).join('')}</div>
+  <div class="acts" style="margin-top:16px">${btn(`Confirm ${fmt(c.slots[c.slot][0])}, ${c.slots[c.slot][1]}`,'k','book',k)}<span class="m">Toronto time</span></div>`}
+function prepHTML(k){const n=k==='notion';const q=n?['How did you size the drop-off?','If activation fell 4 points, where would you look first?','What would you change about self-serve signup?']:['If the ticket cost doubled, what would you automate first?','Which assumption are you least sure of?','How would you forecast the pipeline?'];
+ return`<div class="two"><div><h3 class="lab">How the 45 minutes run</h3><ul class="kv"><li><span class="i">${n?'Your funnel diagnosis':'Your cost model'}</span><span>10 min</span></li><li><span class="i">${n?'A live growth case':'A take-home review'}</span><span>25 min</span></li><li><span class="i">Your questions</span><span>10 min</span></li></ul></div>
+  <div><h3 class="lab">${R[k].first} is likely to ask</h3><ul class="ev">${q.map(x=>`<li>${ic('message-circle')}<span class="i">${x}</span></li>`).join('')}</ul></div></div>`}
+function reasonHTML(k){const c=C(k),r=R[k];const skill=c.why==='Needs a required skill'&&k==='notion';
+ return`${c.line?`<figure class="quote"><blockquote>“${c.line}”</blockquote><figcaption>${av(r.ini,r.tone,'xs')}<span class="m">${r.who}, ${r.job}</span></figcaption></figure>`:`<p class="m">${r.first} did not give a reason${c.why?`. Marked as: ${c.why.toLowerCase()}`:''}.</p>`}
+  ${skill?`<div class="acts" style="margin-top:16px">${S.fix?chip(ic('check')+'Amplitude Funnel Analysis is on your pathway','g'):btn('Add the Amplitude scenario','s','fix')}<span class="m">About 3 hours. It closes the gap ${r.first} named.</span></div>`:''}`}
+function offerHTML(k){const c=C(k),r=R[k],o=r.offer,m=c.ui;
+ const foot=m==='confirm'?`<p class="i grow">Accept ${c.amount} from ${r.co}? Zero tells ${r.first} and withdraws you everywhere else.</p>${btn('Yes, accept','k','acceptyes',k)}${btn('Not yet','s','offerback',k)}`
+  :m==='counter'?`<label class="field grow" for="askIn"><span class="m">Ask for</span><input id="askIn" value="${o.counter}" autocomplete="off"></label>${btn('Send the ask','k','asksend',k)}${btn('Back','s','offerback',k)}`
+  :m==='declining'?`<p class="i grow">Decline ${r.co}’s offer? This cannot be undone.</p>${btn('Yes, decline','k','declineyes',k)}${btn('Keep it open','s','offerback',k)}`
+  :m==='asked'?`${btn(`Accept ${c.amount} as it stands`,'s','acceptoffer',k)}<span class="m">${r.first} usually answers within 2 days.</span>`
+  :`${btn('Accept offer','k','acceptoffer',k)}${btn('Ask for changes','s','counter',k)}${btn('Decline','s','declineoffer',k)}`;
+ return`<p class="fig">${c.amount} a year</p><div class="chips" style="margin-top:12px">${[`Starts ${o.start}`,...o.extras].map(x=>chip(x)).join('')}</div>
+  <p style="margin-top:12px">${m==='counter'?`Their range tops out at ${o.top}. ${o.counter} is a fair ask.`:`Their range was ${r.pay}. The median for this role in Toronto is ${o.median}.`}</p>
   <div class="acts" style="margin-top:20px;align-items:flex-end">${foot}</div>`}
-function hiredHTML(){const P=[['zero','Portfolio ready','Mon 12 Oct'],['notion.so','Notion asked to meet','Mon 19 Oct'],['notion.so','First interview','Thu 22 Oct'],['figma.com','Figma asked to meet','Tue 27 Oct'],['figma.com','Offer','Mon 9 Nov'],['figma.com','Accepted','Tue 10 Nov']];
- return`<div class="mid">${orb()}<h1 class="h">You start at Figma on Monday 30 November.</h1><p class="sub">Analyst, Go-to-market Operations. CA$82,000 a year. Zero has paused your search.</p>
-  <ol class="path">${P.map(p=>`<li>${p[0]==='zero'?orb('xs'):lg(p[0],'sm')}<div><p class="i">${p[1]}</p><p class="m">${p[2]}</p></div></li>`).join('')}</ol>
-  <div class="acts"><button class="s" type="button" data-g="restart">${ic('rotate-ccw')}Start over</button></div></div>`}
+function heroLine(){const ks=Object.keys(S.co),by=s=>ks.find(k=>C(k).st===s),act=ks.filter(k=>LIVE.includes(C(k).st));let k;
+ if(S.hired){const r=R[S.hired];return[`You start at ${r.co} on ${r.offer.start}.`,`${r.role}. ${C(S.hired).amount} a year. Zero has paused your search.`]}
+ if(k=by('offer'))return C(k).ui==='asked'?[`You asked ${R[k].co} for ${C(k).ask}.`,`${R[k].first} has until ${C(k).by}. The offer stays open.`]:[`${R[k].co} made you an offer.`,`It runs until ${C(k).by}. Nothing is answered without you.`];
+ if(k=by('asked'))return[`${R[k].co} wants to meet you.`,`Say yes and ${R[k].first} gets your name. Then you pick a time.`];
+ if(k=by('accepted'))return[`${R[k].first} has your name now.`,'Pick a time that works.'];
+ if(k=by('booked')){const c=C(k),s=c.slots[c.slot];return[`You meet ${R[k].first} on ${fmt(s[0])} at ${s[1]}.`,'Here is what to expect.']}
+ if(k=by('met'))return[`${R[k].co} is deciding.`,`You met ${R[k].first} ${rel(C(k).metOn)}. Most teams decide within 3 days.`];
+ if(!act.length)return['Nothing is open right now.','Zero reads new roles every morning and brings you the ones that pass.'];
+ const opened=act.filter(x=>C(x).st==='opened').map(x=>R[x].co);
+ return['Nothing needs you today.',opened.length?`${opened.join(' and ')} opened your work. Zero tells you the moment someone replies.`:`Your work is with ${act.length} team${act.length===1?'':'s'}. They usually open it within 2 days.`]}
+const logRows=(rows,who)=>`<ul class="log">${rows.slice(0,9).map((e,i)=>{const s=who&&ST.find(x=>x.id===e.dom);return`<li class="${i===0&&S.flash?'flash':''}"><span class="badge">${s?av(s.ini,s.tone):e.dom==='zero'?orb('xs'):lg(e.dom,'sm')}<b>${ic(e.icon)}</b></span><div><p class="i">${e.text}</p><p class="m">${e.date===today()?'Today':e.date}</p></div></li>`}).join('')}</ul>`;
+function homeHTML(){const h=heroLine();const ks=Object.keys(S.co).filter(k=>!['new','held','skipped'].includes(C(k).st));
+ const rank=k=>{const s=C(k).st;return['asked','accepted','offer'].includes(s)?0:s==='hired'?1:LIVE.includes(s)?2+(4-AT[s]):9};ks.sort((a,b)=>rank(a)-rank(b));
+ const fresh=Object.keys(S.co).filter(k=>C(k).st==='new');
+ const news=fresh.map(k=>`<div class="newm">${lg(R[k].dom,'sm')}<p class="grow"><span class="i">New match: ${R[k].role} at ${R[k].co}.</span> It passes all six rules now.</p>${btn('See it','s sm','tab','matches')}</div>`).join(''),busy=ks.some(k=>rank(k)===0);
+ return`<div class="hero">${orb()}<div><h1 class="h">${h[0]}</h1><p class="sub">${h[1]}</p></div></div>
+  <div class="home"><section>${busy?'':news}<h2 class="lab">Your introductions</h2><div class="lanes">${ks.map(k=>laneHTML(laneOf(k))).join('')}${ks.length?'':`<div class="item soft"><p class="grow">Nothing is out yet. Your matches are waiting for a yes.</p>${btn('See matches','s sm','tab','matches')}</div>`}</div>${busy&&news?`<div style="margin-top:12px">${news}</div>`:''}</section>
+  <aside class="side"><h2 class="lab">What happened</h2>${logRows(S.slog)}</aside></div>`}
 function confetti(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const h=document.createElement('div');h.className='conf';const cols=['#131417','#12733F','#B7F06A','#D2F59B','#C9CBD2'];
  for(let i=0;i<70;i++){const p=document.createElement('i');p.style.cssText=`left:${Math.random()*100}%;background:${cols[i%5]};--dx:${(Math.random()*240-120).toFixed(0)}px;--r:${(Math.random()*900-450).toFixed(0)}deg;animation-delay:${(Math.random()*.5).toFixed(2)}s`;h.appendChild(p)}
  document.body.appendChild(h);setTimeout(()=>h.remove(),3200)}
 
-/* ═══ Priya's side: the batch, judged against her brief ═══ */
-const CRIT=[['Funnel or conversion analysis','Funnel',1],['Turns analysis into a recommendation','Recommendation',1],['Presents to non-technical teams','Presenting',1],['Experiment design','Experiments',0],['Amplitude or Mixpanel','Amplitude',0]];
+/* ═══ student: matches, portfolio, rules ═══ */
+function matchesHTML(){const ks=Object.keys(S.co),fresh=ks.filter(k=>C(k).st==='new'),sent=ks.filter(k=>!['new','held','skipped'].includes(C(k).st)),skip=ks.filter(k=>C(k).st==='skipped');
+ const label=k=>({sent:'Sent',opened:'Opened',asked:'Wants to meet',accepted:'Pick a time',booked:'Interview booked',met:'Deciding',offer:'Offer',hired:'Hired',passed:'Passed',noreply:'No reply',declined:'Declined',offerDeclined:'Declined',closed:'Role closed',withdrawn:'Withdrawn'}[C(k).st]);
+ const held=[...(C('spotify').st==='held'?[['spotify.com','Spotify','Analyst, Subscriber Retention','No salary posted. Zero asked their recruiter.']]:[]),['wealthsimple.com','Wealthsimple','Business Operations Analyst','You asked to stay hidden from them.'],['intercom.com','Intercom','Customer Success Associate','Outside the role you set.'],...skip.map(k=>[R[k].dom,R[k].co,R[k].role,'You said not for me.'])];
+ return`<div class="title"><h1 class="h">${fresh.length?`${fresh.length===1?'One role is':fresh.length+' roles are'} waiting for your yes.`:'No new matches today.'}</h1><p class="sub">Zero reads every open role at the teams hiring on ZERO. Only the ones that pass all six rules reach you.</p></div>
+  ${fresh.length?`<h2 class="lab">New</h2><div class="cols" style="margin-bottom:32px">${fresh.map(k=>{const r=R[k];return`<div class="pick on">${lg(r.dom)}<div><h2 class="i">${r.role}</h2><p class="m">${r.co} · ${r.place}</p></div><p class="i">${r.pay}</p>${evList(r)}${toLine(r)}<div class="acts">${btn('Send my work','k','send',k)}${btn('Not for me','s','skip',k)}</div></div>`}).join('')}</div>`:''}
+  ${sent.length?`<h2 class="lab">Sent</h2><div class="list" style="margin-bottom:32px">${sent.map(k=>{const r=R[k];return`<div class="item">${lg(r.dom,'sm')}<div class="grow"><p class="i">${r.role}</p><p class="m">${r.co} · ${r.pay}</p></div>${chip(label(k),['asked','accepted','offer'].includes(C(k).st)?'w':C(k).st==='hired'?'g':'')}${btn('Open','x','tab','home')}</div>`}).join('')}</div>`:''}
+  <h2 class="lab">Held back, and why</h2><div class="list">${held.map(x=>`<div class="item soft">${lg(x[0],'sm')}<div class="grow"><p class="i">${x[2]}</p><p class="m">${x[1]}</p></div><p class="m">${x[3]}</p></div>`).join('')}</div>`}
+function portfolioHTML(){const m=S.masked;
+ return`<div class="title row"><div class="grow"><h1 class="h">${m?'This is what a hiring team sees.':'This is your full portfolio.'}</h1><p class="sub">${m?'Your work and your grades. No name, no photo, no email until you both say yes.':'After you accept an introduction, that team sees your name and email too.'}</p></div>
+   <div class="seg" role="group" aria-label="View"><button type="button" class="${m?'on':''}" aria-pressed="${m}" data-a="mask" data-id="1">${ic('eye-off')}As a team sees it</button><button type="button" class="${m?'':'on'}" aria-pressed="${!m}" data-a="mask" data-id="">${ic('eye')}After you say yes</button></div></div>
+  <div class="card row" style="margin-bottom:12px;flex-wrap:wrap">${av('RR','e','lgx')}<div class="grow"><h2 class="i">${m?'Ron R.':'Ron Robinson'}</h2><p class="m">Business Analyst · Proficient · Toronto${m?'':' · ron.robinson@mail.example'}</p></div><div class="chips">${chip(ic('badge-check')+'ID verified')}${chip('Can work in Canada')}${chip(`Can start ${S.rules.start}`)}</div></div>
+  <div class="cols">${WORK.map(w=>`<div class="card" style="display:flex;flex-direction:column;gap:16px"><div class="row">${lg(w[2],'sm')}<span class="m">ZERO scenario for ${w[1]}</span></div><div><h2 class="i">${w[0]}</h2><p style="margin-top:4px">${w[4]}</p></div><div class="chips" style="margin-top:auto">${chip(w[3],w[3].startsWith('Exceeds')?'g':'')}${chip(ic('file-text')+'Write-up')}${chip(ic('play')+'4 min')}</div></div>`).join('')}</div>
+  <p class="m" style="margin-top:16px">Every team gets the same work and the same grades. Zero only changes the order.</p>`}
+function rulesPageHTML(){return`<div class="title"><h1 class="h">Your rules.</h1><p class="sub">Zero only brings you roles that pass all six. Tap one to change it.</p></div>${ruleTiles().replace('class="rules"','class="rules" style="margin-top:0;max-width:none"')}
+  <div class="list" style="margin-top:12px"><div class="item"><div class="grow"><p class="i">Visible to hiring teams</p><p class="m">${S.vis?'Six teams can be shown your work, once you say yes to each.':'Hidden. Work already sent stays with those teams.'}</p></div><button class="sw ${S.vis?'on':''}" type="button" role="switch" aria-checked="${S.vis}" aria-label="Visible to hiring teams" data-a="vis"></button></div></div>`}
+
+/* ═══ recruiter: Priya at Notion ═══ */
+const CRIT=[['Funnel or conversion analysis','Funnel'],['Turns analysis into a recommendation','Recommendation'],['Presents to non-technical teams','Presenting'],['Experiment design','Experiments'],['Amplitude or Mixpanel','Amplitude']];
 const ST=[
- {id:'ron',name:'Ron R.',first:'Ron',ini:'RR',tone:'e',his:'his',track:'Business Analyst',level:'Proficient',city:'Toronto',start:'4 January',
+ {id:'ron',name:'Ron R.',full:'Ron Robinson',email:'ron.robinson@mail.example',first:'Ron',ini:'RR',tone:'e',he:'he',track:'Business Analyst',level:'Proficient',city:'Toronto',start:'4 January',
   c:[['y','Broke a signup funnel into steps and sized the biggest drop-off.'],['y','Every write-up opens with the recommendation.'],['y','Presented it to a non-technical panel in 4 minutes.'],['p','Read one experiment. Has not designed one yet.'],['n','Used Looker Studio. No Amplitude or Mixpanel yet.']],
   work:[['Signup Funnel Diagnosis','Notion','notion.so','Exceeds expectations'],['Experiment Read','Slack','slack.com','Meets expectations'],['Early-Churn Analysis','Spotify','spotify.com','Meets expectations']]},
- {id:'amara',name:'Amara O.',first:'Amara',ini:'AO',tone:'d',his:'her',track:'Growth Analyst',level:'Advanced',city:'Vancouver',start:'1 December',
+ {id:'amara',name:'Amara O.',full:'Amara Okonkwo',first:'Amara',ini:'AO',tone:'d',he:'she',track:'Growth Analyst',level:'Advanced',city:'Vancouver',start:'1 December',
   c:[['y','Rebuilt an activation funnel from raw events.'],['y','Closed with three ranked fixes.'],['p','Clear memo. The live presentation ran long.'],['y','Designed and sized a pricing page test.'],['y','Built a retention dashboard in Amplitude.']],
   work:[['Activation Funnel Teardown','Duolingo','duolingo.com','Exceeds expectations'],['Pricing Page Experiment','Canva','canva.com','Exceeds expectations'],['Retention Dashboard','Strava','strava.com','Meets expectations']]},
- {id:'tomas',name:'Tomás V.',first:'Tomás',ini:'TV',tone:'c',his:'his',track:'Business Analyst',level:'Proficient',city:'Montréal',start:'15 January',
+ {id:'tomas',name:'Tomás V.',full:'Tomás Villareal',first:'Tomás',ini:'TV',tone:'c',he:'he',track:'Business Analyst',level:'Proficient',city:'Montréal',start:'15 January',
   c:[['y','Traced a checkout drop-off to one payment step.'],['p','The recommendation is there, on page three.'],['y','Presented to a mock operations team.'],['n','No experiment work yet.'],['p','One Mixpanel chart. No funnel built in it.']],
   work:[['Checkout Drop-off Study','Shopify','shopify.com','Meets expectations'],['Trial Conversion Model','Miro','miro.com','Meets expectations']]},
- {id:'hyejin',name:'Hye-jin P.',first:'Hye-jin',ini:'HP',tone:'b',his:'her',track:'Data Analyst',level:'Proficient',city:'Toronto',start:'4 January',
+ {id:'hyejin',name:'Hye-jin P.',full:'Hye-jin Park',first:'Hye-jin',ini:'HP',tone:'b',he:'she',track:'Data Analyst',level:'Proficient',city:'Toronto',start:'4 January',
   c:[['y','Split an onboarding funnel by signup cohort.'],['y','Led with the recommendation and one number.'],['p','Recorded only. Has not presented live.'],['p','Proposed a referral test. Did not size it.'],['n','SQL and Sheets. No Amplitude or Mixpanel yet.']],
   work:[['Onboarding Funnel by Cohort','Slack','slack.com','Exceeds expectations'],['Referral Loop Sizing','Dropbox','dropbox.com','Meets expectations']]},
- {id:'devika',name:'Devika S.',first:'Devika',ini:'DS',tone:'a',his:'her',track:'Product Analyst',level:'Proficient',city:'Calgary',start:'1 February',
+ {id:'devika',name:'Devika S.',full:'Devika Sharma',first:'Devika',ini:'DS',tone:'a',he:'she',track:'Product Analyst',level:'Proficient',city:'Calgary',start:'1 February',
   c:[['p','Reported adoption by week. No step by step funnel.'],['y','Recommended which feature to retire, with the cost.'],['y','Handled two hard questions from a mixed panel.'],['n','No experiment work yet.'],['n','Looker and Sheets. No Amplitude or Mixpanel yet.']],
   work:[['Feature Adoption Readout','Asana','asana.com','Exceeds expectations'],['Support Deflection Model','Intercom','intercom.com','Meets expectations']]},
 ];
 const MK={y:['check','Shown'],p:['minus','Partly'],n:['x','Not shown yet']};
 const mk=k=>`<span class="mk ${k}" title="${MK[k][1]}">${ic(MK[k][0])}<span class="hide">${MK[k][1]}</span></span>`;
-const rcSt=s=>S.rc.st[s.id]||'new';
-const fit=s=>{const m=s.c.slice(0,3).map(x=>x[0]);return m.every(x=>x==='y')?'Strong fit':!m.includes('n')&&m.filter(x=>x==='p').length<2?'Good fit':'Worth a look'};
-const fitChip=s=>{const st=rcSt(s);return st==='asked'?chip(`Waiting on ${s.first}`,'w'):st==='passed'?chip('Passed'):chip(fit(s),fit(s)==='Strong fit'?'g':'')};
-function rcDetail(s){const st=rcSt(s),mode=S.rc.mode===s.id;
- const state=mode?`<div class="form"><p class="i">Why are you passing on ${s.first}?</p><div class="chips" role="radiogroup" aria-label="Reason">${['Needs a required skill','Start date','Level','Location'].map(w=>`<button type="button" role="radio" aria-checked="${S.rc.why[s.id]===w}" class="opt ${S.rc.why[s.id]===w?'on':''}" data-r="why" data-w="${w}">${w}</button>`).join('')}</div>
-    <label class="field" for="rcLine"><span class="i">A line ${s.first} will read</span><input id="rcLine" placeholder="One honest sentence helps most" autocomplete="off"><span class="m">${s.first} reads this. Your private notes stay with your team.</span></label>
-    <div class="acts"><button class="k" type="button" data-r="passyes" ${S.rc.why[s.id]?'':'disabled'}>Pass on ${s.name}</button><button class="s" type="button" data-r="cancel">Cancel</button></div></div>`
-  :st==='asked'?`<div class="banner">${chip(`Waiting on ${s.first}`,'w')}<p class="grow">Request sent. ${s.first}’s name stays hidden until ${s.his==='his'?'he':'she'} says yes.</p><button class="s sm" type="button" data-r="undo">Withdraw</button></div>`
-  :st==='passed'?`<div class="banner">${chip('Passed')}<p class="grow">${S.rc.why[s.id]}${S.rc.line[s.id]?`. ${s.first} will read: “${S.rc.line[s.id]}”`:''}</p><button class="s sm" type="button" data-r="undo">Undo</button></div>`:'';
- return`<article class="card"><div class="row">${av(s.ini,s.tone,'lgx')}<div class="grow"><h2 class="i">${s.name}</h2><p class="m">${s.track} · ${s.level} · ${s.city}</p></div>${st==='new'&&!mode?`<div class="acts"><button class="s" type="button" data-r="pass">Pass</button><button class="k" type="button" data-r="ask">Ask to meet ${s.first}</button></div>`:''}</div>
-  ${state}
-  <div class="chips" style="margin-top:20px">${chip(ic('badge-check')+'ID verified')}${chip('Can work in Canada')}${chip(`Can start ${s.start}`)}</div>
-  <section class="sec"><h3 class="lab">Against your brief</h3><ul class="crit">${CRIT.map((c,i)=>`<li>${mk(s.c[i][0])}<div class="grow"><p class="i">${c[0]}${c[2]?'':' <span class="m">Nice to have</span>'}</p><p>${s.c[i][1]}</p></div></li>`).join('')}</ul></section>
+const RMAP={sent:'new',opened:'new',asked:'asked',accepted:'yes',booked:'booked',met:'met',offer:'offer',hired:'hired',passed:'passed',declined:'declined',withdrawn:'gone',offerDeclined:'refused'};
+const rst=s=>s.id==='ron'?RMAP[C('notion').st]:(S.rc.st[s.id]||'new');
+const batch=()=>ST.filter(s=>s.id!=='ron'||RMAP[C('notion').st]);
+const rname=s=>['yes','booked','met','offer','hired','refused'].includes(rst(s))?s.full:s.name;
+const fit=s=>{const m=s.c.map((x,i)=>S.rc.must[i]?x[0]:'').filter(Boolean);return m.every(x=>x==='y')?'Strong fit':!m.includes('n')&&m.filter(x=>x==='p').length<2?'Good fit':'Worth a look'};
+const rwhen=s=>{if(s.id!=='ron')return S.rc.when[s.id]||'';const c=C('notion');return c.slots?`${fmt(c.slots[c.slot][0])}, ${c.slots[c.slot][1]}`:''};
+function rchip(s){const st=rst(s);return st==='new'?chip(fit(s),fit(s)==='Strong fit'?'g':''):st==='asked'?chip(`Waiting on ${s.first}`,'w'):st==='yes'?chip('Said yes','g'):st==='booked'?chip('Interview booked','g'):st==='met'?chip('Needs your decision','w'):st==='offer'?chip('Offer sent','w'):st==='hired'?chip(ic('check')+'Hired','g'):st==='passed'?chip('Passed'):st==='declined'?chip('Declined'):st==='gone'?chip('Withdrew'):chip('Declined offer')}
+function rcState(s){const st=rst(s),f=s.first,m=S.rc.mode,ron=s.id==='ron';
+ if(m==='pass:'+s.id)return`<div class="form"><p class="i">Why are you passing on ${f}?</p><div class="chips" role="radiogroup" aria-label="Reason">${['Needs a required skill','Start date','Level','Location'].map(w=>`<button type="button" role="radio" aria-checked="${S.rc.why[s.id]===w}" class="opt ${S.rc.why[s.id]===w?'on':''}" data-a="rwhy" data-id="${w}">${w}</button>`).join('')}</div>
+   <label class="field" for="rcLine"><span class="i">A line ${f} will read</span><input id="rcLine" placeholder="One honest sentence helps most" autocomplete="off"><span class="m">${f} reads this. Private notes stay with your team.</span></label>
+   <div class="acts">${btn(`Pass on ${s.name}`,'k','rpassyes','',S.rc.why[s.id]?'':'disabled')}${btn('Cancel','s','rcancel')}</div></div>`;
+ if(m==='offer:'+s.id)return`<div class="form"><label class="field" for="rcAmt"><span class="i">Salary</span><input id="rcAmt" value="${R.notion.offer.amount}" autocomplete="off"><span class="m">Your posted range is ${R.notion.pay}. Starts ${R.notion.offer.start}.</span></label><div class="acts">${btn(`Send the offer to ${f}`,'k','rofferyes')}${btn('Cancel','s','rcancel')}</div></div>`;
+ const b=(c,t,x='')=>`<div class="banner">${c}<p class="grow">${t}</p>${x}</div>`;
+ return st==='asked'?b(chip(`Waiting on ${f}`,'w'),`Request sent. ${f}’s full name stays hidden until ${s.he} says yes.`,ron?'':btn('Withdraw','s sm','rundo'))
+  :st==='yes'?b(chip('Said yes','g'),`${s.full} said yes and is picking a time. ${s.email||''}`)
+  :st==='booked'?b(chip('Interview booked','g'),`${s.full} picked ${rwhen(s)}. It is in your calendar.`)
+  :st==='met'?b(chip('Needs your decision','w'),`You met ${s.full} ${rel(C('notion').metOn)}. Decide when you are ready.`,btn('Pass','s sm','rpass')+btn('Make an offer','k sm','roffer'))
+  :st==='offer'?b(chip('Offer sent','w'),`You offered ${s.full} ${C('notion').amount}. ${f} has until ${C('notion').by}.`)
+  :st==='hired'?b(chip(ic('check')+'Hired','g'),`${s.full} accepted ${C('notion').amount}. ${f} starts ${R.notion.offer.start}.`)
+  :st==='passed'?b(chip('Passed'),`${(ron?C('notion').why:S.rc.why[s.id])||'No reason given'}${(ron?C('notion').line:S.rc.line[s.id])?`. ${f} reads: “${ron?C('notion').line:S.rc.line[s.id]}”`:''}`,ron?'':btn('Undo','s sm','rundo'))
+  :st==='declined'?b(chip('Declined'),`${f} declined your request. No reason is shared.`)
+  :st==='gone'?b(chip('Withdrew'),`${f} accepted another offer and withdrew.`)
+  :st==='refused'?b(chip('Declined offer'),`${s.full} declined your offer.`):''}
+function rcDetail(s){const st=rst(s),m=S.rc.mode;
+ return`<article class="card ${S.flash===s.id||(s.id==='ron'&&S.flash==='notion')?'flash':''}"><div class="row">${av(s.ini,s.tone,'lgx')}<div class="grow"><h2 class="i">${rname(s)}</h2><p class="m">${s.track} · ${s.level} · ${s.city}</p></div>${st==='new'&&!m?`<div class="acts">${btn('Pass','s','rpass')}${btn(`Ask to meet ${s.first}`,'k','rask')}</div>`:''}</div>
+  ${rcState(s)}
+  <div class="chips" style="margin-top:20px">${chip(ic('badge-check')+'ID verified')}${chip('Can work in Canada')}${chip(`Can start ${s.start}`)}${chip(fit(s),fit(s)==='Strong fit'?'g':'')}</div>
+  <section class="sec"><h3 class="lab">Against your brief</h3><ul class="crit">${CRIT.map((c,i)=>`<li>${mk(s.c[i][0])}<div class="grow"><p class="i">${c[0]}${S.rc.must[i]?'':' <span class="m">Nice to have</span>'}</p><p>${s.c[i][1]}</p></div></li>`).join('')}</ul></section>
   <section class="sec"><h3 class="lab">Graded work</h3><div class="works">${s.work.map(w=>`<div class="work"><div class="row">${lg(w[2],'xs')}<span class="m">${w[1]}</span></div><div><p class="i">${w[0]}</p><p class="m">${w[3]}</p></div></div>`).join('')}</div><p class="m" style="margin-top:12px">Same scenarios and the same rubric for every student.</p></section></article>`}
-function rcTable(){return`<div class="tw"><table class="tb"><thead><tr><th scope="col">Student</th>${CRIT.map(c=>`<th scope="col">${c[1]}</th>`).join('')}<th scope="col">Can start</th><th scope="col">Fit</th></tr></thead><tbody>${ST.map(s=>`<tr data-r="open" data-id="${s.id}" tabindex="0"><th scope="row">${av(s.ini,s.tone)}<span><span class="i">${s.name}</span><br><span class="m">${s.track} · ${s.city}</span></span></th>${s.c.map(e=>`<td>${mk(e[0])}</td>`).join('')}<td>${s.start}</td><td>${fitChip(s)}</td></tr>`).join('')}</tbody></table></div>
+function rcTable(){return`<div class="tw"><table class="tb"><thead><tr><th scope="col">Student</th>${CRIT.map(c=>`<th scope="col">${c[1]}</th>`).join('')}<th scope="col">Can start</th><th scope="col">Status</th></tr></thead><tbody>${batch().map(s=>`<tr data-a="ropen" data-id="${s.id}" tabindex="0"><th scope="row">${av(s.ini,s.tone)}<span><span class="i">${rname(s)}</span><br><span class="m">${s.track} · ${s.city}</span></span></th>${s.c.map(e=>`<td>${mk(e[0])}</td>`).join('')}<td>${s.start}</td><td>${rchip(s)}</td></tr>`).join('')}</tbody></table></div>
   <p class="row m" style="margin-top:12px;flex-wrap:wrap">${['y','p','n'].map(k=>`${mk(k)}<span>${MK[k][1]} in graded work</span>`).join('')}</p>`}
-function recruiterHTML(){const r=S.rc;const s=ST.find(x=>x.id===r.sel)||ST[0];
- return`<div class="hero"><div class="grow"><h1 class="h">Five students for Growth Analyst, Self-serve.</h1><p class="sub">This week’s batch. Each one is judged against your brief, with the graded work behind it.</p></div>
-   <div class="seg" role="group" aria-label="View"><button type="button" class="${r.view==='list'?'on':''}" aria-pressed="${r.view==='list'}" data-r="view" data-id="list">${ic('rows-3')}One by one</button><button type="button" class="${r.view==='table'?'on':''}" aria-pressed="${r.view==='table'}" data-r="view" data-id="table">${ic('table-2')}Side by side</button></div></div>
-  ${r.view==='table'?rcTable():`<div class="rc"><div class="rc-list">${ST.map(x=>`<button class="rc-row ${x.id===s.id?'on':''}" type="button" data-r="sel" data-id="${x.id}" aria-current="${x.id===s.id}">${av(x.ini,x.tone)}<span class="grow"><span class="i">${x.name}</span><span class="m">${x.track} · ${x.city}</span></span>${fitChip(x)}</button>`).join('')}</div>${rcDetail(s)}</div>`}`}
+function studentsHTML(){const r=S.rc,B=batch(),n=B.length,need=B.filter(s=>['new','met'].includes(rst(s))).length;const s=B.find(x=>x.id===r.sel)||B[0];
+ const num=['No','One','Two','Three','Four','Five'];
+ return`<div class="hero"><div class="grow"><h1 class="h">${num[n]} students for Growth Analyst, Self-serve.</h1><p class="sub">${need?`${num[need]} need${need===1?'s':''} a decision from you.`:'Nobody is waiting on you.'} Each one is judged against your brief, with the graded work behind it.</p></div>
+   <div class="seg" role="group" aria-label="View"><button type="button" class="${r.view==='list'?'on':''}" aria-pressed="${r.view==='list'}" data-a="rview" data-id="list">${ic('rows-3')}One by one</button><button type="button" class="${r.view==='table'?'on':''}" aria-pressed="${r.view==='table'}" data-a="rview" data-id="table">${ic('table-2')}Side by side</button></div></div>
+  ${r.view==='table'?rcTable():`<div class="rc"><div class="rc-list">${B.map(x=>`<button class="rc-row ${x.id===s.id?'on':''}" type="button" data-a="rsel" data-id="${x.id}" aria-current="${x.id===s.id}">${av(x.ini,x.tone)}<span class="grow"><span class="i">${rname(x)}</span><span class="m">${x.track} · ${x.city}</span></span>${rchip(x)}</button>`).join('')}</div>${rcDetail(s)}</div>`}`}
+const RT=['Asked','Said yes','Interview','Decision','Hired'],RAT={asked:0,yes:1,booked:2,met:3,offer:3,hired:4};
+function introsHTML(){const B=batch().filter(s=>rst(s) in RAT||(s.id==='ron'&&C('notion').at>=2&&['passed','declined','gone','refused'].includes(rst(s))));
+ const lane=s=>{const st=rst(s),at=RAT[st],closed=at===undefined;const stat={asked:`Waiting on ${s.first}. Students usually answer within 2 days.`,yes:`${s.full} said yes and is picking a time.`,booked:`Interview ${rwhen(s)}.`,met:`You met ${s.first}. The decision is yours.`,offer:`Offer sent. Waiting on ${s.first}.`,hired:`${s.first} starts ${R.notion.offer.start}.`,passed:'You passed after meeting.',declined:`${s.first} declined your request.`,gone:`${s.first} accepted another offer.`,refused:`${s.first} declined your offer.`}[st];
+  return`<article class="lane ${st==='met'?'need':''} ${closed?'closed':''} ${S.flash===s.id||(s.id==='ron'&&S.flash==='notion')?'flash':''}"><div class="row">${av(s.ini,s.tone,'lgx')}<div class="grow"><h2 class="i">${rname(s)}</h2><p class="m">${s.track} · ${s.city}</p></div>${rchip(s)}</div>
+   <ol class="trk">${RT.map((t,i)=>`<li class="${closed?(i<2?'done':i===2?'end':''):st==='hired'||i<at||(st==='offer'&&i===3)?'done':i===at?'now':''}"><span>${t}</span></li>`).join('')}</ol>
+   <div class="stat"><p class="grow ${closed?'':'i'}">${stat}</p>${st==='met'?btn('Pass','s sm','ropenpass',s.id)+btn('Make an offer','k sm','ropenoffer',s.id):btn('Open','x','ropen',s.id)}</div></article>`};
+ return`<div class="title"><h1 class="h">${B.length?'Everyone you asked to meet.':'Nobody yet.'}</h1><p class="sub">${B.length?'A student appears here the moment you ask. Their name and email arrive when they say yes.':'Ask to meet a student and they appear here, with where it stands.'}</p></div>
+  <div class="home"><section><div class="lanes">${B.map(lane).join('')}${B.length?'':`<div class="item soft"><p class="grow">Nothing to track yet.</p>${btn('See the batch','s sm','tab','students')}</div>`}</div></section>
+  <aside class="side"><h2 class="lab">What happened</h2>${S.rlog.length?logRows(S.rlog,true):'<p class="m">Nothing yet.</p>'}</aside></div>`}
+function roleHTML(){const r=R.notion;
+ return`<div class="title"><h1 class="h">Growth Analyst, Self-serve.</h1><p class="sub">${r.pay} · ${r.place} · Batches arrive every Monday at 9:00 am.</p></div>
+  <div class="two"><div class="card"><h2 class="lab">What students are ranked on</h2><ul class="list" style="gap:12px">${CRIT.map((c,i)=>`<li class="row"><span class="i grow">${c[0]}</span><span class="seg" role="group" aria-label="${c[0]}"><button type="button" class="${S.rc.must[i]?'on':''}" aria-pressed="${!!S.rc.must[i]}" data-a="rmust" data-id="${i}" data-m="1">Must have</button><button type="button" class="${S.rc.must[i]?'':'on'}" aria-pressed="${!S.rc.must[i]}" data-a="rmust" data-id="${i}" data-m="">Nice to have</button></span></li>`).join('')}</ul><p class="m" style="margin-top:16px">A must have decides the fit label. A nice to have only changes the order.</p></div>
+  <div class="card"><h2 class="lab">On the posting</h2><ul class="kv"><li><span class="i">Pay range</span><span>${r.pay}</span></li><li><span class="i">Place</span><span>${r.place}</span></li><li><span class="i">AI in screening</span><span>Disclosed</span></li><li><span class="i">Fee</span><span>10% on hire, 90 day guarantee</span></li></ul><p class="m" style="margin-top:16px">ZERO ranks students against your brief. It never advances or rejects anyone for you.</p></div></div>`}
 
-/* ═══ render, the pointer, events ═══ */
-function screen(){const k=cur().k;return k==='ready'?readyHTML():k==='rules'?rulesHTML():k==='search'?searchHTML():k==='matches'&&!S.sent?matchesHTML():k==='priya'?recruiterHTML():k==='hired'?hiredHTML():homeHTML()}
-function render(enter){const b=$('#body'),sc=b.scrollTop;$('#guide').innerHTML=guideHTML();$('#top').innerHTML=topHTML();b.innerHTML=`<div class="page ${enter?'in':''}">${screen()}</div>`;b.scrollTop=enter?0:sc;if(enter)scrollTo(0,0);icons();
- if(cur().k==='search')runSearch();const e=$('#ruleIn');if(e){e.focus();e.select()}point();if(enter)setTimeout(point,380)}
-function point(){const p=$('#ptr'),c=cur();let sel=typeof c.target==='function'?c.target():c.target;if(isDone(c)&&c.next)sel='#gnext';
- const t=sel&&$(sel);if(!t||t.hidden||t.closest('[hidden]')||innerWidth<=1024){p.classList.remove('on');return}
- const r=t.getBoundingClientRect(),bx=t.closest('#body')?$('#body').getBoundingClientRect():{top:0,bottom:innerHeight};if(r.width===0||r.top<bx.top+4||r.bottom>bx.bottom-4){p.classList.remove('on');return}
- const rt=sel==='#gnext',up=!rt&&(r.left<120||(typeof c.up==='function'?c.up():!!c.up));p.className='ptr on'+(up?' up':rt?' rt':'');p.innerHTML=rt?`${ic('arrow-left')}Next`:up?`Try this${ic('arrow-down')}`:`Try this${ic('arrow-right')}`;icons();
- const w=p.offsetWidth;p.style.left=(rt?r.right+14:up?r.left+Math.max(0,r.width/2-w/2):r.left-w-16)+'px';p.style.top=(up?r.top-44:r.top+r.height/2-15)+'px'}
+/* ═══ frame, render, events ═══ */
+const TABS={student:[['home','Home'],['matches','Matches'],['portfolio','Portfolio'],['rules','Rules']],recruiter:[['students','Students'],['intros','Introductions'],['role','Role']]};
+function stripHTML(){const e=nextAuto(),need=S.mode==='student'?Object.keys(S.co).some(k=>['asked','accepted','offer'].includes(C(k).st)):batch().some(s=>['new','met'].includes(rst(s)));
+ const status=S.paused?'Paused':e?'Time is moving':S.first!=='done'&&S.mode==='student'?'':need?'Waiting on you':'';
+ return`<div class="strip-l"><button class="x" type="button" data-a="pause" aria-label="${S.paused?'Resume time':'Pause time'}" style="height:36px;padding:0 10px">${ic(S.paused?'play':'pause')}</button><span class="live ${e?'go':''}"></span><span class="i">${today()}</span><span class="m">${status}</span></div>
+  <div class="modes" role="group" aria-label="See the portal as">${[['student','Student','RR','e'],['recruiter','Recruiter','PR','a']].map(m=>`<button type="button" class="${S.mode===m[0]?'on':''}" aria-pressed="${S.mode===m[0]}" data-a="mode" data-id="${m[0]}">${av(m[2],m[3])}${m[1]}${S.dots[m[0]]&&S.mode!==m[0]?'<span class="dot"></span>':''}</button>`).join('')}</div>
+  <div class="strip-r"><button class="x" type="button" data-a="restart" style="height:36px">${ic('rotate-ccw')}Start over</button></div>`}
+function topHTML(){const mark=$('#wordmark').innerHTML,rec=S.mode==='recruiter',firstRun=!rec&&S.first!=='done';
+ const tabs=firstRun?'':`<nav class="tabs" aria-label="Sections">${TABS[S.mode].map(t=>`<button type="button" class="${S.tab[S.mode]===t[0]?'on':''}" ${S.tab[S.mode]===t[0]?'aria-current="page"':''} data-a="tab" data-id="${t[0]}">${t[1]}${S.tdot[t[0]]&&S.tab[S.mode]!==t[0]?'<span class="dot"></span>':''}</button>`).join('')}</nav>`;
+ return rec?`<div class="row">${mark}<span class="m">for hiring teams</span></div>${tabs}<div class="row who">${lg('notion.so','xs')}<span class="i">Notion</span>${av('PR','a')}</div>`:`${mark}${tabs}<div class="row who">${av('RR','e')}</div>`}
+function screen(){if(S.mode==='recruiter'){const t=S.tab.recruiter;return t==='intros'?introsHTML():t==='role'?roleHTML():studentsHTML()}
+ if(S.first!=='done')return{ready:readyHTML,rules:rulesHTML,search:searchHTML,matches:picksHTML}[S.first]();
+ const t=S.tab.student;return t==='matches'?matchesHTML():t==='portfolio'?portfolioHTML():t==='rules'?rulesPageHTML():homeHTML()}
+function render(enter){const b=$('#body'),sc=b.scrollTop;
+ if(S.mode==='recruiter'&&S.tab.recruiter==='students'&&S.rc.view==='list'){const B=batch(),s=B.find(x=>x.id===S.rc.sel)||B[0];if(s&&s.id==='ron'&&C('notion').st==='sent')E.open('notion')}
+ $('#top').innerHTML=topHTML();b.innerHTML=`<div class="page ${enter?'in':''}">${screen()}</div>`;b.scrollTop=enter?0:sc;if(enter)scrollTo(0,0);
+ schedule();$('#strip').innerHTML=stripHTML();icons();S.flash='';
+ if(S.mode==='student'&&S.first==='search')runSearch();const e=$('#ruleIn');if(e){e.focus();e.select()}}
 function commitRule(){const i=$('#ruleIn');if(!i||!S.edit)return false;S.rules[i.dataset.id]=i.value.trim()||S.rules[i.dataset.id];S.edit='';return true}
-document.addEventListener('click',e=>{const g=e.target.closest('[data-g]'),a=e.target.closest('[data-a]'),r=e.target.closest('[data-r]');
- if(!e.target.closest('#ruleIn')&&commitRule()&&!g&&!a)return render();
- if(g){const v=g.dataset.g;if(v==='restart'){S=fresh();go(0)}else if(v==='next')go(S.ch+1);else if(v==='prev')go(S.ch-1);else go(+v);return}
- if(a){const k=a.dataset.a,id=a.dataset.id,st=id==='figma'?S.f:S.n,ro=R[id];
-  if(k==='start')return go(1);if(k==='rulesok')return go(2);if(k==='tomatches')return go(3);
-  if(k==='rule'){S.edit=id;return render()}
-  if(k==='pick'){if(id==='klarna')S.pick.klarna=!S.pick.klarna;else S.pinned=true;return render()}
-  if(k==='send'){S.sent=true;return render(true)}
-  if(k==='open'){S.open=S.open===id?'':id;return render()}
-  if(k==='accept'){st.intro='accepted';note(`You said yes. ${ro.first} has your name`,ro.dom,'check');return render()}
-  if(k==='decline'){st.intro='declined';note(`You declined ${ro.co}`,ro.dom,'x');return render()}
-  if(k==='slot'){st.slot=+a.dataset.i;return render()}
-  if(k==='book'){st.booked=true;const sl=SLOTS[id][st.slot];note(`Booked ${sl[0]}, ${sl[1]}`,ro.dom,'calendar');return render()}
-  if(k==='fix'){S.fix=true;note('Added the Amplitude scenario','zero','plus');return render()}
-  if(k==='acceptoffer'){S.offer='confirm';return render()}
-  if(k==='counter'){S.offer='counter';render();const i=$('#askIn');if(i){i.focus();i.select()}return}
-  if(k==='declineoffer'){S.offer='declining';return render()}
-  if(k==='offerback'){S.offer=S.ask?'asked':'';return render()}
-  if(k==='asksend'){S.ask=($('#askIn').value||'CA$86,000').trim();S.offer='asked';note(`Asked Dan for ${S.ask}`,'figma.com','mail');return render()}
-  if(k==='declineyes'){S.offer='declined';note('Declined the offer','figma.com','x');return render()}
-  if(k==='acceptyes'){go(idx('hired'));confetti();return}}
- if(r){const k=r.dataset.r,rc=S.rc,s=ST.find(x=>x.id===rc.sel);
-  if(k==='sel'){rc.sel=r.dataset.id;rc.mode='';return render()}
-  if(k==='view'){rc.view=r.dataset.id;return render()}
-  if(k==='open'){rc.view='list';rc.sel=r.dataset.id;return render()}
-  if(k==='ask'){rc.st[s.id]='asked';return render()}
-  if(k==='pass'){rc.mode=s.id;return render()}
-  if(k==='why'){const l=$('#rcLine').value;rc.why[s.id]=r.dataset.w;render();$('#rcLine').value=l;return}
-  if(k==='cancel'){rc.mode='';return render()}
-  if(k==='passyes'){rc.line[s.id]=$('#rcLine').value.trim();rc.st[s.id]='passed';rc.mode='';return render()}
-  if(k==='undo'){delete rc.st[s.id];delete rc.why[s.id];delete rc.line[s.id];return render()}}});
-document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key==='Escape')&&e.target.id==='ruleIn'){e.preventDefault();commitRule();render()}if(e.key==='Enter'&&e.target.closest('tr[data-r]'))e.target.closest('tr[data-r]').click()});
-addEventListener('resize',point);$('#body').addEventListener('scroll',point,{passive:true});$('#guide').addEventListener('scroll',point,{passive:true});addEventListener('scroll',point,{passive:true});
-const h0=CH.findIndex(c=>c.k===location.hash.slice(1));go(h0<0?0:h0);
+document.addEventListener('click',e=>{const a=e.target.closest('[data-a]');if(!e.target.closest('#ruleIn')&&commitRule()&&!a)return render();if(!a)return;
+ const k=a.dataset.a,id=a.dataset.id,c=S.co[id],rc=S.rc,sel=batch().find(x=>x.id===rc.sel)||batch()[0];
+ switch(k){
+  case'mode':S.mode=id;S.dots[id]=false;clearTimeout(timer);S.pend='';rc.mode='';return render(true);
+  case'tab':S.tab[S.mode]=id;S.tdot[id]=false;rc.mode='';return render(true);
+  case'pause':S.paused=!S.paused;clearTimeout(timer);S.pend='';return render();
+  case'restart':clearTimeout(timer);S=fresh();return render(true);
+  case'first':S.first=id;return render(true);
+  case'rule':S.edit=id;return render();
+  case'pick':S.pick[id]=!S.pick[id];return render();
+  case'sendall':['notion','figma','klarna'].forEach(x=>{if(S.pick[x])E.send(x);else C(x).st='skipped'});S.first='done';S.flash='';return render(true);
+  case'send':E.send(id);S.tab.student='home';return render(true);
+  case'skip':c.st='skipped';return render();
+  case'look':S.open=S.open===id?'':id;return render();
+  case'accept':E.accept(id);return render();
+  case'decline':E.decline(id);return render();
+  case'slot':c.slot=+a.dataset.i;return render();
+  case'book':E.book(id);return render();
+  case'fix':S.fix=true;S.slog.unshift({dom:'zero',icon:'plus',text:'Added the Amplitude scenario',date:today()});return render();
+  case'acceptoffer':c.ui='confirm';return render();
+  case'counter':c.ui='counter';render();{const i=$('#askIn');if(i){i.focus();i.select()}}return;
+  case'declineoffer':c.ui='declining';return render();
+  case'offerback':c.ui=c.ask?'asked':'';return render();
+  case'asksend':c.ask=($('#askIn').value||R[id].offer.counter).trim();c.ui='asked';slog(id,'mail',`Asked ${R[id].first} for ${c.ask}`);return render();
+  case'declineyes':E.refuse(id);return render();
+  case'acceptyes':E.hire(id);render(true);return confetti();
+  case'mask':S.masked=!!id;return render();
+  case'vis':S.vis=!S.vis;return render();
+  case'rsel':rc.sel=id;rc.mode='';return render();
+  case'rview':rc.view=id;return render();
+  case'ropen':rc.view='list';rc.sel=id;rc.mode='';S.tab.recruiter='students';return render(true);
+  case'ropenpass':rc.view='list';rc.sel=id;rc.mode='pass:'+id;S.tab.recruiter='students';return render(true);
+  case'ropenoffer':rc.view='list';rc.sel=id;rc.mode='offer:'+id;S.tab.recruiter='students';return render(true);
+  case'rask':if(sel.id==='ron')E.ask('notion');else{rc.st[sel.id]='asked';rlog(sel.id,'send',`You asked to meet ${sel.name}`)}return render();
+  case'rpass':rc.mode='pass:'+sel.id;return render();
+  case'roffer':rc.mode='offer:'+sel.id;render();{const i=$('#rcAmt');if(i){i.focus();i.select()}}return;
+  case'rwhy':{const l=$('#rcLine').value;rc.why[sel.id]=id;render();$('#rcLine').value=l;return}
+  case'rcancel':rc.mode='';return render();
+  case'rpassyes':{const line=$('#rcLine').value.trim();rc.line[sel.id]=line;if(sel.id==='ron')E.pass('notion',rc.why.ron,line);else{rc.st[sel.id]='passed';rlog(sel.id,'x',`You passed on ${sel.name}`)}rc.mode='';return render()}
+  case'rofferyes':E.offer('notion',($('#rcAmt').value||R.notion.offer.amount).trim());rc.mode='';return render();
+  case'rundo':delete rc.st[sel.id];delete rc.why[sel.id];delete rc.line[sel.id];return render();
+  case'rmust':rc.must[+id]=a.dataset.m?1:0;return render()}});
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key==='Escape')&&e.target.id==='ruleIn'){e.preventDefault();commitRule();render()}if(e.key==='Enter'&&e.target.matches('tr[data-a]'))e.target.click()});
+render(true);
 
 </script>
 </body>
