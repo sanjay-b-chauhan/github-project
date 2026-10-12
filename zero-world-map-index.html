@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Zero world map, every version</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,100..1000&display=swap">
+<style>
+@font-face{font-family:'STK Bureau Serif';src:url('zero-world-map-index-assets/STKBureau-SerifBook.otf') format('opentype');font-weight:400;font-display:swap}
+:root{--tx:#1A1917;--tx-2:#5F5C56;--tx-3:#8A857C;--line:rgba(26,25,23,.11);--line-2:rgba(26,25,23,.065);--page:#F3F2EF;--sheet:#FBFAF8;--ink:#151514;
+  --serif:'STK Bureau Serif',Georgia,serif;--sans:'Google Sans Flex','Google Sans',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;--out:cubic-bezier(.16,1,.3,1)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{background:var(--page)}
+body{font-family:var(--sans);font-size:14px;line-height:1.45;letter-spacing:-.005em;color:var(--tx);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit;text-decoration:none}
+img{display:block;width:100%;height:auto}
+.wrap{max-width:1240px;margin:0 auto;padding:0 32px 72px}
+header{display:flex;align-items:center;justify-content:space-between;height:76px}
+header .wm{height:20px;color:var(--ink)} header .wm svg{height:100%;width:auto;display:block}
+header span{font-size:12.5px;color:var(--tx-3)}
+.intro{padding:36px 0 30px;max-width:640px}
+h1{font:400 46px/1.04 var(--serif);letter-spacing:-.03em;text-wrap:balance}
+.intro p{margin-top:12px;font-size:15px;color:var(--tx-2);text-wrap:pretty}
+.tag{flex:none;display:inline-grid;place-items:center;height:22px;padding:0 8px 1px;border-radius:99px;background:var(--ink);color:#F6F6F4;font:500 11.5px/1 var(--sans);font-variant-numeric:tabular-nums}
+.tag.new{background:#3FAE59}
+.shot{display:block;border-radius:14px;overflow:hidden;box-shadow:0 0 0 1px var(--line);background:#E2E3E1}
+.shot img{transition:transform .9s var(--out)}
+.shot:hover img{transform:scale(1.02)}
+
+/* the newest build takes the top of the page */
+.hero{display:grid;grid-template-columns:minmax(0,1.62fr) minmax(0,1fr);gap:28px;padding:20px;border-radius:22px;background:var(--sheet);box-shadow:0 0 0 1px var(--line)}
+.hero .more{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.hero .more .shot{border-radius:10px}
+.hero .side{display:flex;flex-direction:column;padding:8px 8px 4px 0}
+.hero .tags{display:flex;gap:6px}
+.hero h2{margin-top:16px;font:400 36px/1.04 var(--serif);letter-spacing:-.028em}
+.hero .side>p{margin-top:10px;color:var(--tx-2);font-size:14.5px;text-wrap:pretty}
+.facts{margin-top:18px;box-shadow:0 -1px 0 var(--line-2)}
+.facts>div{display:flex;gap:14px;padding:10px 0;box-shadow:0 1px 0 var(--line-2);font-size:13px}
+.facts dt{flex:none;width:76px;color:var(--tx-3)}
+.facts dd{flex:1;color:var(--tx)}
+.facts dd a{text-decoration:underline;text-decoration-color:rgba(26,25,23,.25);text-underline-offset:3px;transition:text-decoration-color .2s}
+.facts dd a:hover{text-decoration-color:var(--tx)}
+.go{margin-top:auto;padding-top:22px;display:flex;gap:8px}
+.key{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 18px 1px;border-radius:12px;background:var(--ink);color:#F6F6F4;font:500 13.5px/1 var(--sans);transition:opacity .2s,transform .16s var(--out)}
+.key:hover{opacity:.88} .key:active{transform:scale(.98)}
+.key svg{width:13px;height:13px}
+.ghost{display:inline-flex;align-items:center;height:42px;padding:0 16px 1px;border-radius:12px;font:500 13.5px/1 var(--sans);box-shadow:inset 0 0 0 1px var(--line);transition:background .2s}
+.ghost:hover{background:rgba(26,25,23,.045)}
+
+h2.sec{margin:54px 0 18px;font:500 13px/1 var(--sans);color:var(--tx-3);letter-spacing:0}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 22px}
+.card .meta{display:flex;align-items:center;gap:9px;margin-top:14px}
+.card h3{font:500 15px/1.2 var(--sans);letter-spacing:-.012em}
+.card p{margin-top:6px;font-size:13px;color:var(--tx-2);text-wrap:pretty}
+.card .links{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}
+.card .links a{display:inline-flex;align-items:center;height:28px;padding:0 11px 1px;border-radius:99px;font:500 12px/1 var(--sans);box-shadow:inset 0 0 0 1px var(--line);transition:background .2s,color .2s}
+.card .links a:first-child{background:var(--ink);color:#F6F6F4;box-shadow:none}
+.card .links a:hover{background:rgba(26,25,23,.06)} .card .links a:first-child:hover{background:#2E2D2A}
+footer{margin-top:60px;padding-top:18px;box-shadow:0 -1px 0 var(--line);font-size:12.5px;color:var(--tx-3)}
+@media (max-width:980px){.hero{grid-template-columns:1fr}.hero .side{padding:0 4px 4px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}h1{font-size:38px}}
+@media (max-width:620px){.wrap{padding:0 16px 56px}.grid{grid-template-columns:1fr}.hero{padding:12px;border-radius:18px}h1{font-size:32px}.hero h2{font-size:30px}.go{flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><a class="wm" href="zero-world-map-b6.html" aria-label="Zero"><svg viewBox="0 0 333 96" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M283.572 95.9991C274.465 95.9991 266.219 93.8453 258.834 89.5377C251.45 85.2301 245.604 79.4456 241.296 72.1842C236.988 64.9228 234.834 56.9229 234.834 48.1846C234.834 39.3232 236.988 31.3234 241.296 24.185C245.604 17.0467 251.45 11.3237 258.834 7.0161C266.219 2.70849 274.465 0.554688 283.572 0.554688C292.926 0.554688 301.233 2.70849 308.495 7.0161C315.879 11.3237 321.664 17.1082 325.848 24.3696C330.156 31.508 332.31 39.4463 332.31 48.1846C332.31 56.9229 330.156 64.9228 325.848 72.1842C321.664 79.4456 315.879 85.2301 308.495 89.5377C301.11 93.8453 292.803 95.9991 283.572 95.9991ZM283.572 75.8764C288.864 75.8764 293.541 74.6457 297.603 72.1842C301.664 69.5996 304.864 66.2151 307.202 62.0305C309.664 57.846 310.895 53.2922 310.895 48.3692C310.895 43.3232 309.664 38.7079 307.202 34.5233C304.864 30.3388 301.664 27.0158 297.603 24.5543C293.541 21.9697 288.864 20.6774 283.572 20.6774C278.403 20.6774 273.726 21.9697 269.542 24.5543C265.48 27.0158 262.219 30.3388 259.757 34.5233C257.419 38.7079 256.249 43.3232 256.249 48.3692C256.249 53.2922 257.419 57.846 259.757 62.0305C262.219 66.2151 265.48 69.5996 269.542 72.1842C273.726 74.6457 278.403 75.8764 283.572 75.8764Z" fill="currentColor"/><path d="M204.893 93.7845H183.478V32.6502C183.478 16.2581 196.767 2.96973 213.159 2.96973H237.939V23.8309H212.313C208.215 23.8309 204.893 27.153 204.893 31.251V93.7845Z" fill="currentColor"/><path d="M132.213 95.9983C122.982 95.9983 114.675 93.9676 107.29 89.9061C99.9058 85.7216 94.0598 79.9986 89.7522 72.7372C85.5676 65.4758 83.4753 57.1067 83.4753 47.6299C83.4753 39.0147 85.383 31.0764 89.1983 23.815C93.1367 16.5536 98.6135 10.769 105.629 6.46142C112.644 2.15381 120.767 0 129.998 0C139.351 0 147.351 2.09227 153.997 6.27681C160.643 10.3383 165.751 15.8151 169.32 22.7073C173.012 29.5995 174.858 37.2301 174.858 45.5992V53.1683H100.275L103.967 46.153C103.598 52.0606 104.583 57.3528 106.921 62.0297C109.26 66.7065 112.583 70.3988 116.89 73.1064C121.198 75.814 126.244 77.1679 132.028 77.1679C137.444 77.1679 142.305 75.9987 146.613 73.6602C151.043 71.1987 154.489 67.6296 156.951 62.9527L173.381 71.4449C169.443 79.3217 163.905 85.4139 156.766 89.7215C149.628 93.906 141.444 95.9983 132.213 95.9983ZM105.075 40.2454H153.443C153.074 36.0609 151.843 32.3687 149.751 29.1687C147.782 25.9688 145.074 23.5073 141.628 21.7842C138.182 19.9381 134.244 19.015 129.813 19.015C125.259 19.015 121.198 19.9996 117.629 21.9688C114.182 23.815 111.413 26.338 109.321 29.5379C107.229 32.7379 105.813 36.3071 105.075 40.2454Z" fill="currentColor"/><path d="M78.8426 93.7823H20.6897C13.9206 93.7823 8.75149 92.0592 5.18233 88.6132C1.73623 85.044 0.0131865 81.0441 0.0131865 76.6134C-0.109888 72.675 0.628561 69.2904 2.22853 66.4597C3.8285 63.629 6.41307 61.0444 9.98224 58.706L55.766 26.2143C56.7506 25.3527 57.2429 24.4297 57.2429 23.4451C57.2429 22.5836 56.9353 22.0297 56.3199 21.7836C55.8276 21.4143 55.2122 21.2297 54.4738 21.2297H2.41314V2.95312H58.9045C65.6736 2.95312 70.7812 4.73771 74.2273 8.30687C77.7964 11.753 79.581 15.6914 79.581 20.1221C79.581 24.0604 78.781 27.445 77.1811 30.2757C75.7042 33.1064 73.1811 35.691 69.612 38.0294L23.8282 70.7058C22.7205 71.4442 22.1666 72.3673 22.1666 73.475C22.1666 74.2134 22.4128 74.7672 22.9051 75.1365C23.5205 75.3826 24.1974 75.5057 24.9358 75.5057H78.8426V93.7823Z" fill="currentColor"/></svg></a><span>World map, 6 versions</span></header>
+  <section class="intro">
+    <h1>The world map, version by version.</h1>
+    <p>Every build of the skill points world, newest first. Each one opens on its own and can be stepped through with the review key at the bottom right.</p>
+  </section>
+
+  <section class="hero">
+    <div>
+      <a class="shot" href="zero-world-map-b6.html" aria-label="Open b6"><img src="zero-world-map-index-assets/b6.jpg" width="1200" height="675" alt=""></a>
+      <div class="more">
+        <a class="shot" href="zero-world-map-b6.html#focus-6" aria-label="Open b6 beside a building"><img src="zero-world-map-index-assets/b6-focus.jpg" width="1200" height="675" alt="" loading="lazy"></a>
+        <a class="shot" href="zero-world-map-b6.html#summit" aria-label="Open b6 on the day the job opens"><img src="zero-world-map-index-assets/b6-summit.jpg" width="1200" height="675" alt="" loading="lazy"></a>
+      </div>
+    </div>
+    <div class="side">
+      <div class="tags"><span class="tag">b6</span><span class="tag new">Newest</span></div>
+      <h2>The city that does not end</h2>
+      <p>A real street grid running to the horizon. What you have reached is in full colour, with traffic and people. What you have not reached is blank white, waiting. Beside one company, everything else goes soft.</p>
+      <dl class="facts">
+        <div><dt>Looks</dt><dd><a href="zero-world-map-b6.html">Day</a>, <a href="zero-world-map-b6.html?v=night">Night</a></dd></div>
+        <div><dt>Learners</dt><dd><a href="zero-world-map-b6.html#world-3">Sanjay</a>, <a href="zero-world-map-b6.html?u=1#world-3">Maya</a>, <a href="zero-world-map-b6.html?u=2#world-3">Jordan</a>. Each has their own road, and the shuffle gives a new one.</dd></div>
+        <div><dt>Moments</dt><dd><a href="zero-world-map-b6.html#dream-co">Picking the job</a>, <a href="zero-world-map-b6.html#world-0">day one</a>, <a href="zero-world-map-b6.html#focus-6">beside a building</a>, <a href="zero-world-map-b6.html#levels">the levels</a>, <a href="zero-world-map-b6.html#summit">the day it opens</a></dd></div>
+        <div><dt>Settings</dt><dd>Hide or show buildings, homes, trees, parked cars, moving cars, people, lamps, logos and the unexplored fade.</dd></div>
+      </dl>
+      <div class="go"><a class="key" href="zero-world-map-b6.html">Open b6<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a><a class="ghost" href="zero-world-map-b6.html?v=night">Night</a></div>
+    </div>
+  </section>
+
+  <h2 class="sec">Earlier versions</h2>
+  <section class="grid">
+    <article class="card">
+      <a class="shot" href="zero-world-map-b5.html" aria-label="Open b5"><img src="zero-world-map-index-assets/b5.jpg" width="1200" height="675" alt="" loading="lazy"></a>
+      <div class="meta"><span class="tag">b5</span><h3>Real logos, fly in</h3></div>
+      <p>Click a building and the eye flies down beside it while its card opens. Every company carries its real logo.</p>
+      <div class="links"><a href="zero-world-map-b5.html">Day</a><a href="zero-world-map-b5.html?v=night">Night</a></div>
+    </article>
+    <article class="card">
+      <a class="shot" href="zero-world-map-b4.html" aria-label="Open b4"><img src="zero-world-map-index-assets/b4.jpg" width="1200" height="675" alt="" loading="lazy"></a>
+      <div class="meta"><span class="tag">b4</span><h3>The terraced city</h3></div>
+      <p>Four terraces, and the road climbs exactly where a level opens roles. The ladder of levels arrives here.</p>
+      <div class="links"><a href="zero-world-map-b4.html">Diorama</a><a href="zero-world-map-b4.html?v=model">Model</a><a href="zero-world-map-b4.html?v=night">Night</a><a href="zero-world-map-b4.html?v=drawing">Drawing</a></div>
+    </article>
+    <article class="card">
+      <a class="shot" href="zero-world-map-b3.html" aria-label="Open b3"><img src="zero-world-map-index-assets/b3.jpg" width="1200" height="675" alt="" loading="lazy"></a>
+      <div class="meta"><span class="tag">b3</span><h3>The first built city</h3></div>
+      <p>Every building made in code for the first time. Roles open only at some levels, never the first ones.</p>
+      <div class="links"><a href="zero-world-map-b3.html">Model</a><a href="zero-world-map-b3.html?v=night">Night</a><a href="zero-world-map-b3.html?v=drawing">Drawing</a></div>
+    </article>
+    <article class="card">
+      <a class="shot" href="zero-world-map-b2.html" aria-label="Open b2"><img src="zero-world-map-index-assets/b2.jpg" width="1200" height="675" alt="" loading="lazy"></a>
+      <div class="meta"><span class="tag">b2</span><h3>The photo city, in relief</h3></div>
+      <p>Zero's own city picture, raised into 3D so it turns a little with the pointer.</p>
+      <div class="links"><a href="zero-world-map-b2.html">Open</a></div>
+    </article>
+    <article class="card">
+      <a class="shot" href="zero-world-map-b1.html" aria-label="Open b1"><img src="zero-world-map-index-assets/b1.jpg" width="1200" height="675" alt="" loading="lazy"></a>
+      <div class="meta"><span class="tag">b1</span><h3>The photo city</h3></div>
+      <p>Zero's own city picture, with the road, the stops and the job you want drawn on it.</p>
+      <div class="links"><a href="zero-world-map-b1.html">Open</a></div>
+    </article>
+  </section>
+  <footer>Prototypes. Scenario titles, roles and pay are stand-ins.</footer>
+</div>
+</body>
+</html>
