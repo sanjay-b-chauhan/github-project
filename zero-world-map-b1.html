@@ -1,0 +1,1435 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Zero world map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,100..1000&display=swap">
+<style>
+/* core.css */
+/* ZERO skill path · the shell and the shared parts.
+   Three surfaces, all taken from Zero's own screens:
+     world  = the city with dark glass on it (the app's home, the tutorial's world)
+     paper  = the job portal's warm paper with white cards
+   Type is STK Bureau Serif for titles and Google Sans Flex for everything else. Nothing else. */
+@font-face{font-family:'STK Bureau Serif';src:url('zero-world-map-assets-b1/fonts/STKBureau-SerifBook.otf') format('opentype');font-weight:400;font-display:swap}
+@font-face{font-family:'STK Bureau Serif';src:url('zero-world-map-assets-b1/fonts/STKBureau-SerifMedium.otf') format('opentype');font-weight:500;font-display:swap}
+
+:root{
+  --ease:cubic-bezier(.625,.05,0,1); --out:cubic-bezier(.16,1,.3,1); --spring:cubic-bezier(.22,1,.36,1);
+  --serif:'STK Bureau Serif',Georgia,serif;
+  --sans:'Google Sans Flex','Google Sans',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  --gold:#FFD56B; --gold-2:#F0B94D; --gold-ink:#3A2A05;
+  --ok:#49BA61; --ok-deep:#0C7E45;
+  --key-light:linear-gradient(#FFFFFF,#EDEDEA);
+  --key-light-sh:inset 0 1px 0 #fff,inset 0 -3px 0 rgba(0,0,0,.1),0 0 0 1px rgba(0,0,0,.18),0 14px 24px -14px rgba(0,0,0,.5);
+  --key-dark:linear-gradient(#303432,#181A19);
+  --key-dark-sh:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -3px 0 rgba(0,0,0,.5),0 0 0 1px #121413,0 14px 24px -14px rgba(18,20,19,.5);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;overscroll-behavior:none;background:#131514}
+body{font-family:var(--sans);font-size:14px;letter-spacing:-.012em;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;font-synthesis:none;color:#F4F4F3}
+button{font:inherit;letter-spacing:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+svg{display:block}
+*{scrollbar-width:none}::-webkit-scrollbar{width:0;height:0}
+::selection{background:#FFE9A8;color:#111}
+
+/* ---------- the stage: a 1600 x 840 canvas scaled to fit. The city bleeds past it to the window's edge. ---------- */
+#sp-root{position:fixed;inset:0;overflow:hidden;background:#131514;transition:background .5s var(--ease)}
+#sp-root[data-tone="paper"]{background:#F8F7F5}
+#sp-stage{position:absolute;left:50%;top:50%;width:1600px;height:840px;transform-origin:0 0}
+
+/* tone tokens */
+#sp-root{
+  --tx:#F4F4F3; --tx-2:rgba(244,244,243,.68); --tx-3:rgba(244,244,243,.44); --tx-4:rgba(244,244,243,.22);
+  --line:rgba(255,255,255,.10); --line-2:rgba(255,255,255,.06);
+  --glass:rgba(17,18,19,.60); --glass-2:rgba(255,255,255,.06); --glass-3:rgba(255,255,255,.10);
+  --ink:#F4F4F3; --on-ink:#131315;
+}
+#sp-root[data-tone="paper"]{
+  --tx:#1A1917; --tx-2:#5D5A54; --tx-3:#747068; --tx-4:#A9A49B;
+  --line:rgba(26,25,23,.09); --line-2:rgba(26,25,23,.05);
+  --card:#FFFFFF; --field:#F1F0ED; --wash:#FAF9F7; --sunk:#EDEBE7;
+  --ink:#141312; --on-ink:#FFFFFF;
+  --sh1:0 1px 2px rgba(26,25,23,.035);
+  --sh2:0 2px 8px rgba(26,25,23,.05),0 16px 40px -24px rgba(26,25,23,.24);
+  --sh3:0 30px 80px rgba(26,25,23,.20);
+  color:var(--tx);
+}
+
+/* ---------- the city ---------- */
+#sp-map{position:absolute;left:-520px;top:-360px;width:2640px;height:1560px;overflow:hidden;background:#131514;opacity:0;visibility:hidden;transition:opacity .6s var(--ease),visibility 0s .6s}
+#sp-root[data-map="1"] #sp-map{opacity:1;visibility:visible;transition:opacity .6s var(--ease)}
+/* the city leans toward the pointer. It is a flat shear, not a 3D turn: a 3D turn makes the browser redraw the
+   whole city at low resolution, and it goes soft on a sharp screen. */
+.mp-tilt{position:absolute;inset:0;transform-origin:1320px 780px;transition:transform 1s var(--out)}
+.mp-cam{position:absolute;left:520px;top:360px;width:1600px;height:900px;transform-origin:0 0;--s:1;will-change:transform;
+  transition:transform var(--cam,1.4s) var(--ease)}
+.mp-city{position:absolute;inset:0;width:100%;height:100%;display:block;user-select:none;-webkit-user-drag:none}
+/* the city rests (its picture is the quiet one), so the buildings that are yours carry the colour */
+.mp-glow{position:absolute;border-radius:50%;opacity:0;transform-origin:50% 78%;cursor:pointer;
+  transition:opacity .9s var(--ease),transform .7s var(--spring)}
+.mp-glow i{position:absolute;inset:0;background-image:var(--city);background-repeat:no-repeat;
+  -webkit-mask-image:radial-gradient(closest-side,#000 58%,rgba(0,0,0,.6) 78%,transparent 100%);mask-image:radial-gradient(closest-side,#000 58%,rgba(0,0,0,.6) 78%,transparent 100%)}
+.mp-on .mp-glow.lit{opacity:1}
+.mp-on .mp-glow.hov{opacity:1;transform:scale(1.05) translateY(-.8%)}
+.mp-on .mp-glow.dream:not(.lit):not(.hov){opacity:.38}
+.mp-road{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.mp-road path{fill:none;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+.mp-road .case{stroke:rgba(10,12,11,.62);stroke-width:9}
+.mp-road .ahead{stroke:rgba(255,255,255,.92);stroke-width:3;stroke-dasharray:.1 9}
+.mp-road .walked{stroke:#fff;stroke-width:4}
+.mp-road .last{stroke:var(--gold);stroke-width:3;stroke-dasharray:.1 9}
+.mp-road .rev{stroke:#fff;stroke-width:14;stroke-dasharray:1;stroke-dashoffset:1}
+.mp-road.drawn .rev{stroke-dashoffset:0;transition:stroke-dashoffset var(--draw,2.4s) cubic-bezier(.45,.05,.2,1)}
+.mp-road.inst .rev{stroke-dashoffset:0;transition:none}
+/* anything pinned to the map keeps its size while the camera moves */
+.mp-pin{position:absolute;width:0;height:0;transform:scale(calc(1 / var(--s)));transform-origin:0 0;transition:transform var(--cam,1.4s) var(--ease)}
+.mp-stop{position:absolute;left:-13px;top:-13px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+  background:#1B1D1C;color:#fff;font:600 12px/1 var(--sans);letter-spacing:0;box-shadow:0 0 0 2px rgba(255,255,255,.9),0 4px 10px rgba(0,0,0,.4);
+  opacity:0;transform:scale(.4);transition:opacity .3s var(--ease) var(--d,0s),transform .5s var(--spring) var(--d,0s)}
+.mp-on .mp-stop{opacity:1;transform:none}
+.mp-stop[data-i]{cursor:pointer}
+.mp-on .mp-stop.hov{transform:scale(1.16);box-shadow:0 0 0 2px #fff,0 0 0 7px rgba(255,255,255,.22),0 4px 10px rgba(0,0,0,.4);transition:transform .35s var(--spring),box-shadow .3s}
+.mp-on .mp-stop.under{opacity:0}
+/* you: the marker that stands on the stop you are at, and walks the road when you finish one */
+.mp-you-pin{z-index:3}
+.mp-you{position:absolute;left:-17px;top:-17px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;cursor:pointer;
+  background:#fff;color:#141312;font:600 11px/1 var(--sans);letter-spacing:-.01em;padding-bottom:1px;
+  box-shadow:0 0 0 2px #141312,0 0 0 4px #fff,0 8px 18px rgba(0,0,0,.5);opacity:0;scale:.5;transition:opacity .3s var(--ease) .2s,scale .6s var(--spring) .2s}
+.mp-on .mp-you{opacity:1;scale:1}
+.mp-you::after{content:'';position:absolute;inset:-9px;border-radius:50%;border:2px solid rgba(255,255,255,.85);animation:mp-pulse 2.2s var(--out) infinite}
+.mp-walking .mp-you::after{animation:none;opacity:0}
+.mp-walking .mp-chip{opacity:0!important}
+/* the roles a stop opens, as a small stack of marks beside it */
+.mp-roles{position:absolute;left:0;top:0;display:flex;opacity:0;scale:.6;transition:opacity .4s var(--ease) var(--d,0s),scale .6s var(--spring) var(--d,0s)}
+.mp-roles .sp-lg{box-shadow:0 0 0 2px #fff,0 4px 10px rgba(0,0,0,.45)}
+.mp-roles .sp-lg+.sp-lg{margin-left:-7px}
+.mp-roles.b,.mp-roles.l{transform:translate(18px,-12px)} .mp-roles.r,.mp-roles.t{transform:translate(calc(-100% - 18px),-12px)}
+.mp-on.mp-show-roles .mp-roles{opacity:1;scale:1}
+.mp-stop.done{background:#fff;color:#141312}
+.mp-stop.done svg{width:12px;height:12px}
+.mp-stop.now{background:#fff;color:#141312;box-shadow:0 0 0 2px #fff,0 0 0 7px rgba(255,255,255,.28),0 4px 10px rgba(0,0,0,.4)}
+.mp-stop.now::after{content:'';position:absolute;inset:-7px;border-radius:50%;border:2px solid rgba(255,255,255,.8);animation:mp-pulse 2.2s var(--out) infinite}
+@keyframes mp-pulse{0%{opacity:.9;transform:scale(.8)}100%{opacity:0;transform:scale(1.9)}}
+.mp-chip{position:absolute;left:0;top:0;display:flex;align-items:center;gap:7px;height:30px;padding:0 11px 0 5px;border-radius:99px;white-space:nowrap;
+  background:rgba(20,21,21,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#fff;font:500 13px/1 var(--sans);letter-spacing:-.01em;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 0 0 1px rgba(0,0,0,.4),0 8px 18px -8px rgba(0,0,0,.6);
+  opacity:0;transition:opacity .35s var(--ease) var(--d,0s),translate .5s var(--spring) var(--d,0s);translate:0 6px}
+.mp-on .mp-chip{opacity:1;translate:0 0}
+.mp-chip.b{transform:translate(-50%,20px)} .mp-chip.t{transform:translate(-50%,-52px)} .mp-chip.r{transform:translate(22px,-15px)} .mp-chip.l{transform:translate(calc(-100% - 22px),-15px)}
+.mp-chip.now{background:#fff;color:#141312;box-shadow:0 0 0 1px rgba(0,0,0,.2),0 10px 22px -8px rgba(0,0,0,.6)}
+.mp-chip em{font-style:normal;color:var(--ok-deep);font-weight:500;display:flex;align-items:center;gap:5px;margin-left:2px}
+.mp-chip em::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--ok)}
+.mp-chip.far{opacity:0!important}
+.mp-chip.dim{background:rgba(20,21,21,.6);color:rgba(255,255,255,.78)}
+/* the job you want, standing on its building */
+.mp-dream{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:0;
+  opacity:0;translate:0 10px;transition:opacity .5s var(--ease) var(--d,0s),translate .7s var(--spring) var(--d,0s)}
+.mp-on .mp-dream{opacity:1;translate:0 0}
+.mp-dream-card{display:flex;align-items:center;gap:10px;height:48px;padding:0 16px 0 7px;border-radius:99px;white-space:nowrap;
+  background:rgba(20,21,21,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 0 0 1px rgba(0,0,0,.5),0 0 0 2px rgba(255,213,107,.0),0 14px 30px -10px rgba(0,0,0,.7);
+  transition:box-shadow .6s var(--ease),background .6s var(--ease)}
+.mp-dream.above{transform:translate(-50%,-100%) translateY(-4px)} .mp-dream.below{transform:translate(-50%,10px)}
+.mp-dream-card .tx b{display:block;font:500 14px/1.2 var(--sans);color:#fff;letter-spacing:-.012em}
+.mp-dream-card .tx span{display:block;font:400 12px/1.15 var(--sans);color:rgba(255,255,255,.6);margin-top:3px}
+.mp-dream-card{cursor:pointer}
+.mp-dream-card .tx .segs{display:flex;gap:2.5px;margin-top:7px}
+.mp-dream-card .tx .segs i{width:9px;height:3px;border-radius:2px;background:rgba(255,255,255,.2)}
+.mp-dream-card .tx .segs i.on{background:var(--gold)}
+.mp-dream-card:has(.segs){height:58px}
+.mp-dream-card .lk{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);margin-left:4px;flex:none}
+.mp-dream-card .lk svg{width:13px;height:13px}
+.mp-dream i.stem{width:2px;height:14px;background:linear-gradient(rgba(255,255,255,.8),rgba(255,255,255,.1))}
+.mp-dream.below i.stem{background:linear-gradient(rgba(255,255,255,.1),rgba(255,255,255,.8))}
+.mp-dream.open .mp-dream-card{background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.2),0 0 0 6px rgba(255,213,107,.5),0 0 60px 10px rgba(255,213,107,.55),0 14px 30px -10px rgba(0,0,0,.7)}
+.mp-dream.open .mp-dream-card .tx b{color:#141312}.mp-dream.open .mp-dream-card .tx span{color:#5D5A54}
+.mp-dream.open .lk{background:var(--ok);color:#fff}
+.mp-beam{position:absolute;left:-90px;top:-420px;width:180px;height:440px;pointer-events:none;opacity:0;transition:opacity 1s var(--ease);
+  background:radial-gradient(ellipse 50% 6% at 50% 97%,rgba(255,223,140,.9),rgba(255,223,140,0) 70%),linear-gradient(to top,rgba(255,223,140,.5),rgba(255,223,140,0) 85%);
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 35%,#000 65%,transparent);mask-image:linear-gradient(to right,transparent,#000 35%,#000 65%,transparent);mix-blend-mode:screen}
+.mp-on .mp-beam.on{opacity:.9}
+.mp-on .mp-beam.on.soft{opacity:.42}
+.mp-shade{position:absolute;inset:0;pointer-events:none;transition:opacity .8s var(--ease),background .8s var(--ease);
+  background:linear-gradient(to right,rgba(10,12,11,var(--shl,0)) 0,rgba(10,12,11,var(--shl,0)) 560px,rgba(10,12,11,0) 1290px),
+  linear-gradient(to left,rgba(10,12,11,var(--shr,0)) 0,rgba(10,12,11,var(--shr,0)) 560px,rgba(10,12,11,0) 1180px),
+  linear-gradient(to bottom,rgba(10,12,11,.5) 0,rgba(10,12,11,.5) 360px,rgba(10,12,11,0) 540px),linear-gradient(to top,rgba(10,12,11,.4) 0,rgba(10,12,11,.4) 360px,rgba(10,12,11,0) 520px)}
+.mp-dimmer{position:absolute;inset:0;background:rgba(9,10,10,var(--dim,0));pointer-events:none;transition:background .7s var(--ease)}
+
+/* ---------- screens ---------- */
+#sp-screens{position:absolute;inset:0;pointer-events:none}
+.sp-screen{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .28s var(--ease)}
+.sp-screen.on{opacity:1;pointer-events:auto;transition:opacity .5s var(--ease) .12s}
+.sp-screen.on.rise>*{animation:sp-rise .7s var(--spring) both}
+@keyframes sp-rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+/* ---------- chrome that stays put between screens ---------- */
+.sp-wm{position:absolute;left:30px;top:26px;height:26px;z-index:40;color:var(--tx);transition:color .5s var(--ease),opacity .4s}
+.sp-wm svg{height:100%;width:auto}
+.sp-rail{position:absolute;left:22px;top:50%;z-index:40;transform:translateY(-50%);display:flex;flex-direction:column;gap:4px;padding:6px;border-radius:22px;
+  background:var(--glass);backdrop-filter:blur(22px) saturate(1.3);-webkit-backdrop-filter:blur(22px) saturate(1.3);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 0 0 1px rgba(0,0,0,.35),0 20px 40px -20px rgba(0,0,0,.6);
+  opacity:0;pointer-events:none;translate:-10px 0;transition:opacity .45s var(--ease),translate .6s var(--spring),background .5s,box-shadow .5s}
+#sp-root[data-rail] .sp-rail{opacity:1;pointer-events:auto;translate:0 0}
+#sp-root[data-tone="paper"] .sp-rail{background:#fff;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:0 0 0 1px var(--line),var(--sh2)}
+.sp-rail button{width:58px;padding:11px 0 9px;border-radius:16px;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--tx-3);
+  font:500 10.5px/1 var(--sans);letter-spacing:0;transition:color .25s,background .25s}
+.sp-rail button svg{width:19px;height:19px}
+.sp-rail button:hover{color:var(--tx)}
+.sp-rail button.on{color:var(--on-ink);background:var(--ink)}
+.sp-rail button{position:relative}
+.sp-rail button i.n{position:absolute;right:8px;top:5px;min-width:17px;height:17px;padding:0 4px 0;border-radius:99px;display:grid;place-items:center;
+  background:var(--ink);color:var(--on-ink);font:600 10.5px/1 var(--sans);font-style:normal;letter-spacing:0;font-variant-numeric:tabular-nums;box-shadow:0 0 0 2px rgba(17,18,19,.6)}
+#sp-root[data-tone="paper"] .sp-rail button i.n{box-shadow:0 0 0 2px #fff}
+.sp-rail button.on i.n{display:none}
+/* how it works: the plan again, any time */
+.sp-help{position:absolute;left:22px;bottom:22px;z-index:40;height:38px;padding:0 15px 1px;border-radius:99px;white-space:nowrap;font:500 13px/1 var(--sans);letter-spacing:-.01em;color:var(--tx-2);
+  background:var(--glass);backdrop-filter:blur(22px) saturate(1.3);-webkit-backdrop-filter:blur(22px) saturate(1.3);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 0 0 1px rgba(0,0,0,.35),0 14px 30px -16px rgba(0,0,0,.6);
+  opacity:0;pointer-events:none;translate:0 8px;transition:opacity .45s var(--ease),translate .6s var(--spring),color .2s,background .5s,box-shadow .5s}
+#sp-root[data-help] .sp-help{opacity:1;pointer-events:auto;translate:0 0}
+.sp-help:hover{color:var(--tx)}
+#sp-root[data-tone="paper"] .sp-help{background:#fff;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:0 0 0 1px var(--line),var(--sh1)}
+/* the job portal's own tabs, as in its Figma shell */
+.sp-tabs{position:absolute;left:50%;top:27px;z-index:40;transform:translateX(-50%);display:flex;gap:2px;opacity:0;pointer-events:none;transition:opacity .4s var(--ease)}
+#sp-root[data-tabs] .sp-tabs{opacity:1;pointer-events:auto}
+.sp-tabs button{height:40px;padding:0 17px;border-radius:99px;font:500 14.5px/1 var(--sans);letter-spacing:-.014em;color:var(--tx-3);white-space:nowrap;transition:background .2s,color .2s}
+.sp-tabs button:hover{color:var(--tx)}
+.sp-tabs button.on{color:var(--tx);background:var(--sunk,rgba(255,255,255,.1))}
+/* the one number: level, and how far to the next */
+.sp-pill{position:absolute;right:26px;top:20px;z-index:40;display:flex;align-items:center;gap:11px;height:54px;padding:0 8px 0 8px;border-radius:99px;text-align:left;
+  background:var(--glass);backdrop-filter:blur(22px) saturate(1.3);-webkit-backdrop-filter:blur(22px) saturate(1.3);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 0 0 1px rgba(0,0,0,.35),0 20px 40px -20px rgba(0,0,0,.6);
+  opacity:0;pointer-events:none;translate:0 -8px;transition:opacity .45s var(--ease),translate .6s var(--spring),background .5s,box-shadow .5s}
+#sp-root[data-pill] .sp-pill{opacity:1;pointer-events:auto;translate:0 0}
+#sp-root[data-tone="paper"] .sp-pill{background:#fff;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:0 0 0 1px var(--line),var(--sh2)}
+.sp-pill .t{display:flex;flex-direction:column;gap:4px;padding-right:4px;min-width:112px}
+.sp-pill .t b{font:500 14.5px/1 var(--sans);color:var(--tx);letter-spacing:-.014em;white-space:nowrap}
+.sp-pill .t span{font:400 12.5px/1 var(--sans);color:var(--tx-2);white-space:nowrap;font-variant-numeric:tabular-nums}
+.sp-pill .goal{display:flex;align-items:center;gap:8px;height:38px;padding:0 13px 0 5px;border-radius:99px;background:var(--glass-2);box-shadow:inset 0 0 0 1px var(--line-2)}
+#sp-root[data-tone="paper"] .sp-pill .goal{background:var(--field);box-shadow:none}
+.sp-pill .goal span{font:400 12.5px/1 var(--sans);color:var(--tx-2);white-space:nowrap}
+.sp-pill .goal b{font-weight:500;color:var(--tx)}
+.sp-pill.bump{animation:sp-bump .6s var(--spring)}
+@keyframes sp-bump{0%{scale:1}35%{scale:1.06}100%{scale:1}}
+
+/* ---------- parts ---------- */
+/* the level ring: the number is the level, the arc is how far into it you are */
+.sp-ring{position:relative;flex:none;width:var(--z,38px);height:var(--z,38px);display:grid;place-items:center}
+.sp-ring svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.sp-ring circle{fill:none;stroke-width:3;stroke-linecap:round}
+.sp-ring .tr{stroke:var(--tx-4)}
+.sp-ring .ar{stroke:var(--gold);stroke-dasharray:100;stroke-dashoffset:calc(100 - var(--p,0) * 100);transition:stroke-dashoffset 1s var(--out)}
+#sp-root[data-tone="paper"] .sp-ring .ar{stroke:#E3A62B}
+.sp-ring b{position:relative;font:600 calc(var(--z,38px) * .40)/1 var(--sans);letter-spacing:-.02em;color:var(--tx);font-variant-numeric:tabular-nums}
+/* the skill point star */
+.sp-star{flex:none;width:var(--z,14px);height:var(--z,14px);color:var(--gold)}
+#sp-root[data-tone="paper"] .sp-star{color:#E3A62B}
+/* a company mark on its own colour */
+.sp-lg{flex:none;position:relative;width:var(--z,32px);height:var(--z,32px);border-radius:calc(var(--z,32px) * .28);background:var(--c,#111);display:grid;place-items:center;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),inset 0 1px 0 rgba(255,255,255,.14)}
+.sp-lg.round{border-radius:50%}
+.sp-lg i{width:56%;height:56%;background:var(--m,#fff);-webkit-mask:var(--u) center/contain no-repeat;mask:var(--u) center/contain no-repeat}
+.sp-lg.lightc{box-shadow:inset 0 0 0 1px rgba(0,0,0,.09)}
+.sp-lg svg{width:54%;height:54%}
+/* buttons: the key, as on the Zero site */
+.sp-key{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:48px;padding:0 22px 2px;border-radius:15px;white-space:nowrap;
+  background:var(--key-light);color:#131315;box-shadow:var(--key-light-sh);font:500 15px/1 var(--sans);letter-spacing:-.014em;
+  transition:transform .18s var(--out),filter .2s,box-shadow .2s}
+.sp-key:hover{filter:brightness(1.03)}
+.sp-key:active{transform:translateY(1.5px);box-shadow:inset 0 1px 0 #fff,inset 0 -1px 0 rgba(0,0,0,.1),0 0 0 1px rgba(0,0,0,.18),0 6px 12px -8px rgba(0,0,0,.5)}
+.sp-key.dark{background:var(--key-dark);color:#F4F4F3;box-shadow:var(--key-dark-sh)}
+.sp-key.dark:active{box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -1px 0 rgba(0,0,0,.5),0 0 0 1px #121413}
+.sp-key.sm{height:40px;padding:0 16px 2px;border-radius:13px;font-size:14px}
+.sp-key svg{width:16px;height:16px;flex:none}
+.sp-key[disabled]{opacity:.45;pointer-events:none}
+.sp-ghost{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 20px;border-radius:15px;white-space:nowrap;
+  color:var(--tx);font:500 15px/1 var(--sans);letter-spacing:-.014em;background:var(--glass-2);box-shadow:inset 0 0 0 1px var(--line);transition:background .2s}
+.sp-ghost:hover{background:var(--glass-3)}
+.sp-ghost.sm{height:40px;padding:0 15px;border-radius:13px;font-size:14px}
+#sp-root[data-tone="paper"] .sp-ghost{background:#fff;box-shadow:0 0 0 1px var(--line),var(--sh1)}
+#sp-root[data-tone="paper"] .sp-ghost:hover{background:var(--wash)}
+/* glass panel on the city */
+.sp-glass{background:var(--glass);backdrop-filter:blur(26px) saturate(1.3);-webkit-backdrop-filter:blur(26px) saturate(1.3);border-radius:30px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 0 0 0 1px rgba(255,255,255,.04),0 0 0 1px rgba(0,0,0,.4),0 40px 80px -40px rgba(0,0,0,.75)}
+/* a lock, and a tick */
+.sp-lock{flex:none;width:var(--z,26px);height:var(--z,26px);border-radius:50%;display:grid;place-items:center;background:var(--glass-3);color:var(--tx-2)}
+.sp-lock svg{width:50%;height:50%}
+#sp-root[data-tone="paper"] .sp-lock{background:var(--field);color:var(--tx-3)}
+.sp-tick{flex:none;width:var(--z,26px);height:var(--z,26px);border-radius:50%;display:grid;place-items:center;background:var(--ok);color:#fff}
+.sp-tick svg{width:50%;height:50%}
+/* titles */
+.sp-h1{font:400 40px/1.08 var(--serif);letter-spacing:-.028em;color:var(--tx);text-wrap:balance}
+.sp-h2{font:400 28px/1.12 var(--serif);letter-spacing:-.024em;color:var(--tx);text-wrap:balance}
+.sp-p{font:400 15px/1.45 var(--sans);letter-spacing:-.012em;color:var(--tx-2);text-wrap:pretty}
+.sp-num{font-variant-numeric:tabular-nums}
+
+/* ---------- the review key, bottom right. It is for stepping through the screens, not part of the product. ---------- */
+#sp-dev{position:fixed;right:16px;bottom:16px;z-index:200;font:500 12.5px/1 var(--sans);letter-spacing:-.005em;color:#F4F4F3}
+#sp-dev .bar{display:flex;align-items:center;gap:2px;height:40px;padding:0 5px;border-radius:14px;background:var(--key-dark);box-shadow:var(--key-dark-sh)}
+#sp-dev .bar button{height:30px;min-width:30px;padding:0 8px;border-radius:9px;display:grid;place-items:center;color:rgba(244,244,243,.72);transition:background .2s,color .2s}
+#sp-dev .bar button:hover{background:rgba(255,255,255,.08);color:#fff}
+#sp-dev .bar button svg{width:15px;height:15px}
+#sp-dev .name{padding:0 10px;min-width:150px;text-align:center;white-space:nowrap;color:#F4F4F3}
+#sp-dev .name em{font-style:normal;color:rgba(244,244,243,.45);margin-right:7px;font-variant-numeric:tabular-nums}
+#sp-dev .menu{position:absolute;right:0;bottom:50px;width:560px;max-height:calc(100vh - 90px);overflow:auto;padding:16px;border-radius:20px;background:#1B1D1C;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 0 0 1px #0c0d0d,0 30px 70px -20px rgba(0,0,0,.8);display:none}
+#sp-dev.open .menu{display:block}
+#sp-dev .menu h4{font:500 11.5px/1 var(--sans);color:rgba(244,244,243,.45);margin:14px 4px 8px}
+#sp-dev .menu h4:first-child{margin-top:2px}
+#sp-dev .grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+#sp-dev .grid button{display:flex;align-items:center;gap:9px;height:34px;padding:0 10px;border-radius:10px;text-align:left;color:rgba(244,244,243,.8);white-space:nowrap;overflow:hidden}
+#sp-dev .grid button em{font-style:normal;color:rgba(244,244,243,.36);font-variant-numeric:tabular-nums;width:16px;flex:none}
+#sp-dev .grid button:hover{background:rgba(255,255,255,.07);color:#fff}
+#sp-dev .grid button.on{background:#F4F4F3;color:#131315}
+#sp-dev .grid button.on em{color:rgba(19,19,21,.5)}
+#sp-dev .foot{display:flex;gap:6px;margin-top:14px}
+#sp-dev .foot a,#sp-dev .foot button{flex:1;height:38px;border-radius:11px;display:grid;place-items:center;background:rgba(255,255,255,.07);color:#F4F4F3;text-decoration:none;font:500 12.5px/1 var(--sans)}
+#sp-dev .foot a:hover,#sp-dev .foot button:hover{background:rgba(255,255,255,.12)}
+
+/* screens/dream.css */
+/* the dream: where, which job, and the plan */
+.sc-dream .dr-panel,.sc-plan .dr-panel{position:absolute;left:112px;top:50%;width:468px;transform:translateY(-50%);padding:36px 32px 32px;border-radius:34px}
+.sc-dream .dr-body,.sc-plan .dr-body{transition:opacity .2s var(--ease),transform .3s var(--ease)}
+.sc-dream .dr-body.out{opacity:0;transform:translateY(6px)}
+.sc-dream .dr-h,.sc-plan .dr-h{font-size:38px}
+.sc-dream .dr-sub{margin-top:12px;max-width:330px}
+.sc-dream .dr-back{position:relative;width:38px;height:38px;margin:-6px 0 18px -6px;border-radius:50%;display:grid;place-items:center;color:var(--tx-2);background:var(--glass-2);box-shadow:inset 0 0 0 1px var(--line);transition:background .2s,color .2s}
+.sc-dream .dr-back:hover{background:var(--glass-3);color:var(--tx)}
+.sc-dream .dr-back svg{width:16px;height:16px}
+
+/* the six companies */
+.sc-dream .dr-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:26px}
+.sc-dream .dr-co{position:relative;display:flex;align-items:center;gap:13px;height:68px;padding:0 14px;border-radius:20px;text-align:left;
+  background:var(--glass-2);box-shadow:inset 0 0 0 1px var(--line-2);transition:background .25s var(--ease),box-shadow .25s var(--ease),transform .2s var(--out)}
+.sc-dream .dr-co:hover{background:var(--glass-3)}
+.sc-dream .dr-co:active{transform:scale(.985)}
+.sc-dream .dr-co>span:not(.sp-lg){font:500 16px/1 var(--sans);letter-spacing:-.016em;color:var(--tx)}
+.sc-dream .dr-co>i{margin-left:auto;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:#141312;color:#fff;opacity:0;scale:.5;transition:opacity .2s,scale .35s var(--spring)}
+.sc-dream .dr-co>i svg{width:11px;height:11px}
+.sc-dream .dr-co.on{background:var(--key-light);box-shadow:var(--key-light-sh)}
+.sc-dream .dr-co.on>span:not(.sp-lg){color:#141312}
+.sc-dream .dr-co.on>i{opacity:1;scale:1}
+
+/* the four rungs */
+.sc-dream .dr-rungs{display:flex;flex-direction:column;gap:8px;margin-top:26px}
+.sc-dream .dr-rung{position:relative;display:flex;align-items:center;gap:14px;height:72px;padding:0 16px 0 12px;border-radius:20px;text-align:left;
+  background:var(--glass-2);box-shadow:inset 0 0 0 1px var(--line-2);transition:background .25s var(--ease),box-shadow .25s var(--ease),transform .2s var(--out)}
+.sc-dream .dr-rung:hover{background:var(--glass-3)}
+.sc-dream .dr-rung:active{transform:scale(.99)}
+.sc-dream .dr-rung .lv{flex:none;width:48px;height:48px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:var(--glass-2);box-shadow:inset 0 0 0 1px var(--line-2)}
+.sc-dream .dr-rung .lv b{font:500 18px/1 var(--sans);letter-spacing:-.02em;color:var(--tx);font-variant-numeric:tabular-nums}
+.sc-dream .dr-rung .lv em{font:400 10.5px/1 var(--sans);font-style:normal;color:var(--tx-3);letter-spacing:0}
+.sc-dream .dr-rung .tx{display:flex;flex-direction:column;gap:6px;min-width:0}
+.sc-dream .dr-rung .tx b{font:500 16px/1 var(--sans);letter-spacing:-.016em;color:var(--tx);white-space:nowrap}
+.sc-dream .dr-rung .tx em{font:400 13px/1 var(--sans);font-style:normal;color:var(--tx-2);white-space:nowrap}
+.sc-dream .dr-rung>i{margin-left:auto;flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:#141312;color:#fff;opacity:0;scale:.5;transition:opacity .2s,scale .35s var(--spring)}
+.sc-dream .dr-rung>i svg{width:11px;height:11px}
+.sc-dream .dr-rung.on{background:var(--key-light);box-shadow:var(--key-light-sh)}
+.sc-dream .dr-rung.on .lv{background:#141312;box-shadow:none}
+.sc-dream .dr-rung.on .lv b{color:#fff}.sc-dream .dr-rung.on .lv em{color:rgba(255,255,255,.6)}
+.sc-dream .dr-rung.on .tx b{color:#141312}.sc-dream .dr-rung.on .tx em{color:#5D5A54}
+.sc-dream .dr-rung.on>i{opacity:1;scale:1}
+
+.sc-dream .dr-foot,.sc-plan .dr-foot{display:flex;align-items:center;gap:16px;margin-top:28px}
+.sc-dream .dr-go svg,.sc-plan .dr-go svg{margin-right:-4px}
+
+/* the plan */
+.sc-plan .dr-panel.pl{width:500px;padding:38px 34px 32px}
+.sc-plan .pl-list{list-style:none;display:flex;flex-direction:column;gap:6px;margin-top:26px}
+.sc-plan .pl-list li{display:flex;align-items:center;gap:15px;min-height:70px;padding:12px 18px 12px 14px;border-radius:20px;cursor:pointer;
+  opacity:0;transform:translateY(10px);transition:opacity .5s var(--ease),transform .7s var(--spring),background .5s var(--ease),box-shadow .5s var(--ease)}
+.sc-plan .pl-list li.on{opacity:.62;transform:none}
+.sc-plan .pl-list li.on.now,.sc-plan .pl-list li.on:hover{opacity:1}
+.sc-plan .pl-list li.now{background:var(--glass-2);box-shadow:inset 0 0 0 1px var(--line-2)}
+.sc-plan .pl-list li>span{flex:none}
+.sc-plan .pl-ic{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--glass-3)}
+.sc-plan .pl-ic .sp-ring{--z:30px}
+.sc-plan .pl-ic:has(.sp-ring){background:none}
+.sc-plan .pl-list p{font:400 15px/1.42 var(--sans);letter-spacing:-.012em;color:var(--tx-2);text-wrap:pretty}
+.sc-plan .pl-list p b{font-weight:500;color:var(--tx)}
+.sc-plan .dr-foot{opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .5s var(--ease) .5s,transform .7s var(--spring) .5s}
+.sc-plan .dr-foot.on{opacity:1;transform:none;pointer-events:auto}
+.sc-plan .pl-count{font:400 13px/1 var(--sans);color:var(--tx-3);white-space:nowrap}
+
+/* screens/world.css */
+/* the world: the city stays clickable, only the card takes the pointer */
+.sc-world.on{pointer-events:none}
+.sc-world .wd-card{position:absolute;right:26px;top:50%;width:372px;transform:translateY(-50%);padding:10px;border-radius:32px;pointer-events:auto;
+  transition:opacity .5s var(--ease),translate .7s var(--spring)}
+.sc-world .wd-card.wait{opacity:0;translate:16px 0;pointer-events:none}
+.sc-world .wd-card.in .wd-hero{animation:sp-rise .6s var(--spring) both}
+.sc-world .wd-card.in .wd-body>*{animation:sp-rise .6s var(--spring) both}
+.sc-world .wd-card.in .wd-body>*:nth-child(1){animation-delay:.05s}.sc-world .wd-card.in .wd-body>*:nth-child(2){animation-delay:.09s}
+.sc-world .wd-card.in .wd-body>*:nth-child(3){animation-delay:.13s}.sc-world .wd-card.in .wd-body>*:nth-child(4){animation-delay:.17s}
+.sc-world .wd-card.in .wd-body>*:nth-child(5){animation-delay:.21s}.sc-world .wd-card.in .wd-body>*:nth-child(6){animation-delay:.25s}
+.sc-world .wd-card.quick .wd-hero img,.sc-world .wd-card.quick .wd-body{animation:wd-swap .28s var(--ease) both}
+@keyframes wd-swap{from{opacity:0}to{opacity:1}}
+
+/* the building, as the picture of what you are about to do */
+.sc-world .wd-hero{position:relative;height:176px;border-radius:22px;overflow:hidden;background:#1b1d1c;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.sc-world .wd-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.sc-world .wd-hero::after{content:'';position:absolute;inset:0;border-radius:22px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);
+  background:linear-gradient(to top,rgba(10,12,11,.5),rgba(10,12,11,0) 46%);pointer-events:none}
+.sc-world .wd-tag,.sc-world .wd-no{position:absolute;z-index:1;display:flex;align-items:center;height:32px;border-radius:99px;white-space:nowrap;
+  background:rgba(20,21,21,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 0 0 1px rgba(0,0,0,.3);color:#fff}
+.sc-world .wd-tag{left:10px;bottom:10px;gap:7px;padding:0 13px 0 5px;font:500 13.5px/1 var(--sans);letter-spacing:-.012em}
+.sc-world .wd-no{right:10px;top:10px;padding:0 12px 1px;font:400 12.5px/1 var(--sans);color:rgba(255,255,255,.86)}
+.sc-world .wd-body{padding:18px 12px 12px;display:flex;flex-direction:column}
+.sc-world .wd-title{font-size:28px}
+.sc-world .wd-ask{margin-top:9px}
+.sc-world .wd-meta{display:flex;gap:8px;margin-top:16px}
+.sc-world .wd-meta>span{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 13px 1px 11px;border-radius:99px;background:var(--glass-2);box-shadow:inset 0 0 0 1px var(--line-2);
+  font:400 13.5px/1 var(--sans);color:var(--tx);white-space:nowrap;font-variant-numeric:tabular-nums}
+.sc-world .wd-meta>span>svg{width:15px;height:15px;color:var(--tx-2)}
+.sc-world .wd-meta>span.ok>svg{color:var(--ok);width:14px;height:14px}
+/* what this scenario opens: the reason to start it */
+.sc-world .wd-opens{margin-top:14px;padding:14px 12px 8px;border-radius:20px;background:var(--glass-2);box-shadow:inset 0 0 0 1px var(--line-2)}
+.sc-world .wd-opens p{font:400 13px/1 var(--sans);color:var(--tx-2);padding:0 4px 8px}
+.sc-world .wd-opens p b{font-weight:500;color:var(--tx)}
+.sc-world .wd-opens ul{list-style:none}
+.sc-world .wd-opens li{display:flex;align-items:center;gap:11px;height:48px;padding:0 4px}
+.sc-world .wd-opens li .tx{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1}
+.sc-world .wd-opens li b{font:500 14px/1.3 var(--sans);letter-spacing:-.012em;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sc-world .wd-opens li em{font:400 12.5px/1.3 var(--sans);font-style:normal;color:var(--tx-3)}
+.sc-world .wd-lv{flex:none;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--glass-3);font:500 13.5px/1 var(--sans);color:var(--tx);font-variant-numeric:tabular-nums}
+.sc-world .wd-state{display:flex;align-items:center;gap:11px;margin-top:16px;font:400 14px/1.36 var(--sans);color:var(--tx-2)}
+.sc-world .wd-state b{font-weight:500;color:var(--tx)}
+.sc-world .wd-state.ok span{color:var(--tx)}
+.sc-world .wd-start,.sc-world .wd-apply{margin-top:14px;width:100%;height:52px;border-radius:17px}
+.sc-world .wd-two{display:flex;gap:8px;margin-top:14px}
+.sc-world .wd-two .sp-ghost{flex:1;padding:0 10px}
+.sc-world .wd-apply.sp-ghost{margin-top:14px;width:100%}
+.sc-world .wd-start svg{width:14px;height:14px;margin-right:-1px}
+
+/* what just opened, said once at the top of the next card */
+.sc-world .wd-news{display:flex;align-items:center;gap:10px;margin:-4px 0 14px;padding:10px 12px 10px 10px;border-radius:16px;background:rgba(73,186,97,.14);box-shadow:inset 0 0 0 1px rgba(73,186,97,.28);
+  font:400 13.5px/1.35 var(--sans);color:var(--tx)}
+.sc-world .wd-news b{font-weight:500}
+.sc-world .wd-body:has(.wd-news) .wd-title{order:0}
+.sc-world .wd-body .wd-news{order:-1}
+
+/* the ladder: what each level opens. It drops from the level pill. */
+.sc-world .wd-ladder{position:absolute;right:26px;top:84px;width:372px;max-height:722px;padding:18px 12px 12px;border-radius:32px;pointer-events:none;overflow:auto;
+  opacity:0;translate:0 -10px;scale:.985;transform-origin:80% 0;transition:opacity .28s var(--ease),translate .5s var(--spring),scale .5s var(--spring)}
+.sc-world.laddered .wd-ladder{opacity:1;translate:0 0;scale:1;pointer-events:auto}
+.sc-world.laddered .wd-card{opacity:0;pointer-events:none;translate:10px 0}
+.sc-world .wd-lh{display:flex;align-items:flex-start;gap:12px;padding:2px 6px 14px 10px}
+.sc-world .wd-lh div{flex:1;display:flex;flex-direction:column;gap:6px}
+.sc-world .wd-lh b{font:500 16px/1.2 var(--sans);letter-spacing:-.016em;color:var(--tx)}
+.sc-world .wd-lh span{font:400 13px/1.3 var(--sans);color:var(--tx-2);font-variant-numeric:tabular-nums}
+.sc-world .wd-lx{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:var(--tx-2);background:var(--glass-2);box-shadow:inset 0 0 0 1px var(--line);transition:background .2s,color .2s}
+.sc-world .wd-lx:hover{background:var(--glass-3);color:var(--tx)}
+.sc-world .wd-lx svg{width:14px;height:14px}
+.sc-world .wd-ladder ol{list-style:none;display:flex;flex-direction:column;gap:4px}
+.sc-world .wd-ladder li{display:flex;align-items:center;gap:11px;height:56px;padding:0 12px 0 10px;border-radius:18px;background:var(--glass-2);box-shadow:inset 0 0 0 1px var(--line-2)}
+.sc-world .wd-ladder li .n{flex:none;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--glass-3);font:500 14px/1 var(--sans);color:var(--tx);font-variant-numeric:tabular-nums}
+.sc-world .wd-ladder li .lgs{flex:none;display:flex;min-width:45px}
+.sc-world .wd-ladder li .lgs .sp-lg{box-shadow:0 0 0 2px #232524}
+.sc-world .wd-ladder li .lgs .sp-lg+.sp-lg{margin-left:-7px}
+.sc-world .wd-ladder li .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.sc-world .wd-ladder li .tx b{font:500 14px/1.3 var(--sans);letter-spacing:-.012em;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sc-world .wd-ladder li .tx em{font:400 12.5px/1.3 var(--sans);font-style:normal;color:var(--tx-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sc-world .wd-ladder li .go{flex:none;font:400 12.5px/1 var(--sans);color:var(--tx-2);white-space:nowrap;font-variant-numeric:tabular-nums}
+.sc-world .wd-ladder li.locked .tx b{color:var(--tx-2)}
+.sc-world .wd-ladder li.reached .n{background:#F4F4F3;color:#141312}
+.sc-world .wd-ladder li.next{background:var(--glass-3);box-shadow:inset 0 0 0 1px var(--line)}
+.sc-world .wd-ladder li.goal{box-shadow:inset 0 0 0 1.5px rgba(255,213,107,.7)}
+.sc-world .wd-ladder li.goal .tx em{color:var(--gold)}
+
+/* the summit */
+.sc-summit .sm-box{position:absolute;left:112px;top:50%;width:468px;transform:translateY(-50%);padding:36px 34px 34px;border-radius:34px}
+.sc-summit .sm-ring{display:block}
+.sc-summit .sm-ring .sp-ring circle{stroke-width:2.6}
+.sc-summit .sm-ring .sp-ring .ar{transition:stroke-dashoffset 1s var(--out)}
+.sc-summit .sm-h{margin-top:26px;font-size:60px;letter-spacing:-.035em}
+.sc-summit .sm-line{margin-top:14px;font:400 19px/1.35 var(--sans);letter-spacing:-.018em;color:var(--tx-2);text-wrap:balance}
+.sc-summit .sm-line b{font-weight:500;color:var(--tx)}
+.sc-summit .sm-sub{margin-top:12px;font:400 15px/1.45 var(--sans);color:var(--tx-2);max-width:390px;text-wrap:pretty}
+.sc-summit .sm-go{margin-top:28px;height:52px;border-radius:17px}
+.sc-summit .sm-h,.sc-summit .sm-line,.sc-summit .sm-sub,.sc-summit .sm-go{opacity:0;transform:translateY(12px);transition:opacity .6s var(--ease),transform .8s var(--spring)}
+.sc-summit .sm-box.on .sm-h{opacity:1;transform:none}
+.sc-summit .sm-box.on .sm-line{opacity:1;transform:none;transition-delay:.12s}
+.sc-summit .sm-box.on .sm-sub{opacity:1;transform:none;transition-delay:.9s}
+.sc-summit .sm-box.on .sm-go{opacity:1;transform:none;transition-delay:1.3s}
+.sc-summit .sm-fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+
+</style>
+</head>
+<body>
+<script>window.SP_ASSET_BASE='zero-world-map-assets-b1/';window.SP_BUILD='b1';</script>
+<script>
+/* data.js */
+/* ZERO skill path · the system, as data.
+   One source of truth so every screen agrees. Change a number here and the whole flow follows.
+
+   THE CHAIN (the only thing a learner has to hold in their head):
+     the job you want is locked  ->  it opens at a level  ->  skill points raise your level
+     ->  scenarios pay skill points  ->  every level opens real roles on the way.
+
+   THE RULES
+     1. One currency: skill points. They are paid for the quality of graded work, never for time or logins.
+     2. One headline number: your level. 1,000 skill points is a level. Always.
+     3. A scenario pays up to 1,600. "Meeting Expectations" lands near 1,000, so one solid scenario is about one level.
+        (Same order of size as today's XP awards, so the awards keep their scale and only the level curve changes.)
+     4. Every level opens at least one real role. A level with nothing behind it does not exist.
+     5. The job you want sits at a level like every other role. Nothing else is needed to open it.
+     6. Nobody starts at zero: onboarding counts.
+     7. Zero never applies without a yes.
+   Scenario titles, roles, pay and points here are stand-ins for the prototype. The structure is the proposal. */
+(function () {
+  'use strict';
+
+  var PER_LEVEL = 1000, SCENARIO_MAX = 1600, PACE = 1000, START = 250;
+
+  /* the five skills a product designer is hired on. Every scenario pays into three of them. */
+  var SKILLS = {
+    research: { name: 'User research',      can: 'Finds the real problem before drawing anything' },
+    ix:       { name: 'Interaction design', can: 'Turns a problem into a flow people finish' },
+    visual:   { name: 'Visual design',      can: 'Makes the screen clear at a glance' },
+    product:  { name: 'Product thinking',   can: 'Ties a design to a number the business cares about' },
+    story:    { name: 'Storytelling',       can: 'Presents the work and holds up under questions' }
+  };
+
+  /* where things stand on the city, in percent of the map image */
+  var PLACE = {
+    zero:      [49.4, 51.0],
+    airbnb:    [56.5, 65.2], uber:   [53.5, 71.4], stripe:  [63.4, 76.4], spacex:   [69.4, 66.6],
+    spotify:   [63.2, 60.9], nintendo: [62.4, 57.4], netflix: [63.5, 47.3], meta:   [66.3, 44.5],
+    tesla:     [63.4, 36.4], doordash: [53.6, 35.3],
+    apple:     [54.2, 45.0], google: [41.6, 34.8], microsoft: [45.7, 44.6], amazon: [41.6, 47.9],
+    openai:    [42.8, 57.2], samsung: [46.2, 57.3]
+  };
+  /* where the card for the job you want hangs, and on which side of that point: above a roof, or below the Apple lawn */
+  var ROOF = { apple: [54.2, 45.0, 'b'], google: [39.5, 29.8, 't'], microsoft: [44.3, 35.0, 't'], amazon: [38.5, 41.4, 't'], openai: [40.5, 57.5, 't'], samsung: [45.3, 56.4, 't'] };
+  /* the middle of that building, where the light stands */
+  var HEART = { apple: [54.6, 41.0], google: [39.5, 33.2], microsoft: [44.4, 40.4], amazon: [38.6, 46.4], openai: [40.6, 63.0], samsung: [45.4, 61.6] };
+  /* the pool of light a building stands in when it is yours: centre x, centre y, radius x, radius y, in percent of the map */
+  var SPOT = {
+    airbnb: [55.9, 60.4, 4.6, 6.2], uber: [53.5, 66.6, 3.2, 6.0], stripe: [66.3, 71.2, 3.8, 6.6], spacex: [70.7, 60.6, 4.6, 6.0],
+    spotify: [64.6, 57.8, 3.2, 3.8], nintendo: [61.2, 52.8, 3.0, 5.6], netflix: [62.4, 41.6, 2.9, 6.6], meta: [68.0, 41.4, 4.2, 4.8],
+    tesla: [63.4, 32.2, 2.8, 6.0], doordash: [55.2, 32.3, 4.4, 4.6],
+    apple: [54.6, 40.4, 4.6, 5.2], google: [39.6, 32.4, 3.9, 4.6], microsoft: [44.4, 39.6, 4.4, 5.6], amazon: [38.6, 45.4, 4.4, 5.4],
+    openai: [40.6, 62.0, 3.0, 6.4], samsung: [45.4, 60.8, 3.8, 5.0], zero: [49.4, 50.8, 6.0, 7.2]
+  };
+  /* which side of its stop a company's name hangs on */
+  var SIDE = { airbnb: 'b', uber: 'l', stripe: 'b', spacex: 'r', spotify: 'r', nintendo: 'l', netflix: 'r', meta: 'r', tesla: 'r', doordash: 't' };
+  /* the road bends through these points so it runs along the streets, not across a building */
+  var W1 = [[51.4, 36.4], [49.7, 38.6], [49.5, 42.4]];
+  var VIA = {
+    'airbnb>uber':      [[55.2, 68.4]],
+    'uber>stripe':      [[56.6, 69.4], [58.6, 68.6], [61.2, 71.2], [63.2, 73.6]],
+    'stripe>spacex':    [[66.4, 78.4], [69.4, 76.2], [70.2, 72.2], [69.7, 69.2]],
+    'spacex>spotify':   [[67.6, 66.7], [65.4, 64.5], [63.7, 62.6]],
+    'spotify>nintendo': [[62.5, 59.4]],
+    'nintendo>netflix': [[63.3, 54.8], [63.9, 51.4], [63.9, 48.9]],
+    'netflix>meta':     [[65.0, 46.4]],
+    'meta>tesla':       [[64.7, 42.7], [64.2, 40.0], [63.9, 38.0]],
+    'tesla>doordash':   [[60.8, 36.7], [58.4, 36.5], [56.0, 36.2]],
+    'doordash>apple':     [[51.7, 36.3], [50.9, 38.6], [50.9, 41.8], [52.0, 44.2]],
+    'doordash>google':    [[51.4, 36.2], [49.7, 34.4], [49.5, 31.2], [47.3, 30.0], [45.2, 31.2], [43.3, 33.2]],
+    'doordash>microsoft': W1.concat([[48.9, 45.4], [47.3, 46.1]]),
+    'doordash>amazon':    W1.concat([[48.6, 45.6], [45.6, 45.9], [43.2, 46.6]]),
+    'doordash>samsung':   W1.concat([[48.2, 45.8], [45.6, 48.2], [44.3, 51.6], [44.6, 55.0]]),
+    'doordash>openai':    W1.concat([[48.2, 45.8], [45.4, 48.0], [43.6, 51.6], [43.0, 54.8]])
+  };
+
+  /* the scenarios, in the order the road runs. Problems mirror Zero's real catalogue, seen from a designer's seat. */
+  var SCENARIOS = [
+    { id: 's1',  co: 'airbnb',   title: 'Fewer Host Cancellations',      ask: 'Redesign how a host cancels, so fewer of them do.',             skills: ['research', 'ix', 'story'],     mins: 90 },
+    { id: 's2',  co: 'uber',     title: 'The Fare, Explained',           ask: 'Make the price breakdown something a rider trusts.',            skills: ['product', 'visual', 'ix'],     mins: 75 },
+    { id: 's3',  co: 'stripe',   title: 'First Payment in Five Minutes', ask: 'Get a new business from signup to its first charge.',           skills: ['ix', 'product', 'story'],      mins: 100 },
+    { id: 's4',  co: 'spacex',   title: 'Online in Ten Minutes',         ask: 'Take a new Starlink customer from the box to online.',          skills: ['research', 'ix', 'visual'],    mins: 90 },
+    { id: 's5',  co: 'spotify',  title: 'Week One on Spotify',           ask: 'Find why new listeners leave in week one, and design the fix.', skills: ['research', 'product', 'story'], mins: 110 },
+    { id: 's6',  co: 'nintendo', title: 'The Family Checkout',           ask: 'Let a parent approve a purchase in one tap.',                   skills: ['ix', 'visual', 'research'],    mins: 80 },
+    { id: 's7',  co: 'netflix',  title: 'Downloads Worth Opening',       ask: 'Recommend what to watch when there is no signal.',              skills: ['ix', 'visual', 'product'],     mins: 100 },
+    { id: 's8',  co: 'meta',     title: 'The Group Invite',              ask: 'Cut spam invites without hiding the real ones.',                skills: ['research', 'product', 'ix'],   mins: 95 },
+    { id: 's9',  co: 'tesla',    title: 'Planning a Charging Stop',      ask: 'Design the in-car flow for a stop the driver did not plan.',    skills: ['ix', 'research', 'visual'],    mins: 110 },
+    { id: 's10', co: 'doordash', title: 'Where Is My Order',             ask: 'Rebuild the tracking screen around a promise you can keep.',    skills: ['product', 'visual', 'story'],  mins: 120 }
+  ];
+
+  var CO = {
+    apple: 'Apple', google: 'Google', microsoft: 'Microsoft', amazon: 'Amazon', openai: 'OpenAI', samsung: 'Samsung',
+    airbnb: 'Airbnb', uber: 'Uber', stripe: 'Stripe', figma: 'Figma', duolingo: 'Duolingo', notion: 'Notion',
+    spotify: 'Spotify', netflix: 'Netflix', tesla: 'Tesla', doordash: 'DoorDash', spacex: 'SpaceX', nintendo: 'Nintendo',
+    shopify: 'Shopify', canva: 'Canva', klarna: 'Klarna', monzo: 'Monzo', intercom: 'Intercom', linear: 'Linear',
+    pinterest: 'Pinterest', dropbox: 'Dropbox', wise: 'Wise', nike: 'Nike', meta: 'Meta', zero: 'Zero'
+  };
+  /* brand colour behind a white mark, for the small logo tiles */
+  var TINT = {
+    apple: '#111113', google: '#4285F4', microsoft: '#FFFFFF', amazon: '#FF9900', openai: '#111113', samsung: '#1428A0',
+    airbnb: '#FF385C', uber: '#111113', stripe: '#635BFF', figma: '#1E1E1E', duolingo: '#58CC02', notion: '#FFFFFF',
+    spotify: '#1ED760', netflix: '#111113', tesla: '#E82127', doordash: '#FF3008', spacex: '#111113', nintendo: '#E60012',
+    shopify: '#7AB55C', canva: '#00C4CC', klarna: '#FFB3C7', monzo: '#14233C', intercom: '#111113', linear: '#5E6AD2',
+    pinterest: '#BD081C', dropbox: '#0061FF', wise: '#9FE870', nike: '#111113', meta: '#0467DF'
+  };
+  var INK = { microsoft: 1, notion: '#111113', klarna: '#17120F', wise: '#163300', spotify: '#111113', netflix: '#E50914' };
+
+  /* the companies a learner can aim at. They come from the vision board made in onboarding, so nothing is asked twice. */
+  var DREAMS = ['apple', 'google', 'microsoft', 'amazon', 'openai', 'samsung'];
+
+  /* the rungs at the company you want. Pick one: that is the job the whole path points at. */
+  var RUNGS = [
+    { id: 'intern', title: 'Product Design Intern',   level: 3,  pay: '$46 an hour',        band: 'Internship' },
+    { id: 'junior', title: 'Junior Product Designer', level: 6,  pay: '$104,000 to 126,000', band: 'Junior' },
+    { id: 'mid',    title: 'Product Designer',        level: 10, pay: '$138,000 to 182,000', band: 'Mid level' },
+    { id: 'senior', title: 'Senior Product Designer', level: 16, pay: '$185,000 to 250,000', band: 'Senior' }
+  ];
+
+  /* real roles that open on the way, by level. `from` names the scenario that makes the match obvious. */
+  var ROLES = [
+    { id: 'r-duo',   co: 'duolingo',  title: 'Product Design Intern',          level: 1,  loc: 'Pittsburgh',     mode: 'On site',  pay: '$38 an hour',          posted: '2d', applicants: 41 },
+    { id: 'r-shop',  co: 'shopify',   title: 'UX Apprentice',                  level: 1,  loc: 'Remote',         mode: 'Remote',   pay: '$32 an hour',          posted: '5d', applicants: 63 },
+    { id: 'r-notn',  co: 'notion',    title: 'Product Design Intern',          level: 2,  loc: 'San Francisco',  mode: 'Hybrid',   pay: '$45 an hour',          posted: '1d', applicants: 58 },
+    { id: 'r-canva', co: 'canva',     title: 'Design Intern, Growth',          level: 2,  loc: 'Remote',         mode: 'Remote',   pay: '$36 an hour',          posted: '6d', applicants: 77 },
+    { id: 'r-klar',  co: 'klarna',    title: 'Junior Product Designer',        level: 3,  loc: 'New York',       mode: 'Hybrid',   pay: '$72,000 to 84,000',    posted: '3d', applicants: 34 },
+    { id: 'r-monzo', co: 'monzo',     title: 'Junior Product Designer',        level: 4,  loc: 'Remote',         mode: 'Remote',   pay: '$78,000 to 90,000',    posted: '4d', applicants: 52 },
+    { id: 'r-inter', co: 'intercom',  title: 'Associate Product Designer',     level: 4,  loc: 'San Francisco',  mode: 'Hybrid',   pay: '$85,000 to 98,000',    posted: '2d', applicants: 29 },
+    { id: 'r-lin',   co: 'linear',    title: 'Product Designer, Early Career', level: 5,  loc: 'Remote',         mode: 'Remote',   pay: '$95,000 to 110,000',   posted: '1d', applicants: 88 },
+    { id: 'r-pin',   co: 'pinterest', title: 'Associate Product Designer',     level: 5,  loc: 'San Francisco',  mode: 'Hybrid',   pay: '$98,000 to 115,000',   posted: '8d', applicants: 46 },
+    { id: 'r-drop',  co: 'dropbox',   title: 'Product Designer I',             level: 6,  loc: 'Remote',         mode: 'Remote',   pay: '$105,000 to 125,000',  posted: '3d', applicants: 37 },
+    { id: 'r-figma', co: 'figma',     title: 'Product Designer',               level: 7,  loc: 'New York',       mode: 'Hybrid',   pay: '$128,000 to 150,000',  posted: '2d', applicants: 94 },
+    { id: 'r-wise',  co: 'wise',      title: 'Product Designer',               level: 7,  loc: 'New York',       mode: 'Hybrid',   pay: '$115,000 to 135,000',  posted: '5d', applicants: 31 },
+    { id: 'r-air',   co: 'airbnb',    title: 'Experience Designer',            level: 8,  loc: 'San Francisco',  mode: 'Hybrid',   pay: '$135,000 to 160,000',  posted: '1d', applicants: 120 },
+    { id: 'r-strp',  co: 'stripe',    title: 'Product Designer',               level: 8,  loc: 'Remote',         mode: 'Remote',   pay: '$140,000 to 170,000',  posted: '4d', applicants: 73 },
+    { id: 'r-spot',  co: 'spotify',   title: 'Product Designer II',            level: 9,  loc: 'New York',       mode: 'Hybrid',   pay: '$135,000 to 165,000',  posted: '6d', applicants: 66 },
+    { id: 'r-uber',  co: 'uber',      title: 'Product Designer II',            level: 9,  loc: 'San Francisco',  mode: 'Hybrid',   pay: '$140,000 to 172,000',  posted: '2d', applicants: 58 },
+    { id: 'r-nflx',  co: 'netflix',   title: 'Product Designer',               level: 10, loc: 'Los Gatos',      mode: 'Hybrid',   pay: '$150,000 to 210,000',  posted: '3d', applicants: 140 },
+    { id: 'r-drop2', co: 'dropbox',   title: 'Senior Product Designer',        level: 11, loc: 'Remote',         mode: 'Remote',   pay: '$155,000 to 188,000',  posted: '7d', applicants: 44 },
+    { id: 'r-nike',  co: 'nike',      title: 'Senior Product Designer',        level: 12, loc: 'Portland',       mode: 'Hybrid',   pay: '$160,000 to 195,000',  posted: '9d', applicants: 52 },
+    { id: 'r-fig2',  co: 'figma',     title: 'Senior Product Designer',        level: 13, loc: 'San Francisco',  mode: 'Hybrid',   pay: '$172,000 to 215,000',  posted: '3d', applicants: 131 },
+    { id: 'r-meta',  co: 'meta',      title: 'Senior Product Designer',        level: 14, loc: 'New York',       mode: 'Hybrid',   pay: '$178,000 to 230,000',  posted: '4d', applicants: 110 },
+    { id: 'r-spot2', co: 'spotify',   title: 'Senior Product Designer',        level: 15, loc: 'New York',       mode: 'Hybrid',   pay: '$180,000 to 232,000',  posted: '5d', applicants: 87 }
+  ];
+
+  /* what a level means to someone hiring. One line a recruiter can read. */
+  var BANDS = [
+    { from: 1,  to: 3,  name: 'Internships',  can: 'Has shipped a full design case, reviewed by a manager.' },
+    { from: 4,  to: 6,  name: 'Junior roles', can: 'Runs research, designs the flow and defends it, more than once.' },
+    { from: 7,  to: 10, name: 'Mid level',    can: 'Owns a problem end to end across different products.' },
+    { from: 11, to: 16, name: 'Senior',       can: 'Sets direction and brings others along.' }
+  ];
+
+  /* the first scenario, graded. Used by the earn, review and level-up screens. */
+  var RESULT = {
+    scenario: 's1', band: 'Meeting Expectations', earned: 1050, max: SCENARIO_MAX,
+    bySkill: [
+      { skill: 'research', pts: 420, max: 520, why: 'You found the real cause: calendar conflicts, 46% of cancellations.' },
+      { skill: 'ix',       pts: 360, max: 600, why: 'The new cancel flow offers a swap first. Two steps still have no way back.' },
+      { skill: 'story',    pts: 270, max: 480, why: 'Clear presentation. You did not say what the fix would cost.' }
+    ],
+    left: 550, back: 200, fix: 'Add a way back on steps 2 and 4, and put a cost on the fix.'
+  };
+
+  /* the app's own performance bands, and what one scenario pays at each */
+  var PAYS = [
+    { band: 'Below Expectations',    pts: 600 },
+    { band: 'Meeting Expectations',  pts: 1000 },
+    { band: 'Exceeding Expectations', pts: 1300 },
+    { band: 'Exceptional',           pts: 1600 }
+  ];
+
+  /* the moments inside a scenario that pay, in order */
+  var EARN = [
+    { k: 'notes',   label: 'Kickoff notes',  max: 100, got: 80 },
+    { k: 'say',     label: 'Say it back',    max: 100, got: 100 },
+    { k: 'stage1',  label: 'Find the cause', max: 400, got: 320 },
+    { k: 'stage2',  label: 'Design the fix', max: 500, got: 300 },
+    { k: 'present', label: 'Present it',     max: 500, got: 250 }
+  ];
+
+  /* ---------- derived, so no screen does its own maths ---------- */
+  function fmt(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+  function level(pts) { return Math.floor(pts / PER_LEVEL); }
+  function into(pts) { return pts - level(pts) * PER_LEVEL; }              // points into the current level
+  function toNext(pts) { return PER_LEVEL - into(pts); }                   // points to the next level
+  function at(lv) { return lv * PER_LEVEL; }                               // points a level sits at
+  function scenariosTo(lv, pts) { return Math.max(0, Math.ceil((at(lv) - pts) / PACE)); }
+  function rung(id) { return RUNGS.filter(function (r) { return r.id === id; })[0] || RUNGS[2]; }
+  function band(lv) { return BANDS.filter(function (b) { return lv >= b.from && lv <= b.to; })[0] || BANDS[BANDS.length - 1]; }
+  function scenario(id) { return SCENARIOS.filter(function (s) { return s.id === id; })[0]; }
+  /* how many scenarios stand between day one and this job: a nearer job needs fewer stops on the road */
+  function need(dream) { return Math.min(SCENARIOS.length, rung(dream.rung).level); }
+
+  /* every role on the path for this dream: the market roles plus the four rungs at the company you want */
+  function roles(dream) {
+    var mine = RUNGS.map(function (r) {
+      return { id: 'd-' + r.id, co: dream.co, title: r.title, level: r.level, loc: DLOC[dream.co] || 'Remote', mode: 'Hybrid', pay: r.pay,
+        posted: '2d', applicants: 180, dream: true, target: r.id === dream.rung };
+    });
+    return ROLES.concat(mine).sort(function (a, b) { return a.level - b.level || (a.dream ? 1 : 0) - (b.dream ? 1 : 0); });
+  }
+  var DLOC = { apple: 'Cupertino', google: 'Mountain View', microsoft: 'Redmond', amazon: 'Seattle', openai: 'San Francisco', samsung: 'Mountain View' };
+  function rolesAt(dream, lv) { return roles(dream).filter(function (r) { return r.level === lv; }); }
+  function target(dream) { return roles(dream).filter(function (r) { return r.target; })[0]; }
+  /* locked | open | applied */
+  function roleState(role, st) {
+    if ((st.applied || []).indexOf(role.id) >= 0) return 'applied';
+    return role.level <= level(st.pts) ? 'open' : 'locked';
+  }
+  /* how well the work so far backs this role, 0 to 100. Scenarios done at that company count most. */
+  function match(role, st) {
+    var done = SCENARIOS.slice(0, st.done), n = 76 + (role.id.charCodeAt(2) * 7 + role.id.charCodeAt(3)) % 9;
+    if (done.some(function (x) { return x.co === role.co; })) n += 10;
+    n += Math.min(5, Math.max(0, level(st.pts) - role.level));
+    return Math.max(70, Math.min(97, n));
+  }
+  /* the scenarios still ahead that close the gap to a locked role */
+  function gap(role, st) {
+    var n = scenariosTo(role.level, st.pts);
+    return SCENARIOS.slice(st.done, st.done + n);
+  }
+
+  /* what each scenario pays the demo learner, in order. The sums land on the moments below. */
+  var PAID = [1050, 950, 1000, 900, 1000, 1000, 950, 1030, 1000, 950];
+  var MOMENTS = {
+    day0:   { pts: START, done: 0,  applied: [] },
+    won1:   { pts: 1300,  done: 1,  applied: [] },
+    after1: { pts: 1300,  done: 1,  applied: ['r-duo', 'r-shop'] },
+    mid:    { pts: 6150,  done: 6,  applied: ['r-duo', 'r-shop', 'r-notn', 'r-klar', 'd-intern', 'r-monzo', 'r-lin'] },
+    summit: { pts: 10080, done: 10, applied: ['r-duo', 'r-shop', 'r-notn', 'r-klar', 'd-intern', 'r-monzo', 'r-lin', 'r-drop', 'd-junior', 'r-figma', 'r-air', 'r-spot'] }
+  };
+
+  window.SP_DATA = {
+    MOMENTS: MOMENTS, PAID: PAID,
+    PER_LEVEL: PER_LEVEL, SCENARIO_MAX: SCENARIO_MAX, PACE: PACE, START: START,
+    SKILLS: SKILLS, PLACE: PLACE, ROOF: ROOF, HEART: HEART, SPOT: SPOT, SIDE: SIDE, VIA: VIA, SCENARIOS: SCENARIOS, CO: CO, TINT: TINT, INK: INK, DREAMS: DREAMS, RUNGS: RUNGS,
+    ROLES: ROLES, BANDS: BANDS, RESULT: RESULT, EARN: EARN, PAYS: PAYS, DLOC: DLOC,
+    learner: { name: 'Sanjay', family: 'Product Designer', city: 'New York' },
+    fmt: fmt, level: level, into: into, toNext: toNext, at: at, scenariosTo: scenariosTo, rung: rung, band: band, scenario: scenario, need: need,
+    roles: roles, rolesAt: rolesAt, target: target, roleState: roleState, match: match, gap: gap
+  };
+})();
+
+/* wordmark.js */
+/* The Zero wordmark, exactly as the app and the onboarding draw it. Takes the colour of its parent. */
+window.ZT_WORDMARK = "<svg viewBox=\"0 0 333 96\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" aria-hidden=\"true\"><path d=\"M283.572 95.9991C274.465 95.9991 266.219 93.8453 258.834 89.5377C251.45 85.2301 245.604 79.4456 241.296 72.1842C236.988 64.9228 234.834 56.9229 234.834 48.1846C234.834 39.3232 236.988 31.3234 241.296 24.185C245.604 17.0467 251.45 11.3237 258.834 7.0161C266.219 2.70849 274.465 0.554688 283.572 0.554688C292.926 0.554688 301.233 2.70849 308.495 7.0161C315.879 11.3237 321.664 17.1082 325.848 24.3696C330.156 31.508 332.31 39.4463 332.31 48.1846C332.31 56.9229 330.156 64.9228 325.848 72.1842C321.664 79.4456 315.879 85.2301 308.495 89.5377C301.11 93.8453 292.803 95.9991 283.572 95.9991ZM283.572 75.8764C288.864 75.8764 293.541 74.6457 297.603 72.1842C301.664 69.5996 304.864 66.2151 307.202 62.0305C309.664 57.846 310.895 53.2922 310.895 48.3692C310.895 43.3232 309.664 38.7079 307.202 34.5233C304.864 30.3388 301.664 27.0158 297.603 24.5543C293.541 21.9697 288.864 20.6774 283.572 20.6774C278.403 20.6774 273.726 21.9697 269.542 24.5543C265.48 27.0158 262.219 30.3388 259.757 34.5233C257.419 38.7079 256.249 43.3232 256.249 48.3692C256.249 53.2922 257.419 57.846 259.757 62.0305C262.219 66.2151 265.48 69.5996 269.542 72.1842C273.726 74.6457 278.403 75.8764 283.572 75.8764Z\" fill=\"currentColor\"/><path d=\"M204.893 93.7845H183.478V32.6502C183.478 16.2581 196.767 2.96973 213.159 2.96973H237.939V23.8309H212.313C208.215 23.8309 204.893 27.153 204.893 31.251V93.7845Z\" fill=\"currentColor\"/><path d=\"M132.213 95.9983C122.982 95.9983 114.675 93.9676 107.29 89.9061C99.9058 85.7216 94.0598 79.9986 89.7522 72.7372C85.5676 65.4758 83.4753 57.1067 83.4753 47.6299C83.4753 39.0147 85.383 31.0764 89.1983 23.815C93.1367 16.5536 98.6135 10.769 105.629 6.46142C112.644 2.15381 120.767 0 129.998 0C139.351 0 147.351 2.09227 153.997 6.27681C160.643 10.3383 165.751 15.8151 169.32 22.7073C173.012 29.5995 174.858 37.2301 174.858 45.5992V53.1683H100.275L103.967 46.153C103.598 52.0606 104.583 57.3528 106.921 62.0297C109.26 66.7065 112.583 70.3988 116.89 73.1064C121.198 75.814 126.244 77.1679 132.028 77.1679C137.444 77.1679 142.305 75.9987 146.613 73.6602C151.043 71.1987 154.489 67.6296 156.951 62.9527L173.381 71.4449C169.443 79.3217 163.905 85.4139 156.766 89.7215C149.628 93.906 141.444 95.9983 132.213 95.9983ZM105.075 40.2454H153.443C153.074 36.0609 151.843 32.3687 149.751 29.1687C147.782 25.9688 145.074 23.5073 141.628 21.7842C138.182 19.9381 134.244 19.015 129.813 19.015C125.259 19.015 121.198 19.9996 117.629 21.9688C114.182 23.815 111.413 26.338 109.321 29.5379C107.229 32.7379 105.813 36.3071 105.075 40.2454Z\" fill=\"currentColor\"/><path d=\"M78.8426 93.7823H20.6897C13.9206 93.7823 8.75149 92.0592 5.18233 88.6132C1.73623 85.044 0.0131865 81.0441 0.0131865 76.6134C-0.109888 72.675 0.628561 69.2904 2.22853 66.4597C3.8285 63.629 6.41307 61.0444 9.98224 58.706L55.766 26.2143C56.7506 25.3527 57.2429 24.4297 57.2429 23.4451C57.2429 22.5836 56.9353 22.0297 56.3199 21.7836C55.8276 21.4143 55.2122 21.2297 54.4738 21.2297H2.41314V2.95312H58.9045C65.6736 2.95312 70.7812 4.73771 74.2273 8.30687C77.7964 11.753 79.581 15.6914 79.581 20.1221C79.581 24.0604 78.781 27.445 77.1811 30.2757C75.7042 33.1064 73.1811 35.691 69.612 38.0294L23.8282 70.7058C22.7205 71.4442 22.1666 72.3673 22.1666 73.475C22.1666 74.2134 22.4128 74.7672 22.9051 75.1365C23.5205 75.3826 24.1974 75.5057 24.9358 75.5057H78.8426V93.7823Z\" fill=\"currentColor\"/></svg>";
+
+/* core.js */
+/* ZERO skill path · the engine.
+   A 1600 x 840 canvas scaled to fit, one persistent city under the screens, the chrome that stays put
+   (wordmark, the Learn / Jobs rail, the level pill) and a review key bottom right for stepping through.
+   Screens are plain functions that draw from SP.state, so any screen can be opened at any moment of the story. */
+(function () {
+  'use strict';
+  var D = window.SP_DATA, W = 1600, H = 840;
+  var BASE = window.SP_ASSET_BASE || '../assets/';
+  var root, stage, mapEl, cam, layer, screensEl, pill, rail, tabs, help, dev;
+  var defs = {}, steps = [], cur = null, curStep = null, timers = [];
+
+  var I = {
+    lock: '<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.1" y="6.3" width="7.8" height="5.7" rx="1.7"/><path d="M4.9 6.3V4.6a2.1 2.1 0 014.2 0v1.7"/></svg>',
+    tick: '<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.4l2.6 2.6L11 4.6"/></svg>',
+    star: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .6c.5 3.9 2.9 6.3 7.4 7.4-4.5 1.100-6.9 3.500-7.4 7.400C7.500 11.500 5.100 9.100.6 8 5.100 6.900 7.500 4.500 8 .6z" fill="currentColor"/></svg>',
+    arrow: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>',
+    back: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 8H3M7 4L3 8l4 4"/></svg>',
+    left: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5L5.500 8l4.500 4.500"/></svg>',
+    right: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5L10.500 8 6 12.500"/></svg>',
+    close: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>',
+    menu: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M3 5h10M3 8h10M3 11h10"/></svg>',
+    learn: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="7.2"/><path d="M12.900 7.100l-1.500 4.300-4.300 1.500 1.500-4.300z"/></svg>',
+    jobs: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.400" y="6.600" width="13.200" height="9.600" rx="2.400"/><path d="M7.400 6.600V5.500a1.700 1.700 0 011.700-1.700h1.800a1.700 1.700 0 011.700 1.700v1.100M3.400 11h13.200"/></svg>',
+    send: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2L7.300 8.700M14 2L9.700 14l-2.400-5.300L2 6.300z"/></svg>',
+    clock: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="5.800"/><path d="M8 4.800V8l2.100 1.400"/></svg>',
+    play: '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M5 3.200v9.600L13 8z"/></svg>',
+    pin: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.500" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 14.200s4.400-3.900 4.400-7.300a4.400 4.400 0 10-8.800 0c0 3.400 4.400 7.300 4.400 7.300z"/><circle cx="8" cy="6.800" r="1.600"/></svg>',
+    eye: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.500" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.600 8S4 3.600 8 3.600 14.400 8 14.400 8 12 12.400 8 12.400 1.600 8 1.600 8z"/><circle cx="8" cy="8" r="1.900"/></svg>',
+    doc: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.500" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2.200h5.200L12 5v8.800H4z"/><path d="M9.200 2.200V5H12M6 8h4M6 10.600h4"/></svg>',
+    cal: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.500" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.400" y="3.400" width="11.200" height="10" rx="2"/><path d="M2.400 6.600h11.200M5.400 2v2.400M10.600 2v2.400"/></svg>'
+  };
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function asset(p) { return BASE + p; }
+
+  /* a company mark on its own colour */
+  function logo(co, z, cls) {
+    var c = D.TINT[co] || '#111113', ink = D.INK[co], light = /^#(fff|ffb3c7|9fe870|1ed760)/i.test(c);
+    var inner = co === 'microsoft'
+      ? '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="1" y="1" width="8.400" height="8.400" fill="#F25022"/><rect x="10.600" y="1" width="8.400" height="8.400" fill="#7FBA00"/><rect x="1" y="10.600" width="8.400" height="8.400" fill="#00A4EF"/><rect x="10.600" y="10.600" width="8.400" height="8.400" fill="#FFB900"/></svg>'
+      : '<i style="--u:url(' + asset('logo/' + co + '.svg') + ')' + (typeof ink === 'string' ? ';--m:' + ink : '') + '"></i>';
+    return '<span class="sp-lg' + (light ? ' lightc' : '') + (cls ? ' ' + cls : '') + '" style="--z:' + (z || 32) + 'px;--c:' + c + '" title="' + esc(D.CO[co] || co) + '">' + inner + '</span>';
+  }
+  function star(z) { return '<span class="sp-star" style="--z:' + (z || 14) + 'px">' + I.star + '</span>'; }
+  function ring(lv, frac, z) {
+    return '<span class="sp-ring" style="--z:' + (z || 38) + 'px;--p:' + Math.max(0, Math.min(1, frac)) + '"><svg viewBox="0 0 40 40"><circle class="tr" cx="20" cy="20" r="17" pathLength="100"/><circle class="ar" cx="20" cy="20" r="17" pathLength="100"/></svg><b>' + lv + '</b></span>';
+  }
+  function lock(z) { return '<span class="sp-lock" style="--z:' + (z || 26) + 'px">' + I.lock + '</span>'; }
+  function tick(z) { return '<span class="sp-tick" style="--z:' + (z || 26) + 'px">' + I.tick + '</span>'; }
+
+  /* ---------- state ---------- */
+  var state = { dream: { co: 'apple', rung: 'mid' }, pts: D.START, done: 0, applied: [], moment: 'day0' };
+  function setMoment(m) {
+    var M = D.MOMENTS[m]; if (!M) return;
+    state.moment = m; state.pts = M.pts; state.done = M.done; state.applied = M.applied.slice();
+  }
+
+  /* ---------- the city ---------- */
+  var map = { v: { cx: 60, cy: 55, s: 1.7, fx: .5, fy: .5 }, opts: null };
+  function px(p) { return [p[0] / 100 * W, p[1] / 100 * 900]; }
+  function r1(n) { return Math.round(n * 10) / 10; }
+  function spline(P, a, b) {
+    var K = .17, d = 'M' + r1(P[a][0]) + ' ' + r1(P[a][1]);
+    for (var i = a; i < b; i++) {
+      var p0 = P[Math.max(0, i - 1)], p1 = P[i], p2 = P[i + 1], p3 = P[Math.min(P.length - 1, i + 2)];
+      d += 'C' + r1(p1[0] + (p2[0] - p0[0]) * K) + ' ' + r1(p1[1] + (p2[1] - p0[1]) * K) + ' ' +
+        r1(p2[0] - (p3[0] - p1[0]) * K) + ' ' + r1(p2[1] - (p3[1] - p1[1]) * K) + ' ' + r1(p2[0]) + ' ' + r1(p2[1]);
+    }
+    return d;
+  }
+  /* move the camera. cx, cy = the point of the city (in percent) that sits at fx, fy of the canvas. s = zoom. */
+  map.view = function (v, ms) {
+    v = Object.assign({}, map.v, v);
+    var tx = v.fx * W - v.cx / 100 * W * v.s, ty = v.fy * H - v.cy / 100 * 900 * v.s, B = 70;
+    tx = Math.min(-B, Math.max(W + B - W * v.s, tx)); ty = Math.min(-B, Math.max(H + B - 900 * v.s, ty));
+    map.v = v;
+    cam.style.setProperty('--cam', (ms == null ? 1400 : ms) + 'ms');
+    cam.style.setProperty('--s', v.s);
+    cam.style.transform = 'translate(' + r1(tx) + 'px,' + r1(ty) + 'px) scale(' + v.s + ')';
+    map.t = { tx: tx, ty: ty, s: v.s };
+  };
+  /* frame a set of points (percent) inside a zone of the canvas (px) */
+  map.fit = function (pts, zone, ms, max) {
+    var x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+    pts.forEach(function (p) { x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]); });
+    var s = Math.min(zone.w / ((x1 - x0) / 100 * W), zone.h / ((y1 - y0) / 100 * 900), max || 2.4);
+    s = Math.max(1.12, s);
+    map.view({ cx: (x0 + x1) / 2, cy: (y0 + y1) / 2, s: s, fx: (zone.x + zone.w / 2) / W, fy: (zone.y + zone.h / 2) / H }, ms);
+  };
+  /* where a point of the city is on the canvas right now (after the camera has settled) */
+  map.at = function (p) { var t = map.t; return [p[0] / 100 * W * t.s + t.tx, p[1] / 100 * 900 * t.s + t.ty]; };
+  /* every point the road for this dream touches, for framing */
+  map.points = function (dream, withDream) {
+    var a = D.SCENARIOS.map(function (s) { return D.PLACE[s.co]; });
+    D.SCENARIOS.forEach(function (s, i) { if (i) (D.VIA[D.SCENARIOS[i - 1].co + '>' + s.co] || []).forEach(function (v) { a.push(v); }); });
+    if (withDream !== false) {
+      a.push(D.PLACE[dream.co]); var rf = D.ROOF[dream.co]; a.push([rf[0], rf[1] + (rf[2] === 'b' ? 5 : -5)]);
+      (D.VIA['doordash>' + dream.co] || []).forEach(function (v) { a.push(v); });
+    }
+    return a;
+  };
+  /* draw what stands on the city.
+     o = { dream, done, road, stops, chips: 'none'|'now'|'next'|'all', dest: 'none'|'locked'|'open', reveal, beam, level } */
+  /* the road as points on the plane, and where each stop sits in that list */
+  function route(dream) {
+    var SC = D.SCENARIOS, P = [], at = [];
+    SC.forEach(function (s, i) {
+      if (i) (D.VIA[SC[i - 1].co + '>' + s.co] || []).forEach(function (v) { P.push(px(v)); });
+      at.push(P.length); P.push(px(D.PLACE[s.co]));
+    });
+    var end = P.length - 1;
+    (D.VIA[SC[SC.length - 1].co + '>' + dream.co] || []).forEach(function (v) { P.push(px(v)); });
+    P.push(px(D.PLACE[dream.co]));
+    return { P: P, at: at, end: end, last: P.length - 1 };
+  }
+  /* a building in full colour over the resting city: a soft pool of light that can also be hovered and pressed */
+  function glow(co, cls, attrs) {
+    var sp = D.SPOT[co]; if (!sp) return '';
+    var w = sp[2] * 2.7, h = sp[3] * 2.7, x = sp[0] - w / 2, y = sp[1] - h / 2;
+    return '<div class="mp-glow ' + (cls || '') + '" data-co="' + co + '"' + (attrs || '') + ' style="left:' + r1(x) + '%;top:' + r1(y) + '%;width:' + r1(w) + '%;height:' + r1(h) + '%"><i style="background-size:' +
+      r1(10000 / w) + '% ' + r1(10000 / h) + '%;background-position:' + r1(x / (100 - w) * 100) + '% ' + r1(y / (100 - h) * 100) + '%"></i></div>';
+  }
+  /* draw what stands on the city.
+     o = { dream, done, road, stops, chips: 'none'|'now'|'next'|'all', dest: 'none'|'locked'|'open', reveal, beam, roles,
+           focus (rest the city so only your buildings are in colour), you (the marker that stands on the current stop),
+           litDream (light the building of the job you want), still (no entrance, for a redraw in place) } */
+  map.draw = function (o) {
+    o = Object.assign({ dream: state.dream, done: state.done, road: true, stops: true, chips: 'now', dest: 'locked', reveal: false, beam: false, roles: false,
+      focus: true, you: false, litDream: false, still: false }, o || {});
+    map.opts = o;
+    var SC = D.SCENARIOS, R = route(o.dream), P = R.P, at = R.at, last = R.last, html = '', uid = 'mp-m' + Date.now();
+    var open = o.dest === 'open', lv = D.level(state.pts);
+    /* a nearer job needs fewer stops: the line past the last one is the gold leg to the building */
+    var need = D.need(o.dream), end = at[need - 1];
+    /* the pools of light come first, so the road and the pins sit over them */
+    if (o.focus) {
+      if (o.stops) SC.forEach(function (s, i) { if (i < need) html += glow(s.co, i <= o.done ? 'lit' : '', ' data-i="' + i + '"'); });
+      html += glow(o.dream.co, 'dream' + (open || o.litDream ? ' lit' : ''), ' data-dream="1"');
+    }
+    if (o.road) {
+      var full = spline(P, 0, last), walkedTo = o.done > 0 ? at[Math.min(o.done, need - 1)] : 0;
+      if (o.done >= need) walkedTo = last;
+      html += '<svg class="mp-road' + (o.reveal ? '' : ' inst') + '" viewBox="0 0 ' + W + ' 900"><defs><mask id="' + uid + '" maskUnits="userSpaceOnUse" x="0" y="0" width="' + W + '" height="900"><path class="rev" pathLength="1" d="' + full + '"/></mask></defs>' +
+        '<g mask="url(#' + uid + ')"><path class="case" d="' + full + '"/>' +
+        '<path class="ahead" d="' + spline(P, 0, end) + '"/>' +
+        '<path class="last" d="' + spline(P, end, last) + '"/>' +
+        (walkedTo > 0 ? '<path class="walked" d="' + spline(P, 0, walkedTo) + '"/>' : '') +
+        '</g></svg>';
+    }
+    if (o.stops) {
+      SC.forEach(function (s, i) {
+        if (i >= need) return;
+        var p = D.PLACE[s.co], st = i < o.done ? 'done' : i === o.done ? 'now' : '', d = o.reveal ? (i / SC.length * 2.2).toFixed(2) : (i * .03).toFixed(2);
+        var chipOn = o.chips === 'all' || (o.chips === 'now' && i === o.done) || (o.chips === 'next' && i >= o.done && i <= o.done + 1);
+        var rl = o.roles ? D.rolesAt(o.dream, i + 1) : [];
+        html += '<div class="mp-pin" style="left:' + p[0] + '%;top:' + p[1] + '%"><div class="mp-stop ' + st + (o.you && st === 'now' ? ' under' : '') + '" data-i="' + i + '" data-co="' + s.co + '" style="--d:' + d + 's">' + (st === 'done' ? I.tick : (i + 1)) + '</div>' +
+          (rl.length ? '<div class="mp-roles ' + (D.SIDE[s.co] || 'b') + '" style="--d:' + (i * .11).toFixed(2) + 's">' + rl.map(function (r) { return logo(r.co, 24, 'round'); }).join('') + '</div>' : '') +
+          (chipOn ? '<div class="mp-chip ' + (D.SIDE[s.co] || 'b') + (i === o.done ? ' now' : ' dim') + '" data-i="' + i + '" data-co="' + s.co + '" style="--d:' + (+d + .08).toFixed(2) + 's">' + logo(s.co, 22, 'round') + '<b style="font-weight:500">' + D.CO[s.co] + '</b>' + (i === o.done && o.chips !== 'all' ? '<em>Ready</em>' : '') + '</div>' : '') + '</div>';
+      });
+      if (o.you && o.done < need) {
+        var yp = D.PLACE[SC[o.done].co];
+        html += '<div class="mp-pin mp-you-pin" style="left:' + yp[0] + '%;top:' + yp[1] + '%"><div class="mp-you" data-i="' + o.done + '" data-co="' + SC[o.done].co + '">You</div></div>';
+      }
+    }
+    var ht = D.HEART[o.dream.co];
+    if (o.beam || open) html += '<div class="mp-pin" style="left:' + ht[0] + '%;top:' + ht[1] + '%"><div class="mp-beam on' + (o.beam === 'soft' && !open ? ' soft' : '') + '"></div></div>';
+    if (o.dest !== 'none') {
+      var rf = D.ROOF[o.dream.co], rg = D.rung(o.dream.rung), segs = '';
+      for (var k = 1; k <= rg.level; k++) segs += '<i class="' + (k <= lv ? 'on' : '') + '"></i>';
+      var card = '<div class="mp-dream-card" data-dream="1" data-co="' + o.dream.co + '">' + logo(o.dream.co, 34, 'round') +
+        '<div class="tx"><b>' + rg.title + '</b><span>' + (open ? 'Open to you now' : 'Opens at Level ' + rg.level) + '</span>' + (open ? '' : '<span class="segs">' + segs + '</span>') + '</div><span class="lk">' + (open ? I.tick : I.lock) + '</span></div>';
+      html += '<div class="mp-pin" style="left:' + rf[0] + '%;top:' + rf[1] + '%"><div class="mp-dream ' + (rf[2] === 'b' ? 'below' : 'above') + (open ? ' open' : '') + '" style="--d:' + (o.reveal ? '2.3' : '.1') + 's">' +
+        (rf[2] === 'b' ? '<i class="stem"></i>' + card : card + '<i class="stem"></i>') + '</div></div>';
+    }
+    mapEl.classList.toggle('focus', !!o.focus);
+    if (!o.still) layer.classList.remove('mp-on');
+    layer.classList.remove('mp-show-roles');
+    layer.innerHTML = html;
+    void layer.offsetWidth;
+    layer.classList.add('mp-on');
+    var rd = layer.querySelector('.mp-road'); if (rd && o.reveal) requestAnimationFrame(function () { rd.classList.add('drawn'); });
+    if (rd && o.reveal) later(60, function () { rd.classList.add('drawn'); });
+  };
+  /* the marker walks the road from one stop to a later one: the line behind it turns solid, the stops it passes get
+     their tick, and the building it reaches comes into colour. Resolves when it has arrived. */
+  map.walk = function (from, to, ms) {
+    var o = map.opts; if (!o) return Promise.resolve();
+    return new Promise(function (res) {
+      var SC = D.SCENARIOS, R = route(o.dream), g = layer.querySelector('.mp-road g'), you = layer.querySelector('.mp-you-pin');
+      to = Math.min(to, D.need(o.dream) - 1);
+      if (!g || !you || to <= from) { res(); return; }
+      var seg = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      seg.setAttribute('d', spline(R.P, R.at[from], R.at[to])); seg.setAttribute('class', 'walked');
+      g.appendChild(seg);
+      var len = seg.getTotalLength(), t0 = performance.now(); ms = ms || 1800;
+      /* how far along the line each stop on the way sits */
+      var marks = [], tmp = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      for (var k = from + 1; k <= to; k++) { tmp.setAttribute('d', spline(R.P, R.at[from], R.at[k])); marks.push({ k: k, at: tmp.getTotalLength(), hit: false }); }
+      seg.style.strokeDasharray = len + ' ' + len; seg.style.strokeDashoffset = len;
+      layer.classList.add('mp-walking');
+      function tickStop(i) { var sd = layer.querySelector('.mp-stop[data-i="' + i + '"]'); if (sd) { sd.className = 'mp-stop done'; sd.innerHTML = I.tick; } }
+      function ease(t) { return t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
+      var left = false;
+      (function frame(now) {
+        if (!seg.isConnected) { res(); return; }
+        var t = Math.min(1, (now - t0) / ms), cur = len * ease(t), pt = seg.getPointAtLength(cur);
+        seg.style.strokeDashoffset = len - cur;
+        you.style.left = (pt.x / W * 100) + '%'; you.style.top = (pt.y / 900 * 100) + '%';
+        if (!left && cur > 6) { left = true; tickStop(from); }
+        marks.forEach(function (m) {
+          if (m.hit || cur < m.at - 3) return; m.hit = true;
+          var gl = layer.querySelector('.mp-glow[data-i="' + m.k + '"]'); if (gl) gl.classList.add('lit');
+          if (m.k < to) tickStop(m.k);
+        });
+        if (t < 1) requestAnimationFrame(frame);
+        else { layer.classList.remove('mp-walking'); map.draw(Object.assign({}, o, { done: to, still: true })); res(); }
+      })(t0);
+    });
+  };
+  map.clear = function () { layer.innerHTML = ''; map.opts = null; };
+  map.layer = function () { return layer; };
+  map.shade = function (l, r, dim) { mapEl.style.setProperty('--shl', l || 0); mapEl.style.setProperty('--shr', r || 0); mapEl.style.setProperty('--dim', dim || 0); };
+
+  /* ---------- timers a screen starts are stopped when it leaves ---------- */
+  function later(ms, fn) { var t = setTimeout(function () { fn(); }, ms); timers.push(t); return t; }
+  function stopTimers() { timers.forEach(clearTimeout); timers = []; }
+
+  /* ---------- the chrome ---------- */
+  function drawPill() {
+    var lv = D.level(state.pts), rg = D.rung(state.dream.rung), n = D.scenariosTo(rg.level, state.pts), open = lv >= rg.level;
+    pill.innerHTML = ring(lv, D.into(state.pts) / D.PER_LEVEL, 38) +
+      '<span class="t"><b>Level ' + lv + '</b><span>' + D.fmt(D.toNext(state.pts)) + ' to Level ' + (lv + 1) + '</span></span>' +
+      '<span class="goal">' + logo(state.dream.co, 28, 'round') + '<span>' + (open ? '<b>Open</b>' : '<b>' + n + '</b> ' + (n === 1 ? 'scenario' : 'scenarios') + ' to go') + '</span></span>';
+    /* how many roles are open and not yet applied to: the number on the Jobs button, so Learn always points at what the work opened */
+    var jb = rail && rail.querySelector('[data-mode="jobs"]');
+    if (jb) {
+      var nOpen = D.roles(state.dream).filter(function (r) { return D.roleState(r, state) === 'open'; }).length, bd = jb.querySelector('i.n');
+      if (!bd) { bd = document.createElement('i'); bd.className = 'n'; jb.appendChild(bd); }
+      bd.textContent = nOpen; bd.style.display = nOpen ? '' : 'none'; bd.title = nOpen + (nOpen === 1 ? ' role is' : ' roles are') + ' open to you';
+    }
+  }
+  function bump() { pill.classList.remove('bump'); void pill.offsetWidth; pill.classList.add('bump'); }
+  /* pay skill points: a chip rises from `from`, flies to the pill, and the level follows */
+  function award(n, o) {
+    o = o || {};
+    return new Promise(function (res) {
+      var from = o.from ? o.from.getBoundingClientRect() : null, to = pill.getBoundingClientRect(), k = stage.getBoundingClientRect().width / W;
+      var chip = document.createElement('div');
+      chip.style.cssText = 'position:fixed;z-index:120;left:0;top:0;display:flex;align-items:center;gap:7px;height:' + 34 * k + 'px;padding:0 ' + 13 * k + 'px 0 ' + 10 * k + 'px;border-radius:99px;background:#fff;color:#141312;font:600 ' + 14 * k + 'px/1 var(--sans);box-shadow:0 0 0 1px rgba(0,0,0,.14),0 12px 26px -8px rgba(0,0,0,.5);pointer-events:none;white-space:nowrap;transition:transform .8s cubic-bezier(.5,0,.1,1),opacity .3s';
+      chip.innerHTML = '<span style="width:' + 15 * k + 'px;height:' + 15 * k + 'px;color:#E3A62B;display:block">' + I.star + '</span>+' + D.fmt(n) + (o.label ? '<span style="font-weight:400;color:#5D5A54;margin-left:' + 2 * k + 'px">' + esc(o.label) + '</span>' : '');
+      document.body.appendChild(chip);
+      var x0 = from ? from.left + from.width / 2 - chip.offsetWidth / 2 : innerWidth / 2, y0 = from ? from.top - chip.offsetHeight - 8 * k : innerHeight / 2;
+      chip.style.transform = 'translate(' + x0 + 'px,' + (y0 + 10 * k) + 'px) scale(.8)'; chip.style.opacity = '0';
+      requestAnimationFrame(function () { chip.style.transition = 'transform .4s cubic-bezier(.22,1,.36,1),opacity .25s'; chip.style.opacity = '1'; chip.style.transform = 'translate(' + x0 + 'px,' + y0 + 'px) scale(1)'; });
+      setTimeout(function () {
+        chip.style.transition = 'transform .75s cubic-bezier(.6,0,.15,1),opacity .3s .5s';
+        chip.style.transform = 'translate(' + (to.left + 14 * k) + 'px,' + (to.top + 10 * k) + 'px) scale(.5)'; chip.style.opacity = '0';
+      }, o.hold || 900);
+      setTimeout(function () { chip.remove(); if (!o.dry) { state.pts += n; drawPill(); bump(); } res(); }, (o.hold || 900) + 760);
+    });
+  }
+
+  /* ---------- screens and steps ---------- */
+  function screen(def) { defs[def.id] = def; }
+  function step(s) { steps.push(s); }
+  function api() {
+    return { state: state, data: D, I: I, go: go, show: show, next: next, prev: prev, logo: logo, star: star, ring: ring, lock: lock, tick: tick, esc: esc, fmt: D.fmt,
+      asset: asset, map: map, later: later, award: award, drawPill: drawPill, setMoment: setMoment, W: W, H: H };
+  }
+  function mount(id, o) {
+    var def = defs[id]; if (!def) { console.error('no screen', id); return; }
+    stopTimers();
+    var old = cur && cur.el, prevDef = cur && cur.def;
+    if (prevDef && prevDef.leave) try { prevDef.leave(old, api()); } catch (e) { console.error(e); }
+    var el = document.createElement('section');
+    el.className = 'sp-screen sc-' + id + (def.rise === false ? '' : '');
+    screensEl.appendChild(el);
+    root.dataset.tone = def.tone || 'world';
+    if (def.map === false || def.tone === 'paper') delete root.dataset.map; else root.dataset.map = '1';
+    var ch = def.chrome || {};
+    if (ch.rail) root.dataset.rail = ch.rail; else delete root.dataset.rail;
+    if (ch.pill) root.dataset.pill = '1'; else delete root.dataset.pill;
+    if (ch.tabs) root.dataset.tabs = ch.tabs; else delete root.dataset.tabs;
+    if (ch.help) root.dataset.help = '1'; else delete root.dataset.help;
+    Array.prototype.forEach.call(tabs.children, function (b) { b.classList.toggle('on', b.dataset.tab === ch.tabs); });
+    root.querySelector('.sp-wm').style.opacity = ch.logo === false ? '0' : '1';
+    Array.prototype.forEach.call(rail.children, function (b) { b.classList.toggle('on', b.dataset.mode === ch.rail); });
+    drawPill();
+    cur = { id: id, def: def, el: el };
+    try { def.mount(el, api(), o || {}); } catch (e) { console.error('mount ' + id, e); }
+    requestAnimationFrame(function () { el.classList.add('on'); });
+    setTimeout(function () { el.classList.add('on'); }, 30);
+    if (old) { old.classList.remove('on'); setTimeout(function () { old.remove(); }, 420); }
+    drawDev();
+  }
+  /* open a step of the story: sets the moment, then the screen */
+  function go(stepId, o) {
+    var s = steps.filter(function (x) { return x.id === stepId; })[0];
+    if (!s) { if (defs[stepId]) return show(stepId, o); console.error('no step', stepId); return; }
+    curStep = s;
+    if (s.moment) setMoment(s.moment);
+    try { history.replaceState(null, '', '#' + s.id); } catch (e) {}
+    mount(s.screen, Object.assign({}, s.opts, o));
+  }
+  /* open a screen as things stand now (the rail, a button inside a screen) */
+  function show(id, o) {
+    var s = steps.filter(function (x) { return x.screen === id && (!x.moment || x.moment === state.moment) && !x.opts; })[0] || steps.filter(function (x) { return x.screen === id; })[0];
+    if (s) curStep = s;
+    try { history.replaceState(null, '', '#' + (s ? s.id : id)); } catch (e) {}
+    mount(id, o);
+  }
+  function idx() { return Math.max(0, steps.indexOf(curStep)); }
+  function next() { var i = idx(); if (i < steps.length - 1) go(steps[i + 1].id); }
+  function prev() { var i = idx(); if (i > 0) go(steps[i - 1].id); }
+
+  /* ---------- the review key ---------- */
+  function drawDev() {
+    var i = idx(), s = steps[i] || {}, groups = [], html = '';
+    /* played by hand (Start pressed in the world): say where the play stands instead of naming a fixed step */
+    var live = state.moment === 'live' ? (state.done + ' of ' + D.need(state.dream) + ' scenarios done') : '';
+    steps.forEach(function (x) { if (groups.indexOf(x.group) < 0) groups.push(x.group); });
+    groups.forEach(function (g) {
+      html += '<h4>' + g + '</h4><div class="grid">' + steps.map(function (x, k) { return x.group === g ? '<button data-go="' + x.id + '" class="' + (x === curStep ? 'on' : '') + '"><em>' + (k + 1) + '</em>' + esc(x.name) + '</button>' : ''; }).join('') + '</div>';
+    });
+    dev.innerHTML = '<div class="menu">' + html + '<div class="foot"><button data-go="' + steps[0].id + '">Start over</button></div></div>' +
+      '<div class="bar"><button data-a="menu" title="All screens">' + I.menu + '</button><button data-a="prev" title="Back  [">' + I.left + '</button><span class="name"><em>' + (live ? 'Playing' : (i + 1) + ' / ' + steps.length) + '</em>' + esc(live || s.name || '') + '</span><button data-a="next" title="Next  ]">' + I.right + '</button></div>';
+  }
+
+  function fit() {
+    var k = Math.min(innerWidth / W, innerHeight / H);
+    stage.style.transform = 'translate(' + (-W * k / 2) + 'px,' + (-H * k / 2) + 'px) scale(' + k + ')';
+  }
+
+  function boot() {
+    root = document.createElement('div'); root.id = 'sp-root'; root.dataset.tone = 'world';
+    root.innerHTML = '<div id="sp-stage"><div id="sp-map" style="--city:url(' + asset('img/city-lo.jpg') + ')"><div class="mp-tilt"><div class="mp-cam"><img class="mp-city lo" alt="" draggable="false" src="' + asset('img/city-rest-lo.jpg') + '"><div class="mp-layer"></div></div></div><div class="mp-dimmer"></div><div class="mp-shade"></div></div>' +
+      '<div id="sp-screens"></div><div class="sp-wm">' + (window.ZT_WORDMARK || '') + '</div>' +
+      '<div class="sp-rail"><button data-mode="learn">' + I.learn + 'Learn</button><button data-mode="jobs">' + I.jobs + 'Jobs</button></div>' +
+      '<div class="sp-tabs"><button data-tab="foryou" data-to="jobs">For you</button><button data-tab="explore" data-to="explore">Explore</button><button data-tab="portfolio" data-to="proof">Portfolio</button></div>' +
+      '<button class="sp-help" type="button">How it works</button>' +
+      '<button class="sp-pill" type="button" aria-label="Your level and your path"></button></div>';
+    document.body.appendChild(root);
+    dev = document.createElement('div'); dev.id = 'sp-dev'; document.body.appendChild(dev);
+    stage = root.querySelector('#sp-stage'); mapEl = root.querySelector('#sp-map'); cam = root.querySelector('.mp-cam'); layer = root.querySelector('.mp-layer');
+    screensEl = root.querySelector('#sp-screens'); pill = root.querySelector('.sp-pill'); rail = root.querySelector('.sp-rail'); tabs = root.querySelector('.sp-tabs');
+    tabs.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) show(b.dataset.to); });
+    /* the sharp city replaces the light one once it has loaded */
+    /* the city at rest is its own picture (quieter, baked in, so it stays sharp at any zoom); the colour one is used for the buildings that are yours */
+    var hi = new Image(); hi.onload = function () { var im = root.querySelector('.mp-city'); im.src = hi.src; im.classList.remove('lo'); }; hi.src = asset('img/city-rest.webp');
+    var col = new Image(); col.onload = function () { mapEl.style.setProperty('--city', 'url(' + col.src + ')'); }; col.src = asset('img/city.webp');
+    /* the city leans a little toward the pointer, like a model on a table */
+    var tilt = root.querySelector('.mp-tilt');
+    addEventListener('mousemove', function (e) {
+      if (!root.dataset.map || root.dataset.still) return;
+      var nx = e.clientX / innerWidth * 2 - 1, ny = e.clientY / innerHeight * 2 - 1;
+      tilt.style.transform = 'translate(' + (-nx * 9).toFixed(1) + 'px,' + (-ny * 6).toFixed(1) + 'px) skewX(' + (nx * .7).toFixed(3) + 'deg) scaleY(' + (1 + ny * .012).toFixed(4) + ')';
+    });
+    document.addEventListener('mouseleave', function () { tilt.style.transform = ''; });
+    /* hovering a stop, its name or its building wakes that building up */
+    function wake(e, on) {
+      var t = e.target.closest && e.target.closest('[data-co]'); if (!t) return;
+      var gl = layer.querySelector('.mp-glow[data-co="' + t.dataset.co + '"]'); if (gl) gl.classList.toggle('hov', on);
+      var sd = layer.querySelector('.mp-stop[data-co="' + t.dataset.co + '"]'); if (sd) sd.classList.toggle('hov', on);
+    }
+    layer.addEventListener('mouseover', function (e) { wake(e, true); });
+    layer.addEventListener('mouseout', function (e) { wake(e, false); });
+    fit(); addEventListener('resize', fit);
+    map.view({}, 0);
+    rail.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) show(b.dataset.mode === 'jobs' ? 'jobs' : 'world'); });
+    /* this build is the world on its own: the pill opens whatever the screen on show offers (the world opens its ladder of levels) */
+    pill.addEventListener('click', function () { if (cur && cur.def.onPill) cur.def.onPill(cur.el, api()); });
+    /* the four lines of the plan, one press away wherever the rail is */
+    help = root.querySelector('.sp-help');
+    help.addEventListener('click', function () { show('plan', { back: cur && cur.id !== 'plan' ? cur.id : 'world' }); });
+    dev.addEventListener('click', function (e) {
+      var g = e.target.closest('[data-go]'), a = e.target.closest('[data-a]');
+      if (g) { dev.classList.remove('open'); go(g.dataset.go); }
+      else if (a) { if (a.dataset.a === 'menu') dev.classList.toggle('open'); else if (a.dataset.a === 'next') next(); else prev(); }
+    });
+    document.addEventListener('click', function (e) { if (!dev.contains(e.target)) dev.classList.remove('open'); });
+    addEventListener('keydown', function (e) {
+      if (/input|textarea/i.test((e.target.tagName || ''))) return;
+      if (e.key === ']') next(); else if (e.key === '[') prev(); else if (e.key === 'Escape') dev.classList.remove('open');
+    });
+    var want = (location.hash || '').slice(1) || (new URLSearchParams(location.search).get('s') || '');
+    go(steps.some(function (x) { return x.id === want; }) ? want : steps[0].id);
+    window.SP.ready = true;
+  }
+
+  window.SP = { screen: screen, step: step, go: go, show: show, next: next, prev: prev, state: state, map: map, I: I, logo: logo, steps: steps, ready: false,
+    get current() { return cur; }, get currentStep() { return curStep; } };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else setTimeout(boot, 0);
+})();
+
+/* screens/dream.js */
+/* The dream. Two questions on the city itself, then the plan in four lines.
+   Left is where you answer, right is the city answering back: the camera flies to the building you pick,
+   the job stands on it with its lock, and the road to it is drawn stop by stop. */
+(function () {
+  'use strict';
+
+  /* ---------- 1 and 2: where, and which job ---------- */
+  SP.screen({
+    id: 'dream', tone: 'world', chrome: {},
+    mount: function (root, api, opts) {
+      var D = api.data, st = api.state, step = opts.step || 'co', back = opts.back;   // back = changing the job later: return there, keep the points
+      root.innerHTML = '<div class="dr-panel sp-glass"><div class="dr-body"></div></div>';
+      var body = root.querySelector('.dr-body');
+
+      function look(co, close) {
+        var h = D.HEART[co], rf = D.ROOF[co];
+        api.map.view({ cx: h[0], cy: (h[1] + rf[1]) / 2 + (rf[2] === 'b' ? 1.5 : -1), s: close ? 2.5 : 2.15, fx: .665, fy: .5 }, 1500);
+      }
+      function stand(showCard) {
+        api.map.draw({ road: false, stops: false, chips: 'none', dest: showCard ? 'locked' : 'none', beam: true, litDream: true, dream: st.dream });
+      }
+
+      function company() {
+        step = 'co';
+        body.innerHTML =
+          '<h1 class="sp-h1 dr-h">Where do you want to work?</h1>' +
+          '<p class="sp-p dr-sub">These came from your vision board. Pick the one to aim at first.</p>' +
+          '<div class="dr-grid">' + D.DREAMS.map(function (co) {
+            return '<button type="button" class="dr-co' + (co === st.dream.co ? ' on' : '') + '" data-co="' + co + '">' + api.logo(co, 40) + '<span>' + D.CO[co] + '</span><i>' + api.I.tick + '</i></button>';
+          }).join('') + '</div>' +
+          '<div class="dr-foot"><button type="button" class="sp-key dr-go">Continue' + api.I.arrow + '</button></div>';
+        api.map.shade(.72, 0, 0);
+        stand(false); look(st.dream.co, false);
+      }
+      function role() {
+        step = 'role';
+        var name = D.CO[st.dream.co];
+        body.innerHTML =
+          '<button type="button" class="dr-back" aria-label="Back">' + api.I.left + '</button>' +
+          '<h1 class="sp-h1 dr-h">Which job at ' + name + '?</h1>' +
+          '<p class="sp-p dr-sub">' + (back ? 'Your ' + D.fmt(st.pts) + ' skill points come with you.' : 'Each one opens at a level. Higher takes more scenarios.') + '</p>' +
+          '<div class="dr-rungs">' + D.RUNGS.map(function (r) {
+            var n = D.scenariosTo(r.level, st.pts);
+            return '<button type="button" class="dr-rung' + (r.id === st.dream.rung ? ' on' : '') + '" data-rung="' + r.id + '">' +
+              '<span class="lv"><b>' + r.level + '</b><em>Level</em></span>' +
+              '<span class="tx"><b>' + r.title + '</b><em>About ' + n + ' scenarios. ' + r.pay + '.</em></span><i>' + api.I.tick + '</i></button>';
+          }).join('') + '</div>' +
+          '<div class="dr-foot"><button type="button" class="sp-key dr-go">' + (back ? 'Change to this' : 'This is the one') + api.I.arrow + '</button></div>';
+        api.map.shade(.72, 0, 0);
+        stand(true); look(st.dream.co, true);
+      }
+
+      root.addEventListener('click', function (e) {
+        var c = e.target.closest('[data-co]'), r = e.target.closest('[data-rung]');
+        if (c) {
+          st.dream.co = c.dataset.co;
+          Array.prototype.forEach.call(root.querySelectorAll('.dr-co'), function (b) { b.classList.toggle('on', b === c); });
+          stand(false); look(st.dream.co, false);
+        } else if (r) {
+          st.dream.rung = r.dataset.rung;
+          Array.prototype.forEach.call(root.querySelectorAll('.dr-rung'), function (b) { b.classList.toggle('on', b === r); });
+          stand(true);
+        } else if (e.target.closest('.dr-back')) { swap(company); }
+        else if (e.target.closest('.dr-go')) { if (step === 'co') swap(role); else if (back) api.show(back); else api.go('plan'); }
+      });
+      function swap(fn) { body.classList.add('out'); api.later(200, function () { fn(); body.classList.remove('out'); }); }
+
+      if (step === 'role') role(); else company();
+    }
+  });
+
+  /* ---------- 3: the plan. Four lines, each one shown on the city as it is said. ---------- */
+  SP.screen({
+    id: 'plan', tone: 'world', chrome: {},
+    mount: function (root, api, opts) {
+      opts = opts || {};   // opts.back = opened later from "How it works": the button returns there and nothing is reset
+      var D = api.data, st = api.state, rg = D.rung(st.dream.rung), name = D.CO[st.dream.co];
+      var n = D.scenariosTo(rg.level, st.pts), first = D.rolesAt(st.dream, 1);
+      var LINES = [
+        { ic: api.lock(30), t: '<b>' + rg.title + ' at ' + name + '</b> is locked. It opens at Level ' + rg.level + '.' },
+        { ic: '<span class="pl-ic">' + api.star(16) + '</span>', t: '<b>Scenarios pay skill points.</b> Better work pays more, up to ' + D.fmt(D.SCENARIO_MAX) + ' each.' },
+        { ic: '<span class="pl-ic">' + api.ring(1, .62, 30) + '</span>', t: '<b>' + D.fmt(D.PER_LEVEL) + ' skill points is a level.</b> One solid scenario is about one level.' },
+        { ic: api.tick(30), t: '<b>Every level opens real roles.</b> ' + (first.length ? D.CO[first[0].co] + (first[1] ? ' and ' + D.CO[first[1].co] : '') + ' open at Level 1. ' : '') + 'Zero applies with you after each scenario.' }
+      ];
+      root.innerHTML =
+        '<div class="dr-panel pl sp-glass"><div class="dr-body">' +
+          '<h1 class="sp-h1 dr-h">Here is how you get there.</h1>' +
+          '<ol class="pl-list">' + LINES.map(function (l, i) { return '<li data-i="' + i + '">' + l.ic + '<p>' + l.t + '</p></li>'; }).join('') + '</ol>' +
+          '<div class="dr-foot"><button type="button" class="sp-key dr-go">' + (opts.back ? 'Got it' : 'Start scenario 1' + api.I.arrow) + '</button>' +
+          '<span class="pl-count">About ' + n + ' scenarios to ' + name + '</span></div>' +
+        '</div></div>';
+      var li = root.querySelectorAll('.pl-list li'), foot = root.querySelector('.dr-foot'), shown = -1;
+      var zone = { x: 640, y: 96, w: 880, h: 660 };
+
+      function beat(i) {
+        if (i <= shown) return; shown = i;
+        for (var k = 0; k <= i; k++) li[k].classList.add('on');
+        Array.prototype.forEach.call(li, function (x, k) { x.classList.toggle('now', k === i); });
+        if (i === 0) {
+          var h = D.HEART[st.dream.co], rf = D.ROOF[st.dream.co];
+          api.map.draw({ road: false, stops: false, chips: 'none', dest: 'locked', beam: true, litDream: true });
+          api.map.view({ cx: h[0], cy: (h[1] + rf[1]) / 2, s: 2.3, fx: .675, fy: .5 }, 1200);
+        } else if (i === 1) {
+          api.map.fit(api.map.points(st.dream), zone, 1800);
+          api.map.draw({ chips: 'none', dest: 'locked', beam: true, litDream: true, reveal: true, roles: true, done: opts.back ? st.done : 0 });
+        } else if (i === 3) {
+          api.map.layer().classList.add('mp-show-roles');
+        }
+        if (i === LINES.length - 1) foot.classList.add('on');
+      }
+      api.map.shade(.72, 0, 0);
+      beat(0);
+      api.later(2600, function () { beat(1); });
+      api.later(5600, function () { beat(2); });
+      api.later(8000, function () { beat(3); });
+      root.addEventListener('click', function (e) {
+        var l = e.target.closest('.pl-list li');
+        if (e.target.closest('.dr-go')) { if (opts.back) api.show(opts.back); else api.go('world-0'); }
+        else if (l) { for (var k = shown + 1; k <= +l.dataset.i; k++) beat(k); }
+        else if (!e.target.closest('.dr-foot') && shown < LINES.length - 1) beat(shown + 1);
+      });
+    }
+  });
+})();
+
+/* screens/world.js */
+/* The world: home in Learn mode. The road to the job you want runs through the city, the next scenario is
+   lit, and its card says what it pays and which roles it opens. Also the summit: the day the job opens. */
+(function () {
+  'use strict';
+
+  SP.screen({
+    id: 'world', tone: 'world', chrome: { pill: true, help: true },
+    /* the level pill opens the ladder: what every level opens, in one list */
+    onPill: function (root) { if (root && root._ladder) root._ladder(); },
+    mount: function (root, api) {
+      var D = api.data, st = api.state, SC = D.SCENARIOS, rg = D.rung(st.dream.rung), lv = D.level(st.pts);
+      var need = D.need(st.dream), allDone = st.done >= need, open = lv >= rg.level, name = D.CO[st.dream.co];
+      var sel = allDone ? 'd' : st.done, shown = null, tHover = 0;
+
+      /* arriving with a scenario finished since the city was last seen: the marker walks there first */
+      var from = (st.seenDone != null && st.seenDone < st.done && !allDone) ? st.seenDone : null;
+      st.seenDone = st.done;
+
+      api.map.shade(.3, .62, 0);
+      api.map.fit(api.map.points(st.dream), { x: 130, y: 104, w: 1010, h: 650 }, 1500);
+      api.map.draw({ chips: from == null ? 'now' : 'none', done: from == null ? st.done : from, you: true, beam: 'soft', dest: open ? 'open' : 'locked' });
+
+      root.innerHTML = '<div class="wd-card sp-glass"></div><div class="wd-ladder sp-glass"></div>';
+      var card = root.querySelector('.wd-card'), ladder = root.querySelector('.wd-ladder');
+
+      /* the ladder: every level, what it opens, and where you stand */
+      function ladderHTML() {
+        var top = Math.max(rg.level, 10), rows = '';
+        for (var L = 1; L <= top; L++) {
+          var rl = D.rolesAt(st.dream, L), goal = rl.some(function (r) { return r.target; });
+          var state = L <= lv ? 'reached' : L === lv + 1 ? 'next' : 'locked';
+          rows += '<li class="' + state + (goal ? ' goal' : '') + '"><span class="n">' + L + '</span>' +
+            '<span class="lgs">' + rl.map(function (r) { return api.logo(r.co, 26, 'round'); }).join('') + '</span>' +
+            '<span class="tx"><b>' + rl.map(function (r) { return D.CO[r.co]; }).join(', ') + '</b><em>' + (goal ? 'The job you want' : D.band(L).name) + '</em></span>' +
+            (state === 'reached' ? api.tick(22) : state === 'next' ? '<span class="go">' + D.fmt(D.toNext(st.pts)) + ' to go</span>' : api.lock(22)) + '</li>';
+        }
+        return '<div class="wd-lh"><div><b>What each level opens</b><span>' + D.fmt(D.PER_LEVEL) + ' skill points is a level. You have ' + D.fmt(st.pts) + '.</span></div><button type="button" class="wd-lx" aria-label="Close">' + api.I.close + '</button></div><ol>' + rows + '</ol>';
+      }
+      root._ladder = function (force) {
+        var on = force != null ? force : !root.classList.contains('laddered');
+        if (on) ladder.innerHTML = ladderHTML();
+        root.classList.toggle('laddered', on);
+      };
+
+      function rolesList(list, st2) {
+        return '<ul>' + list.map(function (r) {
+          var s = D.roleState(r, st2 || st);
+          return '<li>' + api.logo(r.co, 30) + '<span class="tx"><b>' + r.title + '</b><em>' + D.CO[r.co] + '</em></span>' + (s === 'locked' ? api.lock(22) : api.tick(22)) + '</li>';
+        }).join('') + '</ul>';
+      }
+      function html(key) {
+        if (key === 'd') {
+          var n = D.scenariosTo(rg.level, st.pts), tg = D.target(st.dream);
+          var doors = D.roles(st.dream).filter(function (r) { return r.dream && r.level < rg.level; });
+          return '<div class="wd-hero"><img alt="" src="' + api.asset('img/b/' + st.dream.co + '.webp') + '"><span class="wd-tag">' + api.logo(st.dream.co, 22, 'round') + name + '</span><span class="wd-no">The job you want</span></div>' +
+            '<div class="wd-body"><h2 class="sp-h2 wd-title">' + rg.title + '</h2>' +
+            '<p class="sp-p wd-ask">' + tg.loc + '. ' + tg.pay + '.</p>' +
+            (open
+              ? '<p class="wd-state ok">' + api.tick(24) + '<span>Open to you now. Zero can apply with you.</span></p><button type="button" class="sp-ghost wd-apply">See the day it opened</button>'
+              : '<p class="wd-state">' + api.lock(24) + '<span>Opens at <b>Level ' + rg.level + '</b>. You are Level ' + lv + '. About ' + n + (n === 1 ? ' scenario.' : ' scenarios.') + '</span></p>' +
+                (doors.length ? '<div class="wd-opens"><p>Earlier doors at ' + name + '</p><ul>' + doors.map(function (r) {
+                  var s = D.roleState(r, st);
+                  return '<li><span class="wd-lv">' + r.level + '</span><span class="tx"><b>' + r.title + '</b><em>Level ' + r.level + '</em></span>' + (s === 'locked' ? api.lock(22) : api.tick(22)) + '</li>';
+                }).join('') + '</ul></div>' : '') +
+                '<div class="wd-two"><button type="button" class="sp-ghost wd-path">See every level</button><button type="button" class="sp-ghost wd-change">Change the job</button></div>') + '</div>';
+        }
+        var i = key, s = SC[i], state = i < st.done ? 'done' : i === st.done ? 'now' : 'ahead', body = '';
+        var after = D.level(st.pts + D.PACE * (i - st.done + 1)), opens = D.rolesAt(st.dream, after);
+        var meta = '<div class="wd-meta"><span>' + api.I.clock + s.mins + ' min</span><span>' + api.star(15) + 'Up to ' + D.fmt(D.SCENARIO_MAX) + '</span></div>';
+        if (state === 'now') {
+          var nw = st.news && st.news.done === st.done ? D.rolesAt(st.dream, st.news.level) : null;
+          body = (nw ? '<p class="wd-news">' + api.tick(22) + '<span><b>Level ' + st.news.level + '.</b> ' + (nw.length ? 'Now open to you: ' + nw.map(function (r) { return D.CO[r.co]; }).join(' and ') + '.' : 'One step closer.') + '</span></p>' : '') +
+            meta + '<div class="wd-opens"><p>Gets you to <b>Level ' + after + '</b>, which opens</p>' + rolesList(opens) + '</div>' +
+            '<button type="button" class="sp-key wd-start">' + api.I.play + (st.done === 0 ? 'Start scenario 1' : 'Start') + '</button>';
+        } else if (state === 'done') {
+          var got = i === 0 ? D.RESULT.earned : 900 + (i * 137) % 500, band = got >= 1300 ? 'Exceeding Expectations' : 'Meeting Expectations';
+          body = '<div class="wd-meta"><span class="ok">' + api.I.tick + band + '</span><span>' + api.star(15) + '+' + D.fmt(got) + '</span></div>' +
+            '';
+        } else {
+          var gapN = i - st.done;
+          body = meta + '<p class="wd-state">' + api.lock(24) + '<span>' + (gapN === 1 ? 'Opens after ' + D.CO[SC[st.done].co] + '.' : 'Opens after ' + gapN + ' more scenarios.') + '</span></p>' +
+            '<div class="wd-opens far"><p>Takes you to <b>Level ' + after + '</b>, which opens</p>' + rolesList(opens) + '</div>';
+        }
+        return '<div class="wd-hero"><img alt="" src="' + api.asset('img/b/' + s.co + '.webp') + '"><span class="wd-tag">' + api.logo(s.co, 22, 'round') + D.CO[s.co] + '</span><span class="wd-no">Scenario ' + (i + 1) + '</span></div>' +
+          '<div class="wd-body"><h2 class="sp-h2 wd-title">' + s.title + '</h2><p class="sp-p wd-ask">' + s.ask + '</p>' + body + '</div>';
+      }
+      function show(key, quick) {
+        if (key === shown) return; shown = key;
+        card.innerHTML = html(key);
+        card.classList.remove('in', 'quick'); void card.offsetWidth; card.classList.add(quick ? 'quick' : 'in');
+        card.classList.toggle('peek', key !== sel);
+      }
+
+      if (from == null) show(sel);
+      else {
+        card.classList.add('wait');
+        api.later(1100, function () {
+          api.map.walk(from, st.done, 1400 + Math.min(4, st.done - from) * 360).then(function () {
+            api.map.draw({ chips: 'now', you: true, still: true, beam: 'soft', dest: open ? 'open' : 'locked' });
+            card.classList.remove('wait'); show(sel);
+          });
+        });
+      }
+
+      /* the city answers the pointer: a stop, its name, its building or the job you want shows in the card */
+      function keyOf(t) {
+        var el = t.closest && t.closest('[data-dream],[data-i]'); if (!el) return null;
+        return el.dataset.dream ? 'd' : +el.dataset.i;
+      }
+      var layer = api.map.layer();
+      function over(e) { var k = keyOf(e.target); if (k == null || card.classList.contains('wait')) return; clearTimeout(tHover); tHover = setTimeout(function () { show(k, true); }, 90); }
+      function out(e) { if (keyOf(e.target) == null) return; clearTimeout(tHover); tHover = setTimeout(function () { show(sel, true); }, 220); }
+      function pick(e) { var k = keyOf(e.target); if (k == null || card.classList.contains('wait')) return; clearTimeout(tHover); sel = k; shown = null; show(k); }
+      layer.addEventListener('mouseover', over); layer.addEventListener('mouseout', out); layer.addEventListener('click', pick);
+      root._off = function () { clearTimeout(tHover); layer.removeEventListener('mouseover', over); layer.removeEventListener('mouseout', out); layer.removeEventListener('click', pick); };
+      root.addEventListener('click', function (e) {
+        /* this build is the world on its own, so Start finishes the scenario on the spot: the points fly to the
+           level, then the marker walks to the next stop. Press it ten times and the job opens. */
+        var b = e.target.closest('.wd-start');
+        if (b && !b.disabled) {
+          b.disabled = true;
+          var before = D.level(st.pts);
+          api.award(D.PAID[st.done] || 1000, { from: b, label: 'Scenario ' + (st.done + 1) + ' done' }).then(function () {
+            st.done += 1; st.moment = 'live';
+            var now = D.level(st.pts); st.news = now > before ? { level: now, done: st.done } : null;
+            if (st.done >= need && now >= rg.level) api.show('summit'); else api.show('world');
+          });
+        }
+        else if (e.target.closest('.wd-apply')) api.show('summit');
+        else if (e.target.closest('.wd-path')) root._ladder(true);
+        else if (e.target.closest('.wd-change')) api.show('dream', { step: 'co', back: 'world' });
+        else if (e.target.closest('.wd-lx')) root._ladder(false);
+      });
+    },
+    leave: function (root) { if (root && root._off) root._off(); }
+  });
+
+  /* The summit. Level 10: the lock on the job you picked on day one comes off, on its own building. */
+  SP.screen({
+    id: 'summit', tone: 'world', chrome: {},
+    mount: function (root, api) {
+      var D = api.data, st = api.state, rg = D.rung(st.dream.rung), name = D.CO[st.dream.co];
+      var h = D.HEART[st.dream.co], rf = D.ROOF[st.dream.co];
+      api.map.shade(.6, 0, 0);
+      var need = D.need(st.dream);
+      api.map.draw({ chips: 'none', dest: 'locked', beam: false, done: need });
+      api.map.view({ cx: h[0], cy: (h[1] + rf[1]) / 2 + .5, s: 2.5, fx: .68, fy: .5 }, 2200);
+      root.innerHTML =
+        '<div class="sm-box sp-glass">' +
+          '<span class="sm-ring">' + api.ring(rg.level - 1, .92, 84) + '</span>' +
+          '<h1 class="sp-h1 sm-h">Level ' + rg.level + '.</h1>' +
+          '<p class="sm-line"><b>' + rg.title + ' at ' + name + '</b> is open to you.</p>' +
+          '<p class="sm-sub">You picked it on day one. ' + st.done + ' scenarios and ' + D.fmt(st.pts) + ' skill points later, the lock is off.</p>' +
+          '<button type="button" class="sp-key sm-go">See your city' + api.I.arrow + '</button>' +
+        '</div><canvas class="sm-fx" width="1600" height="840"></canvas>';
+      var ring = root.querySelector('.sm-ring .sp-ring'), box = root.querySelector('.sm-box');
+      api.later(700, function () { ring.style.setProperty('--p', 1); });
+      api.later(1700, function () { ring.querySelector('b').textContent = rg.level; ring.style.setProperty('--p', .08); box.classList.add('on'); });
+      api.later(2500, function () {
+        api.map.draw({ chips: 'none', dest: 'open', done: need });
+        var p = api.map.at([rf[0], rf[1]]); burst(root.querySelector('.sm-fx'), p[0], p[1] + 34, api);
+      });
+      st.seenDone = st.done;
+      root.querySelector('.sm-go').addEventListener('click', function () { api.show('world'); });
+    }
+  });
+
+  /* one short burst of white and gold paper, then nothing */
+  function burst(cv, x, y, api) {
+    var c = cv.getContext('2d'), P = [], t0 = performance.now(), cols = ['#FFD56B', '#FFFFFF', '#F0B94D', '#FFF3CC'];
+    for (var i = 0; i < 90; i++) {
+      var a = Math.random() * Math.PI * 2, v = 3 + Math.random() * 9;
+      P.push({ x: x, y: y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 5, w: 4 + Math.random() * 5, h: 2 + Math.random() * 3, r: Math.random() * 6, vr: (Math.random() - .5) * .5, c: cols[i % 4] });
+    }
+    (function frame(now) {
+      var t = (now - t0) / 1000; c.clearRect(0, 0, 1600, 840);
+      if (t > 2.6 || !cv.isConnected) { c.clearRect(0, 0, 1600, 840); return; }
+      P.forEach(function (p) {
+        p.vy += .32; p.vx *= .985; p.vy *= .985; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+        c.save(); c.globalAlpha = Math.max(0, 1 - t / 2.5); c.translate(p.x, p.y); c.rotate(p.r); c.fillStyle = p.c; c.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); c.restore();
+      });
+      requestAnimationFrame(frame);
+    })(t0);
+  }
+  window.SP.burst = burst;
+})();
+
+/* steps.js */
+/* The world on its own, in the order the review key steps through it. A step is a screen at a moment.
+   Inside the world you can also just press Start: each press finishes a scenario and the marker walks on. */
+SP.step({ id: 'dream-co',   screen: 'dream',  moment: 'day0', opts: { step: 'co' },   name: 'Where do you want to work',   group: 'The job you want' });
+SP.step({ id: 'dream-role', screen: 'dream',  moment: 'day0', opts: { step: 'role' }, name: 'Which job there',             group: 'The job you want' });
+SP.step({ id: 'plan',       screen: 'plan',   moment: 'day0', name: 'How you get there',           group: 'The job you want' });
+SP.step({ id: 'world-0',    screen: 'world',  moment: 'day0', name: 'Day one',                     group: 'The world' });
+SP.step({ id: 'world-1',    screen: 'world',  moment: 'after1', name: 'After scenario 1',          group: 'The world' });
+SP.step({ id: 'world-6',    screen: 'world',  moment: 'mid',  name: 'Level 6',                     group: 'The world' });
+SP.step({ id: 'summit',     screen: 'summit', moment: 'summit', name: 'Level 10: the job opens',   group: 'The world' });
+SP.step({ id: 'world-10',   screen: 'world',  moment: 'summit', name: 'Every building yours',      group: 'The world' });
+
+</script>
+</body>
+</html>
