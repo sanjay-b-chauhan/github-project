@@ -3830,7 +3830,7 @@ AFTER.push(()=>{if(!ntF)return;const e=$(ntF);ntF='';if(e)e.focus({preventScroll
 
 /* ZERO Job Portal, v34. Loaded last. The same working model on both sides:
    an agent that finds matches, a matches table with a fit score and a column per criterion, a review window that puts the
-   profile beside the criteria analysis, Approve or Reject with a reason Zero learns from, and a manual or automatic mode.
+   profile beside the criteria analysis, Approve in one click, Reject with a reason Zero learns from, and a manual or automatic mode.
    The recruiter reviews students for a role. The student reviews roles. */
 
 /* ═══ shared pieces ═══ */
@@ -3861,7 +3861,8 @@ A.agstart=id=>{const r=rcRole(id),g=ag(id);if(!r||g.st==='src')return false;g.st
 AUTO.unshift(ev=>{if(S.onb.recruiter!=='done')return null;for(const r of rcOpen()){const g=ag(r.id);if(g.st!=='src'||g.mode!=='auto')continue;const s=agTodo(r).find(x=>rcHigh(rcFit(r,x).label)&&rcCan(r,x));
   if(s)return ev('ag-'+rcKey(r.id,s.id),2600,0,()=>{if(rcAsk(r.id,s.id)===false){S.rc.no[rcKey(r.id,s.id)]=true;return}const t=`Zero asked ${s.name} to meet for you`,e=S.rlog.find(x=>x.sid===s.id);if(e)e.text=t;const m=S.rc.zero.msgs.filter(x=>x.from==='act'&&x.sid===s.id).pop();if(m)m.text=t;S.rc.moved=rcKey(r.id,s.id);g.seen=+S.now})}return null});
 
-/* ═══ feedback: every decision can carry a reason. S.fb={side,kind,rid,id,tags,text,auto} ═══ */
+/* ═══ feedback: saying no asks why, so Zero can look for something else. Saying yes just happens: Apply applies, Approve asks the student to meet.
+   S.fb={side,kind,rid,id,tags,text,auto} ═══ */
 const rcCan=(r,s)=>{const c=rcRec(r.id,s.id);return(!c||c.st==='new')&&!rcHold(r.id,s.id)&&!S.rc.no[rcKey(r.id,s.id)]&&!(rcIsMaya(s)&&(r.id!==LINK||(S.hired&&!c)))};
 const rcTold=(r,s)=>{const c=rcRec(r.id,s.id);return!!c&&c.st==='new'&&c.src==='applied'};
 const sCan=r=>!S.apps[r.id]&&!S.hidden[r.id]&&!(S.qq||[]).includes(r.id)&&!(S.qa&&S.qa.id===r.id);
@@ -3871,7 +3872,7 @@ function fbTags(f){if(f.side==='st')return[['pay','Pay'],['mode','Place'],['co',
 function fbDraft(f){const r=rcRole(f.rid),s=rcStu(f.id),T=fbTags(f),t=(T.find((x,i)=>f.tags[i])||[])[0];
  if(typeof t==='number'){const k=r.crit[t],v=rcFit(r,s).c[t][0];return v==='p'?`Your graded work only partly shows one thing this role needs: ${k.t}.`:`One thing this role needs is not in your graded work yet: ${k.t}.`}
  return rcPassDraft(t||'Needs a required skill',s,r)}
-function fbOpen(side,kind,id,rid){const f=S.fb={side,kind,id,rid:rid||'',tags:{},text:'',auto:''};if(side==='rc'&&kind==='no'&&rcTold(rcRole(rid),rcStu(id)))f.text=f.auto=fbDraft(f)}
+function fbOpen(side,kind,id,rid){const f=S.fb={side,kind,id,rid:rid||'',tags:{},text:'',auto:''};if(kind==='yes')return A.fbsend();if(side==='rc'&&rcTold(rcRole(rid),rcStu(id)))f.text=f.auto=fbDraft(f)}
 A.fbopen=(id,a)=>{const d=a.dataset,st=d.side==='st';if(st?!sCan(ROLE(id)):!rcCan(rcRole(d.role),rcStu(id)))return false;fbOpen(st?'st':'rc',d.k,id,d.role)};
 A.fbtag=id=>{const f=S.fb;if(!f)return false;f.tags[id]=!f.tags[id];if(f.side==='rc'&&f.kind==='no'&&rcTold(rcRole(f.rid),rcStu(f.id))&&(!f.text.trim()||f.text===f.auto))f.text=f.auto=fbDraft(f)};
 A.fbx=()=>{S.fb=null};
