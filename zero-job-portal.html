@@ -58,15 +58,20 @@ input::placeholder{color:var(--ink3)}
 @keyframes pulse{50%{opacity:.3}}
 .stagewrap{flex:1;min-width:0;min-height:0;padding:0 14px 14px}
 .sheet{position:relative;display:flex;flex-direction:column;height:100%;background:var(--sheet);border-radius:28px;box-shadow:0 0 0 1px rgba(19,20,23,.05),0 1px 2px rgba(19,20,23,.04),0 40px 70px -50px rgba(19,20,23,.35);overflow:hidden}
-.top{display:flex;align-items:center;gap:20px;flex-shrink:0;height:68px;padding:0 28px}
+.top{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:20px;flex-shrink:0;height:68px;padding:0 28px}
+.top-l{display:flex;align-items:center;gap:12px;min-width:0}
+.top-r{display:flex;justify-content:flex-end;min-width:0}
+.whoami{display:flex;align-items:center;gap:10px;height:44px;padding:0 6px 0 14px;border-radius:99px;transition:background-color .12s var(--e),box-shadow .12s var(--e)}
+.whoami:hover{background:var(--well)}
+.whoami.on{background:var(--well2)}
 .top .zlogo{width:58px;height:auto;display:block}
 .top .zlogo path{fill:var(--ink)}
-.tabs{display:flex;gap:2px;margin-right:auto}
+.tabs{display:flex;gap:2px;padding:4px;border-radius:99px;background:var(--well)}
 .tabs button{position:relative;height:36px;padding:0 14px;border-radius:99px;color:var(--ink3);white-space:nowrap;transition:background-color .12s var(--e),color .12s var(--e)}
 .tabs button:hover{color:var(--ink)}
-.tabs button.on{background:var(--well2);color:var(--ink)}
+.tabs button.on{background:#fff;color:var(--ink);box-shadow:0 0 0 1px var(--line),0 6px 12px -10px rgba(19,20,23,.5)}
 .top .who{margin-left:auto}
-.body{flex:1;min-height:0;overflow-y:auto;padding:4px 28px 56px}
+.body{flex:1;min-height:0;overflow-y:auto;padding:4px 28px 132px}
 .page{max-width:1120px;margin:0 auto}
 .page.in{animation:in .28s var(--e) both}
 @keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -108,9 +113,8 @@ input::placeholder{color:var(--ink3)}
  background:radial-gradient(circle at 32% 26%,rgba(255,255,255,.95) 0 7%,rgba(255,255,255,0) 20%),radial-gradient(circle at 72% 80%,rgba(255,255,255,.4) 0 6%,rgba(255,255,255,0) 22%),radial-gradient(circle at 50% 58%,#D6FF7A 0%,#A6EC3F 52%,#6CC81E 100%);
  box-shadow:inset 0 -4px 9px rgba(50,120,8,.38),inset 0 3px 6px rgba(255,255,255,.65),0 6px 16px -8px rgba(90,170,30,.7)}
 .orb i{position:absolute;background:#1A2A0A}
-.orb .l,.orb .r{top:38%;width:calc(var(--s)*.1);height:calc(var(--s)*.16);border-radius:99px;animation:blink 5s infinite}
-.orb .l{left:32%}.orb .r{right:32%}
-.orb .mo{left:50%;top:60%;width:calc(var(--s)*.26);height:calc(var(--s)*.12);transform:translateX(-50%);border-radius:0 0 99px 99px}
+.orb .l,.orb .r{top:32%;width:calc(var(--s)*.11);height:calc(var(--s)*.27);border-radius:99px;animation:blink 5s infinite}
+.orb .l{left:31%}.orb .r{right:31%}
 .orb.sm{--s:28px}.orb.xs{--s:36px}
 @keyframes blink{0%,46%,50%,100%{transform:scaleY(1)}48%{transform:scaleY(.12)}}
 
@@ -294,7 +298,7 @@ button.item:hover{box-shadow:inset 0 0 0 1px var(--line2)}
 .mini i.now{background:var(--lime);box-shadow:inset 0 0 0 1px rgba(19,20,23,.45)}
 .mini i.end{background:var(--ink4)}
 .c img{width:14px;height:14px;border-radius:3px}
-.body.split{overflow:hidden;padding:0 20px 20px}
+.body.split{overflow:hidden;padding:0 20px 132px}
 .body.split .page{height:100%;max-width:1280px}
 .jobs{display:grid;grid-template-columns:minmax(320px,420px) minmax(0,1fr);gap:12px;height:100%}
 .jl{display:flex;flex-direction:column;min-height:0;border-radius:20px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);overflow:hidden}
@@ -316,10 +320,10 @@ button.item:hover{box-shadow:inset 0 0 0 1px var(--line2)}
 .chat-h{display:flex;align-items:center;gap:12px;margin:8px;padding:12px;border-radius:14px;background:var(--well)}
 .msgs{display:flex;flex-direction:column;gap:14px;flex:1;min-height:0;overflow-y:auto;padding:12px 20px 20px}
 .msgs li{display:flex;gap:10px;max-width:min(640px,86%)}
-.msgs li div{display:flex;flex-direction:column;gap:4px}
-.msgs li p{padding:10px 14px;border-radius:16px;background:var(--well);color:var(--ink)}
+.msgs li>div{display:flex;flex-direction:column;gap:4px}
+.msgs li>div>p{padding:10px 14px;border-radius:16px;background:var(--well);color:var(--ink)}
 .msgs li.me{align-self:flex-end}
-.msgs li.me p{background:var(--ink);color:#fff}
+.msgs li.me>div>p{background:var(--ink);color:#fff}
 .msgs li.me .m{text-align:right}
 .msgs li.sys{align-self:center;max-width:none}
 .msgs li.sys span{padding:6px 12px;border-radius:99px;background:var(--well);font-size:13px;line-height:18px;color:var(--ink3);text-align:center}
@@ -331,6 +335,71 @@ form.chat-f input:focus{box-shadow:inset 0 0 0 2px var(--ink)}
 .pfbar{display:flex;align-items:center;gap:16px;padding:4px 28px 16px}
 .pfframe{flex:1;width:100%;border:0;background:#fff}
 
+/* v29: Zero's dock and drawer, working states, the match ring, the AI card */
+.zdock{position:absolute;left:50%;bottom:18px;z-index:20;display:flex;flex-direction:column;align-items:center;gap:8px;width:min(680px,calc(100% - 40px));transform:translateX(-50%);pointer-events:none}
+.zdock>*{pointer-events:auto}
+.zsug{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.zsug .opt{box-shadow:inset 0 0 0 1px var(--line2),0 6px 14px -10px rgba(19,20,23,.4)}
+.zform{display:flex;align-items:center;gap:10px;width:100%;height:56px;padding:0 8px 0 12px;border-radius:99px;background:#fff;box-shadow:0 0 0 1px var(--line2),0 18px 36px -18px rgba(19,20,23,.45)}
+.zform:focus-within{box-shadow:0 0 0 2px var(--ink),0 18px 36px -18px rgba(19,20,23,.45)}
+.zform input{flex:1;min-width:0;height:44px;color:var(--ink)}
+.zgo{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:99px;color:#fff;background:linear-gradient(#313337,#17181B);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 0 0 1px #0F1012;flex-shrink:0;transition:filter .12s var(--e),transform .12s var(--e)}
+.zgo:hover{filter:brightness(1.14)}
+.zgo:active{transform:translateY(1px)}
+.zdrawer{position:absolute;top:76px;right:12px;bottom:12px;z-index:30;display:none;flex-direction:column;width:min(440px,calc(100% - 24px));border-radius:24px;background:#fff;box-shadow:0 0 0 1px var(--line2),0 30px 60px -24px rgba(19,20,23,.45);overflow:hidden}
+.zdrawer.on{display:flex;animation:in .24s var(--e) both}
+.zhead{display:flex;align-items:center;gap:12px;margin:8px;padding:12px;border-radius:16px;background:linear-gradient(120deg,#EEFAD9,#F6F6F8 70%)}
+.zdrawer .msgs{padding:8px 16px 16px}
+.zdrawer .msgs li{max-width:100%}
+.zdrawer .zsug{justify-content:flex-start;padding:0 16px 8px}
+.zdrawer .zform{width:auto;margin:0 12px 12px;height:52px;box-shadow:inset 0 0 0 1px var(--line2)}
+.zdrawer .zform:focus-within{box-shadow:inset 0 0 0 2px var(--ink)}
+.msgs li.them>div{min-width:0}
+.zsteps{display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-radius:16px;background:var(--well)}
+.zsteps li{display:flex;align-items:center;gap:10px;max-width:none;color:var(--ink3)}
+.zsteps li.done{color:var(--ink)}
+.zsteps li.done svg{width:14px;height:14px;color:var(--good);stroke-width:2.5}
+.zsteps li.now{color:var(--ink)}
+.spin{width:14px;height:14px;border-radius:99px;box-shadow:inset 0 0 0 2px var(--line2);flex-shrink:0}
+.now>.spin,.spin.go{box-shadow:none;border:2px solid var(--line2);border-top-color:var(--ink);animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.zcard{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.zcard .item{flex-wrap:wrap;padding:12px}
+.zcard .item .grow{flex-basis:160px}
+.ring{--p:80;position:relative;display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:99px;background:conic-gradient(var(--good) calc(var(--p)*1%),var(--well2) 0);flex-shrink:0}
+.ring::before{content:'';position:absolute;inset:5px;border-radius:99px;background:#fff}
+.ring b{position:relative;font-weight:400;color:var(--ink);letter-spacing:0}
+.ring.sm{width:36px;height:36px}
+.ring.sm::before{inset:3px}
+.ring.sm b{font-size:13px;line-height:18px}
+.ai{padding:20px;border-radius:20px;background:linear-gradient(125deg,#EAF9D2 0%,#FBFDF6 38%,#FFFFFF 60%,#F1F0FB 100%);box-shadow:inset 0 0 0 1px var(--line)}
+.ai .stats{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.ai .c{background:rgba(255,255,255,.8);box-shadow:inset 0 0 0 1px var(--line)}
+
+/* the portfolio, native */
+.pf{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:40px;align-items:start;padding-top:12px}
+.pf-main{min-width:0;max-width:760px}
+.pf-side{position:sticky;top:0}
+.pf-head{display:flex;align-items:center;flex-wrap:wrap;gap:16px}
+.pf-head .grow{flex-basis:220px}
+.pf-about{margin-top:20px;color:var(--ink);max-width:62ch}
+.pf-list{display:flex;flex-direction:column;gap:8px}
+.pf-pr{display:flex;gap:16px;padding:16px;border-radius:20px;background:#fff;box-shadow:inset 0 0 0 1px var(--line)}
+.pf-pr.off{background:var(--well)}
+.pf-th{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;width:132px;height:96px;border-radius:14px;background:var(--well);box-shadow:inset 0 0 0 1px var(--line);flex-shrink:0}
+.pf-sk{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.pf-sk>div{display:flex;flex-direction:column;gap:6px}
+.pf-rows{display:flex;flex-direction:column;gap:20px}
+.pf-sug{display:flex;flex-direction:column;gap:12px;margin-top:16px}
+.pf-sug li{display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-radius:14px;background:var(--well)}
+.pf-fit .h{font-size:32px}
+.pf-val{display:inline-flex;align-items:center;gap:8px;color:var(--ink);text-align:right;border-radius:8px}
+.pf-val svg{width:14px;height:14px;color:var(--ink3)}
+.pf-val:hover{color:var(--ink2)}
+.pf-in{width:190px;height:28px;padding:0 8px;border-radius:8px;color:var(--ink);text-align:right;box-shadow:inset 0 0 0 2px var(--ink)}
+.field textarea{padding:12px 14px;border-radius:12px;background:#fff;color:var(--ink);font:inherit;letter-spacing:inherit;resize:vertical;border:0;outline:0;box-shadow:inset 0 0 0 1px var(--ink3)}
+.field textarea:focus{box-shadow:inset 0 0 0 2px var(--ink)}
+
 @media(max-width:1024px){
   body{overflow:auto}
   .app{height:auto;min-height:100dvh}
@@ -340,14 +409,19 @@ form.chat-f input:focus{box-shadow:inset 0 0 0 2px var(--ink)}
   .strip-r{grid-area:r}
   .stagewrap{padding:0 8px 8px}
   .sheet{height:auto;min-height:80dvh;border-radius:24px}
-  .top{height:auto;min-height:60px;padding:10px 16px;flex-wrap:wrap;gap:8px 12px}
-  .tabs{order:3;flex-basis:100%;overflow-x:auto;margin:0}
-  .body{overflow:visible;padding:4px 16px 48px}
-  .home,.rc{grid-template-columns:minmax(0,1fr);gap:32px}
+  .top{grid-template-columns:minmax(0,1fr) auto;height:auto;min-height:60px;padding:10px 16px;gap:8px 12px}
+  .tabs{grid-column:1/-1;grid-row:2;justify-self:center;max-width:100%;overflow-x:auto}
+  .zdock{position:fixed;bottom:10px}
+  .zdrawer{position:fixed;top:8px;right:8px;bottom:8px;left:8px;width:auto}
+  .zsug{display:none}
+  .body{overflow:visible;padding:4px 16px 120px}
+  .home,.rc,.pf{grid-template-columns:minmax(0,1fr);gap:32px}
+  .pf-side{position:static}
+  .pf-sk{grid-template-columns:minmax(0,1fr)}
   .side{position:static}
   .picks,.rules,.rules.five,.cols{grid-template-columns:minmax(0,1fr)}
   .teams.seven{grid-template-columns:repeat(4,minmax(0,1fr))}
-  .body.split{overflow:visible;padding:4px 12px 32px}
+  .body.split{overflow:visible;padding:4px 12px 120px}
   .body.split .page{height:auto}
   .jobs{grid-template-columns:minmax(0,1fr);height:auto}
   .jl-list{max-height:320px}
@@ -376,26 +450,68 @@ form.chat-f input:focus{box-shadow:inset 0 0 0 2px var(--ink)}
   .k,.s,.x{height:48px}
 }
 @media(prefers-reduced-motion:reduce){
-  .page.in,.conf i,.orb .l,.orb .r{animation:none}
+  .page.in,.conf i,.orb .l,.orb .r,.zdrawer.on,.spin{animation:none}
   .team .res,.k,.s,.x,.pick,.slot,.sw::after{transition:none}
   .flash,.live.go{animation:none}
 }
 
 /* ZERO Job Portal, the recruiter side. Same three sizes, same surfaces as app.css. New names start with r- or pl-. */
 
-/* onboarding and forms */
-.r-duo{display:flex;align-items:center}
-.r-duo .av{margin-left:-10px;box-shadow:0 0 0 3px var(--sheet)}
-.r-ico{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:11px;background:var(--well2);color:var(--ink)}
-.r-form{display:flex;flex-direction:column;gap:12px;width:100%;max-width:760px;margin-top:32px;text-align:left}
+/* the frame: the person stays on the right while the tabs are hidden in onboarding (belongs in app.css, see the note to its owner) */
+@media(min-width:1025px){.top>.top-r{grid-column:3}}
+
+/* Zero at work: ticking steps, one line with a count, and skeletons shaped like what is coming */
+.r-work{width:100%;max-width:420px;margin:20px auto 0;text-align:left}
+.r-form .r-work,.r-new .r-work{margin:4px 0 0}
+.r-work.r-wline{display:flex;align-items:center;gap:10px;max-width:none;min-height:24px;margin:0;color:var(--ink)}
+.r-wline .m{flex-shrink:0;font-variant-numeric:tabular-nums}
+.r-sk{display:block;height:10px;border-radius:99px;background:var(--well2);animation:r-pulse 1.2s ease-in-out infinite}
+.r-sk+.r-sk{margin-top:10px}
+.r-w40{width:40%}
+.r-w70{width:70%}
+.r-w90{width:90%}
+.r-ska{width:36px;height:36px;flex-shrink:0}
+.r-skc{width:76px;height:28px;flex-shrink:0}
+.r-skm{width:24px;height:24px;flex-shrink:0}
+.r-ska+.r-sk,.r-skm+.r-sk,.grow+.r-skc{margin-top:0}
+.r-skrow{display:flex;align-items:center;gap:12px;padding:14px 16px}
+.r-skcrit{margin-top:20px}
+.r-skcrit .grow{padding-top:6px}
+@keyframes r-pulse{50%{opacity:.45}}
+@keyframes r-in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* onboarding: Zero asks one thing per screen */
+.r-ob{padding-top:8px}
+.r-ob .r-dots{margin-top:18px}
+.r-ob .h{margin-top:16px}
+.r-hold{min-height:44px}
+.r-quiet{margin-top:6px}
+.r-gap{margin-top:14px}
+.r-top{align-items:flex-start}
+.r-ask{display:block;width:100%;max-width:420px;margin-top:28px}
+.r-ask .r-in{width:100%;height:56px;border-radius:16px;text-align:center}
+.r-in:disabled,.r-ta:disabled,.field input:disabled{color:var(--ink3)}
+.r-cocard{width:100%;max-width:520px;margin-top:28px;text-align:left}
+.r-form{display:flex;flex-direction:column;gap:12px;width:100%;max-width:760px;margin-top:24px;text-align:left}
+.r-form>.card{padding:16px 20px}
+.r-form .r-crits{gap:10px}
+.r-seg{align-self:center}
+.r-pick{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.r-pick .m{margin-right:4px}
+.r-pick .opt:disabled{opacity:.5;pointer-events:none}
 .r-big{display:flex;flex-direction:column;gap:6px}
 .r-ta{display:block;width:100%;min-height:96px;padding:14px 16px;border:0;outline:0;resize:none;border-radius:16px;background:var(--sheet);box-shadow:inset 0 0 0 1px var(--ink3);font:inherit;letter-spacing:inherit;color:var(--ink);caret-color:var(--ink)}
 .r-ta:focus{box-shadow:inset 0 0 0 2px var(--ink)}
 .r-ta::placeholder{color:var(--ink3)}
-.r-fields{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1.1fr) minmax(0,1.3fr);gap:12px}
+.r-fields{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1.1fr) minmax(0,1.4fr);gap:12px}
+.ai .r-fields{margin-top:16px}
 .r-fields .field{min-width:0}
 .r-fields input{width:100%;min-width:0}
-.r-hold{min-height:44px}
+.r-whys{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;width:100%;max-width:960px;margin-top:24px;text-align:left}
+.r-whys+.r-form{margin-top:20px}
+.r-why{gap:10px;width:100%;min-height:0;padding:16px}
+button.r-why.on,button.r-why.on:hover{background:var(--sheet);box-shadow:inset 0 0 0 2px var(--ink)}
+.r-zsay{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-radius:16px;background:var(--well);color:var(--ink)}
 .r-crits{display:flex;flex-direction:column;gap:14px}
 .r-crits li{display:flex;align-items:center;gap:12px}
 .r-in{height:44px;min-width:0;padding:0 14px;border-radius:12px;background:var(--sheet);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line2)}
@@ -403,9 +519,25 @@ form.chat-f input:focus{box-shadow:inset 0 0 0 2px var(--ink)}
 .r-mn{width:84px;flex-shrink:0;text-align:right}
 .r-err{color:var(--warn)}
 .r-new{display:flex;flex-direction:column;gap:12px}
+.r-new .r-seg{align-self:flex-start}
+
+/* reading the students: the one being read on top, everyone settling into a label below */
+.r-reading{width:100%;max-width:760px;margin-top:24px;text-align:left}
+.r-now{padding:16px 20px}
+.r-prog{margin-top:14px}
+.r-prog .m{flex-shrink:0;min-width:56px;text-align:right;font-variant-numeric:tabular-nums}
+.r-bar{height:6px;border-radius:99px;background:var(--well2);overflow:hidden}
+.r-bar i{display:block;width:100%;height:100%;border-radius:99px;background:var(--ink);transform-origin:left center;transform:scaleX(var(--p,0));transition:transform .35s var(--e)}
+.r-reading>.r-result{justify-content:center;margin-top:4px}
+.r-read{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.r-rd{display:flex;align-items:center;gap:12px;min-height:68px;padding:12px 14px;border-radius:16px;background:var(--sheet);box-shadow:inset 0 0 0 1px var(--line)}
+.r-rd .grow>span{display:block}
+.r-rd.r-pop{animation:r-drop .32s var(--e) both}
+@keyframes r-drop{from{opacity:0;margin-top:-76px}to{opacity:1;margin-top:0}}
 
 /* home and roles: one card per role, with how many students sit at each stage */
 .r-main>.sechead:first-child{margin-top:0}
+.r-zhome{margin-bottom:28px}
 .r-role{display:flex;flex-direction:column;gap:14px;width:100%;padding:18px 20px;border-radius:20px;background:var(--sheet);box-shadow:inset 0 0 0 1px var(--line);transition:box-shadow .12s var(--e)}
 .r-role:hover{box-shadow:inset 0 0 0 1px var(--line2)}
 .r-role .row{width:100%;align-items:flex-start}
@@ -435,7 +567,9 @@ form.chat-f input:focus{box-shadow:inset 0 0 0 2px var(--ink)}
 .r-tb td,.r-tb thead th+th{text-align:center}
 .r-tb thead th.i{color:var(--ink)}
 
-/* find talent */
+/* find talent: the list, the portfolio, and how this student fits, each in its own pane */
+.body.r-wide .page{max-width:1440px}
+.jobs.r-find{grid-template-columns:minmax(280px,1fr) minmax(0,2fr) minmax(288px,1fr)}
 .r-filters{display:flex;gap:8px}
 .r-sel{position:relative;display:flex;align-items:center;flex:1;min-width:0}
 .r-sel select{-webkit-appearance:none;appearance:none;width:100%;height:36px;padding:0 32px 0 14px;border:0;outline:0;border-radius:99px;background:var(--sheet);box-shadow:inset 0 0 0 1px var(--line2);font:inherit;font-size:13px;line-height:18px;letter-spacing:inherit;color:var(--ink2);text-overflow:ellipsis;cursor:pointer}
@@ -443,15 +577,21 @@ form.chat-f input:focus{box-shadow:inset 0 0 0 2px var(--ink)}
 .r-sel svg{position:absolute;right:12px;width:14px;height:14px;color:var(--ink3);pointer-events:none}
 .r-filters .opt{flex-shrink:0;white-space:nowrap}
 .r-none{display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:16px 12px}
-.r-head{align-items:flex-start}
-.r-line{margin-top:20px;max-width:56ch}
-.r-facts{display:flex;flex-wrap:wrap;gap:12px 32px;margin-top:20px;padding:14px 16px;border-radius:14px;background:var(--well)}
-.r-pfwrap{display:flex;flex-direction:column;overflow:hidden}
-.r-pf{flex:1;width:100%;min-height:0;border:0;background:var(--sheet)}
+.r-prof{max-width:820px;padding:28px}
+.r-prof .pf-head>.grow{flex-basis:220px}
+.r-side{display:flex;flex-direction:column;gap:12px;min-height:0;overflow-y:auto;border-radius:20px}
+.r-side>.card{flex-shrink:0}
+.r-work.r-opening{margin-top:20px}
+/* what you can do stays in reach at the foot of the fit card while the proof scrolls above it */
+.r-side:not(.r-formed) .pf-fit>.acts{position:sticky;bottom:0;margin:20px -24px -24px;padding:16px 24px 20px;border-radius:0 0 20px 20px;background:var(--sheet);box-shadow:inset 0 1px 0 var(--line),inset 1px 0 0 var(--line),inset -1px 0 0 var(--line),inset 0 -1px 0 var(--line)}
+.r-state{display:flex;flex-direction:column;align-items:flex-start;gap:10px;flex:1 1 100%;padding:14px 16px;border-radius:14px;background:var(--well)}
+.r-note{flex-basis:100%}
+.r-side .pf-fit>.acts>.k{flex:1 1 100%}
+.r-sform{flex:1 1 100%;min-width:0;margin-top:0;padding:16px}
 
-/* pipeline: one column per stage, cards move on their own */
+/* pipeline: one column per stage, cards move on their own. The board stops above Zero's dock. */
 .pl-top{flex-shrink:0;width:100%;max-width:1680px;margin:0 auto;padding:0 28px}
-.pl-board{flex:1;min-height:0;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(196px,1fr);gap:8px;width:100%;max-width:1680px;margin:0 auto;padding:0 28px 24px;overflow-x:auto}
+.pl-board{flex:1;min-height:0;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(196px,1fr);gap:8px;width:100%;max-width:1680px;margin:0 auto;padding:0 28px 96px;overflow-x:auto}
 .pl-col{display:flex;flex-direction:column;min-height:0;border-radius:20px;background:var(--well)}
 .pl-h{padding:14px 12px 8px 14px}
 .pl-list{display:flex;flex-direction:column;gap:6px;flex:1;min-height:0;overflow-y:auto;padding:6px}
@@ -469,27 +609,59 @@ form.chat-f input:focus{box-shadow:inset 0 0 0 2px var(--ink)}
 .pl-quiet .pl-card{background:var(--well);box-shadow:none}
 .pl-quiet .pl-card .i{color:var(--ink2)}
 
+/* inbox: Zero writing a reply */
+.r-replying{padding:0 20px}
+
+/* account */
+.r-acct{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+.r-team,.r-perm{display:flex;flex-direction:column;gap:16px}
+.r-team{margin-top:4px}
+.r-selw{flex:0 0 176px}
+.r-invite{margin-top:16px}
+.r-sub{margin:24px 0 12px}
+.r-fee{margin-top:20px}
+
+/* Zero's answers in the drawer: small rows that go somewhere */
+.r-zc{gap:6px}
+.r-zrow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:2px 12px;width:100%;padding:10px 12px;border-radius:14px;background:var(--sheet);box-shadow:inset 0 0 0 1px var(--line);text-align:left;transition:box-shadow .12s var(--e)}
+button.r-zrow:hover{box-shadow:inset 0 0 0 1px var(--line2)}
+.r-zrow>.av,.r-zrow>.lg{grid-row:1/3;align-self:start}
+.r-zrow>svg{width:16px;height:16px;color:var(--ink3)}
+.r-zl{grid-column:2/-1}
+.r-zev{display:flex;align-items:flex-start;gap:10px;padding:4px 2px}
+.r-zev>.grow>span{display:block}
+.r-zacts{display:flex;flex-wrap:wrap;gap:6px;padding-top:2px}
+
 @media(max-width:1024px){
-  .r-rolepage{grid-template-columns:minmax(0,1fr);gap:24px}
+  .r-rolepage,.r-acct{grid-template-columns:minmax(0,1fr)}
+  .r-rolepage{gap:24px}
+  .jobs.r-find{grid-template-columns:minmax(0,1fr)}
+  .r-find .r-side{order:2;overflow:visible}
+  .r-side:not(.r-formed) .pf-fit>.acts{position:static;margin:20px 0 0;padding:0;box-shadow:none}
+  .r-find .r-pane{order:3}
+  .r-prof{padding:20px 16px}
+  .r-whys{grid-template-columns:repeat(2,minmax(0,1fr))}
   .pl-top{padding:0 16px}
-  .pl-board{flex:none;grid-auto-columns:240px;padding:0 16px 32px;scroll-snap-type:x proximity;scroll-padding-left:16px}
+  .pl-board{flex:none;grid-auto-columns:240px;padding:0 16px 120px;scroll-snap-type:x proximity;scroll-padding-left:16px}
   .pl-col{scroll-snap-align:start;align-self:start}
   .pl-list{overflow:visible}
-  .r-pfwrap{min-height:70dvh}
 }
 @media(max-width:640px){
-  .r-fields{grid-template-columns:minmax(0,1fr)}
-  .teams.seven.r-found{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .r-fields,.r-whys{grid-template-columns:minmax(0,1fr)}
+  .r-rd .clip{white-space:normal}
+  .r-rd.r-pop{animation-name:r-in}
   .r-stages{grid-template-columns:repeat(3,minmax(0,1fr))}
   .r-marks{display:none}
-  .r-head{flex-wrap:wrap}
-  .r-head>.grow{flex-basis:calc(100% - 60px)}
   .r-mn{display:none}
   .r-filters{flex-wrap:wrap}
-  .r-ban>.grow,.r-stat>.grow{flex-basis:100%}
+  .r-stat>.grow{flex-basis:100%}
+  .r-team .row{flex-wrap:wrap}
+  .r-selw{flex:1 1 100%}
+  .chat-f .s{padding:0 12px}
 }
 @media(prefers-reduced-motion:reduce){
-  .r-role,.r-stu-h,.pl-card{transition:none}
+  .r-role,.r-stu-h,.pl-card,.r-zrow,.r-bar i{transition:none}
+  .r-sk,.r-rd.r-pop{animation:none}
 }
 
 </style>
@@ -501,6 +673,8 @@ form.chat-f input:focus{box-shadow:inset 0 0 0 2px var(--ink)}
     <div class="sheet">
       <header class="top" id="top"></header>
       <main class="body" id="body"></main>
+      <div class="zdock" id="zdock"></div>
+      <aside class="zdrawer" id="zdrawer" aria-label="Zero"></aside>
     </div>
   </div>
 </div>
@@ -1347,6 +1521,9 @@ const DATA = {
   ]
 };
 
+/* Maya, taken from the live portfolio data (zero-portfolio/v29/js/data.js) */
+const MAYA={"about":"I build the agents and data pipelines that sales teams run on. I start from the rep’s day, wire the data, then put a number on what changed.","facts":[["Location","Austin, Texas"],["Work style","Remote in the US, or Austin"],["Work authorization","Authorized to work in the US"],["Available","From November 2026"],["Languages","English, native. Spanish, professional."]],"projects":[{"id":"router","co":"hubspot","dom":"hubspot.com","short":"Inbound lead router","title":"Inbound lead router that replies in 90 seconds","sum":"I built a workflow for HubSpot’s sales team that reads every new form fill, scores how good a fit the lead is, and sends it to the right rep with a reply already drafted.","tools":[["n8n","n8n.io"],["claude","claude.ai"],["hubspot","hubspot.com"],["slack","slack.com"]],"verdict":"Exceptional","by":"Dana Whitfield","byRole":"Director of Revenue Operations","quote":"She replayed last quarter’s real leads through the router before she showed it to anyone. The human queue for unsure scores is the part I would ship first."},{"id":"waterfall","co":"notion","dom":"notion.so","short":"Enrichment waterfall","title":"Enrichment waterfall for 8,400 target accounts","sum":"Notion’s sales team had a list of 8,400 companies it wanted to reach, but only about half had an email address we could trust.","tools":[["clay","clay.com"],["apollo","apollo.io"],["claude","claude.ai"],["hubspot","hubspot.com"]],"verdict":"Exceeds","by":"Marcus Hale","byRole":"Head of Growth","quote":"Cheapest provider first, stop at the first verified hit. She priced every step, so I could see what a contact costs before we ran it."},{"id":"evals","co":"shopify","dom":"shopify.com","short":"Outbound agent with evals","title":"Outbound email agent with its own eval suite","sum":"I built an agent for Shopify’s outbound team that writes the first email to each account from a short brief.","tools":[["claude","claude.ai"],["instantly","instantly.ai"],["cursor","cursor.com"],["python","python.org"]],"verdict":"Exceptional","by":"Tom Becker","byRole":"VP, Sales Development","quote":"Most people show me their best email. She showed me the four that failed and what she changed because of them."},{"id":"intent","co":"stripe","dom":"stripe.com","short":"Intent signal scoring","title":"Intent signals that tell reps who to call today","sum":"Stripe’s reps had more accounts than they could call, so I turned three signs of buying interest into one score per account: pricing page visits, new sales hires and funding news.","tools":[["clay","clay.com"],["snowflake","snowflake.com"],["claude","claude.ai"],["slack","slack.com"]],"verdict":"Exceeds","by":"Priya Nair","byRole":"Senior Manager, Sales Strategy","quote":"Reps do not read dashboards. Putting ten accounts and a reason in Slack at 8 am was the right call."},{"id":"pql","co":"figma","dom":"figma.com","short":"Product qualified lead score","title":"Product qualified lead score from workspace usage","sum":"I wanted Figma’s sales team to know which free workspaces were most likely to upgrade, so I scored each one on seats, shared files and how often people edit.","tools":[["snowflake","snowflake.com"],["hightouch","hightouch.com"],["hubspot","hubspot.com"],["python","python.org"]],"verdict":"Exceeds","by":"Elena Sokolova","byRole":"Growth Analytics Lead","quote":"She held out a full month and scored it blind. That is the only number I trust."},{"id":"notes","co":"slack","dom":"slack.com","short":"Call notes agent","title":"Call notes agent that fills the CRM and shows its sources","sum":"Reps at Slack were typing their notes into the CRM by hand after every sales call, so I built an agent that reads the transcript and fills in the seven deal fields for them.","tools":[["claude","claude.ai"],["hubspot","hubspot.com"],["n8n","n8n.io"],["python","python.org"]],"verdict":"Exceeds","by":"Rachel Kim","byRole":"Director of Sales Enablement","quote":"Every field links to the line in the call. My managers stopped asking where the answer came from."},{"id":"model","co":"canva","dom":"canva.com","short":"CRM data model","title":"CRM data model for one clean view of each account","sum":"Canva’s CRM listed the same company several times over, and about one in five accounts had no owner.","tools":[["hubspot","hubspot.com"],["snowflake","snowflake.com"],["n8n","n8n.io"]],"verdict":"Meets","by":"James Okafor","byRole":"RevOps Manager","quote":"The model is right. The rollout plan needed owners and dates, and she added them after the review."}],"skills":[["Agents and automation",["AI agents in revenue workflows","Workflow orchestration","Prompt and context design","Evals and guardrails"]],["Data",["Data enrichment waterfall","Lead scoring","SQL","CRM data modeling","Reverse ETL"]],["GTM and working with people",["Intent signals","Ideal customer profile","Product led sales","Cold email deliverability","Presenting to a team","Written updates","Scoping a loose brief"]]],"tools":[["clay","clay.com"],["n8n","n8n.io"],["claude","claude.ai"],["hubspot","hubspot.com"],["apollo","apollo.io"],["snowflake","snowflake.com"],["instantly","instantly.ai"],["hightouch","hightouch.com"],["cursor","cursor.com"],["python","python.org"],["slack","slack.com"],["openai","openai.com"]],"work":[{"org":"Zapier","dom":"zapier.com","role":"Sales Development Representative","when":"Jun 2023 to Aug 2025","where":"Remote","note":"Booked 14 meetings a month on average. Built the team’s first Clay table for account research, which the whole pod picked up."},{"org":"Salesforce","dom":"salesforce.com","role":"Sales Operations Intern","when":"May 2022 to Aug 2022","where":"Austin, Texas","note":"Cleaned 40,000 lead records ahead of a territory change and wrote the dedupe rules the team kept using."}],"school":[{"org":"The University of Texas at Austin","dom":"utexas.edu","role":"BBA, Management Information Systems","when":"2019 to 2023","note":"GPA 3.6"},{"org":"HubSpot Academy","dom":"hubspot.com","role":"Revenue Operations Certification","when":"Mar 2026","note":""},{"org":"Google","dom":"google.com","role":"Google Data Analytics Professional Certificate","when":"Nov 2024","note":""}]};
+
 /* ZERO Job Portal, core: helpers, one shared state, the clock, the events that both sides read and write.
    Pages live in student.js and recruiter.js and register themselves in PAGES. Actions register in A. */
 const $=(q,e=document)=>e.querySelector(q),$$=(q,e=document)=>[...e.querySelectorAll(q)];
@@ -1355,7 +1532,7 @@ const ic=n=>`<i data-lucide="${n}"></i>`;
 const icons=()=>{if(window.lucide)lucide.createIcons()};
 const lg=(d,k='')=>`<span class="lg ${k}">${fav(d)}</span>`;
 const av=(ini,tone='',k='')=>`<span class="av ${tone?'tone-'+tone:''} ${k}">${ini}</span>`;
-const orb=(k='')=>`<span class="orb ${k}" role="img" aria-label="Zero"><i class="l"></i><i class="r"></i><i class="mo"></i></span>`;
+const orb=(k='')=>`<span class="orb ${k}" role="img" aria-label="Zero"><i class="l"></i><i class="r"></i></span>`;
 const chip=(t,k='')=>`<span class="c ${k}">${t}</span>`;
 const btn=(t,k,a,id='',x='')=>`<button class="${k}" type="button" data-a="${a}" data-id="${id}" ${x}>${t}</button>`;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -1364,6 +1541,8 @@ const fmt=d=>`${DAY[d.getDay()]} ${d.getDate()} ${MON[d.getMonth()]}`;
 const addBiz=(d,n)=>{const x=new Date(d);while(n>0){x.setDate(x.getDate()+1);if(x.getDay()%6)n--}return x};
 const money=n=>'$'+Number(n).toLocaleString('en-US');
 const payOf=r=>r.pay?`${money(r.pay[0])} to ${money(r.pay[1])}`:'Pay not posted';
+const score=r=>{let a=0,b=0;r.needs.forEach(n=>{const w=n.must?2:1;b+=w;a+=w*(n.v==='y'?1:n.v==='p'?.5:0)});return Math.round(20+78*a/b)};
+const ring=(n,k='')=>`<span class="ring ${k}" style="--p:${n}" role="img" aria-label="${n} percent match"><b>${n}</b></span>`;
 const NUM=['No','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten'];
 const num=n=>NUM[n]||String(n);
 
@@ -1383,7 +1562,7 @@ const NEEDS=['asked','accepted','offer'];
 const fresh=()=>({mode:'student',page:{student:'home',recruiter:'home'},onb:{student:'ready',recruiter:'welcome'},now:new Date(2026,9,12),paused:false,pend:'',
  prefs:{role:'GTM engineering roles',where:'Remote in the US, or Austin',pay:'$95,000',start:'November 2026',hide:'Zapier'},edit:'',searched:false,
  apps:{},saved:{},hidden:{},applying:'',job:'',q:'',fit:'all',open:'',hired:'',fix:{},picks:{},
- threads:{},thread:'',slog:[],rlog:[],dots:{},tdot:{},flash:'',
+ threads:{},thread:'',slog:[],rlog:[],dots:{},tdot:{},flash:'',zopen:false,zdraft:'',pf:{view:'own',edit:false,all:false,hide:{},top:'',about:'',sug:{}},vis:true,
  rc:{}});
 let S=fresh(),timer=0;
 const today=()=>fmt(S.now);
@@ -1443,6 +1622,25 @@ function nextAuto(){if(S.paused)return null;if(S.mode==='student')return S.onb.s
  for(const f of AUTO){const e=f(ev);if(e)return e}return null}
 function schedule(){const e=nextAuto();if(!e){clearTimeout(timer);S.pend='';return}if(S.pend===e.key)return;clearTimeout(timer);S.pend=e.key;timer=setTimeout(()=>{S.pend='';e.run();render()},e.ms)}
 
+/* ═══ Zero, the agent. One thread per side. It shows its work, then answers, and can act when you say so. ═══
+   The student's thread is the same one the Inbox shows, so nothing said here is lost. */
+const INTENTS={student:[],recruiter:[]},SUGGEST={student:()=>[],recruiter:()=>[]};
+const zthread=()=>S.mode==='student'?(S.threads.zero=S.threads.zero||{msgs:[],unread:0,runread:0}):(S.rc.zero=S.rc.zero||{msgs:[]});
+const zsteps=m=>`<ul class="zsteps">${m.steps.map((t,i)=>`<li class="${i<m.at?'done':i===m.at&&m.busy?'now':''}">${i<m.at?ic('check'):'<span class="spin"></span>'}<span>${t}</span></li>`).join('')}</ul>`;
+function zbub(m){if(m.from==='sys')return`<li class="sys"><span>${esc(m.text)}</span></li>`;if(m.from==='me')return`<li class="me"><div><p>${esc(m.text)}</p></div></li>`;
+ return`<li class="them">${orb('xs')}<div>${m.steps&&m.steps.length&&(m.busy||m.keep)?zsteps(m):''}${m.busy?'':`${m.text?`<p>${m.html?m.text:esc(m.text)}</p>`:''}${m.card||''}`}<span class="m">${m.busy?'Working':m.date===today()?'Today':m.date}</span></div></li>`}
+function zask(q){q=(q||'').trim();if(!q)return;const t=zthread(),L=INTENTS[S.mode],it=L.find(i=>i.re.test(q))||L[L.length-1];t.msgs.push({from:'me',text:q,date:today()});
+ const m={from:'them',date:today(),steps:it&&it.steps?it.steps(q):['Reading your question'],at:0,busy:true};t.msgs.push(m);S.zopen=true;S.zdraft='';zdraw();
+ const step=()=>{if(m.at<m.steps.length-1){m.at++;zdraw();setTimeout(step,560+Math.random()*380)}else setTimeout(()=>{m.at=m.steps.length;const r=(it&&it.run(q))||{text:'I did not catch that.'};Object.assign(m,r,{busy:false});render()},620)};setTimeout(step,520)}
+function zsay2(text,card){zthread().msgs.push({from:'them',date:today(),text,html:true,card:card||''})}
+function zdraw(){const d=$('#zdock'),w=$('#zdrawer');if(!d)return;const onb=S.onb[S.mode]!=='done';if(onb){d.innerHTML='';w.className='zdrawer';w.innerHTML='';return}
+ const had=document.activeElement&&document.activeElement.id==='zin',val=had?document.activeElement.value:S.zdraft,t=zthread(),sug=SUGGEST[S.mode]().slice(0,3),name=S.mode==='student'?'Zero':'Zero';
+ const form=`<form class="zform" id="zform"><label class="hide" for="zin">Ask Zero</label>${orb('xs')}<input id="zin" placeholder="${S.mode==='student'?'Ask Zero to find roles, apply for you, or explain anything':'Ask Zero to find students, draft a role, or sum up your pipeline'}" autocomplete="off" value="${esc(val||'')}"><button class="zgo" type="submit" aria-label="Send">${ic('arrow-up')}</button></form>`;
+ const chips=sug.length?`<div class="zsug">${sug.map(x=>`<button type="button" class="opt" data-a="zq" data-id="${esc(x)}">${x}</button>`).join('')}</div>`:'';
+ if(S.zopen){d.innerHTML='';w.className='zdrawer on';w.innerHTML=`<div class="zhead">${orb('xs')}<div class="grow"><p class="i">${name}</p><p class="m">${S.mode==='student'?'Your agent. It finds roles, applies when you say so, and keeps you posted.':'Your hiring agent. It reads every student against your brief.'}</p></div><button class="x" type="button" data-a="zclose" aria-label="Close" style="height:36px;padding:0 10px">${ic('x')}</button></div><ul class="msgs" id="zmsgs">${t.msgs.length?t.msgs.slice(-40).map(zbub).join(''):`<li class="sys"><span>Ask anything. Zero shows its work before it answers.</span></li>`}</ul>${chips}${form}`}
+ else{w.className='zdrawer';w.innerHTML='';d.innerHTML=`${chips}${form}`}
+ icons();const z=$('#zmsgs');if(z){const q=[...z.querySelectorAll('li.me')].pop();z.scrollTop=q&&t.msgs.length&&!t.msgs[t.msgs.length-1].busy?Math.max(0,q.offsetTop-z.offsetTop-8):z.scrollHeight}const i=$('#zin');if(i){if(had){i.focus();i.setSelectionRange(i.value.length,i.value.length)}i.oninput=()=>{S.zdraft=i.value};$('#zform').onsubmit=e=>{e.preventDefault();const v=i.value;i.value='';zask(v);setTimeout(()=>{const n=$('#zin');if(n)n.focus()},0)}}}
+
 /* ═══ frame ═══ */
 const PAGES={student:{},recruiter:{}},TABS={student:[],recruiter:[]},A={},AFTER=[];
 function stripHTML(){const e=nextAuto(),need=S.mode==='student'?Object.keys(S.apps).some(id=>NEEDS.includes(stOf(id))):(typeof rcNeeds==='function'&&rcNeeds());
@@ -1451,9 +1649,10 @@ function stripHTML(){const e=nextAuto(),need=S.mode==='student'?Object.keys(S.ap
   <div class="modes" role="group" aria-label="See the portal as">${[['student','Student',face()],['recruiter','Recruiter',lg('ramp.com','xs')]].map(m=>`<button type="button" class="${S.mode===m[0]?'on':''}" aria-pressed="${S.mode===m[0]}" data-a="mode" data-id="${m[0]}">${m[2]}${m[1]}${S.dots[m[0]]&&S.mode!==m[0]?'<span class="dot"></span>':''}</button>`).join('')}</div>
   <div class="strip-r"><button class="x" type="button" data-a="restart" style="height:36px">${ic('rotate-ccw')}Start over</button></div>`}
 function topHTML(){const mark=$('#wordmark').innerHTML,rec=S.mode==='recruiter',onb=S.onb[S.mode]!=='done';
- const tabs=onb?'':`<nav class="tabs" aria-label="Sections">${TABS[S.mode].map(t=>{const n=t[2]?t[2]():0;return`<button type="button" class="${S.page[S.mode]===t[0]?'on':''}" ${S.page[S.mode]===t[0]?'aria-current="page"':''} data-a="go" data-id="${t[0]}">${t[1]}${n?`<span class="n">${n}</span>`:''}${S.tdot[t[3]||t[0]]&&S.page[S.mode]!==t[0]?'<span class="dot"></span>':''}</button>`}).join('')}</nav>`;
- return rec?`<div class="row">${mark}<span class="m">for hiring teams</span></div>${tabs}<div class="row who">${lg('ramp.com','xs')}<span class="i">Ramp</span>${av(ROLE(LINK).manager.ini,'a')}</div>`:`${mark}${tabs}<div class="row who">${onb?face():`<button type="button" class="x" data-a="go" data-id="prefs" aria-label="Your preferences" style="height:44px;padding:0 6px 0 12px"><span class="m">${ME.first}</span>${face()}</button>`}</div>`}
-function render(enter){const b=$('#body'),sc=b.scrollTop,m=S.mode,key=S.onb[m]!=='done'?'onb':S.page[m];
+ const tabs=onb?'<span></span>':`<nav class="tabs" aria-label="Sections">${TABS[S.mode].map(t=>{const n=t[2]?t[2]():0;return`<button type="button" class="${S.page[S.mode]===t[0]?'on':''}" ${S.page[S.mode]===t[0]?'aria-current="page"':''} data-a="go" data-id="${t[0]}">${t[1]}${n?`<span class="n">${n}</span>`:''}${S.tdot[t[3]||t[0]]&&S.page[S.mode]!==t[0]?'<span class="dot"></span>':''}</button>`}).join('')}</nav>`;
+ const me=rec?`${lg('ramp.com','xs')}<span class="i">${ROLE(LINK).manager.name.split(' ')[0]}</span>${av(ROLE(LINK).manager.ini,'a')}`:`<span class="i">${ME.first}</span>${face()}`,pid=rec?'account':'me';
+ return`<div class="top-l">${mark}${rec?'<span class="m">for hiring teams</span>':''}</div>${tabs}<div class="top-r">${onb?`<span class="row">${me}</span>`:`<button type="button" class="whoami ${S.page[S.mode]===pid?'on':''}" data-a="go" data-id="${pid}" aria-label="${rec?'Your company and account':'Your profile and portfolio'}">${me}</button>`}</div>`}
+function render(enter){const b=$('#body'),sc=b.scrollTop,m=S.mode,key=S.onb[m]!=='done'?'onb':S.page[m];zdraw();
  const html=(PAGES[m][key]||PAGES[m].home)();
  $('#top').innerHTML=topHTML();b.className='body '+(PAGES[m][key+'Class']||'');b.innerHTML=`<div class="page ${enter?'in':''}">${html}</div>`;b.scrollTop=enter?0:sc;if(enter)scrollTo(0,0);
  schedule();$('#strip').innerHTML=stripHTML();icons();S.flash='';AFTER.forEach(f=>f(enter))}
@@ -1463,9 +1662,62 @@ A.pause=()=>{S.paused=!S.paused;clearTimeout(timer);S.pend=''};
 A.restart=()=>{clearTimeout(timer);S=fresh();if(typeof rcSeed==='function')rcSeed();return'enter'};
 document.addEventListener('click',e=>{const a=e.target.closest('[data-a]');if(typeof commitEdit==='function'&&!e.target.closest('[data-edit]')&&commitEdit()&&!a)return render();if(!a||a.disabled)return;const f=A[a.dataset.a];if(!f)return;const r=f(a.dataset.id,a,e);if(r!==false)render(r==='enter')});
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('[data-enter]')){e.preventDefault();const f=A[e.target.dataset.enter];if(f){const r=f(e.target.dataset.id,e.target,e);if(r!==false)render(r==='enter')}}if(e.key==='Enter'&&e.target.matches('tr[data-a],[role="button"][data-a]'))e.target.click()});
+A.zq=id=>{zask(id);return false};
+A.zclose=()=>{S.zopen=false};
+A.zopen=()=>{S.zopen=true};
+
+/* ZERO Job Portal, the portfolio. Built into the portal, not embedded. One component, two views:
+   the student's own (edit it, see who opened it) and the recruiter's (how this person fits a role). */
+const NAMES={hubspot:'HubSpot',notion:'Notion',shopify:'Shopify',stripe:'Stripe',figma:'Figma',slack:'Slack',canva:'Canva',n8n:'n8n',claude:'Claude',clay:'Clay',apollo:'Apollo.io',snowflake:'Snowflake',instantly:'Instantly',hightouch:'Hightouch',cursor:'Cursor',python:'Python',openai:'OpenAI'};
+const nm=x=>NAMES[x]||x;
+const toolChip=t=>`<span class="c">${t[1]?fav(t[1]):''}${nm(t[0])}</span>`;
+function PERSON(id){if(id==='maya'){const hide=S.pf.hide,top=S.pf.top;let pr=MAYA.projects.slice();if(top){const i=pr.findIndex(p=>p.id===top);if(i>0)pr.unshift(pr.splice(i,1)[0])}
+  return{id,name:ME.name,first:ME.first,photo:ME.photo,role:ME.role,city:ME.city,level:ME.level,about:S.pf.about||MAYA.about,facts:[['Can start',S.prefs.start],['Where',S.prefs.where],['Work authorization','Authorized to work in the US']],projects:pr.map(p=>({...p,co:nm(p.co),hidden:!!hide[p.id]})),skills:MAYA.skills,tools:MAYA.tools,work:MAYA.work,school:MAYA.school}}
+ const s=DATA.students.find(x=>x.id===id);return{id,name:s.name,first:s.first,ini:s.ini,tone:s.tone,role:s.track,city:s.city,level:s.level,about:s.line,facts:[['Can start',s.avail],['Where',s.city],['Work authorization',s.auth]],projects:s.projects.map((p,i)=>({id:id+i,title:p.title,co:p.co,dom:p.dom,verdict:p.verdict,sum:'',tools:[]})),skills:[['Skills',s.skills]],tools:s.tools.map(t=>[t,'']),work:[],school:[]}}
+/* how many teams opened each of Maya's projects: one view per opened application that leans on it */
+const pfViews=()=>{const v={};Object.keys(S.apps).forEach(id=>{if(APP(id).opened)ROLE(id).needs.forEach(n=>{if(n.pid)(v[n.pid]=v[n.pid]||new Set()).add(id)})});return v};
+function profileMain(p,o={}){const own=o.view!=='recruiter',edit=own&&S.pf.edit,views=p.id==='maya'&&own?pfViews():{},list=p.projects.filter(x=>own||!x.hidden),shown=S.pf.all?list:list.slice(0,4);
+ const proj=x=>`<article class="pf-pr ${x.hidden?'off':''}"><span class="pf-th">${lg(x.dom)}<span class="m">ZERO scenario</span></span><div class="grow"><h3 class="i">${x.title}</h3>${x.sum?`<p>${x.sum}</p>`:`<p class="m">For ${x.co}</p>`}
+   <div class="chips" style="margin-top:10px">${chip(ic('check')+'Rated '+x.verdict,x.verdict==='Meets'?'':'g')}${x.tools.map(toolChip).join('')}${views[x.id]?chip(ic('eye')+`Opened by ${num(views[x.id].size).toLowerCase()} team${views[x.id].size===1?'':'s'}`):''}${x.hidden?chip('Hidden from teams'):''}</div>
+   ${edit?`<div class="acts" style="margin-top:12px">${btn('Show first','s sm','pftop',x.id)}${btn(x.hidden?'Show to teams':'Hide from teams','s sm','pfhide',x.id)}</div>`:''}</div></article>`;
+ const row=x=>`<li class="row" style="align-items:flex-start">${x.dom?lg(x.dom,'sm'):''}<div class="grow"><p class="i">${x.org}</p><p>${x.role}</p><p class="m">${[x.when,x.where].filter(Boolean).join(' · ')}</p>${x.note?`<p style="margin-top:6px">${x.note}</p>`:''}</div></li>`;
+ return`<header class="pf-head">${p.photo?`<span class="av face" style="width:76px;height:76px"><img src="${p.photo}" alt=""></span>`:av(p.ini,p.tone,'lgx')}<div class="grow"><h1 class="h">${p.name}</h1><p class="sub" style="margin-top:4px">${p.role} · ${p.city}</p></div><div class="chips">${chip(`Level ${p.level} of 10`,'g')}${chip(ic('badge-check')+'Work verified by Zero')}</div></header>
+  ${edit?`<label class="field" for="aboutIn" style="margin-top:20px"><span class="m">About you, in your words</span><textarea id="aboutIn" data-edit rows="3">${esc(p.about)}</textarea></label>`:`<p class="pf-about">${esc(p.about)}</p>`}
+  <div class="chips" style="margin-top:16px">${p.facts.map(f=>chip(`${f[0]}: ${esc(f[1])}`)).join('')}</div>
+  <section class="sec"><h2 class="lab">Projects</h2><div class="pf-list">${shown.map(proj).join('')}</div>${list.length>4?`<div style="margin-top:12px">${btn(S.pf.all?'Show fewer':`Show ${list.length-4} more projects`,'s sm','pfall')}</div>`:''}</section>
+  <section class="sec"><h2 class="lab">Skills</h2><div class="pf-sk">${p.skills.map(g=>`<div><p class="i">${g[0]}</p>${g[1].map(x=>`<p>${x}</p>`).join('')}</div>`).join('')}</div></section>
+  ${p.tools.length?`<section class="sec"><h2 class="lab">Tools</h2><div class="chips">${p.tools.map(toolChip).join('')}</div></section>`:''}
+  ${p.work.length?`<section class="sec"><h2 class="lab">Experience</h2><ul class="pf-rows">${p.work.map(row).join('')}</ul></section>`:''}
+  ${p.school.length?`<section class="sec"><h2 class="lab">Education and certificates</h2><ul class="pf-rows">${p.school.map(row).join('')}</ul></section>`:''}`}
+/* the recruiter's card on a profile: the label and the proof, no score */
+function fitCard(sid,rid,acts=''){const s=DATA.students.find(x=>x.id===sid),r=DATA.rampRoles.find(x=>x.id===rid)||DATA.rampRoles[0],f=(s.fits||{})[r.id];if(!f)return'';
+ return`<div class="card pf-fit"><div class="row">${lg('ramp.com','sm')}<div class="grow"><p class="i">${r.title}</p><p class="m">${r.team} · Ramp</p></div></div>
+  <p class="h" style="margin-top:16px">${f.label}</p>
+  <ul class="crit" style="margin-top:16px;gap:12px">${r.crit.map((c,i)=>`<li><span class="mk ${f.c[i][0]}">${ic(f.c[i][0]==='y'?'check':f.c[i][0]==='p'?'minus':'x')}</span><div class="grow"><p class="i">${c.t}${c.must?'':' <span class="m">Nice to have</span>'}</p><p class="m">${f.c[i][1]}</p></div></li>`).join('')}</ul>
+  ${acts?`<div class="acts" style="margin-top:20px">${acts}</div>`:''}</div>`}
+
+/* ═══ the student's own page: reached from her name, top right ═══ */
+const SUGS=[['redo','Your CRM data model is rated Meets. Redo that scenario and it can move up.'],['line','Add one line on the kind of team you want. Teams read it first.'],['intro','Record a 60 second intro. Profiles with one get opened more.']];
+PAGES.student.me=()=>{const p=PERSON('maya'),rec=S.pf.view==='recruiter',done=SUGS.filter(x=>S.pf.sug[x[0]]==='done').length,left=SUGS.filter(x=>!S.pf.sug[x[0]]),strength=Math.min(96,84+4*done);
+ const opens=Object.keys(S.apps).filter(id=>APP(id).opened);
+ const side=rec?`${fitCard('maya','ramp-gtm',`<button class="s" type="button" disabled>Shortlist</button><button class="k" type="button" disabled>Ask to meet Maya</button>`)}<p class="m" style="margin-top:12px">This is what a hiring manager at Ramp sees beside your work. A label and the proof behind it. Your email stays private until you say yes.</p>`
+  :`<div class="card"><div class="row">${ring(strength)}<div class="grow"><p class="i">Portfolio strength</p><p class="m">${left.length?`${num(left.length)} thing${left.length===1?'':'s'} would lift it.`:'Nothing left to fix.'}</p></div></div>
+     <div class="acts" style="margin-top:16px">${S.pf.edit?btn('Save changes','k','pfsave'):btn(`${ic('pencil')}Edit portfolio`,'k','pfedit')}${btn(`${ic('message-circle')}Ask Zero`,'s','zopen')}</div>
+     ${left.length?`<ul class="pf-sug">${left.slice(0,2).map(x=>`<li><p>${x[1]}</p><div class="acts">${btn('Done','s sm','pfsug',x[0],'data-v="done"')}${btn('Skip','x sm','pfsug',x[0],'data-v="skip"')}</div></li>`).join('')}</ul>`:''}</div>
+    <div class="card" style="margin-top:12px"><h2 class="lab">Who opened it</h2>${opens.length?`<ul class="log">${opens.map(id=>{const r=ROLE(id),pr=PROJ((r.needs.find(n=>n.pid)||{}).pid)||ME.projects[0];return`<li>${lg(CO(r.co).dom,'sm')}<div><p class="i">${who(id).name}, ${CO(r.co).name}</p><p class="m">${APP(id).opened===today()?'Today':APP(id).opened} · read ${pr[1]}</p></div></li>`}).join('')}</ul>`:'<p class="m">Nobody yet. It fills in when a team opens your work.</p>'}</div>
+    <div class="card" style="margin-top:12px"><div class="sechead" style="margin:0 0 12px"><h2 class="lab">Job search preferences</h2></div><ul class="kv">${PREFS.map(r=>`<li><span>${r[2]}</span>${S.edit===r[0]?`<input id="prefIn" data-edit data-id="${r[0]}" value="${esc(S.prefs[r[0]])}" autocomplete="off" aria-label="${r[2]}" class="pf-in">`:`<button type="button" class="pf-val" data-a="pref" data-id="${r[0]}">${esc(S.prefs[r[0]])}${ic('pencil')}</button>`}</li>`).join('')}</ul>
+     <div class="row" style="margin-top:16px"><p class="grow">Visible to hiring teams</p><button class="sw ${S.vis!==false?'on':''}" type="button" role="switch" aria-checked="${S.vis!==false}" aria-label="Visible to hiring teams" data-a="vis"></button></div><p class="m" style="margin-top:6px">A role that breaks a preference is held back. Your salary floor is never shown.</p></div>`;
+ return`<div class="pf"><div class="pf-main">${profileMain(p,{view:rec?'recruiter':'own'})}</div>
+  <aside class="pf-side"><div class="seg" role="group" aria-label="View" style="margin-bottom:12px"><button type="button" class="${rec?'':'on'}" aria-pressed="${!rec}" data-a="pfview" data-id="own">${ic('user')}Your view</button><button type="button" class="${rec?'on':''}" aria-pressed="${rec}" data-a="pfview" data-id="recruiter">${ic('eye')}Recruiter view</button></div>${side}</aside></div>`};
+A.pfview=id=>{S.pf.view=id;S.pf.edit=false};A.pfedit=()=>{S.pf.edit=true};A.pfall=()=>{S.pf.all=!S.pf.all};
+A.pfsave=()=>{const a=$('#aboutIn');if(a&&a.value.trim())S.pf.about=a.value.trim();S.pf.edit=false;zpost2('I saved your portfolio changes. Teams see the new version from now on.')};
+A.pftop=id=>{S.pf.top=id};A.pfhide=id=>{S.pf.hide[id]=!S.pf.hide[id]};
+A.pfsug=(id,a)=>{S.pf.sug[id]=a.dataset.v};
+A.vis=()=>{S.vis=S.vis===false};
+function zpost2(t){(S.threads.zero=S.threads.zero||{msgs:[],unread:0,runread:0}).msgs.push({from:'them',text:t,date:today()})}
 
 /* ZERO Job Portal, the student side: Maya. Onboarding, Home, Jobs, Applications, Inbox, Portfolio. */
-TABS.student=[['home','Home'],['jobs','Jobs'],['apps','Applications',()=>Object.keys(S.apps).filter(id=>NEEDS.includes(stOf(id))).length],['inbox','Inbox',()=>Object.values(S.threads).reduce((n,t)=>n+t.unread,0),'inbox'],['portfolio','Portfolio']];
+TABS.student=[['home','Home'],['jobs','Jobs'],['apps','Applications',()=>Object.keys(S.apps).filter(id=>NEEDS.includes(stOf(id))).length],['inbox','Inbox',()=>Object.values(S.threads).reduce((n,t)=>n+t.unread,0),'inbox']];
 const fitK=f=>f==='Strong fit'?'g':f==='Not a match'?'':'';
 const openRoles=()=>DATA.roles.filter(r=>!S.apps[r.id]);
 const mkLine=(v,t)=>`<li class="${v}">${ic(v==='y'?'check':v==='p'?'minus':'circle-dashed')}<span>${t}</span></li>`;
@@ -1483,8 +1735,12 @@ function onbSearch(){const d=S.searched,cos=Object.keys(DATA.companies),best=c=>
  const n=f=>DATA.roles.filter(r=>r.fit===f).length;
  return`<div class="mid">${orb()}<h1 class="h">${d?`${num(n('Strong fit')+n('Good fit'))} roles fit your work.`:'Reading every open role.'}</h1><p class="sub">${d?`${DATA.roles.length} open roles read at ${cos.length} hiring teams. ${num(n('Strong fit'))} are a strong fit.`:`${cos.length} teams are hiring on ZERO this week.`}</p>
   <div class="teams seven">${cos.map(c=>{const b=best(c);return`<div class="team ${d?'done':''} ${b==='Not a match'?'off':''}">${lg(CO(c).dom)}<p class="i">${CO(c).name}</p><div class="res">${chip((b==='Strong fit'?ic('check'):'')+b,b==='Strong fit'?'g':'')}</div></div>`}).join('')}</div>
+  <p class="row m" id="reading" style="margin-top:20px;justify-content:center;min-height:18px">${d?'':'<span class="spin go"></span><span>Starting</span>'}</p>
   <div class="acts" ${d?'':'hidden'}>${btn('See my best matches','k','onb','picks')}</div></div>`}
-function runSearch(){if(S.searched||S.searching)return;S.searching=true;let i=0;const step=()=>{const t=$$('.team');if(S.onb.student!=='search'||S.mode!=='student'||!t.length){S.searching=false;return}if(i<t.length){for(let j=0;j<=i;j++)t[j].classList.add('done');i++;setTimeout(step,240)}else{S.searched=true;S.searching=false;render()}};setTimeout(step,600)}
+function runSearch(){if(S.searched||S.searching)return;S.searching=true;const fast=matchMedia('(prefers-reduced-motion: reduce)').matches;let i=0;const R=DATA.roles.slice().sort((a,b)=>Object.keys(DATA.companies).indexOf(a.co)-Object.keys(DATA.companies).indexOf(b.co));
+ const step=()=>{const t=$$('.team'),line=$('#reading');if(S.onb.student!=='search'||S.mode!=='student'||!t.length){S.searching=false;return}
+  if(i<R.length&&!fast){const r=R[i],ci=Object.keys(DATA.companies).indexOf(r.co);if(line)line.innerHTML=`<span class="spin go"></span><span>Reading ${CO(r.co).name}, ${r.title}. ${i+1} of ${R.length}</span>`;const last=!R[i+1]||R[i+1].co!==r.co;if(last)for(let j=0;j<=ci;j++)t[j]&&t[j].classList.add('done');i++;setTimeout(step,190)}
+  else{S.searched=true;S.searching=false;render()}};setTimeout(step,500)}
 AFTER.push(()=>{if(S.mode==='student'&&S.onb.student==='search')runSearch();const e=$('#prefIn');if(e){e.focus();e.select()}});
 function onbPicks(){const want=['linked','pass-late','slow'],strong=DATA.roles.filter(r=>r.fit==='Strong fit');let top=want.map(t=>strong.find(r=>r.sim.type===t)).filter(Boolean);if(top.length<3)top=strong.slice(0,3);top.forEach(r=>{if(S.picks[r.id]===undefined)S.picks[r.id]=true});const n=top.filter(r=>S.picks[r.id]).length;
  return`<div class="mid">${orb()}<h1 class="h">Start with these three.</h1><p class="sub">Your strongest matches. Each team sees your portfolio. Your contact details stay private until you say yes.</p>
@@ -1495,7 +1751,7 @@ PAGES.student.onb=()=>({ready:onbReady,prefs:onbPrefs,search:onbSearch,picks:onb
 A.onb=id=>{S.onb.student=id;return'enter'};
 A.pref=id=>{S.edit=id};
 A.pick=id=>{S.picks[id]=!S.picks[id]};
-A.applyall=()=>{Object.keys(S.picks).forEach(id=>{if(S.picks[id])E.send(id)});S.onb.student='done';S.flash='';return'enter'};
+A.applyall=()=>{Object.keys(S.picks).forEach(id=>{if(S.picks[id])E.send(id)});S.onb.student='done';S.flash='';zpost2('That is your first three out. I will post here the moment a team opens your work. Ask me to find more roles, or to apply for you.');return'enter'};
 A.onbskip=()=>{S.onb.student='done';S.page.student='jobs';return'enter'};
 function commitEdit(){const i=$('#prefIn');if(!i||!S.edit)return false;S.prefs[i.dataset.id]=i.value.trim()||S.prefs[i.dataset.id];S.edit='';return true}
 A.prefsave=()=>{commitEdit()};
@@ -1556,7 +1812,7 @@ function heroLine(){const ids=Object.keys(S.apps),by=s=>ids.find(id=>stOf(id)===
  if(!act.length)return['Nothing is open right now.','Apply to another role below. Zero reads new ones every morning.'];
  const opened=act.filter(x=>stOf(x)==='opened').map(co);
  return['Nothing needs you today.',opened.length?`${opened.slice(0,2).join(' and ')} opened your work. Zero tells you the moment someone replies.`:`Your work is with ${num(act.length).toLowerCase()} team${act.length===1?'':'s'}. They usually open it within 2 days.`]}
-const roleCard=r=>`<button class="rcard" type="button" data-a="job" data-id="${r.id}"><span class="row">${lg(CO(r.co).dom,'sm')}<span class="grow"><span class="i">${r.title}</span><span class="m">${CO(r.co).name} · ${r.mode}</span></span></span><span class="i">${payOf(r)}</span><span class="m">${r.why}</span><span class="row">${chip(r.fit,fitK(r.fit))}<span class="m">${r.days} day${r.days===1?'':'s'} ago</span></span></button>`;
+const roleCard=r=>`<button class="rcard" type="button" data-a="job" data-id="${r.id}"><span class="row">${lg(CO(r.co).dom,'sm')}<span class="grow"><span class="i">${r.title}</span><span class="m">${CO(r.co).name} · ${r.mode}</span></span></span><span class="i">${payOf(r)}</span><span class="m">${r.why}</span><span class="row">${ring(score(r),'sm')}${chip(r.fit,fitK(r.fit))}<span class="m">${r.days} day${r.days===1?'':'s'} ago</span></span></button>`;
 const logRows=rows=>`<ul class="log">${rows.slice(0,7).map((e,i)=>`<li class="${i===0&&S.flash?'flash':''}"><span class="badge">${e.dom==='zero'?orb('xs'):lg(e.dom,'sm')}<b>${ic(e.icon)}</b></span><div><p class="i">${e.text}</p><p class="m">${e.date===today()?'Today':e.date}</p></div></li>`).join('')}</ul>`;
 const miniRow=id=>{const r=ROLE(id),l=laneOf(id);return`<button class="item" type="button" data-a="go" data-id="apps">${lg(CO(r.co).dom,'sm')}<span class="grow"><span class="i">${r.title}</span><span class="m">${CO(r.co).name}</span></span><span class="mini" aria-hidden="true">${TR.map((t,i)=>`<i class="${l.won||i<l.at?'done':i===l.at?(l.end?'end':'now'):''}"></i>`).join('')}</span>${chip(l.end||TR[l.at],l.end?'':l.at>=2?'g':'')}</button>`};
 PAGES.student.home=()=>{const h=heroLine(),ids=appIds(),need=ids.filter(id=>NEEDS.includes(stOf(id))),rest=ids.filter(id=>!NEEDS.includes(stOf(id)));
@@ -1574,9 +1830,10 @@ PAGES.student.home=()=>{const h=heroLine(),ids=appIds(),need=ids.filter(id=>NEED
 const jobList=()=>{const q=S.q.toLowerCase();return DATA.roles.filter(r=>(S.fit==='hidden'?S.hidden[r.id]:!S.hidden[r.id])&&(S.fit==='all'||S.fit==='hidden'||(S.fit==='saved'?S.saved[r.id]:S.fit==='applied'?S.apps[r.id]:r.fit===S.fit))&&(!q||(r.title+CO(r.co).name+r.loc+r.team).toLowerCase().includes(q)))};
 const stLabel=id=>({sent:'Applied',opened:'Opened',asked:'Wants to meet',accepted:'Pick a time',booked:'Interview booked',met:'Deciding',offer:'Offer',hired:'Hired',passed:'Passed',noreply:'No reply',declined:'Declined',offerDeclined:'Declined',closed:'Role closed',withdrawn:'Withdrawn'}[stOf(id)]);
 function applyPack(r){const ids=[...new Set(r.needs.map(n=>n.pid).filter(Boolean))];ME.projects.forEach(p=>{if(ids.length<3&&!ids.includes(p[0]))ids.push(p[0])});return ids.slice(0,3).map(PROJ)}
-function jobDetail(r){const c=CO(r.co),a=S.apps[r.id],m=r.manager,musts=r.needs.filter(n=>n.must),have=musts.filter(n=>n.v==='y').length;
+function jobDetail(r){const c=CO(r.co),a=S.apps[r.id],m=r.manager,musts=r.needs.filter(n=>n.must),have=musts.filter(n=>n.v==='y').length,nices=r.needs.filter(n=>!n.must),niceHave=nices.filter(n=>n.v==='y').length;
  const cta=a?`<div class="banner" style="margin-top:20px">${chip(stLabel(r.id),NEEDS.includes(a.st)?'w':'g')}<p class="grow">You applied ${rel(a.sent)}. ${m.name.split(' ')[0]} has your work.</p>${btn('Track it','s sm','go','apps')}</div>`
-  :S.applying===r.id?`<div class="form"><p class="i">This is what ${m.name} gets.</p>
+  :S.applying===r.id&&S.pack<3?`<div class="form">${zsteps({steps:['Reading the role again','Picking your three most relevant projects',`Writing a short note to ${m.name.split(' ')[0]}`],at:S.pack,busy:true})}</div>`
+  :S.applying===r.id?`<div class="form"><p class="row i">${orb('sm')}Ready. This is what ${m.name} gets.</p>
      <ul class="list">${applyPack(r).map((p,i)=>`<li class="item"><span class="m" style="width:16px">${i+1}</span>${lg(p[3],'sm')}<span class="grow"><span class="i">${p[1]}</span><span class="m">ZERO scenario for ${p[2]} · Rated ${p[4]}</span></span></li>`).join('')}</ul>
      <p class="m">Your most relevant work goes first. The work and the grades are the same for every team.</p>
      <div class="quote"><p class="i">Hi ${m.name.split(' ')[0]}. I build the agents and data pipelines that sales teams run on. ${applyPack(r)[0][1]} is the closest thing in my portfolio to this role, so it comes first. I would like to talk about ${r.title}.</p><p class="m" style="margin-top:8px">Zero wrote this from your portfolio. Your contact details stay private until you say yes.</p></div>
@@ -1586,22 +1843,23 @@ function jobDetail(r){const c=CO(r.co),a=S.apps[r.id],m=r.manager,musts=r.needs.
  return`<article class="jd"><div class="row" style="align-items:flex-start">${lg(c.dom)}<div class="grow"><h1 class="h" style="font-size:32px">${r.title}</h1><p class="sub" style="margin-top:6px">${c.name} · ${r.team} · ${r.loc}</p></div></div>
   <div class="chips" style="margin-top:16px">${chip(payOf(r)+(r.pay?' a year':''))}${chip(r.mode)}${chip(`Posted ${r.days} day${r.days===1?'':'s'} ago`)}${chip(ic('badge-check')+'Hiring on ZERO')}</div>
   ${cta}
-  <section class="sec"><h2 class="lab">Why this fits you</h2><div class="banner" style="margin-top:0">${chip(r.fit,fitK(r.fit))}<p class="grow i">${r.why}</p><span class="m">${have} of ${musts.length} must haves shown</span></div>
-   <ul class="crit" style="margin-top:20px">${r.needs.map(n=>{const p=PROJ(n.pid);return`<li><span class="mk ${n.v}">${ic(n.v==='y'?'check':n.v==='p'?'minus':'x')}</span><div class="grow"><p class="i">${n.t}${n.must?'':' <span class="m">Nice to have</span>'}</p><p>${n.ev}</p></div>${p?`<span class="c">${fav(p[3]).replace('<img','<img class="ci"')}${p[1]}</span>`:''}</li>`}).join('')}</ul></section>
+  <section class="sec"><div class="ai"><div class="row" style="align-items:flex-start;gap:16px">${ring(score(r))}<div class="grow"><p class="row m" style="gap:8px">${orb('sm')}Why Zero thinks this ${r.fit==='Not a match'?'is not for you':'fits you'}</p><p class="i" style="margin-top:8px">${r.fit}. ${r.why}</p>
+     <div class="stats">${chip(`${ic(have===musts.length?'check':'minus')}${have} of ${musts.length} must haves`,have===musts.length?'g':'')}${nices.length?chip(`${niceHave} of ${nices.length} nice to haves`):''}${chip(r.fit==='Not a match'?'Breaks a preference or a must have':'Fits your preferences')}</div></div></div></div>
+   <h2 class="lab" style="margin-top:24px">Checked against your graded work</h2><ul class="crit">${r.needs.map(n=>{const p=PROJ(n.pid);return`<li><span class="mk ${n.v}">${ic(n.v==='y'?'check':n.v==='p'?'minus':'x')}</span><div class="grow"><p class="i">${n.t}${n.must?'':' <span class="m">Nice to have</span>'}</p><p>${n.ev}</p></div>${p?`<span class="c">${fav(p[3]).replace('<img','<img class="ci"')}${p[1]}</span>`:''}</li>`}).join('')}</ul></section>
   <section class="sec"><h2 class="lab">What you would do</h2><ul class="ev">${r.about.map(x=>`<li>${ic('dot')}<span>${x}</span></li>`).join('')}</ul></section>
   <section class="sec two"><div><h2 class="lab">How they hire</h2><ol class="kv">${r.process.map((x,i)=>`<li><span class="i">${i+1}. ${x.split(',')[0]}</span><span>${(x.split(',')[1]||'').trim()}</span></li>`).join('')}</ol></div>
    <div><h2 class="lab">Who you would meet</h2><div class="row">${av(m.ini,'a','lgx')}<div><p class="i">${m.name}</p><p class="m">${m.title}</p></div></div></div></section>
   <section class="sec"><h2 class="lab">About ${c.name}</h2><p>${c.blurb} ${c.size}. Based in ${c.hq}.</p><div class="chips" style="margin-top:12px">${r.perks.map(x=>chip(x)).join('')}</div></section></article>`}
 PAGES.student.jobsClass='split';
 PAGES.student.jobs=()=>{const L=jobList();if(!L.find(r=>r.id===S.job))S.job=L[0]?L[0].id:'';const r=ROLE(S.job),F=[['all','All'],['Strong fit','Strong fit'],['Good fit','Good fit'],['Stretch','Stretch'],['saved','Saved'],['applied','Applied'],...(Object.values(S.hidden).some(Boolean)?[['hidden','Hidden']]:[])];
- return`<div class="jobs"><div class="jl"><div class="jl-top"><div class="row"><h1 class="i grow">${DATA.roles.length} open roles at ${Object.keys(DATA.companies).length} teams</h1>${btn(`${ic('sliders-horizontal')}Preferences`,'x sm','go','prefs')}</div>
+ return`<div class="jobs"><div class="jl"><div class="jl-top"><div class="row"><h1 class="i grow">${DATA.roles.length} open roles at ${Object.keys(DATA.companies).length} teams</h1>${btn(`${ic('sliders-horizontal')}Preferences`,'x sm','go','me')}</div>
     <label class="search" for="jq">${ic('search')}<span class="hide">Search roles</span><input id="jq" placeholder="Search by role, team or company" value="${esc(S.q)}" autocomplete="off"></label>
     <div class="chips" role="group" aria-label="Filter">${F.map(f=>`<button type="button" class="opt ${S.fit===f[0]?'on':''}" aria-pressed="${S.fit===f[0]}" data-a="fit" data-id="${f[0]}">${f[1]}</button>`).join('')}</div></div>
-   <div class="jl-list">${L.map(x=>`<button type="button" class="jr ${x.id===S.job?'on':''}" data-a="job" data-id="${x.id}" aria-current="${x.id===S.job}">${lg(CO(x.co).dom,'sm')}<span class="grow"><span class="i">${x.title}</span><span class="m">${CO(x.co).name} · ${x.loc}</span><span class="m">${payOf(x)}</span></span><span class="jr-r">${S.apps[x.id]?chip(stLabel(x.id),'g'):chip(x.fit,fitK(x.fit))}<span class="m">${S.saved[x.id]?'Saved · ':''}${x.days}d ago</span></span></button>`).join('')||'<p class="m" style="padding:16px">No roles match. Clear the search or pick All.</p>'}</div></div>
+   <div class="jl-list">${L.map(x=>`<button type="button" class="jr ${x.id===S.job?'on':''}" data-a="job" data-id="${x.id}" aria-current="${x.id===S.job}">${lg(CO(x.co).dom,'sm')}<span class="grow"><span class="i">${x.title}</span><span class="m">${CO(x.co).name} · ${x.loc}</span><span class="m">${payOf(x)}</span></span><span class="jr-r">${S.apps[x.id]?chip(stLabel(x.id),'g'):chip(x.fit,fitK(x.fit))}<span class="m">${score(x)}% match${S.saved[x.id]?' · Saved':''}</span></span></button>`).join('')||'<p class="m" style="padding:16px">No roles match. Clear the search or pick All.</p>'}</div></div>
   <div class="jd-wrap" id="jdwrap">${r?jobDetail(r):'<p class="m" style="padding:24px">Pick a role on the left.</p>'}</div></div>`};
 A.job=id=>{S.job=id;S.applying='';if(S.page.student!=='jobs'){S.page.student='jobs';return'enter'}setTimeout(()=>{const w=$('#jdwrap');if(w)w.scrollTop=0},0)};
 A.fit=id=>{S.fit=id};A.save=id=>{S.saved[id]=!S.saved[id]};A.hide=id=>{S.hidden[id]=!S.hidden[id];if(!Object.values(S.hidden).some(Boolean)&&S.fit==='hidden')S.fit='all'};
-A.apply=id=>{S.applying=id};A.applycancel=()=>{S.applying=''};
+A.apply=id=>{S.applying=id;S.pack=matchMedia('(prefers-reduced-motion: reduce)').matches?3:0;const go=()=>{if(S.applying!==id||S.pack>=3)return;S.pack++;render();setTimeout(go,620)};setTimeout(go,620)};A.applycancel=()=>{S.applying=''};
 A.applysend=id=>{E.send(id);S.applying=''};
 AFTER.push(()=>{const q=$('#jq');if(q&&!q._b){q._b=1;q.addEventListener('input',()=>{S.q=q.value;const p=q.selectionStart;render();const n=$('#jq');n.focus();n.setSelectionRange(p,p)})}});
 
@@ -1618,26 +1876,50 @@ PAGES.student.inbox=()=>{const ids=threadIds();if(!ids.includes(S.thread))S.thre
  const row=k=>{const x=S.threads[k],m=x.msgs[x.msgs.length-1],z=k==='zero';return`<button type="button" class="jr ${k===S.thread?'on':''}" data-a="thread" data-id="${k}">${z?orb('xs'):lg(CO(ROLE(k).co).dom,'sm')}<span class="grow"><span class="i">${z?'Zero':who(k).name}</span><span class="m">${z?'Your agent':CO(ROLE(k).co).name+' · '+ROLE(k).title}</span><span class="m clip">${esc(m.text)}</span></span><span class="jr-r">${x.unread?'<span class="un"></span>':''}<span class="m">${m.date===today()?'Today':m.date.slice(4)}</span></span></button>`};
  const z=S.thread==='zero',open=!z&&S.thread&&['accepted','booked','met','offer','hired'].includes(stOf(S.thread));
  const bub=m=>m.from==='sys'?`<li class="sys"><span>${esc(m.text)}</span></li>`:`<li class="${m.from==='me'?'me':'them'}">${m.from==='me'?'':(z?orb('xs'):av(who(S.thread).ini,'a'))}<div><p>${esc(m.text)}</p><span class="m">${m.date===today()?'Today':m.date}</span></div></li>`;
- return`<div class="jobs"><div class="jl"><div class="jl-top"><h1 class="i">Inbox</h1><p class="m">Zero posts every update here. A team can write to you once you accept their introduction.</p></div><div class="jl-list">${ids.map(row).join('')||'<p class="m" style="padding:16px">Nothing yet. Updates arrive after you apply.</p>'}</div></div>
+ return`<div class="jobs"><div class="jl"><div class="jl-top"><h1 class="i">Inbox</h1><p class="m">Everything Zero does and everything you ask it is kept here. A team can write to you once you accept their introduction.</p></div><div class="jl-list">${ids.map(row).join('')||'<p class="m" style="padding:16px">Nothing yet. Updates arrive after you apply.</p>'}</div></div>
   <div class="jd-wrap chat">${t?`<div class="chat-h">${z?orb('xs'):lg(CO(ROLE(S.thread).co).dom,'sm')}<div class="grow"><p class="i">${z?'Zero':who(S.thread).name}</p><p class="m">${z?'Your agent. It writes here every time it does something for you.':who(S.thread).title+' at '+CO(ROLE(S.thread).co).name}</p></div>${z?'':btn('See the role','s sm','job',S.thread)}</div>
-    <ul class="msgs" id="msgs">${t.msgs.map(bub).join('')}</ul>
-    ${z?'<p class="m chat-f">Zero only posts updates here. To change what it looks for, open Preferences from your photo.</p>':open?`<form class="chat-f row" id="sendf"><label class="hide" for="msgIn">Message</label><input id="msgIn" class="grow" placeholder="Write to ${first(S.thread)}" autocomplete="off"><button class="k sm" type="submit">Send</button></form>`:`<p class="m chat-f">${stOf(S.thread)==='asked'?'Accept the introduction to write back.':'This conversation is closed.'}</p>`}`:'<p class="m" style="padding:24px">No conversation selected.</p>'}</div></div>`};
+    <ul class="msgs" id="msgs">${t.msgs.map(z?zbub:bub).join('')}</ul>
+    ${z?`<div class="chat-f row">${btn(`${ic('message-circle')}Ask Zero something`,'k sm','zopen')}<span class="m">Or use the bar at the bottom of any page.</span></div>`:open?`<form class="chat-f row" id="sendf"><label class="hide" for="msgIn">Message</label><input id="msgIn" class="grow" placeholder="Write to ${first(S.thread)}" autocomplete="off"><button class="k sm" type="submit">Send</button></form>`:`<p class="m chat-f">${stOf(S.thread)==='asked'?'Accept the introduction to write back.':'This conversation is closed.'}</p>`}`:'<p class="m" style="padding:24px">No conversation selected.</p>'}</div></div>`};
 A.thread=id=>{S.thread=id;if(S.page.student!=='inbox'){S.page.student='inbox';S.tdot.inbox=false;return'enter'}};
 AFTER.push(()=>{const m=$('#msgs');if(m)m.scrollTop=m.scrollHeight;const f=$('#sendf');if(f)f.onsubmit=e=>{e.preventDefault();const v=$('#msgIn').value.trim();if(!v)return;const id=S.thread;say(id,'me',v);render();if(id!==LINK)setTimeout(()=>{if(S.threads[id]){say(id,'them','Thanks, Maya. Got it.');render()}},2600);setTimeout(()=>{const i=$('#msgIn');if(i)i.focus()},0)}});
 
-/* ═══ preferences: what Zero looks for, reached from your photo or from Jobs ═══ */
-PAGES.student.prefs=()=>`<div class="title"><h1 class="h">What Zero looks for.</h1><p class="sub">A role that breaks one of these is held back. Tap one to change it, and Zero reads every open role again.</p></div>
-  ${prefTiles().replace('class="rules five"','class="rules five" style="margin-top:0;max-width:none"')}
-  <div class="list" style="margin-top:12px"><div class="item"><div class="grow"><p class="i">Visible to hiring teams</p><p class="m">${S.vis!==false?'Teams on ZERO can find your work. Your email stays private until you say yes.':'Hidden. Work you already sent stays with those teams.'}</p></div><button class="sw ${S.vis!==false?'on':''}" type="button" role="switch" aria-checked="${S.vis!==false}" aria-label="Visible to hiring teams" data-a="vis"></button></div></div>`;
-A.vis=()=>{S.vis=S.vis===false};
+/* ═══ Zero, for the student: finds roles, applies when told, explains, keeps score ═══ */
+const zRoleOf=q=>{const t=q.toLowerCase(),hit=DATA.roles.filter(r=>t.includes(CO(r.co).name.toLowerCase()));return hit.find(r=>t.includes(r.title.toLowerCase()))||hit[0]};
+const zRole=r=>`<div class="item">${lg(CO(r.co).dom,'sm')}<span class="grow"><span class="i">${r.title}</span><span class="m">${CO(r.co).name} · ${payOf(r)}</span></span>${ring(score(r),'sm')}${S.apps[r.id]?chip(stLabel(r.id),'g'):btn('Apply','k sm','zapply',r.id)}${btn('View','x sm','job',r.id)}</div>`;
+const zList=a=>`<div class="zcard">${a.join('')}</div>`;
+const bestOpen=()=>openRoles().filter(r=>!S.hidden[r.id]&&(r.fit==='Strong fit'||r.fit==='Good fit')).sort((a,b)=>score(b)-score(a));
+INTENTS.student=[
+ {re:/\b(apply|go for|send (it|my work))\b/i,steps:q=>{const r=zRoleOf(q)||bestOpen()[0];return r?[`Reading ${r.title} at ${CO(r.co).name}`,'Picking your three most relevant projects',`Writing a short note to ${r.manager.name.split(' ')[0]}`]:['Looking for a role to apply to']},
+  run:q=>{const r=zRoleOf(q)||bestOpen()[0];if(!r)return{text:'There is nothing left to apply to right now. I read new roles every morning.'};if(S.apps[r.id])return{text:`You already applied to ${CO(r.co).name} ${rel(APP(r.id).sent)}. It stands at: ${stLabel(r.id)}.`,card:zList([zRole(r)])};
+   return{text:`Ready. This goes to ${r.manager.name} at ${CO(r.co).name}. ${applyPack(r)[0][1]} leads, because it is closest to the role. Nothing is sent until you press the button.`,card:zList([...applyPack(r).map((p,i)=>`<div class="item soft"><span class="m" style="width:16px">${i+1}</span>${lg(p[3],'sm')}<span class="grow"><span class="i">${p[1]}</span><span class="m">Rated ${p[4]}</span></span></div>`),`<div class="acts">${btn(`Send to ${CO(r.co).name}`,'k sm','zsend',r.id)}${btn('Not now','s sm','znot')}</div>`])}}},
+ {re:/\b(find|search|more roles|other roles|new roles|what else|recommend|roles for me|jobs)\b/i,steps:()=>[`Reading ${DATA.roles.length} open roles at ${Object.keys(DATA.companies).length} teams`,'Checking each one against your preferences','Ranking them by your graded work'],
+  run:()=>{const a=bestOpen().slice(0,3);return a.length?{text:`${num(a.length)} you have not applied to yet, best first. Say apply and I will pack it for you.`,card:zList(a.map(zRole))}:{text:'You have applied to every role that fits. I read new ones every morning and will post them here.'}}},
+ {re:/why.*(pass|no\b|reject|turn)|feedback/i,steps:()=>['Finding the team that passed','Reading what they wrote'],
+  run:q=>{const id=Object.keys(S.apps).find(x=>stOf(x)==='passed'&&(!zRoleOf(q)||zRoleOf(q).id===x))||Object.keys(S.apps).find(x=>stOf(x)==='passed');if(!id)return{text:'Nobody has passed on you. When a team does, I ask them for a reason and post it here.'};const c=APP(id);return{text:c.line?`${CO(ROLE(id).co).name} passed ${rel(c.told)}. ${who(id).name} wrote: “${esc(c.line)}”`:`${CO(ROLE(id).co).name} passed and gave no reason. I asked once more.`,html:true,card:zList([`<div class="acts">${btn('Open the application','s sm','go','apps')}</div>`])}}},
+ {re:/offer|fair|salary|negotiat|counter/i,steps:()=>['Reading the offer','Comparing it with the posted range','Checking what similar roles pay'],
+  run:()=>{const id=Object.keys(S.apps).find(x=>stOf(x)==='offer');if(!id)return{text:'There is no offer on the table yet. When one arrives I compare it with the posted range and the median before you answer.'};const c=APP(id),r=ROLE(id);return{text:`${CO(r.co).name} offered ${c.amount}. Their posted range was ${payOf(r)} and the median for this role is ${c.median}. It is a fair offer. If you want more, asking for ${money(r.pay?r.pay[1]-4000:0)} is reasonable. I only send what you approve.`,card:zList([`<div class="acts">${btn('Open the offer','k sm','go','apps')}</div>`])}}},
+ {re:/prepare|interview|practi[cs]e|what will .* ask/i,steps:()=>['Finding your next interview','Reading the rubric that team scores on'],
+  run:()=>{const id=Object.keys(S.apps).find(x=>stOf(x)==='booked');if(!id)return{text:'You have no interview booked. When you do, I pull what they are likely to ask from the rubric they score on.'};const c=APP(id),s=c.slots[c.slot],p=PROJ((ROLE(id).needs.find(n=>n.pid&&n.v==='y')||{}).pid)||ME.projects[0];return{text:`You meet ${who(id).name} on ${fmt(s[0])} at ${s[1]}. Expect three things: a walk through your ${p[1].toLowerCase()}, a problem from their team, and what is new to you in this role. Lead with the number, then the method.`}}},
+ {re:/why|fit|match|good for|right for/i,steps:q=>{const r=zRoleOf(q)||ROLE(S.job)||DATA.roles[0];return[`Reading ${r.title} at ${CO(r.co).name}`,'Checking each requirement against your graded work']},
+  run:q=>{const r=zRoleOf(q)||ROLE(S.job)||DATA.roles[0],m=r.needs.filter(n=>n.must),gap=r.needs.find(n=>n.v!=='y');return{text:`${CO(r.co).name}, ${r.title}: ${score(r)}% match. ${r.fit}. ${r.why} You show ${m.filter(n=>n.v==='y').length} of ${m.length} must haves.${gap?` The gap: ${gap.ev}`:''}`,card:zList([zRole(r)])}}},
+ {re:/portfolio|profile|improve|stronger/i,steps:()=>['Reading your portfolio the way a hiring manager would','Checking which projects teams open most'],
+  run:()=>{const left=SUGS.filter(x=>!S.pf.sug[x[0]]);return{text:left.length?`${num(left.length)} thing${left.length===1?'':'s'} would lift it. ${left[0][1]}`:'Your portfolio is in good shape. Nothing to fix right now.',card:zList([`<div class="acts">${btn('Open my portfolio','k sm','go','me')}</div>`])}}},
+ {re:/where|status|stand|update|happen|next|should i|needs? me|waiting/i,steps:()=>['Checking your applications','Checking your inbox'],
+  run:()=>{const ids=Object.keys(S.apps),need=ids.filter(id=>NEEDS.includes(stOf(id))),live=ids.filter(id=>LIVE.includes(stOf(id)));if(!ids.length)return{text:'You have not applied anywhere yet. Want me to find the roles that fit you best?'};
+   return{text:need.length?`${num(need.length)} thing${need.length===1?'':'s'} need${need.length===1?'s':''} you: ${need.map(id=>`${CO(ROLE(id).co).name} (${stLabel(id).toLowerCase()})`).join(', ')}.`:`Nothing needs you. ${num(live.length)} application${live.length===1?' is':'s are'} in progress and I am waiting on the teams.`,card:zList([...need.concat(live.filter(x=>!need.includes(x))).slice(0,3).map(id=>zRole(ROLE(id))),`<div class="acts">${btn('Open Applications','s sm','go','apps')}</div>`])}}},
+ {re:/./,steps:()=>['Reading your question'],run:()=>({text:'I can find roles for you, apply when you say so, explain why a role fits or why a team passed, prepare you for an interview, and tell you where everything stands. Try one of the suggestions below.'})},
+];
+SUGGEST.student=()=>{const ids=Object.keys(S.apps),has=s=>ids.find(id=>stOf(id)===s),a=[];if(has('offer'))a.push('Is this offer fair?');if(has('booked'))a.push('Prepare me for the interview');if(has('passed'))a.push(`Why did ${CO(ROLE(has('passed')).co).name} pass?`);
+ if(S.page.student==='jobs'&&S.job&&!S.apps[S.job])a.push(`Apply to ${CO(ROLE(S.job).co).name} ${ROLE(S.job).title}`);a.push(ids.length?'Find more roles':'Find roles for me','Where do I stand?','Improve my portfolio');return a};
+A.zapply=id=>{const r=ROLE(id);zask(`Apply to ${CO(r.co).name} ${r.title}`);return false};
+A.zsend=id=>{const r=ROLE(id);if(S.apps[id])return;const c=E.send(id);zsay2(`Sent. ${r.manager.name} has your work. You should hear back by ${c.reply}.`)};
+A.znot=()=>{zsay2('Left it. Nothing was sent.')};
 
-/* ═══ portfolio: the real one ═══ */
-PAGES.student.portfolioClass='flush';
-PAGES.student.portfolio=()=>`<div class="pfbar"><div class="grow"><p class="i">This is your live portfolio. It is exactly what a hiring team opens.</p><p class="m">Teams see all of it. Your email stays private until you accept an introduction.</p></div><a class="s sm" href="${PF}slate-light.html" target="_blank" rel="noopener">Open in a new tab${ic('arrow-up-right')}</a></div><iframe class="pfframe" src="${PF}slate-light.html" title="Maya Reyes, portfolio" loading="lazy"></iframe>`;
-
-/* ZERO Job Portal, the recruiter side: the hiring manager on the shared role, at Ramp. Onboarding, Home, Roles, Find talent, Pipeline, Inbox.
+/* ZERO Job Portal, the recruiter side: the hiring manager on the shared role, at Ramp. Onboarding, Home, Roles, Find talent, Pipeline, Inbox, Account, and Zero's chat.
    Maya is the one student both sides share. Her application to LINK lives in S.apps[LINK] and moves only through E.
-   Every other student lives in S.rc and moves through RE below, played by the clock. */
+   Every other student lives in S.rc and moves through RE below, played by the clock.
+   Zero does the reading on this side, and shows it. Each wait is a short state in S.rc.work (see rcWork), so nothing blocks a click, and reduced motion shows the result at once.
+   Fit is a label and the proof behind it, never a number. */
 TABS.recruiter=[['home','Home'],['roles','Roles'],['find','Find talent'],['pipeline','Pipeline',()=>rcDue().length],['rinbox','Inbox',()=>rcUnread(),'rinbox']];
 
 /* ═══ who is who ═══ */
@@ -1665,21 +1947,30 @@ const rcPool=()=>DATA.students.filter(rcSeen);
 const RC_FITS=['Strong fit','Good fit','Worth a look'];
 const RC_MK={y:['check','Shown'],p:['minus','Partly shown'],n:['x','Not shown yet']};
 const rcMk=v=>`<span class="mk ${v}" title="${RC_MK[v][1]}">${ic(RC_MK[v][0])}<span class="hide">${RC_MK[v][1]}</span></span>`;
-/* role families: the words that pick one, the tracks that belong to it, and the criteria Zero drafts for it */
+const rcLow=t=>/^[A-Z]{2}/.test(t)?t:t[0].toLowerCase()+t.slice(1);
+const rcMode=loc=>/remote/i.test(loc)?'Remote':/hybrid/i.test(loc)?'Hybrid':'On site';
+const rcIsA=l=>l===RC_FITS[2]?'is worth a look':`is a ${l.toLowerCase()}`;
+/* role families: the words that pick one, the tracks that belong to it, the tools such a team runs on, one plain sentence for it, and the criteria Zero drafts for it */
 const RC_FAM=[
- {k:'gtm',title:'GTM Engineer',team:'Revenue Systems',pay:[105000,135000],w:['gtm','go to market','agent','outbound','enrich','prospect','sales eng'],own:['gtm'],near:['sales systems','revenue operations'],
+ {k:'gtm',title:'GTM Engineer',team:'Revenue Systems',pay:[105000,135000],w:['gtm','go to market','agent','outbound','enrich','prospect','sales eng'],own:['gtm'],near:['sales systems','revenue operations'],tools:['Clay','n8n','Claude','Snowflake','Salesforce'],
+  need:'Someone who can build the agents and data flows our sales team runs on, and test them on real data.',
   crit:[['Builds AI agents for sales teams','AI agents',1],['Enriches and scores accounts','Enrichment',1],['Writes SQL on a warehouse','SQL',1],['Tests AI output before launch','Evals',0],['Has worked in a CRM','CRM',0]]},
- {k:'revops',title:'Revenue Operations Analyst',team:'Revenue Operations',pay:[88000,110000],w:['revops','revenue operations','sales operations','crm','salesforce','hubspot','forecast','pipeline report','quota','territor'],own:['revenue operations','sales systems'],near:['data analyst','gtm','marketing operations'],
+ {k:'revops',title:'Revenue Operations Analyst',team:'Revenue Operations',pay:[88000,110000],w:['revops','revenue operations','sales operations','crm','salesforce','hubspot','forecast','pipeline report','quota','territor'],own:['revenue operations','sales systems'],near:['data analyst','gtm','marketing operations'],tools:['Salesforce','Snowflake','Tableau','dbt'],
+  need:'An analyst who keeps the CRM clean, builds the weekly pipeline report, and can explain a number to a sales leader.',
   crit:[['Keeps CRM data clean','CRM data',1],['Writes SQL for pipeline reports','SQL',1],['Builds dashboards leaders use','Dashboards',1],['Has run a forecast review','Forecasting',0],['Explains numbers in plain words','Presenting',0]]},
- {k:'growth',title:'Growth Analyst',team:'Growth',pay:[90000,115000],w:['growth','funnel','signup','experiment','a/b','conversion','activation','retention','drop off','drop-off'],own:['growth'],near:['data analyst','marketing operations'],
+ {k:'growth',title:'Growth Analyst',team:'Growth',pay:[90000,115000],w:['growth','funnel','signup','experiment','a/b','conversion','activation','retention','drop off','drop-off'],own:['growth'],near:['data analyst','marketing operations'],tools:['Amplitude','Mixpanel','Snowflake','Python'],
+  need:'An analyst who can find where signups drop off, test a fix, and say plainly if it worked.',
   crit:[['Finds drop-off in a funnel','Funnels',1],['Designs and reads A/B tests','Experiments',1],['Writes SQL on product data','SQL',1],['Builds clear charts','Charts',0],['Writes a short recommendation','Writing',0]]},
- {k:'mops',title:'Marketing Operations Associate',team:'Marketing',pay:[78000,98000],w:['marketing','campaign','email','lifecycle','newsletter','webinar','marketo','deliverab'],own:['marketing operations'],near:['growth','sales systems'],
+ {k:'mops',title:'Marketing Operations Associate',team:'Marketing',pay:[78000,98000],w:['marketing','campaign','email','lifecycle','newsletter','webinar','marketo','deliverab'],own:['marketing operations'],near:['growth','sales systems'],tools:['Marketo','HubSpot','Salesforce','Mailchimp'],
+  need:'Someone who runs our campaigns and makes sure good leads reach sales.',
   crit:[['Runs campaigns in a marketing automation tool','Automation',1],['Scores leads and routes them to sales','Lead scoring',1],['Reports campaigns against pipeline','Reporting',1],['Keeps lists clean and deliverable','List hygiene',0],['Writes a clear campaign brief','Writing',0]]},
- {k:'data',title:'Data Analyst',team:'Data',pay:[90000,116000],w:['data','analyst','analytics','sql','dashboard','warehouse','metric','report','cohort','statistic'],own:['data analyst'],near:['growth','revenue operations'],
+ {k:'data',title:'Data Analyst',team:'Data',pay:[90000,116000],w:['data','analyst','analytics','sql','dashboard','warehouse','metric','report','cohort','statistic'],own:['data analyst'],near:['growth','revenue operations'],tools:['Snowflake','dbt','Looker','Tableau','Python'],
+  need:'An analyst who writes the SQL and builds the dashboards a team uses every week.',
   crit:[['Writes SQL on a warehouse','SQL',1],['Builds dashboards a team uses every week','Dashboards',1],['Checks data quality before reporting','Data quality',1],['Uses statistics to size an effect','Statistics',0],['Explains numbers in plain words','Presenting',0]]}];
-const RC_ANY={k:'any',title:'Associate',team:'Operations',pay:[80000,100000],w:[],own:[],near:[''],
+const RC_ANY={k:'any',title:'Associate',team:'Operations',pay:[80000,100000],w:[],own:[],near:[''],tools:[],need:'Someone who can take an open problem and finish it.',
  crit:[['Finishes an open problem end to end','Ownership',1],['Uses data to make a decision','Data',1],['Writes clearly for a busy reader','Writing',1],['Uses AI tools and checks their output','AI tools',0],['Presents to people outside the team','Presenting',0]]};
 function rcFamOf(text){const t=text.toLowerCase();let best=RC_ANY,top=0;RC_FAM.forEach(f=>{const n=f.w.filter(w=>t.includes(w)).length;if(n>top){top=n;best=f}});return best}
+const rcFamFor=r=>RC_FAM.find(f=>f.k===r.fam)||(r.fam==='any'?RC_ANY:rcFamOf(`${r.title} ${r.team}`));
 /* A role made here, or a draft published here, has no graded fits in the data. Its fit is computed, and it is the same on every render:
    track counts 2 when the student's track belongs to the role's family, 1 when it is a neighbouring family, 0 otherwise;
    level counts 2 at level 7 or above, 1 at level 5 or 6, 0 below that;
@@ -1689,11 +1980,19 @@ function rcGuess(r,s){const fam=RC_FAM.find(f=>f.k===r.fam)||rcFamOf(`${r.title}
  const track=fam.own.some(w=>t.includes(w))?2:fam.near.some(w=>t.includes(w))?1:0,level=s.level>=7?2:s.level>=5?1:0;
  return r.crit.map((c,i)=>{const h=rcHash(s.id+i),n=track*2+level+h%3-1,p=s.projects[h%s.projects.length],v=n>=5?'y':n>=3?'p':'n';
   return[v,v==='y'?`Shown in ${p.title} for ${p.co}, rated ${p.verdict}.`:v==='p'?`Partly shown in ${p.title} for ${p.co}.`:`Not in ${s.first}’s graded work yet.`]})}
-/* the label follows the must haves: one missing is Worth a look, all shown with one gap at most is a Strong fit, anything between is a Good fit */
-function rcFit(r,s){const c=(s.fits&&s.fits[r.id]?s.fits[r.id].c:rcGuess(r,s)).slice(0,r.crit.length),must=c.filter((x,i)=>r.crit[i].must).map(x=>x[0]),gaps=c.filter(x=>x[0]!=='y').length;
+/* the label follows the must haves: one missing is Worth a look, all shown with one gap at most is a Strong fit, anything between is a Good fit.
+   A criterion you rewrote (ed) no longer matches the evidence in the data, so that one line is read again by rcGuess. */
+function rcFit(r,s){const d=s.fits&&s.fits[r.id],g=d&&!r.crit.some(k=>k.ed)?null:rcGuess(r,s),c=r.crit.map((k,i)=>d&&d.c[i]&&!k.ed?d.c[i]:g[i]),must=c.filter((x,i)=>r.crit[i].must).map(x=>x[0]),gaps=c.filter(x=>x[0]!=='y').length;
  return{c,label:must.includes('n')?RC_FITS[2]:must.every(v=>v==='y')&&gaps<2?RC_FITS[0]:RC_FITS[1],have:must.filter(v=>v==='y').length,musts:must.length,
   score:c.reduce((n,x,i)=>n+(r.crit[i].must?2:1)*(x[0]==='y'?2:x[0]==='p'?1:0),0)}}
-const rcRank=(r,L)=>L.map(s=>[s,rcFit(r,s)]).sort((a,b)=>RC_FITS.indexOf(a[1].label)-RC_FITS.indexOf(b[1].label)||b[1].score-a[1].score||b[0].level-a[0].level).map(x=>x[0]);
+/* why you are hiring decides who comes first when two students carry the same label */
+const RC_WHY=[['team','users-round','New team','Nobody can hand work over yet. Zero puts students who ran a project end to end first.','with the most projects rated Exceptional'],
+ ['back','repeat','Backfill','The work is already running. Zero puts students who know your tools first.','who know the most of your tools'],
+ ['fast','trending-up','Growing fast','You need people soon. Zero puts students who can start earliest first.','who can start earliest'],
+ ['first','flag','First hire of this kind','Nobody here can teach it yet. Zero puts the highest levels first.','at the highest level']];
+const rcMonth=t=>{const m=String(t).match(/([A-Za-z]{3})[a-z]*\s+(\d{4})/);return m?+m[2]*12+MON.indexOf(m[1]):0};
+const rcLean=(r,s)=>r.why==='fast'?-rcMonth(s.avail):r.why==='first'?s.level:r.why==='team'?s.projects.filter(p=>p.verdict==='Exceptional').length:r.why==='back'?s.tools.filter(t=>rcFamFor(r).tools.includes(t)).length:0;
+const rcRank=(r,L)=>L.map(s=>[s,rcFit(r,s)]).sort((a,b)=>RC_FITS.indexOf(a[1].label)-RC_FITS.indexOf(b[1].label)||rcLean(r,b[0])-rcLean(r,a[0])||b[1].score-a[1].score||b[0].level-a[0].level).map(x=>x[0]);
 const rcFitChip=f=>chip(f.label,fitK(f.label));
 function rcWhy(f,r){const g=v=>r.crit.filter((k,i)=>k.must&&f.c[i][0]===v).map(k=>esc(k.s)),n=g('n'),p=g('p');
  return n.length?`Not in graded work yet: ${rcList(n)}.`:p.length?`No must have is missing. Partly shown: ${rcList(p)}.`:f.label===RC_FITS[0]?'Every must have is shown in graded work.':'Every must have is shown. Two or more nice to haves are not.'}
@@ -1759,10 +2058,13 @@ AUTO.push(ev=>{if(S.onb.recruiter!=='done')return null;const all=[];
  x=by('offer')[0];if(x&&!due(2))return ev('rc-hire-'+x.k,4600,2,()=>RE.hire(x.rid,x.sid));
  return bk?meet(bk):null});
 
-/* ═══ seed: two open roles already moving, one draft ═══ */
+/* ═══ seed: two open roles already moving, one draft. Also what onboarding starts from, and the account. ═══ */
 function rcSeed(){const now=S.now,ago=n=>fmt(rcBack(now,n)),R0=DATA.rampRoles,me=first(LINK);
  S.rc={roles:R0.map(r=>({...r,pay:[...r.pay],crit:r.crit.map(c=>({...c}))})),st:{},named:{},saved:{},role:R0[0].id,sel:'',q:'',track:'',lvl:0,strong:false,ui:'',form:{},open:'',view:'list',exp:'',draft:null,
-  threads:{},thread:'',msg:'',read:0,found:false,moved:'',n:0,ob:{need:R0[0].need,title:R0[0].title,pay:payOf(R0[0]),loc:R0[0].loc}};
+  threads:{},thread:'',msg:'',read:0,moved:'',n:0,work:{},seen:{},
+  ob:{co:RC_CO0.name,cook:false,cobad:false,src:'link',link:rcLink(R0[0]),need:R0[0].need,bad:'',got:false,rid:R0[0].id,title:'',pay:'',loc:'',why:'',note:'',crit:null,i:0,done:false,run:null,made:false},
+  acct:{blurb:RC_CO0.blurb,invite:'',bad:false,team:RC_TEAM.map(t=>({...t})),zero:{rank:true,alert:true,notes:true,ask:false,pass:false}}};
+ CO('ramp').blurb=RC_CO0.blurb;
  const g=S.rc.roles[0],v=S.rc.roles[1],rest=DATA.students.filter(s=>!rcIsMaya(s)),rk=(r,s)=>RC_FITS.indexOf(rcFit(r,s).label),log=[];
  const V=v?rcRank(v,rest.filter(s=>rk(v,s)<rk(g,s))):[],G=rcRank(g,rest.filter(s=>!V.includes(s)));
  const thread=(s,rid,msgs,unread)=>{S.rc.named[s.id]=true;S.rc.threads[s.id]={role:rid,unread,msgs:[{from:'sys',text:`${s.name} said yes. You have ${s.first}’s email.`,date:msgs[0][2]},
@@ -1781,40 +2083,147 @@ function rcSeed(){const now=S.now,ago=n=>fmt(rcBack(now,n)),R0=DATA.rampRoles,me
   V.slice(1,4).forEach((s,i)=>RE.put(v.id,s.id,{st:'new',src:i===1?'matched':'applied',on:i?ago(1):today()}))}
  S.rlog=log.map(e=>({sid:e[0],icon:e[1],text:e[2],date:e[3],role:e[4]}))}
 
-/* ═══ onboarding: who you are, the brief, the criteria, who fits ═══ */
+/* ═══ Zero at work. A wait is state in S.rc.work, so any render draws it, and a timer that outlives its state stops itself.
+   It is drawn as ticking steps, or as one line with a count. Nothing is blocked while it runs. Reduced motion skips to the result. ═══ */
+const rcCalm=()=>!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+function rcWork(key,steps,done,ms=420){const W=S.rc.work,w=W[key]={steps,at:0};if(rcCalm()){delete W[key];if(done)done();return null}
+ const tick=()=>{if(S.rc.work!==W||W[key]!==w)return;if(w.at<steps.length-1){w.at++;rcPaint(key);setTimeout(tick,ms)}else{delete W[key];if(done)done();render()}};setTimeout(tick,ms);return w}
+const rcBusy=key=>S.rc.work[key];
+const rcWorkIn=(w,kind)=>kind==='line'?`<span class="spin go"></span><span class="grow">${w.steps[w.at]}</span>${w.steps.length>1?`<span class="m">${w.at+1} of ${w.steps.length}</span>`:''}`:zsteps({steps:w.steps,at:w.at,busy:true});
+const rcWorkBox=(key,kind='steps',k='')=>{const w=rcBusy(key);return w?`<div class="r-work ${kind==='line'?'r-wline':''} ${k}" data-rw="${key}" data-rk="${kind}" role="status">${rcWorkIn(w,kind)}</div>`:''};
+function rcPaint(key){const w=rcBusy(key);if(!w)return;$$(`[data-rw="${key}"]`).forEach(e=>{e.innerHTML=rcWorkIn(w,e.dataset.rk)});icons()}
+const rcSk=(k='')=>`<span class="r-sk ${k}"></span>`;
+const rcSkRow=k=>`<div class="${k} r-skrow" aria-hidden="true">${rcSk('r-ska')}<span class="grow">${rcSk('r-w40')}${rcSk('r-w70')}</span>${rcSk('r-skc')}</div>`;
+
+/* ═══ the brief: a link to a job post, or a sentence, read into a family, a title, pay and a place.
+   The same reader serves onboarding, a new role, and Zero's chat. In onboarding a role your team already has on ZERO is matched, not made twice. ═══ */
+const RC_CO0={...DATA.companies.ramp};
+const RC_MORE=['Data Analyst','Marketing Operations Associate'];            /* on the careers page, not on ZERO yet */
+const RC_ACR={gtm:'GTM',ai:'AI',crm:'CRM',sql:'SQL',ii:'II',iii:'III',hr:'HR',it:'IT',ux:'UX',ui:'UI',qa:'QA',sr:'Senior',jr:'Junior',ops:'Operations',revops:'Revenue Operations'};
+const RC_SKIP=/^(careers?|jobs?|positions?|openings?|roles?|apply|en|us|www|boards?|view|details?|ramp)$/i;
+const RC_CITY=['New York','San Francisco','Austin','Chicago','Boston','Seattle','London','Denver','Atlanta','Miami','Los Angeles','Toronto'];
+const rcSlug=t=>String(t).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+const rcLink=r=>`ramp.com/careers/${rcSlug(r.title||r)}`;
+const rcDom=n=>/^\S+\.[a-z]{2,}(\/\S*)?$/i.test(n)?n.toLowerCase().replace(/^[a-z]+:\/\//,'').replace(/^www\./,'').split('/')[0]:rcSlug(n.replace(/[\s,]+(inc|llc|ltd|corp|co)\.?$/i,'')).replace(/-/g,'')+'.com';
+const rcCareers=fresh=>[...S.rc.roles.map(r=>r.title),...RC_MORE].filter((t,i,a)=>a.indexOf(t)===i&&(!fresh||!S.rc.roles.some(r=>r.title===t)));
+function rcLinkTitle(link){const p=link.trim().replace(/^[a-z]+:\/\//i,'').split(/[?#]/)[0].split('/').filter(Boolean);if(p.length&&p[0].includes('.'))p.shift();
+ const seg=p.filter(x=>!RC_SKIP.test(x)&&/[a-z]{3}/i.test(x)).pop()||'';
+ return seg.split(/[-_+.%\s]+/).filter(x=>/^[a-z]{2,}$/i.test(x)).map((x,i)=>RC_ACR[x.toLowerCase()]||(i&&/^(of|and|for|to|in|the)$/i.test(x)?x.toLowerCase():x[0].toUpperCase()+x.slice(1).toLowerCase())).join(' ')}
+const rcPayIn=t=>{const m=String(t).replace(/,/g,'').match(/\$\s?\d+(\.\d+)?\s*k?|\b\d+(\.\d+)?\s*k\b/gi);return m?rcPay(m.join(' to '),null):null};
+const rcLocIn=t=>{const c=RC_CITY.find(x=>t.toLowerCase().includes(x.toLowerCase())),rem=/\bremote\b/i.test(t),hy=/\bhybrid\b/i.test(t);return c?(rem?`${c} or remote in the US`:hy?`${c}, hybrid`:c):rem?'Remote in the US':''};
+function rcBrief(d,match){const say=d.src!=='link',raw=String(say?d.need:d.link).trim(),lt=say?'':rcLinkTitle(raw);if(say?raw.length<8:!lt)return null;
+ const f=rcFamOf(say?raw:lt),r=match&&f.k!=='any'?S.rc.roles.find(x=>rcFamFor(x).k===f.k):null,pay=(say&&rcPayIn(raw))||(r?r.pay:f.pay);
+ return{fam:f.k,rid:r?r.id:'new',team:r?r.team:f.team,title:r?r.title:say?f.title:lt,pay:`${money(pay[0])} to ${money(pay[1])}`,pay0:pay,loc:(say&&rcLocIn(raw))||(r?r.loc:S.rc.roles[0].loc),need:say?raw:r?r.need:f.need,mkt:f.pay}}
+const rcBriefBad=o=>o.src!=='link'?'Write a sentence first. Who do you need, and what will they do?':o.link.trim()?'Zero could not read a role from that link. Paste the link to one job post, or describe the role instead.':'Paste a link to the job post, or pick a role from your careers page.';
+const rcDraftCrit=d=>{const r=rcRole(d.rid);return r?r.crit.map(c=>({t:c.t,t0:c.t,s:c.s,must:c.must})):(RC_FAM.find(f=>f.k===d.fam)||RC_ANY).crit.map(c=>({t:c[0],t0:c[0],s:c[1],must:!!c[2]}))};
+function rcMake(d){const loc=d.loc.trim()||S.rc.roles[0].loc,r={id:'ramp-r'+(++S.rc.n),title:d.title.trim()||'New role',team:d.team,status:'Open',loc,mode:rcMode(loc),pay:rcPay(d.pay,d.pay0),opened:today(),need:d.need.trim(),fam:d.fam,why:d.why||'',note:(d.note||'').trim(),link:d.src==='link'?d.link.trim():'',
+  crit:d.crit.map(c=>{const t=c.t.trim()||c.t0;return{t,s:t===c.t0?c.s:rcShort(t),must:c.must}})};S.rc.roles.push(r);return r}
+function rcApply(d,r){const loc=d.loc.trim()||r.loc;Object.assign(r,{title:d.title.trim()||r.title,loc,mode:rcMode(loc),pay:rcPay(d.pay,r.pay),need:d.need.trim()||r.need,why:d.why||'',note:(d.note||'').trim(),link:d.src==='link'?d.link.trim():r.link||''});
+ d.crit.forEach((c,i)=>{const k=r.crit[i],t=c.t.trim()||k.t;if(t!==k.t)Object.assign(k,{t,s:rcShort(t),ed:true});k.must=c.must});d.pay=payOf(r)}
+/* Zero matches the students who fit a newly opened role. Maya is never matched: she applies from her own side. */
+function rcMatch(r){if(!S.rc.acct.zero.rank){rlog('','megaphone',`You opened ${r.title}`,r.id);return[]}
+ const L=rcRank(r,DATA.students.filter(s=>!rcIsMaya(s))).filter(s=>rcFit(r,s).label!==RC_FITS[2]).slice(0,5);L.forEach(s=>RE.put(r.id,s.id,{st:'new',src:'matched',on:today()}));
+ rlog('','megaphone',`You opened ${r.title}. Zero found ${num(L.length).toLowerCase()} student${L.length===1?'':'s'} who fit`,r.id);
+ if(S.rc.acct.zero.alert&&L.length)rcZSay(`You opened ${esc(r.title)}. I read ${rcPool().length} students and matched ${num(L.length).toLowerCase()}. ${L[0].name} comes first.`,rcZCard([rcZStuRow(L[0],r,rcReadPick(r,L[0]).ev)]));return L}
+
+/* ═══ onboarding: a short conversation. Zero asks one thing per screen, you answer, Zero works where you can see it. ═══ */
 const rcSw=(on,label,rid,i)=>`<button class="sw ${on?'on':''}" type="button" role="switch" aria-checked="${!!on}" aria-label="${esc(label)}. Must have" data-a="rmust" data-id="${rid}" data-i="${i}"></button>`;
 const rcCrits=r=>`<ul class="r-crits">${r.crit.map((c,i)=>`<li><div class="grow"><p class="i">${esc(c.t)}</p><p class="m">${c.must?'Must have':'Nice to have'}</p></div>${rcSw(c.must,c.t,r.id,i)}</li>`).join('')}</ul>`;
+const rcCritEdit=(p,crit)=>`<ul class="r-crits">${crit.map((c,i)=>`<li><label class="hide" for="rC${i}">Criterion ${i+1}</label><input id="rC${i}" class="r-in grow" data-rv="${p}.crit.${i}.t" value="${esc(c.t)}" autocomplete="off"><span class="m r-mn">${c.must?'Must have':'Nice to have'}</span>${rcSw(c.must,c.t,p==='ob'?'ob':'new',i)}</li>`).join('')}</ul>`;
 const rcFields=(p,o)=>`<div class="r-fields">${[['title','Title'],['pay','Pay range, a year'],['loc','Place']].map(f=>`<label class="field" for="rF${f[0]}"><span class="m">${f[1]}</span><input id="rF${f[0]}" data-rv="${p}.${f[0]}" value="${esc(o[f[0]])}" autocomplete="off"></label>`).join('')}</div>`;
-const rcNeedBox=(p,o,ph='')=>`<label class="r-big" for="rNeed"><span class="m">The role, in a sentence or two</span><textarea id="rNeed" class="r-ta" rows="3" data-rv="${p}.need" placeholder="${ph}">${esc(o.need)}</textarea></label>`;
-function rcOnbWelcome(){const m=who(LINK),n=rcOpen().length;
- return`<div class="mid"><div class="r-duo">${lg('ramp.com')}${av(m.ini,'a','lgx')}</div><h1 class="h">You are hiring at Ramp, ${first(LINK)}.</h1>
-  <p class="sub">${m.title}. Your team has ${num(n).toLowerCase()} role${n===1?'':'s'} open on ZERO. Check the brief for the first one, then see who fits.</p>
-  <div class="fan">${[['hammer','Students did real scenarios','Each one built the kind of work your team would hand over. You read that work, not a resume.'],['clipboard-check','A manager graded them','Every project is graded on one rubric, so two students can be compared.'],['receipt','You pay only on a hire','10% of the first year salary, with a 90 day guarantee.']]
-   .map(f=>`<div class="cs"><span class="r-ico">${ic(f[0])}</span><div><p class="i">${f[1]}</p><p class="m">${f[2]}</p></div></div>`).join('')}</div>
-  <div class="acts">${btn('Check the brief','k','ronb','brief')}${btn('Skip the setup','x','ronb','skip')}</div></div>`}
-function rcOnbBrief(){return`<div class="mid"><h1 class="h">What are you hiring for?</h1><p class="sub">Say it the way you would to a colleague. Zero turns it into five criteria and reads every student against them.</p>
-  <div class="r-form">${rcNeedBox('ob',S.rc.ob)}${rcFields('ob',S.rc.ob)}<p class="m">Students see the pay range and the place before they apply.</p></div>
-  <div class="acts">${btn('Draft the criteria','k','ronb','crit')}${btn('Back','s','ronb','welcome')}</div></div>`}
-function rcOnbCrit(){const r=S.rc.roles[0],n=r.crit.filter(c=>c.must).length;
- return`<div class="mid"><h1 class="h">Five things Zero looks for.</h1><p class="sub">Drafted from your brief. A student who misses a must have is marked Worth a look. Nice to haves only change the order.</p>
-  <div class="r-form"><div class="card">${rcCrits(r)}</div><p class="m">${num(n)} must have${n===1?'':'s'}. You can change these later in Roles, and every fit label follows.</p></div>
-  <div class="acts">${btn('Find students','k','ronb','found')}${btn('Back','s','ronb','brief')}</div></div>`}
-function rcOnbFound(){const r=S.rc.roles[0],d=S.rc.found,P=rcPool(),n=l=>P.filter(s=>rcFit(r,s).label===l).length;
- return`<div class="mid"><h1 class="h">${d?`${num(n(RC_FITS[0])+n(RC_FITS[1]))} students fit this role.`:'Reading every student.'}</h1>
-  <p class="sub">${d?`${P.length} students read against your five criteria. ${num(n(RC_FITS[0]))} ${n(RC_FITS[0])===1?'is':'are'} a strong fit.`:`${P.length} students on ZERO have graded work this week.`}</p>
-  <div class="teams seven r-found">${P.map(s=>{const f=rcFit(r,s);return`<div class="team ${d?'done':''}">${av(s.ini,s.tone)}<p class="i">${s.name}</p><div class="res">${chip((f.label===RC_FITS[0]?ic('check'):'')+f.label,fitK(f.label))}</div></div>`}).join('')}</div>
-  <div class="acts r-hold">${d?btn('See your matches','k','ronb','done')+btn('Change the criteria','s','ronb','crit'):''}</div></div>`}
-function rcRunFound(){if(S.rc.found||S.rc.finding)return;S.rc.finding=true;let i=0;const step=()=>{const t=$$('.r-found .team');if(S.onb.recruiter!=='found'||S.mode!=='recruiter'||!t.length){S.rc.finding=false;return}
- if(i<t.length){for(let j=0;j<=i;j++)t[j].classList.add('done');i++;setTimeout(step,170)}else{S.rc.found=true;S.rc.finding=false;render()}};setTimeout(step,500)}
-PAGES.recruiter.onb=()=>{rcKeep();return({brief:rcOnbBrief,crit:rcOnbCrit,found:rcOnbFound}[S.onb.recruiter]||rcOnbWelcome)()};
-A.ronb=id=>{const o=S.rc.ob,r=S.rc.roles[0];
- if(id==='crit'){r.need=o.need.trim()||r.need;r.title=o.title.trim()||r.title;r.loc=o.loc.trim()||r.loc;r.pay=rcPay(o.pay,r.pay);o.pay=payOf(r)}
- if(id==='skip'){S.onb.recruiter='done';return'enter'}
- if(id==='done'){S.onb.recruiter='done';S.page.recruiter='roles';S.rc.open=r.id;S.rc.role=r.id;return'enter'}
+const rcNeedBox=(p,o,ph='',x='')=>`<label class="r-big" for="rNeed"><span class="m">The role, in a sentence or two</span><textarea id="rNeed" class="r-ta" rows="3" data-rv="${p}.need" placeholder="${ph}" ${x}>${esc(o.need)}</textarea></label>`;
+const rcD=a=>a.dataset.p==='ob'?S.rc.ob:S.rc.draft;
+/* two ways in: a link Zero reads, or a sentence. The careers page roles are one tap. */
+function rcBriefIn(p,o,w){const link=o.src==='link',C=rcCareers(p!=='ob'),dis=w?'disabled':'';
+ return`<div class="seg r-seg" role="group" aria-label="How to tell Zero">${[['link','link','Paste a link'],['say','pencil-line','Describe it']].map(x=>`<button type="button" class="${o.src===x[0]?'on':''}" aria-pressed="${o.src===x[0]}" data-a="rsrc" data-id="${x[0]}" data-p="${p}">${ic(x[1])}${x[2]}</button>`).join('')}</div>
+  ${link?`<label class="field" for="rLink"><span class="m">Link to the job post</span><input id="rLink" data-rv="${p}.link" ${p==='ob'?'data-enter="rob" data-id="read"':'data-enter="rdraft"'} value="${esc(o.link)}" placeholder="ramp.com/careers/gtm-engineer" autocomplete="off" inputmode="url" ${dis}></label>
+    ${C.length?`<div class="r-pick"><span class="m">${p==='ob'?'On your careers page':'On your careers page, not on ZERO yet'}</span>${C.map(t=>`<button type="button" class="opt ${rcSlug(o.link).endsWith(rcSlug(t))?'on':''}" data-a="rlink" data-id="${esc(t)}" data-p="${p}" ${dis}>${esc(t)}</button>`).join('')}</div>`:''}`
+   :rcNeedBox(p,o,'An analyst who keeps our CRM clean and builds the weekly pipeline report.',dis)}
+  ${o.bad?`<p class="m r-err">${o.bad}</p>`:''}`}
+const rcObAt=()=>({role:1,why:2,crit:3,found:4}[S.onb.recruiter]||0);
+const rcOb=(h,sub,body,acts,skip=true)=>`<div class="mid r-ob">${orb()}<span class="mini r-dots" role="img" aria-label="Step ${rcObAt()+1} of 5">${[0,1,2,3,4].map(i=>`<i class="${i<rcObAt()?'done':i===rcObAt()?'now':''}"></i>`).join('')}</span>
+  <h1 class="h">${h}</h1><p class="sub">${sub}</p>${body}${acts==null?'':`<div class="acts r-hold">${acts}</div>`}${skip?`<div class="r-quiet">${btn('Skip the setup','x sm m','ronb','skip')}</div>`:''}</div>`;
+function rcObCo(){const o=S.rc.ob,c=CO('ramp'),w=rcBusy('co'),n=rcOpen().length,C=rcCareers().length,other=rcDom(o.co.trim())!==c.dom;
+ if(o.cook)return rcOb('This is what Zero found.',other?`Zero could not find ${esc(o.co.trim())} on ZERO. You signed in with a ${c.dom} address, so this is your company.`:'Students see this beside every role you open. You can change the line later, from your name at the top right.',
+  `<div class="ai r-cocard"><div class="row">${lg(c.dom)}<div class="grow"><p class="i">${c.name}</p><p class="m">${c.dom}</p></div>${chip(ic('check')+'Found','g')}</div><p class="i r-gap">${esc(S.rc.acct.blurb)}</p>
+    <div class="stats">${chip(ic('users-round')+c.size)}${chip(ic('map-pin')+c.hq)}${chip(ic('briefcase-business')+`${num(C)} roles on your careers page`)}</div>
+    <p class="m r-gap">Your team already has ${num(n).toLowerCase()} of them open on ZERO.</p></div>`,
+  btn(`Yes, this is ${c.name}`,'k','ronb','role')+btn('Change','s','rob','coedit'));
+ return rcOb('What is your company?','Type the name. Zero finds it, reads what you do, and checks which roles you have open.',
+  `<label class="r-ask" for="rCo"><span class="hide">Company name</span><input id="rCo" class="r-in" data-rv="ob.co" data-enter="rob" data-id="co" value="${esc(o.co)}" placeholder="Your company" autocomplete="organization" ${w?'disabled':''}></label>
+   ${o.cobad?'<p class="m r-err r-gap">Type your company name first.</p>':''}${rcWorkBox('co')}`,w?'':btn('Continue','k','rob','co'))}
+function rcObRole(){const o=S.rc.ob,w=rcBusy('role'),r=rcRole(o.rid);
+ if(o.got)return rcOb('This is what Zero read.','Correct anything that is off. Students see the pay range and the place before they apply.',
+  `<div class="r-form"><div class="ai"><div class="row r-top">${orb('sm')}<p class="grow i">${esc(o.need)}</p></div>${rcFields('ob',o)}
+    <p class="m r-gap">${o.src==='link'?`Read from ${esc(o.link.trim())}. `:''}Roles like it on ZERO pay ${money(o.mkt[0])} to ${money(o.mkt[1])} a year.${r?` Your team already has this role on ZERO, so Zero keeps its students.`:''}</p></div></div>`,
+  btn('Looks right','k','ronb','why')+btn(o.src==='link'?'Read another post':'Say it again','s','rob','reread'));
+ return rcOb('What are you hiring for?','Paste a link to the job post, or say it in a sentence. Zero pulls out the title, the pay and the place.',
+  `<div class="r-form">${rcBriefIn('ob',o,w)}${rcWorkBox('role')}</div>`,w?'':btn(o.src==='link'?'Read the post':'Read my sentence','k','rob','read')+btn('Back','s','ronb','welcome'))}
+function rcObWhy(){const o=S.rc.ob,y=RC_WHY.find(x=>x[0]===o.why),note=o.note.trim();
+ return rcOb('Why are you hiring?',`One tap. It decides who comes first when two students fit ${esc(o.title)} equally.`,
+  `<div class="r-whys" role="radiogroup" aria-label="Why you are hiring">${RC_WHY.map(x=>`<button type="button" role="radio" aria-checked="${o.why===x[0]}" class="rule r-why ${o.why===x[0]?'on':''}" data-a="rwhyob" data-id="${x[0]}"><span class="row"><span class="ico">${ic(x[1])}</span><span class="i">${x[2]}</span></span><span class="m">${x[3]}</span></button>`).join('')}</div>
+   <div class="r-form"><label class="field" for="rNote"><span class="m">Anything else Zero should know? One line.</span><input id="rNote" data-rv="ob.note" data-live data-enter="ronb" data-id="crit" value="${esc(o.note)}" placeholder="Our last GTM engineer left in September and the Clay tables need an owner." autocomplete="off"></label>
+    ${y||note?`<div class="r-zsay">${orb('sm')}<p class="grow">${y?`Got it. When two students fit equally, the one ${y[4]} comes first.`:'Got it.'}${note?' Your line stays with the brief, for you and your team. It does not change a fit label.':''}</p></div>`:''}</div>`,
+  btn('Continue','k','ronb','crit',o.why||note?'':'disabled')+btn('Back','s','ronb','role'))}
+function rcObCrit(){const o=S.rc.ob,w=rcBusy('crit'),n=o.crit?o.crit.filter(c=>c.must).length:0;
+ return rcOb('What matters most?',o.crit?`Zero drafted five things from ${o.src==='link'?'the post':'your sentence'}. Rewrite any line, or switch it between must have and nice to have.`:'Zero is drafting five things to read every student against.',
+  `<div class="r-form">${o.crit?`<div class="card">${rcCritEdit('ob',o.crit)}</div><p class="m">${num(n)} must have${n===1?'':'s'}. A student who misses one is marked Worth a look. Nice to haves only change the order.</p>`:rcWorkBox('crit')}</div>`,
+  (o.crit&&!w?btn('Read the students','k','ronb','found'):'')+btn('Back','s','ronb','why'))}
+/* reading the students: one at a time, with what Zero is reading and a count. Each one settles under it into a label with one line of proof,
+   newest on top so the eye stays in one place. When all are read the list is ranked. */
+const rcReadMs=s=>400+rcHash(s.id)%200;
+function rcReadPick(r,s){const f=rcFit(r,s),ix=r.crit.map((k,i)=>i),must=ix.filter(i=>r.crit[i].must),hit=v=>must.find(i=>f.c[i][0]===v)??ix.find(i=>f.c[i][0]===v),i=(f.label===RC_FITS[2]?hit('n'):hit('y'))??0;
+ const ev=f.c[i][1].toLowerCase(),n=p=>rcTok(p.title).filter(w=>w.length>3&&ev.includes(w.slice(0,5))).length,p=s.projects.reduce((a,b)=>n(b)>n(a)?b:a,s.projects[i%s.projects.length]);
+ return{f,i,ev:f.c[i][1],p}}
+const rcReadRow=(r,s,pop)=>{const x=rcReadPick(r,s);return`<li class="r-rd ${pop?'r-pop':''}">${rcAv(s)}<span class="grow"><span class="i">${s.name}</span><span class="m clip">${x.ev}</span></span>${rcFitChip(x.f)}</li>`};
+const rcReadWho=(r,s)=>{const x=rcReadPick(r,s);return`${rcAv(s,'lgx')}<div class="grow"><p class="i">${s.name}</p><p class="m">Reading ${s.first}’s ${rcLow(x.p.title)} against ${esc(r.crit[x.i].t)}</p></div>`};
+function rcObFound(){const o=S.rc.ob,r=rcRole(o.rid),P=rcPool(),d=o.done,i=Math.min(o.i,P.length-1),n=l=>P.filter(s=>rcFit(r,s).label===l).length,fit=n(RC_FITS[0])+n(RC_FITS[1]);
+ return rcOb(d?`${num(fit)} student${fit===1?'':'s'} fit this role.`:'Reading every student.',
+  d?`${P.length} students read against your five criteria for ${esc(r.title)}. ${num(n(RC_FITS[0]))} ${n(RC_FITS[0])===1?'is':'are'} a strong fit.`:`${P.length} students on ZERO have graded work. Zero reads each one against your five criteria for ${esc(r.title)}.`,
+  `<div class="r-reading">${d?`<div class="acts r-result">${btn('See your matches','k','ronb','done')}${btn('Change the criteria','s','ronb','crit')}</div>`
+    :`<div class="ai r-now" role="status"><div class="row" id="rNowWho">${rcReadWho(r,P[i])}</div><div class="row r-prog"><div class="r-bar grow"><i id="rNowBar" style="--p:${((i+1)/P.length).toFixed(3)}"></i></div><span class="m" id="rNowCnt">${i+1} of ${P.length}</span></div></div>`}
+   <ul class="r-read" id="rRead">${(d?rcRank(r,P):P.slice(0,i).reverse()).map(s=>rcReadRow(r,s)).join('')}</ul></div>`,null,!d)}
+function rcRunRead(){const o=S.rc.ob,r=rcRole(o.rid),P=rcPool();if(o.done||o.run||!r)return;const me=o.run={};
+ const end=()=>{o.i=P.length;o.done=true;o.run=null;if(o.made&&!rcIds(r.id).length)rcMatch(r);o.made=false;render()};
+ const step=()=>{if(S.rc.ob!==o||o.run!==me)return;if(S.onb.recruiter!=='found'||S.mode!=='recruiter'){o.run=null;return}
+  if(rcCalm()||o.i>=P.length-1)return end();o.i++;const ul=$('#rRead'),who=$('#rNowWho');
+  if(ul&&who){ul.insertAdjacentHTML('afterbegin',rcReadRow(r,P[o.i-1],true));who.innerHTML=rcReadWho(r,P[o.i]);$('#rNowBar').style.setProperty('--p',((o.i+1)/P.length).toFixed(3));$('#rNowCnt').textContent=`${o.i+1} of ${P.length}`}
+  setTimeout(step,rcReadMs(P[o.i]))};
+ setTimeout(step,rcReadMs(P[Math.min(o.i,P.length-1)]))}
+PAGES.recruiter.onb=()=>{rcKeep();return({role:rcObRole,why:rcObWhy,crit:rcObCrit,found:rcObFound}[S.onb.recruiter]||rcObCo)()};
+/* moving between the questions. A step opens only when the one before it is answered. */
+A.ronb=id=>{const o=S.rc.ob;
+ if(id==='skip'){o.run=null;S.onb.recruiter='done';return'enter'}
+ if(id==='done'){const r=rcRole(o.rid)||S.rc.roles[0],P=rcPool(),n=l=>P.filter(s=>rcFit(r,s).label===l).length;S.onb.recruiter='done';S.page.recruiter='roles';S.rc.open=r.id;S.rc.role=r.id;
+  rcZSay(`I read ${P.length} students against ${esc(r.title)}. ${num(n(RC_FITS[0])+n(RC_FITS[1]))} fit, and ${num(n(RC_FITS[0])).toLowerCase()} ${n(RC_FITS[0])===1?'is':'are'} a strong fit. Ask me who to meet first.`);return'enter'}
+ if(id==='role'&&!o.cook)return false;
+ if(id==='why'&&!o.got)return false;
+ if(id==='crit'){if(!o.got||!(o.why||o.note.trim()))return false;if(!o.crit&&!rcBusy('crit'))rcWork('crit',['Reading your brief again','Writing five things to look for','Marking the must haves'],()=>{o.crit=rcDraftCrit(o)},560)}
+ if(id==='found'){if(!o.crit)return false;let r=rcRole(o.rid);if(r){rcApply(o,r);if(r.status==='Draft'){r.status='Open';r.opened=today();o.made=true}}else{r=rcMake(o);o.rid=r.id;o.made=true}
+  S.rc.role=r.id;o.run=null;o.i=0;o.done=false;if(rcCalm()){o.i=rcPool().length;o.done=true;if(o.made&&!rcIds(r.id).length)rcMatch(r);o.made=false}}
  S.onb.recruiter=id;return'enter'};
-A.rmust=(id,a)=>{const c=(id==='new'?S.rc.draft:rcRole(id)).crit[+a.dataset.i];c.must=!c.must};
+/* answering inside a question: the company, the post */
+A.rob=id=>{const o=S.rc.ob;
+ if(id==='co'){const n=o.co.trim();if(rcBusy('co'))return false;if(!n){o.cobad=true;rcF='rCo';return}o.cobad=false;
+  rcWork('co',[`Finding ${esc(rcDom(n))}`,`Reading what ${esc(n)} does`,'Checking open roles on your careers page'],()=>{o.cook=true},650);return}
+ if(id==='coedit'){o.cook=false;rcF='rCo';return}
+ if(id==='read'){if(rcBusy('role'))return false;const b=rcBrief(o,true);if(!b){o.bad=rcBriefBad(o);rcF=o.src==='link'?'rLink':'rNeed';return}o.bad='';
+  rcWork('role',[o.src==='link'?'Reading the post':'Reading your sentence','Pulling the title, pay and place','Comparing with roles like it'],()=>{Object.assign(o,b,{got:true,crit:null})},600);return}
+ if(id==='reread'){o.got=false;rcF=o.src==='link'?'rLink':'rNeed'}};
+A.rsrc=(id,a)=>{const o=rcD(a);o.src=id;o.bad='';rcF=id==='link'?'rLink':'rNeed'};
+A.rlink=(id,a)=>{const o=rcD(a);o.link=rcLink(id);o.bad=''};
+A.rwhyob=id=>{const o=S.rc.ob;o.why=o.why===id?'':id};
+A.rmust=(id,a)=>{const o=id==='new'?S.rc.draft:id==='ob'?S.rc.ob:rcRole(id),c=o.crit[+a.dataset.i];c.must=!c.must;
+ if(o.status&&o.status!=='Draft'&&!rcBusy('rank-'+id))rcWork('rank-'+id,[`Re-reading ${rcPool().length} students`],null,700)};
 
-/* ═══ home: what needs you, your roles, interviews, what happened ═══ */
+/* ═══ home: what needs you, what Zero suggests, your roles, interviews, what happened ═══ */
+/* Zero's one suggestion for today: the strongest student you have not asked yet */
+function rcNext(){const B=[];rcOpen().forEach(r=>rcPool().forEach(s=>{const c=rcRec(r.id,s.id),f=rcFit(r,s);if(f.label===RC_FITS[0]&&rcZFree(r,s))B.push({r,s,f,c})}));
+ return B.sort((a,b)=>(b.c?1:0)-(a.c?1:0)||b.f.score-a.f.score||b.s.level-a.s.level)[0]}
+function rcZHome(){const x=rcNext(),n=rcOpen().length,P=rcPool().length;
+ return`<h2 class="lab">From Zero</h2><div class="ai r-zhome"><div class="row r-top">${orb('sm')}<p class="grow i">${x?`Meet ${x.s.name} next.`:'No new strong fit today.'}</p></div>
+  <p class="r-gap">${x?`${x.s.first} is a strong fit for ${esc(x.r.title)}${x.c?`, and ${x.c.src==='applied'?'applied':'was matched'} ${rel(x.c.on)}`:', and has not applied'}. ${rcWhy(x.f,x.r)}`:`Zero read ${P} students against ${num(n).toLowerCase()} open role${n===1?'':'s'}. Nobody new shows every must have.`}</p>
+  <div class="acts r-gap">${x?btn(`Open ${x.s.first}`,'s sm','rstu',x.s.id,`data-role="${x.r.id}"`):''}${btn('Ask Zero','x sm','zopen')}</div></div>`}
 function rcHero(){const W=rcWaiting(),met=W.filter(x=>x.c.st==='met'),nw=W.filter(x=>x.c.st==='new'),all=rcAll(),by=st=>all.filter(x=>x.c.st===st),nm=x=>rcName(rcStu(x.sid)),f=x=>rcStu(x.sid).first,ti=x=>esc(rcRole(x.rid).title);let x;
  if(met.length===1)return[`${nm(met[0])} is waiting on your decision.`,`You met ${f(met[0])} ${rel(met[0].c.on)} about ${ti(met[0])}. Make an offer, or pass with a reason ${f(met[0])} can read.`];
  if(met.length)return[`${num(met.length)} students are waiting on your decision.`,'You have met each of them. Make an offer, or pass with a reason they can read.'];
@@ -1840,7 +2249,7 @@ PAGES.recruiter.home=()=>{rcKeep();const h=rcHero(),W=rcWaiting(),met=W.filter(x
    ${met.length?`<h2 class="lab">Needs your decision</h2><div class="lanes">${met.map(rcLane).join('')}</div>`:''}
    ${nw.length?`<div class="sechead"><h2 class="lab">To review</h2>${btn(`Open Pipeline${ic('arrow-right')}`,'x sm','go','pipeline')}</div><div class="list">${nw.slice(0,4).map(rcMini).join('')}</div>${nw.length>4?`<p class="m" style="margin-top:10px">And ${num(nw.length-4).toLowerCase()} more in Pipeline.</p>`:''}`:''}
    <div class="sechead"><h2 class="lab">Your roles</h2>${btn(`Open Roles${ic('arrow-right')}`,'x sm','go','roles')}</div><div class="list">${S.rc.roles.map(r=>rcRoleCard(r,'rpipe')).join('')}</div>
-  </section><aside class="side"><h2 class="lab">Interviews coming up</h2>
+  </section><aside class="side">${rcZHome()}<h2 class="lab">Interviews coming up</h2>
    ${up.length?`<div class="list" style="margin-bottom:28px">${up.map(x=>{const s=rcStu(x.sid);return`<button class="item soft" type="button" data-a="rstu" data-id="${s.id}" data-role="${x.rid}">${rcAv(s)}<span class="grow"><span class="i">${rcName(s)}</span><span class="m">${x.c.when}</span><span class="m clip">${esc(rcRole(x.rid).title)} · 45 minutes</span></span></button>`}).join('')}</div>`
     :'<p class="m" style="margin-bottom:28px">None booked. An interview appears here when a student picks a time.</p>'}
    <h2 class="lab">What happened</h2>${S.rlog.length?rcLog(S.rlog):'<p class="m">Nothing yet. It fills in as students answer.</p>'}</aside></div>`};
@@ -1857,104 +2266,117 @@ function rcOneByOne(r,L){const open=L.find(s=>s.id===S.rc.exp)||L[0];if(rcIsMaya
 function rcTable(r,L){return`<div class="tw"><table class="tb r-tb"><thead><tr><th scope="col">Student</th>${r.crit.map(c=>`<th scope="col" class="${c.must?'i':''}" title="${esc(c.t)}">${esc(c.s)}</th>`).join('')}</tr></thead>
   <tbody>${L.map(s=>{const f=rcFit(r,s),c=rcRec(r.id,s.id);return`<tr data-a="rstu" data-id="${s.id}" data-role="${r.id}" tabindex="0"><th scope="row">${rcAv(s)}<span><span class="i">${rcName(s)}</span><br><span class="m">${f.label} · ${RC_SHORT[c.st]}</span></span></th>${f.c.map(x=>`<td>${rcMk(x[0])}</td>`).join('')}</tr>`}).join('')}</tbody></table></div>
   <p class="row m" style="margin-top:12px;flex-wrap:wrap">${['y','p','n'].map(k=>`${rcMk(k)}<span>${RC_MK[k][1]}</span>`).join('')}<span>Must haves are the darker columns.</span></p>`}
-function rcRolePage(r){const d=r.status==='Draft',L=rcRank(r,rcIds(r.id).map(rcStu)),n=rcPool().length;
+function rcRolePage(r){const d=r.status==='Draft',L=rcRank(r,rcIds(r.id).map(rcStu)),n=rcPool().length,w=rcBusy('rank-'+r.id),y=RC_WHY.find(x=>x[0]===r.why);
  return`<div class="r-back">${btn(`${ic('arrow-left')}All roles`,'x sm','rroles')}</div>
   <div class="title row"><div class="grow"><h1 class="h">${esc(r.title)}</h1><p class="sub">${esc(r.team)} · ${esc(r.loc)} · ${payOf(r)} a year</p></div>${rcStatusChip(r)}${d?btn('Publish the role','k','rpublish',r.id):btn('See the pipeline','s','rpipe',r.id)}</div>
   <div class="r-rolepage"><div class="r-col"><div class="r-colhead"><h2 class="lab">The brief</h2></div>
-    <div class="card"><p class="i">${esc(r.need)}</p><h2 class="lab" style="margin-top:24px">What students are ranked on</h2>${rcCrits(r)}
-     <p class="m" style="margin-top:16px">Strong fit means every must have is shown, with one gap at most. A student who misses a must have is marked Worth a look.</p></div>
+    <div class="card"><p class="i">${esc(r.need)}</p>
+     ${y?`<p class="m r-gap">Why you are hiring: ${y[2].toLowerCase()}. Ties go to students ${y[4]}.</p>`:''}${r.note?`<p class="m ${y?'':'r-gap'}">Your note: ${esc(r.note)}</p>`:''}
+     <h2 class="lab" style="margin-top:24px">What students are ranked on</h2>${rcCrits(r)}
+     <p class="m" style="margin-top:16px">Zero drafted these from your brief. Switch one and Zero reads all ${n} students again. Strong fit means every must have is shown, with one gap at most. A student who misses a must have is marked Worth a look.</p></div>
     <div class="card"><h2 class="lab">On the posting</h2><ul class="kv"><li><span class="i">Pay range</span><span>${payOf(r)}</span></li><li><span class="i">Place</span><span>${esc(r.loc)}</span></li><li><span class="i">Opened</span><span>${d?'Not published':r.opened}</span></li><li><span class="i">AI in screening</span><span>Disclosed to students</span></li><li><span class="i">Fee</span><span>10% on a hire, 90 day guarantee</span></li></ul>
-     <p class="m" style="margin-top:16px">ZERO ranks students against your brief. It never advances or rejects anyone for you.</p></div></div>
+     <p class="m" style="margin-top:16px">Zero ranks students against your brief. It asks to meet or passes only when you allow it in your account.</p></div></div>
    <section>${d?`<div class="r-colhead"><h2 class="lab">Students</h2></div><div class="item soft"><p class="grow">Students cannot see a draft. Publish it and Zero reads all ${n} students against these five criteria.</p></div>`
+    :w?`<div class="r-colhead">${rcWorkBox('rank-'+r.id,'line')}</div><div class="r-ranked">${Array(Math.max(L.length,4)).fill(rcSkRow('r-stu')).join('')}</div>`
     :`<div class="r-colhead"><h2 class="lab">${L.length?`${num(L.length)} student${L.length===1?'':'s'}, ranked by fit`:'Students'}</h2><div class="seg" role="group" aria-label="View">${[['list','rows-3','One by one'],['table','table-2','Side by side']].map(v=>`<button type="button" class="${S.rc.view===v[0]?'on':''}" aria-pressed="${S.rc.view===v[0]}" data-a="rview" data-id="${v[0]}">${ic(v[1])}${v[2]}</button>`).join('')}</div></div>
-     ${L.length?(S.rc.view==='table'?rcTable(r,L):rcOneByOne(r,L)):'<div class="item soft"><p class="grow">Nobody in this role yet. Find a student and ask to meet, or wait for the first application.</p></div>'}
-     <div class="acts" style="margin-top:16px">${btn(`${ic('search')}Find more students for this role`,'s sm','rfind',r.id)}<span class="m">${n} students are on ZERO. These ${num(L.length).toLowerCase()} applied or were matched.</span></div>`}</section></div>`}
-function rcNewRole(){const d=S.rc.draft;
+     ${L.length?(S.rc.view==='table'?rcTable(r,L):rcOneByOne(r,L)):`<div class="item soft"><p class="grow">${S.rc.acct.zero.rank?'Nobody in this role yet. Find a student and ask to meet, or wait for the first application.':'Zero is not ranking new students for you. Turn it on in your account, or find a student yourself.'}</p></div>`}
+     <div class="acts" style="margin-top:16px">${btn(`${ic('search')}Find more students for this role`,'s sm','rfind',r.id)}<span class="m">${n} students are on ZERO. ${L.length?`These ${num(L.length).toLowerCase()} applied or were matched.`:''}</span></div>`}</section></div>`}
+/* a new role: say it or paste it, Zero drafts the posting and five criteria, you correct them, then Zero reads every student */
+function rcNewRole(){const d=S.rc.draft,w=rcBusy('draft');
  return`<div class="r-back">${btn(`${ic('arrow-left')}All roles`,'x sm','rroles')}</div>
-  <div class="title"><h1 class="h">${d.crit?'Check what Zero drafted.':'Describe the role in a sentence.'}</h1><p class="sub">${d.crit?'Change any line. Students are ranked on these five things the moment you publish.':'Say who you need and what they will do. Zero drafts five criteria from it.'}</p></div>
-  <div class="narrow r-new">${rcNeedBox('draft',d,'An analyst who keeps our CRM clean and builds the weekly pipeline report.')}
-   ${d.err?'<p class="m r-err">Write a sentence first. Who do you need, and what will they do?</p>':''}
-   ${d.crit?`${rcFields('draft',d)}<h2 class="lab" style="margin-top:16px">Five criteria</h2><div class="card"><ul class="r-crits">${d.crit.map((c,i)=>`<li><label class="hide" for="rC${i}">Criterion ${i+1}</label><input id="rC${i}" class="r-in grow" data-rv="draft.crit.${i}.t" value="${esc(c.t)}" autocomplete="off"><span class="m r-mn">${c.must?'Must have':'Nice to have'}</span>${rcSw(c.must,c.t,'new',i)}</li>`).join('')}</ul></div>
-    <div class="acts" style="margin-top:8px">${btn('Publish the role','k','rpublish','new')}${btn('Draft again from the sentence','s','rdraft')}<span class="m">Publishing shows the role to students. You pay 10% only on a hire.</span></div>`
-   :`<div class="acts">${btn('Draft the criteria','k','rdraft')}<span class="m">Nothing is published yet.</span></div>`}</div>`}
+  <div class="title"><h1 class="h">${d.crit?'Check what Zero drafted.':'What is the new role?'}</h1><p class="sub">${d.crit?'Change any line. Zero reads every student against these five things the moment you publish.':'Paste a link to the job post, or say who you need in a sentence. Zero drafts the posting and five criteria.'}</p></div>
+  <div class="narrow r-new">${rcBriefIn('draft',d,w)}${rcWorkBox('draft')}
+   ${d.crit&&!w?`<div class="ai"><div class="row r-top">${orb('sm')}<p class="grow i">${d.src==='link'?esc(d.need):'Zero filled these in from your sentence. Correct anything that is off.'}</p></div>${rcFields('draft',d)}<p class="m r-gap">Roles like it on ZERO pay ${money(d.mkt[0])} to ${money(d.mkt[1])} a year. Students see the pay range and the place before they apply.</p></div>
+    <h2 class="lab" style="margin-top:16px">Five criteria</h2><div class="card">${rcCritEdit('draft',d.crit)}</div>
+    <div class="acts" style="margin-top:8px">${btn('Publish the role','k','rpublish','new')}${btn('Draft again','s','rdraft')}<span class="m">Publishing shows the role to students. You pay 10% only on a hire.</span></div>`
+   :w?'':`<div class="acts">${btn('Draft the role','k','rdraft')}<span class="m">Nothing is published yet.</span></div>`}</div>`}
 PAGES.recruiter.roles=()=>{rcKeep();return S.rc.open==='new'&&S.rc.draft?rcNewRole():rcRole(S.rc.open)?rcRolePage(rcRole(S.rc.open)):rcRoleList()};
 A.rrole=id=>{S.rc.open=id;S.rc.exp='';S.page.recruiter='roles';return'enter'};
 A.rroles=()=>{S.rc.open='';return'enter'};
 A.rview=id=>{S.rc.view=id};
 A.rexp=id=>{S.rc.exp=id};
-A.rnew=()=>{S.rc.open='new';S.rc.draft={need:'',title:'',pay:'',loc:'',crit:null,err:false};rcF='rNeed';return'enter'};
-A.rdraft=()=>{const d=S.rc.draft;if(d.need.trim().length<8){d.err=true;rcF='rNeed';return}const f=rcFamOf(d.need);
- Object.assign(d,{err:false,fam:f.k,team:f.team,title:f.title,pay:`${money(f.pay[0])} to ${money(f.pay[1])}`,pay0:f.pay,loc:S.rc.roles[0].loc,crit:f.crit.map(c=>({t:c[0],t0:c[0],s:c[1],must:!!c[2]}))})};
-A.rpublish=id=>{let r;if(id==='new'){const d=S.rc.draft,loc=d.loc.trim()||S.rc.roles[0].loc;
-  r={id:'ramp-r'+(++S.rc.n),title:d.title.trim()||'New role',team:d.team,status:'Open',loc,mode:/remote/i.test(loc)?'Remote':/hybrid/i.test(loc)?'Hybrid':'On site',pay:rcPay(d.pay,d.pay0),opened:today(),need:d.need.trim(),fam:d.fam,
-   crit:d.crit.map(c=>{const t=c.t.trim()||c.t0;return{t,s:t===c.t0?c.s:rcShort(t),must:c.must}})};S.rc.roles.push(r);S.rc.draft=null}
- else{r=rcRole(id);r.status='Open';r.opened=today()}
- const L=rcRank(r,DATA.students.filter(s=>!rcIsMaya(s))).filter(s=>rcFit(r,s).label!==RC_FITS[2]).slice(0,5);L.forEach(s=>RE.put(r.id,s.id,{st:'new',src:'matched',on:today()}));
- rlog('','megaphone',`You opened ${r.title}. Zero found ${num(L.length).toLowerCase()} student${L.length===1?'':'s'} who fit`,r.id);S.rc.open=r.id;S.rc.exp='';S.rc.role=r.id;return'enter'};
+A.rnew=()=>{S.rc.open='new';S.rc.draft={src:'say',link:'',need:'',title:'',pay:'',loc:'',crit:null,bad:''};rcF='rNeed';return'enter'};
+A.rdraft=()=>{const d=S.rc.draft;if(!d||rcBusy('draft'))return false;const b=rcBrief(d,false);if(!b){d.bad=rcBriefBad(d);rcF=d.src==='link'?'rLink':'rNeed';return}d.bad='';d.crit=null;
+ rcWork('draft',[d.src==='link'?'Reading the post':'Reading your sentence','Comparing with roles like it','Writing five things to look for'],()=>{Object.assign(d,b);d.crit=rcDraftCrit(d)},300)};
+/* publishing opens the role page at once. The students column reads, then fills with the ones who fit. */
+A.rpublish=id=>{let r;if(id==='new'){const d=S.rc.draft;if(!d||!d.crit)return false;r=rcMake(d);S.rc.draft=null}else{r=rcRole(id);if(!r||r.status!=='Draft')return false;r.status='Open';r.opened=today()}
+ S.rc.open=r.id;S.rc.exp='';S.rc.role=r.id;S.page.recruiter='roles';
+ if(S.rc.acct.zero.rank)rcWork('rank-'+r.id,rcPool().map(s=>`Reading ${s.name}`),()=>rcMatch(r),65);else rcMatch(r);return'enter'};
 
-/* ═══ find talent: every student on ZERO, and one of them in full ═══ */
-const rcFindList=r=>{const q=S.rc.q.trim().toLowerCase();return rcRank(r,rcPool().filter(s=>(!S.rc.track||s.track===S.rc.track)&&s.level>=S.rc.lvl&&(!S.rc.strong||rcFit(r,s).label===RC_FITS[0])&&(!q||[rcName(s),s.track,s.city,...s.skills,...s.tools].join(' ').toLowerCase().includes(q))))};
+/* ═══ find talent: every student on ZERO, one of them in full (the shared portfolio), and beside it how that one fits the role ═══ */
+const rcTok=q=>String(q).toLowerCase().replace(/[^a-z0-9+#/]+/g,' ').trim().split(/\s+/).filter(Boolean).map(w=>w.length>3?w.replace(/s$/,''):w);
+const rcHay=s=>[s.name,s.track,s.city,...s.skills,...s.tools,...s.projects.map(p=>p.title)].map(x=>x.toLowerCase());
+const rcHas=(s,T)=>{const h=rcHay(s);return T.every(t=>h.some(x=>x.includes(t)))};
+const rcFindList=r=>{const T=rcTok(S.rc.q);return rcRank(r,rcPool().filter(s=>(!S.rc.track||s.track===S.rc.track)&&s.level>=S.rc.lvl&&(!S.rc.strong||rcFit(r,s).label===RC_FITS[0])&&rcHas(s,T)))};
+const rcFindRead=()=>{rcWork('find',[`Reading ${rcPool().length} students`],null,380)};
 const rcSel=(key,label,opts)=>`<label class="r-sel"><span class="hide">${label}</span><select data-rf="${key}">${opts.map(o=>`<option value="${esc(o[0])}" ${String(S.rc[key])===String(o[0])?'selected':''}>${esc(o[1])}</option>`).join('')}</select>${ic('chevron-down')}</label>`;
 function rcForm(s,r,ui){return ui==='offer'?{amount:rcIsMaya(s)?'$118,000':money(Math.round((r.pay[0]+r.pay[1])/2000)*1000)}:{why:'',line:'',auto:''}}
 function rcPassDraft(why,s,r){const f=rcFit(r,s),mi=r.crit.findIndex((k,i)=>k.must&&f.c[i][0]!=='y'),i=mi<0?r.crit.findIndex((k,j)=>f.c[j][0]!=='y'):mi,k=r.crit[i];
  return{'Needs a required skill':!k?'This role needs a skill your graded work does not show yet.':f.c[i][0]==='p'?`Your graded work only partly shows one thing this role needs: ${k.t}.`:`${k.must?'One must have for this role':'One thing this role needs'} is not in your graded work yet: ${k.t}.`,'Level':'This role needs someone further along. Your work is good for where you are.','Location':`We need someone in ${r.loc} for this role.`,'Start date':`We need someone who can start before ${s.avail}.`}[why]||''}
-function rcState(s,r,c){const st=c?c.st:'',ui=S.rc.ui,F=S.rc.form,f=s.first,n=rcName(s),t=esc(r.title),ban=(ch,tx,x='')=>`<div class="banner r-ban">${ch}<p class="grow">${tx}</p>${x}</div>`;
- if(rcIsMaya(s)&&r.id!==LINK)return ban(chip('Not for this role'),`Maya is looking for ${esc(S.prefs.role)}. You can ask to meet about ${esc(rcRole(LINK).title)}.`,btn(`See Maya for ${esc(rcRole(LINK).title)}`,'s sm','rcur',LINK));
- if(rcIsMaya(s)&&!c&&S.hired)return ban(chip('Hired elsewhere'),`Maya accepted an offer from ${CO(ROLE(S.hired).co).name}.`);
- if(ui==='pass')return`<div class="form"><p class="i">Why are you passing on ${f}?</p><div class="chips" role="radiogroup" aria-label="Reason">${['Needs a required skill','Level','Location','Start date'].map(w=>`<button type="button" role="radio" aria-checked="${F.why===w}" class="opt ${F.why===w?'on':''}" data-a="rwhy" data-id="${w}">${w}</button>`).join('')}</div>
-   <label class="field" for="rLine"><span class="i">A line ${f} will read</span><input id="rLine" data-rv="form.line" value="${esc(F.line||'')}" placeholder="One honest sentence helps most" autocomplete="off"><span class="m">${f} reads this exactly as written. Private notes stay with your team.</span></label>
-   <div class="acts">${btn(`Pass on ${n}`,'k','rpassyes',s.id,F.why?'':'disabled')}${btn('Cancel','s','rcancel')}</div></div>`;
- if(ui==='offer')return`<div class="form"><label class="field" for="rAmt"><span class="i">Salary for ${f}, a year</span><input id="rAmt" data-rv="form.amount" data-enter="rofferyes" data-id="${s.id}" value="${esc(F.amount||'')}" autocomplete="off"><span class="m">Your posted range is ${payOf(r)}. ${f} gets 4 working days to answer.</span></label>
+/* what you can do about this student, or where it stands. It sits inside the fit card. */
+function rcActs(s,r,c){const st=c?c.st:'',ui=S.rc.ui,F=S.rc.form,f=s.first,n=rcName(s),t=esc(r.title),sv=S.rc.saved[s.id];
+ const box=(ch,tx,x='')=>`<div class="r-state">${ch}<p>${tx}</p>${x?`<div class="acts">${x}</div>`:''}</div>`,msg=btn(`Message ${f}`,'s sm','rthread',s.id);
+ if(rcIsMaya(s)&&r.id!==LINK)return box(chip('Not for this role'),`Maya is looking for ${esc(S.prefs.role)}. You can ask to meet about ${esc(rcRole(LINK).title)}.`,btn(`See Maya for ${esc(rcRole(LINK).title)}`,'s sm','rcur',LINK));
+ if(rcIsMaya(s)&&!c&&S.hired)return box(chip('Hired elsewhere'),`Maya accepted an offer from ${CO(ROLE(S.hired).co).name}.`);
+ if(ui==='pass')return`<div class="form r-sform"><p class="i">Why are you passing on ${f}?</p><div class="chips" role="radiogroup" aria-label="Reason">${['Needs a required skill','Level','Location','Start date'].map(w=>`<button type="button" role="radio" aria-checked="${F.why===w}" class="opt ${F.why===w?'on':''}" data-a="rwhy" data-id="${w}">${w}</button>`).join('')}</div>
+   <label class="field" for="rLine"><span class="i">A line ${f} will read</span><textarea id="rLine" rows="4" data-rv="form.line" placeholder="One honest sentence helps most">${esc(F.line||'')}</textarea><span class="m">${F.auto&&F.line===F.auto?'Zero drafted this from the fit. Edit it before it goes. ':''}${f} reads it exactly as written. Private notes stay with your team.</span></label>
+   <div class="acts">${btn(`Pass on ${f}`,'k','rpassyes',s.id,F.why?'':'disabled')}${btn('Cancel','s','rcancel')}</div></div>`;
+ if(ui==='offer')return`<div class="form r-sform"><label class="field" for="rAmt"><span class="i">Salary for ${f}, a year</span><input id="rAmt" data-rv="form.amount" data-enter="rofferyes" data-id="${s.id}" value="${esc(F.amount||'')}" autocomplete="off"><span class="m">Your posted range is ${payOf(r)}. Zero put in the middle of it. ${f} gets 4 working days to answer.</span></label>
    <div class="acts">${btn('Send the offer','k','rofferyes',s.id)}${btn('Cancel','s','rcancel')}</div></div>`;
- if(!st||st==='new')return`<div class="acts" style="margin-top:20px">${btn(`Ask to meet ${f}`,'k','rask',s.id)}${st?btn('Pass','s','rpass',s.id):''}</div>
-   <p class="m" style="margin-top:10px">${!st?`${f} has not applied to ${t}. Asking sends your name and the role.`:c.src==='applied'?`${f} applied to ${t} ${rel(c.on)}.${c.reply?` Zero promised an answer by ${c.reply}.`:''}`:`Zero matched ${f} to ${t} ${rel(c.on)}.`} You get ${f}’s email when the answer is yes.</p>`;
- const msg=btn(`Message ${f}`,'s sm','rthread',s.id);
- return st==='asked'?ban(rcStageChip(c,s),`You asked ${rel(c.on)} about ${t}. Students usually answer within 2 days. The email arrives with a yes.`)
-  :st==='yes'?ban(rcStageChip(c,s),`${s.name} said yes and is picking a time. Write to ${rcMail(s)}, or here.`,msg)
-  :st==='booked'?ban(rcStageChip(c,s),`${s.name} picked ${c.when}. 45 minutes on Google Meet, about ${t}.`,msg)
-  :st==='met'?ban(rcStageChip(c,s),`You met ${s.name} ${rel(c.on)} about ${t}. ${f} was told to expect an answer within three days.`,btn('Pass','s sm','rpass',s.id)+btn('Make an offer','k sm','roffer',s.id))
-  :st==='offer'?ban(rcStageChip(c,s),`You offered ${f} ${c.amount} a year for ${t}. ${f} has until ${c.by} to answer.`,msg)
-  :st==='hired'?ban(rcStageChip(c,s),`${s.name} accepted ${c.amount} for ${t}. The fee is ${money(Math.round(rcNum(c.amount)/10))}, with a 90 day guarantee.`,msg)
-  :st==='passed'?ban(rcStageChip(c,s),`You passed ${rel(c.on)}. ${esc(c.why||'No reason given')}.${c.line?` ${f} read: “${esc(c.line)}”`:''}`)
-  :ban(rcStageChip(c,s),c.how==='gone'?`${f} accepted another offer and withdrew from ${t}.`:c.how==='refused'?`${n} declined your offer for ${t}.`:`${f} declined your request about ${t}. No reason is shared.`)}
-function rcProfile(s,r){const f=rcFit(r,s),c=rcRec(r.id,s.id),sv=S.rc.saved[s.id];
- return`<article class="jd ${rcMoved({rid:r.id,sid:s.id})?'flash':''}"><div class="row r-head">${rcAv(s,'lgx')}<div class="grow"><h1 class="h">${rcName(s)}</h1><p class="sub" style="margin-top:6px">${s.track} · ${rcNamed(s)?rcMail(s):'Email arrives on a yes'}</p></div>
-   ${rcIsMaya(s)?btn(`${ic('panel-top')}Open her portfolio`,'s sm','rpf'):''}${btn(`${ic(sv?'bookmark-check':'bookmark')}${sv?'Saved':'Save'}`,'s sm','rsave',s.id,`aria-pressed="${!!sv}"`)}</div>
-  <p class="i r-line">“${s.line}”</p>
-  <dl class="r-facts">${[['Level',s.level],['Lives in',s.city],['Can start',s.avail],['Work authorization',s.auth]].map(x=>`<div><dt class="m">${x[0]}</dt><dd class="i">${x[1]}</dd></div>`).join('')}</dl>
-  ${rcState(s,r,c)}
-  <section class="sec"><h2 class="lab">How ${s.first} fits ${esc(r.title)}</h2><div class="banner r-ban" style="margin-top:0">${rcFitChip(f)}<p class="grow i">${rcWhy(f,r)}</p><span class="m">${f.have} of ${f.musts} must haves shown</span></div>
-   <ul class="crit" style="margin-top:20px">${r.crit.map((k,i)=>`<li>${rcMk(f.c[i][0])}<div class="grow"><p class="i">${esc(k.t)}${k.must?'':' <span class="m">Nice to have</span>'}</p><p>${f.c[i][1]}</p></div></li>`).join('')}</ul></section>
-  <section class="sec"><h2 class="lab">${num(s.projects.length)} graded projects</h2><div class="works">${s.projects.map(p=>`<div class="work"><div class="row">${lg(p.dom,'xs')}<span class="m">ZERO scenario for ${p.co}</span></div><div><p class="i">${p.title}</p><p class="m">Rated ${p.verdict}</p></div></div>`).join('')}</div>
-   <p class="m" style="margin-top:12px">Every student gets the same scenarios. A manager grades each one on one rubric.</p></section>
-  <section class="sec two"><div><h2 class="lab">Skills</h2><div class="chips">${s.skills.map(x=>chip(x)).join('')}</div></div><div><h2 class="lab">Tools</h2><div class="chips">${s.tools.map(x=>chip(x)).join('')}</div></div></section></article>`}
-PAGES.recruiter.findClass='split';
-PAGES.recruiter.find=()=>{rcKeep();const rc=S.rc,r=rcCur(),L=rcFindList(r),P=rcPool();if(!L.find(s=>s.id===rc.sel)){rc.sel=L[0]?L[0].id:'';rc.ui=''}
- const s=rcStu(rc.sel),lv=[...new Set(P.map(x=>x.level))].sort((a,b)=>a-b).slice(1),filt=rc.q||rc.track||rc.lvl||rc.strong;
- if(s&&rcIsMaya(s)&&stOf(LINK)==='sent')E.open(LINK);if(!s||!rcIsMaya(s))rc.ui=rc.ui==='pf'?'':rc.ui;
- return`<div class="jobs"><div class="jl"><div class="jl-top"><h1 class="i">${filt?`${L.length} of ${P.length}`:P.length} students on ZERO</h1>
-    <label class="search" for="rq">${ic('search')}<span class="hide">Search students</span><input id="rq" data-rv="q" data-live placeholder="Search by skill, tool, track or city" value="${esc(rc.q)}" autocomplete="off"></label>
+ if(!st||st==='new')return`${btn(`Ask to meet ${f}`,'k','rask',s.id)}${st?btn('Pass','s sm','rpass',s.id):''}${btn(`${ic(sv?'bookmark-check':'bookmark')}${sv?'Saved':'Save'}`,'s sm','rsave',s.id,`aria-pressed="${!!sv}"`)}
+   <p class="m r-note">${!st?`${f} has not applied to ${t}. Asking sends your name and the role.`:c.src==='applied'?`${f} applied ${rel(c.on)}.${c.reply?` Zero promised an answer by ${c.reply}.`:' Zero promised an answer within five days.'}`:`Zero matched ${f} to ${t} ${rel(c.on)}. ${f} has not been promised an answer.`}</p>`;
+ return st==='asked'?box(rcStageChip(c,s),`You asked ${rel(c.on)} about ${t}. Students usually answer within 2 days. The email arrives with a yes.`)
+  :st==='yes'?box(rcStageChip(c,s),`${n} said yes and is picking a time. Write to ${rcMail(s)}, or here.`,msg)
+  :st==='booked'?box(rcStageChip(c,s),`${n} picked ${c.when}. 45 minutes on Google Meet, about ${t}.`,msg)
+  :st==='met'?box(rcStageChip(c,s),`You met ${n} ${rel(c.on)} about ${t}. ${f} was told to expect an answer within three days.`,btn('Make an offer','k sm','roffer',s.id)+btn('Pass','s sm','rpass',s.id))
+  :st==='offer'?box(rcStageChip(c,s),`You offered ${f} ${c.amount} a year for ${t}. ${f} has until ${c.by} to answer.`,msg)
+  :st==='hired'?box(rcStageChip(c,s),`${n} accepted ${c.amount} for ${t}. The fee is ${money(Math.round(rcNum(c.amount)/10))}, with a 90 day guarantee.`,msg)
+  :st==='passed'?box(rcStageChip(c,s),`You passed ${rel(c.on)}. ${esc(c.why||'No reason given')}.${c.line?` ${f} read: “${esc(c.line)}”`:''}`)
+  :box(rcStageChip(c,s),c.how==='gone'?`${f} accepted another offer and withdrew from ${t}.`:c.how==='refused'?`${n} declined your offer for ${t}.`:`${f} declined your request about ${t}. No reason is shared.`)}
+/* the label and the proof, no number. The shared card draws it while the role still reads as it does in the data.
+   Once you rename the role, rewrite a criterion, flip a must have, or the role was made here, the same card is drawn from the live fit. */
+function rcFitCard(s,r,acts){const f=rcFit(r,s),d=DATA.rampRoles.find(x=>x.id===r.id),g=d&&s.fits&&s.fits[r.id];
+ if(g&&g.label===f.label&&d.title===r.title&&d.team===r.team&&d.crit.every((k,i)=>r.crit[i]&&k.t===r.crit[i].t&&k.must===r.crit[i].must))return fitCard(s.id,r.id,acts);
+ return`<div class="card pf-fit"><div class="row">${lg('ramp.com','sm')}<div class="grow"><p class="i">${esc(r.title)}</p><p class="m">${esc(r.team)} · Ramp</p></div></div><p class="h" style="margin-top:16px">${f.label}</p>
+  <ul class="crit" style="margin-top:16px;gap:12px">${r.crit.map((k,i)=>`<li>${rcMk(f.c[i][0])}<div class="grow"><p class="i">${esc(k.t)}${k.must?'':' <span class="m">Nice to have</span>'}</p><p class="m">${f.c[i][1]}</p></div></li>`).join('')}</ul>
+  ${acts?`<div class="acts" style="margin-top:20px">${acts}</div>`:''}</div>`}
+const rcFitSk=r=>`<div class="card pf-fit"><div class="row">${lg('ramp.com','sm')}<div class="grow"><p class="i">${esc(r.title)}</p><p class="m">${esc(r.team)} · Ramp</p></div></div>
+  ${rcWorkBox('open','line','r-opening')}<ul class="crit r-skcrit" aria-hidden="true">${r.crit.map(()=>`<li>${rcSk('r-skm')}<div class="grow">${rcSk('r-w70')}${rcSk('r-w90')}</div></li>`).join('')}</ul></div>`;
+/* the first time you open a student for a role, Zero reads their work against the brief before the fit appears */
+function rcSide(s,r){const key=r.id+'|'+s.id,c=rcRec(r.id,s.id);if(!S.rc.seen[key]&&((c&&c.st!=='new')||S.rc.ui))S.rc.seen[key]=1;
+ if(!S.rc.seen[key]){const w=rcBusy('open');if(!w||w.id!==key){const n=rcWork('open',[`Reading ${s.first}’s work against your brief`],()=>{S.rc.seen[key]=1},700);if(n)n.id=key}}
+ return S.rc.seen[key]?rcFitCard(s,r,rcActs(s,r,c)):rcFitSk(r)}
+/* the main column is the portfolio every team opens. Under it, what the portfolio does not carry: how to reach them. */
+function rcProfile(s,r){const ok=rcNamed(s);
+ return`<article class="r-prof ${rcMoved({rid:r.id,sid:s.id})?'flash':''}">${profileMain(PERSON(s.id),{view:'recruiter'})}
+  <section class="sec"><h2 class="lab">Contact</h2><div class="item soft">${ic(ok?'mail':'lock')}<div class="grow"><p class="i">${ok?rcMail(s):'Email arrives on a yes'}</p><p class="m">${ok?`${s.first} said yes to meeting you.`:`Ask to meet ${s.first}. You get the email when the answer is yes.`}</p></div></div>
+   <p class="m" style="margin-top:12px">Every student gets the same scenarios. A manager grades each one on one rubric.</p></section></article>`}
+PAGES.recruiter.findClass='split r-wide';
+PAGES.recruiter.find=()=>{rcKeep();const rc=S.rc,r=rcCur(),P=rcPool(),w=rcBusy('find'),L=rcFindList(r);if(!w&&!L.find(s=>s.id===rc.sel)){rc.sel=L[0]?L[0].id:'';rc.ui=''}
+ const s=P.find(x=>x.id===rc.sel),lv=[...new Set(P.map(x=>x.level))].sort((a,b)=>a-b).slice(1),filt=rc.q.trim()||rc.track||rc.lvl||rc.strong;
+ if(s&&rcIsMaya(s)&&stOf(LINK)==='sent')E.open(LINK);
+ return`<div class="jobs r-find"><div class="jl"><div class="jl-top">${w?rcWorkBox('find','line','i'):`<h2 class="i">${filt?`${L.length} of ${P.length}`:P.length} students on ZERO</h2>`}
+    <label class="search" for="rq">${ic('search')}<span class="hide">Search students</span><input id="rq" data-rv="q" placeholder="Skill, tool, project or city" value="${esc(rc.q)}" autocomplete="off"></label>
     <div class="r-filters">${rcSel('track','Track',[['','Any track'],...[...new Set(P.map(x=>x.track))].map(t=>[t,t])])}${rcSel('lvl','Minimum level',[[0,'Any level'],...lv.map(n=>[n,`Level ${n} and up`])])}</div>
     <div class="r-filters">${rcSel('role','Rank by fit for',rcOpen().map(o=>[o.id,`Fit for ${o.title}`]))}<button type="button" class="opt ${rc.strong?'on':''}" aria-pressed="${rc.strong}" data-a="rstrong">Strong fits only</button></div></div>
-   <div class="jl-list" id="rlist" data-keep>${L.map(x=>{const f=rcFit(r,x),c=rcRec(r.id,x.id);return`<button type="button" class="jr ${x.id===rc.sel?'on':''}" data-a="rsel" data-id="${x.id}" aria-current="${x.id===rc.sel}">${rcAv(x)}<span class="grow"><span class="i">${rcName(x)}</span><span class="m">${x.track} · Level ${x.level}</span><span class="m">${x.city}</span></span><span class="jr-r">${rcFitChip(f)}<span class="m">${c?RC_SHORT[c.st]:rc.saved[x.id]?'Saved':''}</span></span></button>`}).join('')
+   <div class="jl-list" id="rlist" data-keep>${w?Array(6).fill(rcSkRow('jr')).join(''):L.map(x=>{const f=rcFit(r,x),c=rcRec(r.id,x.id);return`<button type="button" class="jr ${x.id===rc.sel?'on':''}" data-a="rsel" data-id="${x.id}" aria-current="${x.id===rc.sel}">${rcAv(x)}<span class="grow"><span class="i">${rcName(x)}</span><span class="m">${x.track}</span><span class="m">Level ${x.level} · ${c?RC_SHORT[c.st]:x.city.split(',')[0]}</span></span><span class="jr-r">${rcFitChip(f)}${!c&&rc.saved[x.id]?'<span class="m">Saved</span>':''}</span></button>`}).join('')
     ||`<div class="r-none"><p class="m">No student matches. Loosen a filter, or clear them all.</p>${btn('Clear the filters','s sm','rclear')}</div>`}</div></div>
-  ${s&&rc.ui==='pf'?`<div class="jd-wrap r-pfwrap"><div class="chat-h">${rcAv(s)}<div class="grow"><p class="i">${rcName(s)}’s portfolio</p><p class="m">Seven graded projects, the same page every hiring team opens.</p></div>${btn(`${ic('arrow-left')}Back to her profile`,'s sm','rpfback')}</div><iframe class="r-pf" src="${PF}slate-light.html" title="Maya’s portfolio" loading="lazy"></iframe></div>`
-   :`<div class="jd-wrap" id="rpane" data-keep>${s?rcProfile(s,r):'<p class="m" style="padding:24px">Nobody to show. Clear a filter on the left to see students again.</p>'}</div>`}</div>`};
+  <div class="jd-wrap r-pane" id="rpane" data-keep>${s?rcProfile(s,r):'<p class="m" style="padding:24px">Nobody to show. Clear a filter on the left to see students again.</p>'}</div>
+  <aside class="r-side ${rc.ui?'r-formed':''}" id="rside" data-keep aria-label="How this student fits">${s?rcSide(s,r):''}</aside></div>`};
 A.rsel=id=>{S.rc.sel=id;S.rc.ui='';S.rc.form={};rcTop=true};
-A.rstu=(id,a)=>{const rc=S.rc,d=a?a.dataset:{};if(d.role&&rcRole(d.role)&&rcRole(d.role).status!=='Draft')rc.role=d.role;rc.sel=id;rc.ui=d.ui||'';rc.form=rc.ui?rcForm(rcStu(id),rcCur(),rc.ui):{};rc.q='';rc.track='';rc.lvl=0;rc.strong=false;if(rc.ui==='offer')rcF='rAmt';S.page.recruiter='find';rcTop=true;return'enter'};
+A.rstu=(id,a)=>{const rc=S.rc,d=a?a.dataset:{};if(d.role&&rcRole(d.role)&&rcRole(d.role).status!=='Draft')rc.role=d.role;rc.sel=id;rc.ui=d.ui||'';rc.form=rc.ui?rcForm(rcStu(id),rcCur(),rc.ui):{};rc.q='';rc.track='';rc.lvl=0;rc.strong=false;delete rc.work.find;if(rc.ui==='offer')rcF='rAmt';rcShow=!!rc.ui;S.page.recruiter='find';rcTop=true;return'enter'};
 A.rfind=id=>{S.rc.role=id;S.rc.ui='';S.page.recruiter='find';return'enter'};
-A.rstrong=()=>{S.rc.strong=!S.rc.strong};
-A.rclear=()=>{Object.assign(S.rc,{q:'',track:'',lvl:0,strong:false})};
+A.rstrong=()=>{S.rc.strong=!S.rc.strong;rcFindRead()};
+A.rclear=()=>{Object.assign(S.rc,{q:'',track:'',lvl:0,strong:false});rcFindRead()};
 A.rsave=id=>{S.rc.saved[id]=!S.rc.saved[id]};
 A.rcur=id=>{S.rc.role=id;S.rc.ui=''};
-A.rpf=()=>{S.rc.ui='pf'};A.rpfback=()=>{S.rc.ui=''};
 A.rask=(id,a)=>{const rid=(a&&a.dataset.role)||rcCur().id,s=rcStu(id),c=rcRec(rid,id);if(c&&c.st!=='new')return false;
  if(!rcIsMaya(s))return RE.ask(rid,id);if(rid!==LINK||(S.hired&&!c))return false;
  if(!S.apps[LINK])S.apps[LINK]={st:'opened',sent:today(),opened:today(),reply:fmt(addBiz(S.now,5))};if(stOf(LINK)==='sent')E.open(LINK);E.ask(LINK)};
-A.rpass=id=>{S.rc.ui='pass';S.rc.form=rcForm(rcStu(id),rcCur(),'pass')};
-A.rwhy=id=>{const F=S.rc.form,d=rcPassDraft(id,rcStu(S.rc.sel),rcCur());F.why=id;if(!F.line||F.line===F.auto)F.line=d;F.auto=d};
+A.rpass=id=>{S.rc.ui='pass';S.rc.form=rcForm(rcStu(id),rcCur(),'pass');rcShow=true};
+A.rwhy=id=>{const F=S.rc.form,d=S.rc.acct.zero.notes?rcPassDraft(id,rcStu(S.rc.sel),rcCur()):'';F.why=id;if(!F.line||F.line===F.auto)F.line=d;F.auto=d};
 A.rpassyes=id=>{const F=S.rc.form,r=rcCur(),s=rcStu(id),c=rcRec(r.id,id);if(!F.why||!c)return false;const line=(F.line||'').trim();if(rcIsMaya(s))E.pass(LINK,F.why,line);else RE.pass(r.id,id,F.why,line);S.rc.ui='';S.rc.form={}};
-A.roffer=id=>{S.rc.ui='offer';S.rc.form=rcForm(rcStu(id),rcCur(),'offer');rcF='rAmt'};
+A.roffer=id=>{S.rc.ui='offer';S.rc.form=rcForm(rcStu(id),rcCur(),'offer');rcF='rAmt';rcShow=true};
 A.rofferyes=id=>{const r=rcCur(),s=rcStu(id),c=rcRec(r.id,id);if(!c||c.st!=='met')return false;const n=rcNum(S.rc.form.amount),amount=money(n||Math.round((r.pay[0]+r.pay[1])/2000)*1000);
  if(rcIsMaya(s))E.offer(LINK,amount);else RE.offer(r.id,id,amount);S.rc.ui='';S.rc.form={}};
 A.rcancel=()=>{S.rc.ui='';S.rc.form={}};
@@ -1990,7 +2412,7 @@ PAGES.recruiter.rinbox=()=>{rcKeep();const ids=rcThreadIds();if(!ids.includes(S.
    <div class="jl-list" id="rthreads" data-keep>${ids.map(row).join('')||'<p class="m" style="padding:16px">No conversations yet. Ask to meet a student. The thread opens on a yes.</p>'}</div></div>
   <div class="jd-wrap chat">${T?`<div class="chat-h">${rcAv(s)}<div class="grow"><p class="i">${rcName(s)}</p><p class="m">${esc(rcRole(T.role).title)} · ${esc(rcLine(T.c,s))}</p></div>${btn(`Open ${s.first}’s profile`,'s sm','rstu',s.id,`data-role="${T.role}"`)}</div>
     <ul class="msgs" id="rmsgs">${T.msgs.map(bub).join('')}</ul>
-    ${T.open?`<form class="chat-f row" id="rsendf"><label class="hide" for="rmsgIn">Message</label><input id="rmsgIn" class="grow" data-rv="msg" placeholder="Write to ${s.first}" value="${esc(S.rc.msg)}" autocomplete="off"><button class="k sm" type="submit">Send</button></form>`:'<p class="m chat-f">This conversation is closed.</p>'}`
+    ${T.open?`${rcWorkBox('reply','line','r-replying')}<form class="chat-f row" id="rsendf"><label class="hide" for="rmsgIn">Message</label><input id="rmsgIn" class="grow" data-rv="msg" placeholder="Write to ${s.first}" value="${esc(S.rc.msg)}" autocomplete="off">${btn('Draft with Zero','s sm','rreply')}<button class="k sm" type="submit">Send</button></form>`:'<p class="m chat-f">This conversation is closed.</p>'}`
    :'<p class="m" style="padding:24px">Nothing to read yet. When a student says yes, their thread opens here with their email.</p>'}</div></div>`};
 A.rthread=id=>{S.rc.thread=id;S.rc.msg='';if(S.page.recruiter!=='rinbox'){S.page.recruiter='rinbox';return'enter'}};
 const RC_REPLY=['Thanks. That works for me.','Understood. I will have it ready.','Sounds good. Talk soon.'];
@@ -1998,18 +2420,168 @@ function rcSend(){const text=S.rc.msg.trim(),sid=S.rc.thread,s=rcStu(sid);if(!te
  if(rcIsMaya(s)){const T=S.threads[LINK],n=T.msgs.length;say(LINK,'them',text);S.dots.student=true;setTimeout(()=>{if(S.threads[LINK]===T&&S.mode==='recruiter'){say(LINK,'me',RC_REPLY[n%RC_REPLY.length]);render()}},2600)}
  else{const T=S.rc.threads[sid],n=T.msgs.length;rcSay(sid,'you',text);setTimeout(()=>{if(S.rc.threads[sid]===T){rcSay(sid,'stu',RC_REPLY[n%RC_REPLY.length]);render()}},2600)}
  render()}
+/* Zero drafts a reply from where the student stands. You read it, change it, and send it yourself. */
+const rcReplyDraft=(s,c)=>({yes:`Hi ${s.first}. Any of the times on the calendar work for me. Pick the one that suits you.`,booked:`See you on ${c.when}, ${s.first}. No slides needed, just walk me through your work.`,met:`Thank you for your time on ${c.on}, ${s.first}. You will hear from me within three days.`,offer:`Take the time you need, ${s.first}. I am here if you have questions about the offer.`,hired:`Welcome to the team, ${s.first}. Your contract arrives this week.`}[c.st]||`Thank you, ${s.first}.`);
+A.rreply=()=>{const sid=S.rc.thread,s=rcStu(sid);if(!s||rcBusy('reply'))return false;rcWork('reply',[`Zero is writing to ${s.first}`],()=>{if(S.rc.thread!==sid)return;S.rc.msg=rcReplyDraft(s,rcThread(sid).c);rcF='rmsgIn'},650)};
+
+/* ═══ account: reached from your name, top right. The company, you, who else sees candidates, what Zero may do alone, and the terms. ═══ */
+const RC_TEAM=[{name:'Dana Okafor',ini:'DO',tone:'b',title:'Senior Recruiter',access:'decide'},{name:'Marcus Lindqvist',ini:'ML',tone:'c',title:'VP, Revenue Operations',access:'see'},{name:'Priyanka Shah',ini:'PS',tone:'d',title:'Recruiting Coordinator',access:'see'}];
+const RC_ACCESS=[['decide','Sees and decides'],['see','Sees candidates'],['none','No access']];
+const RC_ZERO=[['rank','Rank new students','Zero reads every new student against each open role, and matches the ones who fit.',1],
+ ['alert','Tell me about strong fits','A note in Zero’s chat when you open a role and students fit it.',1],
+ ['notes','Draft pass notes','Zero writes the line from the fit. You edit it, and you send it.',1],
+ ['ask','Ask to meet without me','Off: Zero suggests, and you tap to send. On: Zero sends the request when you tell it to in chat.',0],
+ ['pass','Send a pass without me','Off: Zero drafts the line, and you send it. On: Zero sends the pass when you tell it to in chat.',0]];
+const rcMyMail=()=>who(LINK).name.toLowerCase().replace(/[^a-z ]/g,'').trim().replace(/ +/g,'.')+'@'+CO('ramp').dom;
+PAGES.recruiter.account=()=>{rcKeep();const c=CO('ramp'),m=who(LINK),a=S.rc.acct,open=rcOpen().length,dr=S.rc.roles.length-open,see=a.team.filter(t=>t.access!=='none').length;
+ const hired=rcAll().filter(x=>x.c.st==='hired'),fee=hired.reduce((n,x)=>n+Math.round(rcNum(x.c.amount)/10),0);
+ const perm=on=>RC_ZERO.filter(z=>!!z[3]===on).map(z=>`<li class="row"><div class="grow"><p class="i">${z[1]}</p><p class="m">${z[2]}</p></div><button class="sw ${a.zero[z[0]]?'on':''}" type="button" role="switch" aria-checked="${!!a.zero[z[0]]}" aria-label="${z[1]}" data-a="racct" data-id="${z[0]}"></button></li>`).join('');
+ return`<div class="title"><h1 class="h">Your account at ${c.name}.</h1><p class="sub">What students see about ${c.name}, who on your team sees candidates, and what Zero may do without you.</p></div>
+  <div class="r-acct"><div class="r-col">
+    <section class="card"><h2 class="lab">Company</h2><div class="row">${lg(c.dom)}<div class="grow"><p class="i">${c.name}</p><p class="m">${c.dom}</p></div>${chip(ic('badge-check')+'Verified','g')}</div>
+     <label class="field r-gap" for="rBlurb"><span class="m">The line students read on every role</span><input id="rBlurb" data-rv="acct.blurb" value="${esc(a.blurb)}" autocomplete="off"></label>
+     <ul class="kv r-gap"><li><span class="i">Size</span><span>${c.size}</span></li><li><span class="i">Headquarters</span><span>${c.hq}</span></li><li><span class="i">Roles on ZERO</span><span>${open} open${dr?`, ${dr} draft`:''}</span></li></ul></section>
+    <section class="card"><h2 class="lab">You</h2><div class="row">${av(m.ini,'a','lgx')}<div class="grow"><p class="i">${m.name}</p><p class="m">${m.title}</p></div>${chip('Owner')}</div>
+     <ul class="kv r-gap"><li><span class="i">Signed in as</span><span>${rcMyMail()}</span></li><li><span class="i">Students reach you</span><span>In your inbox here</span></li></ul>
+     <p class="m r-gap">Your name and title come from your ${c.name} sign in. Students see them on every role you own.</p></section>
+    <section class="card"><h2 class="lab">Team who can see candidates</h2>
+     <ul class="r-team">${a.team.map((t,i)=>`<li class="row">${av(t.ini,t.tone)}<div class="grow"><p class="i clip">${esc(t.name)}</p><p class="m clip">${esc(t.title)}</p></div><label class="r-sel r-selw"><span class="hide">Access for ${esc(t.name)}</span><select data-rt="${i}">${RC_ACCESS.map(o=>`<option value="${o[0]}" ${t.access===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select>${ic('chevron-down')}</label></li>`).join('')}</ul>
+     <div class="row r-invite"><label class="hide" for="rInv">Work email of a colleague</label><input id="rInv" class="r-in grow" data-rv="acct.invite" data-enter="rinvite" value="${esc(a.invite)}" placeholder="name@${c.dom}" autocomplete="off" inputmode="email">${btn('Invite','s sm','rinvite')}</div>
+     <p class="m r-gap ${a.bad?'r-err':''}">${a.bad?`Type a work email, like name@${c.dom}.`:`${num(see)} ${see===1?'person':'people'} besides you can see candidates. Only people who decide can ask to meet, pass or make an offer.`}</p></section>
+   </div><div class="r-col">
+    <section class="card"><div class="row r-top">${orb('sm')}<div class="grow"><h2 class="i">What Zero may do</h2><p class="m">Zero reads and drafts on its own. Anything a student receives needs you, unless you say otherwise.</p></div></div>
+     <h3 class="lab r-sub">On its own</h3><ul class="r-perm">${perm(true)}</ul>
+     <h3 class="lab r-sub">Only with you</h3><ul class="r-perm">${perm(false)}<li class="row"><div class="grow"><p class="i">Make an offer</p><p class="m">Always you. Zero suggests the middle of your range.</p></div>${chip(ic('lock')+'Always you')}</li></ul></section>
+    <section class="card"><h2 class="lab">Terms</h2><ul class="r-perm">
+      <li><p class="i">10% on a hire</p><p class="m">Of the first year salary, due when a student accepts your offer. Posting, reading and interviewing cost nothing.</p></li>
+      <li><p class="i">90 day guarantee</p><p class="m">If the hire leaves within 90 days, the fee comes back.</p></li>
+      <li><p class="i">AI in screening is disclosed</p><p class="m">Students are told that Zero ranks them, and on what.</p></li></ul>
+     <div class="banner r-fee">${chip(hired.length?`${hired.length} hire${hired.length===1?'':'s'}`:'No hires yet',hired.length?'g':'')}<p class="grow">${hired.length?`${rcList(hired.map(x=>rcStu(x.sid).name))} accepted. Fees due: ${money(fee)}.`:'You owe nothing until a student accepts your offer.'}</p></div></section>
+   </div></div>`};
+A.racct=id=>{const z=S.rc.acct.zero;z[id]=!z[id]};
+A.rinvite=()=>{const a=S.rc.acct,e=a.invite.trim().toLowerCase();rcF='rInv';if(!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/.test(e)){a.bad=true;return}
+ const n=e.split('@')[0].split(/[._-]+/).filter(Boolean).map(w=>w[0].toUpperCase()+w.slice(1));a.bad=false;a.invite='';
+ a.team.push({name:n.join(' ')||e,ini:((n[0]||e)[0]+(n[1]?n[1][0]:(n[0]||e)[1]||'')).toUpperCase(),tone:'e',title:`Invited ${today()}. Not joined yet.`,access:'see'})};
+
+/* ═══ Zero's chat on this side. core.js owns the dock, the drawer and the thread (S.rc.zero). Here: what Zero understands and what it answers.
+   Answers are short, with names, counts and dates from state. Cards are small rows that take you to the right place and close the drawer. ═══ */
+const rcZSay=(text,card='')=>{(S.rc.zero=S.rc.zero||{msgs:[]}).msgs.push({from:'them',date:today(),text,html:true,card})};
+const RC_STOP=new Set(rcTok('find show me list search for students student people candidates candidate anyone someone somebody who whom that which have has had built build made make know use used using with in on of a an the and or to is are was can could did do does work worked experience experienced good great at any all from based live living i we you need want ran run wrote write written get give got their graded project skill tool please zero my our us near around there them they it its this these those about something somebody ranked rank fit fits role roles strong best top'));
+const rcZRole=q=>{const t=q.toLowerCase(),R=rcOpen();return R.find(r=>t.includes(r.title.toLowerCase()))||R.find(r=>r.title.toLowerCase().replace(/[^a-z0-9 ]+/g,' ').split(/\s+/).some(w=>w.length>2&&!/^(analyst|engineer|associate|manager|senior|junior|operations|lead)$/.test(w)&&new RegExp(`\\b${w}\\b`).test(t)))};
+const rcZHere=()=>{const o=S.page.recruiter==='roles'&&rcRole(S.rc.open);return o&&o.status!=='Draft'?o:rcCur()};
+const rcZKeys=q=>{const r=rcZRole(q),skip=r?rcTok(r.title):[];return rcTok(q).filter(w=>!RC_STOP.has(w)&&!skip.includes(w))};
+const rcZWords=q=>{const k=rcZKeys(q),out=[];let run=false;String(q).replace(/[^A-Za-z0-9+#/]+/g,' ').trim().split(/\s+/).forEach(w=>{const on=k.includes(rcTok(w)[0]);if(on&&run)out[out.length-1]+=' '+w;else if(on)out.push(w);run=on});return out};
+/* the role a question is about: the one it names, else one this student is already in, else the one they fit best */
+const rcZRoleFor=(s,q)=>{const R=rcOpen(),lab=r=>RC_FITS.indexOf(rcFit(r,s).label);return rcZRole(q)||(rcIsMaya(s)?rcRole(LINK):R.find(r=>(rcRec(r.id,s.id)||{}).st==='new')||R.find(r=>rcRec(r.id,s.id))||R.slice().sort((a,b)=>lab(a)-lab(b))[0])||rcZHere()};
+const rcZStus=q=>rcPool().filter(s=>new RegExp(`\\b(${s.first}|${s.name.split(' ').pop()})\\b`,'i').test(q));
+const rcZStuRow=(s,r,line)=>`<button type="button" class="r-zrow" data-a="rzgo" data-do="rstu" data-id="${s.id}" data-role="${r.id}">${rcAv(s)}<span class="i clip">${s.name}</span>${rcFitChip(rcFit(r,s))}<span class="m r-zl">${line}</span></button>`;
+const rcZRoleRow=(r,line,to='rpipe')=>`<button type="button" class="r-zrow" data-a="rzgo" data-do="${to}" data-id="${r.id}">${lg('ramp.com','sm')}<span class="i clip">${esc(r.title)}</span>${ic('arrow-right')}<span class="m r-zl">${line}</span></button>`;
+const rcZEv=(r,f,i)=>`<span class="r-zev">${rcMk(f.c[i][0])}<span class="grow"><span class="i">${esc(r.crit[i].s)}</span><span class="m">${f.c[i][1]}</span></span></span>`;
+const rcZActs=h=>`<span class="r-zacts">${h}</span>`;
+const rcZCard=a=>{const h=a.filter(Boolean).join('');return h?`<div class="zcard r-zc">${h}</div>`:''};
+const rcZOn=(s,c)=>c.st==='booked'?`${s.first} is booked for ${c.when}`:c.st==='yes'?`${s.first} said yes and is picking a time`:`${s.first} has had your request since ${c.on}`;
+const rcZFree=(r,s)=>{const c=rcRec(r.id,s.id);return(!c||c.st==='new')&&!(rcIsMaya(s)&&(r.id!==LINK||(S.hired&&!c)))};
+const rcSent=a=>a.map((t,i)=>i?t:t[0].toUpperCase()+t.slice(1)).join('. ')+'.';
+function rcZFind(q){const r=rcZRole(q)||rcZHere(),k=rcZKeys(q),kw=rcZWords(q),P=rcPool();if(!k.length)return rcZStus(q).length?rcZWhy(q):{text:'Name a skill, a tool or a city. For example: evals, Clay or New York.'};
+ let H=P.filter(s=>rcHas(s,k)),all=true;if(!H.length&&k.length>1){H=P.filter(s=>k.some(t=>rcHas(s,[t])));all=false}
+ if(!H.length)return{html:true,text:`Nobody on ZERO matches ${esc(rcList(kw))} yet. Try a skill, a tool or a city.`};
+ const L=rcRank(r,H),top=L.slice(0,4),hit=s=>{const h=[...s.skills,...s.tools,...s.projects.map(p=>`${p.title} for ${p.co}`),s.city];return k.map(t=>h.find(x=>x.toLowerCase().includes(t))).filter((x,i,a)=>x&&a.indexOf(x)===i).slice(0,2).join(' · ')||s.track};
+ return{html:true,text:`${num(H.length)} of ${P.length} students ${H.length===1?'matches':'match'} ${esc(all?rcList(kw):kw.join(' or '))}. ${H.length>top.length?`The top ${num(top.length).toLowerCase()}, ranked`:'Ranked'} for ${esc(r.title)}.`,
+  card:rcZCard([...top.map(s=>rcZStuRow(s,r,hit(s))),all&&H.length>top.length?rcZActs(btn(`See all ${H.length} in Find talent`,'s sm','rzfind',esc(kw.join(' ')))):''])}}
+function rcZMeet(q){const r=rcZRole(q)||rcZHere(),L=rcRank(r,rcPool().filter(s=>rcZFree(r,s))).filter(s=>rcFit(r,s).label!==RC_FITS[2]).slice(0,3),on=rcIds(r.id).map(id=>[rcStu(id),rcRec(r.id,id)]).filter(x=>['asked','yes','booked'].includes(x[1].st)),moving=on.length?` Already moving: ${rcList(on.map(x=>rcZOn(x[0],x[1])))}.`:'';
+ if(!L.length)return{html:true,text:`Nobody new fits ${esc(r.title)} right now.${moving} Loosen a must have in Roles and I will read everyone again.`,card:rcZCard([rcZRoleRow(r,'Open the brief and its criteria','rrole')])};
+ const a=L[0];return{html:true,text:`For ${esc(r.title)}, meet ${a.name} first. ${rcWhy(rcFit(r,a),r)}${L.length>1?` Then ${rcList(L.slice(1).map(s=>s.name))}.`:''}${moving}`,card:rcZCard(L.map(s=>rcZStuRow(s,r,rcReadPick(r,s).ev)))}}
+function rcZWhy(q){const N=rcZStus(q),cur=S.page.recruiter==='find'&&rcStu(S.rc.sel),L=N.length?N:cur?[cur]:[];
+ if(!L.length)return{text:'Which student? Say a name, like “Why is Kofi a strong fit?”'};
+ const s=L[0],r=rcZRole(q)||(cur===s?rcCur():L.length>1?rcZHere():rcZRoleFor(s,q)),f=rcFit(r,s),c=rcRec(r.id,s.id),t=esc(r.title);
+ if(rcIsMaya(s)&&r.id!==LINK)return{html:true,text:`Maya Reyes is looking for ${esc(S.prefs.role)}, so I have not read her for ${t}. For ${esc(rcRole(LINK).title)} she ${rcIsA(rcFit(rcRole(LINK),s).label)}.`,card:rcZCard([rcZStuRow(s,rcRole(LINK),`${s.track} · Level ${s.level}`)])};
+ if(L.length>1){const b=L[1],g=rcFit(r,b),i=r.crit.findIndex((k,j)=>f.c[j][0]!==g.c[j][0]),w={y:'shows it',p:'partly shows it',n:'does not show it yet'};
+  return{html:true,text:`${s.name} ${rcIsA(f.label)} and ${b.name} ${rcIsA(g.label)} for ${t}.${i<0?' On your five criteria they read the same.':` The difference is ${esc(rcLow(r.crit[i].t))}: ${s.first} ${w[f.c[i][0]]}, ${b.first} ${w[g.c[i][0]]}.`}`,card:rcZCard([s,b].map(x=>rcZStuRow(x,r,rcFit(r,x).c[Math.max(i,0)][1])))}}
+ return{html:true,text:`${s.name} ${rcIsA(f.label)} for ${t}. ${rcWhy(f,r)}`,card:rcZCard([...r.crit.map((k,i)=>k.must?rcZEv(r,f,i):''),rcZStuRow(s,r,`${s.track} · Level ${s.level} · ${esc(rcLine(c,s))}`)])}}
+function rcZPipe(){const R=rcOpen(),all=rcAll();if(!all.length)return{text:'Your pipeline is empty. Open a role and I will read every student against it.'};
+ const part=r=>{const n=rcCounts(r.id),X=rcIds(r.id).map(id=>[rcStu(id),rcRec(r.id,id)]),by=st=>X.filter(x=>x[1].st===st),b=[];
+  by('met').forEach(x=>b.push(`${x[0].name} has been waiting on your decision since ${x[1].on}`));by('offer').forEach(x=>b.push(`your offer of ${x[1].amount} is with ${x[0].name} until ${x[1].by}`));
+  by('booked').forEach(x=>b.push(`you meet ${x[0].name} on ${x[1].when}`));by('yes').forEach(x=>b.push(`${x[0].name} said yes and is picking a time`));by('asked').forEach(x=>b.push(`${x[0].name} has had your request since ${x[1].on}`));
+  if(n.new)b.push(`${num(n.new).toLowerCase()} ${n.new===1?'is':'are'} waiting for a review`);by('hired').forEach(x=>b.push(`${x[0].name} accepted ${x[1].amount}`));
+  return`${esc(r.title)}: ${b.join(', ')||'nobody yet'}.`};
+ return{html:true,text:`${num(R.length)} role${R.length===1?' is':'s are'} open, with ${all.length} student${all.length===1?'':'s'} in ${R.length===1?'it':'them'}. ${R.map(part).join(' ')}`,
+  card:rcZCard(R.map(r=>{const n=rcCounts(r.id);return rcZRoleRow(r,`${rcIds(r.id).length} students · ${n.new} to review · ${n.met} to decide`)}))}}
+function rcZWait(){const W=rcWaiting(),met=W.filter(x=>x.c.st==='met'),ap=W.filter(x=>x.c.st==='new'&&x.c.src==='applied'),ma=W.filter(x=>x.c.st==='new'&&x.c.src!=='applied'),un=rcThreadIds().filter(k=>rcThread(k).unread),b=[],nm=x=>rcStu(x.sid).name;
+ met.forEach(x=>b.push(`${nm(x)} has been waiting on your decision since ${x.c.on}`));if(ap.length)b.push(`${rcList(ap.map(nm))} applied and ${ap.length===1?'needs':'need'} a review`);if(un.length)b.push(`${rcList(un.map(k=>rcStu(k).name))} wrote to you`);
+ const rows=[...met,...ap].slice(0,4).map(x=>rcZStuRow(rcStu(x.sid),rcRole(x.rid),`${esc(rcRole(x.rid).title)} · ${esc(rcLine(x.c,rcStu(x.sid)))}`)),more=ma.length?` Not urgent: I matched ${num(ma.length).toLowerCase()} more student${ma.length===1?'':'s'} you have not opened.`:'';
+ if(!b.length)return{html:true,text:`Nothing is waiting on you.${more}`,card:rcZCard(ma.slice(0,3).map(x=>rcZStuRow(rcStu(x.sid),rcRole(x.rid),`${esc(rcRole(x.rid).title)} · ${esc(rcLine(x.c,rcStu(x.sid)))}`)))};
+ return{html:true,text:`${num(b.length)} thing${b.length===1?'':'s'}. ${rcSent(b)}${more}`,card:rcZCard([...rows,un.length?rcZActs(btn('Open your inbox','s sm','rzgo',un[0],'data-do="rthread"')):''])}}
+function rcZCal(){const all=rcAll(),up=all.filter(x=>x.c.st==='booked').sort((a,b)=>a.c.at-b.c.at),soon=all.filter(x=>x.c.st==='yes'||x.c.st==='asked'),row=x=>rcZStuRow(rcStu(x.sid),rcRole(x.rid),`${esc(rcRole(x.rid).title)} · ${esc(rcLine(x.c,rcStu(x.sid)))}`);
+ const tail=soon.length?` ${rcSent(soon.map(x=>rcZOn(rcStu(x.sid),x.c)))}`:'';
+ return up.length?{html:true,text:`${num(up.length)} interview${up.length===1?' is':'s are'} booked. ${rcSent(up.map(x=>`${rcStu(x.sid).name} on ${x.c.when}, about ${esc(rcRole(x.rid).title)}`))} Each one is 45 minutes on Google Meet.${tail}`,card:rcZCard(up.map(row))}
+  :{html:true,text:`No interview is booked.${tail||' Ask to meet a student and it appears here when they pick a time.'}`,card:rcZCard(soon.slice(0,3).map(row))}}
+function rcZTerms(){const hired=rcAll().filter(x=>x.c.st==='hired'),fee=hired.reduce((n,x)=>n+Math.round(rcNum(x.c.amount)/10),0);
+ return{html:true,text:`You pay 10% of the first year salary, and only when a student accepts your offer. If the hire leaves within 90 days, the fee comes back. Posting, reading and interviewing cost nothing. ${hired.length?`So far: ${rcList(hired.map(x=>`${rcStu(x.sid).name} at ${x.c.amount}`))}. Fees due: ${money(fee)}.`:'You have not hired anyone yet, so you owe nothing.'}`,card:rcZCard([rcZActs(btn('Open your account','s sm','rzgo','account','data-do="go"'))])}}
+function rcZAsk(q){const s=rcZStus(q)[0];if(!s)return rcZMeet(q);const r=rcZRoleFor(s,q),c=rcRec(r.id,s.id),f=rcFit(r,s),t=esc(r.title);
+ if(c&&c.st!=='new')return{html:true,text:`${s.name} is already in your pipeline for ${t}. ${esc(rcLine(c,s))}`,card:rcZCard([rcZStuRow(s,r,`${s.track} · Level ${s.level}`)])};
+ if(!rcZFree(r,s))return{html:true,text:rcIsMaya(s)&&S.hired?`Maya Reyes accepted an offer from ${CO(ROLE(S.hired).co).name}, so she is not taking requests.`:`Maya Reyes is looking for ${esc(S.prefs.role)}. Ask her about ${esc(rcRole(LINK).title)} instead.`};
+ if(S.rc.acct.zero.ask){A.rask(s.id,{dataset:{role:r.id}});return{html:true,text:`Done. I asked ${s.name} to meet about ${t}. Students usually answer within 2 days, and you get ${s.first}’s email on a yes.`,card:rcZCard([rcZStuRow(s,r,`${s.track} · Level ${s.level}`)])}}
+ return{html:true,text:`${s.name} ${rcIsA(f.label)} for ${t}. I do not ask without you, so tap to send it. ${s.first} gets your name and the role.`,card:rcZCard([rcZStuRow(s,r,rcReadPick(r,s).ev),rcZActs(btn(`Ask to meet ${s.first}`,'k sm','rzask',s.id,`data-role="${r.id}"`))])}}
+function rcZPass(q){const s=rcZStus(q)[0];if(!s)return{text:'Who should I pass on? Say a name. A pass always carries a reason the student can read.'};
+ const r=rcZRoleFor(s,q),c=rcRec(r.id,s.id),t=esc(r.title),line=rcPassDraft('Needs a required skill',s,r);
+ if(!c)return{html:true,text:`${s.name} is not in your pipeline for ${t}, so there is nothing to pass on.`};
+ if(!['new','met'].includes(c.st))return{html:true,text:c.st==='passed'?`You already passed on ${s.name} for ${t}, ${rel(c.on)}.`:`${s.name} is past that point for ${t}. ${esc(rcLine(c,s))}`,card:rcZCard([rcZStuRow(s,r,`${s.track} · Level ${s.level}`)])};
+ if(S.rc.acct.zero.pass){if(rcIsMaya(s))E.pass(LINK,'Needs a required skill',line);else RE.pass(r.id,s.id,'Needs a required skill',line);return{html:true,text:`Done. I passed on ${s.name} for ${t}. ${s.first} read: “${esc(line)}”`}}
+ return{html:true,text:`A pass is yours to send. I drafted the line from the fit: “${esc(line)}” Open it to pick the reason and edit the line.`,card:rcZCard([rcZActs(`<button class="s sm" type="button" data-a="rzgo" data-do="rstu" data-id="${s.id}" data-role="${r.id}" data-ui="pass">Open the pass for ${s.first}</button>`)])}}
+const rcZNeed=q=>{const t=q.trim().replace(/^((please|can you|could you|zero)[, ]+)*/i,'').replace(/^(draft|create|open|write|post|add)( me)?( up)?( a| an| the)?( new)?( role| job post| job| brief)?( for| to hire|:)?\s*/i,'').replace(/^(we|i) (need|want) to hire\s*/i,'').replace(/^hire\s+/i,'').replace(/[.?!]+$/,'').trim();return t?t[0].toUpperCase()+t.slice(1)+'.':''};
+function rcZDraft(q){const need=rcZNeed(q),b=need.length>=8&&rcBrief({src:'say',need},false);if(!b)return{text:'Say who you need in a sentence. For example: “Draft a role for an analyst who keeps our CRM clean.”'};
+ const f=RC_FAM.find(x=>x.k===b.fam)||RC_ANY,has=S.rc.roles.find(x=>rcFamFor(x).k===b.fam&&b.fam!=='any');
+ return{html:true,text:`I drafted ${/^[aeiou]/i.test(b.title)?'an':'a'} ${esc(b.title)} role. ${b.pay} a year, ${esc(b.loc)}. The must haves: ${rcList(f.crit.filter(c=>c[2]).map(c=>rcLow(c[0])))}. Nothing is published yet.${has?` You already have ${esc(has.title)} on ZERO, so check this is a second role.`:''}`,
+  card:rcZCard([`<span class="r-zrow">${lg('ramp.com','sm')}<span class="i clip">${esc(b.title)}</span>${chip('Draft')}<span class="m r-zl">${esc(b.team)} · ${b.pay}</span></span>`,rcZActs(btn('Open the draft','k sm','rznew',esc(need)))])}}
+const RC_ASKS=['What is waiting on me?','Who should I meet first?','Sum up my pipeline','Find students who built evals','Draft a role for a data analyst'];
+function rcZHelp(){return{text:'I can find students by skill or tool, say who to meet first, explain a fit, sum up your pipeline, or draft a role from a sentence. Try one.',card:rcZCard([rcZActs(RC_ASKS.slice(0,4).map(x=>`<button type="button" class="opt" data-a="zq" data-id="${esc(x)}">${x}</button>`).join(''))])}}
+const rcZP=()=>rcPool().length;
+INTENTS.recruiter=[
+ {re:/\b(draft|new role|open a role|create a role|add a role|post a (role|job)|write (a|the) (role|brief|job)|(we|i) (need|want) to hire|hire an?)\b/i,steps:()=>['Reading your sentence','Comparing with roles like it','Writing five things to look for'],run:rcZDraft},
+ {re:/\b(pass on|reject|turn down|say no to)\b/i,steps:()=>['Checking where they stand','Reading the fit for a reason','Checking what you let me do'],run:rcZPass},
+ {re:/\b(ask|invite|reach out to|request)\b.*\b(meet|interview|talk|chat|call)\b/i,steps:()=>['Checking where they stand','Checking what you let me do'],run:rcZAsk},
+ {re:/waiting (on|for) me|needs? (me|my)\b|what (should|do|can) i (do|need)|what('| i)?s next|on my plate|to ?do\b|my decision|decisions?\b/i,steps:()=>['Checking decisions you owe','Checking new applications','Checking your inbox'],run:rcZWait},
+ {re:/who .*\b(meet|interview|talk to|speak)\b|(meet|interview) first|best (students?|candidates?|fits?|match(es)?|people|person)|top (students?|candidates?|match(es)?|picks?|three|3|five|5)|short ?list|strongest|\brank\b/i,steps:q=>[`Reading ${rcZP()} students against ${esc((rcZRole(q)||rcZHere()).title)}`,'Leaving out anyone you already asked','Picking who to meet first'],run:rcZMeet},
+ {re:/\bwhy\b|\bfits?\b|\bgaps?\b|tell me about|what about|\bcompare\b|\bmissing\b|\bversus\b|\bvs\b/i,steps:q=>{const s=rcZStus(q)[0]||(S.page.recruiter==='find'&&rcStu(S.rc.sel));return s?[`Opening ${s.first}’s graded work`,'Reading it against your five criteria']:['Reading your question']},run:rcZWhy},
+ {re:/interview|calendar|meetings?\b|booked|schedule/i,steps:()=>['Checking your calendar','Checking who has not picked a time'],run:rcZCal},
+ {re:/pipeline|sum up|summar|overview|status|where .*\bstand|how .*\bgoing|stages?\b|funnel|progress|catch me up|update/i,steps:()=>['Counting every stage','Checking dates and replies'],run:rcZPipe},
+ {re:/\b(fees?|costs?|price|pricing|do i pay|charge[sd]?|terms|guarantee|10 ?%|percent|invoice|refund)\b/i,steps:()=>['Reading your terms','Adding up hires so far'],run:rcZTerms},
+ {re:/\b(find|search|show|list|anyone|who|students?|people|candidates?|built|knows?|uses?|experience|skills?|tools?)\b/i,steps:q=>{const k=rcZWords(q);return['Reading your question',k.length?`Searching ${rcZP()} students for ${esc(rcList(k))}`:`Searching ${rcZP()} students`,`Ranking them for ${esc((rcZRole(q)||rcZHere()).title)}`]},run:rcZFind},
+ {re:/./,steps:()=>['Reading your question'],run:q=>rcZStus(q).length?rcZWhy(q):rcZHelp()}];
+/* suggestions follow the page you are on and what is waiting on you */
+SUGGEST.recruiter=()=>{const rc=S.rc,pg=S.page.recruiter,r=rcCur(),F=pg==='find'&&!rcBusy('find')?rcFindList(r):[],s=pg==='find'&&(F.find(x=>x.id===rc.sel)||F[0]||rcStu(rc.sel)),o=pg==='roles'&&rcRole(rc.open),L=[],ti=x=>x.title.length>24?'this role':x.title.replace(/[<>&"]/g,'');
+ if(rcDue().length&&pg!=='find')L.push('What is waiting on me?');
+ if(s&&r)L.push(rcFit(r,s).label===RC_FITS[2]?`Why is ${s.first} only worth a look?`:`Why is ${s.first} a ${rcFit(r,s).label.toLowerCase()}?`,`Find students who use ${s.tools[0]}`);
+ else if(o&&o.status!=='Draft')L.push(`Who should I meet first for ${ti(o)}?`);
+ else if(pg==='roles')L.push('Draft a role for a data analyst');
+ else if(pg==='pipeline'&&r)L.push('Sum up my pipeline',`Who should I meet first for ${ti(r)}?`);
+ else if(pg==='rinbox')L.push('When are my interviews?');
+ else if(pg==='account')L.push('What do I pay on a hire?');
+ return[...new Set([...L,'Sum up my pipeline','Who should I meet first?','Find students who built evals','Draft a role for a data analyst'])]};
+/* buttons inside Zero's answers: go somewhere and close the drawer, or act and say so */
+A.rzgo=(id,a,e)=>{S.zopen=false;return A[a.dataset.do](id,a,e)};
+A.rzfind=id=>{S.zopen=false;Object.assign(S.rc,{q:id,track:'',lvl:0,strong:false,ui:''});S.page.recruiter='find';return'enter'};
+A.rznew=id=>{const d={src:'say',link:'',need:id,title:'',pay:'',loc:'',crit:null,bad:''},b=rcBrief(d,false);if(b){Object.assign(d,b);d.crit=rcDraftCrit(d)}S.zopen=false;S.rc.draft=d;S.rc.open='new';S.page.recruiter='roles';return'enter'};
+A.rzask=(id,a)=>{const s=rcStu(id),rid=a.dataset.role;if(A.rask(id,a)===false)return false;const c=rcRec(rid,id);if(c&&c.st==='asked')rcZSay(`Sent. ${s.name} has your request about ${esc(rcRole(rid).title)}. Students usually answer within 2 days.`)};
 
 /* ═══ after each render: keep what the person was doing. Typed text lives in S.rc, scroll and focus are put back. ═══ */
-let rcSc={},rcTop=false,rcF='',rcWas=null;
+let rcSc={},rcTop=false,rcF='',rcWas=null,rcShow=false;
 function rcKeep(){rcSc={};$$('[data-keep]').forEach(e=>{rcSc[e.id]=[e.scrollTop,e.scrollLeft]});const a=document.activeElement;rcWas=a&&a.id&&a.matches('#body input,#body textarea')?[a.id,a.selectionStart]:null}
-document.addEventListener('input',e=>{const t=e.target,p=t.dataset&&t.dataset.rv;if(!p||S.mode!=='recruiter')return;const k=p.split('.');let o=S.rc;while(k.length>1)o=o[k.shift()];o[k[0]]=t.value;if('live' in t.dataset)render()});
-document.addEventListener('change',e=>{const t=e.target,k=t.dataset&&t.dataset.rf;if(!k||S.mode!=='recruiter')return;S.rc[k]=k==='lvl'?+t.value:t.value;if(S.rc.ui!=='pf')S.rc.ui='';render()});
+document.addEventListener('input',e=>{const t=e.target,p=t.dataset&&t.dataset.rv;if(!p||S.mode!=='recruiter')return;const k=p.split('.');let o=S.rc;while(k.length>1)o=o[k.shift()];if(!o)return;o[k[0]]=t.value;
+ if(p==='acct.blurb')CO('ramp').blurb=t.value.trim()||RC_CO0.blurb;
+ if(p==='q'){rcFindRead();render()}else if('live' in t.dataset)render()});
+document.addEventListener('change',e=>{const t=e.target,d=t.dataset||{};if(S.mode!=='recruiter')return;
+ if(d.rt){S.rc.acct.team[+d.rt].access=t.value;return render()}
+ if(!d.rf)return;S.rc[d.rf]=d.rf==='lvl'?+t.value:t.value;S.rc.ui='';rcFindRead();render()});
 AFTER.push(enter=>{rcNamed(DATA.students[0]);S.rc.moved='';const keep=rcSc,was=rcF?[rcF,null]:enter?null:rcWas;rcSc={};rcF='';rcWas=null;if(S.mode!=='recruiter')return;
- if(S.onb.recruiter==='found')rcRunFound();
+ if(S.onb.recruiter==='found')rcRunRead();
  if(!enter)Object.keys(keep).forEach(id=>{const e=document.getElementById(id);if(e){e.scrollTop=keep[id][0];e.scrollLeft=keep[id][1]}});
- if(rcTop){const p=$('#rpane');if(p)p.scrollTop=0;rcTop=false}
+ if(rcTop){['#rpane','#rside'].forEach(q=>{const p=$(q);if(p)p.scrollTop=0});rcTop=false}
+ if(rcShow){const f=$('.r-sform');if(f)f.scrollIntoView({block:'nearest'});rcShow=false}
+ const z=$('#zmsgs'),q=z&&[...z.querySelectorAll('li.me')].pop();if(q&&!S.rc.zero.msgs[S.rc.zero.msgs.length-1].busy)z.scrollTop+=q.getBoundingClientRect().top-z.getBoundingClientRect().top-8;
  const m=$('#rmsgs');if(m)m.scrollTop=m.scrollHeight;const f=$('#rsendf');if(f)f.onsubmit=e=>{e.preventDefault();rcSend()};
- const el=was&&document.getElementById(was[0]);if(el&&document.activeElement!==el){const n=was[1]==null?el.value.length:was[1];el.focus({preventScroll:true});try{el.setSelectionRange(n,n)}catch(x){}}});
+ const co=$('#rCo'),el=was?document.getElementById(was[0]):enter&&co&&!co.disabled?co:null;
+ if(el&&document.activeElement!==el){const n=was&&was[1]!=null?was[1]:el.value.length;el.focus({preventScroll:true});try{if(el===co&&!was)el.select();else el.setSelectionRange(n,n)}catch(x){}}});
 /* the Roles tab always opens the list, and leaving a page closes any open form */
 const rcGo=A.go;A.go=id=>{if(S.mode==='recruiter'){if(id==='roles')S.rc.open='';S.rc.ui='';S.rc.form={}}return rcGo(id)};
 
