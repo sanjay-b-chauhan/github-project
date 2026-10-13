@@ -883,6 +883,83 @@ button.r-zrow:hover{box-shadow:inset 0 0 0 1px var(--line2)}
   .r-sk,.r-rd.r-pop,.pl-back{animation:none}
 }
 
+/* ZERO Job Portal, v32: home numbers, what Zero noticed, the feed, the conversation card, the mail list. Same three sizes, same surfaces. */
+
+/* recruiter home: four numbers in one quiet row */
+.tls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:28px}
+.tl{display:flex;flex-direction:column;gap:2px;min-width:0;padding:16px 18px;border-radius:20px;background:var(--well);text-align:left;transition:background-color .12s var(--e)}
+.tl:hover{background:var(--well2)}
+.tl-n{font:400 28px/34px var(--serif);letter-spacing:-.025em;color:var(--ink)}
+.tl.nil .tl-n{color:var(--ink4)}
+.tl .m{min-height:16px}
+.rh{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:28px;align-items:start}
+.rh.one{grid-template-columns:minmax(0,1fr)}
+.rh-more{margin:8px 0 0}
+.rh-z{padding:18px;border-radius:20px;background:linear-gradient(150deg,#EEF9DC 0%,#FBFDF6 46%,#FFFFFF 100%);box-shadow:inset 0 0 0 1px var(--line)}
+.rh-zh{gap:10px;margin-bottom:14px}
+.rh-z ul{display:flex;flex-direction:column;gap:16px}
+.rh-z li{display:flex;flex-direction:column;align-items:flex-start;gap:10px;color:var(--ink)}
+.ps .ps-hit,.rr .rr-hit{display:flex;flex-direction:column;text-align:left;border-radius:8px}
+.ps .ps-hit>span,.rr .rr-hit>span{display:block}
+.rr.busy{background:var(--well)}
+.rr-w{gap:8px}
+
+/* explore: the feed */
+.ex-top{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:16px 0 20px}
+.ex-role{width:230px}
+.ex-feed{display:flex;flex-direction:column;gap:14px}
+.fd{display:flex;flex-direction:column;gap:14px;padding:18px;border-radius:20px;background:#fff;box-shadow:inset 0 0 0 1px var(--line)}
+.fd>header .grow>*{display:block}
+.fd-work{display:flex;align-items:center;gap:14px;width:100%;padding:14px;border-radius:16px;background:var(--well);text-align:left;transition:background-color .12s var(--e)}
+.fd-work:hover{background:var(--well2)}
+.fd-work .grow>span{display:block}
+.fd-sum{margin-top:6px;color:var(--ink2);display:-webkit-box!important;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.fd>footer{gap:8px;flex-wrap:wrap}
+.fd-like,.fd-fo{gap:6px;color:var(--ink2)}
+.fd-like svg,.fd-fo svg{width:15px;height:15px}
+.fd-like.on{color:#C2264B}
+.fd-like.on svg{fill:#C2264B;stroke:#C2264B}
+.fd-fo.on{color:var(--good)}
+.fd-inv{display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+.fd>.pl-why{margin:0}
+.r-find .jl-top>.seg{align-self:flex-start}
+
+/* the conversation on a student's page */
+.cv{display:flex;flex-direction:column;gap:12px;margin-top:12px;padding:18px}
+.r-fitlist{margin-top:12px}
+.r-fitlist .r-fitc2{margin-top:0}
+.cv-list{display:flex;flex-direction:column;gap:10px}
+.cv-list li,.cv-draft{display:flex;flex-direction:column;gap:4px;padding:10px 12px;border-radius:14px;background:var(--well)}
+.cv-list li.me{background:#fff;box-shadow:inset 0 0 0 1px var(--line)}
+.cv-t{color:var(--ink)}
+.cv-subj{display:flex;align-items:center;gap:6px;min-width:0;color:var(--ink2)}
+.cv-subj svg{width:13px;height:13px;flex-shrink:0}
+.cv-draft{background:var(--warnbg)}
+.cv-draft .acts{margin-top:6px}
+.cv-f{gap:8px}
+.cv-f input{height:32px;min-width:0;padding:0 12px;border-radius:99px;background:var(--well);color:var(--ink)}
+.cv-f input:focus{box-shadow:inset 0 0 0 2px var(--ink)}
+.msgs .cv-subj{margin:0 2px 2px}
+
+/* account: the emails Zero sends */
+.ml-list{display:flex;flex-direction:column;gap:14px;margin-top:18px}
+.ml-row.off>.row .i,.ml-row.off>.row .m{color:var(--ink4)}
+.ml-mode{flex:0 0 150px}
+.ml-mode select{height:32px}
+.ml-ed{display:flex;flex-direction:column;gap:10px;margin-top:12px;padding:14px;border-radius:14px;background:var(--well)}
+
+@media(max-width:1024px){
+  .rh{grid-template-columns:minmax(0,1fr)}
+  .tls{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ex-role{width:100%}
+}
+@media(max-width:640px){
+  .rr,.ps{flex-wrap:wrap}
+  .ml-row>.row{flex-wrap:wrap}
+  .ml-row>.row>.grow{flex-basis:100%}
+  .ml-mode{flex:1 1 150px}
+}
+
 </style>
 </head>
 <body>
@@ -1966,7 +2043,7 @@ PAGES.student.me=()=>{const p=PERSON('maya'),rec=S.pf.view==='recruiter',done=SU
   :`<div class="card"><div class="row">${ring(strength)}<div class="grow"><p class="i">Portfolio strength</p><p class="m">${left.length?`${num(left.length)} thing${left.length===1?'':'s'} would lift it.`:'Nothing left to fix.'}</p></div></div>
      <div class="acts" style="margin-top:16px">${S.pf.edit?btn('Save changes','k','pfsave'):btn(`${ic('pencil')}Edit portfolio`,'k','pfedit')}${btn(`${ic('message-circle')}Ask Zero`,'s','zopen')}</div>
      ${left.length?`<ul class="pf-sug">${left.slice(0,1).map(x=>`<li><p>${x[1]}</p><div class="acts">${btn('Done','s sm','pfsug',x[0],'data-v="done"')}${btn('Skip','x sm','pfsug',x[0],'data-v="skip"')}</div></li>`).join('')}</ul>`:''}</div>
-    <div class="card" style="margin-top:12px"><h2 class="lab">Who opened it</h2>${opens.length?`<ul class="log">${opens.map(id=>{const r=ROLE(id),pr=PROJ((r.needs.find(n=>n.pid)||{}).pid)||ME.projects[0];return`<li>${lg(CO(r.co).dom,'sm')}<div><p class="i">${who(id).name}, ${CO(r.co).name}</p><p class="m">${APP(id).opened===today()?'Today':APP(id).opened} · read ${pr[1]}</p></div></li>`}).join('')}</ul>`:'<p class="m">Nobody yet. It fills in when a team opens your work.</p>'}</div>
+    <div class="card" style="margin-top:12px"><h2 class="lab">Who is looking</h2>${opens.length||(S.soc&&S.soc.mine.length)?`<ul class="log">${(S.soc?S.soc.mine:[]).map(e=>`<li>${lg('ramp.com','sm')}<div><p class="i">${e.text}</p><p class="m">${e.date===today()?'Today':e.date}</p></div></li>`).join('')}${opens.map(id=>{const r=ROLE(id),pr=PROJ((r.needs.find(n=>n.pid)||{}).pid)||ME.projects[0];return`<li>${lg(CO(r.co).dom,'sm')}<div><p class="i">${who(id).name}, ${CO(r.co).name}</p><p class="m">${APP(id).opened===today()?'Today':APP(id).opened} · read ${pr[1]}</p></div></li>`}).join('')}</ul>`:'<p class="m">Nobody yet. It fills in when a team opens your work.</p>'}</div>
     <div class="card" style="margin-top:12px"><div class="sechead" style="margin:0 0 12px"><h2 class="lab">Job search preferences</h2></div><ul class="kv">${PREFS.map(r=>`<li><span>${r[2]}</span>${S.edit===r[0]?`<input id="prefIn" data-edit data-id="${r[0]}" value="${esc(S.prefs[r[0]])}" autocomplete="off" aria-label="${r[2]}" class="pf-in">`:`<button type="button" class="pf-val" data-a="pref" data-id="${r[0]}">${esc(S.prefs[r[0]])}${ic('pencil')}</button>`}</li>`).join('')}</ul>
      <div class="row" style="margin-top:16px"><p class="grow">Visible to hiring teams</p><button class="sw ${S.vis!==false?'on':''}" type="button" role="switch" aria-checked="${S.vis!==false}" aria-label="Visible to hiring teams" data-a="vis"></button></div></div>`;
  return`<div class="pf"><div class="pf-main">${profileMain(p,{view:rec?'recruiter':'own'})}</div>
@@ -2379,16 +2456,15 @@ const RC_TIMES=['2:00 pm','10:30 am','11:00 am','3:30 pm'];
 const RE={
  put(rid,sid,c){(S.rc.st[rid]=S.rc.st[rid]||{})[sid]=c;return c},
  note(rid,sid,icon,text){rlog(sid,icon,text,rid);S.rc.moved=rid+'|'+sid},
- ask(rid,sid){const s=rcStu(sid);RE.put(rid,sid,{src:'matched',...(rcRec(rid,sid)||{}),st:'asked',on:today()});RE.note(rid,sid,'send',`You asked to meet ${s.name}`)},
+ ask(rid,sid){const s=rcStu(sid);RE.put(rid,sid,{src:'matched',...(rcRec(rid,sid)||{}),st:'asked',on:today()});RE.note(rid,sid,'send',`You asked to meet ${s.name}`);rcMailGo('ask',rid,sid)},
  yes(rid,sid){const s=rcStu(sid),c=rcRec(rid,sid);c.st='yes';c.on=today();S.rc.named[sid]=true;RE.note(rid,sid,'check',`${s.name} said yes`);
-  rcSay(sid,'sys',`${s.name} said yes. You have ${s.first}’s email.`,rid);rcSay(sid,'you',`Hi ${s.first}. Glad you said yes. Your ${s.projects[0].title.toLowerCase()} is the reason I asked. Pick any time that works for you.`)},
+  rcSay(sid,'sys',`${s.name} said yes. You have ${s.first}’s email.`,rid);rcMailGo('yes',rid,sid)},
  book(rid,sid){const s=rcStu(sid),c=rcRec(rid,sid);c.st='booked';c.at=addBiz(S.now,3);c.when=`${fmt(c.at)}, ${RC_TIMES[rcHash(sid)%RC_TIMES.length]}`;RE.note(rid,sid,'calendar',`${s.first} booked ${c.when}`);
-  rcSay(sid,'sys',`Interview booked for ${c.when}. 45 minutes on Google Meet.`);rcSay(sid,'stu',`Thank you, ${first(LINK)}. ${fmt(c.at)} works for me. See you then.`)},
- met(rid,sid){const s=rcStu(sid),c=rcRec(rid,sid);if(c.at>S.now)S.now=new Date(c.at);c.st='met';c.on=fmt(c.at);RE.note(rid,sid,'video',`You met ${s.name} for 45 minutes`);S.rlog[0].date=c.on;rcSay(sid,'stu',`Thank you for the time today, ${first(LINK)}. I enjoyed the questions.`)},
- offer(rid,sid,amount){const s=rcStu(sid),c=rcRec(rid,sid);c.st='offer';c.amount=amount;c.on=today();c.by=fmt(addBiz(S.now,4));RE.note(rid,sid,'file-text',`You offered ${s.first} ${amount}`);
-  rcSay(sid,'you',`We would love to have you on the team, ${s.first}. The offer is ${amount} a year. Take the time you need.`)},
- hire(rid,sid){const s=rcStu(sid),c=rcRec(rid,sid);c.st='hired';c.on=today();RE.note(rid,sid,'party-popper',`${s.name} accepted your offer`);rcSay(sid,'sys',`${s.name} accepted the offer of ${c.amount}.`);rcSay(sid,'stu','I accept. Thank you. I am glad to be joining the team.')},
- pass(rid,sid,why,line){const s=rcStu(sid),c=rcRec(rid,sid);c.st='passed';c.why=why;c.line=line;c.on=today();RE.note(rid,sid,'x',`You passed on ${rcName(s)}`);if(S.rc.threads[sid])rcSay(sid,'you',line||'We are not moving forward this time. Thank you for your time.')}};
+  rcSay(sid,'sys',`Interview booked for ${c.when}. 45 minutes on Google Meet.`);rcMailGo('booked',rid,sid);rcSay(sid,'stu',`Thank you, ${first(LINK)}. ${fmt(c.at)} works for me. See you then.`)},
+ met(rid,sid){const s=rcStu(sid),c=rcRec(rid,sid);if(c.at>S.now)S.now=new Date(c.at);c.st='met';c.on=fmt(c.at);RE.note(rid,sid,'video',`You met ${s.name} for 45 minutes`);S.rlog[0].date=c.on;rcMailGo('met',rid,sid);rcSay(sid,'stu',`Thank you for the time today, ${first(LINK)}. I enjoyed the questions.`)},
+ offer(rid,sid,amount){const s=rcStu(sid),c=rcRec(rid,sid);c.st='offer';c.amount=amount;c.on=today();c.by=fmt(addBiz(S.now,4));RE.note(rid,sid,'file-text',`You offered ${s.first} ${amount}`);rcMailGo('offer',rid,sid,{amount})},
+ hire(rid,sid){const s=rcStu(sid),c=rcRec(rid,sid);c.st='hired';c.on=today();RE.note(rid,sid,'party-popper',`${s.name} accepted your offer`);rcSay(sid,'sys',`${s.name} accepted the offer of ${c.amount}.`);rcSay(sid,'stu','I accept. Thank you. I am glad to be joining the team.');rcMailGo('hired',rid,sid)},
+ pass(rid,sid,why,line){const s=rcStu(sid),c=rcRec(rid,sid);c.st='passed';c.why=why;c.line=line;c.on=today();RE.note(rid,sid,'x',`You passed on ${rcName(s)}`);rcMailGo('pass',rid,sid,{line})}};
 /* the clock, for everyone but Maya. Days pass in order: an interview that comes first is held first. A student with a move on hold waits. */
 AUTO.push(ev=>{if(S.onb.recruiter!=='done')return null;const all=[];
  Object.keys(S.rc.st).forEach(rid=>Object.keys(S.rc.st[rid]).forEach(sid=>{if(!S.rc.hold[rcKey(rid,sid)])all.push({rid,sid,c:S.rc.st[rid][sid],k:rid+'-'+sid})}));
@@ -2427,7 +2503,7 @@ function rcSeed(){const now=S.now,ago=n=>fmt(rcBack(now,n)),R0=DATA.rampRoles,me
   V.slice(1,4).forEach((s,i)=>RE.put(v.id,s.id,{st:'new',src:i===1?'matched':'applied',on:i?ago(1):today()}))}
  S.rlog=log.map(e=>({sid:e[0],icon:e[1],text:e[2],date:e[3],role:e[4]}));
  /* what already happened is the start of Zero's thread, oldest first, in the shape rlog writes */
- S.rc.zero={msgs:[...S.rlog].reverse().map(e=>({from:'act',sid:e.sid,icon:e.icon,text:e.text,date:e.date}))}}
+ S.rc.zero={msgs:[...S.rlog].reverse().map(e=>({from:'act',sid:e.sid,icon:e.icon,text:e.text,date:e.date}))};socSeed()}
 
 /* ═══ Zero at work. A wait is state in S.rc.work, so any render draws it, and a timer that outlives its state stops itself.
    It is drawn as ticking steps, or as one line with a count. Nothing is blocked while it runs. Reduced motion skips to the result. ═══ */
@@ -2680,7 +2756,7 @@ function rcRanked(r){const L=rcRank(r,rcIds(r.id).map(rcStu)),y=RC_WHY.find(x=>x
 /* one student, opened inside the role: the portfolio every team sees, and beside it how this one fits and what you can do */
 function rcRoleStu(r,s){if(rcIsMaya(s)&&stOf(LINK)==='sent')E.open(LINK);const tab=RC_TABS.find(t=>t[0]===S.rc.tab)||RC_TABS[0];
  return`<div class="r-rolewrap">${rcRoleHead(r,tab[0],btn(`${ic('arrow-left')}${tab[1]}`,'x sm','rtab',tab[0]))}
-  <div class="r-one"><div class="jd-wrap r-pane" id="rpane" data-keep>${rcProfile(s,r)}</div><aside class="r-side" id="rside" data-keep aria-label="How ${s.first} fits">${rcSide(s,r)}</aside></div></div>`}
+  <div class="r-one"><div class="jd-wrap r-pane" id="rpane" data-keep>${rcProfile(s,r)}</div><aside class="r-side" id="rside" data-keep aria-label="How ${s.first} fits">${rcSideX(s,r)}</aside></div></div>`}
 /* a new role: say it or paste it, Zero drafts the posting and five criteria, you correct them, then Zero reads every student */
 function rcNewRole(){const d=S.rc.draft,w=rcBusy('draft');
  return`<div class="r-back">${btn(`${ic('arrow-left')}All roles`,'x sm','rroles')}</div>
@@ -2759,7 +2835,7 @@ PAGES.recruiter.find=()=>{rcKeep();const rc=S.rc,r=rcCur(),P=rcPool(),w=rcBusy('
    <div class="jl-list" id="rlist" data-keep>${w?Array(6).fill(rcSkRow('jr')).join(''):L.map(x=>{const f=rcFit(r,x),c=rcRec(r.id,x.id);return`<button type="button" class="jr ${x.id===rc.sel?'on':''}" data-a="rsel" data-id="${x.id}" aria-current="${x.id===rc.sel}">${rcAv(x)}<span class="grow"><span class="i">${rcName(x)}</span><span class="m">Level ${x.level} · ${x.track}</span><span class="r-jrf">${rcFitChip(f)}<span class="m">${c?RC_SHORT[c.st]:rc.saved[x.id]?'Saved':''}</span></span></span></button>`}).join('')
     ||`<div class="r-none"><p class="m">No student matches.</p>${btn('Clear the filters','s sm','rclear')}</div>`}</div></div>
   <div class="jd-wrap r-pane" id="rpane" data-keep>${s?rcProfile(s,r):''}</div>
-  <aside class="r-side" id="rside" data-keep aria-label="How this student fits">${s?rcSide(s,r,true):''}</aside></div>`};
+  <aside class="r-side" id="rside" data-keep aria-label="How this student fits">${s?rcSideX(s,r,true):''}</aside></div>`};
 A.rsel=id=>{S.rc.sel=id;rcTop=true};
 /* open one student. A student already in the role opens inside that role. Anyone else opens in Find talent. */
 A.rstu=(id,a)=>{const rc=S.rc,d=a?a.dataset:{},rid=d.role&&rcRole(d.role)&&rcRole(d.role).status!=='Draft'?d.role:rcCur().id;rcEdSave();rc.role=rid;rcTop=true;
@@ -2776,19 +2852,19 @@ const rcFlip=t=>t.replace(/^You accepted the offer\. You start (.+)\.$/,'Maya ac
 const rcMayaOn=()=>!!S.threads[LINK]&&rcNamed(DATA.students[0]);
 const rcMayaNew=()=>S.threads[LINK].msgs.slice(S.rc.read).filter(m=>m.from==='me').length;      /* what Maya wrote since you last looked */
 function rcThread(sid){const s=rcStu(sid);if(!rcIsMaya(s)){const t=S.rc.threads[sid],c=rcRec(t.role,sid);return{...t,open:!!c&&['yes','booked','met','offer','hired'].includes(c.st),c}}
- const t=S.threads[LINK];return{role:LINK,unread:rcMayaNew(),open:['accepted','booked','met','offer','hired'].includes(stOf(LINK)),c:rcMayaRec(),msgs:t.msgs.map(m=>({from:m.from==='me'?'stu':m.from==='them'?'you':'sys',text:m.from==='sys'?rcFlip(m.text):m.text,date:m.date}))}}
+ const t=S.threads[LINK];return{role:LINK,unread:rcMayaNew(),open:['accepted','booked','met','offer','hired'].includes(stOf(LINK)),c:rcMayaRec(),msgs:t.msgs.map(m=>({from:m.from==='me'?'stu':m.from==='them'?'you':'sys',text:m.from==='sys'?rcFlip(m.text):m.text,date:m.date,subj:m.subj,auto:m.auto}))}}
 const rcThreadIds=()=>[...(rcMayaOn()?[DATA.students[0].id]:[]),...Object.keys(S.rc.threads)];
 const rcUnread=()=>Object.values(S.rc.threads).reduce((n,t)=>n+t.unread,0)+(rcMayaOn()?rcMayaNew():0);
 PAGES.recruiter.rinboxClass='split r-pg';
 PAGES.recruiter.rinbox=()=>{rcKeep();const ids=rcThreadIds();if(!ids.includes(S.rc.thread))S.rc.thread=ids[0]||'';const sid=S.rc.thread,s=sid&&rcStu(sid);
  if(s){if(rcIsMaya(s)){S.threads[LINK].runread=0;S.rc.read=S.threads[LINK].msgs.length}else S.rc.threads[sid].unread=0}S.tdot.rinbox=false;const T=s?rcThread(sid):null,dt=d=>d===today()?'Today':d;
  const row=k=>{const x=rcStu(k),t=rcThread(k),m=t.msgs[t.msgs.length-1];return`<button type="button" class="jr ${k===sid?'on':''}" data-a="rthread" data-id="${k}">${rcAv(x)}<span class="grow"><span class="i">${rcName(x)}</span><span class="m">${esc(rcRole(t.role).title)}</span><span class="m clip">${m.from==='you'?'You: ':''}${esc(m.text)}</span></span><span class="jr-r">${t.unread?'<span class="un"></span>':''}<span class="m">${m.date===today()?'Today':m.date.slice(4)}</span></span></button>`};
- const bub=m=>m.from==='sys'?`<li class="sys"><span>${esc(m.text)}</span></li>`:`<li class="${m.from==='you'?'me':'them'}">${m.from==='you'?'':rcAv(s)}<div><p>${esc(m.text)}</p><span class="m">${dt(m.date)}</span></div></li>`;
+ const bub=m=>m.from==='sys'?`<li class="sys"><span>${esc(m.text)}</span></li>`:`<li class="${m.from==='you'?'me':'them'}">${m.from==='you'?'':rcAv(s)}<div>${m.subj?`<span class="m cv-subj">${ic('mail')}${esc(m.subj)}</span>`:''}<p>${esc(m.text)}</p><span class="m">${m.auto?'Sent by Zero · ':''}${dt(m.date)}</span></div></li>`;
  return`<div class="jobs"><div class="jl"><div class="jl-top"><h1 class="i">Inbox</h1></div>
    <div class="jl-list" id="rthreads" data-keep>${ids.map(row).join('')||'<p class="m r-pad">No conversations yet. A thread opens when a student says yes.</p>'}</div></div>
   <div class="jd-wrap chat">${T?`<div class="chat-h">${rcAv(s)}<div class="grow"><p class="i">${rcName(s)}</p><p class="m">${esc(rcRole(T.role).title)} · ${esc(rcLine(T.c,s))}</p></div>${btn(`Open ${s.first}’s profile`,'s sm','rstu',s.id,`data-role="${T.role}"`)}</div>
     <ul class="msgs" id="rmsgs">${T.msgs.map(bub).join('')}</ul>
-    ${T.open?`${rcWorkBox('reply','line','r-replying')}<form class="chat-f row" id="rsendf"><label class="hide" for="rmsgIn">Message</label><input id="rmsgIn" class="grow" data-rv="msg" placeholder="Write to ${s.first}" value="${esc(S.rc.msg)}" autocomplete="off">${btn('Draft with Zero','s sm','rreply')}<button class="k sm" type="submit">Send</button></form>`:'<p class="m chat-f">This conversation is closed.</p>'}`
+    ${T.open?`${rcWorkBox('reply','line','r-replying')}<form class="chat-f row" id="rsendf"><label class="hide" for="rmsgIn">Message</label><input id="rmsgIn" class="grow" data-rv="msg" placeholder="Write to ${s.first}" value="${esc(S.rc.msg)}" autocomplete="off">${btn('Draft with Zero','s sm','rreply')}<button class="k sm" type="submit">Send</button></form>`:`<p class="m chat-f">${T.c&&T.c.st==='asked'?`Waiting for ${s.first} to answer.`:'This conversation is closed.'}</p>`}`
    :''}</div></div>`};
 A.rthread=id=>{S.rc.thread=id;S.rc.msg='';if(S.page.recruiter!=='rinbox'){S.page.recruiter='rinbox';return'enter'}};
 const RC_REPLY=['Thanks. That works for me.','Understood. I will have it ready.','Sounds good. Talk soon.'];
@@ -2824,6 +2900,7 @@ PAGES.recruiter.account=()=>{rcKeep();const c=CO('ramp'),m=who(LINK),a=S.rc.acct
      <div class="row r-invite"><label class="hide" for="rInv">Work email of a colleague</label><input id="rInv" class="r-in grow" data-rv="acct.invite" data-enter="rinvite" value="${esc(a.invite)}" placeholder="name@${c.dom}" autocomplete="off" inputmode="email">${btn('Invite','s sm','rinvite')}</div>
      <p class="m r-gap ${a.bad?'r-err':''}">${a.bad?`Type a work email, like name@${c.dom}.`:`${num(see)} ${see===1?'person':'people'} besides you can see candidates. Only people who decide can ask to meet, pass or make an offer.`}</p></section>
    </div><div class="r-col">
+    ${rcMailCard()}
     <section class="card"><div class="row r-top">${orb('sm')}<div class="grow"><h2 class="i">What Zero may do</h2><p class="m">Zero reads and drafts on its own. Anything a student receives needs you, unless you say otherwise.</p></div></div>
      <h3 class="lab r-sub">On its own</h3><ul class="r-perm">${perm(true)}</ul>
      <h3 class="lab r-sub">Only with you</h3><ul class="r-perm">${perm(false)}<li class="row"><div class="grow"><p class="i">Make an offer</p><p class="m">Always you. Zero suggests the middle of your range.</p></div>${chip(ic('lock')+'Always you')}</li></ul></section>
@@ -2863,7 +2940,7 @@ function rcZFind(q){const r=rcZRole(q)||rcZHere(),k=rcZKeys(q),kw=rcZWords(q),P=
  if(!H.length)return{html:true,text:`Nobody on ZERO matches ${esc(rcList(kw))} yet. Try a skill, a tool or a city.`};
  const L=rcRank(r,H),top=L.slice(0,4),hit=s=>{const h=[...s.skills,...s.tools,...s.projects.map(p=>`${p.title} for ${p.co}`),s.city];return k.map(t=>h.find(x=>x.toLowerCase().includes(t))).filter((x,i,a)=>x&&a.indexOf(x)===i).slice(0,2).join(' · ')||s.track};
  return{html:true,text:`${num(H.length)} of ${P.length} students ${H.length===1?'matches':'match'} ${esc(all?rcList(kw):kw.join(' or '))}. ${H.length>top.length?`The top ${num(top.length).toLowerCase()}, ranked`:'Ranked'} for ${esc(r.title)}.`,
-  card:rcZCard([...top.map(s=>rcZStuRow(s,r,hit(s))),all&&H.length>top.length?rcZActs(btn(`See all ${H.length} in Find talent`,'s sm','rzfind',esc(kw.join(' ')))):''])}}
+  card:rcZCard([...top.map(s=>rcZStuRow(s,r,hit(s))),all&&H.length>top.length?rcZActs(btn(`See all ${H.length} in Explore`,'s sm','rzfind',esc(kw.join(' ')))):''])}}
 function rcZMeet(q){const r=rcZRole(q)||rcZHere(),L=rcRank(r,rcPool().filter(s=>rcZFree(r,s))).filter(s=>rcFit(r,s).label!==RC_LOW).slice(0,3),on=rcIds(r.id).map(id=>[rcStu(id),rcRec(r.id,id)]).filter(x=>['asked','yes','booked'].includes(x[1].st)),moving=on.length?` Already moving: ${rcList(on.map(x=>rcZOn(x[0],x[1])))}.`:'';
  if(!L.length)return{html:true,text:`Nobody new fits ${esc(r.title)} right now.${moving} Loosen a must have in the job description and I will read everyone again.`,card:rcZCard([rcZRoleRow(r,'Open the job description','rjd')])};
  const a=L[0];return{html:true,text:`For ${esc(r.title)}, meet ${a.name} first. ${rcWhy(rcFit(r,a),r)}${L.length>1?` Then ${rcList(L.slice(1).map(s=>s.name))}.`:''}${moving}`,card:rcZCard(L.map(s=>rcZStuRow(s,r,rcReadPick(r,s).ev)))}}
@@ -2988,6 +3065,157 @@ function rcBoardFit(){const b=$('#plboard');if(!b)return;b.classList.toggle('pl-
 addEventListener('resize',()=>{if(S.mode==='recruiter')rcBoardFit()});
 /* the Roles tab always opens the list of roles, and leaving a page saves a line you were editing */
 const rcGo=A.go;A.go=id=>{if(S.mode==='recruiter'){rcEdSave();if(id==='roles')Object.assign(S.rc,{open:'',stu:''})}return rcGo(id)};
+
+/* ZERO Job Portal, v32: the layer on top of both sides.
+   1. Mail. Every step a recruiter takes sends the student an email. Zero writes and sends it by default (S.rc.mail[k].mode 'auto');
+      a recruiter can change the words, ask to approve each one first ('ask'), or switch one off ('off').
+   2. Explore. Students' finished work as a feed. A recruiter can like a post, follow a student, or invite them to a role.
+      What a recruiter does to Maya shows up on Maya's side (S.soc.mine).
+   3. Home, both sides: fewer, calmer blocks. The recruiter gets numbers, what Zero noticed, the roles, and new work.
+   Loaded after recruiter.js. It replaces pages by assignment and wraps a few actions; it never redeclares. */
+
+/* ═══ mail ═══ [key, when it goes, subject, body]. Zero fills {first} {role} {company} {project} {when} {amount} {line} {me}. */
+const MAIL=[
+ ['ask','When you ask to meet','{company} would like to meet you, {first}','Hi {first}. I read your {project} and I would like to talk about {role}. Say yes and you pick the time. {me}'],
+ ['yes','When they say yes','Pick a time, {first}','Glad you said yes, {first}. Any time on the calendar works for me. It is 45 minutes on Google Meet.'],
+ ['booked','When an interview is booked','Confirmed for {when}','See you on {when}, {first}. No slides needed. Walk me through your {project}, then we work on one problem from our team.'],
+ ['met','After the interview','Thank you, {first}','Thank you for your time today, {first}. You will hear from me within three days.'],
+ ['nudge','When a student has not answered','Still open, {first}','Hi {first}. No rush. My invitation to talk about {role} is still open.'],
+ ['pass','When you pass','About {role}','{line}'],
+ ['offer','When you make an offer','Your offer from {company}','We would love to have you on the team, {first}. The offer is {amount} a year. Take the time you need.'],
+ ['hired','When they accept','Welcome to {company}, {first}','Wonderful news, {first}. Your contract arrives this week. Welcome to the team.']];
+const MAIL_MODES=[['auto','Zero sends it'],['ask','Ask me first'],['off','Off']];
+const mailDef=k=>{const m=MAIL.find(x=>x[0]===k);return{mode:'auto',subj:m[2],body:m[3]}};
+function rcMailText(k,r,s,x={}){const t=S.rc.mail[k],c=rcRec(r.id,s.id)||{},p=rcIsMaya(s)?ME.projects[0][1]:(s.projects[0]||{}).title||'work';
+ const v={first:s.first,name:s.name,role:r.title,company:CO('ramp').name,me:first(LINK),project:rcLow(p),when:x.when||c.when||'the time you picked',amount:x.amount||c.amount||'',line:x.line||c.line||'We are not moving forward this time. Thank you for your time.'};
+ const f=z=>String(z).replace(/\{(\w+)\}/g,(m,a)=>v[a]??m);return{subj:f(t.subj),body:f(t.body)}}
+function rcMailPush(s,rid,m,k){
+ if(rcIsMaya(s)){say(LINK,'them',m.body);const L=S.threads[LINK].msgs;Object.assign(L[L.length-1],{subj:m.subj,auto:k});S.dots.student=true}
+ else{rcSay(s.id,'you',m.body,rid);const L=S.rc.threads[s.id].msgs;Object.assign(L[L.length-1],{subj:m.subj,auto:k})}
+ S.rc.sent++;if(S.mode==='recruiter')whisper('recruiter',`Zero emailed ${s.first}. ${m.subj}`)}
+function rcMailGo(k,rid,sid,x){const t=S.rc.mail&&S.rc.mail[k],s=rcStu(sid),r=rcRole(rid);if(!t||t.mode==='off'||!s||!r)return;const m=rcMailText(k,r,s,x);
+ if(t.mode==='ask'){S.rc.drafts[sid]={k,rid,...m};if(S.mode==='recruiter')whisper('recruiter',`A draft to ${s.first} is waiting for you`);return}
+ rcMailPush(s,rid,m,k)}
+/* Maya's side runs through E. After each step on the shared role, the message Ramp sends her is the recruiter's email, in the recruiter's words. */
+const E_MAIL={ask:'ask',accept:'yes',book:'booked',met:'met',pass:'pass',offer:'offer',hire:'hired'};
+Object.keys(E_MAIL).forEach(k=>{const f=E[k];E[k]=(...a)=>{const on=a[0]===LINK,n0=on&&S.threads[LINK]?S.threads[LINK].msgs.length:0,out=f(...a);if(on&&S.rc&&S.rc.mail)rcMailMaya(E_MAIL[k],n0,a);return out}});
+function rcMailMaya(k,n0,a){const t=S.rc.mail[k],T=S.threads[LINK],s=DATA.students[0],r=rcRole(LINK);if(!t||!T||!r)return;const c=rcMayaRec()||{},m=rcMailText(k,r,s,{line:a[2],amount:APP(LINK).amount,when:c.when});
+ let i=T.msgs.findIndex((x,j)=>j>=n0&&x.from==='them');
+ if(t.mode==='auto'){if(i<0){say(LINK,'them',m.body);i=T.msgs.length-1}else if(k!=='pass')T.msgs[i].text=m.body;Object.assign(T.msgs[i],{subj:m.subj,auto:k});S.rc.sent++;if(S.mode==='recruiter')whisper('recruiter',`Zero emailed Maya. ${m.subj}`)}
+ else{if(i>=0){T.msgs.splice(i,1);T.unread=Math.max(0,T.unread-1)}if(t.mode==='ask')S.rc.drafts[s.id]={k,rid:LINK,...m}}}
+A.smailsend=id=>{const d=S.rc.drafts[id],s=rcStu(id);if(!d||!s)return false;delete S.rc.drafts[id];rcMailPush(s,d.rid,d,d.k)};
+A.smaildrop=id=>{delete S.rc.drafts[id]};
+A.smled=id=>{S.rc.mled=S.rc.mled===id?'':id;if(S.rc.mled)rcF='ml-'+id};
+A.smlreset=id=>{const m=S.rc.mail[id];Object.assign(m,mailDef(id),{mode:m.mode})};
+document.addEventListener('change',e=>{const k=e.target.dataset&&e.target.dataset.ml;if(!k||S.mode!=='recruiter')return;S.rc.mail[k].mode=e.target.value;render()});
+const mailSel=k=>`<label class="r-sel ml-mode"><span class="hide">How this email goes out</span><select data-ml="${k}">${MAIL_MODES.map(o=>`<option value="${o[0]}" ${S.rc.mail[k].mode===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select>${ic('chevron-down')}</label>`;
+function rcMailCard(){const rc=S.rc,own=MAIL.filter(m=>{const t=rc.mail[m[0]];return t.subj!==m[2]||t.body!==m[3]}).length;
+ return`<section class="card ml" id="rmail"><div class="row r-top">${orb('sm')}<div class="grow"><h2 class="i">Emails Zero sends for you</h2><p class="m">${rc.sent?`${rc.sent} sent so far.`:'None sent yet.'}${own?` ${num(own)} in your words.`:''}</p></div></div>
+  <ul class="ml-list">${MAIL.map(m=>{const k=m[0],t=rc.mail[k],ed=rc.mled===k;return`<li class="ml-row ${t.mode==='off'?'off':''}"><div class="row"><div class="grow"><p class="i">${m[1]}</p><p class="m clip">${esc(t.subj)}</p></div>${mailSel(k)}${btn(ed?'Done':'Edit','x sm','smled',k)}</div>
+   ${ed?`<div class="ml-ed"><label class="field" for="ml-${k}"><span class="m">Subject</span><input id="ml-${k}" data-rv="mail.${k}.subj" value="${esc(t.subj)}" autocomplete="off"></label>
+    <label class="field" for="mlb-${k}"><span class="m">Email</span><textarea id="mlb-${k}" data-rv="mail.${k}.body" rows="4">${esc(t.body)}</textarea></label>
+    <div class="acts">${btn('Back to Zero’s words','s sm','smlreset',k)}<span class="m">Zero fills in {first}, {role}, {project}, {when} and {amount}.</span></div></div>`:''}</li>`}).join('')}</ul></section>`}
+
+/* ═══ the conversation, on the student's own page: every email and message with this person, the draft waiting for you, and a place to write ═══ */
+function rcConvo(s,r){const maya=rcIsMaya(s),has=maya?!!S.threads[LINK]:!!S.rc.threads[s.id],d=S.rc.drafts[s.id];if(!has&&!d)return'';
+ const T=has?rcThread(s.id):{msgs:[],open:false},L=T.msgs.filter(m=>m.from!=='sys').slice(-4),dt=x=>x===today()?'Today':x;
+ return`<div class="card cv"><div class="row"><h2 class="i grow">Messages</h2>${has&&(!maya||rcMayaOn())?btn(`Inbox${ic('arrow-right')}`,'x sm','rthread',s.id):''}</div>
+  ${L.length?`<ul class="cv-list">${L.map(m=>`<li class="${m.from==='you'?'me':''}">${m.subj?`<p class="m cv-subj">${ic('mail')}<span class="clip">${esc(m.subj)}</span></p>`:''}<p class="cv-t">${esc(m.text)}</p><p class="m">${m.from==='you'?(m.auto?'Sent by Zero':'You'):s.first} · ${dt(m.date)}</p></li>`).join('')}</ul>`:''}
+  ${d?`<div class="cv-draft"><p class="m cv-subj">${ic('mail')}<span class="clip">${esc(d.subj)}</span></p><p class="cv-t">${esc(d.body)}</p><div class="acts">${btn('Send','k sm','smailsend',s.id)}${btn('Discard','x sm','smaildrop',s.id)}</div></div>`:''}
+  ${T.open?`<form class="cv-f row" data-cv="${s.id}"><label class="hide" for="rmsgIn">Message</label><input id="rmsgIn" class="grow" data-rv="msg" placeholder="Write to ${s.first}" value="${esc(S.rc.msg)}" autocomplete="off"><button class="k sm" type="submit">Send</button></form>`:''}</div>`}
+function rcSideX(s,r,named){const h=rcSide(s,r,named),c=rcConvo(s,r),k='<ul class="crit r-fitc2">';return c&&h.includes(k)?h.replace(k,`</div>${c}<div class="card r-fit r-fitlist">${k}`):h+c}
+document.addEventListener('submit',e=>{const f=e.target.closest&&e.target.closest('form[data-cv]');if(!f||S.mode!=='recruiter')return;e.preventDefault();S.rc.thread=f.dataset.cv;rcSend()});
+
+/* ═══ the feed: each finished project is a post ═══ */
+const socAgo=n=>n<=0?'Today':n===1?'Yesterday':`${n} days ago`;
+function socPosts(){const out=[];rcPool().forEach(s=>{const maya=rcIsMaya(s),L=maya?PERSON('maya').projects.filter(p=>!p.hidden):s.projects;
+  L.forEach((p,i)=>{const h=rcHash(s.id+'post'+i);out.push({id:s.id+'-'+i,s,p,i,ago:(h%6)+i*5,likes:1+h%6})})});
+ return out.sort((a,b)=>a.ago-b.ago||rcHash(a.id)-rcHash(b.id))}
+const socLiked=p=>!!S.soc.likes[p.id];
+function socTell(icon,text){S.soc.mine.unshift({icon,text,date:today()});slog(LINK,icon,text)}
+A.slike=id=>{const p=socPosts().find(x=>x.id===id);if(!p)return false;const on=S.soc.likes[id]=!S.soc.likes[id];if(on&&rcIsMaya(p.s))socTell('heart',`${who(LINK).name} at Ramp liked your ${rcLow(p.p.short||p.p.title)}`)};
+A.sfollow=id=>{const s=rcStu(id);if(!s)return false;const on=S.soc.follows[id]=!S.soc.follows[id];if(on&&rcIsMaya(s))socTell('user-check',`${who(LINK).name} at Ramp follows your work`)};
+A.sinv=id=>{S.rc.inv=S.rc.inv===id?'':id};
+A.sinvto=(id,a)=>{S.rc.inv='';S.rc.snap=null;const rid=a.dataset.role,r=rcAsk(rid,id);if(r===false){S.rc.snap={k:rcKey(rid,id),text:`${rcStu(id).first} cannot be invited to this role.`};return}S.rc.role=rid};
+const socInvite=(p,r)=>{const s=p.s,open=S.rc.inv===p.id,R=rcOpen().filter(o=>{const c=rcRec(o.id,s.id);return(!c||c.st==='new')&&!(rcIsMaya(s)&&(o.id!==LINK||(S.hired&&!c)))}),c=rcRec(r.id,s.id);
+ if(c&&c.st!=='new')return rcStageChip(c,s);if(!R.length)return'';
+ return open?`<span class="fd-inv">${R.map(o=>btn(esc(o.title),'s sm','sinvto',s.id,`data-role="${o.id}"`)).join('')}${btn('Cancel','x sm','sinv',p.id)}</span>`:btn(`${ic('send')}Invite`,'s sm','sinv',p.id,`aria-expanded="false"`)};
+function feedCard(p,r){const s=p.s,f=rcFit(r,s),lk=socLiked(p),fo=!!S.soc.follows[s.id],go=`data-role="${r.id}"`;
+ return`<article class="fd ${S.rc.inv===p.id?'open':''}"><header class="row">${rcAv(s)}<div class="grow"><button type="button" class="pl-name i" data-a="rstu" data-id="${s.id}" ${go}>${rcName(s)}</button><p class="m">${s.track} · Level ${s.level} · ${socAgo(p.ago)}</p></div>
+   <button type="button" class="x sm fd-fo ${fo?'on':''}" aria-pressed="${fo}" data-a="sfollow" data-id="${s.id}">${ic(fo?'user-check':'user-plus')}${fo?'Following':'Follow'}</button></header>
+  <button type="button" class="fd-work" data-a="rstu" data-id="${s.id}" ${go}>${lg(p.p.dom)}<span class="grow"><span class="i">${p.p.title}</span><span class="m">ZERO scenario for ${p.p.co}</span>${p.p.sum?`<span class="fd-sum">${p.p.sum}</span>`:''}</span>${chip(ic('check')+'Rated '+p.p.verdict,p.p.verdict==='Meets'?'':'g')}</button>
+  <footer class="row"><button type="button" class="x sm fd-like ${lk?'on':''}" aria-pressed="${lk}" aria-label="${lk?'Unlike':'Like'}" data-a="slike" data-id="${p.id}">${ic('heart')}${p.likes+(lk?1:0)}</button>${rcFitChip(f)}<span class="grow"></span>${socInvite(p,r)}</footer>${rcSnap(r.id,s.id)}</article>`}
+const exSeg=()=>`<div class="seg" role="group" aria-label="Explore"><button type="button" class="${S.rc.ex!=='people'?'on':''}" aria-pressed="${S.rc.ex!=='people'}" data-a="sex" data-id="feed">${ic('layout-list')}Feed</button><button type="button" class="${S.rc.ex==='people'?'on':''}" aria-pressed="${S.rc.ex==='people'}" data-a="sex" data-id="people">${ic('users')}People</button></div>`;
+A.sex=id=>{S.rc.ex=id;S.rc.inv='';return'enter'};
+A.sexf=id=>{S.rc.exf=id;S.rc.inv=''};
+function rcFeedPage(){rcKeep();const rc=S.rc,r=rcCur(),P=socPosts(),nf=Object.keys(S.soc.follows).filter(k=>S.soc.follows[k]).length,fol=rc.exf==='fol';
+ const L=(fol?P.filter(p=>S.soc.follows[p.s.id]):P.filter(p=>rcFit(r,p.s).label!==RC_LOW)).slice(0,16);
+ const opt=(k,t)=>`<button type="button" class="opt ${rc.exf===k?'on':''}" aria-pressed="${rc.exf===k}" data-a="sexf" data-id="${k}">${t}</button>`;
+ return`<div class="ex"><div class="ex-top">${exSeg()}<span class="grow"></span>${opt('you','For you')}${opt('fol',`Following${nf?' '+nf:''}`)}<div class="ex-role">${rcSel('role','Show the fit for',rcOpen().map(o=>[o.id,`Fit for ${o.title}`]))}</div></div>
+  <div class="ex-feed">${L.map(p=>feedCard(p,r)).join('')||`<div class="item soft"><p class="grow">${fol?'Follow a student and their new work shows up here.':'No new work fits this role yet.'}</p>${fol?btn('For you','s sm','sexf','you'):''}</div>`}</div></div>`}
+const rcFind0=PAGES.recruiter.find;
+PAGES.recruiter.find=()=>S.rc.ex==='people'?rcFind0().replace('<div class="jl-top">','<div class="jl-top">'+exSeg()):rcFeedPage();
+Object.defineProperty(PAGES.recruiter,'findClass',{configurable:true,get(){return S.rc.ex==='people'?'split r-wide r-pg':'r-pg col1'}});
+TABS.recruiter=TABS.recruiter.map(t=>t[0]==='find'?['find','Explore']:t);
+/* anything that opens one student outside a role lands on People, where the profile is */
+['rstu','rzfind','rfind'].forEach(k=>{const f=A[k];if(!f)return;A[k]=(...a)=>{const r=f(...a);if(S.page.recruiter==='find')S.rc.ex='people';return r}});
+
+/* ═══ recruiter home: the numbers, who is waiting, what Zero noticed, the roles, new work ═══ */
+function rhRow(x){const s=rcStu(x.sid),r=rcRole(x.rid),c=x.c,h=rcHold(r.id,s.id),go=`data-role="${r.id}"`,met=c.st==='met';
+ return`<article class="item r-need ${met&&!h?'r-due':''} ${rcMoved(x)?'flash':''}">${rcAv(s)}<div class="grow"><button type="button" class="pl-name i" data-a="rstu" data-id="${s.id}" ${go}>${rcName(s)}</button><p class="m">${esc(r.title)} · ${esc(rcCardLine(c))}</p></div>${rcFitChip(rcFit(r,s))}
+  ${h?'':`<div class="acts">${met?btn('Make an offer','k sm','roffer',s.id,go):btn('Ask to meet','s sm','rask',s.id,go)}${btn('Pass','x sm','rpass',s.id,go)}</div>`}${rcSnap(r.id,s.id)}${h?rcHoldBox(s,r,h):''}</article>`}
+function rhNoticed(){const out=[],all=rcAll(),R=rcOpen(),P=rcPool(),dr=Object.keys(S.rc.drafts);
+ if(dr.length){const s=rcStu(dr[0]);out.push([`${dr.length===1?`An email to ${s.first} is`:`${num(dr.length)} emails are`} waiting for your send.`,btn(`Open ${s.first}`,'s sm','rstu',s.id,`data-role="${S.rc.drafts[dr[0]].rid}"`)])}
+ const un=rcThreadIds().filter(k=>rcThread(k).unread);
+ if(un.length){const s=rcStu(un[0]);out.push([`${s.first} wrote to you.`,btn('Read it','s sm','rthread',s.id)])}
+ const st=all.find(x=>x.c.st==='asked'&&x.c.on!==today()&&!S.rc.nudged[rcKey(x.rid,x.sid)]);
+ if(st){const s=rcStu(st.sid);out.push([`${s.first} has not answered since ${st.c.on}.`,btn(`Nudge ${s.first}`,'s sm','snudge',s.id,`data-role="${st.rid}"`)])}
+ let best=null;R.forEach(r=>r.crit.forEach((k,i)=>{if(!k.must)return;const n=P.filter(s=>{const f=rcFit(r,s);return f.c[i][0]!=='y'&&r.crit.every((q,j)=>j===i||!q.must||f.c[j][0]==='y')}).length;if(n>=2&&(!best||n>best.n))best={r,k,n}}));
+ if(best)out.push([`Making “${esc(best.k.s||best.k.t)}” a nice to have adds ${num(best.n).toLowerCase()} strong fits for ${esc(best.r.title)}.`,btn('Open the criteria','s sm','rjd',best.r.id)]);
+ const fp=socPosts().find(p=>S.soc.follows[p.s.id]&&p.ago<=3);
+ if(fp)out.push([`${fp.s.first}, who you follow, finished ${rcLow(fp.p.short||fp.p.title)}.`,btn('See it','s sm','sexgo','fol')]);
+ const d=S.rc.roles.find(r=>r.status==='Draft');
+ if(d){const n=P.filter(s=>rcHigh(rcFit(d,s).label)).length;if(n)out.push([`${esc(d.title)} is still a draft. ${rcCap(num(n).toLowerCase())} student${n===1?'':'s'} would be a strong fit today.`,btn('Open the draft','s sm','rrole',d.id)])}
+ return out.slice(0,3)}
+A.snudge=(id,a)=>{const rid=a.dataset.role;S.rc.nudged[rcKey(rid,id)]=true;rcMailGo('nudge',rid,id);rlog(id,'bell',`Zero nudged ${rcStu(id).first}`,rid)};
+A.sexgo=id=>{S.rc.ex='feed';S.rc.exf=id||'you';S.page.recruiter='find';return'enter'};
+PAGES.recruiter.home=()=>{rcKeep();const h=rcHero(),W=rcWaiting(),all=rcAll(),R=rcOpen(),P=rcPool(),due=rcDue(),lab=x=>RC_FITS.indexOf(rcFit(rcRole(x.rid),rcStu(x.sid)).label);
+ const up=all.filter(x=>x.c.st==='booked').sort((a,b)=>a.c.at-b.c.at),yes=all.filter(x=>['yes','booked','met','offer','hired'].includes(x.c.st)).length,asked=yes+all.filter(x=>['asked','declined'].includes(x.c.st)).length;
+ const fits=P.filter(s=>R.some(r=>rcFit(r,s).label!==RC_LOW)).length,L=[...W].sort((a,b)=>(b.c.st==='met')-(a.c.st==='met')||(b.c.src==='applied')-(a.c.src==='applied')||lab(a)-lab(b)),N=rhNoticed();
+ const tile=(n,t,sub,a,id,x='')=>`<button type="button" class="tl ${n?'':'nil'}" data-a="${a}" data-id="${id}" ${x}><span class="tl-n">${n}</span><span class="i">${t}</span>${sub?`<span class="m clip">${sub}</span>`:''}</button>`;
+ const posts=socPosts().filter(p=>R.some(r=>rcFit(r,p.s).label!==RC_LOW)).slice(0,3),r0=rcCur();
+ return`<div class="hero"><div><h1 class="h">${h[0]}</h1>${h[1]?`<p class="sub">${h[1]}</p>`:''}</div></div>
+  <div class="tls">${tile(due.length,'Waiting on you',due.length?`${esc(rcStu(L[0].sid).first)} first`:'',L[0]?'rstu':'go',L[0]?L[0].sid:'roles',L[0]?`data-role="${L[0].rid}"`:'')}
+   ${tile(up.length,up.length===1?'Interview booked':'Interviews booked',up[0]?esc(up[0].c.when):'',up[0]?'rstu':'go',up[0]?up[0].sid:'roles',up[0]?`data-role="${up[0].rid}"`:'')}
+   ${tile(asked?`${yes} of ${asked}`:0,'Said yes to you','', 'go','roles')}
+   ${tile(`${fits} of ${P.length}`,'Students fit your roles','', 'sexgo','you')}</div>
+  <div class="rh ${N.length?'':'one'}"><section>${L.length?`<div class="list">${L.slice(0,4).map(rhRow).join('')}</div>${L.length>4?`<div class="sechead rh-more">${btn(`${num(L.length-4)} more in your roles${ic('arrow-right')}`,'x sm','go','roles')}</div>`:''}`:`<div class="item soft"><p class="grow">Nobody is waiting on you.</p>${btn('Explore students','s sm','sexgo','you')}</div>`}</section>
+   ${N.length?`<aside class="rh-z"><div class="row rh-zh">${orb('sm')}<h2 class="i">Zero noticed</h2></div><ul>${N.map(n=>`<li><p>${n[0]}</p>${n[1]}</li>`).join('')}</ul></aside>`:''}</div>
+  <div class="sechead">${btn(`Your roles${ic('arrow-right')}`,'x sm','go','roles')}${btn(`${ic('plus')}New role`,'s sm','rnew')}</div><div class="list">${S.rc.roles.map(rcRoleCard).join('')}</div>
+  ${posts.length?`<div class="sechead">${btn(`New work from students${ic('arrow-right')}`,'x sm','sexgo','you')}</div><div class="list">${posts.map(p=>{const lk=socLiked(p);return`<article class="item ps">${rcAv(p.s)}<button type="button" class="grow ps-hit" data-a="rstu" data-id="${p.s.id}" data-role="${r0.id}"><span class="i">${rcName(p.s)} finished ${rcLow(p.p.short||p.p.title)}</span><span class="m">For ${p.p.co} · Rated ${p.p.verdict} · ${socAgo(p.ago)}</span></button><button type="button" class="x sm fd-like ${lk?'on':''}" aria-pressed="${lk}" aria-label="${lk?'Unlike':'Like'}" data-a="slike" data-id="${p.id}">${ic('heart')}${p.likes+(lk?1:0)}</button></article>`}).join('')}</div>`:''}`};
+
+/* ═══ student home: what needs you, then two short lists. Rows, not cards. ═══ */
+const roleRow=r=>{const q=S.qa&&S.qa.id===r.id?S.qa:null;
+ return`<article class="item rr ${q?'busy':''}">${lg(CO(r.co).dom,'sm')}<button type="button" class="grow rr-hit" data-a="job" data-id="${r.id}"><span class="i">${r.title}</span><span class="m">${CO(r.co).name} · ${r.mode} · ${payOf(r)}</span></button>
+  ${q?(q.at>=QA.length?`<span class="m">${r.manager.name} has your work</span>${chip(ic('check')+'Sent','g')}`:`<span class="row m rr-w"><span class="spin go"></span>${QA[q.at]}</span>`):`${fitChip(fitOf(r))}${btn('Apply','s sm','qapply',r.id)}`}</article>`};
+PAGES.student.home=()=>{const h=heroLine(),ids=appIds(),need=ids.filter(id=>NEEDS.includes(stOf(id))),rest=ids.filter(id=>!NEEDS.includes(stOf(id))&&id!==S.hired);
+ const recs=DATA.roles.filter(r=>(!S.apps[r.id]||(S.qa&&S.qa.id===r.id))&&!S.hidden[r.id]&&(r.fit==='Strong fit'||r.fit==='Good fit')).sort((a,b)=>score(b)-score(a)).slice(0,3);
+ return`<div class="hero">${orb('orb-lg','live')}<div><h1 class="h">${h[0]}</h1>${h[1]?`<p class="sub">${h[1]}</p>`:''}</div></div>
+  <div class="home one"><section>
+   ${need.length?`<div class="lanes">${need.map(id=>laneHTML(laneOf(id))).join('')}</div>`:''}
+   ${S.hired?`<div class="lanes">${laneHTML(laneOf(S.hired))}</div>`:''}
+   ${!S.hired&&recs.length?`<div class="sechead">${btn(`All ${DATA.roles.length} roles${ic('arrow-right')}`,'x sm','go','jobs')}</div><div class="list">${recs.map(roleRow).join('')}</div>`:''}
+   ${rest.length?`<div class="sechead">${btn(`Applications${ic('arrow-right')}`,'x sm','go','apps')}</div><div class="list">${rest.slice(0,5).map(miniRow).join('')}</div>`:''}
+  </section></div>`};
+
+/* Zero can say what it sent */
+INTENTS.recruiter.splice(INTENTS.recruiter.length-1,0,{re:/\b(e-?mails?|mails?|templates?)\b/i,steps:()=>['Checking what went out'],run:()=>{const rc=S.rc,ask=MAIL.filter(m=>rc.mail[m[0]].mode==='ask').length,off=MAIL.filter(m=>rc.mail[m[0]].mode==='off').length;
+ return{text:`I send the student an email at every step: when you ask to meet, when they say yes, when a time is booked, after the interview, on a pass and on an offer. ${rc.sent} sent so far.${ask?` ${rcCap(num(ask).toLowerCase())} wait for your send first.`:''}${off?` ${rcCap(num(off).toLowerCase())} switched off.`:''} You can change the words of any of them.`,card:rcZCard([rcZActs(btn('Open the emails','s sm','rzgo','account','data-do="go"'))])}}});
+
+/* ═══ start state for all of the above. Called at the end of rcSeed, so Start over resets it too. ═══ */
+function socSeed(){const rc=S.rc;Object.assign(rc,{ex:'feed',exf:'you',inv:'',mail:{},drafts:{},sent:0,mled:'',nudged:{}});MAIL.forEach(m=>rc.mail[m[0]]=mailDef(m[0]));
+ S.soc={likes:{},follows:{},mine:[]};
+ Object.keys(rc.threads).forEach(sid=>{const T=rc.threads[sid],m=T.msgs.find(x=>x.from==='you');if(m){Object.assign(m,{subj:rcMailText('yes',rcRole(T.role),rcStu(sid)).subj,auto:'yes'});rc.sent+=2}S.soc.follows[sid]=true})}
 
 if(typeof rcSeed==='function')rcSeed();render(true);
 
