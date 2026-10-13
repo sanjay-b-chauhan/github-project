@@ -1143,6 +1143,36 @@ body.zapp .zstage{background:var(--canvas)}
   .zdbg{right:16px;bottom:16px}
 }
 
+/* nothing is cut off. Zero sits inside the thread column at every width (it used to hang 50px outside it, where the
+   scrolling thread clips), and the thread keeps room for its ring and shadow. */
+.turn{padding-left:46px}
+.turn .tg{left:2px}
+.turn .tg .orb{top:14px}
+.hthread{padding:14px 10px 24px}
+.turn .orb[data-m=alert]::before,.turn .orb[data-m=alert]::after{display:none}
+.agst2{overflow:visible}
+.hr{padding-left:6px;padding-right:6px;margin:0 -6px}
+.hl{padding-left:4px;padding-right:4px;margin:0 -4px}
+/* a card is a button: its content starts at the top, whatever the height of its neighbours */
+.mrec{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start}
+.mrec .rtop{flex-shrink:0}
+@media(max-width:760px){.turn{padding-left:40px}}
+
+/* explore: what you are looking for, as chips. Tap one to narrow the list. */
+.xwant{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:2px 0 18px}
+.xwl{margin-right:6px;font-size:12px;line-height:16px;color:var(--tx3)}
+.xw{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px 0 10px;border-radius:99px;background:#fff;box-shadow:inset 0 0 0 1px var(--line2);font-size:12px;line-height:16px;color:var(--tx2);white-space:nowrap;transition:box-shadow .12s var(--e),color .12s var(--e)}
+.xw svg{width:14px;height:14px;color:var(--tx3)}
+.xw:hover{box-shadow:inset 0 0 0 1px var(--line)}
+.xw.on{box-shadow:inset 0 0 0 2px var(--ink);color:var(--tx)}
+.xw.on svg{color:var(--tx)}
+.xwant .zbtn.sm{height:30px;padding:0 10px}
+.xwant .zbtn svg{width:13px;height:13px}
+
+/* the 28 serif is for a page or pane title and for a figure. Card titles, pay and headlines are body size. */
+.zjd .pay,.zsum .big,.pfheadline,.pmdocbody h3,.crole .t,.xc .t{font-family:var(--f);font-size:14px;line-height:20px;letter-spacing:inherit;color:var(--tx)}
+.pfav,.chero .pfav,.bigav{font-size:14px}
+
 /* Zero, the current character */
 /* Zero. A glass sphere with a fluid green interior and two white eyes. No mouth: every mood reads from the eyes and the body.
    data-m is the mood. --gx and --gy (-1 to 1) are where it looks: the face slides and tilts that way and the far eye gets smaller,
@@ -2132,7 +2162,7 @@ function toolsHTML(b,done){return`<div class="tools ${done?'done':''}"><button c
  <div class="trows">${b.rows.map(r=>`<div class="trow ${done?'ok':''}"><span class="tmk">${done?ic('check'):''}</span>${ic(r[0])}<b>${r[1]}</b><span class="tchip">${r[2]}</span></div>`).join('')}</div></div>`}
 async function playTools(host,b,fast){setStatus('work',b.rows[0][1]+' '+b.rows[0][2]);
  const n=el(toolsHTML(b,false));host.appendChild(n);icons();n.classList.add('open');
- for(const r of $$('.trow',n)){r.classList.add('on');r.querySelector('.tmk').innerHTML='<i class="spin"></i>';setStatus('work',r.textContent.trim());follow();await wait(fast?60:620);r.classList.add('ok');r.querySelector('.tmk').innerHTML=ic('check');icons()}
+ const R=$$('.trow',n);for(let i=0;i<R.length;i++){const r=R[i];r.classList.add('on');r.querySelector('.tmk').innerHTML='<i class="spin"></i>';setStatus('work',b.rows[i]?b.rows[i][1]+' '+b.rows[i][2]:r.textContent.trim());follow();await wait(fast?60:620);r.classList.add('ok');r.querySelector('.tmk').innerHTML=ic('check');icons()}
  await wait(fast?40:350);const d=el(toolsHTML(b,true));n.replaceWith(d);icons();bindThink(d);return d}
 
 /* streamed answer with inline sources and actions */
@@ -2571,8 +2601,15 @@ function jobDetailHTML(j){const x=JOBX[j.id]||{match:70,applicants:40,reply:'abo
   <div class="xsec"><div class="xh">Your portfolio for this role</div>${order.slice(0,3).map((p,i)=>{const up=masterPos(p.id)-(i+1);return`<div class="xord"><span class="tn">${i+1}</span><span class="zlogo2 s34">${fav(p.dom)}</span><span class="tpt">${p.short}<span class="tps">${p.co}</span></span>${up>0?`<span class="tmv up">${ic('arrow-up')}from ${masterPos(p.id)}</span>`:''}</div>`}).join('')}${TAILOR[tk].why?`<div class="twhy">${TAILOR[tk].why}</div>`:''}</div>
   <div class="xsec"><div class="xh">Who you would meet</div><div class="xev"><span class="av">${x.mgr[0].split(' ').map(s=>s[0]).join('').slice(0,2)}</span><div><div class="xet">${x.mgr[0]}</div><div class="xes">${x.mgr[1]}</div></div></div></div>
   <div class="xsec"><div class="xh">The role</div><ul style="font-size:14px;line-height:1.7;color:var(--tx2)">${j.about.map(v=>`<li style="margin-left:17px;margin-bottom:4px">${v}</li>`).join('')}</ul></div>`}
+const payLow=t=>{const m=String(t).replace(/,/g,'').match(/\d{4,}/);return m?+m[0]:null};
+function wantChips(){const b=S.brief,floor=payLow(b.pay),days=/remote only/i.test(b.mode)?0:+((b.mode.match(/(\d)\s*days?/)||[])[1]||5),any=/anywhere/i.test(b.place),city=b.place.split(/ or /i)[0],keys=b.role.toLowerCase().split(/ or /).map(x=>x.replace(/^business /,'').trim());
+ return[['role','briefcase-business',b.role,j=>keys.some(k=>j.t.toLowerCase().includes(k))],
+  ['place','map-pin',any||/remote/i.test(b.place)?b.place:`${city} or remote`,j=>any||j.loc.includes(city)||j.mode==='Remote'],
+  ['mode','building-2',b.mode,j=>j.mode==='Remote'?true:+((j.mode.match(/(\d)\s*days?/)||[])[1]||5)<=days],
+  ...(floor?[['pay','banknote',`From ${b.pay.replace(/ per year/i,'')}`,j=>{const p=payLow(j.pay);return p!=null&&p>=floor}]]:[])]}
 function visibleJobs(){const q=(S.q||'').toLowerCase();const mt=j=>(JOBX[j.id]||{match:0}).match;const found=JOBS.filter(j=>S.found.includes(j.id)).sort((a,b)=>mt(b)-mt(a));
- return found.filter(j=>{if(S.co&&j.dom!==S.co)return false;if(S.filter==='fits'&&j.fit!=='fits')return false;if(S.filter==='explore'&&j.fit!=='explore')return false;if(S.filter==='saved'&&!SAVED[j.id])return false;if(q&&!(j.t+j.co+j.loc).toLowerCase().includes(q))return false;return true})}
+ const W=wantChips().filter(w=>(S.want||{})[w[0]]);
+ return found.filter(j=>{if(W.some(w=>!w[3](j)))return false;if(S.filter==='fits'&&j.fit!=='fits')return false;if(S.filter==='explore'&&j.fit!=='explore')return false;if(S.filter==='saved'&&!SAVED[j.id])return false;if(q&&!(j.t+j.co+j.loc).toLowerCase().includes(q))return false;return true})}
 function renderDetail(){const d=$('#xdetail');if(!d)return;const j=JOBS.find(x=>x.id===S.sel);
  d.innerHTML=j?jobDetailHTML(j):`<div class="zempty" style="text-align:center;padding:40px"><b>Pick a role.</b>Its details open here.</div>`;
  $$('#xdetail [data-a]').forEach(b=>b.onclick=()=>{const k=b.dataset.a;if(k==='save'){SAVED[j.id]=!SAVED[j.id];renderJobs();return}jobAction(k,j)});
@@ -2584,9 +2621,8 @@ function renderJobs(){
  if(!list.find(j=>j.id===S.sel))S.sel=list[0]?list[0].id:'';
  const last=S.visit==='first'?S.lastFound:null;const sc=$('#zsbody').scrollTop;
  $('#zsbody').innerHTML=`<div class="zin wide" style="max-width:1180px">
-  <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:8px 0 18px"><h1 class="ztitle" style="margin:0">Explore</h1><span style="font-size:12px;color:var(--tx3)">${found.length} role${found.length===1?'':'s'} at ${cos.length} compan${cos.length===1?'y':'ies'}${dayOneLive()?', and counting':''}</span></div>
-  <div class="xcos">${cos.map(c=>`<div class="xco ${S.co===c.dom?'on':''}" data-co="${c.dom}"><div class="lg">${fav(c.dom)}</div><span class="ct">${c.n} role${c.n===1?'':'s'}</span><div class="nm">${c.co}</div>${c.live?'<span class="live"></span>':''}</div>`).join('')}
-   ${dayOneLive()?`<div class="xco" style="cursor:default;border-style:dashed"><div class="nm" style="left:38px;right:16px;bottom:auto;top:18px;font-weight:400;color:var(--tx3);font-size:12px;line-height:1.45">Reading ${296-S.log.length*18} more</div><span class="live" style="bottom:auto;top:20px;right:auto;left:16px"></span></div>`:''}</div>
+  <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:8px 0 18px"><h1 class="ztitle" style="margin:0">Explore</h1><span style="font-size:12px;color:var(--tx3)">${list.length<found.length?`${list.length} of ${found.length} roles`:`${found.length} role${found.length===1?'':'s'} at ${cos.length} compan${cos.length===1?'y':'ies'}`}${dayOneLive()?', and counting':''}</span></div>
+  <div class="xwant"><span class="xwl">Looking for</span>${wantChips().map(w=>`<button type="button" class="xw ${(S.want||{})[w[0]]?'on':''}" aria-pressed="${!!(S.want||{})[w[0]]}" data-want="${w[0]}">${ic(w[1])}${w[2]}</button>`).join('')}<button type="button" class="zbtn ghost sm" id="xwedit">${ic('pencil')}Edit</button></div>
   <div style="display:flex;align-items:center;gap:10px;margin:14px 0 18px;flex-wrap:wrap">
    <div class="xfil">${[['all','All'],['fits','Aligned'],['explore','Around'],['saved','Saved']].map(f=>`<button class="${S.filter===f[0]?'on':''}" data-f="${f[0]}" ${counts[f[0]]===0&&f[0]!=='all'?'disabled':''}>${f[1]}<sup>${counts[f[0]]}</sup></button>`).join('')}</div>
    <div style="display:flex;align-items:center;gap:9px;height:36px;padding:0 14px;background:var(--card);border:1px solid var(--line2);border-radius:99px;flex:1;min-width:180px;margin-left:auto;max-width:300px">${ic('search')}<input id="jq" placeholder="Search roles or companies" value="${S.q||''}" style="flex:1;font-size:14px"></div>
@@ -2599,7 +2635,8 @@ function renderJobs(){
  $('#jq').addEventListener('input',e=>{S.q=e.target.value;renderJobs();$('#jq').focus();$('#jq').setSelectionRange(99,99)});
  $$('#zsbody [data-f]').forEach(b=>b.onclick=()=>{S.filter=b.dataset.f;snd('tick');renderJobs()});
  $$('#zsbody [data-xv]').forEach(b=>b.onclick=()=>{S.xview=b.dataset.xv;snd('tick');renderJobs()});
- $$('#zsbody [data-co]').forEach(b=>b.onclick=()=>{S.co=S.co===b.dataset.co?'':b.dataset.co;snd('tick');renderJobs()});
+ $$('#zsbody [data-want]').forEach(b=>b.onclick=()=>{S.want=S.want||{};S.want[b.dataset.want]=!S.want[b.dataset.want];snd('tick');renderJobs()});
+ $('#xwedit').onclick=()=>openTerms(()=>renderJobs());
  $$('#zsbody [data-save]').forEach(b=>b.onclick=e=>{e.stopPropagation();SAVED[b.dataset.save]=!SAVED[b.dataset.save];renderJobs();toast(SAVED[b.dataset.save]?'Saved.':'Removed from saved.')});
  $$('#zsbody .xr').forEach(r=>r.onclick=()=>{S.sel=r.dataset.j;snd('tick');renderDetail();$('#xdetail').scrollTop=0});
  $$('#zsbody .xc [data-a]').forEach(b=>b.onclick=e=>{e.stopPropagation();const j=JOBS.find(x=>x.id===b.closest('[data-j]').dataset.j);jobAction(b.dataset.a,j)});
