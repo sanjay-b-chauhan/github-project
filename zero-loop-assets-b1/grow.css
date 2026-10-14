@@ -1,0 +1,183 @@
+/* System 2, Levels & Coach. Maya in the middle, one thing per side, lots of air.
+   Every class here starts with g-. Core classes are only restyled under .g-root. */
+.g-root{position:absolute;inset:0;overflow:hidden}
+.g-root b{font-weight:400}
+
+/* ---------- the core layout: what you get, her, the coach ---------- */
+.g-core{position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,1fr) 240px minmax(0,1fr);column-gap:56px;align-items:center;align-content:center;padding:0 32px}
+.g-left{justify-self:end;width:288px;transition:opacity .6s var(--e2),transform .7s var(--e2)}
+.g-right{position:relative;justify-self:start;width:288px;transition:opacity .6s var(--e2) .08s,transform .7s var(--e2) .08s}
+.g-pre .g-left,.g-pre .g-right{opacity:0;transform:translateY(12px)}
+.g-hold .g-left{opacity:0;transform:translateX(-36px)}
+.g-focus .g-left,.g-focus .g-right{opacity:0;transform:scale(.96);pointer-events:none}
+.g-focus .g-right{transition-delay:0s}
+
+/* her: the ring, the photo, the level */
+.g-mid{position:relative;display:flex;flex-direction:column;align-items:center;width:240px;height:280px}
+.g-ring{position:relative;width:184px;height:184px;flex-shrink:0}
+.g-ring svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.g-tk,.g-fl,.g-fx{fill:none;stroke-width:8;stroke-linecap:round}
+.g-tk{stroke:#ECECF0}
+.g-fl{stroke:var(--ink)}
+.g-fx{stroke:#F2C14E;opacity:0}
+.g-fx.on{animation:gfx 1.1s var(--e) both}
+@keyframes gfx{0%{opacity:0;stroke-width:8}22%{opacity:1;stroke-width:13}100%{opacity:0;stroke-width:8}}
+.g-photo{position:absolute;left:26px;top:26px;width:132px;height:132px;border-radius:99px;object-fit:cover;background:var(--well2);box-shadow:0 0 0 1px rgba(19,20,23,.06),0 16px 30px -18px rgba(19,20,23,.5)}
+.g-pt{position:absolute;left:50%;top:50%;width:var(--s);height:var(--s);margin:calc(var(--s)/-2) 0 0 calc(var(--s)/-2);border-radius:99px;background:var(--c);opacity:0;pointer-events:none;animation:gpt 1.5s var(--e) var(--d) both}
+@keyframes gpt{0%{opacity:0;transform:rotate(var(--a)) translateY(-90px) scale(.5)}25%{opacity:1}100%{opacity:0;transform:rotate(var(--a)) translateY(calc(-90px - var(--r))) scale(1)}}
+
+.g-meta{position:absolute;left:50%;top:198px;display:flex;flex-direction:column;align-items:center;white-space:nowrap;transform:translateX(-50%);transition:opacity .4s var(--e)}
+.g-lvn{display:inline-block}
+.g-lvn.pop{animation:popin .5s var(--e2)}
+.g-pts{margin-top:6px;font-size:14px;line-height:20px;color:var(--ink2)}
+.g-next{margin-top:2px;font-size:12px;line-height:16px;color:var(--ink4);transition:opacity .5s var(--e)}
+.g-next.off{opacity:0}
+
+/* the level up moment: the rest steps back */
+.g-up{position:absolute;left:50%;top:194px;display:flex;flex-direction:column;align-items:center;white-space:nowrap;transform:translateX(-50%);opacity:0;visibility:hidden;transition:opacity .4s var(--e),visibility 0s .4s}
+.g-up .big{line-height:48px}
+.g-uprow{display:flex;align-items:center;gap:28px;margin-top:18px;font-size:14px;line-height:20px;color:var(--ink);opacity:0;transform:translateY(8px);transition:opacity .5s var(--e),transform .6s var(--e2)}
+.g-upi{display:inline-flex;align-items:center;gap:10px}
+.g-focus .g-meta{opacity:0}
+.g-focus .g-up{opacity:1;visibility:visible;transition:opacity .6s var(--e) .2s,visibility 0s}
+.g-focus .g-uprow{opacity:1;transform:none;transition-delay:.6s}
+
+/* what the next levels open */
+.g-get{padding:6px 6px 8px}
+.g-ct{padding:12px 14px 6px;font-size:14px;line-height:20px;color:var(--ink)}
+.g-gr{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:12px;padding:10px 14px;border-radius:16px;transition:background-color .6s var(--e),padding .6s var(--e2)}
+.g-gr+.g-gr{margin-top:2px}
+.g-grt{display:flex;flex-direction:column;min-width:0}
+.g-grt .i{font-size:14px;line-height:20px}
+.g-grt .m{color:var(--ink3)}
+.g-gj{grid-column:1/-1;display:grid;grid-template-rows:0fr;margin:0 -7px;transition:grid-template-rows .65s var(--e2)}
+.g-gji{min-height:0;overflow:hidden}
+.g-job{display:flex;align-items:center;gap:10px;height:40px;margin:10px 1px 2px;padding:0 12px 0 8px;border-radius:10px;background:#fff;box-shadow:0 0 0 1px var(--line),0 1px 2px rgba(19,20,23,.06);font-size:14px;color:var(--ink);opacity:0;transition:opacity .5s var(--e) .15s}
+.g-job .m{color:var(--ink3)}
+.g-want.on{background:var(--well);padding-bottom:6px}
+.g-want.on .g-gj{grid-template-rows:1fr}
+.g-want.on .g-job{opacity:1}
+
+/* the scenario that just finished (arrives from Scenarios) */
+.g-scen{position:relative;padding:20px 20px 22px}
+.g-st{display:flex;align-items:center;gap:12px;padding-right:32px}
+.g-stt{display:flex;flex-direction:column;min-width:0}
+.g-stt .i{font-size:14px;line-height:20px}
+.g-done{position:absolute;top:18px;right:18px;display:grid;place-items:center;width:24px;height:24px;border-radius:99px;background:var(--goodbg);color:var(--good)}
+.g-done svg{width:14px;height:14px}
+.g-band{display:flex;align-items:center;gap:10px;margin-top:22px;font-size:12px;line-height:16px;color:var(--ink2);white-space:nowrap}
+.g-band .bands{gap:3px}
+.g-band .bands i{width:16px;height:7px;border-radius:4px}
+.g-scen .sp{margin-top:18px;transition:opacity .5s var(--e)}
+.g-scen .sp.spent{opacity:.45}
+
+/* the coach card: what Maya sees */
+.g-coach{position:relative;z-index:2;padding:12px;border-radius:26px;background:#1E1F21;color:#F2F1EE;box-shadow:0 0 0 1px rgba(255,255,255,.06),0 1px 2px rgba(19,20,23,.12),0 22px 34px -24px rgba(19,20,23,.55)}
+.g-ch{display:flex;align-items:center;gap:10px;height:32px;padding:0 6px;font-size:14px;line-height:20px;color:#fff}
+.g-cb{margin-top:8px;padding:11px 14px 12px;border-radius:14px;background:rgba(255,255,255,.05);transition:box-shadow .5s var(--e)}
+.g-cb+.g-cb{margin-top:6px}
+.g-cl{font-size:12px;line-height:16px;color:#9C9A94}
+.g-cb p{min-height:40px;margin-top:4px;font-size:14px;line-height:20px;color:#F4F3F0;text-wrap:pretty;transition:opacity .35s var(--e)}
+.g-need p{color:#F7E3AE}
+.g-cb p.out{opacity:0}
+.g-cb.lit{box-shadow:inset 0 0 0 1px rgba(247,227,174,.32)}
+
+/* the coach's own head: what only the coach sees. A different thing: dashed, canvas, quiet. */
+.g-drawer{display:grid;grid-template-rows:0fr;transition:grid-template-rows .7s var(--e2)}
+.g-drawer.open{grid-template-rows:1fr}
+.g-dri{min-height:0;overflow:hidden}
+.g-head{margin-top:10px;padding:9px 9px 9px;border-radius:24px;background:var(--canvas);border:1px dashed var(--line2);opacity:0;transform:translateY(-16px);transition:opacity .45s var(--e),transform .7s var(--e2)}
+.g-drawer.open .g-head{opacity:1;transform:none}
+.g-hh{display:flex;align-items:center;gap:8px;height:24px;padding:0 10px;font-size:12px;line-height:16px;color:var(--ink3)}
+.g-hh svg{width:14px;height:14px}
+.g-reads{margin-top:4px;display:flex;flex-direction:column;gap:2px}
+.g-rd{display:grid;grid-template-columns:minmax(0,1fr) auto 16px;align-items:center;column-gap:12px;min-height:26px;padding:0 10px;border-radius:14px;font-size:12px;line-height:16px;color:var(--ink2);transition:background-color .45s var(--e),box-shadow .45s var(--e),color .45s var(--e)}
+.g-rn{height:26px;display:flex;align-items:center}
+.g-rd .bands{gap:3px}
+.g-rd .bands i{width:16px;height:6px;border-radius:3px;background:#E1E1E6}
+.g-tr{display:grid;place-items:center;width:16px;height:16px;color:var(--ink4)}
+.g-tr svg{width:12px;height:12px}
+.g-tr.up{color:var(--ink)}
+.g-tr.dn{color:var(--ink3)}
+.g-sw{grid-column:1/-1;display:grid;grid-template-rows:0fr;transition:grid-template-rows .55s var(--e2)}
+.g-swi{min-height:0;overflow:hidden;color:var(--ink3)}
+.g-swi span{display:block;padding:0 0 8px;text-wrap:pretty}
+.g-rd.hi{background:#fff;color:var(--ink);box-shadow:0 0 0 1px var(--line),0 8px 16px -12px rgba(19,20,23,.35)}
+.g-rd.hi .g-sw{grid-template-rows:1fr}
+.g-rd.moved{animation:gmoved 1.4s var(--e)}
+@keyframes gmoved{0%{box-shadow:0 0 0 1px var(--line),0 0 0 6px rgba(242,193,78,.35)}100%{box-shadow:0 0 0 1px var(--line),0 0 0 0 rgba(242,193,78,0)}}
+
+/* the read drives the line: a quiet connector from the read to what the coach says */
+.g-link{position:absolute;left:0;top:0;width:1px;height:1px;overflow:visible;pointer-events:none;opacity:0;transition:opacity .5s var(--e)}
+.g-link.on{opacity:1}
+.g-link path{fill:none;stroke:var(--ink4);stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round}
+.g-link .ln{stroke-dasharray:2 3.5}
+.g-link circle{fill:var(--ink4)}
+
+/* the rules, one quiet line */
+.g-rules{position:absolute;left:0;right:0;bottom:24px;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:0 24px;opacity:0;transform:translateY(8px);transition:opacity .5s var(--e),transform .6s var(--e2)}
+.g-rules.on{opacity:1;transform:none}
+
+/* ---------- Day 4: the daily check in ---------- */
+.g-daily{display:grid;place-items:center}
+.g-dc{display:flex;flex-direction:column;align-items:center;width:420px;padding:28px 24px 24px}
+.g-days{display:grid;grid-template-columns:repeat(7,48px);gap:6px;margin-top:22px}
+.g-day{display:flex;flex-direction:column;align-items:center;justify-content:space-between;height:86px;padding:10px 0 9px;border-radius:14px;background:var(--well);transition:background-color .45s var(--e),box-shadow .45s var(--e)}
+.g-dn{font-size:12px;line-height:16px;color:var(--ink3);white-space:nowrap}
+.g-da{font-size:12px;line-height:16px;color:var(--ink2)}
+.g-dic{display:grid;place-items:center;height:30px}
+.g-tick{display:grid;place-items:center;width:22px;height:22px;border-radius:99px;background:var(--goodbg);color:var(--good)}
+.g-tick svg{width:14px;height:14px}
+.g-day .coin{width:16px;height:16px}
+.g-day.got .g-dn,.g-day.got .g-da{color:var(--ink4)}
+.g-day.now{background:#fff;box-shadow:0 0 0 1.5px var(--ink),0 14px 26px -12px rgba(212,145,28,.6)}
+.g-day.now .g-dn,.g-day.now .g-da{color:var(--ink)}
+.g-day.now .coin{width:24px;height:24px}
+.g-day.got.now{background:var(--well);box-shadow:0 0 0 1.5px var(--line2)}
+.g-day.got.now .g-tick{animation:popin .5s var(--e2)}
+.g-chest{position:relative;width:32px;height:26px}
+.g-chest::before{content:'';position:absolute;left:0;right:0;top:0;height:12px;border-radius:8px 8px 2px 2px;background:linear-gradient(#F6D677,#DCA531);box-shadow:inset 0 0 0 1px rgba(150,98,0,.35),inset 0 2px 0 rgba(255,255,255,.35)}
+.g-chest::after{content:'';position:absolute;left:1px;right:1px;top:11px;bottom:0;border-radius:2px 2px 6px 6px;background:linear-gradient(#E2AD3D,#B67B15);box-shadow:inset 0 0 0 1px rgba(150,98,0,.35)}
+.g-chest i{position:absolute;z-index:1;left:50%;top:8px;width:6px;height:8px;margin-left:-3px;border-radius:2px;background:#FFF1BF;box-shadow:0 0 0 1px rgba(150,98,0,.45)}
+.g-collect{margin-top:24px;padding:0 20px 0 14px}
+.g-collect.btn-l{padding:0 18px 0 12px;cursor:default}
+.g-collect.btn-l:hover{background:#fff}
+
+/* ---------- the credits ledger, under the credits pill ---------- */
+.g-ledger{position:absolute;top:56px;z-index:20;width:216px;padding:4px;border-radius:18px;background:#fff;box-shadow:0 0 0 1px var(--line),0 24px 44px -20px rgba(19,20,23,.4);transform-origin:24px 0;animation:gpop .45s var(--e2) both}
+.g-ledger.out{animation:gpopo .3s var(--e) both}
+@keyframes gpop{from{opacity:0;transform:translateY(-4px) scale(.96)}}
+@keyframes gpopo{to{opacity:0;transform:translateY(-4px) scale(.97)}}
+.g-lr{display:flex;align-items:center;gap:10px;height:40px;padding:0 12px;border-radius:14px;font-size:14px;line-height:20px;color:var(--ink);white-space:nowrap}
+.g-la{display:inline-flex;align-items:center;gap:6px;font-size:12px;line-height:16px;color:var(--ink3)}
+.g-la .coin{width:14px;height:14px}
+.g-lr.new{animation:gnew 1.6s var(--e)}
+@keyframes gnew{0%{background:var(--well2)}100%{background:transparent}}
+
+/* ---------- how the coach talks ---------- */
+.g-talk{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px 40px}
+.g-th{display:flex;align-items:center;gap:12px;width:100%;max-width:1320px;padding:0 4px}
+.g-th .zf{--z:34px}
+.g-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;width:100%;max-width:1320px;margin-top:18px}
+.g-cell{padding:8px;border-radius:24px;background:var(--well)}
+.g-cr{display:flex;align-items:center;gap:14px;min-height:32px;padding:0 8px}
+.g-cr .i{font-size:14px;line-height:20px;white-space:nowrap}
+.g-cw{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
+.g-cw .chip{background:#fff;box-shadow:0 0 0 1px var(--line);color:var(--ink3)}
+.g-notes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:8px;margin-top:8px}
+.g-saw{align-self:end;padding:0 8px 6px;font-size:12px;line-height:16px;color:var(--ink3);text-wrap:pretty}
+.g-note{padding:12px 14px 14px;border-radius:16px;background:#1E1F21;box-shadow:0 0 0 1px rgba(255,255,255,.06),0 18px 30px -22px rgba(0,0,0,.55)}
+.g-note p{font-size:14px;line-height:20px;color:#F4F3F0;text-wrap:pretty}
+.g-try{margin-top:8px;font-size:12px;line-height:16px;color:#B8B5AE;text-wrap:pretty}
+.g-try span{color:#F2C14E}
+.g-note.good .g-try span{color:#7BD69F}
+.g-talk .g-saw,.g-talk .g-note{opacity:0;transform:translateY(8px);transition:opacity .5s var(--e),transform .6s var(--e2)}
+.g-cell.on .g-saw,.g-cell.on .g-note{opacity:1;transform:none}
+.g-cell.on .g-saw:nth-child(2),.g-cell.on .g-note:nth-child(4){transition-delay:.45s}
+.g-crules{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:18px;opacity:0;transform:translateY(6px);transition:opacity .5s var(--e),transform .6s var(--e2)}
+.g-crules.on{opacity:1;transform:none}
+
+@media (max-width:1180px){
+  .g-core{column-gap:28px;padding:0 16px}
+  .g-left,.g-right{width:264px}
+}
