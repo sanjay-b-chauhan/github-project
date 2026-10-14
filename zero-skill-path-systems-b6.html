@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Zero · three systems</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,100..1000&display=swap">
+<style>
+@font-face{font-family:'STK Bureau Serif';src:url('zero-skill-path-assets-b6/fonts/STKBureau-SerifBook.otf') format('opentype');font-weight:400;font-display:swap}
+:root{--bg:#F8F7F5;--card:#fff;--field:#F1F0ED;--sunk:#EDEBE7;--line:rgba(26,25,23,.09);--line-2:rgba(26,25,23,.05);--tx:#1A1917;--tx2:#5D5A54;--tx3:#8A867E;--ink:#141312;
+  --serif:'STK Bureau Serif',Georgia,serif;--sans:'Google Sans Flex','Google Sans',-apple-system,system-ui,sans-serif;
+  --sh1:0 1px 2px rgba(26,25,23,.035);--sh2:0 2px 8px rgba(26,25,23,.05),0 16px 40px -24px rgba(26,25,23,.24);--e:cubic-bezier(.16,1,.3,1)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--tx);font:400 14px/1.45 var(--sans);letter-spacing:-.012em;-webkit-font-smoothing:antialiased;font-synthesis:none}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1180px;margin:0 auto;padding:0 32px}
+header{display:flex;align-items:center;justify-content:space-between;padding:26px 0}
+header img{height:22px;display:block;filter:brightness(0)}
+header nav{display:flex;gap:6px}
+header nav a{height:36px;padding:0 14px 1px;border-radius:99px;display:inline-flex;align-items:center;gap:8px;background:#fff;box-shadow:0 0 0 1px var(--line),var(--sh1);font-size:13px;color:var(--tx2);transition:color .2s}
+header nav a:hover{color:var(--tx)}
+header nav a i{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:#fff;font:500 11px/1 var(--sans);font-style:normal}
+h1{font:400 64px/1 var(--serif);letter-spacing:-.035em;padding:56px 0 44px;text-align:center}
+h2{font:400 32px/1.1 var(--serif);letter-spacing:-.026em;text-align:center}
+section{padding:64px 0}
+
+/* the three systems and what crosses between them */
+.sys{position:relative;display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-top:8px}
+.card{position:relative;z-index:2;padding:22px 22px 18px;border-radius:28px;background:#fff;box-shadow:0 0 0 1px var(--line),var(--sh2);display:flex;flex-direction:column}
+.card .n{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:#fff;font:500 16px/1 var(--sans)}
+.card h3{margin-top:16px;font:400 26px/1.1 var(--serif);letter-spacing:-.022em}
+.card .job{margin-top:6px;font-size:14px;color:var(--tx2)}
+.card .where{display:flex;flex-wrap:wrap;gap:5px;margin-top:14px}
+.card .where span{height:26px;padding:0 10px 1px;border-radius:99px;display:inline-flex;align-items:center;font-size:12px;color:var(--tx2);background:var(--field)}
+.card ol{list-style:none;margin-top:16px;counter-reset:x}
+.card li a{display:flex;align-items:center;gap:10px;height:38px;padding:0 10px;margin:0 -10px;border-radius:12px;font-size:14px;transition:background .2s;counter-increment:x}
+.card li a::before{content:counter(x);width:20px;font-size:12px;color:var(--tx3);font-variant-numeric:tabular-nums}
+.card li a:hover{background:var(--field)}
+.card li a span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .open{margin-top:auto;padding-top:16px}
+.card .open a{height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(#303432,#181A19);color:#F4F4F3;font:500 14px/1 var(--sans);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -3px 0 rgba(0,0,0,.5),0 0 0 1px #121413,0 14px 24px -14px rgba(18,20,19,.5);transition:filter .2s,transform .15s}
+.card .open a:hover{filter:brightness(1.12)}.card .open a:active{transform:translateY(1px)}
+/* what crosses between the systems */
+.cross{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:920px;margin:28px auto 0}
+.cross a{display:flex;align-items:center;gap:12px;height:54px;padding:0 16px;border-radius:16px;background:#fff;box-shadow:0 0 0 1px var(--line),var(--sh1);font-size:14px;transition:box-shadow .2s,transform .2s var(--e)}
+.cross a:hover{transform:translateY(-1px);box-shadow:0 0 0 1px var(--line),var(--sh2)}
+.cross .ft{flex:none;display:flex;align-items:center;gap:6px;color:var(--tx3)}
+.cross .ft i{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:#fff;font:500 12px/1 var(--sans);font-style:normal}
+.cross .ft i.to{background:var(--field);color:var(--tx)}
+.cross span.t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* the loop */
+.loop{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:28px}
+.loop span{height:40px;padding:0 16px 1px;border-radius:99px;display:inline-flex;align-items:center;gap:8px;background:#fff;box-shadow:0 0 0 1px var(--line),var(--sh1);font-size:14px}
+.loop span i{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--field);font:500 11px/1 var(--sans);font-style:normal;color:var(--tx2)}
+.loop b{color:var(--tx3);font-weight:400}
+
+/* why they come back, two voices */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:28px}
+.tile{padding:24px;border-radius:24px;background:#fff;box-shadow:0 0 0 1px var(--line),var(--sh1)}
+.tile h4{font:400 22px/1.15 var(--serif);letter-spacing:-.02em}
+.tile .rows{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.tile .rows div{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--tx2)}
+.tile .rows i{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:#fff;font:500 11px/1 var(--sans);font-style:normal}
+.face{flex:none;position:relative;display:inline-flex;align-items:center;justify-content:center;gap:4px;width:28px;height:28px;border-radius:50%;background:radial-gradient(circle at 50% 38%,#5BD38E 0,#38C674 52%,#2BAE62 100%);box-shadow:inset 0 0 4px rgba(255,255,255,.55)}
+.face::before,.face::after{content:'';width:3.4px;height:7px;border-radius:9px;background:#fff;margin-top:-1px}
+.av{flex:none;width:28px;height:28px;border-radius:50%;object-fit:cover}
+
+/* parked and open */
+.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:24px}
+.chips span{height:34px;padding:0 14px 1px;border-radius:99px;display:inline-flex;align-items:center;font-size:13px;color:var(--tx2);box-shadow:inset 0 0 0 1px var(--line)}
+.chips.open span{background:#fff;color:var(--tx);box-shadow:0 0 0 1px var(--line),var(--sh1)}
+.chips.open span b{font-weight:400;color:var(--tx3);margin-left:6px}
+.who{display:flex;align-items:center;justify-content:center;gap:10px;margin:-26px 0 40px;font-size:14px;color:var(--tx2)}
+.who img{width:28px;height:28px;border-radius:50%;object-fit:cover}
+footer{padding:40px 0 80px;text-align:center;font-size:12px;color:var(--tx3)}
+@media(max-width:1000px){.sys{grid-template-columns:1fr;gap:20px}.two,.cross{grid-template-columns:1fr}h1{font-size:44px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><img src="zero-skill-path-assets-b6/img/zero-wordmark.svg" alt="zero"><nav>
+    <a href="S1"><i>1</i>Scenarios</a><a href="S2"><i>2</i>Levels and Coach</a><a href="S3"><i>3</i>Jobs</a></nav></header>
+
+  <h1>Zero is three systems.</h1>
+  <p class="who"><img src="zero-skill-path-assets-b6/img/maya.jpg" alt="">Maya Reyes, GTM Engineer, Austin</p>
+
+  <div class="sys">
+    <div class="card">
+      <span class="n">1</span><h3>Scenarios</h3><p class="job">Do the work. Build proof.</p>
+      <div class="where"><span>Learn tab</span><span>Inside a scenario</span></div>
+      <ol>
+        <li><a href="S1#s1-home"><span>Zero is home</span></a></li>
+        <li><a href="S1#s1-pick"><span>Pick one of two scenarios</span></a></li>
+        <li><a href="S1#s1-kickoff"><span>Kickoff with your manager</span></a></li>
+        <li><a href="S1#s1-pop"><span>Say it back</span></a></li>
+        <li><a href="S1#s1-work"><span>Do the work, one chat</span></a></li>
+        <li><a href="S1#s1-present"><span>Present it</span></a></li>
+        <li><a href="S1#s1-review"><span>Your manager reviews it</span></a></li>
+        <li><a href="S1#s1-proof"><span>The work becomes proof</span></a></li>
+      </ol>
+      <div class="open"><a href="S1">Open Scenarios</a></div>
+    </div>
+    <div class="card">
+      <span class="n">2</span><h3>Levels and Coach</h3><p class="job">Know where you stand. Get better.</p>
+      <div class="where"><span>Level pill</span><span>Coach</span><span>Every screen</span></div>
+      <ol>
+        <li><a href="S2#s2-levelup"><span>Level 1, first roles open</span></a></li>
+        <li><a href="S2#s2-pill"><span>Tap your level</span></a></li>
+        <li><a href="S2#s2-slider"><span>What each level opens</span></a></li>
+        <li><a href="S2#s2-checkin"><span>Daily check in, 50 roles by day 7</span></a></li>
+        <li><a href="S2#s2-coach"><span>What I think, what I need to see</span></a></li>
+        <li><a href="S2#s2-nudge"><span>A nudge, after the fact</span></a></li>
+        <li><a href="S2#s2-praise"><span>Praise, after the fact</span></a></li>
+      </ol>
+      <div class="open"><a href="S2">Open Levels and Coach</a></div>
+    </div>
+    <div class="card">
+      <span class="n">3</span><h3>Jobs</h3><p class="job">Get matched. Apply. Hear back.</p>
+      <div class="where"><span>Jobs tab</span><span>Home, Explore, Applications, Inbox</span></div>
+      <ol>
+        <li><a href="S3#s3-home"><span>Home: actions, activity, liked</span></a></li>
+        <li><a href="S3#s3-explore"><span>Explore: one sheet, why you fit</span></a></li>
+        <li><a href="S3#s3-apply"><span>Apply: tailored, then sent</span></a></li>
+        <li><a href="S3#s3-locked"><span>A locked role, back to learn</span></a></li>
+        <li><a href="S3#s3-apps"><span>Applications, one list</span></a></li>
+        <li><a href="S3#s3-inbox"><span>Inbox: a recruiter, a time</span></a></li>
+      </ol>
+      <div class="open"><a href="S3">Open Jobs</a></div>
+    </div>
+  </div>
+
+  <section>
+    <h2>What crosses between them</h2>
+    <div class="cross">
+      <a href="S1#s1-review"><span class="ft"><i>1</i>→<i class="to">2</i></span><span class="t">Skill points and credits from the work</span></a>
+      <a href="S2#s2-nudge"><span class="ft"><i>1</i>→<i class="to">2</i></span><span class="t">How you work, read by the coach</span></a>
+      <a href="S1#s1-pick"><span class="ft"><i>2</i>→<i class="to">1</i></span><span class="t">The next two scenarios open</span></a>
+      <a href="S2#s2-praise"><span class="ft"><i>2</i>→<i class="to">1</i></span><span class="t">Coach notes, after the fact</span></a>
+      <a href="S2#s2-levelup"><span class="ft"><i>2</i>→<i class="to">3</i></span><span class="t">Each level opens a bucket of roles</span></a>
+      <a href="S3#s3-apply"><span class="ft"><i>1</i>→<i class="to">3</i></span><span class="t">Your proof, tailored for every application</span></a>
+      <a href="S3#s3-locked"><span class="ft"><i>3</i>→<i class="to">1</i></span><span class="t">A locked role sends you back to learn</span></a>
+      <a href="S2#s2-checkin"><span class="ft"><i>2</i>→<i class="to">3</i></span><span class="t">A daily check in adds new roles</span></a>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <h2>The loop</h2>
+    <div class="loop"><span><i>1</i>Scenario</span><b>→</b><span><i>2</i>Skill points</span><b>→</b><span><i>2</i>Level</span><b>→</b><span><i>3</i>Roles open</span><b>→</b><span><i>3</i>Apply</span><b>→</b><span><i>3</i>Interview</span><b>→</b><span><i>1</i>Next scenario</span></div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="two">
+      <div class="tile"><h4>Why people come back</h4><div class="rows">
+        <div><i>2</i>A daily check in, 50 new roles by day 7</div><div><i>3</i>A recruiter writes back, in the Inbox</div></div></div>
+      <div class="tile"><h4>Two voices</h4><div class="rows">
+        <div><img class="av" src="zero-skill-path-assets-b6/img/navid-face.jpg" alt="">Your manager, inside one scenario. The only chat.</div>
+        <div><span class="face"></span>Zero, everywhere else. The coach, and the agent.</div></div></div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <h2>Not now</h2>
+    <div class="chips"><span>Mini missions</span><span>Coach chat</span><span>Coach calls</span><span>Recruiter side</span><span>Offers</span><span>Who viewed your portfolio</span><span>Referral codes</span><span>Meetings with real employees</span></div>
+  </section>
+
+  <section style="padding-top:0">
+    <h2>Still to decide</h2>
+    <div class="chips open"><span>Roles per level<b>Navid</b></span><span>How often new roles come<b>Navid</b></span><span>How skill points are paid<b>Engineering</b></span><span>Recruiter chat inside Zero<b>Navid</b></span><span>The job portal builder's view<b>Sanjay</b></span><span>Company or project first on the pick<b>A/B test</b></span></div>
+  </section>
+
+  <footer>From the Sanjay and Navid call, 14 October 2026. Roles, companies, numbers and pay are stand-ins.</footer>
+</div>
+<script>
+/* the three sites: the build writes their file names here */
+var SITES = { S1: 'zero-skill-path-scenarios-b6.html', S2: 'zero-skill-path-levels-b6.html', S3: 'zero-skill-path-jobs-b6.html' } || { S1: 'dev.html?sys=1', S2: 'dev.html?sys=2', S3: 'dev.html?sys=3' };
+Array.prototype.forEach.call(document.querySelectorAll('a[href^="S"]'), function (a) {
+  var h = a.getAttribute('href'), k = h.slice(0, 2);
+  if (SITES[k]) a.setAttribute('href', SITES[k] + h.slice(2));
+});
+</script>
+</body>
+</html>
