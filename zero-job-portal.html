@@ -2879,6 +2879,197 @@ button.fchip:hover{background:var(--well2);color:var(--ink)}
 @keyframes tst{0%{opacity:0;transform:translateY(10px)}6%,92%{opacity:1;transform:none}100%{opacity:0;transform:translateY(6px)}}
 @media(prefers-reduced-motion:reduce){.tst{animation:none}}
 
+/* ═══ the orb loader from libraries.dev; the pixel grid shows only until it loads ═══ */
+.zorb{position:relative;display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;flex-shrink:0}
+.zorb>.lv-h{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.lvon .zorb>.pxl{display:none}
+.rrun .zorb,.zt-st .zorb,.esel.run .zorb{width:16px;height:16px}
+.rrun .zorb>.lv-h,.zt-st .zorb>.lv-h,.esel.run .zorb>.lv-h{transform:scale(.8)}
+
+/* ═══ Zero is working, compact ═══ */
+#zrun{gap:2px;padding:0}
+.zw4{display:flex;flex-direction:column;margin-bottom:4px;border-radius:14px;background:#fff;box-shadow:0 0 0 1px var(--line),0 10px 24px -22px rgba(19,20,23,.45);overflow:hidden}
+.zw4-r{position:relative;display:flex;align-items:center;gap:8px;height:40px;padding:0 12px 0 10px}
+.zw4-r .lg.xs{width:20px;height:20px;border-radius:6px;flex-shrink:0}
+.zw4-r .lg.xs img{width:12px;height:12px}
+.zw4-r .grow{min-width:0}
+.zw4-r .i{color:var(--ink)}
+.zw4-t{flex-shrink:0;font-size:12px;line-height:16px;color:var(--ink4);font-variant-numeric:tabular-nums}
+.zw4-r::after{content:'';position:absolute;left:10px;right:12px;bottom:0;height:2px;border-radius:2px;background:var(--well2)}
+.zw4-p{position:absolute;left:10px;right:12px;bottom:0;z-index:1;height:2px;border-radius:2px;background:var(--ink);transform-origin:left;transition:transform .35s var(--e)}
+.zw4-q{display:flex;align-items:center;gap:8px;height:32px;padding:0 12px;box-shadow:inset 0 1px 0 var(--line)}
+.zw4-q .lgs .lg.xs{width:18px;height:18px}
+.zw4-w{display:flex;align-items:center;gap:10px;width:100%;height:34px;padding:0 8px 0 0;border-radius:10px;text-align:left}
+.zw4-w:hover{background:rgba(255,255,255,.7)}
+.zw4-dot{display:flex;align-items:center;justify-content:center;width:34px;flex-shrink:0}
+.zw4-w>svg{width:14px;height:14px;color:var(--ink3)}
+.zw4-w .lgs .lg.xs{width:18px;height:18px}
+.zw4-l{display:flex;flex-direction:column;padding:0 0 4px 44px}
+.zw4-l li{display:flex;align-items:center;gap:8px;min-height:30px}
+.zw4-l .lg.xs{width:18px;height:18px;border-radius:6px}
+.zw4-l .clip{min-width:0}
+.zw4-l .i{color:var(--ink)}
+@media(prefers-reduced-motion:reduce){.zw4-p{transition:none}}
+
+/* ZERO Job Portal, v49. The level-up sequence. Light, Zero green, one card over the whole screen. */
+@property --c{syntax:'<integer>';inherits:false;initial-value:0}
+
+/* any open sheet dims Zero's chat too, so nothing outside the sheet looks highlighted */
+#zdrawer{transition:opacity .2s var(--e)}
+.app:has(#ov.on) #zdrawer{opacity:.4}
+
+.lu2{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
+/* the field behind the card, after his motion references: a lime to green ripple flowing out, a slow swirl, halftone grain */
+.lu2-bg{position:absolute;inset:0;overflow:hidden;background:radial-gradient(circle at 50% 46%,#FBFFF2 0,#E9FAD2 22%,#CDF1C6 44%,#AEE6C2 66%,#DDF3E2 100%);animation:lu2-fade .5s var(--e) both}
+.lu2-rings{position:absolute;left:50%;top:46%;width:200vmax;height:200vmax;margin:-100vmax;background:radial-gradient(circle,transparent 106px,rgba(255,255,236,.75) 120px,transparent 136px),radial-gradient(circle,transparent 236px,rgba(255,255,236,.75) 250px,transparent 266px),radial-gradient(circle,transparent 366px,rgba(255,255,236,.75) 380px,transparent 396px),radial-gradient(circle,transparent 496px,rgba(255,255,236,.75) 510px,transparent 526px),radial-gradient(circle,transparent 626px,rgba(255,255,236,.75) 640px,transparent 656px),radial-gradient(circle,transparent 756px,rgba(255,255,236,.75) 770px,transparent 786px),radial-gradient(circle,transparent 173px,rgba(110,205,140,.28) 185px,transparent 199px),radial-gradient(circle,transparent 303px,rgba(110,205,140,.28) 315px,transparent 329px),radial-gradient(circle,transparent 433px,rgba(110,205,140,.28) 445px,transparent 459px),radial-gradient(circle,transparent 563px,rgba(110,205,140,.28) 575px,transparent 589px),radial-gradient(circle,transparent 693px,rgba(110,205,140,.28) 705px,transparent 719px);filter:blur(7px);animation:lu2-flow 7s linear infinite}
+.lu2-swirl{position:absolute;left:50%;top:46%;width:150vmax;height:150vmax;margin:-75vmax;background:conic-gradient(from 0deg,rgba(255,255,255,0) 0deg,rgba(255,255,240,.55) 40deg,rgba(255,255,255,0) 95deg,rgba(80,190,170,.18) 160deg,rgba(255,255,255,0) 220deg,rgba(255,255,240,.45) 290deg,rgba(255,255,255,0) 345deg);-webkit-mask-image:radial-gradient(circle,transparent 8%,#000 30%,#000 60%,transparent 75%);mask-image:radial-gradient(circle,transparent 8%,#000 30%,#000 60%,transparent 75%);filter:blur(18px);animation:lu2-spin 24s linear infinite}
+.lu2-dots{position:absolute;inset:0;background:radial-gradient(rgba(40,140,70,.22) 1px,transparent 1.5px) 0 0/7px 7px;-webkit-mask-image:radial-gradient(ellipse at 50% 46%,transparent 18%,rgba(0,0,0,.7) 55%,#000 85%);mask-image:radial-gradient(ellipse at 50% 46%,transparent 18%,rgba(0,0,0,.7) 55%,#000 85%);opacity:.8}
+/* one big ripple across the whole screen at each moment */
+.lu2-wave{position:absolute;left:50%;top:46%;width:0;height:0;pointer-events:none;z-index:1}
+.lu2-wave i{position:absolute;left:-200px;top:-200px;width:400px;height:400px;border-radius:50%;border:3px solid rgba(255,255,240,.9);box-shadow:0 0 40px rgba(183,240,106,.7),inset 0 0 40px rgba(183,240,106,.5);opacity:0;animation:lu2-wv 1.9s cubic-bezier(.15,.7,.3,1) both}
+.lu2-wave i:nth-child(2){animation-delay:.16s}.lu2-wave i:nth-child(3){animation-delay:.32s}.lu2-wave i:nth-child(4){animation-delay:.48s}
+.st-level .lu2-wave i{animation-delay:1.15s}.st-level .lu2-wave i:nth-child(2){animation-delay:1.31s}.st-level .lu2-wave i:nth-child(3){animation-delay:1.47s}.st-level .lu2-wave i:nth-child(4){animation-delay:1.63s}
+@keyframes lu2-flow{from{transform:scale(1)}to{transform:scale(1.6)}}
+@keyframes lu2-spin{to{transform:rotate(360deg)}}
+@keyframes lu2-wv{0%{opacity:1;transform:scale(.2)}100%{opacity:0;transform:scale(5)}}
+.lu2-c{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;width:min(560px,100%);min-height:min(620px,92vh);padding:24px 0 18px;text-align:center;animation:lu2-fade .5s var(--e) both}
+.lu2-s{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;width:100%;animation:lu2-in .45s var(--e) both}
+.lu2-k{font-size:12px;line-height:16px;letter-spacing:.08em;text-transform:uppercase;color:#12733F}
+.lu2-skip{position:fixed;top:20px;right:24px;z-index:3;height:30px;padding:0 10px;border-radius:99px;font-size:12px;line-height:16px;color:var(--ink3)}
+.lu2-skip:hover{background:rgba(255,255,255,.6);color:var(--ink)}
+.lu2-pg{display:flex;gap:6px;margin-top:20px}
+.lu2-pg i{width:6px;height:6px;border-radius:99px;background:rgba(19,20,23,.18);transition:background-color .3s var(--e)}
+.lu2-pg i.on{width:20px;background:var(--ink)}
+.lu2-pg i.done{background:#2DB869}
+
+/* the level rolls over like an odometer while the bar fills */
+.lu2-odo{display:flex;flex-direction:column;align-items:center;gap:0}
+.lu2-odo-l{font-size:14px;line-height:20px;color:var(--ink3)}
+.lu2-odo-w{display:block;height:168px;overflow:hidden;-webkit-mask-image:linear-gradient(transparent,#000 18%,#000 82%,transparent);mask-image:linear-gradient(transparent,#000 18%,#000 82%,transparent)}
+.lu2-odo-s{display:flex;flex-direction:column;animation:lu2-roll .9s cubic-bezier(.3,.8,.25,1.25) 1.15s both}
+.lu2-odo-s b{display:block;height:168px;font-weight:400;font-size:160px;line-height:168px;letter-spacing:-.04em;color:var(--ink);font-variant-numeric:tabular-nums}
+.lu2-bar{width:280px;height:8px;margin-top:10px;border-radius:99px;background:rgba(255,255,255,.7);box-shadow:inset 0 0 0 1px rgba(19,90,50,.08);overflow:hidden}
+.lu2-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#1FA65A,#3CC878 55%,#B7F06A);transform-origin:left;transform:scaleX(var(--p0));animation:lu2-fill 2.4s var(--e) .2s both}
+.lu2-pts{font-size:14px;line-height:20px;color:var(--ink2)}
+.lu2-cnt{animation:lu2-count 1.3s var(--e) .25s both;counter-reset:c var(--c)}
+.lu2-cnt::after{content:counter(c)}
+
+/* ripples */
+.lu2-rp{position:absolute;left:50%;top:42%;width:0;height:0;pointer-events:none}
+.lu2-rp i{position:absolute;left:-70px;top:-70px;width:140px;height:140px;border-radius:50%;border:2px solid rgba(45,184,105,.45);opacity:0;animation:lu2-rip 1.5s cubic-bezier(.2,.7,.3,1) both}
+.lu2-rp i:nth-child(2){animation-delay:.18s}
+.lu2-rp i:nth-child(3){animation-delay:.36s}
+.lu2-level .lu2-rp{top:38%}
+.lu2-level .lu2-rp i{animation-delay:1.25s}
+.lu2-level .lu2-rp i:nth-child(2){animation-delay:1.43s}
+.lu2-level .lu2-rp i:nth-child(3){animation-delay:1.61s}
+
+/* the reward box: it waits with a bounce, loosens with each tap, bursts on the third */
+.lu2-box{position:relative;display:block;width:156px;height:150px;margin:6px 0 10px;transform-origin:50% 100%;scale:1.45;margin-top:78px;cursor:pointer;animation:lu2-bob 1.5s ease-in-out infinite;-webkit-tap-highlight-color:transparent}
+.lu2-box:focus-visible{outline:2px solid var(--ink);outline-offset:6px;border-radius:24px}
+.lu2-box.t1,.lu2-box.t2{animation:lu2-shake .5s cubic-bezier(.36,.07,.19,.97) both,lu2-bob 1.5s ease-in-out .5s infinite}
+.lu2-body{position:absolute;left:14px;right:14px;bottom:16px;height:82px;border-radius:16px;background:linear-gradient(180deg,#4AD58A,#2DB869);box-shadow:inset 0 -12px 20px rgba(0,90,50,.22),inset 0 2px 0 rgba(255,255,255,.35),0 18px 26px -16px rgba(20,120,70,.55)}
+.lu2-body::before,.lu2-lid::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:20px;margin-left:-10px;background:#B7F06A;box-shadow:inset 0 0 0 1px rgba(0,60,30,.06)}
+.lu2-lid{position:absolute;left:6px;right:6px;top:34px;z-index:2;height:32px;border-radius:13px;background:linear-gradient(180deg,#6BE3A2,#3CC878);box-shadow:inset 0 2px 0 rgba(255,255,255,.4),0 8px 14px -8px rgba(20,120,70,.6);transition:transform .35s cubic-bezier(.2,.9,.3,1.4)}
+.lu2-bow{position:absolute;left:50%;top:-24px;width:36px;height:28px;border:7px solid #B7F06A;border-radius:55% 55% 45% 45%;box-shadow:0 2px 0 rgba(0,60,30,.08)}
+.lu2-bow.l{transform:translateX(-100%) rotate(-24deg);transform-origin:right bottom}
+.lu2-bow.r{transform:rotate(24deg);transform-origin:left bottom}
+.lu2-box.t1 .lu2-lid{transform:translateY(-5px) rotate(-3deg)}
+.lu2-box.t2 .lu2-lid{transform:translateY(-11px) rotate(4deg)}
+.lu2-shadow{position:absolute;left:34px;right:34px;bottom:2px;height:10px;border-radius:50%;background:rgba(19,20,23,.14);filter:blur(3px);animation:lu2-shad 1.5s ease-in-out infinite}
+.lu2-box.open{cursor:default;animation:lu2-thump .5s cubic-bezier(.2,.9,.3,1.3) both}
+.lu2-box.open .lu2-lid{animation:lu2-lidoff .8s cubic-bezier(.2,.9,.3,1.1) both}
+.lu2-glow{position:absolute;left:50%;top:46%;z-index:1;width:240px;height:240px;margin:-120px;border-radius:50%;background:radial-gradient(closest-side,rgba(220,255,160,.95),rgba(60,200,120,.45) 45%,transparent);animation:lu2-glow 1.2s ease-out both;pointer-events:none}
+.lu2-hint{font-size:14px;line-height:20px;color:var(--ink2)}
+.lu2-dots{display:flex;gap:6px}
+.lu2-boxs .lu2-dots{position:static;inset:auto;background:none;-webkit-mask-image:none;mask-image:none;opacity:1}
+.lu2-dots i{width:8px;height:8px;border-radius:99px;background:rgba(255,255,255,.75);box-shadow:inset 0 0 0 1px rgba(19,90,50,.15);transition:background-color .2s var(--e)}
+.lu2-dots i.on{background:#2DB869;box-shadow:none}
+.lu2-boxs .lu2-rp{top:46%}
+
+/* green orbs bursting out */
+.lu2-bst{position:absolute;left:50%;top:44%;width:0;height:0;pointer-events:none;z-index:3}
+.lu2-bst i{position:absolute;width:var(--s);height:var(--s);margin:calc(var(--s) / -2);border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,var(--c) 45%);box-shadow:0 0 14px var(--c);opacity:0;animation:lu2-burst 1.2s cubic-bezier(.15,.85,.3,1) var(--dl) both}
+.lu2-bst.fly{top:30%}
+
+/* roles counting up, logos flying in */
+.lu2-big{font-size:120px;line-height:128px;letter-spacing:-.04em;color:var(--ink);font-variant-numeric:tabular-nums}
+.lu2-sub{font-size:14px;line-height:20px;color:var(--ink2)}
+.lu2-fan{position:relative;width:100%;height:52px;margin:8px 0 4px}
+.lu2-fl{position:absolute;left:50%;top:4px;margin-left:-22px;transform:translateX(var(--x));animation:lu2-flyin .65s cubic-bezier(.2,.9,.3,1.35) calc(.35s + var(--i) * 80ms) both}
+.lu2-fl .lg.sm{width:44px;height:44px;border-radius:14px;box-shadow:0 0 0 3px #fff,inset 0 0 0 1px var(--line),0 12px 20px -14px rgba(19,20,23,.5)}
+.lu2-fl .lg.sm img{width:24px;height:24px}
+.lu2-at{margin-bottom:8px}
+.lu2-s .k{display:inline-flex;align-items:center;gap:6px}
+.lu2-s .k svg{width:14px;height:14px}
+
+/* credits */
+.lu2-coin{position:relative;width:120px;height:120px;margin-bottom:16px;scale:1.25;cursor:pointer;animation:lu2-float 2.2s ease-in-out infinite}
+.lu2-cf{position:absolute;left:50%;width:96px;height:96px;margin-left:-48px;border-radius:50%;background:radial-gradient(circle at 35% 28%,#E9FFC2,#9BE86A 32%,#3CC878 62%,#22A35C);box-shadow:inset 0 0 0 5px rgba(255,255,255,.35),inset 0 -8px 14px rgba(0,80,40,.25),0 14px 24px -14px rgba(20,120,70,.6)}
+.lu2-cf.c3{top:22px;opacity:.55;transform:scale(.9)}
+.lu2-cf.c2{top:12px;opacity:.8;transform:scale(.95)}
+.lu2-cf.c1{top:0;display:flex;align-items:center;justify-content:center;color:#fff}
+.lu2-cf.c1 svg{width:38px;height:38px;stroke-width:1.8;filter:drop-shadow(0 1px 1px rgba(0,80,40,.35))}
+.lu2-crs.got .lu2-coin{cursor:default;animation:lu2-coinup .8s cubic-bezier(.2,.9,.3,1.1) both}
+
+/* the summary */
+.lu2-sum{gap:6px}
+.lu2-sb{display:flex;align-items:center;justify-content:center;width:112px;height:112px;box-shadow:0 20px 40px -20px rgba(20,120,70,.6);margin-bottom:8px;border-radius:50%;background:conic-gradient(#2DB869,#B7F06A,#2DB869);animation:lu2-pop-in .6s cubic-bezier(.2,.9,.3,1.3) both}
+.lu2-sb b{display:flex;align-items:center;justify-content:center;width:94px;height:94px;border-radius:50%;background:#fff;font-weight:400;font-size:28px;line-height:34px;color:var(--ink)}
+.lu2-sum .h{color:var(--ink)}
+.lu2-sl{display:flex;flex-direction:column;gap:2px;width:min(420px,100%);margin-top:18px;text-align:left}
+.lu2-sl li{display:flex;align-items:center;gap:12px;min-height:48px;padding:6px 10px;border-radius:14px;animation:lu2-in .4s var(--e) both}
+.lu2-sl li:nth-child(2){animation-delay:.08s}.lu2-sl li:nth-child(3){animation-delay:.16s}.lu2-sl li:nth-child(4){animation-delay:.24s}
+.lu2-sl li>svg{width:16px;height:16px;color:#2DB869;flex-shrink:0}
+.lu2-sl li .grow{min-width:0}
+.lu2-sl .i{color:var(--ink)}
+.lu2-sl li.nx{background:none;box-shadow:inset 0 1px 0 rgba(19,90,50,.12);border-radius:0;margin-top:6px}
+.lu2-sl .lgs{width:44px;flex-shrink:0}
+.lu2-si{display:flex;align-items:center;justify-content:center;width:32px;height:32px;margin:0 6px;flex-shrink:0;border-radius:99px;background:rgba(255,255,255,.75);color:#12733F}
+.lu2-sl li.nx .lu2-si{color:var(--ink3)}
+.lu2-si svg{width:15px;height:15px}
+.lu2-a{width:min(420px,100%);margin-top:18px}
+.lu2-a .k{display:inline-flex;align-items:center;gap:6px}
+.lu2-a svg{width:14px;height:14px}
+
+/* credits in the top bar */
+.crd{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 8px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.crd svg{width:16px;height:16px;color:#2DB869}
+.crd b{font-weight:400}
+.crd.bump{animation:lu2-bump .6s cubic-bezier(.2,.9,.3,1.4) both}
+
+@keyframes lu2-fade{from{opacity:0}}
+@keyframes lu2-pop-in{from{opacity:0;transform:scale(.92) translateY(10px)}}
+@keyframes lu2-in{from{opacity:0;transform:translateY(8px)}}
+@keyframes lu2-roll{to{transform:translateY(calc(var(--n) * -168px))}}
+@keyframes lu2-fill{0%{transform:scaleX(var(--p0))}42%,50%{transform:scaleX(1)}52%{transform:scaleX(0)}100%{transform:scaleX(var(--p1))}}
+@keyframes lu2-count{to{--c:var(--to)}}
+@keyframes lu2-rip{0%{opacity:.9;transform:scale(.3)}100%{opacity:0;transform:scale(2.6)}}
+@keyframes lu2-bob{0%,100%{transform:translateY(0) scale(1,1)}45%{transform:translateY(-12px) scale(.98,1.02)}88%{transform:translateY(0) scale(1.04,.96)}}
+@keyframes lu2-shad{0%,100%{transform:scaleX(1);opacity:1}45%{transform:scaleX(.75);opacity:.6}}
+@keyframes lu2-shake{0%{transform:scale(1.06,.92)}20%{transform:rotate(-7deg) scale(.97,1.04)}40%{transform:rotate(6deg)}60%{transform:rotate(-4deg)}80%{transform:rotate(2deg)}100%{transform:none}}
+@keyframes lu2-thump{0%{transform:scale(1.12,.86)}60%{transform:scale(.96,1.05)}100%{transform:none}}
+@keyframes lu2-lidoff{0%{transform:translateY(-11px) rotate(4deg)}100%{transform:translate(-40px,-150px) rotate(-38deg);opacity:0}}
+@keyframes lu2-glow{0%{opacity:0;transform:scale(.3)}35%{opacity:1}100%{opacity:0;transform:scale(1.6)}}
+@keyframes lu2-burst{0%{opacity:1;transform:rotate(var(--a)) translateX(0) scale(.4)}70%{opacity:1}100%{opacity:0;transform:rotate(var(--a)) translateX(var(--d)) scale(1)}}
+@keyframes lu2-flyin{from{opacity:0;transform:translateX(0) translateY(46px) scale(.3)}}
+@keyframes lu2-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes lu2-coinup{0%{transform:translateY(0) scale(1)}35%{transform:translateY(8px) scale(1.06,.94)}100%{transform:translateY(-70px) scale(.6);opacity:0}}
+@keyframes lu2-bump{0%{transform:scale(1)}40%{transform:scale(1.25)}100%{transform:scale(1)}}
+
+@media(prefers-reduced-motion:reduce){
+ .lu2 *,.lu2-bg,.lu2-c,.crd.bump{animation:none!important;transition:none!important}
+ .lu2-odo-s{transform:translateY(calc(var(--n) * -168px))}
+ .lu2-bar i{transform:scaleX(var(--p1))}
+ .lu2-cnt{--c:var(--to)}
+ .lu2-bst,.lu2-rp,.lu2-glow{display:none}
+}
+@media(max-width:520px){.lu2-c{min-height:460px;padding:26px 18px 18px}.lu2-odo-s b,.lu2-big{font-size:80px}}
+
+.lu2-crs.got .lu2-cnt{animation:none;--c:var(--to)}
+.lu2-sl .lgs{width:56px;justify-content:flex-start;padding-left:4px}
+@media(prefers-reduced-motion:reduce){.lu2-rings,.lu2-swirl{animation:none!important}.lu2-wave{display:none}}
+
 </style>
 </head>
 <body>
@@ -6390,11 +6581,11 @@ function zHistory(){const G=zHist();return G.length?`<div class="zh-w">${G.map(g
 function zChat(){const t=zthread(),sug=SUGGEST.student().slice(0,3),busy=t.msgs.some(x=>x.busy);
  let dd='';const L=t.msgs.slice(-80).map(m=>{const sep=m.date&&m.date!==dd?`<li class="zday"><span>${dayLbl(m.date)}</span></li>`:'';if(m.date)dd=m.date;return sep+zbub(m)}).join('');
  const zr=zRun();return`<div id="zrun" data-k="${esc(zr.k)}">${zr.html}</div><ul class="msgs zp2-m" id="zpmsgs">${L||`<li class="sys"><span>Ask Zero to find roles, write to a team, or get you ready for an interview.</span></li>`}</ul>
-  <button type="button" class="zcx" data-a="ztab" data-id="context" title="What Zero works from. Click to edit.">${ic('id-card')}<span class="clip">${esc(S.prefs.role)} · ${whereOf(S.ctx.places)} · from ${esc(S.prefs.pay)} · ${{warm:'Warm',direct:'Direct',formal:'Formal'}[S.ctx.tone]} notes</span>${ic('chevron-right')}</button>
+  <button type="button" class="zcx" data-a="ztab" data-id="context" title="What Zero works from. Click to edit.">${ic('square-pen')}<span class="clip">${esc(S.prefs.role)} · ${whereOf(S.ctx.places)} · from ${esc(S.prefs.pay)} · ${{warm:'Warm',direct:'Direct',formal:'Formal'}[S.ctx.tone]} notes</span>${ic('chevron-right')}</button>
   ${sug.length?`<div class="zsug">${sug.map(x=>`<button type="button" class="opt" data-a="zq" data-id="${esc(x)}">${x}</button>`).join('')}</div>`:''}
   <form class="zform ${S.zv?'zv':''}" id="zform">${LV.on?`<i class="lv-ov" data-lv="voice" data-lk="zf" data-proc="${busy?1:''}"></i>`:''}<label class="hide" for="zin">Ask Zero</label><input id="zin" placeholder="${S.zv?'Listening':'Ask Zero anything'}" autocomplete="off" value="${esc(S.zdraft||'')}">${LV.on?`<button class="zmic ${S.zv?'on':''}" type="button" data-a="zmic" aria-pressed="${!!S.zv}" aria-label="${S.zv?'Stop listening':'Talk to Zero'}">${ic(S.zv?'square':'mic')}</button>`:''}<button class="zgo" type="submit" aria-label="Send">${ic('arrow-up')}</button></form>`}
 const zPanel=()=>{const cx=S.zt==='context';return`<div class="zp2-h">${orb('xs','live')}<div class="grow"><p class="i">${cx?'What Zero works from':'Zero'}</p><p class="m">${cx?'Zero reads every role against this':zNow()}</p></div>
- <button type="button" class="zp2-ic ${cx?'on':''}" data-a="ztab" data-id="${cx?'chat':'context'}" aria-pressed="${cx}" aria-label="${cx?'Back to the chat':'What Zero works from'}" title="${cx?'Back to the chat':'What Zero works from'}">${ic(cx?'message-circle':'id-card')}</button>
+ <button type="button" class="zp2-ic ${cx?'on':''}" data-a="ztab" data-id="${cx?'chat':'context'}" aria-pressed="${cx}" aria-label="${cx?'Back to the chat':'What Zero works from'}" title="${cx?'Back to the chat':'What Zero works from'}">${ic(cx?'message-circle':'square-pen')}</button>
  <button class="zp2-ic" type="button" data-a="zclose" aria-label="Close Zero" title="Close">${ic('x')}</button></div>
  <div class="zp2-b ${cx?'context':'chat'}">${cx?zContext():zChat()}</div>`};
 function zdraw(){const d=$('#zdock'),w=$('#zdrawer'),sh=$('.sheet');if(!d)return;const onb=S.onb[S.mode]!=='done'||S.mode!=='student',open=!!S.zp&&!onb;
@@ -6577,7 +6768,7 @@ PAGES.student.inbox=()=>{const ids=threadIds().filter(k=>ROLE(k)&&S.threads[k].m
 
 /* ═══ Zero's chat holds everything it does: runs show as steps, finished work as rows you can open ═══ */
 const shimD=()=>`style="animation-delay:-${Date.now()%1800}ms"`;
-const spinS=()=>{const t=Date.now()%650;return`<span class="pxl" aria-hidden="true">${[90,180,270,0,90,180,90,180,270].map(d=>`<i style="animation-delay:${d-t}ms"></i>`).join('')}</span>`};
+const spinS=(t,dark)=>{const p=Date.now()%650,st=t&&typeof LV!=='undefined'&&LV.orbState?LV.orbState(String(t).replace(/<[^>]+>/g,'')):'working';return`<span class="zorb" data-lv="orb" data-lk="zs" data-os="${st}" data-sz="20" ${dark?'data-dk="1"':''} aria-hidden="true"><span class="pxl">${[90,180,270,0,90,180,90,180,270].map(d=>`<i style="animation-delay:${d-p}ms"></i>`).join('')}</span></span>`};
 A.zx=k=>{S.zx=S.zx||{};S.zx[k]=!S.zx[k]};
 function actRow(m){const k=m.k||(m.k=Math.random().toString(36).slice(2,8)),open=(S.zx||{})[k],r=m.id&&ROLE(m.id),ids=m.ids||[],ap=r&&S.apps[m.id]&&/^Applied|applied to/.test(m.text),has=ids.length||ap;
  return`<li class="zrow ${open?'open':''}"><button type="button" class="zrow-h" ${has?`data-a="zx" data-id="${k}" aria-expanded="${!!open}"`:'tabindex="-1"'}>${r?lg(CO(r.co).dom,'xs'):`<span class="zrow-i">${ic(m.icon||'sparkle')}</span>`}<span class="grow">${act2(m)}</span>${m.t?`<span class="m zrow-t">${m.t}</span>`:''}${has?`<span class="zrow-c">${ic('chevron-down')}</span>`:''}</button>
@@ -6992,7 +7183,7 @@ function zPill(){return''}
 /* in the top bar, where it never covers anything: what Zero is applying to right now */
 function zTop(){const q=S.qa&&ROLE(S.qa.id);if(!q||S.mode!=='student')return'';const more=(S.qq||[]).length,at=S.qa.at;
  const ph=at>=QA.length?'Sent':at===3&&((S.ctx&&S.ctx.hold)??3)?`Sending <b data-hold="${q.id}">${(S.nopen||{})[q.id]||S.rwBusy?'paused':`in ${Math.max(1,Math.ceil(((S.qa.until?S.qa.until-Date.now():S.qa.left)||0)/1000))}s`}</b>`:qaPh(q,at);
- return`<button type="button" class="ztop" data-a="${S.page.student==='jobs'&&roomW()>=1100?'exsel':'rolesheet'}" data-id="${q.id}" title="See what Zero is doing">${spinS()}${lg(CO(q.co).dom,'xs')}<span class="clip"><span class="i">Applying to ${coName(q)}</span><span class="m"> · ${ph}</span></span>${more>0?`<span class="zrp-n">+${more}</span>`:''}</button>`}
+ return`<button type="button" class="ztop" data-a="${S.page.student==='jobs'&&roomW()>=1100?'exsel':'rolesheet'}" data-id="${q.id}" title="See what Zero is doing">${spinS(ph,1)}${lg(CO(q.co).dom,'xs')}<span class="clip"><span class="i">Applying to ${coName(q)}</span><span class="m"> · ${ph}</span></span>${more>0?`<span class="zrp-n">+${more}</span>`:''}</button>`}
 {const f=topHTML;topHTML=function(){const t=f(),p=zTop();return p?t.replace('</div><nav class="tabs"',`${p}</div><nav class="tabs"`):t}}
 
 /* ═══ Inbox: what the team asks for happens in the chat ═══ */
@@ -7147,6 +7338,69 @@ function drawToast(){let t=document.getElementById('toast');if(!t){t=document.cr
 A.viewliked=()=>{S.toast=null;drawToast();S.rv=null;S.fb=null;S.page.student='jobs';S.ef='liked';S.jcur='';return'enter'};
 {const f=A.like;A.like=(id,...x)=>{const was=!!S.saved[id],r=f(id,...x),R=ROLE(id);if(!was&&S.saved[id]&&R){S.zwh=null;const n=Object.values(S.saved).filter(Boolean).length;toast('heart',`Liked ${coName(R)}'s ${R.title}${n>1?`. ${n} liked`:''}`,'View liked','viewliked')}return r}}
 {const f=A.eslike;A.eslike=()=>{const n=selIds().length,r=f();if(n){S.zwh=null;toast('heart',`Liked ${n} role${n>1?'s':''}`,'View liked','viewliked')}return r}}
+
+/* ═══ what Zero is doing, compact: one line per run, a hairline of progress, who is next as logos ═══ */
+function zRun(){const R=zRows();if(!R.length)return{k:'',html:''};const run=R.filter(x=>x.run),wait=R.filter(x=>!x.run&&!x.watch),watch=R.filter(x=>x.watch),open=!!S.zww;
+ const B=S.bt&&S.bt.ids,sent=B?B.filter(id=>btState(id)==='sent').length:0,tot=SCAN_MS.reduce((a,b)=>a+b,0);
+ const k=R.map(x=>x.k+x.sub+(x.run?mmss(x.el):'')).join('|')+open+sent;
+ const line=x=>{const sc=x.k.startsWith('scan'),qa=x.k.startsWith('qa'),i=qa?Math.min(S.qa.at,QA.length):0,pct=sc?Math.min(1,x.el/tot):qa?Math.min(1,(i+(i<QA.length?.5:0))/QA.length):0;
+  return`<div class="zw4-r">${spinS(x.sub)}${sc?'':x.ico.replace('lg sm','lg xs')}<p class="grow clip"><span class="i">${sc?'Reading new postings':`Applying to ${x.co}`}</span><span class="m"> · <span class="shim" ${shimD()}>${x.sub}</span></span></p><span class="zw4-t">${mmss(x.el)}</span><i class="zw4-p" style="transform:scaleX(${pct.toFixed(3)})"></i></div>`};
+ const work=run.length||wait.length?`<section class="zw4">${run.map(line).join('')}${wait.length||(B&&B.length>1)?`<div class="zw4-q">${B&&B.length>1?`<span class="m">${sent} of ${B.length} sent</span>`:''}<span class="grow"></span>${wait.length?`<span class="m">Next</span><span class="lgs">${wait.slice(0,5).map(x=>x.ico.replace('lg sm','lg xs')).join('')}</span>`:''}</div>`:''}</section>`:'';
+ const watching=watch.length?`<button type="button" class="zw4-w" data-a="zww" aria-expanded="${open}"><span class="zw4-dot"><span class="zw-dot"></span></span><span class="m">Watching ${num(watch.length).toLowerCase()} for you</span><span class="lgs">${watch.slice(0,4).map(x=>x.ico.replace('lg sm','lg xs')).join('')}</span><span class="grow"></span>${ic(open?'chevron-up':'chevron-down')}</button>${open?`<ul class="zw4-l">${watch.map(x=>`<li>${x.ico.replace('lg sm','lg xs')}<span class="clip"><span class="i">${x.t}</span><span class="m"> · ${x.sub}</span></span></li>`).join('')}</ul>`:''}`:'';
+ return{k,html:work+watching}}
+
+/* ZERO Job Portal, v49: the level-up, rebuilt (the medal modal was "bad"). A sequence over the whole screen, Zero's chat
+   included: the level rolls like an odometer as the bar fills; a reward box you tap three times bursts into green orbs and
+   ripples; the roles it opens count up with their logos; credits to collect; then a summary of what changed and what is next.
+   Credits are new: 100 per level reached, shown in the top bar. */
+
+const LU_STEPS=['level','box','roles','credits','summary'];
+{const f=jbSeed;jbSeed=function(){f();S.credits=(S.lvl||0)*100;S.lu=null}}
+/* every level-up, from any path, plays the sequence instead of the old card */
+{const f=render;render=function(e){if(S.lvup){const u=S.lvup;S.lvup=null;luStart(u)}return f(e)}}
+function luStart(u){const cr=u.to*100;S.lu={...u,step:'level',taps:0,cr,cr0:S.credits||0,pct0:Math.max(0,Math.min(99,Math.round(((S.pts-u.gain)%1000)/10))),pct1:Math.round((S.pts%1000)/10),k:Date.now()};
+ S.credits=(S.credits||0)+cr;S.crShown=S.lu.cr0;luTimer(2700,'box')}
+function luTimer(ms,step){const k=S.lu&&S.lu.k;clearTimeout(luTimer.t);luTimer.t=setTimeout(()=>{if(S.lu&&S.lu.k===k){S.lu.step=step;drawLU()}},matchMedia('(prefers-reduced-motion: reduce)').matches?Math.min(ms,300):ms)}
+const luBurst=n=>[...Array(n)].map((_,i)=>{const a=(360/n)*i+((i*37)%17),d=90+((i*53)%110),s=6+((i*29)%14),c=['#2DB869','#5FDB96','#B7F06A','#3CC878','#A7F3C8'][i%5];return`<i style="--a:${a}deg;--d:${d}px;--s:${s}px;--c:${c};--dl:${(i%6)*18}ms"></i>`}).join('');
+const luRipples=k=>`<span class="lu2-rp" data-id="rp${k}"><i></i><i></i><i></i></span>`;
+function luHTML(){const u=S.lu;if(!u)return'';const R=u.ids.map(ROLE).filter(Boolean).sort((a,b)=>score(b)-score(a)),D=dreams(R),nx=Math.min(10,u.to+1),sc=scOf(nx);
+ const strip=[...Array(u.to-u.from+1)].map((_,i)=>`<b>${u.from+i}</b>`).join('');
+ const level=`<section class="lu2-s lu2-level" data-id="level"><p class="lu2-k">Level up</p>
+   <div class="lu2-odo" style="--n:${u.to-u.from}"><span class="lu2-odo-l">Level</span><span class="lu2-odo-w"><span class="lu2-odo-s">${strip}</span></span></div>
+   <div class="lu2-bar"><i style="--p0:${u.pct0/100};--p1:${u.pct1/100}"></i></div>
+   <p class="lu2-pts">+<span class="lu2-cnt" style="--to:${u.gain}"></span> points</p>${luRipples('l')}</section>`;
+ const left=3-u.taps;
+ const box=`<section class="lu2-s lu2-boxs" data-id="box"><p class="lu2-k">Your reward</p><button type="button" class="lu2-box t${u.taps}" data-a="lutap" data-id="${u.taps}" aria-label="Tap to open your reward. ${left} more tap${left===1?'':'s'}"><span class="lu2-lid"><i class="lu2-bow l"></i><i class="lu2-bow r"></i></span><span class="lu2-body"></span><span class="lu2-shadow"></span></button>
+   ${u.taps?luRipples('t'+u.taps):''}<p class="lu2-hint">${u.taps?`${left} more`:'Tap it'}</p><span class="lu2-dots">${[0,1,2].map(i=>`<i class="${i<u.taps?'on':''}"></i>`).join('')}</span></section>`;
+ const burst=`<section class="lu2-s lu2-boxs open" data-id="burst"><p class="lu2-k">Your reward</p><div class="lu2-box open"><span class="lu2-lid"><i class="lu2-bow l"></i><i class="lu2-bow r"></i></span><span class="lu2-body"></span><span class="lu2-glow"></span></div><span class="lu2-bst">${luBurst(30)}</span>${luRipples('b')}</section>`;
+ const roles=`<section class="lu2-s lu2-roles" data-id="roles"><p class="lu2-k">Unlocked</p><p class="lu2-big">+<span class="lu2-cnt" style="--to:${R.length}"></span></p><p class="lu2-sub">new roles open to you</p>
+   <div class="lu2-fan">${R.slice(0,8).map((r,i)=>`<span class="lu2-fl" style="--i:${i};--x:${(i-Math.min(7,R.length-1)/2)*44}px">${lg(CO(r.co).dom,'sm')}</span>`).join('')}</div>
+   <p class="m lu2-at">At ${D.slice(0,3).map(coName).join(', ')}${R.length>3?' and more':''}</p>${btn(`Collect your credits${ic('arrow-right')}`,'k','lustep','credits')}</section>`;
+ const credits=`<section class="lu2-s lu2-crs ${u.got?'got':''}" data-id="credits${u.got?'g':''}"><p class="lu2-k">Bonus</p><button type="button" class="lu2-coin" data-a="lucoins" ${u.got?'disabled':''} aria-label="Collect ${u.cr} credits"><span class="lu2-cf c3"></span><span class="lu2-cf c2"></span><span class="lu2-cf c1">${ic('coins')}</span></button>
+   <p class="lu2-big">+<span class="lu2-cnt" style="--to:${u.cr}"></span></p><p class="lu2-sub">${u.got?`Collected. You have ${S.credits.toLocaleString()} credits`:'credits. Tap to collect'}</p>${u.got?`<span class="lu2-bst fly">${luBurst(16)}</span>${luRipples('c')}`:''}</section>`;
+ const summary=`<section class="lu2-s lu2-sum" data-id="summary"><span class="lu2-sb"><b>${u.to}</b></span><h2 class="h">You are Level ${u.to}</h2><p class="m">Here is what changed.</p>
+   <ul class="lu2-sl"><li><span class="lgs">${R.slice(0,4).map(r=>lg(CO(r.co).dom,'xs')).join('')}</span><span class="grow"><span class="i">${R.length} new roles</span><span class="m"> · at ${D.slice(0,2).map(coName).join(' and ')}${R.length>2?' and more':''}</span></span>${ic('check')}</li>
+    <li><span class="lu2-si">${ic('coins')}</span><span class="grow"><span class="i">+${u.cr} credits</span><span class="m"> · ${S.credits.toLocaleString()} in all</span></span>${ic('check')}</li>
+    <li><span class="lu2-si">${ic('trending-up')}</span><span class="grow"><span class="i">+${u.gain.toLocaleString()} points</span><span class="m"> · ${S.pts%1000} of 1,000 to Level ${nx}</span></span>${ic('check')}</li>
+    ${u.to<10&&sc?`<li class="nx"><span class="lu2-si">${ic('lock')}</span><span class="grow"><span class="i">Next: Level ${nx}</span><span class="m"> · ${sc.title}, about ${sc.mins} minutes</span></span></li>`:''}</ul>
+   <div class="row lu2-a">${btn('Keep learning','s','lu2close')}<span class="grow"></span>${btn(`See your new roles${ic('arrow-right')}`,'k','lu2see')}</div></section>`;
+ const body={level,box,burst,roles,credits,summary}[u.step]||'';
+ const wave=u.step==='level'||u.step==='burst'||(u.step==='credits'&&u.got)?`<span class="lu2-wave" data-id="w${u.step}${u.got?'g':''}"><i></i><i></i><i></i><i></i></span>`:'';
+ return`<div class="lu2 st-${u.step}" role="dialog" aria-modal="true" aria-label="Level ${u.to}"><div class="lu2-bg"><span class="lu2-rings"></span><span class="lu2-swirl"></span><span class="lu2-dots"></span></div>${wave}<div class="lu2-c">${body}
+  <div class="lu2-pg">${LU_STEPS.map(s=>`<i class="${s===u.step||(s==='box'&&u.step==='burst')?'on':LU_STEPS.indexOf(s)<LU_STEPS.indexOf(u.step==='burst'?'box':u.step)?'done':''}"></i>`).join('')}</div>
+  ${u.step!=='summary'?`<button type="button" class="lu2-skip" data-a="lustep" data-id="summary">Skip</button>`:''}</div></div>`}
+function drawLU(){let el=document.getElementById('lu2');if(!el){el=document.createElement('div');el.id='lu2';document.body.appendChild(el)}const h=luHTML();if(el.dataset.h===h)return;el.dataset.h=h;morph(el,h);icons();document.body.classList.toggle('lu-on',!!S.lu)}
+AFTER.push(drawLU);
+A.lutap=()=>{const u=S.lu;if(!u||u.step!=='box')return false;u.taps++;if(u.taps>=3){u.step='burst';luTimer(1300,'roles')}drawLU();return false};
+A.lustep=id=>{if(!S.lu)return false;S.lu.step=id;clearTimeout(luTimer.t);drawLU();return false};
+A.lucoins=()=>{const u=S.lu;if(!u||u.got)return false;u.got=true;S.crShown=S.credits;drawLU();render();luTimer(1700,'summary');return false};
+A.lu2close=()=>{S.lu=null;clearTimeout(luTimer.t);drawLU()};
+A.lu2see=()=>{S.lu=null;clearTimeout(luTimer.t);drawLU();S.lm='jobs';S.page.student='jobs';S.ef='open';S.jcur='';S.es={k:'fit',d:-1};return'enter'};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&S.lu){A.lu2close()}});
+
+/* credits in the top bar */
+{const f=topHTML;topHTML=function(){const t=f();if(S.mode!=='student'||S.onb.student!=='done')return t;const n=S.crShown??S.credits??0;
+ return t.replace('<button type="button" class="st-lvb"',`<span class="crd ${S.lu&&S.lu.got?'bump':''}" title="Credits: ${n.toLocaleString()}. You get 100 for every level you reach." data-id="c${n}">${ic('coins')}<b>${n.toLocaleString()}</b></span><button type="button" class="st-lvb"`)}}
 
 /* ═══════════ PORTFOLIO: generated by pf_build.py from zero-portfolio/v36 (Slate 9). Do not edit by hand:
    edit pf_page.js or pf_page.css, then run python3 next/pf_build.py. One IIFE, so nothing here is a global
@@ -8310,12 +8564,12 @@ LV.level=()=>{if(!S.zv)return 0;const t=performance.now();return Math.max(.05,Ma
 
 LV.props=(kind,p)=>{const d=p.dataset;
  if(kind==='bot')return d.t?{type:d.t,state:d.st,size:p.offsetWidth||36}:{z:1,state:LV_ST[d.m]||'default',size:p.offsetWidth||44};
- if(kind==='orb')return{state:d.os||'working',size:+d.sz||20};
+ if(kind==='orb')return{state:d.os||'working',size:+d.sz||20,dark:d.dk==='1'};
  const r=getComputedStyle(p.parentNode).borderTopLeftRadius;
  return kind==='beam'?{size:d.b,r}:{proc:!!d.proc,r}};
 LV.el=(kind,q)=>{const x=LV.x,h=x.React.createElement,fill={display:'block',width:'100%',height:'100%',borderRadius:q.r};
  if(kind==='bot')return x.BotAvatar&&h(x.BotAvatar,{...ZFUR,...(q.z?ZBOT:{type:q.type}),state:q.state==='still'?'default':q.state,paused:q.state==='still',size:q.size,'aria-hidden':true});
- if(kind==='orb')return h(x.ThinkingOrb,{state:q.state,size:q.size||20,theme:'light','aria-hidden':true});
+ if(kind==='orb')return h(x.ThinkingOrb,{state:q.state,size:q.size||20,dark:!!q.dark,'aria-hidden':true});
  const kid=h('div',{className:'lv-k',style:{borderRadius:q.r}});
  return kind==='beam'?h(x.BorderBeam,{size:q.size,colorVariant:'colorful',theme:'light',active:true,strength:q.size==='pulse-outside'?.55:.9,style:fill},kid):h(x.VoiceBeam,{level:LV.level,processing:q.proc,theme:'light',style:fill},kid)};
 /* add an overlay placeholder to the boxes that earn one */
