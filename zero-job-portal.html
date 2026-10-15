@@ -2700,26 +2700,24 @@ button.esel:hover{box-shadow:inset 0 0 0 1.5px var(--ink)}
 .zw3-h .pxl{margin:0 2px}
 .tli-i.now .pxl{color:var(--ink)}
 
-/* ═══ rows in Zero's chat that hold something are capsules ═══ */
-#zdrawer .zrow.cap{margin:2px 0}
-#zdrawer .zrow.cap>.zrow-h{min-height:48px;padding:8px 12px 8px 10px;border-radius:16px;background:#fff;box-shadow:0 0 0 1px var(--line),0 1px 2px rgba(19,20,23,.04);transition:box-shadow .15s var(--e)}
-#zdrawer .zrow.cap>.zrow-h:hover{background:#fff;box-shadow:0 0 0 1px var(--line2),0 6px 16px -10px rgba(19,20,23,.3)}
-#zdrawer .zrow.cap.open>.zrow-h{border-radius:16px 16px 0 0;box-shadow:0 0 0 1px var(--line2)}
-#zdrawer .zrow.cap .zrow-b{margin:0;padding:6px 8px 8px;border-radius:0 0 16px 16px;background:#fff;box-shadow:0 0 0 1px var(--line2);clip-path:inset(0 -1px -1px -1px)}
+/* ═══ rows in Zero's chat: no surfaces, one column. The icon sits under Zero's face, the words start where its messages start ═══ */
+#zdrawer .zrow-h{gap:10px;padding:6px 8px 6px 0;border-radius:12px}
+#zdrawer .zrow-h>.lg.xs,#zdrawer .zrow-h>.zrow-i{width:22px;height:22px;margin:0 6px;border-radius:99px;box-shadow:inset 0 0 0 1px var(--line);background:#fff}
+#zdrawer .zrow-h>.lgs{width:34px;justify-content:center}
+#zdrawer .zrow.open>.zrow-h{background:none}
+#zdrawer .zrow-b{margin:0 0 8px 44px;padding:0;box-shadow:none}
 .lgs{display:inline-flex;align-items:center;flex-shrink:0}
-.lgs .lg.xs{width:24px;height:24px;margin-left:-8px;border-radius:99px;box-shadow:0 0 0 2px #fff,inset 0 0 0 1px var(--line)}
+.lgs .lg.xs{width:20px;height:20px;margin-left:-7px;border-radius:99px;box-shadow:0 0 0 2px var(--canvas),inset 0 0 0 1px var(--line)}
 .lgs .lg.xs:first-child{margin-left:0}
-.lgs .lg.xs img{width:14px;height:14px;border-radius:3px}
-.lgs-n{display:inline-flex;align-items:center;justify-content:center;height:24px;min-width:24px;margin-left:-8px;padding:0 6px;border-radius:99px;background:var(--well2);font-size:12px;line-height:16px;color:var(--ink2);box-shadow:0 0 0 2px #fff}
-.zrow-h>.lg.xs{border-radius:99px}
-.zrow-n{display:inline-flex;align-items:center;gap:4px;flex-shrink:0;height:22px;padding:0 8px;border-radius:99px;background:var(--well);font-size:12px;line-height:16px;color:var(--ink2)}
+.lgs .lg.xs img{width:12px;height:12px;border-radius:3px}
+.lgs-n{display:none}
+.zrow-n{display:inline-flex;align-items:center;gap:4px;flex-shrink:0;height:22px;padding:0 8px;border-radius:99px;background:var(--well2);font-size:12px;line-height:16px;color:var(--ink2)}
 .zrow-n.ok{background:#E7F6ED;color:var(--good)}
 .zrow-n svg{width:12px;height:12px}
-#zdrawer .zrow-x{border-radius:12px}
 
 /* tool chips: what Zero did, with the file it made */
-.tcl{display:flex;flex-direction:column;gap:2px;padding:4px 2px}
-.tc{display:flex;align-items:center;gap:8px;min-height:34px;padding:0 6px;color:var(--ink2)}
+.tcl{display:flex;flex-direction:column;gap:0;padding:0}
+.tc{display:flex;align-items:center;gap:8px;min-height:32px;padding:0 8px 0 0;color:var(--ink2)}
 .tc>svg{width:14px;height:14px;flex-shrink:0;color:var(--ink3)}
 .tc b{font-weight:400;color:var(--ink);white-space:nowrap}
 .tc-t{margin-left:auto;flex-shrink:0;font-variant-numeric:tabular-nums}
@@ -2729,28 +2727,56 @@ button.esel:hover{box-shadow:inset 0 0 0 1.5px var(--ink)}
 button.fchip:hover{background:var(--well2);color:var(--ink)}
 .fchip.st{font-variant-numeric:tabular-nums}
 
-/* ═══ the recommendation card: Zero asks before it acts ═══ */
-.msgs li.zrec{display:block;max-width:100%;align-self:stretch}
-.zrec-c{display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:20px;background:#fff;box-shadow:0 0 0 1.5px var(--ink),0 18px 34px -24px rgba(19,20,23,.45);animation:zrec-in .4s var(--e) both}
-.zrec.done .zrec-c{box-shadow:0 0 0 1px var(--line);animation:none}
-.zrec-q{color:var(--ink)}
-.zrec-b{color:var(--ink2);line-height:28px}
-.zrec-b b{font-weight:400;color:var(--ink)}
-.zrec-f{display:flex;align-items:center;gap:8px}
-.zrec-f .k{display:inline-flex;align-items:center;gap:6px}
-.zrec-f .k svg{width:13px;height:13px}
-.zrec-d{display:flex;align-items:center;gap:6px}
+/* ═══ one turn from Zero: what it read, the roles, one question ═══ */
+#zdrawer .msgs li.zturn{max-width:100%}
+#zdrawer .msgs li.zturn>div{flex:1;min-width:0}
+.zt{display:flex;flex-direction:column;padding:12px 6px 10px;border-radius:18px;background:#fff;box-shadow:0 0 0 1px rgba(19,20,23,.05),0 1px 2px rgba(19,20,23,.04)}
+.msgs li .zt>p{padding:0;border-radius:0;background:none;box-shadow:none}
+.zt-p{padding:0 8px!important;color:var(--ink)}
+.zt-l{display:flex;flex-direction:column;margin-top:8px}
+.zt-r{display:flex;align-items:center;gap:12px;min-height:52px;padding:6px 8px;border-radius:12px;text-align:left;transition:background-color .12s var(--e)}
+.zt-r:hover{background:var(--well)}
+.zt-r>.lg.sm{width:32px;height:32px;border-radius:10px}
+.zt-r .grow{display:flex;flex-direction:column;min-width:0}
+.zt-r .i{color:var(--ink)}
+.zt-r .m{font-size:12px;line-height:16px}
+.zt-r .zf-pill,.zt-r .c{flex-shrink:0}
+.zt-lk,.zt-st{display:inline-flex;align-items:center;gap:6px;flex-shrink:0;max-width:46%;font-size:12px;line-height:16px;color:var(--ink3);white-space:nowrap}
+.zt-lk svg,.zt-st svg{width:13px;height:13px;flex-shrink:0}
+.zt-st{color:var(--ink)}
+.zt-st .shim{overflow:hidden;text-overflow:ellipsis}
+.zt-st.w{color:var(--ink3)}
+.zt-st.ok{color:var(--good)}
+.zt-more{padding:6px 8px 0}
+.zt-a{display:flex;flex-direction:column;gap:4px;margin:8px 0 0;padding:12px 8px 0;box-shadow:inset 0 1px 0 var(--line)}
+.msgs li .zt .zt-a>p{padding:0;background:none;border-radius:0;box-shadow:none}
+.zt-q{color:var(--ink)}
+.zt-f{display:flex;align-items:center;gap:8px;margin-top:8px}
+.zt-f .k{display:inline-flex;align-items:center;gap:6px}
+.zt-f .k svg{width:13px;height:13px}
+.zt-d{display:flex;align-items:center;gap:8px;margin:8px 0 0;padding:12px 8px 0!important;box-shadow:inset 0 1px 0 var(--line)!important;color:var(--ink2)}
+.zt-d svg{width:14px;height:14px;color:var(--good)}
+.zt-t{display:block;margin:4px 0 0 8px}
+.zt-t:empty{display:none}
 .cbar{display:inline-flex;align-items:flex-end;gap:2px;height:12px}
 .cbar i{width:3px;border-radius:1px;background:var(--line2)}
 .cbar i:nth-child(1){height:6px}.cbar i:nth-child(2){height:9px}.cbar i:nth-child(3){height:12px}
 .cbar i.on{background:var(--good)}
-@keyframes zrec-in{from{opacity:0;transform:translateY(6px)}}
+/* the same list when Zero answers a question */
+.msgs li.them>div>.zt-l{margin-top:6px;padding:4px;border-radius:16px;background:#fff;box-shadow:0 0 0 1px rgba(19,20,23,.05)}
+.msgs li.them>div>.zt-f{margin-top:8px}
 
-@media(prefers-reduced-motion:reduce){.pxl i{animation:none;opacity:.6}.zrec-c{animation:none}}
+@media(prefers-reduced-motion:reduce){.pxl i{animation:none;opacity:.6}}
 
 .msgs li.zrec .zrec-c>p{padding:0;border-radius:0;background:none;box-shadow:none}
 #zdrawer .msgs li.zrec .zrec-c>p{background:none;box-shadow:none}
 .zrec-b .cn{vertical-align:-5px}
+
+.zt-r .zrow-c{display:flex;color:var(--ink4);transition:transform .15s var(--e)}
+.zt-r .zrow-c svg{width:14px;height:14px}
+.zt-r.open .zrow-c{transform:rotate(180deg)}
+.zt-r.open{background:var(--well)}
+.zt-x{padding:2px 8px 6px 52px}
 
 </style>
 </head>
@@ -6890,7 +6916,8 @@ PAGES.student.inbox=()=>{const ids=threadIds().filter(k=>ROLE(k)&&S.threads[k].m
 /* ZERO Job Portal, v46, on top of st8.js (v45 is next/v45-src/). His notes on v45: back to the light canvas; a row in
    Zero's chat that hides roles shows them as small logo circles before you open it; take the best of beautifului.dev (MIT):
    its pixel-grid loader with a shimmer word and a timer, task-row capsules, tool chips for files, stacked source circles and
-   a recommendation card that asks before acting; and the portal opens as someone who just joined. */
+   a recommendation card that asks before acting; and the portal opens as someone who just joined.
+   v47: the search result and the question are one turn from Zero, no outlined cards, one aligned column. */
 
 /* ═══ a row that holds something shows it: logo circles, a count, a capsule you can open ═══ */
 const lgStack=(ids,n=3)=>`<span class="lgs">${ids.slice(0,n).map(i=>lg(CO(ROLE(i).co).dom,'xs')).join('')}${ids.length>n?`<span class="lgs-n">+${ids.length-n}</span>`:''}</span>`;
@@ -6908,25 +6935,35 @@ actRow=function(m){const k=m.k||(m.k=Math.random().toString(36).slice(2,8)),open
  return`<li class="zrow ${has?'cap':''} ${open?'open':''}"><button type="button" class="zrow-h" ${has?`data-a="zx" data-id="${k}" aria-expanded="${!!open}"`:'tabindex="-1"'}>${lead}<span class="grow">${act2(m)}</span>${meta}${m.t?`<span class="m zrow-t">${m.t}</span>`:''}${has?`<span class="zrow-c">${ic('chevron-down')}</span>`:''}</button>
   ${open?`<div class="zrow-b">${ids.map(i=>{const x=ROLE(i);return`<button type="button" class="zrow-x" data-a="rolesheet" data-id="${i}">${lg(CO(x.co).dom,'xs')}<span class="grow clip">${x.title}<span class="m"> · ${coName(x)}</span></span>${S.apps[i]?chip(stLabel(i)):fitPill(x,1)}</button>`}).join('')}${ap?toolChips(r):''}</div>`:''}</li>`};
 
-/* ═══ Zero asks before it acts: a recommendation card in the chat ═══ */
+/* ═══ one turn from Zero: what it read, the roles it found, and one question, all in one message ═══ */
 const confBars=n=>`<span class="cbar" aria-hidden="true">${[1,2,3].map(i=>`<i class="${i<=n?'on':''}"></i>`).join('')}</span>`;
-function recCard(m){const k=m.k||(m.k=Math.random().toString(36).slice(2,8));
- if(m.kind==='start'){const sc=scOf(1),n=lvRoles(1).length;if(!sc)return'';
-  return`<li class="zrec ${m.done?'done':''}"><div class="zrec-c"><p class="zrec-q">Want to open ${n} roles today?</p><p class="zrec-b">Finish <b>${sc.title}</b>, about ${sc.mins} minutes. Every role gets a Zero fit after it, and the first ${n} unlock, at ${dreams(lvRoles(1)).slice(0,2).map(r=>`<span class="cn">${lg(CO(r.co).dom,'xs')}${coName(r)}</span>`).join(' and ')}.</p>
-   ${m.done?`<p class="m zrec-d">${m.done==='yes'?'Started. Zero opens the roles the moment it is graded.':'Not now. Zero asks again tomorrow.'}</p>`:`<div class="zrec-f">${confBars(3)}<span class="m">Best next step</span><span class="grow"></span>${btn('Later','x sm','recno',k)}${btn(`Start${ic('arrow-right')}`,'k sm','recyes',k)}</div>`}</div></li>`}
- const R=(m.ids||[]).map(ROLE).filter(Boolean),avg=R.length?R.reduce((s,r)=>s+score(r),0)/R.length:0,lvl=avg>=92?3:avg>=84?2:1,open=R.filter(r=>sCan(r));if(!R.length)return'';
- return`<li class="zrec ${m.done?'done':''}"><div class="zrec-c"><p class="zrec-q">Want me to apply to ${R.length>1?`these ${num(R.length).toLowerCase()}`:'this one'}?</p>
-  <p class="zrec-b">${R.map(r=>`<span class="cn">${lg(CO(r.co).dom,'xs')}${coName(r)}</span> <span class="m">${r.title}, ${score(r)}%</span>`).join('<br>')}</p>
-  ${m.done?`<p class="m zrec-d">${m.done==='yes'?`Yes. Zero is applying, one step at a time, and waits ${(S.ctx.hold??3)} seconds before each one sends.`:'Not now. They stay in your best roles.'}</p>`
-  :`<div class="zrec-f">${confBars(lvl)}<span class="m">${['','Worth a look','Good match','High confidence'][lvl]}</span><span class="grow"></span>${btn('Not now','x sm','recno',k)}${open.length?btn(`${ic('zap')}${open.length>1?`Apply to all ${open.length}`:'Apply'}`,'k sm','recyes',k):''}</div>`}</div></li>`}
-{const f=zbub;zbub=function(m){return m.from==='rec'?recCard(m):f(m)}}
-const recFind=k=>zthread().msgs.find(x=>x.k===k);
-A.recno=k=>{const m=recFind(k);if(m)m.done='no'};
-A.recyes=k=>{const m=recFind(k);if(!m)return false;m.done='yes';if(m.kind==='start')return A.lgo();const ids=(m.ids||[]).filter(id=>ROLE(id)&&sCan(ROLE(id)));if(!ids.length)return;S.bt={ids,t0:Date.now()};
+const turnRow=(r,k)=>{const st=btState(r.id),a=S.apps[r.id],lk=locked(r),ok=a&&st==='sent'&&k,open=ok&&(S.zx||{})[k+':'+r.id];
+ const right=lk?`<span class="zt-lk">${ic('lock')}Level ${lvOf(r)}</span>`:st==='run'?`<span class="zt-st">${spinS()}<span class="shim" ${shimD()}>${qaPh(r,S.qa.at)}</span></span>`:st==='wait'?`<span class="zt-st w">${ic('hourglass')}Next in line</span>`:a?`<span class="zt-st ok">${ic('check')}${stLabel(r.id)}</span>`:fitPill(r,1);
+ return`<button type="button" class="zt-r ${open?'open':''}" data-a="${ok?'zx':'rolesheet'}" data-id="${ok?k+':'+r.id:r.id}" ${ok?`aria-expanded="${!!open}"`:''}>${lg(CO(r.co).dom,'sm')}<span class="grow"><span class="i clip">${r.title}</span><span class="m clip">${coName(r)} · ${r.loc}${r.pay?` · ${payK(r)}`:''}</span></span>${right}${ok?`<span class="zrow-c">${ic('chevron-down')}</span>`:''}</button>${open?`<div class="zt-x">${toolChips(r)}</div>`:''}`};
+const turnList=(R,n=5,k)=>`<div class="zt-l">${R.slice(0,n).map(r=>turnRow(r,k)).join('')}${R.length>n?`<p class="m zt-more">And ${num(R.length-n).toLowerCase()} more${R.every(locked)?` at Level ${lvOf(R[0])}`:''}</p>`:''}</div>`;
+function zTurn(m){const t=m.turn,k=m.k||(m.k=Math.random().toString(36).slice(2,8)),R=(m.ids||[]).map(ROLE).filter(Boolean),src=(m.text.match(/^Read (\d+) postings on ([^.]+)\./)||[]);
+ const where=(src[2]||'Greenhouse, Ashby, Lever').replace(/, ([^,]+)$/,' and $1'),intro=t.kind==='start'?`I read ${src[1]||'new'} postings on ${where} this morning. ${R.length} of them open to you at Level 1.`:R.length?`I read ${src[1]||'new'} postings on ${where} this morning. ${rcCap(num(R.length).toLowerCase())} fit you.`:`I read ${src[1]||'new'} postings on ${where} this morning. Nothing new fits you today.`;
+ let ask='';
+ if(t.kind==='start'){const sc=scOf(1);ask=t.done?`<p class="zt-d">${t.done==='yes'?`${spinS()}Started ${sc?sc.title:'your first scenario'}. They open the moment it is graded.`:'Okay. I will ask again tomorrow.'}</p>`
+  :`<div class="zt-a"><p class="zt-q">Want to open them today?</p><p class="m">Finish ${sc?sc.title:'your first scenario'}, about ${sc?sc.mins:30} minutes, and all ${R.length} unlock with a Zero fit.</p><div class="zt-f">${confBars(3)}<span class="m">Best next step</span><span class="grow"></span>${btn('Later','x sm','turnno',k)}${btn(`Start${ic('arrow-right')}`,'k sm','turnyes',k)}</div></div>`}
+ else if(R.length){const open=R.filter(r=>sCan(r)),avg=R.reduce((s,r)=>s+score(r),0)/R.length,lv=avg>=92?3:avg>=84?2:1,sent=R.filter(r=>btState(r.id)==='sent').length,busy=R.some(r=>['run','wait'].includes(btState(r.id)));
+  ask=t.done==='yes'?`<p class="zt-d">${busy?`${spinS()}Applying, one at a time. ${sent} of ${R.length} sent.`:`${ic('check')}Sent to ${R.length>1?`all ${num(R.length).toLowerCase()}`:coName(R[0])}. I will tell you when a team opens one.`}</p>`
+   :t.done==='no'?`<p class="zt-d">Okay. They stay in your best roles.</p>`
+   :open.length?`<div class="zt-a"><p class="zt-q">Want me to apply to ${open.length>1?`all ${num(open.length).toLowerCase()}`:'it'}?</p><div class="zt-f">${confBars(lv)}<span class="m">${['','Worth a look','Good match','High confidence'][lv]}</span><span class="grow"></span>${btn('Not now','x sm','turnno',k)}${btn(`${ic('zap')}${open.length>1?`Apply to all ${open.length}`:'Apply'}`,'k sm','turnyes',k)}</div></div>`:''}
+ return`<li class="them zturn">${orb('xs')}<div><div class="zt"><p class="zt-p">${intro}</p>${R.length?turnList(R,t.kind==='start'?4:5,t.done==='yes'?k:''):''}${ask}</div><span class="m zt-t">${m.t||''}</span></div></li>`}
+{const f=zbub;zbub=function(m){if(m.from==='rec')return'';return m.from==='act'&&m.turn?zTurn(m):f(m)}}
+const turnFind=k=>zthread().msgs.find(x=>x.k===k&&x.turn);
+A.turnno=k=>{const m=turnFind(k);if(m)m.turn.done='no'};
+A.turnyes=k=>{const m=turnFind(k);if(!m)return false;m.turn.done='yes';if(m.turn.kind==='start')return A.lgo();const ids=(m.ids||[]).filter(id=>ROLE(id)&&sCan(ROLE(id)));if(!ids.length)return;S.bt={ids,t0:Date.now()};
  const go=ids.filter(id=>!(S.qa&&S.qa.id===id)&&!(S.qq||[]).includes(id));if(S.qa)S.qq=[...(S.qq||[]),...go];else{S.qq=go.slice(1);stRate(ids.length);A.qapply(go[0])}};
-/* when the morning search lands, Zero offers the next step instead of only reporting */
-{const f=scanTick;scanTick=function(){const had=S.scan;f();if(had&&!S.scan&&S.recDay!==today()){S.recDay=today();const P=sPack().filter(sCan).slice(0,3);
- const m=S.lvl===0?{from:'rec',kind:'start',date:today()}:P.length?{from:'rec',kind:'apply',ids:P.map(r=>r.id),date:today()}:null;if(m){zthread().msgs.push(m);render()}}}}
+/* when the morning search lands it becomes that one turn */
+{const f=scanTick;scanTick=function(){const had=S.scan;f();if(!had||S.scan)return;const m=[...zthread().msgs].reverse().find(x=>x.from==='act'&&/^Read \d+ postings/.test(x.text));if(!m||m.turn)return;
+ if(S.lvl===0){m.turn={kind:'start'};m.ids=lvRoles(1).map(r=>r.id)}else m.turn={kind:'apply'};render()}}
+/* asked to find roles, Zero answers with the same list */
+{const it=INTENTS.student.find(i=>String(i.re).includes('roles for me'));if(it)it.run=()=>{const R=DATA.roles.filter(r=>avail(r)&&!S.apps[r.id]&&!S.hidden[r.id]).sort((a,b)=>score(b)-score(a)).slice(0,4);
+ if(R.length)return{text:`${rcCap(num(R.length).toLowerCase())} you have not applied to yet, best first. Tap one to see it, or say apply.`,card:turnList(R,4)};
+ if(S.lvl===0){const sc=scOf(1),L=lvRoles(1);return{text:`None are open to you yet. ${sc?sc.title:'Your first scenario'} takes about ${sc?sc.mins:30} minutes and opens these ${L.length}.`,card:turnList(L,4)+`<div class="zt-f">${btn(`Start ${sc?sc.title:'it'}${ic('arrow-right')}`,'k sm','lgo')}</div>`}}
+ return{text:'You have seen every role that fits. I read new ones every morning and post them here.'}}}
 A.znote=id=>{(S.nopen=S.nopen||{})[id]=true;(S.rtab=S.rtab||{})[id]='app';S.fb=null;S.rv={side:'st',ids:[id],i:0}};
 
 /* the top-bar pill steps aside while the chat is open: the chat already shows the work */
@@ -6935,8 +6972,10 @@ A.znote=id=>{(S.nopen=S.nopen||{})[id]=true;(S.rtab=S.rtab||{})[id]='app';S.fb=n
 {const f=actRow;actRow=function(m){if(m.id&&S.apps[m.id]&&/^Zero tailored your portfolio for|^Zero built a resume/.test(m.text))return'';return f(m)}}
 /* Zero did the applying, so it says so */
 {const f=act2;act2=function(e){const m=e.text.match(/^Applied to (.+?)\. .+ has your work$/);return m?`<b>Zero</b> applied to <b>${m[1]}</b> for you`:f(e)}}
-/* someone new: the search row carries the logos of the roles their first scenario opens */
-{const f=scanTick;scanTick=function(){const had=S.scan;f();if(had&&!S.scan&&S.lvl===0){const m=[...zthread().msgs].reverse().find(x=>x.from==='act'&&/^Read \d+ postings/.test(x.text));if(m&&!(m.ids||[]).length){m.ids=lvRoles(1).slice(0,6).map(r=>r.id);render()}}}}
+
+/* a role Zero applied to from a turn lives in that turn; it is not repeated as its own row */
+const inTurn=id=>zthread().msgs.some(x=>x.turn&&x.turn.done==='yes'&&(x.ids||[]).includes(id));
+{const f=actRow;actRow=function(m){if(m.id&&/^Applied to|applied to .+ for you/.test(m.text)&&inTurn(m.id))return'';return f(m)}}
 
 /* ═══════════ PORTFOLIO: generated by pf_build.py from zero-portfolio/v36 (Slate 9). Do not edit by hand:
    edit pf_page.js or pf_page.css, then run python3 next/pf_build.py. One IIFE, so nothing here is a global
