@@ -3233,123 +3233,210 @@ button.fchip:hover{background:var(--well2);color:var(--ink)}
 .ch-q .td-hd:has(.orb) .grow{padding-left:0}
 @media(max-width:700px){.ch-av{width:28px}.ch-av .orb{--s:28px}.ch-z{gap:8px}.ch-me span{max-width:85%}.ch-rc{min-width:0}.ch-n{position:static;order:-1}}
 
-/* ZERO Job Portal, v54. For you as a chat with Zero, read like Claude: Zero's text on the left, live steps, tap options, your answers on the right. */
-.body.cz-pg{padding-bottom:0}
-.body.cz-pg .page{max-width:760px;min-width:0;width:100%}
-.cz{display:flex;flex-direction:column;justify-content:flex-end;min-height:calc(100dvh - 130px);padding:24px 0 48px}
-.cz b{font-weight:400;color:var(--ink)}
+/* ZERO Job Portal, v55. For you as Zero's chat, top to bottom; cards like "I found three roles"; live steps with times. Three sizes: 28, 18, 14. */
+.body.zy-pg .page{max-width:840px;min-width:0;width:100%}
+.zy{display:flex;flex-direction:column;padding:12px 0 0}
+.zy-feed{padding-bottom:max(240px,46vh)}
+.zy b{font-weight:400;color:var(--ink)}
+.zy button:focus:not(:focus-visible){outline:none}
 
-/* days */
-.cz-day{display:flex;justify-content:center;margin:32px 0 16px}
-.cz-day:first-child{margin-top:0}
-.cz-day span{font-size:12px;line-height:16px;color:var(--ink4)}
+/* the status, pinned while you scroll */
+.zy-st{position:sticky;top:0;z-index:5;display:flex;justify-content:center;margin:0 -16px 12px;padding:8px 16px 18px;background:linear-gradient(#fff 62%,rgba(255,255,255,0));pointer-events:none}
+.zy-sp2{display:flex;align-items:center;gap:8px;max-width:100%;min-width:0;height:36px;padding:0 16px 0 12px;border-radius:99px;background:rgba(255,255,255,.92);box-shadow:inset 0 0 0 1px var(--line),0 10px 24px -18px rgba(19,20,23,.35);font-size:14px;line-height:20px;color:var(--ink2);pointer-events:auto;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.zy-sp2 .zorb{flex-shrink:0}
+.zy-clk{flex-shrink:0;font-size:14px;line-height:20px;color:var(--ink4);font-variant-numeric:tabular-nums}
 
-/* Zero's turn: the face once, then everything it says and does */
-.cz-z{display:grid;grid-template-columns:28px minmax(0,1fr);column-gap:14px;margin-top:6px}
-.cz-z.first{margin-top:24px}
-.cz-day+.cz-z.first{margin-top:0}
-.cz-av{display:flex}
-.cz-av .orb{--s:28px}
-.cz-c{display:flex;flex-direction:column;align-items:flex-start;gap:10px;min-width:0}
-.cz-p{max-width:620px;font-size:16px;line-height:26px;color:var(--ink2)}
-.cz-p b{color:var(--ink)}
+/* the feed */
+.zy-feed{display:flex;flex-direction:column}
+.zy-old{display:inline-flex;align-items:center;gap:8px;align-self:center;height:32px;margin-bottom:8px;padding:0 14px;border-radius:99px;background:var(--well);font-size:14px;line-height:20px;color:var(--ink3)}
+.zy-old:hover{background:var(--well2);color:var(--ink)}
+.zy-old svg{width:14px;height:14px}
+.zy-day{display:flex;justify-content:center;margin:28px 0 14px}
+.zy-day:first-child{margin-top:4px}
+.zy-day span{font-size:14px;line-height:20px;color:var(--ink4)}
+.zy-z{display:grid;grid-template-columns:36px minmax(0,1fr);column-gap:16px;margin-top:8px}
+.zy-z.first{margin-top:24px}
+.zy-day+.zy-z.first{margin-top:0}
+.zy-av{display:flex}
+.zy-av .orb{--s:36px}
+.zy-c{display:flex;flex-direction:column;align-items:flex-start;gap:12px;min-width:0}
+.zy-p{max-width:680px;font-size:18px;line-height:28px;color:var(--ink2)}
+.zy-p b{color:var(--ink)}
+.zy-me{display:flex;justify-content:flex-end;margin-top:24px}
+.zy-me p{max-width:75%;padding:10px 18px;border-radius:22px;background:var(--well2);font-size:18px;line-height:26px;color:var(--ink)}
+.zy-me+.zy-z{margin-top:24px}
+.zy-end{display:block;height:1px}
 
-/* you */
-.cz-me{display:flex;justify-content:flex-end;margin-top:24px}
-.cz-me p{max-width:75%;padding:9px 16px;border-radius:20px;background:var(--well2);font-size:16px;line-height:24px;color:var(--ink)}
-.cz-me+.cz-z{margin-top:24px}
+/* what Zero did: a quiet line that opens */
+.zy-tl{display:flex;flex-direction:column;width:100%}
+.zy-th{display:inline-flex;align-items:center;gap:10px;max-width:100%;min-height:32px;padding:2px 0;font-size:14px;line-height:20px;color:var(--ink3);text-align:left}
+.zy-th[data-a]:hover{color:var(--ink)}
+.zy-ti{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;min-width:22px;height:22px;color:var(--ink3)}
+.zy-ti>svg{width:16px;height:16px}
+.zy-ti>.lg.xs{width:22px;height:22px;border-radius:7px}
+.zy-ti .lgs .lg.xs{width:20px;height:20px}
+.zy-ok{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:99px;background:#E7F6ED;color:var(--good)}
+.zy-ok svg{width:13px;height:13px;stroke-width:2.5}
+.zy-tt{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.zy-tt b{color:var(--ink2)}
+.zy-cv{display:flex;color:var(--ink4);transition:transform .15s var(--e)}
+.zy-cv svg{width:15px;height:15px}
+.zy-tl.open .zy-cv{transform:rotate(90deg)}
+.zy-tm{flex-shrink:0;font-size:14px;line-height:20px;color:var(--ink4);font-variant-numeric:tabular-nums}
+.zy-out{display:flex;flex-direction:column;gap:12px;width:100%;margin:8px 0 4px}
 
-/* what Zero did: one quiet line, open it for the list */
-.cz-tl{display:flex;flex-direction:column;width:100%}
-.cz-th{display:inline-flex;align-items:center;gap:8px;max-width:100%;min-height:28px;padding:2px 0;color:var(--ink3);text-align:left}
-.cz-th[data-a]:hover{color:var(--ink)}
-.cz-th[data-a]:hover .cz-ch{color:var(--ink)}
-.cz-ti{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;min-width:20px;height:20px;color:var(--ink3)}
-.cz-ti svg{width:14px;height:14px}
-.cz-ti .lg.xs{width:20px;height:20px;border-radius:6px}
-.cz-ti .lgs .lg.xs{width:18px;height:18px}
-.cz-ok{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:99px;background:#E7F6ED;color:var(--good)}
-.cz-ok svg{width:11px;height:11px;stroke-width:2.5}
-.cz-tt{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cz-tt b{color:var(--ink2)}
-.cz-ch{display:flex;color:var(--ink4);transition:transform .15s var(--e)}
-.cz-ch svg{width:14px;height:14px}
-.cz-tl.open .cz-ch{transform:rotate(90deg)}
-.cz-tm{flex-shrink:0;font-size:12px;line-height:16px;color:var(--ink4);font-variant-numeric:tabular-nums}
-.cz-out{display:flex;flex-direction:column;margin:6px 0 4px;padding:4px;border-radius:14px;background:#fff;box-shadow:inset 0 0 0 1px var(--line)}
-.cz-r{display:grid;grid-template-columns:22px minmax(0,1.3fr) minmax(0,1fr) auto;align-items:center;column-gap:12px;width:100%;min-height:44px;padding:4px 10px;border-radius:10px;text-align:left}
-.cz-r:hover{background:var(--well)}
-.cz-r .lg.xs{width:22px;height:22px;border-radius:7px}
-.cz-r .i{color:var(--ink)}
-.cz-rr{display:flex;align-items:center;justify-content:flex-end;gap:8px}
-.cz-ar+.cz-ar{box-shadow:inset 0 1px 0 var(--line)}
-.cz-files{display:flex;flex-wrap:wrap;gap:6px;padding:0 10px 10px 44px}
+/* an application, told top to bottom (the timeline you liked) */
+.zy-app{display:flex;flex-direction:column;gap:6px;padding:16px 18px 10px;border-radius:20px;background:#fff;box-shadow:inset 0 0 0 1px var(--line)}
+.zy-ah{display:flex;align-items:center;gap:12px;padding-bottom:6px}
+.zy-ah .grow{display:flex;flex-direction:column;min-width:0}
+.zy-ah .i{font-size:18px;line-height:26px;color:var(--ink)}
+.zy-ah .m{font-size:14px;line-height:20px}
+.zy .tlx .tli-t{display:flex;align-items:center;gap:6px;flex-wrap:nowrap}
+.zy .tlx .tli-t .m{white-space:nowrap}
 
-/* Zero at work: a title with a clock, then its steps */
-.cz-w{display:flex;flex-direction:column;gap:8px;width:100%;max-width:620px}
-.cz-wh{display:flex;align-items:center;gap:10px;width:100%;min-height:32px;font-size:14px;line-height:20px;color:var(--ink)}
-.cz-wh .grow{flex:1}
-.cz-wh .zorb,.cz-wh .cz-tm,.cz-wh button{flex-shrink:0}
-.cz-st{display:flex;flex-direction:column;gap:6px;margin-left:9px;padding-left:20px;box-shadow:inset 1px 0 0 var(--line)}
-.cz-st li{display:flex;align-items:center;gap:10px;min-height:22px;font-size:14px;line-height:20px;color:var(--ink4)}
-.cz-st li>.cz-dot{width:12px;height:12px;flex-shrink:0;margin:0 2px;border-radius:99px;box-shadow:inset 0 0 0 1.5px var(--line2)}
-.cz-st li.on{color:var(--ink)}
-.cz-st li.on>.cz-dot{box-shadow:inset 0 0 0 4px var(--ink)}
-.cz-st li.ok{color:var(--ink3)}
-.cz-st li.ok>svg{width:16px;height:16px;flex-shrink:0;color:var(--good);stroke-width:2.5}
-.cz-nx{display:flex;align-items:center;gap:8px;margin-left:29px}
-.cz-nx .lgs .lg.xs{width:18px;height:18px}
+/* Zero at work */
+.zy-work{display:flex;flex-direction:column;gap:8px;width:100%;padding:16px 18px 12px;border-radius:20px;background:#fff;box-shadow:inset 0 0 0 1px var(--line)}
+.zy-wh{display:flex;align-items:center;gap:12px;min-width:0;font-size:18px;line-height:26px;color:var(--ink)}
+.zy-wh .m{font-size:14px}
+.zy-wh .lg.sm{flex-shrink:0}
+.zy-wh .zorb{flex-shrink:0}
+.zy-wh .x.sm{flex-shrink:0}
+.zy .tli.zy-on .tli-t{color:var(--ink)}
+.zy .tli.zy-wait .tli-t{color:var(--ink4)}
+.zy .tli-i.o{background:#fff;box-shadow:inset 0 0 0 1.5px var(--line2)}
+.zy .tli .tli-w{font-variant-numeric:tabular-nums}
+.zy-nx{display:flex;align-items:center;gap:10px;padding:6px 0 2px}
+.zy-nx .lgs .lg.xs{width:20px;height:20px}
+.zy-thk{display:flex;align-items:center;gap:10px;min-height:32px;font-size:18px;line-height:26px;color:var(--ink)}
+.zy-thk .zorb{flex-shrink:0}
 
-/* Zero asks: tap an option, like answering Claude */
-.cz-ask{display:flex;flex-direction:column;width:100%;max-width:620px;border-radius:18px;background:#fff;box-shadow:inset 0 0 0 1px var(--line2),0 24px 48px -36px rgba(19,20,23,.4)}
-.cz-sh{display:flex;flex-direction:column;gap:10px;padding:12px 12px 4px}
-.cz-os{display:flex;flex-direction:column;padding:6px}
-.cz-o{position:relative;display:flex;align-items:center;gap:12px;width:100%;min-height:48px;padding:8px 12px 8px 10px;border-radius:12px;text-align:left;color:var(--ink)}
-.cz-o:hover,.cz-o:focus-visible{background:var(--well)}
-.cz-o kbd{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;flex-shrink:0;border-radius:8px;background:var(--well);font:400 12px/16px var(--f);color:var(--ink3)}
-.cz-o:hover kbd,.cz-o:focus-visible kbd{background:var(--ink);color:#fff}
-.cz-o .grow{display:flex;flex-direction:column;min-width:0}
-.cz-o .i{color:var(--ink)}
-.cz-o>svg{width:16px;height:16px;flex-shrink:0;color:var(--ink4);opacity:0;transform:translateX(-4px);transition:opacity .15s var(--e),transform .15s var(--e)}
-.cz-o:hover>svg,.cz-o:focus-visible>svg{opacity:1;transform:none;color:var(--ink)}
-.cz-o+.cz-o::before{content:'';position:absolute;top:0;left:46px;right:12px;height:1px;background:var(--line)}
-.cz-o:hover::before,.cz-o:hover+.cz-o::before{opacity:0}
-.cz-ft{padding:0 18px 12px}
-.cz-rc{display:flex;align-items:center;gap:12px;width:100%;max-width:520px;padding:10px 12px;border-radius:14px;background:var(--well);text-align:left}
-.cz-rc:hover{background:var(--well2)}
-.cz-rc .grow{display:flex;flex-direction:column;min-width:0}
-.cz-rc .i{color:var(--ink)}
-.cz-rc>svg{width:16px;height:16px;flex-shrink:0;color:var(--ink4)}
-.cz-ask .cz-rc{max-width:none}
-.cz-bl{padding:0 4px}
-.cz-qt{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:14px;background:var(--well);color:var(--ink2)}
-.cz-face .av{width:24px;height:24px;flex-shrink:0}
-.cz-msg p{padding:12px 14px;border-radius:14px;background:var(--well);color:var(--ink)}
-.cz-chips{display:flex;flex-wrap:wrap;gap:6px}
-.cz-list{display:flex;flex-direction:column}
-.cz-lr{display:flex;align-items:center;gap:8px;padding-left:4px}
-.cz-lr+.cz-lr{box-shadow:inset 0 1px 0 var(--line)}
-.cz-lb{display:grid;grid-template-columns:22px minmax(0,1.2fr) minmax(0,1fr) auto;align-items:center;column-gap:12px;flex:1;min-width:0;min-height:48px;padding:4px 8px;border-radius:10px;text-align:left}
-.cz-lb:hover{background:var(--well)}
-.cz-lb .lg.xs{width:22px;height:22px;border-radius:7px}
-.cz-lb .i{color:var(--ink)}
+/* what Zero needs from you: one card */
+.zy-card{display:flex;flex-direction:column;gap:18px;width:100%;padding:22px 22px 20px;border-radius:24px;background:#fff;box-shadow:inset 0 0 0 1px var(--line),0 30px 60px -44px rgba(19,20,23,.4);animation:zy-in .5s cubic-bezier(.16,1,.3,1) both}
+@keyframes zy-in{from{opacity:0;transform:translateY(10px)}}
+.zy-ch{display:flex;align-items:center;gap:16px}
+.zy-cl{display:flex;align-items:center;justify-content:center;min-width:52px;height:52px;flex-shrink:0;padding:0 8px;border-radius:99px;background:var(--well)}
+.zy-cl .lgs .lg.xs{width:28px;height:28px}
+.zy-cl:has(.zy-fc){padding:0;background:none}
+.zy-ct{font-size:18px;line-height:26px;color:var(--ink)}
+.zy-cs{margin-top:2px;font-size:14px;line-height:20px;color:var(--ink3)}
+.zy-cb{display:flex;flex-direction:column;gap:12px}
+.zy-cf{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.zy-cf .m{font-size:14px}
+.zy-cf .k,.zy-cf .x,.zy-cf .s{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 20px;font-size:14px}
+.zy-cf .k svg,.zy-cf .x svg,.zy-cf .s svg{width:16px;height:16px}
+.zy-cf .k[disabled]{opacity:.35;pointer-events:none}
+.zy-ic{display:flex;color:var(--ink2)}
+.zy-ic svg{width:22px;height:22px}
+.zy-fc{position:relative;display:inline-flex}
+.zy-fc>.av{width:52px;height:52px}
+.zy-fl{position:absolute;right:-4px;bottom:-4px}
+.zy-fl .lg.xs{width:22px;height:22px;border-radius:7px;box-shadow:0 0 0 2px #fff,inset 0 0 0 1px var(--line)}
 
-/* the agent keeps running */
-.cz-wt{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:28px}
+/* the list inside a card: logo, the role on two lines, something on the right */
+.zy-list{display:flex;flex-direction:column;padding:4px 14px;border-radius:18px;box-shadow:inset 0 0 0 1px var(--line)}
+.zy-r{position:relative;display:flex;align-items:center;gap:14px;min-height:76px;padding:10px 0}
+.zy-r+.zy-r::before,.zy-o+.zy-o::before{content:'';position:absolute;top:0;left:56px;right:0;height:1px;background:var(--line)}
+.zy-r:has(.esel)+.zy-r::before{left:90px}
+.zy-rl{display:flex;flex-shrink:0}
+.zy-rl .lg.sm{width:42px;height:42px;border-radius:12px}
+.zy-rt{display:flex;flex-direction:column;flex:1;min-width:0;text-align:left}
+.zy-rt .i{font-size:18px;line-height:26px;color:var(--ink)}
+.zy-rt .m{font-size:14px;line-height:20px}
+.zy-rt:hover .i{text-decoration:underline;text-decoration-color:var(--line2);text-underline-offset:4px}
+.zy-rr{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-shrink:0}
+.zy-r .esel{width:24px;height:24px;border-radius:7px}
+.zy-yn{display:flex;gap:6px}
+.zy-b{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border-radius:99px;background:#fff;box-shadow:inset 0 0 0 1px var(--line2);font-size:14px;line-height:20px;color:var(--ink2);transition:background-color .12s var(--e),box-shadow .12s var(--e),color .12s var(--e)}
+.zy-b svg{width:14px;height:14px}
+.zy-b:hover{box-shadow:inset 0 0 0 1.5px var(--ink);color:var(--ink)}
+.zy-b.on{background:var(--ink);box-shadow:none;color:#fff}
+.zy-b.no.on{background:var(--well2);color:var(--ink)}
+.zy-o{position:relative;display:flex;align-items:center;gap:14px;width:100%;min-height:72px;padding:12px 4px;text-align:left;color:var(--ink)}
+.zy-o .grow{display:flex;flex-direction:column;min-width:0}
+.zy-o .i{font-size:18px;line-height:26px;color:var(--ink)}
+.zy-o .m{font-size:14px;line-height:20px}
+.zy-o>svg{width:18px;height:18px;flex-shrink:0;color:var(--ink4);transition:transform .15s var(--e),color .15s var(--e)}
+.zy-o:hover>svg{transform:translateX(3px);color:var(--ink)}
+.zy-o:hover .i{text-decoration:underline;text-decoration-color:var(--line2);text-underline-offset:4px}
+.zy-list:has(.zy-o)>.zy-o+.zy-o::before{left:4px}
+.zy-list:has(.zy-rd)>.zy-o+.zy-o::before{left:42px}
+.zy-rd{width:22px;height:22px;flex-shrink:0;border-radius:99px;box-shadow:inset 0 0 0 1.5px var(--line2);transition:box-shadow .15s var(--e)}
+.zy-o.on .zy-rd{box-shadow:inset 0 0 0 7px var(--ink)}
+.zy-qt{display:flex;align-items:flex-start;gap:12px;padding:16px 18px;border-radius:18px;background:var(--well);font-size:18px;line-height:28px;color:var(--ink)}
+.zy-qt .av{width:32px;height:32px;flex-shrink:0}
+.zy-msg{display:flex;flex-direction:column;gap:12px}
+.zy-msg>p{padding:16px 18px;border-radius:18px;background:var(--well);font-size:18px;line-height:28px;color:var(--ink)}
+.zy-chips{display:flex;flex-wrap:wrap;gap:8px}
+.zy-chips .opt{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;font-size:14px}
+.zy-chips .opt svg{width:14px;height:14px}
+.zy .td-in,.zy .td-ta{font-size:18px;line-height:26px;padding:14px 16px}
+.zy-amt{display:flex;align-items:baseline;gap:8px;padding:18px;border-radius:18px;background:var(--well)}
+.zy-amt b{font-size:28px;line-height:36px;color:var(--ink)}
+.zy-p2{font-size:18px;line-height:28px;color:var(--ink2)}
+
+/* pills: a status, a lock */
+.zy-sp,.zy-lk{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 12px;border-radius:99px;background:var(--well);font-size:12px;line-height:16px;color:var(--ink3);white-space:nowrap}
+.zy-sp.ok{background:#E7F6ED;color:var(--good)}
+.zy-lk svg{width:13px;height:13px}
+.zf-pill.st svg{fill:currentColor}
+
+/* notifications */
+.nb-w{position:relative;display:inline-flex;margin-right:6px}
+.nb{position:relative;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:99px;color:var(--ink2)}
+.nb:hover,.nb.on{background:var(--well)}
+.nb svg{width:18px;height:18px}
+.nb-n{position:absolute;top:2px;right:0;min-width:16px;height:16px;padding:0 4px;border-radius:99px;background:#2DB869;box-shadow:0 0 0 2px #fff;font:400 12px/16px var(--f);font-style:normal;color:#fff;text-align:center}
+.nb-p{position:absolute;top:calc(100% + 10px);right:-8px;z-index:60;width:380px;max-height:min(520px,70vh);overflow:auto;padding:8px;border-radius:20px;background:#fff;box-shadow:inset 0 0 0 1px var(--line),0 30px 60px -30px rgba(19,20,23,.35);text-align:left;animation:zy-in .25s cubic-bezier(.16,1,.3,1) both}
+.nb-h{display:flex;align-items:center;gap:8px;padding:8px 10px 10px}
+.nb-h .i{color:var(--ink)}
+.nb-l{display:flex;flex-direction:column}
+.nb-i{display:flex;align-items:flex-start;gap:12px;width:100%;padding:10px;border-radius:14px;text-align:left}
+.nb-i:hover{background:var(--well)}
+.nb-i .grow{display:flex;flex-direction:column;gap:2px;min-width:0}
+.nb-tx{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;color:var(--ink2)}
+.nb-tx b{font-weight:400;color:var(--ink)}
+.nb-i>.lg.sm{width:32px;height:32px;flex-shrink:0;border-radius:10px}
+.nb-i>.lgs{flex-shrink:0}
+.nb-z{display:flex;align-items:center;justify-content:center;width:32px;height:32px;flex-shrink:0;border-radius:99px;background:var(--well);color:var(--ink3)}
+.nb-z svg{width:15px;height:15px}
+.nb-0{padding:12px 10px 16px}
+
+/* the role: a big Apply up top; Like and Not interested on the fit line; where it was sourced */
+.rb-ha .rb-ap{display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 26px;font-size:16px}
+.rb-ha .rb-ap svg{width:17px;height:17px}
+.st-exd .rb .rb-h,.st-sh .rb .rb-h{padding-right:72px}
+.rb-fit{align-items:center}
+.rb-fa{display:inline-flex;align-items:center;gap:6px}
+.rb-fa .x{display:inline-flex;align-items:center;gap:6px}
+.rb-src{display:flex;align-items:center;gap:12px;margin-top:20px;padding:14px 16px;border-radius:16px;background:var(--well)}
+.rb-src .lgs .lg.xs{width:24px;height:24px}
+.rb-src .grow{min-width:0}
+.rb-src .i{color:var(--ink)}
+.rb-sl{display:inline-flex;align-items:center;gap:4px;flex-shrink:0;color:var(--ink);text-decoration:none}
+.rb-sl:hover{text-decoration:underline;text-underline-offset:3px}
+.rb-sl svg{width:14px;height:14px}
+.tli-t .cn,.tli-t .pn{vertical-align:middle}
+.tli-t:has(.cn),.tli-t:has(.pn){display:flex;align-items:center;gap:6px}
+
+/* the level-up background is one canvas now */
+.lu5-c{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.lu2-bg .lu4-rp,.lu2-bg .lu2-swirl,.lu2-rings,.lu4-bloom{display:none!important}
 
 @media(max-width:700px){
- .body.cz-pg{padding-bottom:96px}
- .cz{min-height:0;padding:12px 0 24px}
- .cz-z{grid-template-columns:24px minmax(0,1fr);column-gap:10px}
- .cz-av .orb{--s:24px}
- .cz-me p{max-width:85%}
- .cz-r,.cz-lb{grid-template-columns:22px minmax(0,1fr) auto}
- .cz-r>.m,.cz-lb>.m{display:none}
- .cz-files{padding-left:10px}
+ .zy{padding:8px 0 0}
+ .zy-feed{padding-bottom:40vh}
+ .zy-st{top:64px}
+ .zy-z{grid-template-columns:28px minmax(0,1fr);column-gap:10px}.zy-av .orb{--s:28px}
+ .zy-card{padding:16px;border-radius:20px}.zy-cl{min-width:40px;height:40px}.zy-fc>.av{width:40px;height:40px}
+ .zy-r{flex-wrap:wrap;min-height:0}.zy-rr{width:100%;justify-content:flex-start;padding-left:56px}
+ .zy-r:has(.esel) .zy-rr{padding-left:90px}
+ .zy-me p{max-width:85%}
+ .nb-p{position:fixed;top:64px;left:12px;right:12px;width:auto}
+ .rb-src{flex-wrap:wrap}
 }
-@media(prefers-reduced-motion:reduce){.cz-ch,.cz-o>svg{transition:none}}
-.cz-wt2{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cz-wt2 .m{font-size:14px}
+@media(prefers-reduced-motion:reduce){.zy-card,.nb-p{animation:none}.zy-cv,.zy-o>svg{transition:none}}
+/* the role sheet keeps its actions at the top only */
+.j-rv:has(.rb-ap)>.j-rvf,.j-rv:has(.rb-ha .zy-lk)>.j-rvf,.j-rv:has(.rb-ha .eg-st.run)>.j-rvf{display:none}
 
 </style>
 </head>
@@ -7908,105 +7995,225 @@ function inboxEmpty(){const W=waitIds();
   ${W.length?`<section class="ib0-sec"><div class="row ib0-sh"><h2 class="i grow">Waiting on a reply</h2><span class="ib0-live"><span class="zw-dot"></span>Zero is watching ${num(W.length).toLowerCase()}</span></div><div class="ib0-wl">${W.map(wrow).join('')}</div></section>`
   :`<section class="ib0-sec ib0-none"><span class="ib0-ic">${ic('inbox')}</span><p class="i">Nothing yet</p><p class="m">Apply to a role and Zero watches for the reply.</p>${btn(`Go to For you${ic('arrow-right')}`,'s sm','go','home')}</section>`}</div>`}
 
-/* ZERO Job Portal, v54. For you is a chat with Zero, read like Claude: Zero writes to you in plain text, its work shows
-   as live steps with a timer, and when it needs you it asks with tap options (1, 2, 3, or Let me type). Your taps land on
-   the right as your messages. There is no text box: the agent is already running, it talks first. */
+/* ZERO Job Portal, v55. For you is Zero's chat, top to bottom, like the Zero panel that worked, done properly:
+   Zero's face and a greeting at the top with what it is doing right now; it thinks before it answers (a loader and a
+   running timer), its words stream in, its work fills in step by step with real times; everything it needs from you
+   comes in one container (the "I found three roles" card): a title, a line, a list, buttons bottom right.
+   Someone new is calibrated first, several roles in one card with Yes / No on each. No text box anywhere.
+   Also here: a notification bell, the Jobs fixes (lock pill, no side panel), the role page fixes, a smooth level-up. */
 
 const applyCands=()=>[...new Map([...sPack().filter(sCan),...Object.keys(S.saved).filter(id=>S.saved[id]).map(ROLE).filter(r=>r&&sCan(r))].map(r=>[r.id,r])).values()].slice(0,8);
-const czCap=t=>t?t[0].toUpperCase()+t.slice(1):t;
-const czRole=(r,a='rolesheet')=>`<button type="button" class="cz-rc" data-a="${a}" data-id="${r.id}">${lg(CO(r.co).dom,'sm')}<span class="grow"><span class="i clip">${r.title}</span><span class="m clip">${coName(r)} · ${r.loc}${r.pay?` · ${payK(r)}`:''}</span></span>${ic('arrow-up-right')}</button>`;
-const czOpt=(n,label,a,id,desc,x='')=>`<button type="button" class="cz-o" data-a="${a}" data-id="${id}" data-n="${n}" ${x}><kbd>${n}</kbd><span class="grow"><span class="i">${label}</span>${desc?`<span class="m">${desc}</span>`:''}</span>${ic('arrow-right')}</button>`;
 A.tdslot=(id,a)=>{APP(id).slot=+a.dataset.i;return A.tdbook(id)};
+const zyAnd=L=>L.length<2?L.join(''):L.slice(0,-1).join(', ')+' and '+L[L.length-1];
+const lkPill=n=>`<span class="zy-lk" title="Opens at Level ${n}">${ic('lock')}Level ${n}</span>`;
+const fitOr=r=>S.lvl===0?'':fitPill(r);
+const stPill=id=>`<span class="zy-sp ${CONN.includes(stOf(id))?'ok':''}">${stLabel(id)}</span>`;
+
+/* ── Zero thinks before it answers, then its words stream in ── */
+const zThink=(label,ms)=>{const n=Date.now();S.zth={t0:n,until:n+ms,label}};
+const zThinking=()=>!!(S.zth&&Date.now()<S.zth.until);
+const zyStream=(html,sx)=>{const el=Date.now()-sx;if(el<0)return null;const P=html.split(/(\s+)/),n=Math.ceil(P.length/2),k=Math.floor(el/34)+1;if(k>=n)return html;S.zstr=true;return P.slice(0,k*2).join('')};
+{const wrap=(name,label,ms)=>{const f=A[name];if(!f)return;A[name]=function(...a){const r=f.apply(this,a);if(r!==false)zThink(label,ms);return r}};
+ wrap('tdacc','Writing back',1300);wrap('tddec','Closing it kindly',900);wrap('tdbook','Booking the call',1300);wrap('tdapply','Getting your files ready',1100);
+ wrap('ndgsend','Sending the nudges',1200);wrap('tdlater','',420);wrap('tdcalxdone','Noting it',1100)}
+{const f=scanTick;scanTick=function(){const had=S.scan;f();if(had&&!S.scan)zThink('Checking your fit',1500)}}
+/* someone new: calibrate first, read postings after */
+{const f=scanGo;scanGo=function(){if(S.mode==='student'&&S.lvl===0&&!(S.calp&&S.calp.done&&Date.now()>=S.calp.at))return;return f()}}
+
+/* ── calibration in one card ── */
+A.zc=(id,a)=>{const c=S.cal=S.cal||{i:0,ans:{}};c.ans[id]=a.dataset.k};
+A.zcdone=()=>{const R=calRoles(),c=S.cal=S.cal||{i:0,ans:{}};if(!R.some(r=>c.ans[r.id]))return false;
+ R.forEach(r=>{const k=c.ans[r.id];if(k&&k!=='no'){S.saved[r.id]=true;(S.likeAt=S.likeAt||{})[r.id]={at:Date.now(),date:today()}}});c.done=true;c.i=R.length;
+ const h=R.filter(x=>c.ans[x.id]==='hell'),y=R.filter(x=>c.ans[x.id]==='yes'),no=R.filter(x=>c.ans[x.id]==='no');
+ said('First, tell me what you like',[h.length?`Hell yes to ${zyAnd(h.map(coName))}`:'',y.length?`Yes to ${zyAnd(y.map(coName))}`:'',no.length?`No to ${zyAnd(no.map(coName))}`:''].filter(Boolean).join('. '));
+ zThink('Reading what you picked',1600);
+ zpost2(h.length||y.length?`Got it. ${h.length?`You lit up for ${zyAnd(h.map(coName))}`:`You liked ${zyAnd(y.map(coName))}`}. I will look for more teams like them.`:'Got it. None of those. I will look wider.')};
+A.zmode=id=>{const c=S.ctx=S.ctx||{};S.ag=S.ag||{};if(id==='ask')S.ag.mode='manual';else{S.ag.mode='auto';c.max=+id}
+ S.calp={done:true,at:Date.now()+2600};setTimeout(()=>{if(S.mode==='student'&&S.page.student==='home')render()},2700);said('Should I apply for you?',id==='ask'?'Ask me first':`Apply for me, up to ${id} a day`);zThink('Setting it up',1200);
+ zpost2(id==='ask'?'Okay. Nothing goes out until you say yes. Now I read today’s postings.':`Okay. I apply to up to ${id} Strong fits a day and show you every one. Now I read today’s postings.`)};
+
+/* ── one row in a card: logo, the role on two lines, something on the right ── */
+const zyRow=(r,right='',left='')=>`<div class="zy-r">${left}<span class="zy-rl">${lg(CO(r.co).dom,'sm')}</span><button type="button" class="zy-rt" data-a="${S.apps[r.id]?'sheet':'rolesheet'}" data-id="${r.id}"><span class="i clip">${r.title}</span><span class="m clip">${coName(r)} · ${r.loc}${r.pay?` · ${payK(r)}`:''}</span></button>${right?`<span class="zy-rr">${right}</span>`:''}</div>`;
+const zyFace=r=>`<span class="zy-fc">${av(r.manager.ini,r.manager.tone)}<span class="zy-fl">${lg(CO(r.co).dom,'xs')}</span></span>`;
+const zyIco=n=>`<span class="zy-ic">${ic(n)}</span>`;
+
+/* ── what needs you, as cards ── */
+function todos(){const T=[],ids=appIds(),by=s=>ids.filter(id=>stOf(id)===s);
+ by('offer').forEach(id=>{const r=ROLE(id),c=APP(id);T.push({id:'offer'+id,q:`${coName(r)} made you an offer`,lead:zyFace(r),title:`${coName(r)} made you an offer`,sub:`${r.title} · answer by ${c.by}`,
+  body:`<div class="zy-amt"><b>${c.amount}</b><span class="m">a year, base</span></div>`,btns:btn(`See the offer${ic('arrow-right')}`,'k','sheet',id)})});
+ by('asked').forEach(id=>{const r=ROLE(id),m=r.manager,t=S.threads[id],last=t&&[...t.msgs].reverse().find(x=>x.from==='them');T.push({id:'ask'+id,q:`${m.first} at ${coName(r)} wants to meet you`,lead:zyFace(r),title:`${m.first} at ${coName(r)} wants to meet you`,sub:`${m.title} · ${r.title}`,
+  body:last?`<blockquote class="zy-qt">${av(m.ini,m.tone)}<p>${esc(last.text)}</p></blockquote>`:'',btns:btn('Reply myself','x','thread',id)+btn('Not interested','x','tddec',id)+btn(`${ic('check')}Accept`,'k','tdacc',id)})});
+ by('accepted').forEach(id=>{const r=ROLE(id),m=r.manager,c=APP(id);if(!c.slots)return;const on=c.slot||0;T.push({id:'pick'+id,q:`Pick a time with ${m.first}`,lead:zyFace(r),title:`Pick a time with ${m.first}`,sub:`45 minutes on Google Meet. I send ${m.first} the one you pick.`,
+  body:`<div class="zy-list">${c.slots.map((s,i)=>`<button type="button" class="zy-o ${on===i?'on':''}" data-a="slot" data-id="${id}" data-i="${i}" data-k="${i}" role="radio" aria-checked="${on===i}"><span class="zy-rd"></span><span class="grow"><span class="i">${fmt(s[0])}, ${s[1]}</span>${i===0?'<span class="m">Earliest</span>':''}</span></button>`).join('')}</div>`,
+  btns:btn(`${ic('send')}Send this time`,'k','tdbook',id)})});
+ ids.forEach(id=>{const t=S.threads[id];if(!t||!t.unread||['asked','accepted'].includes(stOf(id))||snoozed('rep'+id))return;const r=ROLE(id),m=r.manager,last=[...t.msgs].reverse().find(x=>x.from==='them');if(!last)return;
+  T.push({id:'rep'+id,q:`${m.first} at ${coName(r)} wrote back`,lead:zyFace(r),title:`${m.first} at ${coName(r)} wrote back`,sub:r.title,body:`<blockquote class="zy-qt">${av(m.ini,m.tone)}<p>${esc(last.text)}</p></blockquote>`,btns:btn('Later','x','tdlater','rep'+id)+btn(`Reply${ic('arrow-right')}`,'k','thread',id)})});
+ by('booked').forEach(id=>{if(snoozed('int'+id))return;const r=ROLE(id),m=r.manager,c=APP(id),s=c.slots&&c.slots[c.slot||0];T.push({id:'int'+id,q:`Interview with ${m.first}`,lead:zyFace(r),title:`Your interview with ${m.first}`,sub:`${s?`${fmt(s[0])} at ${s[1]} · `:''}${r.title} at ${coName(r)}`,
+  body:`<p class="zy-p2">I put together what ${m.first} is likely to ask, the team, and your three best stories for it.</p>`,btns:btn('Later','x','tdlater','int'+id)+btn(`Prepare${ic('arrow-right')}`,'k','sheet',id)})});
+ const N=nudgeIds();if(N.length&&!snoozed('nudge')){const id=N[0],ed=(S.ndg||{}).edit,names=zyAnd(N.slice(0,2).map(i=>coName(ROLE(i))))+(N.length>2?` and ${N.length-2} more`:'');
+  T.push({id:'nudge',q:`No reply from ${names} in a week. Want me to nudge them?`,lead:lgStack(N),title:`No reply from ${names} in a week`,sub:'Want me to nudge them? Here is what I would send.',
+   body:`<div class="zy-msg">${ed?`<textarea id="ndgIn" class="td-ta" rows="3">${esc(nudgeNote(id))}</textarea>`:`<p>${esc(nudgeNote(id))}</p>`}<div class="zy-chips">${[['pro','More professional'],['short','Shorter'],['casual','Casual']].map(([k,t])=>`<button type="button" class="opt" data-a="ndgtone" data-id="${k}">${t}</button>`).join('')}<button type="button" class="opt ${ed?'on':''}" data-a="ndgedit">${ic('pen-line')}Let me type</button></div></div>`,
+   btns:btn('Not now','x','tdlater','nudge')+btn(`${ic('send')}${N.length>1?`Send ${N.length} nudges`:'Send it'}`,'k','ndgsend',id)})}
+ if(S.lvl===0&&!(S.cal&&S.cal.done)){const R=calRoles(),c=S.cal=S.cal||{i:0,ans:{}},n=R.filter(r=>c.ans[r.id]).length;
+  T.push({id:'cal',q:'First, tell me what you like',lead:lgStack(R.map(r=>r.id)),title:'First, tell me what you like',sub:'Tap one for each role. I look for more like the ones you love.',
+   body:`<div class="zy-list">${R.map(r=>zyRow(r,`<span class="zy-yn">${[['no','No'],['yes','Yes'],['hell',`${ic('flame')}Hell yes`]].map(([k,t])=>`<button type="button" class="zy-b ${k} ${c.ans[r.id]===k?'on':''}" data-a="zc" data-id="${r.id}" data-k="${k}" aria-pressed="${c.ans[r.id]===k}">${t}</button>`).join('')}</span>`)).join('')}</div>`,
+   foot:`${n} of ${R.length}`,btns:btn('Done','k','zcdone','',n<R.length?'disabled':'')})}
+ else if(S.lvl===0&&!(S.calx&&S.calx.done)){const x=S.calx=S.calx||{sel:{},text:''};T.push({id:'calx',q:'Anything else I should keep an eye out for?',lead:zyIco('eye'),title:'Anything else I should keep an eye out for?',sub:'Tap all that fit, or tell me in your words.',
+  body:`<div class="zy-chips">${CALX.map(t=>`<button type="button" class="opt ${x.sel[t]?'on':''}" data-a="tdcalx" data-id="${t}" aria-pressed="${!!x.sel[t]}">${t}</button>`).join('')}</div><input id="calxIn" class="td-in" placeholder="Or tell me in your words" value="${esc(x.text||'')}" autocomplete="off">`,
+  btns:btn('Skip','x','tdcalxdone','skip')+btn('Done','k','tdcalxdone','ok')})}
+ else if(S.lvl===0&&!(S.calp&&S.calp.done)){T.push({id:'mode',q:'Should I apply for you?',lead:zyIco('zap'),title:'Should I apply for you?',sub:'When roles open to you, I can send them myself or ask you first.',
+  body:`<div class="zy-list">${[['ask','Ask me first','I bring every role here. Nothing goes out until you say yes.'],['3','Apply for me, up to 3 a day','Only Strong fits that match what you told me. You see every one.'],['10','Apply for me, up to 10 a day','More reach. Still only roles that fit you.']].map(([k,t,d])=>`<button type="button" class="zy-o" data-a="zmode" data-id="${k}"><span class="grow"><span class="i">${t}</span><span class="m">${d}</span></span>${ic('arrow-right')}</button>`).join('')}</div>`})}
+ if(S.lvl>0){const P=applyCands();if(P.length&&!snoozed('apply')){const pk=S.tdPick=S.tdPick||{},n=P.filter(r=>pk[r.id]!==false).length;
+  T.push({id:'apply',q:`I found ${num(P.length).toLowerCase()} role${P.length>1?'s':''} that fit you. Want me to apply?`,lead:lgStack(P.map(r=>r.id)),title:`I found ${num(P.length).toLowerCase()} role${P.length>1?'s':''} that fit you`,sub:'Want me to apply? I make a portfolio, an ATS resume and a note for each.',
+   body:`<div class="zy-list">${P.map(r=>{const on=pk[r.id]!==false;return zyRow(r,fitPill(r),`<button type="button" class="esel ${on?'on':''}" data-a="tdpick" data-id="${r.id}" role="checkbox" aria-checked="${on}" aria-label="Include ${esc(r.title)}">${ic('check')}</button>`)}).join('')}</div>`,
+   btns:btn('Not now','x','tdlater','apply')+(n?btn(`${ic('zap')}${n===P.length&&n>1?`Apply to all ${n}`:`Apply to ${n}`}`,'k','tdapply','go'):'')})}}
+ const scanned=S.scanDay===today()&&!S.scan;
+ if(S.lvl<10&&!snoozed('lvl')&&(S.lvl>0||(S.calp&&S.calp.done&&scanned))){const sc=scOf(S.lvl+1),nx=lvRoles(S.lvl+1).slice().sort((a,b)=>score(b)-score(a));if(sc)T.push({id:'lvl',q:S.lvl===0?'Start your first scenario':`Reach Level ${S.lvl+1}`,lead:zyIco('award'),
+  title:S.lvl===0?`${rcCap(num(nx.length).toLowerCase())} roles open after your first scenario`:`Level ${S.lvl+1} is one scenario away`,
+  sub:`${sc.title} · about ${sc.mins} minutes${S.lvl===0?'. These fit what you told me.':`. It opens ${nx.length} more role${nx.length===1?'':'s'}.`}`,
+  body:nx.length?`<div class="zy-list">${nx.slice(0,S.lvl===0?4:3).map(r=>zyRow(r,`${fitOr(r)}${lkPill(lvOf(r))}`)).join('')}</div>`:'',
+  foot:nx.length>(S.lvl===0?4:3)?`+${nx.length-(S.lvl===0?4:3)} more`:'',btns:(S.lvl===0?btn('See them in Jobs','x','go','jobs'):btn('Later','x','tdlater','lvl'))+btn(`Start${ic('arrow-right')}`,'k','tdlgo','')})}
+ return T}
+
+/* ── the conversation ── */
+function forYou(){const M=zthread().msgs,X=S.czx||{},now=Date.now(),out=[];let day='',side='';S.zstr=false;
+ M.forEach(m=>{if(m&&m.sx==null)m.sx=S.zBoot?Math.max(now,S.zth?S.zth.until:0):0});
+ const zturn=(h,cls='')=>{const f=side!=='z';side='z';return`<div class="zy-z ${f?'first':''} ${cls}"><span class="zy-av">${f?orb('xs'):''}</span><div class="zy-c">${h}</div></div>`};
+ const me=t=>{side='m';return`<div class="zy-me"><p>${esc(t)}</p></div>`};
+ const tool=(icon,txt,t,k,body)=>{const has=!!body,open=has&&X[k];return`<div class="zy-tl ${open?'open':''}"><button type="button" class="zy-th" ${has?`data-a="czx" data-id="${k}" aria-expanded="${!!open}"`:'tabindex="-1"'}><span class="zy-ti">${icon}</span><span class="zy-tt">${txt}</span>${has?`<span class="zy-ch">${ic('chevron-right')}</span>`:''}${t?`<span class="zy-tm">${t}</span>`:''}</button>${open?`<div class="zy-out">${body}</div>`:''}</div>`};
+ const appTl=r=>`<div class="zy-app"><div class="zy-ah">${lg(CO(r.co).dom,'sm')}<span class="grow"><span class="i clip">${r.title}</span><span class="m clip">${coName(r)} · ${r.loc}</span></span>${S.apps[r.id]?stPill(r.id):''}</div><ol class="tlx">${tlEvents(r)}${tlNext(r)}</ol></div>`;
+ /* the thread, merged: one read of postings a day, applications grouped by day */
+ const items=[];M.forEach((m,i)=>{if(!m||!m.date||m.busy||m.from==='rec'||m.from==='sys')return;if(m.from==='act'&&/opened your|^Zero tailored your portfolio for|^Zero built a resume|^You applied to|^You said yes/.test(m.text))return;if(/^Welcome to Zero/.test(m.text||''))return;
+  const last=items[items.length-1],ap=m.from==='act'&&m.id&&ROLE(m.id)&&/applied to/i.test(m.text),rd=m.from==='act'&&/^Read \d+ postings/.test(m.text);
+  if(rd){const j=items.findIndex(x=>x.rd&&x.date===m.date);if(j>=0)items.splice(j,1)}
+  if(ap&&last&&last.kind==='applied'&&last.date===m.date){last.ids.push(m.id);return}
+  items.push(ap?{kind:'applied',ids:[m.id],t:m.t,k:'ap'+i,date:m.date}:{kind:m.from,m,t:m.t,k:'m'+i,date:m.date,rd})});
+ /* days before today fold into one line */
+ const td=dayLbl(today()),old=items.filter(it=>dayLbl(it.date)!==td),shown=S.zyOld?items:items.filter(it=>dayLbl(it.date)===td);
+ if(old.length){const nA=old.filter(x=>x.kind==='applied').reduce((a,x)=>a+x.ids.length,0),nD=new Set(old.map(x=>x.date)).size;
+  out.push(`<button type="button" class="zy-old" data-a="zyold" aria-expanded="${!!S.zyOld}">${ic(S.zyOld?'chevron-up':'history')}<span>${S.zyOld?'Hide earlier':`Earlier: ${nD} day${nD>1?'s':''}${nA?`, applied to ${nA} role${nA>1?'s':''}`:''}`}</span></button>`)}
+ let lastKind='';
+ shown.forEach(it=>{if(it.date!==day){day=it.date;side='';out.push(`<div class="zy-day"><span>${dayLbl(day)}</span></div>`)}
+  lastKind=it.kind;const m=it.m;
+  if(it.kind==='applied'){const R=it.ids.map(ROLE);out.push(zturn(tool(`<span class="zy-ok">${ic('check')}</span>`,`Applied to <b>${R.length>1?`${R.length} roles`:coName(R[0])}</b>${R.length>1?` at ${zyAnd(R.slice(0,2).map(coName))}${R.length>2?' and more':''}`:` for ${R[0].title}`}`,it.t,it.k,R.map(appTl).join(''))));return}
+  if(it.kind==='me'){out.push(me(m.text));return}
+  if(it.kind==='zq'){const r=m.id&&ROLE(m.id);out.push(zturn(`<p class="zy-p">${esc(m.text)}</p>`));return}
+  if(it.kind==='them'||it.kind==='zero'){const h=zyStream(esc(m.text),m.sx);if(h==null)return;out.push(zturn(`<p class="zy-p">${h}</p>`));return}
+  if(it.rd){const ids=(m.ids||[]).filter(id=>ROLE(id)),R=ids.map(ROLE),src=(m.text.match(/^Read (\d+) postings on ([^.]+)\./)||[]),where=(src[2]||'Greenhouse, Ashby, Lever').split(/, | and /);
+   const h=zyStream(R.length?(S.lvl===0?`I read ${src[1]} postings. <b>${rcCap(num(R.length).toLowerCase())} fit</b> what you told me. They open as you level up.`:`I read ${src[1]} postings. <b>${rcCap(num(R.length).toLowerCase())} new role${R.length>1?'s':''}</b> fit you.`):'Nothing new fits you today. I read again tomorrow at 9.',m.sx);
+   out.push(zturn(tool(`<span class="lgs">${where.slice(0,3).map(w=>lg(ATSDOM[w]||'greenhouse.com','xs')).join('')}</span>`,`Read ${src[1]||'new'} postings on ${zyAnd(where)}`,it.t,it.k,R.length?`<div class="zy-list">${R.map(r=>zyRow(r,`${fitOr(r)}${locked(r)?lkPill(lvOf(r)):''}`)).join('')}</div>`:'')+(h!=null?`<p class="zy-p">${h}</p>`:'')));return}
+  const r=m.id&&ROLE(m.id);out.push(zturn(tool(r?lg(CO(r.co).dom,'xs'):m.ids&&m.ids.length?lgStack(m.ids):ic(m.icon||'sparkle'),act2(m),it.t,'','')))});
+ const newDay=!shown.length||dayLbl(day)!==td;
+ /* now: Zero at work, step by step, with real times */
+ const live=[],secs=ms=>`${(ms/1000).toFixed(1)}s`;
+ if(S.scan&&S.scan.me===S){const p=scanPh();if(!p.done){const el=now-S.scan.t0;let acc=0;
+  const L=S.scan.src.map((s,i)=>{const st=acc;acc+=SCAN_MS[i];const ico=`<span class="tli-i ${i===p.i?'now':''}">${i===p.i?spinS(p.txt):lg(ATSDOM[s[0]]||'greenhouse.com','xs')}</span>`;
+   return i<p.i?`<li class="tli">${ico}<span class="grow tli-t">Read ${s[0]}<span class="m"> · ${s[1]} postings</span></span><span class="tli-w">${secs(SCAN_MS[i])}</span></li>`
+    :i===p.i?`<li class="tli zy-on">${ico}<span class="grow tli-t"><span class="shim" ${shimD()}>${p.txt}</span></span><span class="tli-w">${secs(el-st)}</span></li>`
+    :`<li class="tli zy-wait"><span class="tli-i o"></span><span class="grow tli-t">${s[0]}</span></li>`}).join('')
+   +(p.i===3?`<li class="tli zy-on"><span class="tli-i now">${spinS(p.txt)}</span><span class="grow tli-t"><span class="shim" ${shimD()}>${p.txt}</span></span><span class="tli-w">${secs(el-acc)}</span></li>`:`<li class="tli zy-wait"><span class="tli-i o"></span><span class="grow tli-t">Score them against what you told me</span></li>`);
+  live.push(`<section class="zy-work"><header class="zy-wh">${spinS(p.txt)}<span class="grow">Reading new postings</span><span class="zy-clk">${mmss(el)}</span></header><ol class="tlx">${L}</ol></section>`)}}
+ if(S.qa&&ROLE(S.qa.id)){const q=S.qa,r=ROLE(q.id),m=r.manager,at=Math.min(q.at,QA.length),sent=!!(q.ts&&q.ts[3]),hold=at===3&&!sent,K=kwOf(r),hit=K.filter(k=>MYKW.has(k)),ats=r.ats||'Greenhouse';
+  q.zt=q.zt||[q.t0||now];if(q.zt.length<=at)for(let i=q.zt.length;i<=at;i++)q.zt[i]=now;
+  const done=[`Made a portfolio for ${cn(r)}`,`Made an ATS resume<span class="m"> · ${K.length?`${hit.length} of ${K.length} keywords`:'every line readable'}</span>`,`Wrote to ${pn(m)}`,`Sent through ${atsN(r)}<span class="m"> · ${confOf(r)}</span>`],
+   doing=[`Making a portfolio for ${coName(r)}`,`Building a resume ${ats} can read`,`Writing your note to ${m.first}`,hold?qaPh(r,3):`Sending through ${ats}`],icons=['layout-template','file-text','mail','send'];
+  const L=[0,1,2,3].map(i=>i<at||(i===3&&sent)?`<li class="tli"><span class="tli-i">${ic(icons[i])}</span><span class="grow tli-t">${done[i]}</span><span class="tli-w">${secs((q.zt[i+1]||now)-q.zt[i])}</span></li>`
+   :i===at?`<li class="tli zy-on ${hold?'hold':''}"><span class="tli-i now">${spinS(doing[i])}</span><span class="grow tli-t"><span class="${hold?'':'shim'}" ${hold?'':shimD()}>${doing[i]}</span></span>${hold?`<span class="tli-a">${btn('Send now','s sm','qnow',r.id)}</span>`:`<span class="tli-w">${secs(now-q.zt[i])}</span>`}</li>`
+   :`<li class="tli zy-wait"><span class="tli-i o"></span><span class="grow tli-t">${doing[i]}</span></li>`).join('');
+  const B=S.bt&&S.bt.ids||[],bi=B.indexOf(r.id),nx=(S.qq||[]).map(ROLE).filter(Boolean);
+  live.push(`<section class="zy-work"><header class="zy-wh">${lg(CO(r.co).dom,'sm')}<span class="grow clip">Applying to <b>${coName(r)}</b><span class="m"> · ${r.title}</span></span>${B.length>1&&bi>=0?`<span class="m">${bi+1} of ${B.length}</span>`:''}<span class="zy-clk">${mmss(now-(q.t0||now))}</span>${sent?'':btn('Stop','x sm','qstop',r.id)}</header><ol class="tlx">${L}</ol>${nx.length?`<p class="zy-nx">${lgStack(nx.map(x=>x.id))}<span class="m">Next in line: ${zyAnd(nx.slice(0,3).map(coName))}${nx.length>3?` and ${nx.length-3} more`:''}</span></p>`:''}</section>`)}
+ /* then what it needs from you, once it has finished thinking and talking */
+ const T=todos(),cur=T[0],busy=zThinking()||S.zstr||!!S.qa||(S.qq||[]).length>0;
+ if(zThinking()&&S.zth.label)live.push(`<div class="zy-thk">${spinS(S.zth.label)}<span class="shim" ${shimD()}>${S.zth.label}</span><span class="zy-tm">${secs(now-S.zth.t0)}</span></div>`);
+ let ask='';if(cur&&!busy)ask=`<section class="zy-card" data-id="card-${cur.id}"><header class="zy-ch"><span class="zy-cl">${cur.lead||''}</span><div class="grow"><h3 class="zy-ct">${cur.title}</h3>${cur.sub?`<p class="zy-cs">${cur.sub}</p>`:''}</div></header>${cur.body?`<div class="zy-cb">${cur.body}</div>`:''}${cur.btns||cur.foot||T.length>1?`<footer class="zy-cf"><span class="m">${[cur.foot,T.length>1?`${T.length-1} more after this`:''].filter(Boolean).join(' · ')}</span><span class="grow"></span>${cur.btns||''}</footer>`:''}</section>`;
+ const tail=!cur&&!live.length&&!S.zstr?`<p class="zy-p">You are all caught up. I read new postings every morning at 9 and bring anything that needs you right here.</p>`:'';
+ const nowH=live.join('')+ask+tail;
+ if(nowH&&newDay){out.push(`<div class="zy-day"><span>${td}</span></div>`);side=''}
+ return out.join('')+(nowH?zturn(nowH,'zy-lv'):'')+'<i class="zy-end"></i>'}
+A.zyold=()=>{S.zyOld=!S.zyOld};
 A.czx=k=>{S.czx=S.czx||{};S.czx[k]=!S.czx[k]};
 
-/* what needs you: what Zero says, what it shows, and the options it gives */
-function todos(){const T=[],ids=appIds(),by=s=>ids.filter(id=>stOf(id)===s);
- by('offer').forEach(id=>{const r=ROLE(id),c=APP(id);T.push({id:'offer'+id,q:`${coName(r)} made you an offer`,say:`${coName(r)} made you an offer for ${r.title}: <b>${c.amount}</b> a year. You have until ${c.by} to answer.`,
-  opts:[['See the offer','sheet',id,'Pay, start date and what is in it']]})});
- by('asked').forEach(id=>{const r=ROLE(id),m=r.manager,t=S.threads[id],last=t&&[...t.msgs].reverse().find(x=>x.from==='them');T.push({id:'ask'+id,q:`${m.first} at ${coName(r)} wants to meet you`,say:`${m.first} at ${coName(r)} wants to meet you about ${r.title}.`,
-  show:last?`<blockquote class="cz-qt">${faceS2(r)}<span>${esc(last.text)}</span></blockquote>`:'',
-  opts:[['Accept','tdacc',id,`I send ${m.first} three times that work for you`],['Not interested','tddec',id,'I thank them and close it'],['Reply myself','thread',id,'Open the conversation']]})});
- by('accepted').forEach(id=>{const r=ROLE(id),m=r.manager,c=APP(id);if(!c.slots)return;T.push({id:'pick'+id,q:`Pick a time with ${m.first}`,say:`${m.first} sent three times for a 45 minute call on Google Meet. Which one works?`,
-  opts:c.slots.map((s,i)=>[`${fmt(s[0])}, ${s[1]}`,'tdslot',id,i===0?'Earliest':'',`data-i="${i}" data-k="${i}"`])})});
- ids.forEach(id=>{const t=S.threads[id];if(!t||!t.unread||['asked','accepted'].includes(stOf(id))||snoozed('rep'+id))return;const r=ROLE(id),m=r.manager,last=[...t.msgs].reverse().find(x=>x.from==='them');if(!last)return;
-  T.push({id:'rep'+id,q:`${m.first} at ${coName(r)} wrote back`,say:`${m.first} at ${coName(r)} wrote back.`,show:`<blockquote class="cz-qt">${faceS2(r)}<span>${esc(last.text)}</span></blockquote>`,
-   opts:[['Reply','thread',id,'Open the conversation'],['Later','tdlater','rep'+id,'']]})});
- by('booked').forEach(id=>{if(snoozed('int'+id))return;const r=ROLE(id),m=r.manager,c=APP(id),s=c.slots&&c.slots[c.slot||0];T.push({id:'int'+id,q:`Interview with ${m.first}`,say:`your interview with ${m.first} is ${s?`${fmt(s[0])} at ${s[1]}`:'booked'}. I put together what ${m.first} is likely to ask.`,
-  opts:[['Prepare','sheet',id,'Questions, the team and your best stories'],['Later','tdlater','int'+id,'']]})});
- const N=nudgeIds();if(N.length&&!snoozed('nudge')){const id=N[0],ed=(S.ndg||{}).edit;
-  T.push({id:'nudge',q:`No reply from ${N.slice(0,2).map(i=>coName(ROLE(i))).join(' and ')} in a week. Want me to nudge them?`,say:`no reply from ${N.slice(0,2).map(i=>coName(ROLE(i))).join(' and ')}${N.length>2?` and ${N.length-2} more`:''} in a week. Want me to nudge them? Here is what I would send.`,
-   show:`<div class="cz-msg">${ed?`<textarea id="ndgIn" class="td-ta" rows="3">${esc(nudgeNote(id))}</textarea>`:`<p>${esc(nudgeNote(id))}</p>`}</div>`,
-   opts:[[N.length>1?`Send ${N.length} nudges`:'Send it','ndgsend',id,''],['More professional','ndgtone','pro','I rewrite it and show you'],['Not now','tdlater','nudge',''],...(ed?[]:[['Let me type','ndgedit','','Edit it yourself']])]})}
- if(S.lvl===0&&!(S.cal&&S.cal.done)){const R=calRoles(),c=S.cal=S.cal||{i:0,ans:{}},r=R[Math.min(c.i,R.length-1)];if(r)T.push({id:'cal',q:`Would you want ${r.title} at ${coName(r)}?`,
-  say:c.i===0?`before I start, help me learn what you want. Would you want this one?`:c.i===R.length-1?'Last one. This?':'And this one?',show:`${czRole(r)}${CO(r.co).blurb?`<p class="m cz-bl">${esc(CO(r.co).blurb)}</p>`:''}`,foot:`${c.i+1} of ${R.length}`,
-  opts:[['Hell yes','tdcal','hell',''],['Yes','tdcal','yes',''],['No','tdcal','no','']]})}
- else if(S.lvl===0&&!(S.calx&&S.calx.done)){const x=S.calx=S.calx||{sel:{},text:''};T.push({id:'calx',q:'Anything else I should keep an eye out for?',say:'anything else I should keep an eye out for? Tap all that fit, or tell me in your words.',
-  show:`<div class="cz-chips">${CALX.map(t=>`<button type="button" class="opt ${x.sel[t]?'on':''}" data-a="tdcalx" data-id="${t}" aria-pressed="${!!x.sel[t]}">${t}</button>`).join('')}</div><input id="calxIn" class="td-in" placeholder="Or tell me in your words" value="${esc(x.text||'')}" autocomplete="off">`,
-  opts:[['Done','tdcalxdone','ok',''],['Skip','tdcalxdone','skip','']]})}
- if(S.lvl>0||(S.calx&&S.calx.done)){const P=applyCands();if(P.length&&!snoozed('apply')){const pk=S.tdPick=S.tdPick||{},n=P.filter(r=>pk[r.id]!==false).length;
-  T.push({id:'apply',q:`I found ${num(P.length).toLowerCase()} role${P.length>1?'s':''} that fit you. Want me to apply?`,say:`I found <b>${num(P.length).toLowerCase()} role${P.length>1?'s':''}</b> that fit you. Want me to apply? I send a portfolio, an ATS resume and a note with each.`,
-   show:`<div class="cz-list">${P.map(r=>{const on=pk[r.id]!==false;return`<div class="cz-lr"><button type="button" class="esel ${on?'on':''}" data-a="tdpick" data-id="${r.id}" role="checkbox" aria-checked="${on}" aria-label="Include ${esc(r.title)}">${ic('check')}</button><button type="button" class="cz-lb" data-a="rolesheet" data-id="${r.id}">${lg(CO(r.co).dom,'xs')}<span class="i clip">${r.title}</span><span class="m clip">${coName(r)} · ${r.loc}</span>${fitPill(r)}</button></div>`}).join('')}</div>`,
-   opts:[...(n?[[n===P.length&&n>1?`Apply to all ${n}`:`Apply to ${n}`,'tdapply','go',`One at a time. You can stop any of them`]]:[]),['Not now','tdlater','apply','']]})}}
- if(S.lvl<10&&!snoozed('lvl')&&(S.lvl>0||(S.calx&&S.calx.done))){const sc=scOf(S.lvl+1),nx=lvRoles(S.lvl+1);if(sc)T.push({id:'lvl',q:S.lvl===0?'Start your first scenario':`Reach Level ${S.lvl+1}`,
-  say:`${S.lvl===0?'your first scenario is ready':`Level ${S.lvl+1} is one scenario away`}: <b>${sc.title}</b>. About ${sc.mins} minutes, and it opens ${nx.length} role${nx.length===1?'':'s'}${nx.length?` at ${dreams(nx).slice(0,3).map(coName).join(', ').replace(/, ([^,]+)$/,' and $1')}`:''}.`,
-  opts:[['Start','tdlgo','',''],['Later','tdlater','lvl','']]})}
- return T}
-const faceS2=r=>`<span class="cz-face">${av(r.manager.ini,r.manager.tone)}</span>`;
+/* what Zero is doing right now, pinned at the top while you scroll */
+function zyHead(){const R=zRows(),run=R.filter(x=>x.run),W=R.filter(x=>x.watch&&x.k!=='auto'),auto=S.ag&&S.ag.mode==='auto';
+ let st;if(zThinking()&&S.zth.label)st=`${spinS(S.zth.label)}<span class="clip">Zero is thinking</span>`;
+ else if(run.length){const x=run[0];st=`${spinS(x.sub)}<span class="clip">Zero is working · ${x.k.startsWith('scan')?x.sub:`applying to ${x.co}`}</span><span class="zy-clk">${mmss(x.el)}</span>`}
+ else st=`<span class="zw-dot"></span><span class="clip">${W.length?`Watching ${num(W.length).toLowerCase()} application${W.length>1?'s':''} for a reply`:S.lvl===0&&!(S.calp&&S.calp.done)?'Zero is getting to know you':'Ready. I read new postings every morning at 9'}${auto?' · Apply for me is on':''}</span>`;
+ return`<div class="zy-st"><p class="zy-sp2">${st}</p></div>`}
+PAGES.student.homeClass='r-wide zy-pg';
+PAGES.student.home=()=>`<div class="zy">${zyHead()}<div class="zy-feed">${forYou()}</div></div>`;
+/* the old bottom-anchored scroll hooks give way to: keep the newest thing in view */
+for(let i=AFTER.length-1;i>=0;i--){const s=String(AFTER[i]);if(s.includes('S.fyK!==k')||s.includes('b.scrollHeight-b.scrollTop-b.clientHeight<200'))AFTER.splice(i,1)}
+const zyScroll=(d,smooth)=>{const b=document.getElementById('body'),beh=smooth?'smooth':'auto';if(b&&b.scrollHeight>b.clientHeight+2&&getComputedStyle(b).overflowY!=='visible')b.scrollBy({top:d,behavior:beh});else window.scrollBy({top:d,behavior:beh})};
+AFTER.push(()=>{if(S.page.student!=='home'||S.mode!=='student')return;const k=zthread().msgs.length+'|'+((todos()[0]||{}).id||'')+'|'+!!S.qa+'|'+!!S.scan+'|'+zThinking(),changed=S.zyK!==k&&S.zyK!=null;S.zyK=k;
+ if(!S.zBoot){setTimeout(()=>{S.zBoot=true},0);return}
+ /* follow the live turn while you are looking at it; never pull you out of the history */
+ requestAnimationFrame(()=>{const z0=document.querySelector('.zy-z.zy-lv');if(!z0)return;const z=z0.getBoundingClientRect().height>innerHeight-130&&z0.querySelector('.zy-card')||z0,r=z.getBoundingClientRect(),vh=innerHeight,mark=Math.round(vh*.3);
+  if(changed||!S.zyPlaced){S.zyPlaced=1;const h=r.height,fits=r.top>=84&&r.bottom<=vh-24&&r.top<=vh*.55;if(fits)return;const want=Math.max(96,Math.min(mark,vh-24-h));zyScroll(r.top-want,changed);return}
+  if(r.top>vh-40)return;const need=r.bottom-(vh-28);if(need>4)zyScroll(Math.min(need,Math.max(0,r.top-110)),false)})});
+/* someone new: Zero says hello first, in the chat */
+AFTER.push(()=>{if(S.mode==='student'&&S.page.student==='home'&&S.lvl===0&&!S.zyHi&&!(S.cal&&S.cal.done)){S.zyHi=1;zpost2(`Hey ${ME.first}, welcome to Zero. I am your job agent. I find roles, apply for you and bring back only what needs you. First, a quick look at what you like.`)}});
+/* thinking and streaming redraw quickly; work redraws twice a second */
+setInterval(()=>{if(document.hidden||S.mode!=='student'||S.page.student!=='home'||S.lu)return;if(zThinking()||S.zstr||(S.zth&&Date.now()-S.zth.until<200))render()},70);
+setInterval(()=>{if(!document.hidden&&S.mode==='student'&&S.page.student==='home'&&(S.qa||S.scan)&&!S.lu&&!zThinking()&&!S.zstr)render()},250);
+/* a calm first moment: Zero catches up before it shows anything */
+if(!S.zth)zThink(S.lvl===0?'Getting ready':'Catching up on today',1100);
 
-/* the conversation */
-const czLow=t=>/^(Anything|Would|Pick|Start|Reach|No|Nothing|Interview|Before|Your|And|Last|One|Two|Three|Four|Five|Six|Seven|Eight|Nine|Ten|Eleven|Twelve)\b/.test(t)?t[0].toLowerCase()+t.slice(1):t;
-function forYou(){const M=zthread().msgs,X=S.czx||{},out=[],first=(typeof ME!=='undefined'&&ME.first)||'there';let day='',side='',greeted=false;
- /* Zero says hey once a day, on the first thing it writes to you */
- const hey=()=>{if(greeted)return'';greeted=true;return`Hey ${first}, `};
- const zturn=h=>{const first=side!=='z';side='z';return`<div class="cz-z ${first?'first':''}"><span class="cz-av">${first?orb('xs'):''}</span><div class="cz-c">${h}</div></div>`};
- const me=t=>{side='m';return`<div class="cz-me"><p>${esc(t)}</p></div>`};
- const tool=(icon,txt,t,k,body,cls='')=>{const has=!!body,open=has&&X[k];return`<div class="cz-tl ${cls} ${open?'open':''}"><button type="button" class="cz-th" ${has?`data-a="czx" data-id="${k}" aria-expanded="${!!open}"`:'tabindex="-1"'}><span class="cz-ti">${icon}</span><span class="cz-tt">${txt}</span>${has?`<span class="cz-ch">${ic('chevron-right')}</span>`:''}${t?`<span class="cz-tm">${t}</span>`:''}</button>${open?`<div class="cz-out">${body}</div>`:''}</div>`};
- const rrow=(r,right)=>`<button type="button" class="cz-r" data-a="${S.apps[r.id]?'sheet':'rolesheet'}" data-id="${r.id}">${lg(CO(r.co).dom,'xs')}<span class="i clip">${r.title}</span><span class="m clip">${coName(r)} · ${r.loc}</span><span class="cz-rr">${right}</span></button>`;
- const items=[];M.forEach((m,i)=>{if(!m||!m.date||m.busy||m.from==='rec'||m.from==='sys')return;if(m.from==='act'&&/opened your|^Zero tailored your portfolio for|^Zero built a resume|^You applied to|^You said yes/.test(m.text))return;
-  const last=items[items.length-1],ap=m.from==='act'&&m.id&&ROLE(m.id)&&/applied to/i.test(m.text);
-  if(ap&&last&&last.kind==='applied'&&last.date===m.date){last.ids.push(m.id);return}
-  items.push(ap?{kind:'applied',ids:[m.id],t:m.t,k:'ap'+i,date:m.date}:{kind:m.from,m,t:m.t,k:'m'+i,date:m.date})});
- let lastKind='';
- items.forEach(it=>{if(it.date!==day){day=it.date;side='';greeted=false;out.push(`<div class="cz-day"><span>${dayLbl(day)}</span></div>`)}
-  lastKind=it.kind;const m=it.m;
-  if(it.kind==='applied'){const R=it.ids.map(ROLE);out.push(zturn(tool(`<span class="cz-ok">${ic('check')}</span>`,`Applied to <b>${R.length>1?`${R.length} roles`:coName(R[0])}</b>${R.length>1?` at ${R.slice(0,2).map(coName).join(', ')}${R.length>2?' and more':''}`:` for ${R[0].title}`}`,it.t,it.k,
-   R.map(r=>`<div class="cz-ar">${rrow(r,`<span class="eg-st ${CONN.includes(stOf(r.id))?'ok':''}">${S.apps[r.id]?stLabel(r.id):''}</span>`)}<div class="cz-files">${fileChip('file',`${slugOf(r)}-portfolio.pdf`,'pfv',r.id,'View the portfolio')}${fileChip('file-text','ATS resume','cvv',r.id,'View the resume')}${fileChip('mail','your note','znote',r.id,'Read the note')}</div></div>`).join(''))));return}
-  if(it.kind==='me'){out.push(me(m.text));return}
-  if(it.kind==='zq'){const r=m.id&&ROLE(m.id),p=hey();out.push(zturn(`<p class="cz-p">${p}${esc(p?czLow(m.text):m.text)}</p>${r?czRole(r):''}`));return}
-  if(it.kind==='them'||it.kind==='zero'){greeted=true;out.push(zturn(`<p class="cz-p">${esc(m.text)}</p>`));return}
-  if(/^Read \d+ postings/.test(m.text)){const ids=(m.ids||[]).filter(id=>ROLE(id)),R=ids.map(ROLE),src=(m.text.match(/^Read (\d+) postings on ([^.]+)\./)||[]),where=(src[2]||'Greenhouse, Ashby, Lever').replace(/, ([^,]+)$/,' and $1');
-   out.push(zturn(tool(`<span class="cz-ok">${ic('check')}</span>`,`Read ${src[1]||'new'} postings on ${where}`,it.t,it.k,R.length?R.map(r=>rrow(r,`${fitPill(r)}<span class="cz-act">${actCell(r)}</span>`)).join(''):'')+
-    `<p class="cz-p">${(p=>R.length?(S.lvl===0?`${p}<b>${(p?String:rcCap)(num(R.length).toLowerCase())} role${R.length>1?'s':''}</b> open to you at Level 1.`:`${p}I found <b>${num(R.length).toLowerCase()} new role${R.length>1?'s':''}</b> that fit you.`):`${p}${p?'nothing':'Nothing'} new fits you today. I will read again tomorrow at 9.`)(hey())}</p>`));return}
-  const r=m.id&&ROLE(m.id);out.push(zturn(tool(r?lg(CO(r.co).dom,'xs'):m.ids&&m.ids.length?lgStack(m.ids):ic(m.icon||'sparkle'),act2(m),it.t,'','')))});
- const newDay=dayLbl(today())!==dayLbl(day);if(newDay)greeted=false;
- /* now: what Zero is doing */
- const live=[];
- if(S.scan&&S.scan.me===S){const p=scanPh();if(!p.done){const el=Date.now()-S.scan.t0;
-  live.push(`<div class="cz-w"><div class="cz-wh">${spinS(p.txt)}<span class="shim" ${shimD()}>Reading new postings</span><span class="cz-tm">${mmss(el)}</span></div><ul class="cz-st">${S.scan.src.map((s,i)=>`<li class="${i<p.i?'ok':i===p.i?'on':''}">${i<p.i?ic('check'):'<span class="cz-dot"></span>'}<span>${i<p.i?`${s[0]} · ${s[1]} postings`:i===p.i?p.txt:s[0]}</span></li>`).join('')}</ul></div>`)}}
- if(S.qa&&ROLE(S.qa.id)){const r=ROLE(S.qa.id),at=Math.min(S.qa.at,QA.length),el=Date.now()-(S.qa.t0||Date.now()),hold=at===3;
-  const steps=[0,1,2,3].map(i=>{const txt=i===3&&hold?qaPh(r,3):[`Tailoring your portfolio for ${coName(r)}`,`Building a resume ${r.ats||'Greenhouse'} can read`,`Writing your note to ${r.manager.first}`,`Sending through ${r.ats||'Greenhouse'}`][i];
-   return`<li class="${i<at?'ok':i===at?'on':''}">${i<at?ic('check'):'<span class="cz-dot"></span>'}<span ${i===at&&!hold?`class="shim" ${shimD()}`:''}>${txt}</span></li>`}).join('');
-  const nx=(S.qq||[]).map(ROLE).filter(Boolean);
-  live.push(`<div class="cz-w"><div class="cz-wh">${spinS(qaPh(r,at))}<span class="cz-wt2">Applying to <b>${coName(r)}</b><span class="m"> · ${r.title}</span></span><span class="cz-tm">${mmss(el)}</span><span class="grow"></span>${hold?`<button type="button" class="s sm" data-a="qnow" data-id="${r.id}">Send now</button>`:''}<button type="button" class="x sm" data-a="qstop" data-id="${r.id}">Stop</button></div><ul class="cz-st">${steps}</ul>${nx.length?`<p class="m cz-nx">${lgStack(nx.map(x=>x.id))}Next in line: ${nx.slice(0,3).map(coName).join(', ')}${nx.length>3?` and ${nx.length-3} more`:''}</p>`:''}</div>`)}
- /* then what it needs from you */
- const T=todos(),cur=T[0];
- let ask='';if(cur){const p=hey(),say=p?p+cur.say:czCap(cur.say);
-  ask=`<p class="cz-p">${say}</p><div class="cz-ask" data-id="ask-${cur.id}">${cur.show?`<div class="cz-sh">${cur.show}</div>`:''}<div class="cz-os">${cur.opts.map((o,i)=>czOpt(i+1,o[0],o[1],o[2],o[3],o[4]||'')).join('')}</div>${cur.foot||T.length>1?`<div class="cz-ft m">${cur.foot||''}${cur.foot&&T.length>1?' · ':''}${T.length>1?`${T.length-1} more after this`:''}</div>`:''}</div>`}
- const W=zRows().filter(x=>x.watch);
- const tail=!cur&&!live.length?`<p class="cz-p">You are all caught up. I read new postings every morning at 9 and bring anything that needs you right here.</p>`:'';
- const watch=W.length&&!live.length?`<p class="cz-wt m"><span class="zw-dot"></span>${W.some(x=>x.k==='auto')?'Apply for me is on. ':''}Watching ${num(W.filter(x=>x.k!=='auto').length).toLowerCase()} application${W.filter(x=>x.k!=='auto').length===1?'':'s'} for a reply</p>`:'';
- const now=live.join('')+ask+tail;
- if(now&&newDay){out.push(`<div class="cz-day"><span>${dayLbl(today())}</span></div>`);side=''}
- return out.join('')+(now?zturn(now):'')+watch}
-PAGES.student.homeClass='r-wide cz-pg';
-PAGES.student.home=()=>`<div class="cz">${forYou()}</div>`;
-/* keep the live steps moving between redraws */
-setInterval(()=>{if(!document.hidden&&S.mode==='student'&&S.page.student==='home'&&(S.qa||S.scan)&&!S.lu)render()},500);
-/* stay at the latest message while Zero works */
-AFTER.push(()=>{if(S.page.student!=='home'||S.mode!=='student')return;const b=$('#body');if(b&&b.scrollHeight-b.scrollTop-b.clientHeight<200)b.scrollTop=b.scrollHeight});
-/* 1, 2, 3 answer the open question, like picking an option in Claude */
-document.addEventListener('keydown',e=>{if(S.lu||S.rv||S.mode!=='student'||S.page.student!=='home'||e.metaKey||e.ctrlKey||e.altKey)return;const t=e.target;if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.isContentEditable))return;
- if(!/^[1-9]$/.test(e.key))return;const b=document.querySelector(`.cz-ask .cz-o[data-n="${e.key}"]`);if(b){e.preventDefault();b.click()}});
+/* ═══ notifications: what happened and which jobs came in ═══ */
+function nbItems(){const M=zthread().msgs,L=[];M.forEach((m,i)=>{if(!m||!m.date||m.busy||['me','zq','sys','rec'].includes(m.from))return;if(/^Welcome to Zero/.test(m.text||''))return;if(m.from==='act'&&/^Zero tailored|^Zero built/.test(m.text))return;
+  const r=m.id&&ROLE(m.id);L.push({i,date:m.date,t:m.t,id:r&&r.id,lead:r?lg(CO(r.co).dom,'sm'):m.ids&&m.ids.length?lgStack(m.ids,2):`<span class="nb-z">${ic(m.from==='act'?(m.icon||'sparkle'):'sparkle')}</span>`,html:m.from==='act'?act2(m):esc(m.text)})});return L.reverse().slice(0,14)}
+A.nbo=()=>{const M=zthread().msgs;S.nbo=!S.nbo;if(S.nbo)S.nbSeen=M.length};
+A.nbgo=id=>{S.nbo=false;if(id&&ROLE(id))return S.apps[id]?A.sheet(id):A.rolesheet(id);A.go('home')};
+{const f=topHTML;topHTML=function(){const t=f();if(S.mode!=='student'||S.onb.student!=='done')return t;const M=zthread().msgs;if(S.nbSeen==null)S.nbSeen=Math.max(0,M.length-3);
+ const L=S.nbo?nbItems():null,n=nbItems().filter(x=>x.i>=S.nbSeen).length;
+ const panel=S.nbo?`<div class="nb-p" role="dialog" aria-label="Notifications"><header class="nb-h"><span class="i">Notifications</span><span class="grow"></span><span class="m">${L.length?'Newest first':''}</span></header>${L.length?`<ul class="nb-l">${L.map(x=>`<li><button type="button" class="nb-i" data-a="nbgo" data-id="${x.id||''}">${x.lead}<span class="grow"><span class="nb-tx">${x.html}</span><span class="m">${dayLbl(x.date)}${x.t?`, ${x.t}`:''}</span></span></button></li>`).join('')}</ul>`:`<p class="nb-0 m">Nothing yet. When Zero finds roles or a team writes back, it shows up here.</p>`}</div>`:'';
+ const bell=`<span class="nb-w"><button type="button" class="nb ${S.nbo?'on':''}" data-a="nbo" aria-label="Notifications${n?`, ${n} new`:''}" aria-expanded="${!!S.nbo}">${ic('bell')}${n?`<i class="nb-n">${n>9?'9+':n}</i>`:''}</button>${panel}</span>`;
+ return t.includes('<span class="crd')?t.replace('<span class="crd',bell+'<span class="crd'):t.replace('<button type="button" class="st-lvb"',bell+'<button type="button" class="st-lvb"')}}
+document.addEventListener('click',e=>{if(S.nbo&&!(e.target.closest&&e.target.closest('.nb-w'))){S.nbo=false;render()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&S.nbo){S.nbo=false;render()}});
+
+/* ═══ Jobs: locked levels sit in a pill; selecting never opens a side panel (the header bar does it, like Shopify) ═══ */
+function actCell(r){const id=r.id,st=btState(id);
+ if(st==='run')return`<span class="eg-st run">${spinS('apply')}Applying</span>`;if(st==='wait')return`<span class="eg-st">${ic('hourglass')}Next</span>`;
+ if(S.apps[id])return stPill(id);
+ if(locked(r))return lkPill(lvOf(r));
+ if(S.hidden[id])return`<span class="eg-st">Not interested</span>`;
+ return sCan(r)?`<button type="button" class="s sm eg-ap" data-a="fbopen" data-id="${id}" data-side="st" data-k="yes">Apply</button>`:''}
+{const f=PAGES.student.jobs;PAGES.student.jobs=()=>{S.ebatch=false;let h=f();return h.replace(/(\d+) roles? that fits? you(?:\. 🔥 marks Zero’s \d+ picks?)?/g,(m,n)=>`${n} role${n==='1'?'':'s'}`)}}
+
+/* ═══ the role: a big Apply up top, Like and Not interested on the fit line, where it was sourced at the bottom ═══ */
+{const f=roleBody;roleBody=function(r,acts){let h=f(r,acts);const id=r.id,a=S.apps[id],q=btState(id);
+ const top=a?stPill(id):locked(r)?lkPill(lvOf(r)):S.hidden[id]?btn('Show again','x','hide',id):q==='run'||q==='wait'?`<span class="eg-st run">${spinS('apply')}${q==='run'?'Applying':'Next in line'}</span>`:btn(`${ic('zap')}Apply`,'k rb-ap','fbopen',id,'data-side="st" data-k="yes"');
+ const side=a||locked(r)?likeBtn(r):S.hidden[id]?'':likeBtn(r)+btn('Not interested','x sm','fbopen',id,'data-side="st" data-k="no"');
+ h=h.replace(/<div class="rb-ha">[\s\S]*?<\/div>(<\/div><div class="rb-fit">)/,`<div class="rb-ha">${top}</div>$1`);
+ h=h.replace(/(<div class="rb-fit">[\s\S]*?)(<\/div>)/,`$1<span class="grow"></span><span class="rb-fa">${side}</span>$2`);
+ const ats=r.ats||'Greenhouse';
+ h=h.replace(/<p class="m rb-note">[\s\S]*?<\/p>/,`<div class="rb-src"><span class="lgs">${lg(ATSDOM[ats]||'greenhouse.com','xs')}${lg('linkedin.com','xs')}${lg('glassdoor.com','xs')}</span><p class="grow"><span class="i">Posted on ${ats}</span><span class="m"> · also listed on LinkedIn and Glassdoor · Zero checked it today</span></p>${r.real&&r.url?`<a class="rb-sl" href="${esc(r.url)}" target="_blank" rel="noopener">See the posting${ic('arrow-up-right')}</a>`:''}</div>`);
+ return h}}
+
+/* ═══ the level-up background, drawn on one canvas: the swirl, the flowing bands and the blooms.
+   The old version used layers four to eight thousand pixels wide; big Retina screens dropped tiles of them. ═══ */
+const LUC={raf:0,step:'',bl:[],o:null};
+{const f=luHTML;luHTML=function(){return f().replace('<span class="lu4-rp" aria-hidden="true">','<canvas id="luc" class="lu5-c" aria-hidden="true"></canvas><span class="lu4-rp" aria-hidden="true">')}}
+{const f=drawLU;drawLU=function(){f();const u=S.lu;if(!u){LUC.step='';return}if(u.step!==LUC.step){LUC.step=u.step;if(u.step!=='summary'){const t=performance.now()+(u.step==='badge'?900:0);LUC.bl.push({t,k:'a',d:1900},{t:t+80,k:'b',d:2300})}}
+ if(!LUC.raf&&!matchMedia('(prefers-reduced-motion: reduce)').matches)LUC.raf=requestAnimationFrame(lucFrame)}}
+const lucEase=p=>1-Math.pow(1-p,2.6),lucExpo=p=>p>=1?1:1-Math.pow(2,-10*p);
+function lucFrame(){const c=document.getElementById('luc');if(!c||!S.lu){LUC.raf=0;return}LUC.raf=requestAnimationFrame(lucFrame);
+ const sc=.5,w=Math.max(1,Math.round(innerWidth*sc)),h=Math.max(1,Math.round(innerHeight*sc));if(c.width!==w||c.height!==h){c.width=w;c.height=h}
+ const x=c.getContext('2d'),t=performance.now(),cx=w*.5,cy=h*.46,vm=Math.max(w,h)/100,TAU=Math.PI*2;x.clearRect(0,0,w,h);
+ /* the slow swirl, masked to a soft ring */
+ if(x.createConicGradient){const o=LUC.o||(LUC.o=document.createElement('canvas'));if(o.width!==w||o.height!==h){o.width=w;o.height=h}const ox=o.getContext('2d');ox.globalCompositeOperation='source-over';ox.clearRect(0,0,w,h);
+  const g=ox.createConicGradient(t/24000*TAU,cx,cy);[[0,'rgba(255,255,255,0)'],[40/360,'rgba(255,255,240,.55)'],[95/360,'rgba(255,255,255,0)'],[160/360,'rgba(80,190,170,.18)'],[220/360,'rgba(255,255,255,0)'],[290/360,'rgba(255,255,240,.45)'],[345/360,'rgba(255,255,255,0)'],[1,'rgba(255,255,255,0)']].forEach(s=>g.addColorStop(s[0],s[1]));
+  ox.fillStyle=g;ox.fillRect(0,0,w,h);ox.globalCompositeOperation='destination-in';const R=106*vm,mk=ox.createRadialGradient(cx,cy,0,cx,cy,R);mk.addColorStop(.08,'rgba(0,0,0,0)');mk.addColorStop(.3,'#000');mk.addColorStop(.6,'#000');mk.addColorStop(.75,'rgba(0,0,0,0)');ox.fillStyle=mk;ox.fillRect(0,0,w,h);x.drawImage(o,0,0)}
+ /* six thick bands flowing outward, forever */
+ for(let i=0;i<6;i++){const p=((t+i*10000/6)%10000)/10000,s=.06+.94*lucEase(p),op=p<.14?p/.14:p<.72?1-.25*(p-.14)/.58:.75*(1-(p-.72)/.28),R=120*vm*s;
+  const g=x.createRadialGradient(cx,cy,0,cx,cy,R);g.addColorStop(.5,'rgba(255,255,236,0)');g.addColorStop(.59,'rgba(255,255,236,.85)');g.addColorStop(.63,'rgba(206,245,160,.55)');g.addColorStop(.665,'rgba(130,215,150,.28)');g.addColorStop(.73,'rgba(255,255,236,0)');
+  x.globalAlpha=Math.max(0,op);x.fillStyle=g;x.beginPath();x.arc(cx,cy,R*.74,0,TAU);x.fill()}
+ x.globalAlpha=1;
+ /* a bloom on each beat */
+ LUC.bl=LUC.bl.filter(b=>t<b.t+b.d);LUC.bl.forEach(b=>{const p=(t-b.t)/b.d;if(p<0)return;const e=lucExpo(p);
+  if(b.k==='a'){const s=.05+2.15*e,R=63.6*vm*s,op=p<.14?p/.14:1-(p-.14)/.86,g=x.createRadialGradient(cx,cy,0,cx,cy,R);g.addColorStop(0,'rgba(255,255,232,.95)');g.addColorStop(.26,'rgba(230,251,186,.72)');g.addColorStop(.48,'rgba(170,232,155,.32)');g.addColorStop(.68,'rgba(170,232,155,0)');x.globalAlpha=Math.max(0,op);x.fillStyle=g;x.beginPath();x.arc(cx,cy,R*.7,0,TAU);x.fill()}
+  else{const s=.1+2.5*e,R=56.6*vm*s,op=p<.12?p/.12:1-(p-.12)/.88,g=x.createRadialGradient(cx,cy,0,cx,cy,R);g.addColorStop(.56,'rgba(255,255,240,0)');g.addColorStop(.63,'rgba(255,255,240,.95)');g.addColorStop(.67,'rgba(196,242,130,.6)');g.addColorStop(.75,'rgba(196,242,130,0)');x.globalAlpha=Math.max(0,op);x.fillStyle=g;x.beginPath();x.arc(cx,cy,R*.76,0,TAU);x.fill()}});
+ x.globalAlpha=1}
 
 /* ═══════════ PORTFOLIO: generated by pf_build.py from zero-portfolio/v36 (Slate 9). Do not edit by hand:
    edit pf_page.js or pf_page.css, then run python3 next/pf_build.py. One IIFE, so nothing here is a global
