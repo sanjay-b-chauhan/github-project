@@ -4235,6 +4235,32 @@ button.f2-row:hover{background:var(--well)}
 .rb>.jd.rb-who{margin-top:28px}
 .eg.split th:nth-child(1){width:336px!important}
 
+/* ═══ v64: what you sent, kept in the thread ═══ */
+.msgs li.f5-mine{align-self:flex-end;display:flex;flex-direction:column;align-items:flex-end;gap:4px;width:min(420px,86%);margin:4px 0;list-style:none}
+.f5-lb{font-size:12px;line-height:16px;color:var(--ink4)}
+.f5-pv{display:flex;flex-direction:column;gap:10px;width:100%;box-sizing:border-box;padding:12px 14px;border-radius:16px 16px 4px 16px;background:#fff;box-shadow:0 0 0 1px var(--line2)}
+.f5-pk{margin:0;font-size:12px;line-height:16px;color:var(--ink3)}
+.f5-dl{display:flex;flex-direction:column;gap:8px;margin:0}
+.f5-dl>div{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+.f5-dl dt{font-size:14px;line-height:20px;color:var(--ink3)}
+.f5-dl dd{margin:0;font-size:14px;line-height:20px;font-weight:500;color:var(--ink);text-align:right}
+.f5-q{margin:0;font-size:14px;line-height:20px;font-weight:500;color:var(--ink)}
+.f5-tx{margin:0;font-size:14px;line-height:20px;color:var(--ink2);white-space:pre-wrap}
+.f5-fc{display:flex;align-items:center;gap:8px;min-width:0;min-height:40px;padding:0 12px;border-radius:12px;background:var(--well);font-size:14px;line-height:20px;color:var(--ink);text-decoration:none}
+a.f5-fc:hover{background:var(--line)}
+.f5-fc svg{width:15px;height:15px;flex-shrink:0;color:var(--ink3)}
+.f5-fc .clip{flex:1;min-width:0}
+.f5-fc .m{flex-shrink:0;font-size:12px;line-height:16px;color:var(--ink3)}
+.f3-x .f5-pv{max-width:440px;border-radius:16px}
+/* the company speaks with its logo, not a person's face */
+.f5-co{display:inline-flex;flex-shrink:0}
+.msgs li>.f5-co{align-self:flex-end}
+.f5-co .lg.xs{width:28px;height:28px}
+.msgs .f5-pv p{max-width:none;margin:0;padding:0;border-radius:0;background:none;box-shadow:none}
+.msgs .f5-pv .f5-pk{color:var(--ink3)}
+.msgs .f5-pv .f5-q{color:var(--ink)}
+.msgs .f5-pv .f5-tx{color:var(--ink2)}
+
 </style>
 </head>
 <body>
@@ -9438,7 +9464,7 @@ function f2Activity(){const items=f2Items(),now=f3Now();if(!items.length&&!now.l
   if(it.rd){const ids=(m.ids||[]).filter(id=>ROLE(id)),R=ids.map(ROLE),N=(m.text.match(/^Read (\d+)/)||[])[1]||'new',src=(m.text.match(/^Read \d+ postings on ([^.]+)\./)||[])[1];
    return blk(it.k,R.length?lgStack(ids):`<span class="f3-ic">${ic('search')}</span>`,`<b>Zero</b> read ${N} postings${src?` on ${src.replace(/, ([^,]+)$/,' and $1')}`:''}. <b>${R.length?`${rcCap(num(R.length).toLowerCase())} fit${S.lvl===0?' what you told me':' you'}`:'Nothing new fits you'}</b>`,R.length?`<span class="f3-n">${R.length} roles</span>`:'',it.t,
     R.length?R.map(r=>row(r,`${fitOr(r)}<span class="f3-act2">${actCell(r)}</span>`)).join(''):'')}
-  if(m.f2n&&m.id&&ROLE(m.id)){const r=ROLE(m.id);return blk(it.k,m.f2you?f2Me():lg(CO(r.co).dom,'xs'),esc(m.text),'',it.t,'')}
+  if(m.f2n&&m.id&&ROLE(m.id)){const r=ROLE(m.id);return blk(it.k,m.f2you?f2Me():lg(CO(r.co).dom,'xs'),esc(m.text),'',it.t,m.f2you&&m.sent?f5Prev(m.sent):'')}
   const r=m.id&&ROLE(m.id),lead=m.f2x?`<span class="f3-ic">${ic('clock')}</span>`:r?lg(CO(r.co).dom,'xs'):m.ids&&m.ids.length?lgStack(m.ids):`<span class="f3-ic">${ic(m.icon||'sparkle')}</span>`;
   return blk(it.k,lead,m.f2x||m.f2f?esc(m.text):act2(m),'',it.t,'')}).join('')}</div>`).join('')}</div></section>`}
 
@@ -9490,7 +9516,7 @@ const F2NK={
  about:{ic:'pen-line',t:r=>`${coName(r)} asked something only you can answer`,ask:r=>`${coName(r)} asked a question I could not answer for you`,done:r=>`You answered ${coName(r)}`}};
 const f2N=()=>(S.need=S.need||{}),f2St=id=>{const o=S.f2ns=S.f2ns||{};return o[id]=o[id]||{}};
 const f2Has=id=>Object.values(f2N()).some(n=>n.id===id),f2Of=id=>Object.keys(f2N()).find(x=>f2N()[x].id===id);
-const f2Ask=(id,k)=>{const r=ROLE(id),key=id+'~'+k;if(!r||f2N()[key])return;f2N()[key]={id,k,date:today()};zthread().msgs.push({from:'act',icon:F2NK[k].ic,id,text:F2NK[k].ask(r),date:today(),t:clkT(),f2n:1})};
+const f2Ask=(id,k)=>{const r=ROLE(id),key=id+'~'+k;if(!r||f2N()[key])return;f2N()[key]={id,k,date:today()};zthread().msgs.push({from:'act',icon:F2NK[k].ic,id,text:F2NK[k].ask(r),date:today(),t:clkT(),f2n:1,nk:k})};
 const f3Url=v=>/^(https?:\/\/)?[\w-]+(\.[\w-]+)+\/\S+/.test(String(v||'').trim());
 const f2Ok=(k,s)=>k==='video'?!!s.file||(s.mode==='link'&&f3Url(s.link)):k==='file'?(s.pick||'zero')==='zero'||!!s.file:k==='form'?!!(s.auth&&s.move):(s.text||'').trim().length>=40;
 const F2Q='Their question: a project you are proud of, and what you would do in your first month. Two minutes at most.';
@@ -9516,8 +9542,8 @@ A.f2pick=(id,el)=>{f2St(id).pick=el&&el.dataset.k||'zero'};
 A.f2unf=id=>{const s=f2St(id);s.file='';s.size=''};
 A.f2seg=(id,el)=>{f2St(id).move=el&&el.dataset.k};
 A.f2draft=key=>{const n=f2N()[key],r=n&&ROLE(n.id),id=key;if(!r)return false;const b=(CO(r.co).blurb||'').trim();f2St(id).text=`I have followed ${coName(r)} for a while. ${b?b+' ':''}That is the kind of problem I want to spend my days on. In my Zero scenarios I shipped work that managers graded, and I want to bring that pace to the ${r.team||coName(r)} team.`.slice(0,600)};
-A.f2send=key=>{const n=f2N()[key],r=n&&ROLE(n.id);if(!n||!r||!f2Ok(n.k,f2St(key)))return false;delete f2N()[key];
- zthread().msgs.push({from:'act',icon:'check',id:n.id,text:F2NK[n.k].done(r),date:today(),t:clkT(),f2n:1,f2you:1});toast('check',`${F2NK[n.k].done(r)}. I watch for what comes next`)};
+A.f2send=key=>{const n=f2N()[key],r=n&&ROLE(n.id);if(!n||!r||!f2Ok(n.k,f2St(key)))return false;const sent=f5Snap(r,n.k,f2St(key));delete f2N()[key];
+ zthread().msgs.push({from:'act',icon:'check',id:n.id,text:F2NK[n.k].done(r),date:today(),t:clkT(),f2n:1,f2you:1,nk:n.k,sent});toast('check',`${F2NK[n.k].done(r)}. I watch for what comes next`)};
 /* the first team to open your application sends a video assessment */
 {const f=E.open;E.open=function(id){const o=f.apply(E,arguments);if(S.lvl>0&&!S.f2vid&&S.apps[id]){S.f2vid=1;f2Ask(id,'video')}return o}}
 A.f2do=id=>{const key=f2Of(id);if(!key)return false;const o=A.go('home');S.f2first='need'+key;S.f2i=0;S.f2cur='need'+key;S.f2pin=1;return o};
@@ -9571,7 +9597,10 @@ const f3Hd=id=>{const r=ROLE(id),a=S.apps[id];return`<div class="chat-h ib-h f3-
 const f3Z=h=>`<li class="them f3-z"><span class="f3-zo">${orb('xs')}</span><div><p>${h}</p></div></li>`;
 /* Zero opens the thread: how it applied, then each ask and what you sent back */
 const f3Top=id=>{const r=ROLE(id),a=S.apps[id];if(!a)return'';const out=[f3Z((S.f2mine||{})[id]?`You applied to ${esc(r.title)} yourself on ${a.sent}. I am watching for the reply.`:`I applied to ${esc(r.title)} for you on ${a.sent}. I am watching for the reply.`)];
- zthread().msgs.forEach(m=>{if(m&&m.f2n&&m.id===id&&m.f2you)out.push(f3Z(`${esc(m.text)}. ${coName(r)} has it.`))});return out.join('')};
+ const pend=new Set(f3Need(id).map(k=>f2N()[k].k));
+ zthread().msgs.forEach(m=>{if(!m||!m.f2n||m.id!==id)return;
+  if(m.f2you){out.push(`<li class="f5-mine"><span class="f5-lb">You sent${m.t?` · ${m.t}`:''}</span>${m.sent?f5Prev(m.sent):`<div class="f5-pv"><p class="f5-tx">${esc(m.text)}</p></div>`}</li>`,f3Z(`Sent. ${coName(r)} has it.`));return}
+  if(m.nk&&pend.has(m.nk))return;out.push(f3Z(`${esc(m.text)}.`))});return out.join('')};
 /* and anything still open sits at the bottom, ready to fill in */
 const f3Pend=id=>{const r=ROLE(id);return f3Need(id).slice(0,1).map(k=>{const n=f2N()[k],K=F2NK[n.k],s=f2St(k);
  return f3Z(`${K.t(r)}. Can you fill this in?`)+`<li class="f3-nd"><div class="zy-box f2-td" data-id="ibn-${k}"><div class="zy-bb">${f2NBody(r,n.k,s,k)}</div><div class="zy-bf"><span class="grow"></span>${btn(`${ic('send')}Send`,'k','f2send',k,f2Ok(n.k,s)?'':'disabled')}</div></div></li>`}).join('')};
@@ -9583,6 +9612,8 @@ const f3Pend=id=>{const r=ROLE(id);return f3Need(id).slice(0,1).map(k=>{const n=
  const L=q('.jl-list');if(L)L.innerHTML=ids.map(f3Row).join('');const c=q('.jl-top .m');if(c)c.textContent=ids.length;
  const H=q('.chat-h');if(H)H.outerHTML=f3Hd(id);
  const U=q('#msgs');if(U){U.insertAdjacentHTML('afterbegin',f3Top(id));U.insertAdjacentHTML('beforeend',f3Pend(id))}
+ const lgx=`<span class="f5-co">${lg(CO(ROLE(id).co).dom,'xs')}</span>`;T.content.querySelectorAll('#msgs li.them:not(.f3-z)>.av').forEach(e=>{e.outerHTML=lgx});
+ const inp=q('#ibIn');if(inp)inp.setAttribute('placeholder',`Write to ${coName(ROLE(id))}`);
  return T.innerHTML}}
 Object.defineProperty(PAGES.student,'inboxClass',{configurable:true,get(){return f3Ids().length||(S.ibNew&&ROLE(S.ibNew))?'split':'r-wide ib0-pg'}});
 
@@ -9600,7 +9631,7 @@ const f3Zl=(t,b='',w='')=>`<div class="f3-zl ${w}"><span class="f3-zo">${orb('xs
  else Z.push(f3Zl(`${l.stat}${when}`)+(l.body?`<div class="f3-more">${l.body}</div>`:''));
  return`<article class="lane f3-tk ${l.need||f3Need(id).length?'need':''} ${closed?'closed':''}"><ol class="trk" aria-label="Where it stands">${TR.map((t,i)=>`<li class="${l.won||i<l.at?'done':i===l.at?(closed?'end':'now'):''}"${i===l.at?' aria-current="step"':''}><span>${t}</span></li>`).join('')}</ol><div class="f3-zls">${Z.join('')}</div></article>`}}
 {const f=roleSheet;roleSheet=function(r,v){const h=f(r,v),id=r.id,a=S.apps[id];if(!a||S.mode!=='student')return h;const m=r.manager,open=!['asked'].includes(stOf(id))&&!ARCH.includes(stOf(id));
- const qc=`<form class="f3-qc" data-f3qc="${id}">${av(m.ini,m.tone)}<label class="hide" for="qc-${id}">Message ${esc(m.first)}</label><input id="qc-${id}" class="grow" placeholder="${open?`Write to ${esc(m.first)}`:stOf(id)==='asked'?`Accept to write to ${esc(m.first)}`:'This conversation is closed'}" autocomplete="off" ${open?'':'disabled'}><button class="k sm" type="submit" ${open?'':'disabled'} aria-label="Send">${ic('send')}</button><button type="button" class="f3-qx" data-a="thread" data-id="${id}" aria-label="Open the conversation in the Inbox" title="Open in the Inbox">${ic('maximize-2')}</button></form>`;
+ const co=coName(r),qc=`<form class="f3-qc" data-f3qc="${id}"><span class="f5-co">${lg(CO(r.co).dom,'xs')}</span><label class="hide" for="qc-${id}">Message ${esc(co)}</label><input id="qc-${id}" class="grow" placeholder="${open?`Write to ${esc(co)}`:stOf(id)==='asked'?`Accept to write to ${esc(co)}`:'This conversation is closed'}" autocomplete="off" ${open?'':'disabled'}><button class="k sm" type="submit" ${open?'':'disabled'} aria-label="Send">${ic('send')}</button><button type="button" class="f3-qx" data-a="thread" data-id="${id}" aria-label="Open the conversation in the Inbox" title="Open in the Inbox">${ic('maximize-2')}</button></form>`;
  return h.replace(/<footer class="j-rvf">[\s\S]*?<\/footer>/,`<footer class="j-rvf f3-qf">${qc}</footer>`)}}
 document.addEventListener('submit',e=>{const f=e.target.closest&&e.target.closest('form[data-f3qc]');if(!f)return;e.preventDefault();const id=f.dataset.f3qc,i=f.querySelector('input'),v=(i&&i.value||'').trim();if(!v||!ROLE(id))return;i.value='';dm(id,v)});
 A.f2dok=k=>{if(!f2N()[k])return false;const o=A.go('home');S.f2first='need'+k;S.f2i=0;S.f2cur='need'+k;S.f2pin=1;return o};
@@ -9611,6 +9642,19 @@ const f3Btn=k=>{const n=f2N()[k];if(!n)return;const ok=f2Ok(n.k,f2St(k));documen
 A.f3lnk=k=>{const s=f2St(k);s.mode=s.mode==='link'?'':'link';s.file='';setTimeout(()=>{const i=document.querySelector(`[data-f2in="${k}"][data-k="link"]`);if(i)i.focus()},0)};
 A.f3x=k=>{S.f3x=S.f3x||{};S.f3x[k]=!S.f3x[k]};
 {const f=A.f2unf;A.f2unf=k=>{f(k);const s=f2St(k);if(s.mode==='link')s.mode=''}}
+
+/* ═══ v64: what you sent is kept, in full, where you can see it. Trust comes from seeing exactly what went out. ═══ */
+const f5Snap=(r,k,s)=>{if(k==='form')return{k,rows:[['Work authorization',s.auth||''],[`Can work from ${r.loc}`,s.move||''],['Earliest start',s.start!=null?s.start:(S.prefs&&S.prefs.start)||'']]};
+ if(k==='about')return{k,q:`Why do you want to work at ${coName(r)}?`,text:s.text||''};
+ if(k==='video')return s.file?{k,file:s.file,size:s.size||''}:{k,link:String(s.link||'').trim()};
+ return(s.pick||'zero')==='zero'?{k,file:`${String(ME.first||'my').toLowerCase()}-resume-${r.co}.pdf`,size:'1 page'}:{k,file:s.file,size:s.size||''}};
+const F5T={form:'Your details',about:'Your answer',video:'Your video',file:'Your resume'};
+const f5Prev=x=>{if(!x)return'';let b='';
+ if(x.rows)b=`<dl class="f5-dl">${x.rows.map(([k,v])=>`<div><dt>${esc(k)}</dt><dd>${esc(v)||'Not given'}</dd></div>`).join('')}</dl>`;
+ else if(x.text!=null)b=`<p class="f5-q">${esc(x.q)}</p><p class="f5-tx">${esc(x.text)}</p>`;
+ else if(x.link){const u=/^https?:\/\//.test(x.link)?x.link:'https://'+x.link;b=`<a class="f5-fc" href="${esc(u)}" target="_blank" rel="noopener">${ic('link')}<span class="clip">${esc(x.link)}</span>${ic('arrow-up-right')}</a>`}
+ else if(x.file)b=`<span class="f5-fc">${ic(x.k==='video'?'film':'file-text')}<span class="clip">${esc(x.file)}</span>${x.size?`<span class="m">${esc(x.size)}</span>`:''}</span>`;
+ return`<div class="f5-pv"><p class="f5-pk">${F5T[x.k]||'What you sent'}</p>${b}</div>`};
 
 /* ═══ v63 (15 Oct, his review of v62).
    The portal opens by asking which level to start at, and each level arrives with a history to act on:
