@@ -2911,164 +2911,128 @@ button.fchip:hover{background:var(--well2);color:var(--ink)}
 .zw4-l .i{color:var(--ink)}
 @media(prefers-reduced-motion:reduce){.zw4-p{transition:none}}
 
-/* ZERO Job Portal, v49. The level-up sequence. Light, Zero green, one card over the whole screen. */
+/* ZERO Job Portal, v49 base for the level-up: the overlay, the green ripple field, credits in the top bar. v50 (st12) draws the steps. */
 @property --c{syntax:'<integer>';inherits:false;initial-value:0}
-
-/* any open sheet dims Zero's chat too, so nothing outside the sheet looks highlighted */
 #zdrawer{transition:opacity .2s var(--e)}
 .app:has(#ov.on) #zdrawer{opacity:.4}
-
 .lu2{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
-/* the field behind the card, after his motion references: a lime to green ripple flowing out, a slow swirl, halftone grain */
 .lu2-bg{position:absolute;inset:0;overflow:hidden;background:radial-gradient(circle at 50% 46%,#FBFFF2 0,#E9FAD2 22%,#CDF1C6 44%,#AEE6C2 66%,#DDF3E2 100%);animation:lu2-fade .5s var(--e) both}
 .lu2-rings{position:absolute;left:50%;top:46%;width:200vmax;height:200vmax;margin:-100vmax;background:radial-gradient(circle,transparent 106px,rgba(255,255,236,.75) 120px,transparent 136px),radial-gradient(circle,transparent 236px,rgba(255,255,236,.75) 250px,transparent 266px),radial-gradient(circle,transparent 366px,rgba(255,255,236,.75) 380px,transparent 396px),radial-gradient(circle,transparent 496px,rgba(255,255,236,.75) 510px,transparent 526px),radial-gradient(circle,transparent 626px,rgba(255,255,236,.75) 640px,transparent 656px),radial-gradient(circle,transparent 756px,rgba(255,255,236,.75) 770px,transparent 786px),radial-gradient(circle,transparent 173px,rgba(110,205,140,.28) 185px,transparent 199px),radial-gradient(circle,transparent 303px,rgba(110,205,140,.28) 315px,transparent 329px),radial-gradient(circle,transparent 433px,rgba(110,205,140,.28) 445px,transparent 459px),radial-gradient(circle,transparent 563px,rgba(110,205,140,.28) 575px,transparent 589px),radial-gradient(circle,transparent 693px,rgba(110,205,140,.28) 705px,transparent 719px);filter:blur(7px);animation:lu2-flow 7s linear infinite}
 .lu2-swirl{position:absolute;left:50%;top:46%;width:150vmax;height:150vmax;margin:-75vmax;background:conic-gradient(from 0deg,rgba(255,255,255,0) 0deg,rgba(255,255,240,.55) 40deg,rgba(255,255,255,0) 95deg,rgba(80,190,170,.18) 160deg,rgba(255,255,255,0) 220deg,rgba(255,255,240,.45) 290deg,rgba(255,255,255,0) 345deg);-webkit-mask-image:radial-gradient(circle,transparent 8%,#000 30%,#000 60%,transparent 75%);mask-image:radial-gradient(circle,transparent 8%,#000 30%,#000 60%,transparent 75%);filter:blur(18px);animation:lu2-spin 24s linear infinite}
 .lu2-dots{position:absolute;inset:0;background:radial-gradient(rgba(40,140,70,.22) 1px,transparent 1.5px) 0 0/7px 7px;-webkit-mask-image:radial-gradient(ellipse at 50% 46%,transparent 18%,rgba(0,0,0,.7) 55%,#000 85%);mask-image:radial-gradient(ellipse at 50% 46%,transparent 18%,rgba(0,0,0,.7) 55%,#000 85%);opacity:.8}
-/* one big ripple across the whole screen at each moment */
-.lu2-wave{position:absolute;left:50%;top:46%;width:0;height:0;pointer-events:none;z-index:1}
-.lu2-wave i{position:absolute;left:-200px;top:-200px;width:400px;height:400px;border-radius:50%;border:3px solid rgba(255,255,240,.9);box-shadow:0 0 40px rgba(183,240,106,.7),inset 0 0 40px rgba(183,240,106,.5);opacity:0;animation:lu2-wv 1.9s cubic-bezier(.15,.7,.3,1) both}
-.lu2-wave i:nth-child(2){animation-delay:.16s}.lu2-wave i:nth-child(3){animation-delay:.32s}.lu2-wave i:nth-child(4){animation-delay:.48s}
-.st-level .lu2-wave i{animation-delay:1.15s}.st-level .lu2-wave i:nth-child(2){animation-delay:1.31s}.st-level .lu2-wave i:nth-child(3){animation-delay:1.47s}.st-level .lu2-wave i:nth-child(4){animation-delay:1.63s}
 @keyframes lu2-flow{from{transform:scale(1)}to{transform:scale(1.6)}}
 @keyframes lu2-spin{to{transform:rotate(360deg)}}
 @keyframes lu2-wv{0%{opacity:1;transform:scale(.2)}100%{opacity:0;transform:scale(5)}}
-.lu2-c{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;width:min(560px,100%);min-height:min(620px,92vh);padding:24px 0 18px;text-align:center;animation:lu2-fade .5s var(--e) both}
-.lu2-s{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;width:100%;animation:lu2-in .45s var(--e) both}
-.lu2-k{font-size:12px;line-height:16px;letter-spacing:.08em;text-transform:uppercase;color:#12733F}
-.lu2-skip{position:fixed;top:20px;right:24px;z-index:3;height:30px;padding:0 10px;border-radius:99px;font-size:12px;line-height:16px;color:var(--ink3)}
-.lu2-skip:hover{background:rgba(255,255,255,.6);color:var(--ink)}
-.lu2-pg{display:flex;gap:6px;margin-top:20px}
-.lu2-pg i{width:6px;height:6px;border-radius:99px;background:rgba(19,20,23,.18);transition:background-color .3s var(--e)}
-.lu2-pg i.on{width:20px;background:var(--ink)}
-.lu2-pg i.done{background:#2DB869}
-
-/* the level rolls over like an odometer while the bar fills */
-.lu2-odo{display:flex;flex-direction:column;align-items:center;gap:0}
-.lu2-odo-l{font-size:14px;line-height:20px;color:var(--ink3)}
-.lu2-odo-w{display:block;height:168px;overflow:hidden;-webkit-mask-image:linear-gradient(transparent,#000 18%,#000 82%,transparent);mask-image:linear-gradient(transparent,#000 18%,#000 82%,transparent)}
-.lu2-odo-s{display:flex;flex-direction:column;animation:lu2-roll .9s cubic-bezier(.3,.8,.25,1.25) 1.15s both}
-.lu2-odo-s b{display:block;height:168px;font-weight:400;font-size:160px;line-height:168px;letter-spacing:-.04em;color:var(--ink);font-variant-numeric:tabular-nums}
-.lu2-bar{width:280px;height:8px;margin-top:10px;border-radius:99px;background:rgba(255,255,255,.7);box-shadow:inset 0 0 0 1px rgba(19,90,50,.08);overflow:hidden}
-.lu2-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#1FA65A,#3CC878 55%,#B7F06A);transform-origin:left;transform:scaleX(var(--p0));animation:lu2-fill 2.4s var(--e) .2s both}
-.lu2-pts{font-size:14px;line-height:20px;color:var(--ink2)}
-.lu2-cnt{animation:lu2-count 1.3s var(--e) .25s both;counter-reset:c var(--c)}
-.lu2-cnt::after{content:counter(c)}
-
-/* ripples */
-.lu2-rp{position:absolute;left:50%;top:42%;width:0;height:0;pointer-events:none}
-.lu2-rp i{position:absolute;left:-70px;top:-70px;width:140px;height:140px;border-radius:50%;border:2px solid rgba(45,184,105,.45);opacity:0;animation:lu2-rip 1.5s cubic-bezier(.2,.7,.3,1) both}
-.lu2-rp i:nth-child(2){animation-delay:.18s}
-.lu2-rp i:nth-child(3){animation-delay:.36s}
-.lu2-level .lu2-rp{top:38%}
-.lu2-level .lu2-rp i{animation-delay:1.25s}
-.lu2-level .lu2-rp i:nth-child(2){animation-delay:1.43s}
-.lu2-level .lu2-rp i:nth-child(3){animation-delay:1.61s}
-
-/* the reward box: it waits with a bounce, loosens with each tap, bursts on the third */
-.lu2-box{position:relative;display:block;width:156px;height:150px;margin:6px 0 10px;transform-origin:50% 100%;scale:1.45;margin-top:78px;cursor:pointer;animation:lu2-bob 1.5s ease-in-out infinite;-webkit-tap-highlight-color:transparent}
-.lu2-box:focus-visible{outline:2px solid var(--ink);outline-offset:6px;border-radius:24px}
-.lu2-box.t1,.lu2-box.t2{animation:lu2-shake .5s cubic-bezier(.36,.07,.19,.97) both,lu2-bob 1.5s ease-in-out .5s infinite}
-.lu2-body{position:absolute;left:14px;right:14px;bottom:16px;height:82px;border-radius:16px;background:linear-gradient(180deg,#4AD58A,#2DB869);box-shadow:inset 0 -12px 20px rgba(0,90,50,.22),inset 0 2px 0 rgba(255,255,255,.35),0 18px 26px -16px rgba(20,120,70,.55)}
-.lu2-body::before,.lu2-lid::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:20px;margin-left:-10px;background:#B7F06A;box-shadow:inset 0 0 0 1px rgba(0,60,30,.06)}
-.lu2-lid{position:absolute;left:6px;right:6px;top:34px;z-index:2;height:32px;border-radius:13px;background:linear-gradient(180deg,#6BE3A2,#3CC878);box-shadow:inset 0 2px 0 rgba(255,255,255,.4),0 8px 14px -8px rgba(20,120,70,.6);transition:transform .35s cubic-bezier(.2,.9,.3,1.4)}
-.lu2-bow{position:absolute;left:50%;top:-24px;width:36px;height:28px;border:7px solid #B7F06A;border-radius:55% 55% 45% 45%;box-shadow:0 2px 0 rgba(0,60,30,.08)}
-.lu2-bow.l{transform:translateX(-100%) rotate(-24deg);transform-origin:right bottom}
-.lu2-bow.r{transform:rotate(24deg);transform-origin:left bottom}
-.lu2-box.t1 .lu2-lid{transform:translateY(-5px) rotate(-3deg)}
-.lu2-box.t2 .lu2-lid{transform:translateY(-11px) rotate(4deg)}
-.lu2-shadow{position:absolute;left:34px;right:34px;bottom:2px;height:10px;border-radius:50%;background:rgba(19,20,23,.14);filter:blur(3px);animation:lu2-shad 1.5s ease-in-out infinite}
-.lu2-box.open{cursor:default;animation:lu2-thump .5s cubic-bezier(.2,.9,.3,1.3) both}
-.lu2-box.open .lu2-lid{animation:lu2-lidoff .8s cubic-bezier(.2,.9,.3,1.1) both}
-.lu2-glow{position:absolute;left:50%;top:46%;z-index:1;width:240px;height:240px;margin:-120px;border-radius:50%;background:radial-gradient(closest-side,rgba(220,255,160,.95),rgba(60,200,120,.45) 45%,transparent);animation:lu2-glow 1.2s ease-out both;pointer-events:none}
-.lu2-hint{font-size:14px;line-height:20px;color:var(--ink2)}
-.lu2-dots{display:flex;gap:6px}
-.lu2-boxs .lu2-dots{position:static;inset:auto;background:none;-webkit-mask-image:none;mask-image:none;opacity:1}
-.lu2-dots i{width:8px;height:8px;border-radius:99px;background:rgba(255,255,255,.75);box-shadow:inset 0 0 0 1px rgba(19,90,50,.15);transition:background-color .2s var(--e)}
-.lu2-dots i.on{background:#2DB869;box-shadow:none}
-.lu2-boxs .lu2-rp{top:46%}
-
-/* green orbs bursting out */
-.lu2-bst{position:absolute;left:50%;top:44%;width:0;height:0;pointer-events:none;z-index:3}
-.lu2-bst i{position:absolute;width:var(--s);height:var(--s);margin:calc(var(--s) / -2);border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,var(--c) 45%);box-shadow:0 0 14px var(--c);opacity:0;animation:lu2-burst 1.2s cubic-bezier(.15,.85,.3,1) var(--dl) both}
-.lu2-bst.fly{top:30%}
-
-/* roles counting up, logos flying in */
-.lu2-big{font-size:120px;line-height:128px;letter-spacing:-.04em;color:var(--ink);font-variant-numeric:tabular-nums}
-.lu2-sub{font-size:14px;line-height:20px;color:var(--ink2)}
-.lu2-fan{position:relative;width:100%;height:52px;margin:8px 0 4px}
-.lu2-fl{position:absolute;left:50%;top:4px;margin-left:-22px;transform:translateX(var(--x));animation:lu2-flyin .65s cubic-bezier(.2,.9,.3,1.35) calc(.35s + var(--i) * 80ms) both}
-.lu2-fl .lg.sm{width:44px;height:44px;border-radius:14px;box-shadow:0 0 0 3px #fff,inset 0 0 0 1px var(--line),0 12px 20px -14px rgba(19,20,23,.5)}
-.lu2-fl .lg.sm img{width:24px;height:24px}
-.lu2-at{margin-bottom:8px}
-.lu2-s .k{display:inline-flex;align-items:center;gap:6px}
-.lu2-s .k svg{width:14px;height:14px}
-
-/* credits */
-.lu2-coin{position:relative;width:120px;height:120px;margin-bottom:16px;scale:1.25;cursor:pointer;animation:lu2-float 2.2s ease-in-out infinite}
-.lu2-cf{position:absolute;left:50%;width:96px;height:96px;margin-left:-48px;border-radius:50%;background:radial-gradient(circle at 35% 28%,#E9FFC2,#9BE86A 32%,#3CC878 62%,#22A35C);box-shadow:inset 0 0 0 5px rgba(255,255,255,.35),inset 0 -8px 14px rgba(0,80,40,.25),0 14px 24px -14px rgba(20,120,70,.6)}
-.lu2-cf.c3{top:22px;opacity:.55;transform:scale(.9)}
-.lu2-cf.c2{top:12px;opacity:.8;transform:scale(.95)}
-.lu2-cf.c1{top:0;display:flex;align-items:center;justify-content:center;color:#fff}
-.lu2-cf.c1 svg{width:38px;height:38px;stroke-width:1.8;filter:drop-shadow(0 1px 1px rgba(0,80,40,.35))}
-.lu2-crs.got .lu2-coin{cursor:default;animation:lu2-coinup .8s cubic-bezier(.2,.9,.3,1.1) both}
-
-/* the summary */
-.lu2-sum{gap:6px}
-.lu2-sb{display:flex;align-items:center;justify-content:center;width:112px;height:112px;box-shadow:0 20px 40px -20px rgba(20,120,70,.6);margin-bottom:8px;border-radius:50%;background:conic-gradient(#2DB869,#B7F06A,#2DB869);animation:lu2-pop-in .6s cubic-bezier(.2,.9,.3,1.3) both}
-.lu2-sb b{display:flex;align-items:center;justify-content:center;width:94px;height:94px;border-radius:50%;background:#fff;font-weight:400;font-size:28px;line-height:34px;color:var(--ink)}
-.lu2-sum .h{color:var(--ink)}
-.lu2-sl{display:flex;flex-direction:column;gap:2px;width:min(420px,100%);margin-top:18px;text-align:left}
-.lu2-sl li{display:flex;align-items:center;gap:12px;min-height:48px;padding:6px 10px;border-radius:14px;animation:lu2-in .4s var(--e) both}
-.lu2-sl li:nth-child(2){animation-delay:.08s}.lu2-sl li:nth-child(3){animation-delay:.16s}.lu2-sl li:nth-child(4){animation-delay:.24s}
-.lu2-sl li>svg{width:16px;height:16px;color:#2DB869;flex-shrink:0}
-.lu2-sl li .grow{min-width:0}
-.lu2-sl .i{color:var(--ink)}
-.lu2-sl li.nx{background:none;box-shadow:inset 0 1px 0 rgba(19,90,50,.12);border-radius:0;margin-top:6px}
-.lu2-sl .lgs{width:44px;flex-shrink:0}
-.lu2-si{display:flex;align-items:center;justify-content:center;width:32px;height:32px;margin:0 6px;flex-shrink:0;border-radius:99px;background:rgba(255,255,255,.75);color:#12733F}
-.lu2-sl li.nx .lu2-si{color:var(--ink3)}
-.lu2-si svg{width:15px;height:15px}
-.lu2-a{width:min(420px,100%);margin-top:18px}
-.lu2-a .k{display:inline-flex;align-items:center;gap:6px}
-.lu2-a svg{width:14px;height:14px}
-
-/* credits in the top bar */
 .crd{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 8px;color:var(--ink2);font-variant-numeric:tabular-nums}
 .crd svg{width:16px;height:16px;color:#2DB869}
 .crd b{font-weight:400}
 .crd.bump{animation:lu2-bump .6s cubic-bezier(.2,.9,.3,1.4) both}
-
 @keyframes lu2-fade{from{opacity:0}}
-@keyframes lu2-pop-in{from{opacity:0;transform:scale(.92) translateY(10px)}}
-@keyframes lu2-in{from{opacity:0;transform:translateY(8px)}}
-@keyframes lu2-roll{to{transform:translateY(calc(var(--n) * -168px))}}
-@keyframes lu2-fill{0%{transform:scaleX(var(--p0))}42%,50%{transform:scaleX(1)}52%{transform:scaleX(0)}100%{transform:scaleX(var(--p1))}}
 @keyframes lu2-count{to{--c:var(--to)}}
-@keyframes lu2-rip{0%{opacity:.9;transform:scale(.3)}100%{opacity:0;transform:scale(2.6)}}
-@keyframes lu2-bob{0%,100%{transform:translateY(0) scale(1,1)}45%{transform:translateY(-12px) scale(.98,1.02)}88%{transform:translateY(0) scale(1.04,.96)}}
-@keyframes lu2-shad{0%,100%{transform:scaleX(1);opacity:1}45%{transform:scaleX(.75);opacity:.6}}
-@keyframes lu2-shake{0%{transform:scale(1.06,.92)}20%{transform:rotate(-7deg) scale(.97,1.04)}40%{transform:rotate(6deg)}60%{transform:rotate(-4deg)}80%{transform:rotate(2deg)}100%{transform:none}}
-@keyframes lu2-thump{0%{transform:scale(1.12,.86)}60%{transform:scale(.96,1.05)}100%{transform:none}}
-@keyframes lu2-lidoff{0%{transform:translateY(-11px) rotate(4deg)}100%{transform:translate(-40px,-150px) rotate(-38deg);opacity:0}}
-@keyframes lu2-glow{0%{opacity:0;transform:scale(.3)}35%{opacity:1}100%{opacity:0;transform:scale(1.6)}}
-@keyframes lu2-burst{0%{opacity:1;transform:rotate(var(--a)) translateX(0) scale(.4)}70%{opacity:1}100%{opacity:0;transform:rotate(var(--a)) translateX(var(--d)) scale(1)}}
-@keyframes lu2-flyin{from{opacity:0;transform:translateX(0) translateY(46px) scale(.3)}}
-@keyframes lu2-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-@keyframes lu2-coinup{0%{transform:translateY(0) scale(1)}35%{transform:translateY(8px) scale(1.06,.94)}100%{transform:translateY(-70px) scale(.6);opacity:0}}
 @keyframes lu2-bump{0%{transform:scale(1)}40%{transform:scale(1.25)}100%{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.lu2-rings,.lu2-swirl{animation:none!important}.crd.bump{animation:none}}
 
-@media(prefers-reduced-motion:reduce){
- .lu2 *,.lu2-bg,.lu2-c,.crd.bump{animation:none!important;transition:none!important}
- .lu2-odo-s{transform:translateY(calc(var(--n) * -168px))}
- .lu2-bar i{transform:scaleX(var(--p1))}
- .lu2-cnt{--c:var(--to)}
- .lu2-bst,.lu2-rp,.lu2-glow{display:none}
+/* ZERO Job Portal, v50. The level-up, big: the badge in an art frame, roles around a circle, three tiles, one button. */
+.lu3{cursor:pointer;flex-direction:column}
+.lu3.st-summary{cursor:default}
+.lu3-st{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;animation:lu3-up .5s var(--e) both}
+.lu3-k{font-size:14px;line-height:20px;letter-spacing:.24em;text-transform:uppercase;color:#12733F}
+.lu3-sub{margin-top:10px;font-size:18px;line-height:26px;color:#2C5A3C}
+.lu3-foot{position:absolute;left:0;right:0;bottom:28px;z-index:2;display:flex;flex-direction:column;align-items:center;gap:14px;pointer-events:none}
+.lu3-tap{font-size:16px;line-height:22px;color:#1E4D30;animation:lu3-pulse 1.8s ease-in-out infinite}
+.lu3-pg{display:flex;gap:6px}
+.lu3-pg i{width:7px;height:7px;border-radius:99px;background:rgba(19,60,35,.2)}
+.lu3-pg i.on{background:#131417}
+.lu3-pg i.done{background:#2DB869}
+
+
+/* the art frame: rays, glow, a ring, the badge, glints */
+.lu3-fr{--z:min(250px,27vh);position:relative;width:calc(var(--z) * 1.9);height:calc(var(--z) * 1.6);display:flex;align-items:center;justify-content:center;margin:6px 0 4px;perspective:900px}
+.lu3-fr:not(.big){--z:min(150px,17vh);height:calc(var(--z) * 1.5)}
+.lu3-rays{position:absolute;left:50%;top:50%;width:calc(var(--z) * 2.6);height:calc(var(--z) * 2.6);margin:calc(var(--z) * -1.3);background:conic-gradient(from 0deg,rgba(255,255,236,0) 0.0deg,rgba(255,255,236,.85) 2.0deg 5.0deg,rgba(255,255,236,0) 8.0deg,rgba(255,255,236,0) 22.5deg,rgba(255,255,236,.85) 24.5deg 27.5deg,rgba(255,255,236,0) 30.5deg,rgba(255,255,236,0) 45.0deg,rgba(255,255,236,.85) 47.0deg 50.0deg,rgba(255,255,236,0) 53.0deg,rgba(255,255,236,0) 67.5deg,rgba(255,255,236,.85) 69.5deg 72.5deg,rgba(255,255,236,0) 75.5deg,rgba(255,255,236,0) 90.0deg,rgba(255,255,236,.85) 92.0deg 95.0deg,rgba(255,255,236,0) 98.0deg,rgba(255,255,236,0) 112.5deg,rgba(255,255,236,.85) 114.5deg 117.5deg,rgba(255,255,236,0) 120.5deg,rgba(255,255,236,0) 135.0deg,rgba(255,255,236,.85) 137.0deg 140.0deg,rgba(255,255,236,0) 143.0deg,rgba(255,255,236,0) 157.5deg,rgba(255,255,236,.85) 159.5deg 162.5deg,rgba(255,255,236,0) 165.5deg,rgba(255,255,236,0) 180.0deg,rgba(255,255,236,.85) 182.0deg 185.0deg,rgba(255,255,236,0) 188.0deg,rgba(255,255,236,0) 202.5deg,rgba(255,255,236,.85) 204.5deg 207.5deg,rgba(255,255,236,0) 210.5deg,rgba(255,255,236,0) 225.0deg,rgba(255,255,236,.85) 227.0deg 230.0deg,rgba(255,255,236,0) 233.0deg,rgba(255,255,236,0) 247.5deg,rgba(255,255,236,.85) 249.5deg 252.5deg,rgba(255,255,236,0) 255.5deg,rgba(255,255,236,0) 270.0deg,rgba(255,255,236,.85) 272.0deg 275.0deg,rgba(255,255,236,0) 278.0deg,rgba(255,255,236,0) 292.5deg,rgba(255,255,236,.85) 294.5deg 297.5deg,rgba(255,255,236,0) 300.5deg,rgba(255,255,236,0) 315.0deg,rgba(255,255,236,.85) 317.0deg 320.0deg,rgba(255,255,236,0) 323.0deg,rgba(255,255,236,0) 337.5deg,rgba(255,255,236,.85) 339.5deg 342.5deg,rgba(255,255,236,0) 345.5deg);-webkit-mask-image:radial-gradient(circle,#000 22%,transparent 68%);mask-image:radial-gradient(circle,#000 22%,transparent 68%);animation:lu3-spin 40s linear infinite,lu3-fade .8s var(--e) .5s both}
+.lu3-glow{position:absolute;left:50%;top:50%;width:calc(var(--z) * 1.6);height:calc(var(--z) * 1.6);margin:calc(var(--z) * -.8);border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,230,.95),rgba(183,240,106,.55) 45%,rgba(60,200,120,0));animation:lu3-breathe 3s ease-in-out infinite}
+.lu3-ring{position:absolute;left:50%;top:50%;width:calc(var(--z) * 1.32);height:calc(var(--z) * 1.32);margin:calc(var(--z) * -.66);border-radius:50%;box-shadow:0 0 0 1.5px rgba(255,255,255,.9),0 0 30px rgba(183,240,106,.6);animation:lu3-fade .6s var(--e) .7s both}
+.lu3-bd{position:relative;z-index:2;width:var(--z);height:var(--z);object-fit:contain;filter:drop-shadow(0 30px 40px rgba(20,90,50,.35)) drop-shadow(0 6px 10px rgba(20,90,50,.2));animation:lu3-badge 1.15s cubic-bezier(.2,.9,.3,1.15) both,lu3-float 4s ease-in-out 1.2s infinite}
+.lu3-fr:not(.big) .lu3-bd{animation:lu3-pop .6s cubic-bezier(.2,.9,.3,1.2) both,lu3-float 4s ease-in-out .6s infinite}
+.lu3-gl{position:absolute;z-index:3;width:26px;height:26px;background:radial-gradient(closest-side,#fff,rgba(255,255,255,0));clip-path:polygon(50% 0,58% 42%,100% 50%,58% 58%,50% 100%,42% 58%,0 50%,42% 42%);animation:lu3-glint 2.6s ease-in-out infinite}
+.lu3-gl.g1{left:calc(50% + var(--z) * .3);top:calc(50% - var(--z) * .46);animation-delay:1.2s}
+.lu3-gl.g2{left:calc(50% - var(--z) * .5);top:calc(50% - var(--z) * .1);width:18px;height:18px;animation-delay:2s}
+.lu3-gl.g3{left:calc(50% + var(--z) * .42);top:calc(50% + var(--z) * .3);width:14px;height:14px;animation-delay:2.7s}
+
+/* Level 2 rolls to Level 3 */
+.lu3-lv{display:flex;align-items:baseline;gap:22px;margin-top:-10px;font-weight:400;font-size:96px;line-height:104px;letter-spacing:-.04em;color:#131417}
+.lu3-odo{display:inline-block;height:104px;overflow:hidden}
+.lu3-odo>span{display:flex;flex-direction:column;animation:lu3-roll .8s cubic-bezier(.3,.8,.25,1.2) 1.1s both}
+.lu3-odo b{display:block;height:104px;font-weight:400;font-variant-numeric:tabular-nums}
+
+/* the roles: one big number, the companies stacked underneath */
+.s-roles .lu3-k{margin-bottom:4px}
+.lu3-big{font-weight:400;font-size:200px;line-height:1;letter-spacing:-.04em;color:#131417;font-variant-numeric:tabular-nums;animation:lu3-pop .7s cubic-bezier(.2,.9,.3,1.2) both}
+.lu3-ml{margin-top:4px;font-size:24px;line-height:32px;color:#2C5A3C}
+.lu3-cnt{animation:lu2-count 1.2s var(--e) .2s both;counter-reset:c var(--c)}
+.lu3-cnt::after{content:counter(c)}
+.lu3-stk{display:flex;align-items:center;justify-content:center;margin-top:36px;padding-left:12px}
+.lu3-sl{position:relative;z-index:calc(20 - var(--i));margin-left:-12px;animation:lu3-stack .55s cubic-bezier(.2,.9,.3,1.25) calc(.45s + var(--i) * 80ms) both}
+.lu3-sl .lg.sm{width:64px;height:64px;border-radius:20px;box-shadow:0 0 0 4px #F4FCEC,0 18px 30px -16px rgba(20,90,50,.55);rotate:var(--t);translate:0 var(--y);transition:rotate .25s var(--e),translate .25s var(--e),scale .25s var(--e)}
+.lu3-sl:hover{z-index:40}
+.lu3-sl:hover .lg.sm{rotate:0deg;translate:0 calc(var(--y) - 10px);scale:1.12}
+.lu3-tt{position:absolute;left:50%;top:calc(100% + 14px);z-index:41;display:flex;align-items:center;gap:2px;padding:6px 10px;border-radius:10px;background:#131417;color:#fff;font-size:14px;line-height:20px;white-space:nowrap;opacity:0;transform:translate(-50%,-6px);transition:opacity .15s var(--e),transform .15s var(--e);pointer-events:none}
+.lu3-tt span{color:rgba(255,255,255,.6)}
+.lu3-sl:hover .lu3-tt{opacity:1;transform:translate(-50%,0)}
+.lu3-sl .lg.sm img{width:34px;height:34px}
+.lu3-more{z-index:30;rotate:6deg;translate:0 -4px;display:flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:20px;background:#131417;color:#fff;font-size:18px;line-height:24px;box-shadow:0 0 0 4px #F4FCEC,0 18px 30px -16px rgba(20,90,50,.55)}
+.s-roles .lu3-sub{margin-top:16px}
+@keyframes lu3-stack{from{opacity:0;transform:translateY(24px) scale(.6)}}
+
+/* the end: You leveled up, three tiles, one button */
+.lu3-h{font-weight:400;font-size:72px;line-height:80px;letter-spacing:-.04em;color:#131417}
+.s-sum .lu3-sub{margin-top:4px}
+.lu3-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;width:min(640px,calc(100vw - 32px));margin-top:28px}
+.lu3-t{display:flex;flex-direction:column;align-items:center;gap:6px;padding:22px 12px 20px;border-radius:24px;background:rgba(255,255,255,.72);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 0 0 1px rgba(255,255,255,.9),0 24px 40px -28px rgba(20,90,50,.45);animation:lu3-up .5s var(--e) both}
+.lu3-t:nth-child(2){animation-delay:.08s}.lu3-t:nth-child(3){animation-delay:.16s}
+.lu3-t b{font-weight:400;font-size:40px;line-height:44px;letter-spacing:-.03em;color:#131417}
+.lu3-t>span:last-child{font-size:14px;line-height:20px;color:#2C5A3C}
+.lu3-t .lgs .lg.xs{width:30px;height:30px;margin-left:-9px}
+.lu3-t .lgs .lg.xs:first-child{margin-left:0}
+.lu3-t .lgs .lg.xs img{width:16px;height:16px}
+.lu3-ti{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:99px;background:#E7F6ED;color:#12733F}
+.lu3-ti svg{width:16px;height:16px}
+.lu3-go{margin-top:28px;height:56px;padding:0 44px;border-radius:99px;background:#131417;color:#fff;font-size:16px;line-height:22px;box-shadow:0 20px 40px -18px rgba(19,20,23,.6);transition:transform .15s var(--e)}
+.lu3-go:hover{transform:translateY(-1px)}
+.lu3-go:active{transform:scale(.98)}
+.lu3-go:focus-visible{outline:2px solid #131417;outline-offset:4px}
+
+/* one ripple across the screen as each beat lands */
+.lu3-wave{position:absolute;left:50%;top:46%;z-index:1;width:0;height:0;pointer-events:none}
+.lu3-wave i{position:absolute;left:-200px;top:-200px;width:400px;height:400px;border-radius:50%;border:3px solid rgba(255,255,240,.95);box-shadow:0 0 40px rgba(183,240,106,.7),inset 0 0 40px rgba(183,240,106,.5);opacity:0;animation:lu2-wv 2s cubic-bezier(.15,.7,.3,1) both}
+.st-badge .lu3-wave i{animation-delay:.95s}.st-badge .lu3-wave i:nth-child(2){animation-delay:1.12s}.st-badge .lu3-wave i:nth-child(3){animation-delay:1.29s}
+.st-roles .lu3-wave i:nth-child(2){animation-delay:.17s}.st-roles .lu3-wave i:nth-child(3){animation-delay:.34s}
+
+@keyframes lu3-up{from{opacity:0;transform:translateY(14px)}}
+@keyframes lu3-fade{from{opacity:0}}
+@keyframes lu3-spin{to{transform:rotate(360deg)}}
+@keyframes lu3-breathe{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.08);opacity:1}}
+@keyframes lu3-badge{0%{opacity:0;transform:scale(.2) rotateY(-540deg)}60%{opacity:1;transform:scale(1.1) rotateY(20deg)}80%{transform:scale(.97) rotateY(-6deg)}100%{transform:scale(1) rotateY(0)}}
+@keyframes lu3-pop{from{opacity:0;transform:scale(.5)}}
+@keyframes lu3-float{0%,100%{translate:0 0}50%{translate:0 -10px}}
+@keyframes lu3-glint{0%,100%{opacity:0;transform:scale(.3) rotate(0deg)}45%{opacity:1;transform:scale(1) rotate(45deg)}60%{opacity:0;transform:scale(.4) rotate(90deg)}}
+@keyframes lu3-roll{to{transform:translateY(calc(var(--n) * -104px))}}
+@keyframes lu3-logo{from{opacity:0;transform:scale(.2)}}
+@keyframes lu3-rise{0%{opacity:0;transform:translate(0,0)}10%{opacity:.9}80%{opacity:.7}100%{opacity:0;transform:translate(var(--dx),-110vh)}}
+@keyframes lu3-pulse{0%,100%{opacity:.55}50%{opacity:1}}
+
+@media(max-width:700px){
+ .lu3-fr.big{--z:180px}.lu3-lv{font-size:64px;line-height:72px;gap:14px}.lu3-odo,.lu3-odo b{height:72px}
+ @keyframes lu3-roll{to{transform:translateY(calc(var(--n) * -72px))}}
+ .lu3-big{font-size:150px}.lu3-sl .lg.sm,.lu3-more{width:48px;height:48px;border-radius:15px}.lu3-sl .lg.sm img{width:26px;height:26px}.lu3-sl{margin-left:-10px}
+ .lu3-h{font-size:52px;line-height:58px}.lu3-t b{font-size:28px;line-height:34px}.lu3-tiles{gap:8px}
 }
-@media(max-width:520px){.lu2-c{min-height:460px;padding:26px 18px 18px}.lu2-odo-s b,.lu2-big{font-size:80px}}
-
-.lu2-crs.got .lu2-cnt{animation:none;--c:var(--to)}
-.lu2-sl .lgs{width:56px;justify-content:flex-start;padding-left:4px}
-@media(prefers-reduced-motion:reduce){.lu2-rings,.lu2-swirl{animation:none!important}.lu2-wave{display:none}}
+@media(prefers-reduced-motion:reduce){
+ .lu3 *{animation:none!important}
+ .lu3-odo>span{transform:translateY(calc(var(--n) * -104px))}
+ .lu3-cnt{--c:var(--to)}
+ .lu3-wave{display:none}
+}
 
 </style>
 </head>
@@ -7401,6 +7365,43 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&S.lu){A.lu2close()}
 /* credits in the top bar */
 {const f=topHTML;topHTML=function(){const t=f();if(S.mode!=='student'||S.onb.student!=='done')return t;const n=S.crShown??S.credits??0;
  return t.replace('<button type="button" class="st-lvb"',`<span class="crd ${S.lu&&S.lu.got?'bump':''}" title="Credits: ${n.toLocaleString()}. You get 100 for every level you reach." data-id="c${n}">${ic('coins')}<b>${n.toLocaleString()}</b></span><button type="button" class="st-lvb"`)}}
+
+/* ZERO Job Portal, v50: the level-up, made big. His notes on v49: a real badge at the centre in an art frame with
+   particles; the new roles as a number at the centre with their logos around the circle; one action only, Tap to
+   continue; the end is You leveled up with the badge and three tiles (roles, credits, XP) and one button, Continue. */
+
+const LU3=['badge','roles','summary'];
+const lu3Spark=n=>[...Array(n)].map((_,i)=>{const x=(i*37+11)%100,s=3+((i*13)%9),d=7+((i*7)%8),dl=-((i*1.7)%d),c=['#FFFFFF','#E9FFC2','#B7F06A','#5FDB96'][i%4],dx=((i*29)%60)-30;
+ return`<i style="left:${x}%;--s:${s}px;--d:${d}s;--dl:${dl.toFixed(1)}s;--c:${c};--dx:${dx}px"></i>`}).join('');
+const lu3Orbit=n=>[...Array(n)].map((_,i)=>`<i style="--a:${(360/n)*i}deg;--s:${4+(i%3)*3}px"></i>`).join('');
+function luStart(u){S.lu={...u,step:'badge',cr:u.to*100,k:Date.now()};S.credits=(S.credits||0)+u.to*100;S.crShown=S.credits-u.to*100}
+function luHTML(){const u=S.lu;if(!u)return'';const R=u.ids.map(ROLE).filter(Boolean).sort((a,b)=>score(b)-score(a)),D=dreams(R),n=R.length;
+ const strip=[...Array(u.to-u.from+1)].map((_,i)=>`<b>${u.from+i}</b>`).join('');
+ const frame=(big)=>`<div class="lu3-fr ${big?'big':''}"><span class="lu3-rays"></span><span class="lu3-glow"></span><span class="lu3-ring"></span>
+  <img class="lu3-bd" src="${BADGE(u.to,1)}" alt="Level ${u.to} badge"><span class="lu3-gl g1"></span><span class="lu3-gl g2"></span><span class="lu3-gl g3"></span></div>`;
+ let body='';
+ if(u.step==='badge')body=`<div class="lu3-st s-badge"><p class="lu3-k">Level up</p>${frame(1)}
+   <h1 class="lu3-lv"><span>Level</span><span class="lu3-odo" style="--n:${u.to-u.from}"><span>${strip}</span></span></h1>
+   <p class="lu3-sub">+${u.gain.toLocaleString()} XP${u.why?` · ${esc(u.why)}`:''}</p></div>`;
+ if(u.step==='roles'){const seen=new Set(),L=R.filter(r=>!seen.has(r.co)&&seen.add(r.co)),show=L.slice(0,7),more=L.length-show.length;
+  body=`<div class="lu3-st s-roles"><p class="lu3-k">Unlocked</p><p class="lu3-big">+<span class="lu3-cnt" style="--to:${n}"></span></p><p class="lu3-ml">new roles open to you</p>
+   <div class="lu3-stk">${show.map((r,i)=>{const k=R.filter(x=>x.co===r.co).length,t=[-9,6,-4,8,-7,5,-3][i%7],y=[-6,5,-3,7,-5,3,-8][i%7];return`<span class="lu3-sl" style="--i:${i};--t:${t}deg;--y:${y}px" aria-label="${esc(coName(r))}, ${k} role${k>1?'s':''}">${lg(CO(r.co).dom,'sm')}<span class="lu3-tt">${esc(coName(r))}<span> · ${k} role${k>1?'s':''}</span></span></span>`}).join('')}${more>0?`<span class="lu3-sl lu3-more" style="--i:${show.length}">+${more}</span>`:''}</div>
+   <p class="lu3-sub">At ${D.slice(0,3).map(coName).join(', ')}${L.length>3?` and ${L.length-3} more companies`:''}</p></div>`}
+ if(u.step==='summary')body=`<div class="lu3-st s-sum">${frame(0)}<h1 class="lu3-h">You leveled up</h1><p class="lu3-sub">You are Level ${u.to} now</p>
+   <div class="lu3-tiles"><div class="lu3-t"><span class="lgs">${R.slice(0,3).map(r=>lg(CO(r.co).dom,'xs')).join('')}</span><b>+${n}</b><span>New roles</span></div>
+    <div class="lu3-t"><span class="lu3-ti">${ic('coins')}</span><b>+${u.cr}</b><span>Credits</span></div>
+    <div class="lu3-t"><span class="lu3-ti">${ic('zap')}</span><b>+${u.gain.toLocaleString()}</b><span>XP</span></div></div>
+   <button type="button" class="lu3-go" data-a="lu3done">Continue</button></div>`;
+ const wave=u.step!=='summary'?`<span class="lu3-wave" data-id="w${u.step}"><i></i><i></i><i></i></span>`:'';
+ return`<div class="lu2 lu3 st-${u.step}" role="dialog" aria-modal="true" aria-label="Level ${u.to}" data-id="lu3${u.step}"><div class="lu2-bg"><span class="lu2-rings"></span><span class="lu2-swirl"></span><span class="lu2-dots"></span></div>
+  ${wave}${body}
+  <div class="lu3-foot">${u.step!=='summary'?`<p class="lu3-tap">Tap to continue</p>`:''}<span class="lu3-pg">${LU3.map(s=>`<i class="${s===u.step?'on':LU3.indexOf(s)<LU3.indexOf(u.step)?'done':''}"></i>`).join('')}</span></div></div>`}
+const lu3Next=()=>{const u=S.lu;if(!u||u.step==='summary')return;u.step=LU3[LU3.indexOf(u.step)+1];if(u.step==='summary')S.crShown=S.credits;drawLU();if(u.step==='summary')render()};
+document.addEventListener('click',e=>{if(!S.lu||S.lu.step==='summary')return;if(e.target.closest&&e.target.closest('#lu2')){e.stopPropagation();e.preventDefault();lu3Next()}},true);
+document.addEventListener('keydown',e=>{if(!S.lu)return;if(['Enter',' ','ArrowRight'].includes(e.key)&&S.lu.step!=='summary'){e.preventDefault();lu3Next()}},true);
+A.lu3done=()=>{S.lu=null;drawLU();S.lm='jobs';S.page.student='jobs';S.ef='open';S.jcur='';S.es={k:'fit',d:-1};return'enter'};
+/* what earned it, for the line under the level */
+{const f=luStart;luStart=function(u){f(u);const t=S.lrn&&S.lrn.last;if(t)S.lu.why=`${t}, Exceptional`}}
 
 /* ═══════════ PORTFOLIO: generated by pf_build.py from zero-portfolio/v36 (Slate 9). Do not edit by hand:
    edit pf_page.js or pf_page.css, then run python3 next/pf_build.py. One IIFE, so nothing here is a global
