@@ -3734,6 +3734,48 @@ button.bg-r:hover{background:var(--well)}
 .bg-0{padding:2px 4px 6px}
 @media(max-width:1240px){.zy-wrap{grid-template-columns:minmax(0,760px)}.zy-bg{display:none}}
 
+/* Jobs with a role open: every column, scrolling sideways; the role on the left and the heart on the right stay put */
+.eg-sx{overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin}
+.eg.split{min-width:860px}
+.eg.split thead th{position:static}
+.eg.split th:first-child,.eg.split tbody td.eg-r{position:sticky;left:0;z-index:2;background:#fff}
+.eg.split th:last-child,.eg.split tbody td.eg-l{position:sticky;right:0;z-index:2;background:#fff}
+.eg.split tbody td.eg-r{box-shadow:6px 0 10px -10px rgba(19,20,23,.35)}
+.eg.split tbody td.eg-l{box-shadow:-6px 0 10px -10px rgba(19,20,23,.35)}
+.eg.split tbody tr:hover>td.eg-r,.eg.split tbody tr:hover>td.eg-l{background:var(--well)}
+.eg.split tbody tr.on>td.eg-r,.eg.split tbody tr.on>td.eg-l{background:var(--well2)}
+.eg.split td.eg-r{max-width:260px}
+.eg.split th:first-child,.eg.split th:last-child{top:auto}
+.eg.split{min-width:940px;table-layout:fixed}
+.eg.split th:nth-child(1){width:250px}.eg.split th:nth-child(2){width:150px}.eg.split th:nth-child(3){width:130px}.eg.split th:nth-child(4){width:110px}.eg.split th:nth-child(5){width:96px}.eg.split th:nth-child(6){width:150px}.eg.split th:nth-child(7){width:54px}
+@container (max-width:900px){.eg.split th:nth-child(5),.eg.split td:nth-child(5),.eg.split th:nth-child(6),.eg.split td:nth-child(6){display:table-cell}}
+
+/* the chat stays centred; the panel lives in the right margin and only shows when two or more things run */
+.body.zy-pg .page{max-width:none}
+.zy-wrap{grid-template-columns:minmax(0,1fr) minmax(0,760px) minmax(0,1fr);gap:24px;justify-content:stretch}
+.zy-sr{display:flex;justify-content:flex-end;align-self:stretch;min-width:0}
+.zy-sr .zy-bg{width:290px;align-self:flex-start}
+@media(max-width:1360px){.zy-wrap{grid-template-columns:minmax(0,760px);justify-content:center}.zy-sl,.zy-sr{display:none}}
+/* no shadows */
+.zy-bg,.zy-box,.zy-in,.zy-card,.zy-ops,.zy-qs .zy-list,.nb-p,.eg-pop{box-shadow:0 0 0 1px var(--line2)!important}
+.zy-in:focus-within{box-shadow:0 0 0 1px var(--line2)!important}
+.zy-bg{box-shadow:0 0 0 1px var(--line)!important}
+/* more air between what Zero says and its container */
+.zy-c{gap:18px}
+.zy-md+.zy-box,.zy-md+.zy-wk,.zy-md+.zy-tl{margin-top:2px}
+.zy{min-height:var(--zyh,calc(100dvh - 124px))}
+.zy-wrap{align-items:start}
+/* the steps: each source wears its own logo in a small circle; more air */
+.zy-si.lgc{display:inline-flex}
+.zy-si.lgc .lg.xs{width:22px;height:22px;border-radius:99px;box-shadow:inset 0 0 0 1px var(--line)}
+.zy-si.lgc .lg.xs img{width:13px;height:13px;border-radius:99px}
+.zy-stp{gap:6px;margin:8px 0 2px 9px;padding:4px 0 4px 20px}
+.zy-s{min-height:34px;gap:10px}
+.zy-wk{gap:4px}
+.zy-wk+.zy-wk,.zy-wk+.zy-thk,.zy-tl+.zy-wk{margin-top:10px}
+/* the chat box sits in the same place at the end of the scroll too */
+.body.zy-pg .page{margin-bottom:0!important;padding-bottom:0!important}
+
 </style>
 </head>
 <body>
@@ -7020,11 +7062,11 @@ PAGES.student.home=()=>{const h=heroLine(),P=S.hired?[]:sPack(),can=P.filter(sCa
 
 /* ═══ Explore: the grid, with what Zero recommends ═══ */
 const egRow2=(r,sel,split)=>{const lk=locked(r),a=S.apps[r.id];return`<tr class="${sel?'on':''} ${lk?'lk':''}" data-a="exsel" data-id="${r.id}"><td class="eg-r"><div class="row">${lg(CO(r.co).dom,'sm')}<div class="grow"><p class="i clip">${r.title}${isRec(r)?' <span class="rec sm">🔥</span>':''}</p><p class="m clip">${coName(r)} · ${r.loc}</p></div></div></td>
- <td>${a?chip(stLabel(r.id),CONN.includes(a.st)?'g':''):S.hidden[r.id]?chip('Skipped'):fitPill(r,1)}</td>${split?'':`<td class="eg-c">${lvCell(r)}</td>`}<td class="m eg-n">${payK(r)}</td>${split?'':`<td class="m">${r.mode}</td><td class="m eg-n">${r.days}d</td>`}<td class="eg-l">${a||S.hidden[r.id]?'':likeBtn(r)}</td></tr>`};
+ <td>${a?chip(stLabel(r.id),CONN.includes(a.st)?'g':''):S.hidden[r.id]?chip('Skipped'):fitPill(r,1)}</td>${split?'':`<td class="eg-c">${lvCell(r)}</td>`}<td class="m eg-n">${payK(r)}</td><td class="m">${r.mode}</td><td class="m eg-n">${r.days}d</td><td class="eg-l">${a||S.hidden[r.id]?'':likeBtn(r)}</td></tr>`};
 PAGES.student.jobs=()=>{if(!E_TABS.some(t=>t[0]===S.ef))S.ef='all';const t=E_TABS.find(x=>x[0]===S.ef),q=S.q.toLowerCase(),base=DATA.roles.filter(r=>shown(r)&&fltOk(r)),nf=fltN();
  const L=base.filter(r=>t[2](r)&&(!q||(r.title+coName(r)+r.loc+r.team).toLowerCase().includes(q))).sort(esCmp);jIds=L.map(r=>r.id);
  if(S.jcur&&!jIds.includes(S.jcur))S.jcur='';const r=S.jcur&&ROLE(S.jcur),split=!!r&&roomW()>=1100,nr=L.filter(isRec).length;
- const head=`<thead><tr><th>Role</th>${esTh('fit','Zero fit')}${split?'':esTh('lvl','Level','eg-c')}${esTh('pay','Pay')}${split?'':`${esTh('where','Where')}${esTh('posted','Posted')}`}<th><span class="hide">Like</span></th></tr></thead>`;
+ const head=`<thead><tr><th>Role</th>${esTh('fit','Zero fit')}${split?'':esTh('lvl','Level','eg-c')}${esTh('pay','Pay')}${esTh('where','Where')}${esTh('posted','Posted')}<th><span class="hide">Like</span></th></tr></thead>`;
  return`<div class="tbw j-mt st-exw"><div class="row st-exq"><label class="search st-q" for="jq">${ic('search')}<span class="hide">Search roles</span><input id="jq" placeholder="Search roles, companies or places" value="${esc(S.q)}" autocomplete="off"></label>
    <button type="button" class="s st-fb ${nf?'on':''}" data-a="fopen">${ic('sliders-horizontal')}Filters${nf?`<span class="tb-n">${nf}</span>`:''}</button>${nf||S.q?btn('Clear','x','fclear'):''}</div>
   <div class="row tb-bar">${seg2('ef',E_TABS.map(x=>[x[0],x[1],x[0]==='all'?null:base.filter(x[2]).length||null]),S.ef)}<span class="grow"></span><span class="m">${L.length} roles that fit you${nr?`. 🔥 marks Zero’s ${nr} picks`:''}</span></div>
@@ -8136,7 +8178,6 @@ function actCell(r){const id=r.id,st=btState(id);
  if(S.hidden[id])return`<span class="eg-st">Not interested</span>`;
  return sCan(r)?`<button type="button" class="s sm eg-ap" data-a="fbopen" data-id="${id}" data-side="st" data-k="yes">Apply</button>`:''}
 {const f=PAGES.student.jobs;PAGES.student.jobs=()=>{let h=f();const split=/class="eg split"/.test(h);
- if(split)return h.replace(/>Zero fit</g,'>Fit<');
  h=h.replace(/<th class="eg-c"[^>]*>[\s\S]*?<\/th>/g,'').replace(/<th><span class="hide">Like<\/span><\/th>/g,'<th class="eg-act">Action</th><th><span class="hide">Like</span></th>').replace(/>Zero fit</g,'>Fit<');
  h=h.replace(/<tr class="([^"]*)" data-a="exsel" data-id="([^"]+)"([^>]*)>([\s\S]*?)<\/tr>/g,(m,cls,id,rest,body)=>{const r=ROLE(id);if(!r)return m;body=body.replace(/<td class="eg-c">[\s\S]*?<\/td>/,'');
   return`<tr class="${cls}" data-a="exsel" data-id="${id}"${rest}>${body.replace(/<td class="eg-l">/,`<td class="eg-act">${actCell(r)}</td><td class="eg-l">`)}</tr>`});
@@ -8438,7 +8479,7 @@ function forYou(){const M=zthread().msgs,X=S.czx||{},now=Date.now(),out=[];let d
  const tool=(icon,txt,t,k,body)=>{const has=!!body,open=has&&X[k];return`<div class="zy-tl ${open?'open':''}"><button type="button" class="zy-th" ${has?`data-a="czx" data-id="${k}" aria-expanded="${!!open}"`:'tabindex="-1"'}><span class="zy-ti">${icon}</span><span class="zy-tt">${txt}</span>${has?`<span class="zy-ch">${ic('chevron-right')}</span>`:''}${t?`<span class="zy-tm">${t}</span>`:''}</button>${open?`<div class="zy-out">${body}</div>`:''}</div>`};
  const appTl=r=>`<div class="zy-app"><div class="zy-ah">${lg(CO(r.co).dom,'sm')}<span class="grow"><span class="i clip">${r.title}</span><span class="m clip">${coName(r)} · ${r.loc}</span></span>${S.apps[r.id]?stPill(r.id):''}</div><ol class="tlx">${tlEvents(r)}${tlNext(r)}</ol></div>`;
  /* the thread, merged: one read of postings a day, applications grouped by day */
- const secs=ms=>`${(ms/1000).toFixed(1)}s`,step=(st,txt,icn='',x='')=>`<li class="zy-s ${st}"><span class="zy-sk">${st==='ok'?ic('check'):st==='on'?'<span class="zy-spin"></span>':''}</span>${icn?`<span class="zy-si">${ic(icn)}</span>`:''}<span class="grow ${st==='on'?'shim':''}" ${st==='on'?shimD():''}>${txt}</span>${x}</li>`;
+ const secs=ms=>`${(ms/1000).toFixed(1)}s`,step=(st,txt,icn='',x='')=>`<li class="zy-s ${st}"><span class="zy-sk">${st==='ok'?ic('check'):st==='on'?'<span class="zy-spin"></span>':''}</span>${icn?(icn[0]==='@'?`<span class="zy-si lgc">${lg(icn.slice(1),'xs')}</span>`:`<span class="zy-si">${ic(icn)}</span>`):''}<span class="grow ${st==='on'?'shim':''}" ${st==='on'?shimD():''}>${txt}</span>${x}</li>`;
  const items=[];M.forEach((m,i)=>{if(!m||!m.date||m.busy||m.from==='rec'||m.from==='sys')return;if(m.from==='act'&&/opened your|^Zero tailored your portfolio for|^Zero built a resume|^You applied to|^You said yes/.test(m.text))return;if(/^Welcome to Zero/.test(m.text||''))return;
   const last=items[items.length-1],ap=m.from==='act'&&m.id&&ROLE(m.id)&&/applied to/i.test(m.text),rd=m.from==='act'&&/^Read \d+ postings/.test(m.text);
   if(rd){const j=items.findIndex(x=>x.rd&&x.date===m.date);if(j>=0)items.splice(j,1)}
@@ -8455,19 +8496,19 @@ function forYou(){const M=zthread().msgs,X=S.czx||{},now=Date.now(),out=[];let d
   if(it.kind==='them'||it.kind==='zero'){const full=zyMorning(String(m.text)),h=zyStream(full,m.sx);if(h==null)return;const card=h===full&&m.zy&&typeof zyCardOf==='function'?zyCardOf(m.zy,it.k):'';out.push(zturn(`<div class="zy-md">${zyMd(h)}</div>${card}`));return}
   if(it.rd){const ids=(m.ids||[]).filter(id=>ROLE(id)),R=ids.map(ROLE),src=(m.text.match(/^Read (\d+) postings on ([^.]+)\./)||[]),where=(src[2]||'Greenhouse, Ashby, Lever').split(/, | and /);
    const h=zyStream(R.length?(S.lvl===0?`I read ${src[1]} postings. <b>${rcCap(num(R.length).toLowerCase())} fit</b> what you told me. They open as you level up.`:`I read ${src[1]} postings. <b>${rcCap(num(R.length).toLowerCase())} new role${R.length>1?'s':''}</b> fit you.`):'Nothing new fits you today. I read again tomorrow at 9.',m.sx);
-   const dup=it===lastRd&&dayLbl(it.date)===td&&c0&&(c0.id==='apply'||c0.id==='lvl');const tot=+src[1]||0,SRC=m.src||where.map((w,i)=>[w,Math.round(tot*[.56,.39,.05][i]||0)]),fitN=R.length||(m.ids||[]).length,drop=Math.max(0,tot-Math.max(fitN*7,21));out.push(zturn(tool(`<span class="zy-ok">${ic('check')}</span>`,`Read ${src[1]||'new'} postings<span class="m"> · ${m.ms?secs(m.ms):'6.3s'}</span>`,it.t,it.k,`<ul class="zy-stp">${SRC.map(x=>step('ok',`Read ${x[1]} postings on ${x[0]}`,'file-search')).join('')}${step('ok',`Dropped ${drop} outside what you told me`,'filter')}${step('ok',`Matched ${tot-drop} against your scenarios`,'list-checks')}${step('ok','Ranked them by evidence, not keywords','arrow-up-down')}</ul>`)+(h!=null&&!dup?`<p class="zy-p">${h}</p>`:'')));return}
+   const dup=it===lastRd&&dayLbl(it.date)===td&&c0&&(c0.id==='apply'||c0.id==='lvl');const tot=+src[1]||0,SRC=m.src||where.map((w,i)=>[w,Math.round(tot*[.56,.39,.05][i]||0)]),fitN=R.length||(m.ids||[]).length,drop=Math.max(0,tot-Math.max(fitN*7,21));out.push(zturn(tool(`<span class="zy-ok">${ic('check')}</span>`,`Read ${src[1]||'new'} postings<span class="m"> · ${m.ms?secs(m.ms):'6.3s'}</span>`,it.t,it.k,`<ul class="zy-stp">${SRC.map(x=>step('ok',`Read ${x[1]} postings on ${x[0]}`,'@'+(ATSDOM[x[0]]||'greenhouse.com'))).join('')}${step('ok',`Dropped ${drop} outside what you told me`,'filter')}${step('ok',`Matched ${tot-drop} against your scenarios`,'list-checks')}${step('ok','Ranked them by evidence, not keywords','arrow-up-down')}</ul>`)+(h!=null&&!dup?`<p class="zy-p">${h}</p>`:'')));return}
   const r=m.id&&ROLE(m.id);out.push(zturn(tool(r?lg(CO(r.co).dom,'xs'):m.ids&&m.ids.length?lgStack(m.ids):ic(m.icon||'sparkle'),act2(m),it.t,'','')))});
  const newDay=!shown.length||dayLbl(day)!==td;
  /* now: Zero at work, step by step, with real times */
  const live=[];
-/*step defined above*/ const _st=(st,txt,icn='',x='')=>`<li class="zy-s ${st}"><span class="zy-sk">${st==='ok'?ic('check'):st==='on'?'<span class="zy-spin"></span>':''}</span>${icn?`<span class="zy-si">${ic(icn)}</span>`:''}<span class="grow ${st==='on'?'shim':''}" ${st==='on'?shimD():''}>${txt}</span>${x}</li>`;
+/*step defined above*/ const _st=(st,txt,icn='',x='')=>`<li class="zy-s ${st}"><span class="zy-sk">${st==='ok'?ic('check'):st==='on'?'<span class="zy-spin"></span>':''}</span>${icn?(icn[0]==='@'?`<span class="zy-si lgc">${lg(icn.slice(1),'xs')}</span>`:`<span class="zy-si">${ic(icn)}</span>`):''}<span class="grow ${st==='on'?'shim':''}" ${st==='on'?shimD():''}>${txt}</span>${x}</li>`;
  if(S.scan&&S.scan.me===S){const p=scanPh();if(!p.done){const el=now-S.scan.t0,src=S.scan.src,tot=S.scan.tot;
-  const L=src.map((s,i)=>i<p.i?step('ok',`Read ${s[1]} postings on ${s[0]}`,'file-search',`<span class="zy-sd">${secs(SCAN_MS[i])}</span>`):i===p.i?step('on',p.txt,'file-search'):'').join('')+(p.i===3?step('on',`Scoring ${tot} postings against what you told me`,'list-checks'):'');
+  const L=src.map((s,i)=>i<p.i?step('ok',`Read ${s[1]} postings on ${s[0]}`,'@'+(ATSDOM[s[0]]||'greenhouse.com'),`<span class="zy-sd">${secs(SCAN_MS[i])}</span>`):i===p.i?step('on',p.txt,'@'+(ATSDOM[s[0]]||'greenhouse.com')):'').join('')+(p.i===3?step('on',`Scoring ${tot} postings against what you told me`,'list-checks'):'');
   live.push(`<div class="zy-wk"><div class="zy-wh2">${spinS(p.txt)}<span class="shim" ${shimD()}>Reading postings</span><span class="zy-tm">${secs(el)}</span></div><ul class="zy-stp">${L}</ul></div>`)}}
  if(S.qa&&ROLE(S.qa.id)){const q=S.qa,r=ROLE(q.id),m=r.manager,at=Math.min(q.at,QA.length),sent=!!(q.ts&&q.ts[3]),hold=at===3&&!sent,ats=r.ats||'Greenhouse';
   q.zt=q.zt||[q.t0||now];if(q.zt.length<=at)for(let i=q.zt.length;i<=at;i++)q.zt[i]=now;
   const S5=[['layout-template',`Reordered your portfolio for ${coName(r)}`,`Reordering your portfolio for ${coName(r)}`],['pen-line',`Rewrote your resume so ${ats} can read it`,`Rewriting your resume for ${ats}`],['mail',`Wrote your note to ${m.first}`,`Writing your note to ${m.first}`],['send',`Sent through ${ats}`,hold?qaPh(r,3):`Sending through ${ats}`]];
-  const L=step('ok',`Read the role at ${coName(r)}`,'file-search')+S5.map((s,i)=>i<at||(i===3&&sent)?step('ok',s[1],s[0],`<span class="zy-sd">${secs((q.zt[i+1]||now)-q.zt[i])}</span>`):i===at?step(hold?'hold':'on',s[2],s[0],hold?`<span class="zy-sa">${btn('Send now','s sm','qnow',r.id)}</span>`:`<span class="zy-sd">${secs(now-q.zt[i])}</span>`):'').join('');
+  const L=step('ok',`Read the role at ${coName(r)}`,'@'+CO(r.co).dom)+S5.map((s,i)=>i<at||(i===3&&sent)?step('ok',s[1],s[0],`<span class="zy-sd">${secs((q.zt[i+1]||now)-q.zt[i])}</span>`):i===at?step(hold?'hold':'on',s[2],s[0],hold?`<span class="zy-sa">${btn('Send now','s sm','qnow',r.id)}</span>`:`<span class="zy-sd">${secs(now-q.zt[i])}</span>`):'').join('');
   const B=S.bt&&S.bt.ids||[],bi=B.indexOf(r.id),nx=(S.qq||[]).map(ROLE).filter(Boolean);
   live.push(`<div class="zy-wk"><div class="zy-wh2">${spinS('apply')}<span>Applying to <b>${coName(r)}</b><span class="m"> · ${r.title}</span></span><span class="zy-tm">${mmss(now-(q.t0||now))}</span>${B.length>1&&bi>=0?`<span class="m">${bi+1} of ${B.length}</span>`:''}<span class="grow"></span>${sent?'':btn('Stop','x sm','qstop',r.id)}</div><ul class="zy-stp">${L}</ul>${nx.length?`<p class="zy-nx">${lgStack(nx.map(x=>x.id))}<span class="m">Next: ${zyAnd(nx.slice(0,3).map(coName))}${nx.length>3?` and ${nx.length-3} more`:''}</span></p>`:''}</div>`)}
  /* then what it needs from you, once it has finished thinking and talking */
@@ -8542,6 +8583,7 @@ function jToolbar(seg){const s=S.es||{k:'fit',d:-1},open=S.jsrch||S.q;
  return`<div class="eg-tb">${left}${sort}</div>`}
 {const f=PAGES.student.jobs;PAGES.student.jobs=()=>{S.ebatch=false;const h=f(),t=document.createElement('template');t.innerHTML=h;
  const top=t.content.querySelector('.st-exq'),seg=top&&top.querySelector('.seg'),w=t.content.querySelector('.eg-w');
+ const tb=t.content.querySelector('table.eg.split');if(tb){const d=document.createElement('div');d.className='eg-sx';tb.replaceWith(d);d.appendChild(tb)}
  if(top&&w){w.insertAdjacentHTML('afterbegin',jToolbar(seg?seg.outerHTML:''));top.remove()}
  else if(top){const e=t.content.querySelector('.item.soft');const msg=S.q?`No roles match “${esc(S.q)}”.`:{liked:'Nothing liked yet. Tap the heart on a role and it lands here.',applied:'No applications waiting. Apply to a role, or ask Zero to.',connected:'No team has replied yet. When one does, it shows up here.',archived:'Nothing archived. Roles you pass on, or that close, land here.'}[S.ef]||'Nothing here yet.';
   const box=`<div class="eg-w">${jToolbar(seg?seg.outerHTML:'')}<div class="eg-0"><span class="eg-0i">${ic({liked:'heart',applied:'send',connected:'message-circle',archived:'archive'}[S.ef]||'search')}</span><p>${msg}</p></div></div>`;
@@ -8777,7 +8819,13 @@ function bgPanel(){const now=Date.now(),sec=ms=>`${(ms/1000).toFixed(1)}s`,R=[];
   ${W.length?sec_('Watching',W.length,W.slice(0,4).map(id=>{const r=ROLE(id);return`<button type="button" class="bg-r" data-a="sheet" data-id="${id}">${lg(CO(r.co).dom,'xs')}<span class="grow clip">${coName(r)}</span><span class="m">${stLabel(id)}</span></button>`}).join('')):''}
   ${F.length?`<div class="bg-sec"><button type="button" class="bg-k bg-fk" data-a="bgfin" aria-expanded="${!!S.bgFin}">Finished <span>${F.length}</span>${ic(S.bgFin?'chevron-up':'chevron-down')}</button>${S.bgFin?F.slice(0,14).map(x=>`<${x.id?'button type="button"':'div'} class="bg-r done" ${x.id?`data-a="sheet" data-id="${x.id}"`:''}><span class="bg-ok">${ic('check')}</span><span class="grow clip">${x.t}</span><span class="bg-t">${x.d}</span>${x.id?ic('chevron-right'):''}</${x.id?'button':'div'}>`).join(''):''}</div>`:''}
  </aside>`}
-{const f=PAGES.student.home;PAGES.student.home=()=>`<div class="zy-wrap">${f()}${bgPanel()}</div>`}
+/* the panel only when two or more things run at once; one task stays in the chat */
+const bgCount=()=>{let n=0;if(S.scan&&S.scan.me===S&&!scanPh().done)n++;if(S.qa&&ROLE(S.qa.id))n++;n+=(S.qq||[]).length;return n};
+{const f=PAGES.student.home;PAGES.student.home=()=>`<div class="zy-wrap"><span class="zy-sl"></span>${f()}<span class="zy-sr">${bgCount()>=2?bgPanel():''}</span></div>`}
+
+/* the chat box never moves: the For you column is always exactly as tall as the scroll area */
+const zyFit=()=>{const b=document.getElementById('body');if(!b)return;const st=getComputedStyle(b),h=b.clientHeight-parseFloat(st.paddingTop||0)-parseFloat(st.paddingBottom||0);if(h>200)document.documentElement.style.setProperty('--zyh',h+'px')};
+AFTER.push(zyFit);addEventListener('resize',zyFit);
 
 /* ═══════════ PORTFOLIO: generated by pf_build.py from zero-portfolio/v36 (Slate 9). Do not edit by hand:
    edit pf_page.js or pf_page.css, then run python3 next/pf_build.py. One IIFE, so nothing here is a global
