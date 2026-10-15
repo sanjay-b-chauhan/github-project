@@ -2625,51 +2625,8 @@ button.esel:hover{box-shadow:inset 0 0 0 1.5px var(--ink)}
 /* ZERO Job Portal, v45. A dark canvas so the page reads as the important thing; faces and logos beside names; the
    Application and Role switch; picking a time inside the Inbox chat. */
 
-/* ═══ the canvas ═══ */
-body{background:#141518}
-.strip .x{color:#E4E5E9}
-.strip .x:hover{background:rgba(255,255,255,.08)}
-.strip .i{color:#fff}
-.strip .m{color:#8D9099}
-.strip .x svg{color:#C9CBD1}
-.st-as{background:#1F2024;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
-.st-as .m{color:#8D9099}
-.st-as select{color:#fff}
-.st-as select option{color:#131417}
-.st-as svg{color:#8D9099}
-.sheet{box-shadow:0 0 0 1px rgba(255,255,255,.06),0 50px 90px -40px rgba(0,0,0,.7)}
+/* the white dot ring reads on the white page */
 .dot{box-shadow:0 0 0 2px #fff,inset 0 0 0 1px rgba(19,20,23,.25)}
-::view-transition-image-pair(zsheet){box-shadow:0 0 0 1px rgba(255,255,255,.06)}
-
-/* Zero's chat on the dark canvas */
-#zdrawer .zp2-h .i{color:#fff}
-#zdrawer .zp2-h .m{color:#8D9099}
-#zdrawer .zp2-ic{color:#C9CBD1}
-#zdrawer .zp2-ic:hover{background:rgba(255,255,255,.08);color:#fff;box-shadow:none}
-#zdrawer .zp2-ic.on{background:#fff;color:var(--ink)}
-#zdrawer .zday span{color:#6E717A}
-#zdrawer .msgs li.sys span{background:rgba(255,255,255,.07);color:#C9CBD1}
-#zdrawer .msgs li.them>div>p{background:#fff;color:var(--ink);box-shadow:none}
-#zdrawer .msgs li.me>div>p{background:#34353B;color:#fff}
-#zdrawer .zrow-h{color:#B9BBC2}
-#zdrawer .zrow-h b{color:#fff}
-#zdrawer .zrow-h .m,#zdrawer .zrow-t{color:#6E717A}
-#zdrawer .zrow-h[data-a]:hover{background:rgba(255,255,255,.06)}
-#zdrawer .zrow-i{background:#222327;color:#B9BBC2;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
-#zdrawer .zrow-h>.lg.xs{box-shadow:none}
-#zdrawer .zrow-c{color:#6E717A}
-#zdrawer .zrow-b{box-shadow:inset 1.5px 0 0 rgba(255,255,255,.1)}
-#zdrawer .zrow-x .grow{color:#fff}
-#zdrawer .zrow-x .m,#zdrawer .zrow-s{color:#B9BBC2}
-#zdrawer .zrow-x:hover{background:rgba(255,255,255,.06)}
-#zdrawer .zcx{color:#8D9099}
-#zdrawer .zcx:hover{background:rgba(255,255,255,.06);color:#E4E5E9}
-#zdrawer .zsug .opt{background:rgba(255,255,255,.06);color:#E4E5E9;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
-#zdrawer .zsug .opt:hover{background:rgba(255,255,255,.12)}
-#zdrawer .zform{box-shadow:0 0 0 1px rgba(255,255,255,.1),0 16px 30px -18px rgba(0,0,0,.6)}
-#zdrawer .zw3{box-shadow:0 0 0 1px rgba(255,255,255,.08),0 18px 36px -26px rgba(0,0,0,.6)}
-#zdrawer .zw3.run{box-shadow:0 0 0 2px #fff,0 18px 36px -24px rgba(0,0,0,.7)}
-@media(max-width:900px){#zdrawer.zcol{background:#141518}}
 
 /* ═══ faces and logos beside names ═══ */
 .av.ph{overflow:hidden;background:var(--well2);padding:0}
@@ -2730,6 +2687,70 @@ body{background:#141518}
 @media(max-width:900px){.ztop{max-width:44px;padding:0 10px}.ztop .lg.xs,.ztop .clip,.ztop .zrp-n{display:none}}
 
 @media(prefers-reduced-motion:reduce){.ztop{animation:none}}
+
+/* ZERO Job Portal, v46. The light canvas again. From beautifului.dev (MIT), adapted: a pixel-grid loader, capsule rows,
+   stacked logo circles, tool chips for files, and a recommendation card with a confidence meter. */
+
+/* ═══ Zero working: a 3 by 3 pixel grid that lights in a drive pattern ═══ */
+.pxl{display:inline-grid;grid-template-columns:repeat(3,4px);gap:1.5px;flex-shrink:0;color:var(--ink)}
+.pxl i{display:block;width:4px;height:4px;border-radius:1px;background:currentColor;opacity:.15;animation:pixel-on 650ms ease-in-out infinite}
+@keyframes pixel-on{0%,100%{opacity:.15}18%,42%{opacity:1}62%{opacity:.15}}
+.ztop .pxl{color:#fff}
+.rrun .pxl,.bt-ph .pxl,.esel.run .pxl{color:var(--ink)}
+.zw3-h .pxl{margin:0 2px}
+.tli-i.now .pxl{color:var(--ink)}
+
+/* ═══ rows in Zero's chat that hold something are capsules ═══ */
+#zdrawer .zrow.cap{margin:2px 0}
+#zdrawer .zrow.cap>.zrow-h{min-height:48px;padding:8px 12px 8px 10px;border-radius:16px;background:#fff;box-shadow:0 0 0 1px var(--line),0 1px 2px rgba(19,20,23,.04);transition:box-shadow .15s var(--e)}
+#zdrawer .zrow.cap>.zrow-h:hover{background:#fff;box-shadow:0 0 0 1px var(--line2),0 6px 16px -10px rgba(19,20,23,.3)}
+#zdrawer .zrow.cap.open>.zrow-h{border-radius:16px 16px 0 0;box-shadow:0 0 0 1px var(--line2)}
+#zdrawer .zrow.cap .zrow-b{margin:0;padding:6px 8px 8px;border-radius:0 0 16px 16px;background:#fff;box-shadow:0 0 0 1px var(--line2);clip-path:inset(0 -1px -1px -1px)}
+.lgs{display:inline-flex;align-items:center;flex-shrink:0}
+.lgs .lg.xs{width:24px;height:24px;margin-left:-8px;border-radius:99px;box-shadow:0 0 0 2px #fff,inset 0 0 0 1px var(--line)}
+.lgs .lg.xs:first-child{margin-left:0}
+.lgs .lg.xs img{width:14px;height:14px;border-radius:3px}
+.lgs-n{display:inline-flex;align-items:center;justify-content:center;height:24px;min-width:24px;margin-left:-8px;padding:0 6px;border-radius:99px;background:var(--well2);font-size:12px;line-height:16px;color:var(--ink2);box-shadow:0 0 0 2px #fff}
+.zrow-h>.lg.xs{border-radius:99px}
+.zrow-n{display:inline-flex;align-items:center;gap:4px;flex-shrink:0;height:22px;padding:0 8px;border-radius:99px;background:var(--well);font-size:12px;line-height:16px;color:var(--ink2)}
+.zrow-n.ok{background:#E7F6ED;color:var(--good)}
+.zrow-n svg{width:12px;height:12px}
+#zdrawer .zrow-x{border-radius:12px}
+
+/* tool chips: what Zero did, with the file it made */
+.tcl{display:flex;flex-direction:column;gap:2px;padding:4px 2px}
+.tc{display:flex;align-items:center;gap:8px;min-height:34px;padding:0 6px;color:var(--ink2)}
+.tc>svg{width:14px;height:14px;flex-shrink:0;color:var(--ink3)}
+.tc b{font-weight:400;color:var(--ink);white-space:nowrap}
+.tc-t{margin-left:auto;flex-shrink:0;font-variant-numeric:tabular-nums}
+.fchip{display:inline-flex;align-items:center;gap:6px;min-width:0;height:24px;padding:0 8px;border-radius:7px;background:var(--well);font-size:12px;line-height:16px;color:var(--ink2);box-shadow:inset 0 0 0 1px var(--line);transition:background-color .12s var(--e),color .12s var(--e)}
+.fchip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fchip svg{width:12px;height:12px;flex-shrink:0;color:var(--ink3)}
+button.fchip:hover{background:var(--well2);color:var(--ink)}
+.fchip.st{font-variant-numeric:tabular-nums}
+
+/* ═══ the recommendation card: Zero asks before it acts ═══ */
+.msgs li.zrec{display:block;max-width:100%;align-self:stretch}
+.zrec-c{display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:20px;background:#fff;box-shadow:0 0 0 1.5px var(--ink),0 18px 34px -24px rgba(19,20,23,.45);animation:zrec-in .4s var(--e) both}
+.zrec.done .zrec-c{box-shadow:0 0 0 1px var(--line);animation:none}
+.zrec-q{color:var(--ink)}
+.zrec-b{color:var(--ink2);line-height:28px}
+.zrec-b b{font-weight:400;color:var(--ink)}
+.zrec-f{display:flex;align-items:center;gap:8px}
+.zrec-f .k{display:inline-flex;align-items:center;gap:6px}
+.zrec-f .k svg{width:13px;height:13px}
+.zrec-d{display:flex;align-items:center;gap:6px}
+.cbar{display:inline-flex;align-items:flex-end;gap:2px;height:12px}
+.cbar i{width:3px;border-radius:1px;background:var(--line2)}
+.cbar i:nth-child(1){height:6px}.cbar i:nth-child(2){height:9px}.cbar i:nth-child(3){height:12px}
+.cbar i.on{background:var(--good)}
+@keyframes zrec-in{from{opacity:0;transform:translateY(6px)}}
+
+@media(prefers-reduced-motion:reduce){.pxl i{animation:none;opacity:.6}.zrec-c{animation:none}}
+
+.msgs li.zrec .zrec-c>p{padding:0;border-radius:0;background:none;box-shadow:none}
+#zdrawer .msgs li.zrec .zrec-c>p{background:none;box-shadow:none}
+.zrec-b .cn{vertical-align:-5px}
 
 </style>
 </head>
@@ -6137,7 +6158,7 @@ A.lstart=()=>{const L=S.lvl,sc=scOf(L+1);if(!sc||S.lrn.run)return false;const ru
    A demo switch in the strip (apart from the product). Each person keeps the same search; what differs is the level,
    the points and which scenarios are graded, so fit, locks and every line of copy follow from that. */
 const PERSONAS={new:{label:'New, just joined',lvl:0,pts:0,done:0},start:{label:'Started, Level 2',lvl:2,pts:2300,done:2},maya:{label:'Sanjay, Level 8',lvl:8,pts:8640,done:7},top:{label:'Top, Level 10',lvl:10,pts:10000,done:7}};
-let PERSONA=PERSONAS[QS.get('as')]?QS.get('as'):'maya';
+let PERSONA=PERSONAS[QS.get('as')]?QS.get('as'):'new';
 function locked(r){return lvOf(r)>(S.lvl??8)}
 const graded=()=>(S.done||[]).length;
 /* fit only counts the scenarios this person has finished */
@@ -6429,7 +6450,7 @@ PAGES.student.inbox=()=>{const ids=threadIds().filter(k=>ROLE(k)&&S.threads[k].m
 
 /* ═══ Zero's chat holds everything it does: runs show as steps, finished work as rows you can open ═══ */
 const shimD=()=>`style="animation-delay:-${Date.now()%1800}ms"`;
-const spinS=()=>`<span class="zsp" style="animation-delay:-${Date.now()%900}ms" aria-hidden="true"></span>`;
+const spinS=()=>{const t=Date.now()%650;return`<span class="pxl" aria-hidden="true">${[90,180,270,0,90,180,90,180,270].map(d=>`<i style="animation-delay:${d-t}ms"></i>`).join('')}</span>`};
 A.zx=k=>{S.zx=S.zx||{};S.zx[k]=!S.zx[k]};
 function actRow(m){const k=m.k||(m.k=Math.random().toString(36).slice(2,8)),open=(S.zx||{})[k],r=m.id&&ROLE(m.id),ids=m.ids||[],ap=r&&S.apps[m.id]&&/^Applied|applied to/.test(m.text),has=ids.length||ap;
  return`<li class="zrow ${open?'open':''}"><button type="button" class="zrow-h" ${has?`data-a="zx" data-id="${k}" aria-expanded="${!!open}"`:'tabindex="-1"'}>${r?lg(CO(r.co).dom,'xs'):`<span class="zrow-i">${ic(m.icon||'sparkles')}</span>`}<span class="grow">${act2(m)}</span>${m.t?`<span class="m zrow-t">${m.t}</span>`:''}${has?`<span class="zrow-c">${ic('chevron-down')}</span>`:''}</button>
@@ -6865,6 +6886,57 @@ PAGES.student.inbox=()=>{const ids=threadIds().filter(k=>ROLE(k)&&S.threads[k].m
    <button type="button" class="ib-role" data-a="${a?'sheet':'rolesheet'}" data-id="${id}" title="Open the role">${lg(CO(r.co).dom,'xs')}<span class="clip">${r.title}</span>${a?chip(stLabel(id),CONN.includes(a.st)?'g':''):''}${ic('chevron-right')}</button></div>
    <ul class="msgs" id="msgs">${t.msgs.map(bub).join('')}${(S.typing||{})[id]?dots(p):''}${ibAct(id)}</ul>
    ${can?`<form class="chat-f row ib-f" id="ibf"><label class="hide" for="ibIn">Message</label><input id="ibIn" class="grow" placeholder="Write to ${esc(p.first)}" autocomplete="off"><button class="k sm" type="submit">${ic('send')}Send</button></form>`:`<p class="m chat-f">${a&&a.st==='asked'?'Say yes above to write back.':'This conversation is closed.'}</p>`}</div></div>`};
+
+/* ZERO Job Portal, v46, on top of st8.js (v45 is next/v45-src/). His notes on v45: back to the light canvas; a row in
+   Zero's chat that hides roles shows them as small logo circles before you open it; take the best of beautifului.dev (MIT):
+   its pixel-grid loader with a shimmer word and a timer, task-row capsules, tool chips for files, stacked source circles and
+   a recommendation card that asks before acting; and the portal opens as someone who just joined. */
+
+/* ═══ a row that holds something shows it: logo circles, a count, a capsule you can open ═══ */
+const lgStack=(ids,n=3)=>`<span class="lgs">${ids.slice(0,n).map(i=>lg(CO(ROLE(i).co).dom,'xs')).join('')}${ids.length>n?`<span class="lgs-n">+${ids.length-n}</span>`:''}</span>`;
+const slugOf=r=>coName(r).toLowerCase().replace(/[^a-z0-9]+/g,'-');
+const fileChip=(icon,name,a,id,label)=>`<button type="button" class="fchip" data-a="${a}" data-id="${id}" title="${label}">${ic(icon)}<span>${name}</span></button>`;
+function toolChips(r){const id=r.id,m=r.manager,K=kwOf(r),hit=K.filter(k=>MYKW.has(k)),T=(S.qaT||{})[id]||[];
+ const step=(icon,verb,chip,t)=>`<li class="tc">${ic(icon)}<b>${verb}</b>${chip}${t?`<span class="m tc-t">${t}</span>`:''}</li>`;
+ return`<ul class="tcl">${step('layout-template','Made a portfolio',fileChip('file',`${slugOf(r)}-portfolio.pdf`,'pfv',id,'View the portfolio'),T[0])}
+  ${step('file-text','Built an ATS resume',fileChip('file-text',`resume, ${K.length?`${hit.length} of ${K.length} keywords`:'one column'}`,'cvv',id,'View the resume'),T[1])}
+  ${step('mail',`Wrote to ${m.first}`,fileChip('mail','your note','znote',id,'Read the note'),T[2])}
+  ${step('send',`Sent through ${r.ats||'Greenhouse'}`,`<span class="fchip st">${confOf(r)}</span>`,T[3])}</ul>`}
+actRow=function(m){const k=m.k||(m.k=Math.random().toString(36).slice(2,8)),open=(S.zx||{})[k],r=m.id&&ROLE(m.id),ids=(m.ids||[]).filter(i=>ROLE(i)),ap=!!(r&&S.apps[m.id]&&/^Applied|applied to/.test(m.text)),has=ids.length>0||ap;
+ const lead=ids.length?lgStack(ids):r?lg(CO(r.co).dom,'xs'):`<span class="zrow-i">${ic(m.icon||'sparkles')}</span>`;
+ const meta=ids.length?`<span class="zrow-n">${ids.length} role${ids.length>1?'s':''}</span>`:ap?`<span class="zrow-n ok">${ic('check')}Sent</span>`:'';
+ return`<li class="zrow ${has?'cap':''} ${open?'open':''}"><button type="button" class="zrow-h" ${has?`data-a="zx" data-id="${k}" aria-expanded="${!!open}"`:'tabindex="-1"'}>${lead}<span class="grow">${act2(m)}</span>${meta}${m.t?`<span class="m zrow-t">${m.t}</span>`:''}${has?`<span class="zrow-c">${ic('chevron-down')}</span>`:''}</button>
+  ${open?`<div class="zrow-b">${ids.map(i=>{const x=ROLE(i);return`<button type="button" class="zrow-x" data-a="rolesheet" data-id="${i}">${lg(CO(x.co).dom,'xs')}<span class="grow clip">${x.title}<span class="m"> · ${coName(x)}</span></span>${S.apps[i]?chip(stLabel(i)):fitPill(x,1)}</button>`}).join('')}${ap?toolChips(r):''}</div>`:''}</li>`};
+
+/* ═══ Zero asks before it acts: a recommendation card in the chat ═══ */
+const confBars=n=>`<span class="cbar" aria-hidden="true">${[1,2,3].map(i=>`<i class="${i<=n?'on':''}"></i>`).join('')}</span>`;
+function recCard(m){const k=m.k||(m.k=Math.random().toString(36).slice(2,8));
+ if(m.kind==='start'){const sc=scOf(1),n=lvRoles(1).length;if(!sc)return'';
+  return`<li class="zrec ${m.done?'done':''}"><div class="zrec-c"><p class="zrec-q">Want to open ${n} roles today?</p><p class="zrec-b">Finish <b>${sc.title}</b>, about ${sc.mins} minutes. Every role gets a Zero fit after it, and the first ${n} unlock, at ${dreams(lvRoles(1)).slice(0,2).map(r=>`<span class="cn">${lg(CO(r.co).dom,'xs')}${coName(r)}</span>`).join(' and ')}.</p>
+   ${m.done?`<p class="m zrec-d">${m.done==='yes'?'Started. Zero opens the roles the moment it is graded.':'Not now. Zero asks again tomorrow.'}</p>`:`<div class="zrec-f">${confBars(3)}<span class="m">Best next step</span><span class="grow"></span>${btn('Later','x sm','recno',k)}${btn(`Start${ic('arrow-right')}`,'k sm','recyes',k)}</div>`}</div></li>`}
+ const R=(m.ids||[]).map(ROLE).filter(Boolean),avg=R.length?R.reduce((s,r)=>s+score(r),0)/R.length:0,lvl=avg>=92?3:avg>=84?2:1,open=R.filter(r=>sCan(r));if(!R.length)return'';
+ return`<li class="zrec ${m.done?'done':''}"><div class="zrec-c"><p class="zrec-q">Want me to apply to ${R.length>1?`these ${num(R.length).toLowerCase()}`:'this one'}?</p>
+  <p class="zrec-b">${R.map(r=>`<span class="cn">${lg(CO(r.co).dom,'xs')}${coName(r)}</span> <span class="m">${r.title}, ${score(r)}%</span>`).join('<br>')}</p>
+  ${m.done?`<p class="m zrec-d">${m.done==='yes'?`Yes. Zero is applying, one step at a time, and waits ${(S.ctx.hold??3)} seconds before each one sends.`:'Not now. They stay in your best roles.'}</p>`
+  :`<div class="zrec-f">${confBars(lvl)}<span class="m">${['','Worth a look','Good match','High confidence'][lvl]}</span><span class="grow"></span>${btn('Not now','x sm','recno',k)}${open.length?btn(`${ic('zap')}${open.length>1?`Apply to all ${open.length}`:'Apply'}`,'k sm','recyes',k):''}</div>`}</div></li>`}
+{const f=zbub;zbub=function(m){return m.from==='rec'?recCard(m):f(m)}}
+const recFind=k=>zthread().msgs.find(x=>x.k===k);
+A.recno=k=>{const m=recFind(k);if(m)m.done='no'};
+A.recyes=k=>{const m=recFind(k);if(!m)return false;m.done='yes';if(m.kind==='start')return A.lgo();const ids=(m.ids||[]).filter(id=>ROLE(id)&&sCan(ROLE(id)));if(!ids.length)return;S.bt={ids,t0:Date.now()};
+ const go=ids.filter(id=>!(S.qa&&S.qa.id===id)&&!(S.qq||[]).includes(id));if(S.qa)S.qq=[...(S.qq||[]),...go];else{S.qq=go.slice(1);stRate(ids.length);A.qapply(go[0])}};
+/* when the morning search lands, Zero offers the next step instead of only reporting */
+{const f=scanTick;scanTick=function(){const had=S.scan;f();if(had&&!S.scan&&S.recDay!==today()){S.recDay=today();const P=sPack().filter(sCan).slice(0,3);
+ const m=S.lvl===0?{from:'rec',kind:'start',date:today()}:P.length?{from:'rec',kind:'apply',ids:P.map(r=>r.id),date:today()}:null;if(m){zthread().msgs.push(m);render()}}}}
+A.znote=id=>{(S.nopen=S.nopen||{})[id]=true;(S.rtab=S.rtab||{})[id]='app';S.fb=null;S.rv={side:'st',ids:[id],i:0}};
+
+/* the top-bar pill steps aside while the chat is open: the chat already shows the work */
+{const f=zTop;zTop=function(){return S.zp?'':f()}}
+/* the two prep lines live inside the Applied capsule, so the chat does not repeat them */
+{const f=actRow;actRow=function(m){if(m.id&&S.apps[m.id]&&/^Zero tailored your portfolio for|^Zero built a resume/.test(m.text))return'';return f(m)}}
+/* Zero did the applying, so it says so */
+{const f=act2;act2=function(e){const m=e.text.match(/^Applied to (.+?)\. .+ has your work$/);return m?`<b>Zero</b> applied to <b>${m[1]}</b> for you`:f(e)}}
+/* someone new: the search row carries the logos of the roles their first scenario opens */
+{const f=scanTick;scanTick=function(){const had=S.scan;f();if(had&&!S.scan&&S.lvl===0){const m=[...zthread().msgs].reverse().find(x=>x.from==='act'&&/^Read \d+ postings/.test(x.text));if(m&&!(m.ids||[]).length){m.ids=lvRoles(1).slice(0,6).map(r=>r.id);render()}}}}
 
 /* ═══════════ PORTFOLIO: generated by pf_build.py from zero-portfolio/v36 (Slate 9). Do not edit by hand:
    edit pf_page.js or pf_page.css, then run python3 next/pf_build.py. One IIFE, so nothing here is a global
