@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Zero skill path, every version</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,100..1000&display=swap">
+<style>
+@font-face{font-family:'STK Bureau Serif';src:url('zero-skill-path-index-assets/STKBureau-SerifBook.otf') format('opentype');font-weight:400;font-display:swap}
+:root{--tx:#1A1917;--tx-2:#5F5C56;--tx-3:#8A857C;--line:rgba(26,25,23,.11);--line-2:rgba(26,25,23,.065);--page:#F3F2EF;--sheet:#FBFAF8;--ink:#151514;--ok:#3FAE59;--no:#C2553F;
+  --serif:'STK Bureau Serif',Georgia,serif;--sans:'Google Sans Flex','Google Sans',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;--out:cubic-bezier(.16,1,.3,1)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{background:var(--page)}
+body{background:var(--page);font-family:var(--sans);font-size:14px;line-height:1.45;letter-spacing:-.005em;color:var(--tx);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit;text-decoration:none}
+img{display:block;width:100%;height:auto}
+.wrap{max-width:1240px;margin:0 auto;padding:0 32px 72px}
+header{display:flex;align-items:center;justify-content:space-between;height:76px}
+header .wm img{height:20px;width:auto}
+header>span:last-child{font-size:12.5px;color:var(--tx-3)}
+.intro{padding:36px 0 30px;max-width:640px}
+h1{font:400 46px/1.04 var(--serif);letter-spacing:-.03em;text-wrap:balance}
+.intro p{margin-top:12px;font-size:15px;color:var(--tx-2);text-wrap:pretty}
+
+.tags,.meta{display:flex;align-items:center;gap:6px}
+.tag{flex:none;display:inline-grid;place-items:center;height:22px;padding:0 8px 1px;border-radius:99px;font:500 11.5px/1 var(--sans);font-variant-numeric:tabular-nums}
+.tag.b{background:var(--ink);color:#F6F6F4}
+.tag.s{box-shadow:inset 0 0 0 1px var(--line);color:var(--tx-2)}
+.tag.s.current{background:var(--ok);color:#fff;box-shadow:none}
+.tag.s.rejected{color:var(--no);box-shadow:inset 0 0 0 1px rgba(194,85,63,.35)}
+.date{margin-left:4px;font-size:12px;color:var(--tx-3)}
+
+.shot{display:block;border-radius:12px;overflow:hidden;box-shadow:0 0 0 1px var(--line);background:#E2E3E1}
+.shot img{aspect-ratio:1512/800;object-fit:cover;object-position:top;transition:transform .9s var(--out)}
+.shot:hover img{transform:scale(1.02)}
+.shot.big{border-radius:14px}
+
+/* the newest build takes the top of the page */
+.hero{display:grid;grid-template-columns:minmax(0,1.62fr) minmax(0,1fr);gap:28px;padding:20px;border-radius:22px;background:var(--sheet);box-shadow:0 0 0 1px var(--line)}
+.hero .more{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
+.hero .more .shot{border-radius:9px}
+.hero .side{display:flex;flex-direction:column;padding:8px 8px 4px 0}
+.hero h2{margin-top:16px;font:400 34px/1.06 var(--serif);letter-spacing:-.028em;text-wrap:balance}
+.hero .side>p{margin-top:10px;color:var(--tx-2);font-size:14px;text-wrap:pretty}
+.facts{margin-top:18px;box-shadow:0 -1px 0 var(--line-2)}
+.facts>div{display:flex;gap:14px;padding:10px 0;box-shadow:0 1px 0 var(--line-2);font-size:13px}
+.facts dt{flex:none;width:64px;color:var(--tx-3)}
+.facts dd{flex:1}
+blockquote{margin-top:16px;padding-left:14px;box-shadow:inset 2px 0 0 var(--line)}
+blockquote p{font-size:13.5px;color:var(--tx);text-wrap:pretty}
+blockquote cite{display:block;margin-top:4px;font-size:12px;font-style:normal;color:var(--tx-3)}
+.go{margin-top:auto;padding-top:22px;display:flex;flex-wrap:wrap;gap:8px}
+.key{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px 1px;border-radius:12px;background:var(--ink);color:#F6F6F4;font:500 13px/1 var(--sans);transition:opacity .2s,transform .16s var(--out)}
+.key:hover{opacity:.88} .key:active{transform:scale(.98)}
+.key svg{width:13px;height:13px}
+.ghost{display:inline-flex;align-items:center;height:40px;padding:0 14px 1px;border-radius:12px;font:500 13px/1 var(--sans);box-shadow:inset 0 0 0 1px var(--line);transition:background .2s}
+.ghost:hover{background:rgba(26,25,23,.045)}
+
+h2.sec{margin:54px 0 18px;font:500 13px/1 var(--sans);color:var(--tx-3)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:36px 22px}
+.card .more{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.card .more .shot{border-radius:8px}
+.card .meta{margin-top:14px}
+.card h3{margin-top:10px;font:500 15px/1.25 var(--sans);letter-spacing:-.012em}
+.card p{margin-top:6px;font-size:13px;color:var(--tx-2);text-wrap:pretty}
+.card blockquote{margin-top:12px}
+.card blockquote p{font-size:13px}
+.card .links{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}
+.card .links a{display:inline-flex;align-items:center;height:28px;padding:0 11px 1px;border-radius:99px;font:500 12px/1 var(--sans);box-shadow:inset 0 0 0 1px var(--line);transition:background .2s}
+.card .links a:hover{background:rgba(26,25,23,.045)}
+.card.rejected .shot img{filter:saturate(.6)}
+footer{margin-top:64px;font-size:12px;color:var(--tx-3)}
+
+@media (max-width:1000px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}}
+@media (max-width:640px){.wrap{padding:0 16px 56px}h1{font-size:36px}.grid{grid-template-columns:1fr}.hero{padding:14px}.hero .more{grid-template-columns:1fr 1fr}header>span:last-child{display:none}}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><span class="wm"><img src="zero-skill-path-index-assets/zero-wordmark.svg" alt="zero"></span><span>6 versions, 12 to 14 October 2026</span></header>
+  <div class="intro"><h1>Zero skill path</h1>
+    <p>Skill points, levels and the jobs they open. Every version, newest first, with what changed and what you said about the one before.</p></div>
+  <section class="hero">
+  <div class="pics"><a class="shot big" href="zero-skill-path-jobs-b6.html#s3-explore" target="_blank" rel="noopener"><img src="zero-skill-path-index-assets/b6-explore-detail.jpg" alt="b6, explore detail" loading="lazy"></a><div class="more"><a class="shot" href="zero-skill-path-levels-b6.html#s2-slider" target="_blank" rel="noopener"><img src="zero-skill-path-index-assets/b6-slider.jpg" alt="b6, slider" loading="lazy"></a><a class="shot" href="zero-skill-path-levels-b6.html#s2-checkin" target="_blank" rel="noopener"><img src="zero-skill-path-index-assets/b6-checkin.jpg" alt="b6, checkin" loading="lazy"></a><a class="shot" href="zero-skill-path-jobs-b6.html#s3-home" target="_blank" rel="noopener"><img src="zero-skill-path-index-assets/b6-home.jpg" alt="b6, home" loading="lazy"></a><a class="shot" href="zero-skill-path-jobs-b6.html#s3-inbox" target="_blank" rel="noopener"><img src="zero-skill-path-index-assets/b6-inbox.jpg" alt="b6, inbox" loading="lazy"></a><a class="shot" href="zero-skill-path-scenarios-b6.html#s1-work" target="_blank" rel="noopener"><img src="zero-skill-path-index-assets/b6-work.jpg" alt="b6, work" loading="lazy"></a><a class="shot" href="zero-skill-path-systems-b6.html" target="_blank" rel="noopener"><img src="zero-skill-path-index-assets/b6-map.jpg" alt="b6, map" loading="lazy"></a></div></div>
+  <div class="side"><div class="tags"><span class="tag b">b6</span><span class="tag s current">Current</span><span class="date">14 Oct</span></div><h2>Calmer, and the learner is a GTM Engineer</h2><p>Maya Reyes, GTM Engineer in Austin, aiming at OpenAI. 57 real GTM roles open today, a level slider, a daily check in, and Jobs rebuilt as Home, Explore, Applications and Inbox. Nothing scrolls.</p>
+    <dl class="facts"><div><dt>Learner</dt><dd>Maya Reyes, GTM Engineer, Austin. Dream job: GTM Engineer at OpenAI, Level 10</dd></div><div><dt>Levels</dt><dd>A slider from 0 to 10, one real company per level. Seven day check in, 50 new roles by day 7</dd></div><div><dt>Jobs</dt><dd>Explore is a sheet, the role opens on the right with Zero fit. Apply tailors the portfolio and an ATS resume, then sends</dd></div><div><dt>Data</dt><dd>57 real GTM postings from the companies&#x27; own job boards, each with its link</dd></div></dl><blockquote><p>“The one we made was good, but it is too complicated and has too much bad UI. More premium and aesthetic, with less text.”</p><cite>Sanjay, on b5</cite></blockquote><div class="go"><a class="key" href="zero-skill-path-systems-b6.html" target="_blank" rel="noopener">Open the map <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10 10 4M5 4h5v5"/></svg></a><a class="ghost" href="zero-skill-path-scenarios-b6.html" target="_blank" rel="noopener">Scenarios</a><a class="ghost" href="zero-skill-path-levels-b6.html" target="_blank" rel="noopener">Levels and Coach</a><a class="ghost" href="zero-skill-path-jobs-b6.html" target="_blank" rel="noopener">Jobs</a></div></div>
+</section>
+  <h2 class="sec">Earlier versions</h2>
+  <div class="grid"><article class="card superseded"><a class="shot big" href="zero-skill-path-systems-b5.html" target="_blank" rel="noopener"><img src="zero-skill-path-index-assets/b5-map.jpg" alt="b5, map" loading="lazy"></a><div class="more"><a class="shot" href="zero-skill-path-levels-b5.html#s2-pill" target="_blank" rel="noopener"><img src="zero-skill-path-index-assets/b5-pill.jpg" alt="b5, pill" loading="lazy"></a><a class="shot" href="zero-skill-path-jobs-b5.html#s3-open" target="_blank" rel="noopener"><img src="zero-skill-path-index-assets/b5-box.jpg" alt="b5, box" loading="lazy"></a></div>
+  <div class="meta"><span class="tag b">b5</span><span class="tag s superseded">Earlier</span><span class="date">14 Oct</span></div><h3>The three systems from the Navid call</h3><p>Scenarios, Levels and Coach, Jobs as three linked sites and a map. Level 0 start, every level opens a bucket of roles, Jobs V1 is Applied, Connected, Lost.</p><blockquote><p>“Think in a system manner, not just UI. Give me 3 different sites, how they interact with each other, where they do it.”</p><cite>Sanjay, after the Navid call</cite></blockquote><div class="links"><a href="zero-skill-path-systems-b5.html" target="_blank" rel="noopener">Map</a><a href="zero-skill-path-scenarios-b5.html" target="_blank" rel="noopener">Scenarios</a><a href="zero-skill-path-levels-b5.html" target="_blank" rel="noopener">Levels and Coach</a><a href="zero-skill-path-jobs-b5.html" target="_blank" rel="noopener">Jobs</a></div>
+</article><article class="card superseded"><a class="shot big" href="zero-skill-path-b4.html" target="_blank" rel="noopener"><img src="zero-skill-path-index-assets/b4-path-jobs.jpg" alt="b4, path jobs" loading="lazy"></a><div class="more"><a class="shot" href="zero-skill-path-b4.html" target="_blank" rel="noopener"><img src="zero-skill-path-index-assets/b4-app-invite.jpg" alt="b4, app invite" loading="lazy"></a><a class="shot" href="zero-skill-path-b4.html" target="_blank" rel="noopener"><img src="zero-skill-path-index-assets/b4-explore.jpg" alt="b4, explore" loading="lazy"></a></div>
+  <div class="meta"><span class="tag b">b4</span><span class="tag s superseded">Earlier</span><span class="date">12 Oct</span></div><h3>Compact path, and a job portal to the offer</h3><p>Level 1 start, roles open at gate levels, one compact quick view of the whole path, and the job portal from a locked role to the interview, offer letter and hired.</p><blockquote><p>“Make it compact please. In one go we should see more stuff.”</p><cite>Sanjay, on b3</cite></blockquote><div class="links"><a href="zero-skill-path-b4.html" target="_blank" rel="noopener">Prototype</a><a href="zero-skill-path-plan-b4.html" target="_blank" rel="noopener">Plan</a></div>
+</article><article class="card superseded"><a class="shot big" href="zero-skill-path-b3.html" target="_blank" rel="noopener"><img src="zero-skill-path-index-assets/b3-path.jpg" alt="b3, path" loading="lazy"></a><div class="more"><a class="shot" href="zero-skill-path-b3.html" target="_blank" rel="noopener"><img src="zero-skill-path-index-assets/b3-world-1.jpg" alt="b3, world 1" loading="lazy"></a><a class="shot" href="zero-skill-path-b3.html" target="_blank" rel="noopener"><img src="zero-skill-path-index-assets/b3-explore.jpg" alt="b3, explore" loading="lazy"></a></div>
+  <div class="meta"><span class="tag b">b3</span><span class="tag s superseded">Earlier</span><span class="date">12 Oct</span></div><h3>Back to b1, with a side panel</h3><p>The b1 flow again. The full path page is gone: the level pill opens a side panel with your points, the next scenario, what it opens, and the job you want.</p><blockquote><p>“I really like the previous B1 version. I don&#x27;t want this screen. This is too much. Let&#x27;s have a side panel.”</p><cite>Sanjay, on b2</cite></blockquote><div class="links"><a href="zero-skill-path-b3.html" target="_blank" rel="noopener">Prototype</a><a href="zero-skill-path-plan-b3.html" target="_blank" rel="noopener">Plan</a></div>
+</article><article class="card rejected"><a class="shot big" href="zero-skill-path-b2.html" target="_blank" rel="noopener"><img src="zero-skill-path-index-assets/b2-intro.jpg" alt="b2, intro" loading="lazy"></a><div class="more"><a class="shot" href="zero-skill-path-b2.html" target="_blank" rel="noopener"><img src="zero-skill-path-index-assets/b2-tour.jpg" alt="b2, tour" loading="lazy"></a><a class="shot" href="zero-skill-path-b2.html" target="_blank" rel="noopener"><img src="zero-skill-path-index-assets/b2-world-1.jpg" alt="b2, world 1" loading="lazy"></a></div>
+  <div class="meta"><span class="tag b">b2</span><span class="tag s rejected">Rejected</span><span class="date">12 Oct</span></div><h3>A ten second intro and a guided tour</h3><p>How Zero works in one picture, then a guided first look on the real home screen. The pill read Level 1 of 10.</p><blockquote><p>“This is good, but make a second version better, more quickly understandable. Start with intros.”</p><cite>Sanjay, on b1</cite></blockquote><div class="links"><a href="zero-skill-path-b2.html" target="_blank" rel="noopener">Prototype</a><a href="zero-skill-path-plan-b2.html" target="_blank" rel="noopener">Plan</a></div>
+</article><article class="card superseded"><a class="shot big" href="zero-skill-path-b1.html" target="_blank" rel="noopener"><img src="zero-skill-path-index-assets/b1-world-1.jpg" alt="b1, world 1" loading="lazy"></a><div class="more"><a class="shot" href="zero-skill-path-plan-b1.html" target="_blank" rel="noopener"><img src="zero-skill-path-index-assets/b1-plan.jpg" alt="b1, plan" loading="lazy"></a><a class="shot" href="zero-skill-path-b1.html" target="_blank" rel="noopener"><img src="zero-skill-path-index-assets/b1-path.jpg" alt="b1, path" loading="lazy"></a></div>
+  <div class="meta"><span class="tag b">b1</span><span class="tag s superseded">Earlier</span><span class="date">12 Oct</span></div><h3>The first build: skill points open the job</h3><p>The job you want is locked at a level. Scenarios pay skill points, 1,000 make a level, every level opens real roles. 25 screens and a plan page.</p><blockquote><p>“You want to get the role, but the role is locked. Level up, gain more skill points by doing more scenarios.”</p><cite>Sanjay, the first brief</cite></blockquote><div class="links"><a href="zero-skill-path-b1.html" target="_blank" rel="noopener">Prototype</a><a href="zero-skill-path-plan-b1.html" target="_blank" rel="noopener">Plan</a></div>
+</article></div>
+  <footer>Roles in b6 are real postings from 14 October 2026. Roles, pay and numbers in b1 to b5 are stand-ins.</footer>
+</div>
+</body>
+</html>
