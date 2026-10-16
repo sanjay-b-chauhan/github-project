@@ -5144,9 +5144,12 @@ html.zr-round .k.sm,html.zr-round .s.sm{padding:0 14px}
 /* ═══ v77: deadlines, Apply manually, To-do is done, Location, why it fits, the file tree, cancel and stop, the resume ask ═══ */
 
 /* the deadline: red on every to-do, louder at two days or less */
-.f10-due{display:inline-flex;align-items:center;gap:6px;flex-shrink:0;margin-left:auto;font-size:12px;line-height:16px;font-weight:500;color:#C4271B;white-space:nowrap}
-.f10-due svg{width:14px;height:14px}
-.f10-due.soon{height:24px;padding:0 8px;border-radius:8px;background:#FDECEA;color:#B42318;box-shadow:inset 0 0 0 1px rgba(180,35,24,.14)}
+.f10-due{display:inline-flex;align-items:center;gap:6px;flex-shrink:0;margin-left:auto;font-size:12px;line-height:16px;font-weight:400;color:#C4271B;white-space:nowrap}
+.f10-due.soon{font-weight:600;color:#B42318}
+.f10-rg{width:12px;height:12px;flex-shrink:0;transform:rotate(-90deg)}
+.f10-rg circle{fill:none;stroke-width:2.5}
+.f10-rg .t{stroke:rgba(196,39,27,.18)}
+.f10-rg .a{stroke:currentColor;stroke-linecap:round}
 .f2-dl{color:#C4271B}
 .f2-dl.soon{color:#B42318;font-weight:500}
 
@@ -5165,9 +5168,13 @@ td.eg-loc .m{display:block;font-size:12px;line-height:16px;color:var(--ink3)}
 /* why it fits: short bullets on hover or focus */
 .zf-pill[tabindex]{cursor:help}
 .zf-pill:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
-.f10-fit{position:fixed;z-index:450;width:300px;padding:12px 14px 10px;border-radius:12px;background:#fff;color:var(--ink);box-shadow:0 0 0 1px rgba(19,20,23,.08),0 18px 40px -16px rgba(19,20,23,.35);pointer-events:none;animation:f10-in .14s ease-out both}
+.f10-fit{--tint:#EEF3FD;--tx:#2457C5;position:fixed;z-index:450;width:300px;padding:0 14px 10px;border-radius:14px;background:#fff;color:var(--ink);box-shadow:0 0 0 1px rgba(19,20,23,.08),0 2px 4px rgba(19,20,23,.05),0 28px 56px -18px rgba(19,20,23,.42);pointer-events:none;animation:f10-in .14s ease-out both}
+.f10-fit.st{--tint:#E9F7EE;--tx:#13804A}
+.f10-fit::before{content:"";position:absolute;left:var(--ax,20px);top:-5px;width:10px;height:10px;background:var(--tint);transform:rotate(45deg);box-shadow:-1px -1px 0 rgba(19,20,23,.06)}
+.f10-fit.up::before{top:auto;bottom:-5px;background:#fff;box-shadow:1px 1px 0 rgba(19,20,23,.06)}
 @keyframes f10-in{from{opacity:0;transform:translateY(-4px)}}
-.f10-fh{margin:0 0 8px;font-size:12px;line-height:16px;color:var(--ink3)}
+.f10-fh{position:relative;display:flex;align-items:center;gap:6px;margin:0 -14px 8px;padding:10px 14px;border-radius:14px 14px 0 0;background:var(--tint);font-size:12px;line-height:16px;font-weight:500;color:var(--tx)}
+.f10-fh svg{width:14px;height:14px}
 .f10-fit ul{margin:0;padding:0;list-style:none}
 .f10-fit li{display:grid;grid-template-columns:52px 1fr;gap:8px;padding:4px 0;font-size:14px;line-height:20px}
 .f10-fit li .f10-k{font-size:12px;line-height:20px;color:var(--ink3)}
@@ -5189,12 +5196,6 @@ td.eg-loc .m{display:block;font-size:12px;line-height:16px;color:var(--ink3)}
 .f10-ib:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
 .f10-ib svg{width:16px;height:16px}
 
-/* cancel one application, or stop them all */
-.f10-stop,.f10-cx{display:inline-flex;align-items:center;gap:6px;height:28px;margin-left:8px;padding:0 10px;border:0;border-radius:8px;font:500 12px/16px var(--f);color:var(--ink2);background:linear-gradient(#fff,#F3F4F6);box-shadow:inset 0 0 0 1px rgba(19,20,23,.14),0 1px 2px rgba(19,20,23,.06);cursor:pointer}
-.f10-stop:hover,.f10-cx:hover{color:#B42318}
-.f10-stop svg{width:10px;height:10px;fill:currentColor}
-.f3-ih .f10-cx{margin:0 8px 0 0}
-html.zr-round .f10-stop,html.zr-round .f10-cx{border-radius:999px}
 
 /* the resume ask before Zero applies */
 .f10-gate{position:fixed;inset:0;z-index:420;display:grid;place-items:center;padding:16px;background:rgba(19,20,23,.32);animation:f10-fade .16s ease-out both}
@@ -5213,12 +5214,33 @@ html.zr-round .f10-stop,html.zr-round .f10-cx{border-radius:999px}
 .f10-gf{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
 @media (prefers-reduced-motion:reduce){.f10-fit,.f10-gate{animation:none}}
 
-/* in the Jobs table the cancel sits inside the Applying pill */
-.f10-sp{display:inline-flex;align-items:center;gap:4px;padding-right:4px}
-.f10-cxi{display:grid;place-items:center;width:20px;height:20px;border:0;border-radius:6px;background:none;color:var(--ink3);cursor:pointer}
-.f10-cxi:hover{background:rgba(19,20,23,.08);color:#B42318}
-.f10-cxi:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
-.f10-cxi svg{width:12px;height:12px}
+
+/* stop and cancel while Zero applies: x cancels this one, the square stops them all */
+.f10-ic{display:inline-grid;place-items:center;width:28px;height:28px;flex-shrink:0;border:0;border-radius:8px;color:var(--ink2);background:linear-gradient(#fff,#F3F4F6);box-shadow:inset 0 0 0 1px rgba(19,20,23,.14),0 1px 2px rgba(19,20,23,.06);cursor:pointer;transition:color .15s,background .15s}
+.f10-ic svg{width:14px;height:14px}
+.f10-ic.sq svg{width:11px;height:11px;fill:currentColor}
+.f10-ic:hover{color:#B42318;background:linear-gradient(#fff,#FDF1F0)}
+.f10-ic:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.f10-ic.dk{width:26px;height:26px;color:#B9BBC2;background:rgba(255,255,255,.08);box-shadow:none}
+.f10-ic.dk:hover{color:#fff;background:rgba(255,255,255,.18)}
+.f10-ic.lg{width:32px;height:32px;border-radius:10px}
+.f10-ic.row{margin-right:8px}
+.f10-ctl{display:inline-flex;gap:4px;margin-left:8px}
+.f10-zt{display:inline-flex;align-items:center;gap:2px;margin-left:6px;padding-right:5px;border-radius:99px;background:var(--ink)}
+.f10-zt .ztop{margin-left:0;background:none}
+.f10-ztc{display:inline-flex;gap:2px}
+.f10-rb{display:inline-flex;align-items:center;gap:6px}
+.f10-act{display:inline-flex;align-items:center;gap:6px}
+.f10-sp{display:inline-flex;align-items:center;gap:6px}
+.f10-spin{width:11px;height:11px;border-radius:50%;border:1.5px solid rgba(19,20,23,.18);border-top-color:var(--ink2);animation:f10-rot .8s linear infinite}
+@keyframes f10-rot{to{transform:rotate(360deg)}}
+html.zr-round .f10-ic{border-radius:999px}
+
+/* the table keeps its widths now that Location sits second */
+.eg th.eg-loc{width:170px}
+.eg:not(.split) th.eg-act,.eg:not(.split) td.eg-act{width:176px!important}
+@media(max-width:600px){.eg th.eg-loc,.eg td.eg-loc{display:none}.eg:not(.split) th:nth-child(3),.eg:not(.split) td:nth-child(3){display:table-cell}}
+@media (prefers-reduced-motion:reduce){.f10-spin{animation:none}}
 
 </style>
 </head>
@@ -12730,9 +12752,10 @@ const f10Kind=id=>(String(id).match(/^(offer|ask|pick|need|rep|fail)/)||[])[1];
 const f10Hash=s=>{let h=0;for(const ch of String(s))h=(h*31+ch.charCodeAt(0))|0;return Math.abs(h)};
 const f10Due=id=>{const k=f10Kind(id);if(!k)return null;const seen=S.f10seen=S.f10seen||{};if(!seen[id])seen[id]=+S.now-(k==='offer'?0:f10Hash(id)%2)*864e5;return seen[id]+F10WIN[k]*864e5};
 const f10Left=due=>Math.ceil((due-(+S.now))/864e5);
-const f10DueHTML=id=>{const due=f10Due(id);if(!due)return'';const d=f10Left(due),date=fmt(new Date(due)),soon=d<=2;
+const f10Ring=p=>`<svg class="f10-rg" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" pathLength="100" class="t"/><circle cx="8" cy="8" r="6" pathLength="100" class="a" style="stroke-dasharray:${Math.max(4,Math.round(p*100))} 100"/></svg>`;
+const f10DueHTML=id=>{const due=f10Due(id);if(!due)return'';const d=f10Left(due),date=fmt(new Date(due)),soon=d<=2,win=F10WIN[f10Kind(id)]||3;
  const txt=d<0?'Overdue':d===0?'Due today':d===1?'1 day left':soon?`${d} days left`:`Due ${date}`;
- return`<span class="f10-due ${soon?'soon':''}" title="Due ${date}">${ic(soon?'alarm-clock':'clock')}${txt}</span>`};
+ return`<span class="f10-due ${soon?'soon':''}" title="Due ${date}">${f10Ring(Math.max(0,Math.min(1,d/win)))}${txt}</span>`};
 /* ── the to-do card: the deadline sits on the title line; when nothing is left, To-do is done ── */
 {const f=f2Todo;f2Todo=function(T){
  if(!T.length)return`<section class="f2-tds"><div class="f2-th"><h2 class="f2-k">To-dos</h2></div><div class="zy-box f2-td f10-done"><span class="f10-ok">${ic('check')}</span><p class="f10-dt">To-do is done</p>${btn(`${ic('map')}Back to map`,'k','lmode','learn')}</div></section>`;
@@ -12745,7 +12768,7 @@ const f10DueHTML=id=>{const due=f10Due(id);if(!due)return'';const d=f10Left(due)
 {const f=roleBody;roleBody=function(){return f.apply(this,arguments).replace(/<button([^>]*?)data-a="f2retry"([^>]*)>[\s\S]*?<\/button>/g,(m0,a,b)=>`<button${a}data-a="f2self"${b}>Apply manually${ic('arrow-up-right')}</button>`)}}
 
 /* ── Jobs: the location gets its own column; the role cell keeps the title and the company ── */
-{const f=PAGES.student.jobs;PAGES.student.jobs=function(){let h=f.apply(this,arguments);if(!h||h.indexOf('<thead>')<0)return h;
+{const f=PAGES.student.jobs;PAGES.student.jobs=function(){let h=f.apply(this,arguments);if(!h||h.indexOf('<thead>')<0||/<table class="[^"]*\bsplit\b/.test(h))return h;
  h=h.replace(/(<thead><tr><th[\s\S]*?<\/th>)/,'$1<th class="eg-loc">Location</th>');
  h=h.replace(/(<tr[^>]*data-id="([^"]+)"[^>]*>)(<td class="eg-r">[\s\S]*?<\/td>)/g,(m0,tr,id,td)=>{const r=ROLE(id);if(!r)return m0;
   const cell=td.replace(/<span class="mi"><i data-lucide="map-pin"><\/i>[\s\S]*?<\/span>/,'');
@@ -12768,9 +12791,9 @@ function f10Why(r){const p=f10Pref(),out=[],t=(r.title||'').toLowerCase(),where=
 const f10Fit={el:null,id:null};
 function f10FitShow(pill){const host=pill.closest('[data-id]'),r=ROLE(host&&host.dataset.id)||ROLE(S.jcur);if(!r)return;if(f10Fit.id===r.id&&f10Fit.el)return;f10FitHide();
  const w=f10Why(r),strong=/strong|exceptional/i.test(pill.textContent);if(!w.B.length&&!w.gap)return;
- const el=document.createElement('div');el.className='f10-fit';el.id='f10fit';el.setAttribute('role','tooltip');
- el.innerHTML=`<p class="f10-fh">Why it is a ${strong?'strong':'good'} fit</p><ul>${w.B.map(([k,v])=>`<li><span class="f10-k">${k}</span><span>${esc(v)}</span></li>`).join('')}${w.gap?`<li class="f10-gap"><span class="f10-k">Gap</span><span>${esc(w.gap)}</span></li>`:''}</ul>`;
- document.body.appendChild(el);const b=pill.getBoundingClientRect(),W=el.offsetWidth,H=el.offsetHeight;let x=b.left+b.width/2-W/2,y=b.bottom+8;x=Math.max(12,Math.min(innerWidth-W-12,x));if(y+H>innerHeight-12)y=b.top-H-8;
+ const el=document.createElement('div');el.className=`f10-fit ${strong?'st':'gd'}`;el.id='f10fit';el.setAttribute('role','tooltip');
+ el.innerHTML=`<p class="f10-fh">${ic(strong?'sparkle':'thumbs-up')}Why it is a ${strong?'strong':'good'} fit</p><ul>${w.B.map(([k,v])=>`<li><span class="f10-k">${k}</span><span>${esc(v)}</span></li>`).join('')}${w.gap?`<li class="f10-gap"><span class="f10-k">Gap</span><span>${esc(w.gap)}</span></li>`:''}</ul>`;
+ document.body.appendChild(el);icons();const b=pill.getBoundingClientRect(),W=el.offsetWidth,H=el.offsetHeight;let x=b.left,y=b.bottom+10;x=Math.max(12,Math.min(innerWidth-W-12,x));if(y+H>innerHeight-12){y=b.top-H-10;el.classList.add('up')}el.style.setProperty('--ax',`${Math.round(Math.min(W-24,Math.max(14,b.left+16-x)))}px`);
  el.style.left=`${Math.round(x)}px`;el.style.top=`${Math.round(y)}px`;pill.setAttribute('aria-describedby','f10fit');f10Fit.el=el;f10Fit.id=r.id;f10Fit.pill=pill}
 function f10FitHide(){if(f10Fit.el){f10Fit.el.remove();if(f10Fit.pill)f10Fit.pill.removeAttribute('aria-describedby')}f10Fit.el=null;f10Fit.id=null;f10Fit.pill=null}
 document.addEventListener('mouseover',e=>{const p=e.target.closest&&e.target.closest('.zf-pill');if(p)f10FitShow(p);else if(f10Fit.el&&!(e.target.closest&&e.target.closest('.f10-fit')))f10FitHide()});
@@ -12781,13 +12804,16 @@ AFTER.push(()=>{f10FitHide();document.querySelectorAll('.zf-pill:not([tabindex])
 
 /* ── the files Zero sent: a tree, each file with view and download ── */
 const f10Node=(icon,name,kind,view,dl,id,label)=>`<div class="f10-tn" role="listitem"><span class="f10-ti">${ic(icon)}</span><span class="f10-tt">${esc(name)}</span><span class="f10-tk">${kind}</span><span class="grow"></span><button type="button" class="f10-ib" data-a="${view}" data-id="${id}" aria-label="View ${label}" title="View">${ic('eye')}</button><button type="button" class="f10-ib" data-a="${dl}" data-id="${id}" aria-label="Download ${label}" title="Download">${ic('download')}</button></div>`;
+/* the two controls: x cancels this application, the square stops every application */
+const f10X=(id,cls='')=>`<button type="button" class="f10-ic ${cls}" data-a="f10cancel" data-id="${id}" aria-label="Cancel applying to ${esc(coName(ROLE(id)))}" title="Cancel this application">${ic('x')}</button>`;
+const f10Sq=(cls='')=>`<button type="button" class="f10-ic sq ${cls}" data-a="f10stop" aria-label="Stop applying. Nothing else is sent" title="Stop all applying">${ic('square')}</button>`;
 const f10Tree=r=>`<div class="f10-tree" role="list" aria-label="Files sent to ${esc(coName(r))}">${f10Node('file',`${slugOf(r)}-portfolio.pdf`,'Portfolio','pfv','dlpf',r.id,'the portfolio')}${f10Node('file-text',`${slugOf(r)}-resume.pdf`,'ATS resume','cvv','dlcv',r.id,'the resume')}${f10Node('mail','note-to-'+slugOf(r)+'.txt','Your note','znote','f10note',r.id,'the note')}</div>`;
 {const f=f2Activity;f2Activity=function(){let h=f();if(!h)return h;
  h=h.replace(/<div class="f3-files">[\s\S]*?<\/div>/g,m0=>{const id=(m0.match(/data-id="([^"]+)"/)||[])[1],r=ROLE(id);return r?f10Tree(r):m0});
  /* applying: cancel one, or stop them all */
  const L=f6Live(),run=L.filter(x=>/^q/.test(x.k)&&!x.done);
- if(run.length){h=h.replace(/(<button type="button" class="f7-run"[\s\S]*?<\/button>)/,`$1<button type="button" class="f10-stop" data-a="f10stop" title="Stop applying. Nothing else is sent">${ic('square')}Stop</button>`);
-  run.forEach(x=>{const id=x.k.replace(/^qa?/,'');h=h.replace(`<span class="grow">${esc(x.t)}</span>`,`<span class="grow">${esc(x.t)}</span><button type="button" class="f10-cx" data-a="f10cancel" data-id="${id}">Cancel</button>`)})}
+ if(run.length){h=h.replace(/(<button type="button" class="f7-run"[\s\S]*?<\/button>)/,`$1<span class="f10-ctl">${S.qa?f10X(S.qa.id):''}${f10Sq()}</span>`);
+  run.forEach(x=>{const id=x.k.replace(/^qa?/,'');h=h.replace(`<span class="grow">${esc(x.t)}</span>`,`<span class="grow">${esc(x.t)}</span>${f10X(id,'row')}`)})}
  return h}}
 A.f10note=id=>{const r=ROLE(id);if(!r)return false;try{const n=noteOf(r),txt=Array.isArray(n)?n.join('\n\n'):String(n||''),u=URL.createObjectURL(new Blob([txt],{type:'text/plain'})),a=document.createElement('a');a.href=u;a.download=`note-to-${slugOf(r)}.txt`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000)}catch(e){}return false};
 
@@ -12797,7 +12823,11 @@ A.f10cancel=id=>{const r=ROLE(id);if(!r||S.apps[id])return false;if(S.qa&&S.qa.i
 A.f10redo=id=>{if(!ROLE(id)||S.apps[id])return false;S.toast=null;drawToast();if(S.qa)(S.qq=S.qq||[]).push(id);else A.qapply(id)};
 A.f10stop=()=>{const n=(S.qa?1:0)+(S.qq||[]).length;if(!n)return false;if(S.qa){clearInterval(S.qa.timer);S.qa=null}S.qq=[];S.bt=null;
  toast('square',n>1?`Stopped. ${n} applications were not sent`:'Stopped. Nothing was sent')};
-{const f=actCell;actCell=function(r){const st=btState(r.id);if(st==='run'||st==='wait')return`<span class="zy-sp f10-sp">${st==='run'?'Applying':'Next in line'}<button type="button" class="f10-cxi" data-a="f10cancel" data-id="${r.id}" aria-label="Cancel applying to ${esc(coName(r))}" title="Cancel">${ic('x')}</button></span>`;return f(r)}}
+{const f=actCell;actCell=function(r){const st=btState(r.id);if(st==='run'||st==='wait')return`<span class="f10-act"><span class="zy-sp f10-sp">${st==='run'?`<span class="f10-spin" aria-hidden="true"></span>Applying`:'Next in line'}</span>${f10X(r.id)}</span>`;return f(r)}}
+
+{const f=zTop;zTop=function(){const p=f();if(!p||!S.qa)return p;return`<span class="f10-zt">${p}<span class="f10-ztc">${f10X(S.qa.id,'dk')}${f10Sq('dk')}</span></span>`}}
+{const f=roleBody;roleBody=function(r){let h=f.apply(this,arguments);const id=r&&r.id;if(!id)return h;const st=btState(id);if(st!=='run'&&st!=='wait')return h;
+ return h.replace(/(<button type="button" class="(?:k sm rb-ap f4-busy|s sm f4-wait)" disabled(?:="")?>[\s\S]*?<\/button>)/,`<span class="f10-rb">$1${f10X(id,'lg')}${st==='run'?f10Sq('lg'):''}</span>`)}}
 
 /* ── your files: resume, portfolio and LinkedIn live in your profile ── */
 const f10As=()=>{if(!S.f10as){const full=(S.lvl||0)>0||PERSONA!=='new';S.f10as=full?{resume:{name:'sanjay-chauhan-resume.pdf',at:fmt(S.now)},portfolio:{name:'Your Zero portfolio',gen:1},linkedin:'linkedin.com/in/sanjay-chauhan'}:{portfolio:{name:'Your Zero portfolio',gen:1}}}return S.f10as};
