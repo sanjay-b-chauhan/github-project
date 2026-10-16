@@ -5146,10 +5146,7 @@ html.zr-round .k.sm,html.zr-round .s.sm{padding:0 14px}
 /* the deadline: red on every to-do, louder at two days or less */
 .f10-due{display:inline-flex;align-items:center;gap:6px;flex-shrink:0;margin-left:auto;font-size:12px;line-height:16px;font-weight:400;color:#C4271B;white-space:nowrap}
 .f10-due.soon{font-weight:600;color:#B42318}
-.f10-rg{width:12px;height:12px;flex-shrink:0;transform:rotate(-90deg)}
-.f10-rg circle{fill:none;stroke-width:2.5}
-.f10-rg .t{stroke:rgba(196,39,27,.18)}
-.f10-rg .a{stroke:currentColor;stroke-linecap:round}
+.f10-due svg{width:14px;height:14px;flex-shrink:0}
 .f2-dl{color:#C4271B}
 .f2-dl.soon{color:#B42318;font-weight:500}
 
@@ -5218,7 +5215,7 @@ td.eg-loc .m{display:block;font-size:12px;line-height:16px;color:var(--ink3)}
 /* stop and cancel while Zero applies: x cancels this one, the square stops them all */
 .f10-ic{display:inline-grid;place-items:center;width:28px;height:28px;flex-shrink:0;border:0;border-radius:8px;color:var(--ink2);background:linear-gradient(#fff,#F3F4F6);box-shadow:inset 0 0 0 1px rgba(19,20,23,.14),0 1px 2px rgba(19,20,23,.06);cursor:pointer;transition:color .15s,background .15s}
 .f10-ic svg{width:14px;height:14px}
-.f10-ic.sq svg{width:11px;height:11px;fill:currentColor}
+.f10-ic.sq svg{width:15px;height:15px}
 .f10-ic:hover{color:#B42318;background:linear-gradient(#fff,#FDF1F0)}
 .f10-ic:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .f10-ic.dk{width:26px;height:26px;color:#B9BBC2;background:rgba(255,255,255,.08);box-shadow:none}
@@ -12755,7 +12752,7 @@ const f10Left=due=>Math.ceil((due-(+S.now))/864e5);
 const f10Ring=p=>`<svg class="f10-rg" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" pathLength="100" class="t"/><circle cx="8" cy="8" r="6" pathLength="100" class="a" style="stroke-dasharray:${Math.max(4,Math.round(p*100))} 100"/></svg>`;
 const f10DueHTML=id=>{const due=f10Due(id);if(!due)return'';const d=f10Left(due),date=fmt(new Date(due)),soon=d<=2,win=F10WIN[f10Kind(id)]||3;
  const txt=d<0?'Overdue':d===0?'Due today':d===1?'1 day left':soon?`${d} days left`:`Due ${date}`;
- return`<span class="f10-due ${soon?'soon':''}" title="Due ${date}">${f10Ring(Math.max(0,Math.min(1,d/win)))}${txt}</span>`};
+ return`<span class="f10-due ${soon?'soon':''}" title="Due ${date}">${ic('timer')}${txt}</span>`};
 /* ── the to-do card: the deadline sits on the title line; when nothing is left, To-do is done ── */
 {const f=f2Todo;f2Todo=function(T){
  if(!T.length)return`<section class="f2-tds"><div class="f2-th"><h2 class="f2-k">To-dos</h2></div><div class="zy-box f2-td f10-done"><span class="f10-ok">${ic('check')}</span><p class="f10-dt">To-do is done</p>${btn(`${ic('map')}Back to map`,'k','lmode','learn')}</div></section>`;
@@ -12806,7 +12803,7 @@ AFTER.push(()=>{f10FitHide();document.querySelectorAll('.zf-pill:not([tabindex])
 const f10Node=(icon,name,kind,view,dl,id,label)=>`<div class="f10-tn" role="listitem"><span class="f10-ti">${ic(icon)}</span><span class="f10-tt">${esc(name)}</span><span class="f10-tk">${kind}</span><span class="grow"></span><button type="button" class="f10-ib" data-a="${view}" data-id="${id}" aria-label="View ${label}" title="View">${ic('eye')}</button><button type="button" class="f10-ib" data-a="${dl}" data-id="${id}" aria-label="Download ${label}" title="Download">${ic('download')}</button></div>`;
 /* the two controls: x cancels this application, the square stops every application */
 const f10X=(id,cls='')=>`<button type="button" class="f10-ic ${cls}" data-a="f10cancel" data-id="${id}" aria-label="Cancel applying to ${esc(coName(ROLE(id)))}" title="Cancel this application">${ic('x')}</button>`;
-const f10Sq=(cls='')=>`<button type="button" class="f10-ic sq ${cls}" data-a="f10stop" aria-label="Stop applying. Nothing else is sent" title="Stop all applying">${ic('square')}</button>`;
+const f10Sq=(cls='')=>`<button type="button" class="f10-ic sq ${cls}" data-a="f10stop" aria-label="Stop applying. Nothing else is sent" title="Stop all applying">${ic('circle-stop')}</button>`;
 const f10Tree=r=>`<div class="f10-tree" role="list" aria-label="Files sent to ${esc(coName(r))}">${f10Node('file',`${slugOf(r)}-portfolio.pdf`,'Portfolio','pfv','dlpf',r.id,'the portfolio')}${f10Node('file-text',`${slugOf(r)}-resume.pdf`,'ATS resume','cvv','dlcv',r.id,'the resume')}${f10Node('mail','note-to-'+slugOf(r)+'.txt','Your note','znote','f10note',r.id,'the note')}</div>`;
 {const f=f2Activity;f2Activity=function(){let h=f();if(!h)return h;
  h=h.replace(/<div class="f3-files">[\s\S]*?<\/div>/g,m0=>{const id=(m0.match(/data-id="([^"]+)"/)||[])[1],r=ROLE(id);return r?f10Tree(r):m0});
