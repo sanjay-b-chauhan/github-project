@@ -5141,6 +5141,85 @@ html.zr-round .k,html.zr-round .s{padding:0 18px}
 html.zr-round .k.sm,html.zr-round .s.sm{padding:0 14px}
 @media (prefers-reduced-motion:reduce){.f7-dot::after{animation:none}}
 
+/* ═══ v77: deadlines, Apply manually, To-do is done, Location, why it fits, the file tree, cancel and stop, the resume ask ═══ */
+
+/* the deadline: red on every to-do, louder at two days or less */
+.f10-due{display:inline-flex;align-items:center;gap:6px;flex-shrink:0;margin-left:auto;font-size:12px;line-height:16px;font-weight:500;color:#C4271B;white-space:nowrap}
+.f10-due svg{width:14px;height:14px}
+.f10-due.soon{height:24px;padding:0 8px;border-radius:8px;background:#FDECEA;color:#B42318;box-shadow:inset 0 0 0 1px rgba(180,35,24,.14)}
+.f2-dl{color:#C4271B}
+.f2-dl.soon{color:#B42318;font-weight:500}
+
+/* every to-do done */
+.f10-done{flex-direction:column;align-items:center;gap:12px;padding:28px 16px}
+.f10-ok{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--goodbg);color:var(--good)}
+.f10-ok svg{width:20px;height:20px}
+.f10-dt{margin:0;font-size:16px;line-height:24px;font-weight:500;color:var(--ink)}
+
+/* Jobs: the location has its own column */
+.eg-loc{max-width:200px}
+td.eg-loc{color:var(--ink2);font-size:14px;line-height:20px}
+td.eg-loc .clip{display:block;max-width:200px;overflow:hidden;text-overflow:ellipsis}
+td.eg-loc .m{display:block;font-size:12px;line-height:16px;color:var(--ink3)}
+
+/* why it fits: short bullets on hover or focus */
+.zf-pill[tabindex]{cursor:help}
+.zf-pill:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.f10-fit{position:fixed;z-index:450;width:300px;padding:12px 14px 10px;border-radius:12px;background:#fff;color:var(--ink);box-shadow:0 0 0 1px rgba(19,20,23,.08),0 18px 40px -16px rgba(19,20,23,.35);pointer-events:none;animation:f10-in .14s ease-out both}
+@keyframes f10-in{from{opacity:0;transform:translateY(-4px)}}
+.f10-fh{margin:0 0 8px;font-size:12px;line-height:16px;color:var(--ink3)}
+.f10-fit ul{margin:0;padding:0;list-style:none}
+.f10-fit li{display:grid;grid-template-columns:52px 1fr;gap:8px;padding:4px 0;font-size:14px;line-height:20px}
+.f10-fit li .f10-k{font-size:12px;line-height:20px;color:var(--ink3)}
+.f10-fit li.f10-gap{margin-top:4px;padding-top:8px;border-top:1px solid rgba(19,20,23,.07)}
+.f10-fit li.f10-gap .f10-k{color:#B54708}
+
+/* the files Zero sent, as a tree */
+.f10-tree{position:relative;margin:6px 0 2px 18px}
+.f10-tn{position:relative;display:flex;align-items:center;gap:8px;min-height:36px;padding-left:20px}
+.f10-tn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:1px;background:var(--line2)}
+.f10-tn:last-child::before{bottom:50%}
+.f10-tn::after{content:"";position:absolute;left:0;top:50%;width:12px;height:1px;background:var(--line2)}
+.f10-ti{display:inline-flex;color:var(--ink3)}
+.f10-ti svg{width:16px;height:16px}
+.f10-tt{font-size:14px;line-height:20px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.f10-tk{font-size:12px;line-height:16px;color:var(--ink3);white-space:nowrap}
+.f10-ib{display:grid;place-items:center;width:28px;height:28px;flex-shrink:0;border:0;border-radius:8px;background:none;color:var(--ink2);cursor:pointer}
+.f10-ib:hover{background:var(--well);color:var(--ink)}
+.f10-ib:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+.f10-ib svg{width:16px;height:16px}
+
+/* cancel one application, or stop them all */
+.f10-stop,.f10-cx{display:inline-flex;align-items:center;gap:6px;height:28px;margin-left:8px;padding:0 10px;border:0;border-radius:8px;font:500 12px/16px var(--f);color:var(--ink2);background:linear-gradient(#fff,#F3F4F6);box-shadow:inset 0 0 0 1px rgba(19,20,23,.14),0 1px 2px rgba(19,20,23,.06);cursor:pointer}
+.f10-stop:hover,.f10-cx:hover{color:#B42318}
+.f10-stop svg{width:10px;height:10px;fill:currentColor}
+.f3-ih .f10-cx{margin:0 8px 0 0}
+html.zr-round .f10-stop,html.zr-round .f10-cx{border-radius:999px}
+
+/* the resume ask before Zero applies */
+.f10-gate{position:fixed;inset:0;z-index:420;display:grid;place-items:center;padding:16px;background:rgba(19,20,23,.32);animation:f10-fade .16s ease-out both}
+@keyframes f10-fade{from{opacity:0}}
+.f10-gc{width:min(440px,100%);padding:20px;border-radius:16px;background:#fff;box-shadow:0 30px 70px -30px rgba(19,20,23,.5)}
+.f10-gc h2{margin:0 0 14px;font-size:16px;line-height:24px;font-weight:500;color:var(--ink)}
+.f10-gr{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid rgba(19,20,23,.06)}
+.f10-gr .f10-ai{display:grid;place-items:center;width:36px;height:36px;flex-shrink:0;border-radius:10px;background:var(--well);color:var(--ink2)}
+.f10-gr .f10-ai svg{width:18px;height:18px}
+.f10-gr .f10-am{display:flex;flex-direction:column;gap:4px;min-width:0}
+.f10-gr .f10-al{margin:0;font-size:14px;line-height:20px;color:var(--ink)}
+.f10-gr .f10-av{margin:0;font-size:12px;line-height:16px;color:var(--ink2)}
+.f10-gr .f10-av span{color:var(--ink3)}
+.f10-in{height:36px;width:100%;padding:0 12px;border:0;border-radius:10px;font:400 14px/20px var(--f);color:var(--ink);background:#fff;box-shadow:inset 0 0 0 1px rgba(19,20,23,.16)}
+.f10-in:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+.f10-gf{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+@media (prefers-reduced-motion:reduce){.f10-fit,.f10-gate{animation:none}}
+
+/* in the Jobs table the cancel sits inside the Applying pill */
+.f10-sp{display:inline-flex;align-items:center;gap:4px;padding-right:4px}
+.f10-cxi{display:grid;place-items:center;width:20px;height:20px;border:0;border-radius:6px;background:none;color:var(--ink3);cursor:pointer}
+.f10-cxi:hover{background:rgba(19,20,23,.08);color:#B42318}
+.f10-cxi:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+.f10-cxi svg{width:12px;height:12px}
+
 </style>
 </head>
 <body>
@@ -12637,6 +12716,158 @@ A.zmic=()=>{if(S.zv){S.zv=null;zdraw();return false}if(S.mode==='student'&&!S.zp
  const step=()=>{if(S!==me||S.zv!==v)return;v.n++;const i=$('#zin');S.zdraft=words.slice(0,v.n).join(' ');if(i)i.value=S.zdraft;
   if(v.n<words.length)setTimeout(step,150+Math.random()*130);else setTimeout(()=>{if(S!==me||S.zv!==v)return;S.zv=null;const t=S.zdraft;S.zdraft='';zask(t)},560)};
  setTimeout(step,rcCalm()?0:700);return false};
+
+/* ═══ v77 (16 Oct). Changes from the team meeting and Sanjay's notes.
+   To-dos show their deadline (red, louder at two days or less). A failed application offers Apply manually.
+   When every to-do is done: To-do is done, Back to map. Jobs gets its own Location column. The fit pill explains
+   itself on hover in short bullets, from your preferences and your skills, with one gap. The files Zero sent
+   read as a tree with view and download. You can cancel one application or stop them all. Your profile holds
+   your resume, portfolio and LinkedIn, and Zero asks for them before it applies when they are missing. ═══ */
+
+/* ── deadlines: each kind of to-do has a window that starts when it first appears ── */
+const F10WIN={offer:4,ask:3,pick:2,need:3,rep:3,fail:5};
+const f10Kind=id=>(String(id).match(/^(offer|ask|pick|need|rep|fail)/)||[])[1];
+const f10Hash=s=>{let h=0;for(const ch of String(s))h=(h*31+ch.charCodeAt(0))|0;return Math.abs(h)};
+const f10Due=id=>{const k=f10Kind(id);if(!k)return null;const seen=S.f10seen=S.f10seen||{};if(!seen[id])seen[id]=+S.now-(k==='offer'?0:f10Hash(id)%2)*864e5;return seen[id]+F10WIN[k]*864e5};
+const f10Left=due=>Math.ceil((due-(+S.now))/864e5);
+const f10DueHTML=id=>{const due=f10Due(id);if(!due)return'';const d=f10Left(due),date=fmt(new Date(due)),soon=d<=2;
+ const txt=d<0?'Overdue':d===0?'Due today':d===1?'1 day left':soon?`${d} days left`:`Due ${date}`;
+ return`<span class="f10-due ${soon?'soon':''}" title="Due ${date}">${ic(soon?'alarm-clock':'clock')}${txt}</span>`};
+/* ── the to-do card: the deadline sits on the title line; when nothing is left, To-do is done ── */
+{const f=f2Todo;f2Todo=function(T){
+ if(!T.length)return`<section class="f2-tds"><div class="f2-th"><h2 class="f2-k">To-dos</h2></div><div class="zy-box f2-td f10-done"><span class="f10-ok">${ic('check')}</span><p class="f10-dt">To-do is done</p>${btn(`${ic('map')}Back to map`,'k','lmode','learn')}</div></section>`;
+ let h=f(T);const m=h.match(/<article class="zy-box f2-td[^"]*" data-id="td-([^"]+)">/);if(!m)return h;const id=m[1],due=f10DueHTML(id);if(!due)return h;
+ const a=h.indexOf(m[0]),e=h.indexOf('</h3>',a);return e<0?h:h.slice(0,e)+due+h.slice(e)}}
+
+/* ── a failed application: Apply manually opens the posting, then asks if you finished ── */
+{const f=f2Raw;f2Raw=function(){return f().map(t=>{if(!/^fail/.test(t.id))return t;const id=t.id.slice(4),r=ROLE(id);if(!r)return t;const q=`I could not apply to ${coName(r)}. You can apply on their site.`;
+ return Object.assign({},t,{q,title:q,btns:btn(`Apply manually${ic('arrow-up-right')}`,'k','f2self',id)})})}}
+{const f=roleBody;roleBody=function(){return f.apply(this,arguments).replace(/<button([^>]*?)data-a="f2retry"([^>]*)>[\s\S]*?<\/button>/g,(m0,a,b)=>`<button${a}data-a="f2self"${b}>Apply manually${ic('arrow-up-right')}</button>`)}}
+
+/* ── Jobs: the location gets its own column; the role cell keeps the title and the company ── */
+{const f=PAGES.student.jobs;PAGES.student.jobs=function(){let h=f.apply(this,arguments);if(!h||h.indexOf('<thead>')<0)return h;
+ h=h.replace(/(<thead><tr><th[\s\S]*?<\/th>)/,'$1<th class="eg-loc">Location</th>');
+ h=h.replace(/(<tr[^>]*data-id="([^"]+)"[^>]*>)(<td class="eg-r">[\s\S]*?<\/td>)/g,(m0,tr,id,td)=>{const r=ROLE(id);if(!r)return m0;
+  const cell=td.replace(/<span class="mi"><i data-lucide="map-pin"><\/i>[\s\S]*?<\/span>/,'');
+  return`${tr}${cell}<td class="eg-loc"><span class="clip">${esc(r.loc||'')}</span>${r.mode&&!new RegExp(r.mode,'i').test(r.loc||'')?`<span class="m">${esc(r.mode)}</span>`:''}</td>`});
+ return h}}
+
+/* ── why it fits: short bullets from your preferences and your skills, and one gap ── */
+const f10Pref=()=>{const P=S.prefs||{},K=S.know&&S.know.sel?S.know:null;const ks=id=>K?kSel(id):[];
+ return{roles:ks('role').length?ks('role'):(P.role?[P.role]:[]),places:ks('place').length?ks('place'):String(P.where||'').split(/,\s*|\s+or\s+/).map(x=>x.replace(/^or\s+/,'').trim()).filter(Boolean),
+  floor:+(String(P.pay||'').replace(/[^0-9]/g,''))||0,care:ks('care')}};
+const f10Short=n=>n>=1000?`$${Math.round(n/1000)}k`:`$${n}`;
+function f10Why(r){const p=f10Pref(),out=[],t=(r.title||'').toLowerCase(),where=`${r.loc||''} ${r.mode||''}`.toLowerCase();
+ const role=p.roles.find(x=>x&&x.toLowerCase().split(/\s+/).filter(w=>w.length>2).some(w=>t.includes(w.toLowerCase())));if(role)out.push(['Role',`${role}, what you asked for`]);
+ const pl=p.places.find(x=>x&&(where.includes(x.toLowerCase())||(/remote/i.test(x)&&/remote/.test(where))||(/texas/i.test(x)&&/austin|dallas|texas/.test(where))));if(pl)out.push(['Place',/remote/i.test(pl)?'Remote, as you asked':`${pl}, one of your places`]);
+ if(r.pay&&p.floor&&r.pay[1]>=p.floor)out.push(['Pay',`${f10Short(r.pay[0])} to ${f10Short(r.pay[1])}, above your ${f10Short(p.floor)} floor`]);
+ const N=r.needs||[],y=N.filter(n=>n.v==='y'),top=N.filter(n=>n.must);
+ if(N.length)out.push(['Skills',`${top.filter(n=>n.v==='y').length||y.length} of ${top.length||N.length} things they need most`]);
+ const g=N.find(n=>n.must&&n.v==='n')||N.find(n=>n.must&&n.v==='p')||N.find(n=>n.v!=='y');
+ return{B:out.slice(0,4),gap:g?`${g.t}${g.v==='p'?', not proven yet':''}`:''}}
+const f10Fit={el:null,id:null};
+function f10FitShow(pill){const host=pill.closest('[data-id]'),r=ROLE(host&&host.dataset.id)||ROLE(S.jcur);if(!r)return;if(f10Fit.id===r.id&&f10Fit.el)return;f10FitHide();
+ const w=f10Why(r),strong=/strong|exceptional/i.test(pill.textContent);if(!w.B.length&&!w.gap)return;
+ const el=document.createElement('div');el.className='f10-fit';el.id='f10fit';el.setAttribute('role','tooltip');
+ el.innerHTML=`<p class="f10-fh">Why it is a ${strong?'strong':'good'} fit</p><ul>${w.B.map(([k,v])=>`<li><span class="f10-k">${k}</span><span>${esc(v)}</span></li>`).join('')}${w.gap?`<li class="f10-gap"><span class="f10-k">Gap</span><span>${esc(w.gap)}</span></li>`:''}</ul>`;
+ document.body.appendChild(el);const b=pill.getBoundingClientRect(),W=el.offsetWidth,H=el.offsetHeight;let x=b.left+b.width/2-W/2,y=b.bottom+8;x=Math.max(12,Math.min(innerWidth-W-12,x));if(y+H>innerHeight-12)y=b.top-H-8;
+ el.style.left=`${Math.round(x)}px`;el.style.top=`${Math.round(y)}px`;pill.setAttribute('aria-describedby','f10fit');f10Fit.el=el;f10Fit.id=r.id;f10Fit.pill=pill}
+function f10FitHide(){if(f10Fit.el){f10Fit.el.remove();if(f10Fit.pill)f10Fit.pill.removeAttribute('aria-describedby')}f10Fit.el=null;f10Fit.id=null;f10Fit.pill=null}
+document.addEventListener('mouseover',e=>{const p=e.target.closest&&e.target.closest('.zf-pill');if(p)f10FitShow(p);else if(f10Fit.el&&!(e.target.closest&&e.target.closest('.f10-fit')))f10FitHide()});
+document.addEventListener('focusin',e=>{const p=e.target.closest&&e.target.closest('.zf-pill');if(p)f10FitShow(p)});
+document.addEventListener('focusout',e=>{if(e.target.closest&&e.target.closest('.zf-pill'))f10FitHide()});
+addEventListener('scroll',()=>f10FitHide(),true);addEventListener('keydown',e=>{if(e.key==='Escape')f10FitHide()});
+AFTER.push(()=>{f10FitHide();document.querySelectorAll('.zf-pill:not([tabindex])').forEach(p=>p.setAttribute('tabindex','0'))});
+
+/* ── the files Zero sent: a tree, each file with view and download ── */
+const f10Node=(icon,name,kind,view,dl,id,label)=>`<div class="f10-tn" role="listitem"><span class="f10-ti">${ic(icon)}</span><span class="f10-tt">${esc(name)}</span><span class="f10-tk">${kind}</span><span class="grow"></span><button type="button" class="f10-ib" data-a="${view}" data-id="${id}" aria-label="View ${label}" title="View">${ic('eye')}</button><button type="button" class="f10-ib" data-a="${dl}" data-id="${id}" aria-label="Download ${label}" title="Download">${ic('download')}</button></div>`;
+const f10Tree=r=>`<div class="f10-tree" role="list" aria-label="Files sent to ${esc(coName(r))}">${f10Node('file',`${slugOf(r)}-portfolio.pdf`,'Portfolio','pfv','dlpf',r.id,'the portfolio')}${f10Node('file-text',`${slugOf(r)}-resume.pdf`,'ATS resume','cvv','dlcv',r.id,'the resume')}${f10Node('mail','note-to-'+slugOf(r)+'.txt','Your note','znote','f10note',r.id,'the note')}</div>`;
+{const f=f2Activity;f2Activity=function(){let h=f();if(!h)return h;
+ h=h.replace(/<div class="f3-files">[\s\S]*?<\/div>/g,m0=>{const id=(m0.match(/data-id="([^"]+)"/)||[])[1],r=ROLE(id);return r?f10Tree(r):m0});
+ /* applying: cancel one, or stop them all */
+ const L=f6Live(),run=L.filter(x=>/^q/.test(x.k)&&!x.done);
+ if(run.length){h=h.replace(/(<button type="button" class="f7-run"[\s\S]*?<\/button>)/,`$1<button type="button" class="f10-stop" data-a="f10stop" title="Stop applying. Nothing else is sent">${ic('square')}Stop</button>`);
+  run.forEach(x=>{const id=x.k.replace(/^qa?/,'');h=h.replace(`<span class="grow">${esc(x.t)}</span>`,`<span class="grow">${esc(x.t)}</span><button type="button" class="f10-cx" data-a="f10cancel" data-id="${id}">Cancel</button>`)})}
+ return h}}
+A.f10note=id=>{const r=ROLE(id);if(!r)return false;try{const n=noteOf(r),txt=Array.isArray(n)?n.join('\n\n'):String(n||''),u=URL.createObjectURL(new Blob([txt],{type:'text/plain'})),a=document.createElement('a');a.href=u;a.download=`note-to-${slugOf(r)}.txt`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000)}catch(e){}return false};
+
+/* ── cancel one application, or stop them all ── */
+A.f10cancel=id=>{const r=ROLE(id);if(!r||S.apps[id])return false;if(S.qa&&S.qa.id===id){clearInterval(S.qa.timer);S.qa=null}S.qq=(S.qq||[]).filter(x=>x!==id);if(S.bt&&S.bt.ids)S.bt.ids=S.bt.ids.filter(x=>x!==id);if(S.nopen)delete S.nopen[id];
+ toast('x',`Cancelled. Nothing was sent to ${coName(r)}`,'Undo','f10redo',id)};
+A.f10redo=id=>{if(!ROLE(id)||S.apps[id])return false;S.toast=null;drawToast();if(S.qa)(S.qq=S.qq||[]).push(id);else A.qapply(id)};
+A.f10stop=()=>{const n=(S.qa?1:0)+(S.qq||[]).length;if(!n)return false;if(S.qa){clearInterval(S.qa.timer);S.qa=null}S.qq=[];S.bt=null;
+ toast('square',n>1?`Stopped. ${n} applications were not sent`:'Stopped. Nothing was sent')};
+{const f=actCell;actCell=function(r){const st=btState(r.id);if(st==='run'||st==='wait')return`<span class="zy-sp f10-sp">${st==='run'?'Applying':'Next in line'}<button type="button" class="f10-cxi" data-a="f10cancel" data-id="${r.id}" aria-label="Cancel applying to ${esc(coName(r))}" title="Cancel">${ic('x')}</button></span>`;return f(r)}}
+
+/* ── your files: resume, portfolio and LinkedIn live in your profile ── */
+const f10As=()=>{if(!S.f10as){const full=(S.lvl||0)>0||PERSONA!=='new';S.f10as=full?{resume:{name:'sanjay-chauhan-resume.pdf',at:fmt(S.now)},portfolio:{name:'Your Zero portfolio',gen:1},linkedin:'linkedin.com/in/sanjay-chauhan'}:{portfolio:{name:'Your Zero portfolio',gen:1}}}return S.f10as};
+const f10Need=()=>{const a=f10As();return!a.resume};
+const f10Pick=(kind)=>{const i=document.createElement('input');i.type='file';i.accept='.pdf,.doc,.docx';i.style.display='none';document.body.appendChild(i);
+ i.addEventListener('change',()=>{const f=i.files&&i.files[0];if(f){const a=f10As();a[kind]={name:f.name,size:f.size,at:fmt(S.now),url:URL.createObjectURL(f)};toast('check',kind==='resume'?'Resume added':'Portfolio added');render();f10GateDraw()}i.remove()});i.click()};
+A.f10up=k=>{f10Pick(k==='portfolio'?'portfolio':'resume');return false};
+A.f10view=k=>{const a=f10As()[k];if(!a)return false;if(a.url){try{window.open(a.url,'_blank','noopener')}catch(e){}return false}
+ if(k==='resume'){const r=(DATA.roles.find(x=>!locked(x))||DATA.roles[0]);A.cvv(r.id);return}document.querySelector('.zpf-slot')?.scrollIntoView({behavior:'smooth',block:'start'});return false};
+A.f10li=()=>{S.f10li=1};
+A.f10lisave=()=>{const v=(document.getElementById('f10liIn')||{}).value||'';const a=f10As();a.linkedin=v.trim().replace(/^https?:\/\//,'')||a.linkedin||'';S.f10li=0;if(a.linkedin)toast('check','LinkedIn saved')};
+const f10B=(label,a,id,p)=>`<button type="button" class="f10-b ${p?'p':''}" data-a="${a}" data-id="${id||''}">${label}</button>`;
+const f10AssetRow=(icon,label,a,btns)=>`<div class="f10-ar"><span class="f10-ai">${icon}</span><div class="f10-am"><p class="f10-al">${label}</p><p class="f10-av">${a?esc(a.name||a)+(a.at?` <span>Updated ${esc(a.at)}</span>`:''):'<span>Not added yet</span>'}</p></div><div class="f10-ab">${btns}</div></div>`;
+function f10AssetsHTML(){const a=f10As(),R=a.resume,Pf=a.portfolio,li=a.linkedin;
+ const rb=R?`${f10B(`${ic('eye')}View`,'f10view','resume')}${f10B(`${ic('upload')}Replace`,'f10up','resume')}`:f10B(`${ic('upload')}Upload resume`,'f10up','resume',1);
+ const pb=`${f10B(`${ic('eye')}View`,'f10view','portfolio')}${f10B(`${ic('upload')}${Pf&&!Pf.gen?'Replace':'Upload a PDF'}`,'f10up','portfolio')}`;
+ const lb=S.f10li?`<input id="f10liIn" class="f10-in" type="url" inputmode="url" placeholder="linkedin.com/in/your-name" value="${esc(li||'')}" aria-label="Your LinkedIn link">${f10B('Save','f10lisave','',1)}`:f10B(li?'Edit':`${ic('plus')}Add`,'f10li','',!li);
+ return`<section class="f10-as" aria-label="Your files"><h2 class="f10-ah">Your files</h2><div class="f10-asl">
+  ${f10AssetRow(ic('file-text'),'Resume',R,rb)}${f10AssetRow(ic('layout-grid'),'Portfolio',Pf,pb)}${f10AssetRow(lg('linkedin.com','xs'),'LinkedIn',li?{name:li}:null,lb)}</div></section>`}
+/* the profile is the portfolio, drawn in its own shadow root; Your files sits at its top and scrolls with it */
+const F10AS_CSS=`#f10as{max-width:800px;margin:24px auto 0;padding:0 24px;box-sizing:border-box;font-family:Inter,system-ui,sans-serif}
+.f10-ah{margin:0 0 10px;font-size:16px;line-height:24px;font-weight:500;color:#EDEEF0}
+:host(.zpf-day) .f10-ah{color:#131417}
+.f10-asl{border-radius:16px;background:#fff;box-shadow:0 0 0 1px rgba(19,20,23,.08),0 1px 2px rgba(19,20,23,.04)}
+.f10-ar{display:flex;align-items:center;gap:12px;padding:12px 14px}
+.f10-ar+.f10-ar{border-top:1px solid rgba(19,20,23,.06)}
+.f10-ai{display:grid;place-items:center;width:36px;height:36px;flex-shrink:0;border-radius:10px;background:#F3F4F6;color:#3A3D42}
+.f10-ai svg{width:18px;height:18px}.f10-ai img{width:18px;height:18px;border-radius:4px}
+.f10-am{flex:1;min-width:0}.f10-al{margin:0;font-size:14px;line-height:20px;color:#131417}
+.f10-av{margin:0;font-size:12px;line-height:16px;color:#55595F;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.f10-av span{color:#8A8E95}
+.f10-ab{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.f10-b{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px;border:0;border-radius:8px;font:500 12px/16px Inter,system-ui,sans-serif;color:#131417;background:linear-gradient(#fff,#F3F4F6);box-shadow:inset 0 0 0 1px rgba(19,20,23,.14),0 1px 2px rgba(19,20,23,.06);cursor:pointer}
+.f10-b:hover{background:linear-gradient(#fff,#EEEFF2)}.f10-b svg{width:14px;height:14px}
+.f10-b.p{color:#fff;background:linear-gradient(#313337,#17181B);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 0 0 1px #0F1012}
+.f10-in{height:30px;width:220px;padding:0 10px;border:0;border-radius:8px;font:400 12px/16px Inter,system-ui,sans-serif;color:#131417;background:#fff;box-shadow:inset 0 0 0 1px rgba(19,20,23,.18)}
+.f10-b:focus-visible,.f10-in:focus-visible{outline:2px solid #131417;outline-offset:2px}
+@media (max-width:640px){#f10as{padding:0 16px}.f10-ar{flex-wrap:wrap}.f10-ab{width:100%;justify-content:flex-end}.f10-in{flex:1;width:auto}}`;
+function f10AsMount(){const h=document.getElementById('zpf-host');if(!h||!h.shadowRoot)return;const SRt=h.shadowRoot,root=SRt.getElementById('zpf');if(!root)return;
+ if(!SRt.getElementById('f10as-css')){const st=document.createElement('style');st.id='f10as-css';st.textContent=F10AS_CSS;SRt.prepend(st)}
+ let sec=SRt.getElementById('f10as');if(!sec){sec=document.createElement('div');sec.id='f10as';root.prepend(sec);
+  sec.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const f=A[b.dataset.a];if(!f)return;const r=f(b.dataset.id);if(r!==false)render(r==='enter');f10AsMount()});
+  sec.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='f10liIn'){e.preventDefault();A.f10lisave();render();f10AsMount()}})}
+ const html=f10AssetsHTML();if(sec.dataset.h===html)return;const tmp=document.createElement('div');tmp.style.display='none';tmp.innerHTML=html;document.body.appendChild(tmp);icons();sec.innerHTML=tmp.innerHTML;tmp.remove();sec.dataset.h=html;
+ if(S.f10li){const i=sec.querySelector('#f10liIn');if(i)i.focus()}}
+AFTER.push(()=>setTimeout(f10AsMount,0));
+
+/* ── before Zero applies: if the resume is missing, ask for it (and LinkedIn) first ── */
+const f10GateMode=()=>{const v=String(lxPref('f10Gate','apply'));return['apply','jobs','off'].includes(v)?v:'apply'};
+const f10Gate={el:null,after:null};
+function f10GateDraw(){const el=f10Gate.el;if(!el)return;const a=f10As(),R=a.resume;
+ el.innerHTML=`<div class="f10-gc" role="dialog" aria-modal="true" aria-labelledby="f10gt"><h2 id="f10gt">${f10Gate.after?'Add your resume so I can apply':'Add your resume before you apply'}</h2>
+  <div class="f10-gr"><span class="f10-ai">${ic('file-text')}</span><div class="grow f10-am"><p class="f10-al">Resume</p><p class="f10-av clip">${R?esc(R.name):'<span>I send it with every application</span>'}</p></div>${R?btn('Replace','s sm','f10up','resume'):btn(`${ic('upload')}Upload`,'k sm','f10up','resume')}</div>
+  <div class="f10-gr"><span class="f10-ai">${lg('linkedin.com','xs')}</span><div class="grow f10-am"><p class="f10-al">LinkedIn</p><input id="f10gLi" class="f10-in" type="url" inputmode="url" placeholder="linkedin.com/in/your-name" value="${esc(a.linkedin||'')}" aria-label="Your LinkedIn link"></div></div>
+  <div class="f10-gf"><button type="button" class="x" data-f10g="later">Not now</button><button type="button" class="k" data-f10g="go" ${R?'':'disabled'}>${f10Gate.after?'Save and apply':'Save'}</button></div></div>`;icons()}
+function f10GateOpen(after){if(f10Gate.el)return;f10Gate.after=after||null;const el=document.createElement('div');el.className='f10-gate';document.body.appendChild(el);f10Gate.el=el;f10GateDraw();setTimeout(()=>{const b=el.querySelector('[data-f10g="go"]:not([disabled]),.f10-gc .k');if(b)b.focus()},30)}
+function f10GateClose(){if(f10Gate.el){f10Gate.el.remove();f10Gate.el=null}}
+document.addEventListener('click',e=>{if(!f10Gate.el)return;const g=e.target.closest&&e.target.closest('[data-f10g]');if(!g){if(e.target===f10Gate.el)f10GateClose();return}
+ const li=(document.getElementById('f10gLi')||{}).value;if(li!=null&&li.trim())f10As().linkedin=li.trim().replace(/^https?:\/\//,'');
+ const after=f10Gate.after;f10GateClose();if(g.dataset.f10g==='go'&&after&&!f10Need())after();render()});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&f10Gate.el)f10GateClose()});
+{const f=A.qapply;A.qapply=id=>{if(f10GateMode()==='apply'&&f10Need()){const rest=(S.qq||[]).filter(x=>x!==id);S.qq=[];f10GateOpen(()=>{S.qq=rest;A.qapply(id)});return false}return f(id)}}
+{const f=A.tdapply;A.tdapply=function(){if(f10GateMode()==='apply'&&f10Need()){f10GateOpen(()=>A.tdapply());return false}return f.apply(this,arguments)}}
+{const f=PAGES.student.jobs;PAGES.student.jobs=function(){if(f10GateMode()==='jobs'&&f10Need()&&!S.f10gseen){S.f10gseen=1;setTimeout(()=>f10GateOpen(null),400)}return f.apply(this,arguments)}}
+
+/* ── the settings panel learns the new switches: when Zero asks for the resume, and empty files to test it ── */
+{const f=zcfgHTML;zcfgHTML=function(){return f().replace(/(<div class="zc-sec"><p class="zc-k">Interface<\/p>)/,`<div class="zc-sec"><p class="zc-k">Profile</p>
+ <div class="zc-row col"><span>Ask for the resume</span>${zSeg('f10gate',[['apply','Before applying'],['jobs','First Jobs visit'],['off','Never']],f10GateMode())}</div>
+ <div class="zc-row col"><span>Your files</span>${zSeg('f10files',[['full','Added'],['empty','Empty']],f10Need()?'empty':'full')}</div></div>$1`)}}
+document.addEventListener('click',e=>{const z=e.target.closest&&e.target.closest('[data-zc]');if(!z||!zcfg.el)return;const k=z.dataset.zc,v=z.dataset.v;
+ if(k==='f10gate'){lxSave('f10Gate',v);S.f10gseen=0;zcfgDraw()}else if(k==='f10files'){const a=f10As();if(v==='empty'){delete a.resume;delete a.linkedin}else{a.resume=a.resume||{name:'sanjay-chauhan-resume.pdf',at:fmt(S.now)};a.linkedin=a.linkedin||'linkedin.com/in/sanjay-chauhan'}render();zcfgDraw()}},true);
 
 if(typeof rcSeed==='function')rcSeed();render(true);
 
