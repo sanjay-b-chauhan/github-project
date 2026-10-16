@@ -12899,6 +12899,20 @@ addEventListener('keydown',e=>{if(e.key==='Escape'&&f10Gate.el)f10GateClose()});
 document.addEventListener('click',e=>{const z=e.target.closest&&e.target.closest('[data-zc]');if(!z||!zcfg.el)return;const k=z.dataset.zc,v=z.dataset.v;
  if(k==='f10gate'){lxSave('f10Gate',v);S.f10gseen=0;zcfgDraw()}else if(k==='f10files'){const a=f10As();if(v==='empty'){delete a.resume;delete a.linkedin}else{a.resume=a.resume||{name:'sanjay-chauhan-resume.pdf',at:fmt(S.now)};a.linkedin=a.linkedin||'linkedin.com/in/sanjay-chauhan'}render();zcfgDraw()}},true);
 
+/* ── after Zero sends something to a company, it says what happens next, so you are never left guessing ── */
+function f10Next(id){const r=ROLE(id),c=APP(id)||{},co=coName(r),st=c.st||'',mgr=(r.manager&&(r.manager.first||String(r.manager.name||'').split(' ')[0]))||'the hiring manager';
+ const more=f3Need(id).length;if(more)return`What happens next: ${co} asked for one more thing. It is just below.`;
+ if(st==='sent'||st==='opened')return`What happens next: ${co} reviews it with your application. If it fits, they ask for a first call. I will tell you the moment they reply.`;
+ if(st==='asked'||st==='accepted')return`What happens next: pick a time for your call with ${mgr}. Once it is booked, I will send you a short prep the day before.`;
+ if(st==='booked'){const s=c.slots&&c.slots[c.slot||0];return`What happens next: your call with ${mgr}${s?` on ${fmt(s[0])} at ${s[1]}`:''}. I will send you a short prep the day before.`}
+ if(st==='met')return`What happens next: ${co} decides after the interviews. Most teams answer within a week. I will tell you as soon as they do.`;
+ if(st==='offer')return`What happens next: read the offer and answer by ${c.by||'the date on it'}. I can help you compare it if you want.`;
+ if(st==='hired')return`What happens next: your contract, then your first day${c.start?` on ${c.start}`:''}.`;
+ return`What happens next: I watch for ${co}'s reply and tell you the moment it comes.`}
+{const f=PAGES.student.inbox;PAGES.student.inbox=function(){let h=f.apply(this,arguments);const id=S.thread,r=ROLE(id);if(!r||!S.apps[id])return h;
+ const sent=`<p>Sent. ${coName(r)} has it.</p></div></li>`,i=h.lastIndexOf(sent);if(i<0)return h;const at=i+sent.length;
+ return h.slice(0,at)+f3Z(esc(f10Next(id)))+h.slice(at)}}
+
 if(typeof rcSeed==='function')rcSeed();render(true);
 
 </script>
