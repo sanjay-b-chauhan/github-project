@@ -4975,6 +4975,29 @@ button.f2-drop:active{transform:scale(.995)}
 .f9-fx button[data-a="f9fx"]{display:none}
 .lv9.last .lv9-tap{display:none}
 
+/* ═══ v72: grainy packaging skies, a flower of gradient circles, a fibre burst. No confetti ═══ */
+.lv9-sky{position:absolute;inset:0;background:radial-gradient(46% 38% at 50% 40%,rgba(255,255,255,.42) 0,rgba(255,255,255,0) 100%),linear-gradient(180deg,var(--g0) 0%,var(--g1) 30%,var(--g2) 60%,var(--g3) 90%)}
+.lv9-night{position:absolute;inset:0;background:radial-gradient(60% 50% at 50% 42%,color-mix(in srgb,var(--n1) 70%,#fff 6%) 0,transparent 70%),linear-gradient(180deg,var(--n0) 0%,var(--n1) 100%);opacity:calc(1 - var(--n,0));pointer-events:none}
+.lv9-dawn{position:absolute;inset:0;background:radial-gradient(70% 46% at 50% 108%,var(--g2) 0,color-mix(in srgb,var(--g1) 60%,transparent) 42%,transparent 72%);opacity:calc(var(--p,0) * (1 - var(--n,0)) * 1.6);transform:translateY(calc((1 - var(--p,0)) * 18%));pointer-events:none}
+.lv9.lit .lv9-dawn{opacity:0;transition:opacity .6s}
+.lv9-grain{position:absolute;inset:0;opacity:.2;mix-blend-mode:overlay;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.lv9.lit .lv9-k{color:#fff}
+.lv9.lit .lv9-k .b{opacity:.92}
+
+/* the flower of circles behind the badge */
+.lv9-flw{position:absolute;left:50%;top:50%;z-index:1;width:0;height:0;pointer-events:none}
+.lv9-flr2{position:absolute;left:0;top:0;width:0;height:0;animation:lv9-spin 70s linear infinite}
+.lv9-flw i{position:absolute;left:0;top:0;width:calc(var(--z) * var(--s));height:calc(var(--z) * var(--s));margin:calc(var(--z) * var(--s) * -.5);border-radius:50%;background:linear-gradient(var(--d),var(--c1),var(--c2));filter:blur(.6px);opacity:0;transform:rotate(var(--a)) translateY(0) scale(.2)}
+.lv9-flw i.ht{background:radial-gradient(rgba(20,30,40,.22) .9px,transparent 1.3px) 0 0/6px 6px,linear-gradient(var(--d),var(--c1),var(--c2))}
+.lv9.lit .lv9-flw i{animation:lv9-petal .7s cubic-bezier(.16,1,.3,1) calc(.06s + var(--i) * 30ms) forwards}
+@keyframes lv9-petal{from{opacity:0;transform:rotate(var(--a)) translateY(0) scale(.2)}to{opacity:.94;transform:rotate(var(--a)) translateY(calc(var(--z) * var(--r) * -1)) scale(1)}}
+.lv9-flw i.in{z-index:1}
+.lv9-ry{display:none}
+.lv9.k-hire .lv9-ry{display:block}
+@media (prefers-reduced-motion:reduce){.lv9-flw i{opacity:.94;transform:rotate(var(--a)) translateY(calc(var(--z) * var(--r) * -1))}.lv9-flr2{animation:none}}
+.s-badge .lv9-bw{height:calc(var(--z) * 1.78)}
+.s-badge .lv9-lv{margin-top:-2px}
+
 </style>
 </head>
 <body>
@@ -10894,11 +10917,18 @@ const LV9S={amb:'data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjYyLjEy
 /* the sky: a dusk for the wait, then each tier's bright colours (his refs: mint, yellow and orange; purple, pink and peach;
    sky, cyan and mint; orange, gold and yellow) */
 const LVD=['#1D2B7A','#2D5BA6','#4A2F8F','#17698A','#3A3A9E'],LVDB='#1A2462';
+/* v72: each tier is a grainy sky like his packaging and swatch refs: deep at the top, vivid, light, cream at the bottom.
+   The wait runs on that tier's night; the petals of the flower use the tier's colours. */
 const LVT={
- mint:{c:['#2FD9A0','#52D2EE','#F3E46A','#FFB561','#8EF0C4'],b:'#9BEBCB',ink:'#05382A',sub:'#0E5C42',hi:[47,217,160]},
- violet:{c:['#9066F5','#EE70D2','#FFB07A','#FFDF7A','#B690FF'],b:'#C9A2F5',ink:'#2A0F5C',sub:'#55309E',hi:[190,150,255]},
- ocean:{c:['#3B8CFF','#3ED6F2','#5FE2B6','#FFE36B','#7DB6FF'],b:'#8CC6F7',ink:'#0B2A55',sub:'#1A4F8C',hi:[62,214,242]},
- gold:{c:['#FF9B3D','#FFC93A','#FFE45E','#FF8C7A','#FFD58A'],b:'#FFD27A',ink:'#4A2200',sub:'#7A3E05',hi:[255,201,58]}};
+ mint:{g:['#0F6B45','#2EC27E','#B9EFA0','#FFF6D9'],n:['#062A1D','#0D4A33'],acc:'#FF9F4A',pt:['#2EC27E','#7BE0A8','#FFB25B','#58C8F2','#FFF1C9','#FFD84D'],ink:'#063D24',sub:'#13643F',hi:[46,194,126]},
+ violet:{g:['#4A1E9E','#8A5CFF','#FF9AD5','#FFEADB'],n:['#170A3A','#2C1470'],acc:'#FFB07A',pt:['#8A5CFF','#C6A8FF','#FF8ACB','#FFC9A3','#FFF0E6','#7FB2FF'],ink:'#2A0F5C',sub:'#5A2FB0',hi:[170,130,255]},
+ ocean:{g:['#0B2F8A','#2F6BFF','#5ED8EE','#F5F1E6'],n:['#06143D','#0C2770'],acc:'#FFD45C',pt:['#2F6BFF','#7FB2FF','#5ED8EE','#9AF0D0','#FFF3D6','#FFD45C'],ink:'#0A2463',sub:'#1C4FB0',hi:[94,216,238]},
+ gold:{g:['#C2410C','#FF7A1A','#FFC93A','#FFF3D6'],n:['#3A1205','#6A240B'],acc:'#FF8FA3',pt:['#FF7A1A','#FFB347','#FFD84D','#FF8FA3','#FFF1C9','#FFA07A'],ink:'#4A1C00',sub:'#9A3A08',hi:[255,170,60]}};
+for(const k in LVT){const P=LVT[k];P.c=[P.g[1],P.g[2],P.acc,P.g[0],P.pt[1]]}
+/* the flower of circles (his Behance ref): eight outer petals, six inner, each a two-colour gradient, a few with halftone */
+const lv9Flower=P=>{const pt=P.pt,o=[...Array(8)].map((_,i)=>{const a=i*45,c1=pt[i%6],c2=pt[(i+2)%6];return`<i style="--a:${a}deg;--i:${i};--s:.6;--r:.5;--c1:${c1};--c2:${c2};--d:${(a+120)%360}deg" class="${i%3===1?'ht':''}"></i>`}).join(''),
+ n=[...Array(6)].map((_,i)=>{const a=i*60+30,c1=pt[(i+3)%6],c2=pt[(i+1)%6];return`<i style="--a:${a}deg;--i:${i+8};--s:.38;--r:.3;--c1:${c1};--c2:${c2};--d:${(a+200)%360}deg" class="in ${i%2?'ht':''}"></i>`}).join('');
+ return`<div class="lv9-flw" aria-hidden="true"><div class="lv9-flr2">${o}${n}</div></div>`};
 const lvHex=h=>{const n=parseInt(h.slice(1),16);return[n>>16&255,n>>8&255,n&255]};
 const lvMix=(a,b,k)=>{const A=lvHex(a),B=lvHex(b);return A.map((v,i)=>Math.round(v+(B[i]-v)*k))};
 const LVB=[[.16,.18,.6],[.86,.16,.55],[.5,.58,.62],[.1,.9,.58],[.9,.88,.6]];
@@ -10918,7 +10948,7 @@ const lv9Stop=(h,ms=250)=>{if(!h)return;try{const c=sfxCtx(),t=c.currentTime;h.v
 /* ── what each step says ── */
 const lv9Badge=u=>{const old=u.from>=1?BADGE(u.from,1):BADGE(u.to,1),nw=BADGE(u.to,1);
  return`<div class="lv9-st s-badge"><p class="lv9-k"><span class="a">Level ${u.from} complete</span><span class="b">Level ${u.to} unlocked</span></p>
-  <div class="lv9-bw"><span class="lv9-ry"><i></i></span><span class="lv9-ry r2"><i></i></span><span class="lv9-hl"></span><span class="lv9-port"></span>
+  <div class="lv9-bw"><span class="lv9-ry"><i></i></span><span class="lv9-ry r2"><i></i></span><span class="lv9-hl"></span><span class="lv9-port"></span>${lv9Flower(LVT[f6Tier(u.to)])}
    <div class="lv9-fl"><div class="lv9-fi" data-f="o"><img class="lv9-b o ${u.from>=1?'':'lk'}" src="${old}" alt=""><img class="lv9-b n" src="${nw}" alt="Level ${u.to} badge"><span class="lv9-sh" style="-webkit-mask-image:url(${nw});mask-image:url(${nw})"></span></div></div></div>
   <h1 class="lv9-lv"><span>Level</span><span class="lv9-n"><b class="o">${u.from}</b><b class="n">${u.to}</b></span></h1>
   <p class="lv9-sub lv9-post" style="--dl:.3s">+${u.gain.toLocaleString()} XP${u.why?` · ${esc(u.why)}`:''}</p>
@@ -10947,11 +10977,11 @@ const lv9HireH=id=>{const r=ROLE(id),c0=APP(id)||{},amount=c0.amount||money((r.p
 function lv9Kill(){if(L9.el){L9.el.remove();L9.el=null}lv9Stop(L9A.amb,120);L9A.amb=null;lv9Stop(L9A.bld,80);L9A.bld=null}
 function lv9Open(kind,data){lv9Kill();const tier=kind==='hire'?'gold':f6Tier(data.to),P=LVT[tier],RM=F9RM(),t=performance.now();
  const el=document.createElement('div');el.id='lv9';el.className=`lv9 t-${tier} k-${kind}${RM?' rm lit':' ph-in'}`;el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-label',kind==='hire'?'Offer accepted':`Level ${data.to}`);
- const s=el.style;s.setProperty('--ink',P.ink);s.setProperty('--sub',P.sub);s.setProperty('--hi',P.hi.join(','));[P.c[0],P.c[1],P.c[3],P.c[2]].forEach((c,i)=>s.setProperty(`--c${i+1}`,c));
+ const s=el.style;s.setProperty('--ink',P.ink);s.setProperty('--sub',P.sub);s.setProperty('--hi',P.hi.join(','));[P.g[0],P.g[1],P.acc,P.g[2]].forEach((c,i)=>s.setProperty(`--c${i+1}`,c));P.g.forEach((c,i)=>s.setProperty(`--g${i}`,c));s.setProperty('--n0',P.n[0]);s.setProperty('--n1',P.n[1]);
  const beams=[40,90,26,120,60,30,100,44,70].map((wd,i)=>`<i style="--x:${(3+i*11.4+(i%3)*1.6).toFixed(1)};--w:${wd};--d:${3+(i%4)};--dl:${(i*.7).toFixed(1)}"></i>`).join('');
- el.innerHTML=`<div class="lv9-stage"><canvas class="lv9-mesh" aria-hidden="true"></canvas><div class="lv9-beams" aria-hidden="true">${beams}</div><canvas class="lv9-fx" aria-hidden="true"></canvas><span class="lv9-swp" aria-hidden="true"></span><div class="lv9-body"></div>${kind==='lu'?`<div class="lv9-foot"><p class="lv9-tap">Tap to continue</p><span class="lv9-pg"><i class="on"></i><i></i><i></i></span></div>`:''}</div><div class="lv9-wipe" aria-hidden="true"><i></i><i></i><i></i><i></i></div>`;
+ el.innerHTML=`<div class="lv9-stage"><div class="lv9-sky" aria-hidden="true"></div><div class="lv9-night" aria-hidden="true"></div><div class="lv9-dawn" aria-hidden="true"></div><div class="lv9-beams" aria-hidden="true">${beams}</div><div class="lv9-grain" aria-hidden="true"></div><canvas class="lv9-fx" aria-hidden="true"></canvas><span class="lv9-swp" aria-hidden="true"></span><div class="lv9-body"></div>${kind==='lu'?`<div class="lv9-foot"><p class="lv9-tap">Tap to continue</p><span class="lv9-pg"><i class="on"></i><i></i><i></i></span></div>`:''}</div><div class="lv9-wipe" aria-hidden="true"><i></i><i></i><i></i><i></i></div>`;
  document.body.appendChild(el);
- Object.assign(L9,{el,kind,data,P,tier,ph:RM?'rev':'in',t0:t,te:0,w:RM?1:0,k:RM?1:0,lt:0,step:kind==='lu'?'badge':'hire',fl:0,sl:[],sw:[],sh:[],sk:[],tw:[],cf:[],hz:[],mo:null,flip:-1,closing:0,hitAt:RM?t:0,cx:null,cy:null,sh0:0,hp:0,hl:0,bt:0,twt:0});
+ Object.assign(L9,{el,kind,data,P,tier,ph:RM?'rev':'in',t0:t,te:0,w:RM?1:0,k:RM?1:0,lt:0,step:kind==='lu'?'badge':'hire',fl:0,sl:[],sw:[],sh:[],sk:[],tw:[],cf:[],hz:[],mo:null,flip:-1,closing:0,hitAt:RM?t:0,fb:null,fb0:0,fbs:1,cx:null,cy:null,sh0:0,hp:0,hl:0,bt:0,twt:0});
  lv9Content(kind==='lu'?lv9Badge(data):lv9HireH(data.id),true);
  el.addEventListener('click',lv9Click);lv9Load();if(!lv9Play('sweep',.8))f9Whoosh();lv9Stop(L9A.amb,100);L9A.amb=lv9Play('amb',.32,{loop:true,fade:1.2});
  if(!L9.raf)L9.raf=requestAnimationFrame(lv9Loop)}
@@ -10963,7 +10993,7 @@ function lv9Step(st){const el=L9.el;if(!el||L9.step===st)return;L9.step=st;const
  el.classList.remove('swap');void el.offsetWidth;el.classList.add('swap');el.classList.toggle('last',st==='summary');
  if(st==='roles'){lv9Content(lv9RolesH(u));if(!lv9Play('roles',.75)){f9Whoosh();setTimeout(()=>sfx('chime'),260)}const t=performance.now(),P=L9.P;
   L9.hz=F9RM()?[]:[...Array(30)].map((_,i)=>({y:Math.random(),t0:t+120+Math.random()*160,d:380+Math.random()*300,len:.1+Math.random()*.3,wd:.6+Math.random()*1.6,c:i%3?[255,255,255]:P.hi}))}
- if(st==='summary'){lv9Content(lv9Sum(u));if(!lv9Has('success'))f9Whoosh();setTimeout(()=>{if(!L9.el)return;if(!lv9Play('success',.75))sfx('done');if(!F9RM()){f9GBurst(L9,70);f9GDrizzle(L9,70)}},360)}}
+ if(st==='summary'){lv9Content(lv9Sum(u));if(!lv9Has('success'))f9Whoosh();setTimeout(()=>{if(!L9.el)return;if(!lv9Play('success',.75))sfx('done');lv9Fib(performance.now(),.62)},360)}}
 function lv9Close(){const el=L9.el;if(!el||L9.closing)return;L9.closing=1;el.classList.add('out');if(!lv9Play('exit',.8))f9Whoosh();lv9Stop(L9A.amb,500);L9A.amb=null;lv9Stop(L9A.bld,120);L9A.bld=null;const st=el.querySelector('.lv9-st');if(st)st.classList.add('leave');
  setTimeout(()=>{if(L9.el===el){el.remove();L9.el=null}},F9RM()?220:860)}
 function lv9Click(e){if(!L9.el||L9.closing||(e.target.closest&&e.target.closest('button')))return;
@@ -10983,8 +11013,10 @@ function lv9Hit(){const el=L9.el;if(!el||L9.ph==='rev')return;const t=performanc
  for(let i=0;i<26;i++)L9.sl.push({a:i/26*Math.PI*2+(Math.random()-.5)*.1,t0:t+Math.random()*40,d:520+Math.random()*320,r0:6,rg:40+Math.random()*40,len:30+Math.random()*40,wd:1+Math.random()*2.5,c:i%3?[255,255,255]:P.hi});
  L9.sw=[{t0:t,d:650,rg:75},{t0:t+120,d:850,rg:100}];
  const C=P.c.map(lvHex);for(let i=0;i<18;i++){const a=Math.random()*Math.PI*2,sp=.08+Math.random()*.12;L9.sh.push({a,x:null,y:null,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,r:Math.random()*6,vr:(Math.random()-.5)*.012,s:2+Math.random()*5,t0:t,d:650+Math.random()*350,c:i%4===0?C[1]:i%5===0?C[0]:[255,255,255],q:[.7+Math.random()*.5,.6+Math.random()*.5]})}
- setTimeout(()=>{if(L9.el&&!F9RM()){f9GCannons(L9);f9GBurst(L9,110)}},90)}
+ lv9Fib(t,1)}
 
+/* the fibre burst (his fan ref): fine lines out of the badge with a glowing dot on each tip, no confetti */
+const lv9Fib=(t,sc)=>{if(F9RM())return;L9.fb=[...Array(150)].map((_,i)=>({a:i/150*Math.PI*2+(Math.random()-.5)*.03,L:(26+Math.random()*24)*sc,wd:.35+Math.random()*.5,dl:Math.random()*160,ds:.35+Math.random()*.45,tw:Math.random()*6.3}));L9.fb0=t;L9.fbs=sc};
 /* ── the evolution beat: white silhouette flipping old and new, faster and faster ── */
 function lv9Evo(ms,k){const fi=L9.el.querySelector('.lv9-fi');if(!fi)return;const now=performance.now();
  if(L9.kind==='hire'){const f=1.3+k*k*6;L9.hp+=((now-(L9.hl||now))/1000)*f*Math.PI*2;L9.hl=now;const beat=Math.pow(Math.max(0,Math.sin(L9.hp)),6);fi.style.transform=`scale(${(.9+.12*k+.07*beat).toFixed(3)})`;
@@ -11025,9 +11057,13 @@ function lv9Fx(c,t,dt){const P=L9.P,sc=.5,w=Math.max(1,Math.round(innerWidth*sc)
   [[[255,110,200],.6,.965],[WH,.9,1],[[80,210,255],.6,1.035]].forEach(([c,a,f])=>{x.strokeStyle=f9rgb(c,(1-p)*a);x.lineWidth=lw;x.beginPath();x.arc(cx,cy,r*f,0,TAU);x.stroke()})});
  if(L9.fl&&ph==='rev'){const q=Math.min(1,(t-L9.fl)/1400),A=.85*(1-q)+.2,g=x.createLinearGradient(0,0,w,0);g.addColorStop(0,'rgba(255,255,255,0)');g.addColorStop(.5,`rgba(255,255,255,${A.toFixed(3)})`);g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(0,cy-.22*vm,w,.44*vm);
   [[-26,3.4,[120,220,255]],[18,2.2,[255,150,220]],[34,4.6,[255,230,150]]].forEach(([dx,r,c])=>{const X=cx+dx*vm,R=r*vm,gg=x.createRadialGradient(X,cy,0,X,cy,R);gg.addColorStop(0,f9rgb(c,.22*A));gg.addColorStop(.7,f9rgb(c,.1*A));gg.addColorStop(1,f9rgb(c,0));x.fillStyle=gg;x.beginPath();x.arc(X,cy,R,0,TAU);x.fill()})}
+ /* the fibre burst */
+ if(L9.fb&&L9.fb0){const r0=(L9.fbs<1?6:10)*vm;L9.fb.forEach((f,i)=>{const q=Math.max(0,Math.min(1,(t-L9.fb0-f.dl)/750));if(!q)return;const e=1-Math.pow(1-q,3),br=1+.025*Math.sin(t/900+f.tw),r=r0+(f.L*vm-r0)*e*br,ca=Math.cos(f.a),sa=Math.sin(f.a),X=cx+ca*r,Y=cy+sa*r,g=x.createLinearGradient(cx+ca*r0,cy+sa*r0,X,Y);
+  g.addColorStop(0,'rgba(255,255,255,0)');g.addColorStop(.5,'rgba(255,255,255,.28)');g.addColorStop(1,'rgba(255,255,255,.7)');x.strokeStyle=g;x.lineWidth=f.wd;x.beginPath();x.moveTo(cx+ca*r0,cy+sa*r0);x.lineTo(X,Y);x.stroke();
+  const tw=.55+.45*Math.sin(t/420+f.tw);x.fillStyle=`rgba(255,255,255,${(.9*tw*e).toFixed(3)})`;x.beginPath();x.arc(X,Y,f.ds*vm*.5,0,TAU);x.fill();if(i%5===0){x.fillStyle=f9rgb(HI,.35*tw*e);x.beginPath();x.arc(X,Y,f.ds*vm*1.3,0,TAU);x.fill()}})}
  /* sparkles around the badge once it lands */
- if(ph==='rev'&&(!L9.twt||t-L9.twt>170)){L9.twt=t;const a=Math.random()*TAU,s=L9.step==='summary'?.55:1,rr=(12+Math.random()*20)*vm*s;L9.tw.push({x:Math.cos(a)*rr,y:Math.sin(a)*rr*.9,t0:t,d:800+Math.random()*500,s:(1.2+Math.random()*2)*vm*.42,c:Math.random()<.6?WH:HI})}
- L9.tw=L9.tw.filter(s=>t<s.t0+s.d);L9.tw.forEach(s=>{const p=(t-s.t0)/s.d,z=Math.sin(Math.PI*p),R=s.s*z,X=cx+s.x,Y=cy+s.y;x.fillStyle=f9rgb(s.c,.95*z);f9Star(x,X,Y,R);x.fillStyle=f9rgb(s.c,.2*z);x.beginPath();x.arc(X,Y,R*.9,0,TAU);x.fill()});
+ if(ph==='rev'&&(!L9.twt||t-L9.twt>260)){L9.twt=t;const a=Math.random()*TAU,s=L9.step==='summary'?.55:1,rr=(12+Math.random()*20)*vm*s;L9.tw.push({x:Math.cos(a)*rr,y:Math.sin(a)*rr*.9,t0:t,d:800+Math.random()*500,s:(1.2+Math.random()*2)*vm*.42,c:Math.random()<.6?WH:HI})}
+ L9.tw=L9.tw.filter(s=>t<s.t0+s.d);L9.tw.forEach(s=>{const p=(t-s.t0)/s.d,z=Math.sin(Math.PI*p),R=s.s*z*1.6,X=cx+s.x,Y=cy+s.y;x.lineWidth=.7;for(let j=0;j<8;j++){const a=j*Math.PI/4,l=R*(j%2?.55:1),g=x.createLinearGradient(X,Y,X+Math.cos(a)*l,Y+Math.sin(a)*l);g.addColorStop(0,`rgba(255,255,255,${(.95*z).toFixed(3)})`);g.addColorStop(1,'rgba(255,255,255,0)');x.strokeStyle=g;x.beginPath();x.moveTo(X,Y);x.lineTo(X+Math.cos(a)*l,Y+Math.sin(a)*l);x.stroke()}x.fillStyle=`rgba(255,255,255,${(.9*z).toFixed(3)})`;x.beginPath();x.arc(X,Y,.25*vm,0,TAU);x.fill()});
  /* streaks across the screen as the roles fly in */
  L9.hz=L9.hz.filter(s=>t<s.t0+s.d);L9.hz.forEach(s=>{const p=(t-s.t0)/s.d;if(p<0)return;const e=p*p*(3-2*p),L2=s.len*w,X=-L2+(w+L2*2)*e,Y=s.y*h,g=x.createLinearGradient(X-L2,Y,X,Y);g.addColorStop(0,f9rgb(s.c,0));g.addColorStop(1,f9rgb(s.c,.85*(1-p*.5)));x.strokeStyle=g;x.lineWidth=s.wd;x.beginPath();x.moveTo(X-L2,Y);x.lineTo(X,Y);x.stroke()});
  /* glass shards and confetti, solid */
@@ -11049,8 +11085,8 @@ function lv9Loop(){const el=L9.el;if(!el){L9.raf=0;return}L9.raf=requestAnimatio
  if(L9.ph==='old'&&e>(L9.kind==='hire'?560:1050)){L9.ph='evo';L9.te=t;el.classList.remove('ph-old');el.classList.add('ph-evo','sil');L9A.bld=L9.kind==='hire'?lv9Play('heart',.95):lv9Play('build',.75);if(!L9A.bld)f9Riser(L9.kind==='hire'?1700:L9E)}
  if(L9.ph==='evo'){const D=L9.kind==='hire'?1700:L9E,k=Math.min(1,(t-L9.te)/D);L9.k=k;el.style.setProperty('--p',k.toFixed(3));lv9Evo(t-L9.te,k);if(k>=1)lv9Hit()}
  const wt=L9.ph==='rev'?1:L9.ph==='evo'?.42*L9.k*L9.k:0;L9.w+=(wt-L9.w)*Math.min(1,dt/(L9.ph==='rev'?160:300));
- el.style.setProperty('--b',(L9.ph==='evo'?.35+.65*L9.k:L9.ph==='rev'?.4:.3).toFixed(3));
- const mc=el.querySelector('.lv9-mesh'),fx=el.querySelector('.lv9-fx');if(mc)lv9Mesh(mc,L9.P,L9.w,L9.ph==='evo'?L9.k:0,t);if(fx)lv9Fx(fx,t,dt);L9.lt=t}
+ el.style.setProperty('--b',(L9.ph==='evo'?.35+.65*L9.k:L9.ph==='rev'?0:.3).toFixed(3));
+ el.style.setProperty('--n',L9.w.toFixed(3));const fx=el.querySelector('.lv9-fx');if(fx)lv9Fx(fx,t,dt);L9.lt=t}
 
 /* ── wiring: the level-up and the offer both use it ── */
 drawLU=function(){const u=S.lu;if(!u){if(L9.el&&L9.kind==='lu')lv9Close();return}
