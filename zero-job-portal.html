@@ -4348,6 +4348,28 @@ button.f2-drop:active{transform:scale(.995)}
 @keyframes f6-cr{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.08);opacity:1}100%{transform:scale(1)}}
 .f6-crw{margin-top:10px}
 
+/* the level-up text takes the level's colour */
+.lu2[data-tier] .lu3-k,.lu2[data-tier] .lu3-sub,.lu2[data-tier] .lu3-ml,.lu2[data-tier] .lu3-tap{color:var(--lu-ink)}
+.lu2[data-tier] .f6-cr{color:var(--lu-ring);box-shadow:0 0 0 1px color-mix(in srgb,var(--lu-ring) 22%,transparent)}
+.lu2[data-tier] .lu3-ti{color:var(--lu-ring)}
+
+/* the role's line: pills, fit, heart and buttons are all one height */
+.rb .rb-chips li,.rb .rb-fit .zf-pill,.rb .rb-fa .zy-lk,.rb .rb-fa .zy-sp{height:38px;padding:0 14px 0 12px;font-size:14px;line-height:20px;gap:8px}
+.rb .rb-fit .zf-pill svg,.rb .rb-fa .zy-lk svg{width:15px;height:15px}
+.rb .rb-fa .st-like{width:38px;height:38px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:99px}
+.rb .rb-fa .st-like svg{width:17px;height:17px}
+.rb .rb-fa .x,.rb .rb-fa .s,.rb .rb-fa .k{height:38px;padding:0 16px;font-size:14px;line-height:20px}
+.rb .rb-fa .rb-ap{height:38px;padding:0 20px;font-weight:500}
+.rb .rb-fa .rb-ap svg{width:16px;height:16px}
+.rb .rb-fit{min-height:38px}
+/* the glow behind the badge takes the level's colour */
+.lu2[data-tier="violet"] .lu3-glow{background:radial-gradient(closest-side,rgba(255,252,255,.95),rgba(194,170,250,.6) 45%,rgba(140,110,220,0))}
+.lu2[data-tier="violet"] .lu3-ring{box-shadow:0 0 0 1.5px rgba(255,255,255,.9),0 0 30px rgba(194,170,250,.7)}
+.lu2[data-tier="ocean"] .lu3-glow{background:radial-gradient(closest-side,rgba(250,254,255,.95),rgba(144,198,246,.6) 45%,rgba(60,140,210,0))}
+.lu2[data-tier="ocean"] .lu3-ring{box-shadow:0 0 0 1.5px rgba(255,255,255,.9),0 0 30px rgba(144,198,246,.7)}
+.lu2[data-tier="gold"] .lu3-glow{background:radial-gradient(closest-side,rgba(255,253,240,.95),rgba(255,214,110,.65) 45%,rgba(210,160,60,0))}
+.lu2[data-tier="gold"] .lu3-ring{box-shadow:0 0 0 1.5px rgba(255,255,255,.9),0 0 34px rgba(255,206,90,.8)}
+
 </style>
 </head>
 <body>
@@ -9887,9 +9909,19 @@ A.f6dl=id=>{const r=ROLE(id);if(!r)return false;const P=(typeof MAYA!=='undefine
  saveBlob(pdfBlob(`${ME.name}`,lines),`${slugOf(r)}-resume.pdf`);toast('download','Resume downloaded');return false};
 
 /* ── the level-up lands: rings and confetti around the badge, credits called out, everything centred on the badge ── */
-const F6C=['#131417','#12733F','#B7F06A','#D2F59B','#7EE0A1','#FFD84D','#8B5CF6','#ffffff'];
-const f6Burst=n=>{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const t=performance.now(),cx=LUC.cx==null?innerWidth*.25:LUC.cx,cy=LUC.cy==null?innerHeight*.23:LUC.cy;LUC.cf=LUC.cf||[];
- for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,v=2.5+Math.random()*6.5;LUC.cf.push({x:cx,y:cy,vx:Math.cos(a)*v,vy:Math.sin(a)*v-3.5,r:Math.random()*6,vr:(Math.random()-.5)*.35,w:2+Math.random()*3.5,h:4+Math.random()*4,s:Math.random()<.7,c:F6C[i%F6C.length],die:t+1800+Math.random()*1200})}};
+const F6PAL={
+ mint:{bg:['#FBFFF2','#E9FAD2','#CDF1C6','#AEE6C2','#DDF3E2'],dot:'rgba(40,140,70,.22)',band:[[255,255,236],[206,245,160],[130,215,150]],bloom:[[255,255,232],[230,251,186],[170,232,155],[196,242,130]],sw:[[255,255,240],[80,190,170]],ring:'#12733F',ink:'#1E6B3F'},
+ violet:{bg:['#FDFBFF','#F0E8FF','#DCCCFF','#C2ACF4','#EEE8FB'],dot:'rgba(110,70,190,.2)',band:[[255,252,255],[218,202,255],[166,136,240]],bloom:[[255,251,255],[234,224,255],[194,170,250],[212,194,255]],sw:[[255,251,255],[140,110,220]],ring:'#6D4BD8',ink:'#4B2FA6'},
+ ocean:{bg:['#F7FCFF','#DFF1FF','#BEE1FA','#97C9F0','#E0EFFA'],dot:'rgba(30,100,170,.2)',band:[[250,254,255],[184,222,255],[112,172,236]],bloom:[[250,254,255],[208,233,255],[144,198,246],[172,216,255]],sw:[[250,254,255],[60,140,210]],ring:'#1D6FB8',ink:'#164F86'},
+ gold:{bg:['#FFFDF4','#FFF0C4','#F9DA8C','#E9BC5E','#FAEFD4'],dot:'rgba(150,100,20,.24)',band:[[255,252,236],[255,226,150],[228,176,74]],bloom:[[255,253,240],[255,236,170],[238,196,96],[255,218,118]],sw:[[255,250,232],[210,160,60]],ring:'#B07A12',ink:'#7A4E05'}};
+const f6Tier=n=>n>=10?'gold':n>=7?'ocean':n>=4?'violet':'mint';
+const f6Pal=()=>F6PAL[f6Tier(S.lu?S.lu.to:1)],cc=(a,al)=>`rgba(${a[0]},${a[1]},${a[2]},${al})`;
+/* premium confetti: gold foil that flips as it falls, champagne, white, a touch of the level's colour, and glints */
+const F6FOIL=[['#FFF3C4','#E8B94A','#A8761C'],['#FFE9A8','#D9A43A','#8E5F12'],['#FFF8DE','#F0D27A','#B98A2E']];
+const f6Burst=n=>{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const t=performance.now(),cx=LUC.cx==null?innerWidth*.25:LUC.cx,cy=LUC.cy==null?innerHeight*.23:LUC.cy,pal=f6Pal();LUC.cf=LUC.cf||[];
+ for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,v=2.5+Math.random()*7,k=i%10;
+  LUC.cf.push({x:cx,y:cy,vx:Math.cos(a)*v,vy:Math.sin(a)*v-3.8,r:Math.random()*6,vr:(Math.random()-.5)*.3,ph:Math.random()*6,vp:.12+Math.random()*.22,w:2.6+Math.random()*3,h:5+Math.random()*5,
+   kind:k<6?'foil':k<8?'glint':'dot',foil:F6FOIL[i%3],c:k===8?'#ffffff':pal.ring,die:t+2200+Math.random()*1400})}};
 const f6Rings=n=>{const t=performance.now();LUC.rp=LUC.rp||[];for(let i=0;i<n;i++)LUC.rp.push({t:t+i*150,d:1500})};
 function lucFrame(){const c=document.getElementById('luc');if(!c||!S.lu){LUC.raf=0;LUC.cx=LUC.cy=null;return}LUC.raf=requestAnimationFrame(lucFrame);
  const sc=.5,w=Math.max(1,Math.round(innerWidth*sc)),h=Math.max(1,Math.round(innerHeight*sc));if(c.width!==w||c.height!==h){c.width=w;c.height=h}
@@ -9898,33 +9930,40 @@ function lucFrame(){const c=document.getElementById('luc');if(!c||!S.lu){LUC.raf
  let tx=w*.5,ty=h*.46;const fr=document.querySelector('#lu2 .lu3-fr'),cr=c.getBoundingClientRect();if(fr){const b=fr.getBoundingClientRect();if(b.width&&cr.width){tx=(b.left+b.width/2-cr.left)*(w/cr.width);ty=(b.top+b.height/2-cr.top)*(h/cr.height)}}
  LUC.cx=LUC.cx==null?tx:LUC.cx+(tx-LUC.cx)*.07;LUC.cy=LUC.cy==null?ty:LUC.cy+(ty-LUC.cy)*.07;const cx=LUC.cx,cy=LUC.cy;x.clearRect(0,0,w,h);
  if(x.createConicGradient){const o=LUC.o||(LUC.o=document.createElement('canvas'));if(o.width!==w||o.height!==h){o.width=w;o.height=h}const ox=o.getContext('2d');ox.globalCompositeOperation='source-over';ox.clearRect(0,0,w,h);
-  const g=ox.createConicGradient(t/24000*TAU,cx,cy);[[0,'rgba(255,255,255,0)'],[40/360,'rgba(255,255,240,.55)'],[95/360,'rgba(255,255,255,0)'],[160/360,'rgba(80,190,170,.18)'],[220/360,'rgba(255,255,255,0)'],[290/360,'rgba(255,255,240,.45)'],[345/360,'rgba(255,255,255,0)'],[1,'rgba(255,255,255,0)']].forEach(s=>g.addColorStop(s[0],s[1]));
+  const g=ox.createConicGradient(t/24000*TAU,cx,cy);const P=f6Pal();[[0,'rgba(255,255,255,0)'],[40/360,cc(P.sw[0],.55)],[95/360,'rgba(255,255,255,0)'],[160/360,cc(P.sw[1],.2)],[220/360,'rgba(255,255,255,0)'],[290/360,cc(P.sw[0],.45)],[345/360,'rgba(255,255,255,0)'],[1,'rgba(255,255,255,0)']].forEach(s=>g.addColorStop(s[0],s[1]));
   ox.fillStyle=g;ox.fillRect(0,0,w,h);ox.globalCompositeOperation='destination-in';const R=106*vm,mk=ox.createRadialGradient(cx,cy,0,cx,cy,R);mk.addColorStop(.08,'rgba(0,0,0,0)');mk.addColorStop(.3,'#000');mk.addColorStop(.6,'#000');mk.addColorStop(.75,'rgba(0,0,0,0)');ox.fillStyle=mk;ox.fillRect(0,0,w,h);x.drawImage(o,0,0)}
+ const PB=f6Pal().band,PL=f6Pal().bloom;
  for(let i=0;i<6;i++){const p=((t+i*10000/6)%10000)/10000,s=.06+.94*lucEase(p),op=p<.14?p/.14:p<.72?1-.25*(p-.14)/.58:.75*(1-(p-.72)/.28),R=120*vm*s;
-  const g=x.createRadialGradient(cx,cy,0,cx,cy,R);g.addColorStop(.5,'rgba(255,255,236,0)');g.addColorStop(.59,'rgba(255,255,236,.85)');g.addColorStop(.63,'rgba(206,245,160,.55)');g.addColorStop(.665,'rgba(130,215,150,.28)');g.addColorStop(.73,'rgba(255,255,236,0)');
+  const g=x.createRadialGradient(cx,cy,0,cx,cy,R);g.addColorStop(.5,cc(PB[0],0));g.addColorStop(.59,cc(PB[0],.85));g.addColorStop(.63,cc(PB[1],.55));g.addColorStop(.665,cc(PB[2],.3));g.addColorStop(.73,cc(PB[0],0));
   x.globalAlpha=Math.max(0,op);x.fillStyle=g;x.beginPath();x.arc(cx,cy,R*.74,0,TAU);x.fill()}
  x.globalAlpha=1;
  LUC.bl=LUC.bl.filter(b=>t<b.t+b.d);LUC.bl.forEach(b=>{const p=(t-b.t)/b.d;if(p<0)return;const e=lucExpo(p);
-  if(b.k==='a'){const s=.05+2.15*e,R=63.6*vm*s,op=p<.14?p/.14:1-(p-.14)/.86,g=x.createRadialGradient(cx,cy,0,cx,cy,R);g.addColorStop(0,'rgba(255,255,232,.95)');g.addColorStop(.26,'rgba(230,251,186,.72)');g.addColorStop(.48,'rgba(170,232,155,.32)');g.addColorStop(.68,'rgba(170,232,155,0)');x.globalAlpha=Math.max(0,op);x.fillStyle=g;x.beginPath();x.arc(cx,cy,R*.7,0,TAU);x.fill()}
-  else{const s=.1+2.5*e,R=56.6*vm*s,op=p<.12?p/.12:1-(p-.12)/.88,g=x.createRadialGradient(cx,cy,0,cx,cy,R);g.addColorStop(.56,'rgba(255,255,240,0)');g.addColorStop(.63,'rgba(255,255,240,.95)');g.addColorStop(.67,'rgba(196,242,130,.6)');g.addColorStop(.75,'rgba(196,242,130,0)');x.globalAlpha=Math.max(0,op);x.fillStyle=g;x.beginPath();x.arc(cx,cy,R*.76,0,TAU);x.fill()}});
+  if(b.k==='a'){const s=.05+2.15*e,R=63.6*vm*s,op=p<.14?p/.14:1-(p-.14)/.86,g=x.createRadialGradient(cx,cy,0,cx,cy,R);g.addColorStop(0,cc(PL[0],.95));g.addColorStop(.26,cc(PL[1],.72));g.addColorStop(.48,cc(PL[2],.34));g.addColorStop(.68,cc(PL[2],0));x.globalAlpha=Math.max(0,op);x.fillStyle=g;x.beginPath();x.arc(cx,cy,R*.7,0,TAU);x.fill()}
+  else{const s=.1+2.5*e,R=56.6*vm*s,op=p<.12?p/.12:1-(p-.12)/.88,g=x.createRadialGradient(cx,cy,0,cx,cy,R);g.addColorStop(.56,cc(PL[0],0));g.addColorStop(.63,cc(PL[0],.95));g.addColorStop(.67,cc(PL[3],.6));g.addColorStop(.75,cc(PL[3],0));x.globalAlpha=Math.max(0,op);x.fillStyle=g;x.beginPath();x.arc(cx,cy,R*.76,0,TAU);x.fill()}});
  x.globalAlpha=1;
  /* crisp rings that pulse out from the badge */
  LUC.rp=(LUC.rp||[]).filter(r=>t<r.t+r.d);LUC.rp.forEach(r=>{const p=(t-r.t)/r.d;if(p<0)return;const e=1-Math.pow(1-p,3);x.globalAlpha=(1-p)*.9;x.strokeStyle='#ffffff';x.lineWidth=Math.max(.5,3*(1-p));x.beginPath();x.arc(cx,cy,(10+48*e)*vm,0,TAU);x.stroke();
-  x.globalAlpha=(1-p)*.5;x.strokeStyle='#12733F';x.lineWidth=Math.max(.4,1.5*(1-p));x.beginPath();x.arc(cx,cy,(10+48*e)*vm+2,0,TAU);x.stroke()});
+  x.globalAlpha=(1-p)*.5;x.strokeStyle=f6Pal().ring;x.lineWidth=Math.max(.4,1.5*(1-p));x.beginPath();x.arc(cx,cy,(10+48*e)*vm+2,0,TAU);x.stroke()});
  x.globalAlpha=1;
  /* confetti */
  LUC.cf=(LUC.cf||[]).filter(p=>t<p.die&&p.y<h+30);LUC.cf.forEach(p=>{const dt=Math.min(3,(t-(p.lt||t))/16.7);p.lt=t;p.vy+=.16*dt;p.vx*=Math.pow(.985,dt);p.vy*=Math.pow(.995,dt);p.x+=p.vx*dt;p.y+=p.vy*dt;p.r+=p.vr*dt;
-  x.save();x.translate(p.x,p.y);x.rotate(p.r);x.globalAlpha=Math.max(0,Math.min(1,(p.die-t)/500));x.fillStyle=p.c;if(p.s)x.fillRect(-p.w/2,-p.h/2,p.w,p.h);else{x.beginPath();x.arc(0,0,p.w/2,0,TAU);x.fill()}x.restore()});
+  p.ph+=p.vp*dt;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.globalAlpha=Math.max(0,Math.min(1,(p.die-t)/500));
+  if(p.kind==='foil'){const f=Math.cos(p.ph),hh=p.h*Math.max(.08,Math.abs(f)),g=x.createLinearGradient(-p.w/2,-hh/2,p.w/2,hh/2);g.addColorStop(0,p.foil[f>0?0:2]);g.addColorStop(.5,p.foil[1]);g.addColorStop(1,p.foil[f>0?2:0]);x.fillStyle=g;x.fillRect(-p.w/2,-hh/2,p.w,hh)}
+  else if(p.kind==='glint'){const tw=.4+.6*Math.abs(Math.sin(p.ph*1.6)),s=p.w*1.4*tw;x.fillStyle='#FFF6D6';x.beginPath();x.moveTo(0,-s);x.lineTo(s*.22,0);x.lineTo(0,s);x.lineTo(-s*.22,0);x.closePath();x.fill();x.beginPath();x.moveTo(-s,0);x.lineTo(0,s*.22);x.lineTo(s,0);x.lineTo(0,-s*.22);x.closePath();x.fill()}
+  else{x.fillStyle=p.c;x.beginPath();x.arc(0,0,p.w/2,0,TAU);x.fill()}x.restore()});
  x.globalAlpha=1}
 /* the words land with it: the level unlocked, the credits called out */
-{const f=luHTML;luHTML=function(){const u=S.lu;let h=f();if(!u)return h;
+{const f=luHTML;luHTML=function(){const u=S.lu;let h=f();if(!u)return h;const P=F6PAL[f6Tier(u.to)];
+ h=h.replace('<div class="lu2 lu3 ',`<div data-tier="${f6Tier(u.to)}" style="--lu-ink:${P.ink};--lu-ring:${P.ring}" class="lu2 lu3 `).replace('<div class="lu2-bg">',`<div class="lu2-bg" style="background:radial-gradient(circle at 50% 40%,${P.bg[0]} 0,${P.bg[1]} 22%,${P.bg[2]} 44%,${P.bg[3]} 66%,${P.bg[4]} 100%)">`).replace('<span class="lu2-dots"></span>',`<span class="lu2-dots" style="background-image:radial-gradient(${P.dot} 1px,transparent 1.5px)"></span>`);
  h=h.replace('<p class="lu3-k">Level up</p>',`<p class="lu3-k">Level ${u.to} unlocked</p>`);
  if(u.step==='badge')h=h.replace(/(<div class="lu4-m" style="--dl:800ms"><p class="lu3-sub">[\s\S]*?<\/p><\/div>)/,`$1<div class="lu4-m f6-crw" style="--dl:1150ms"><span class="f6-cr">${ic('coins')}+${(u.cr||0).toLocaleString()} credits</span></div>`);
  return h}}
 {const f=drawLU;drawLU=function(){f();const u=S.lu;if(!u){LUC.f6s='';return}if(u.step===LUC.f6s)return;LUC.f6s=u.step;
- if(u.step==='badge')setTimeout(()=>{if(!S.lu)return;f6Rings(3);f6Burst(150);sfx('big')},900);
- else if(u.step==='roles'){f6Rings(2);sfx('chime')}
+ if(u.step==='badge')setTimeout(()=>{if(!S.lu)return;f6Rings(3);f6Burst(180);sfx('big')},900);
+ else if(u.step==='roles'){f6Rings(2);f6Burst(60);sfx('chime')}
  else if(u.step==='summary')setTimeout(()=>{if(!S.lu)return;f6Rings(2);f6Burst(90);sfx('done')},450)}}
+/* a locked role says Level 8 once, in the action spot, not again in the pills */
+{const f=roleBody;roleBody=function(r,acts){const h=f(r,acts);return /class="zy-lk"/.test(h)?h.replace(/<li class="lk">[\s\S]*?<\/li>/,''):h}}
 
 /* ═══════════ PORTFOLIO: generated by pf_build.py from zero-portfolio/v36 (Slate 9). Do not edit by hand:
    edit pf_page.js or pf_page.css, then run python3 next/pf_build.py. One IIFE, so nothing here is a global
