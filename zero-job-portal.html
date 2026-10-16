@@ -4370,6 +4370,23 @@ button.f2-drop:active{transform:scale(.995)}
 .lu2[data-tier="gold"] .lu3-glow{background:radial-gradient(closest-side,rgba(255,253,240,.95),rgba(255,214,110,.65) 45%,rgba(210,160,60,0))}
 .lu2[data-tier="gold"] .lu3-ring{box-shadow:0 0 0 1.5px rgba(255,255,255,.9),0 0 34px rgba(255,206,90,.8)}
 
+/* ═══ v67: running is one small status on the Activity line ═══ */
+.f7-ahr{display:flex;align-items:center;gap:10px}
+.f7-run{display:inline-flex;align-items:center;gap:8px;max-width:60%;height:28px;padding:0 12px 0 10px;border:0;border-radius:99px;background:var(--warnbg);font:500 12px/16px var(--f);color:var(--warn);cursor:pointer;animation:f6-in .25s cubic-bezier(.2,.9,.3,1) both}
+.f7-run:hover{filter:none;box-shadow:inset 0 0 0 1px rgba(138,83,6,.18)}
+.f7-run.ok{background:var(--goodbg);color:var(--good)}
+.f7-dot{position:relative;width:8px;height:8px;flex-shrink:0;border-radius:99px;background:#E09A1A}
+.f7-dot::after{content:'';position:absolute;inset:-4px;border-radius:99px;background:#E09A1A;opacity:.35;animation:f7-pulse 1.4s ease-out infinite}
+@keyframes f7-pulse{from{transform:scale(.4);opacity:.5}to{transform:scale(1.4);opacity:0}}
+.f7-t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--warn);-webkit-mask-image:linear-gradient(90deg,rgba(0,0,0,.5) 0,rgba(0,0,0,.5) 35%,#000 50%,rgba(0,0,0,.5) 65%,rgba(0,0,0,.5) 100%);mask-image:linear-gradient(90deg,rgba(0,0,0,.5) 0,rgba(0,0,0,.5) 35%,#000 50%,rgba(0,0,0,.5) 65%,rgba(0,0,0,.5) 100%);-webkit-mask-size:220% 100%;mask-size:220% 100%;animation:f7-sh 1.8s linear infinite}
+@keyframes f7-sh{from{-webkit-mask-position:110% 0;mask-position:110% 0}to{-webkit-mask-position:-110% 0;mask-position:-110% 0}}
+.f7-ck{display:inline-flex}
+.f7-ck svg{width:13px;height:13px}
+.f7-st{display:inline-flex;align-items:center;gap:6px;flex-shrink:0;max-width:50%;font-size:12px;line-height:16px;color:var(--warn)}
+.f7-st.ok{color:var(--good)}
+.f7-st svg{width:12px;height:12px}
+@media (prefers-reduced-motion:reduce){.f7-t{animation:none;-webkit-mask-image:none;mask-image:none}.f7-dot::after{animation:none}}
+
 </style>
 </head>
 <body>
@@ -9964,6 +9981,20 @@ function lucFrame(){const c=document.getElementById('luc');if(!c||!S.lu){LUC.raf
  else if(u.step==='summary')setTimeout(()=>{if(!S.lu)return;f6Rings(2);f6Burst(90);sfx('done')},450)}}
 /* a locked role says Level 8 once, in the action spot, not again in the pills */
 {const f=roleBody;roleBody=function(r,acts){const h=f(r,acts);return /class="zy-lk"/.test(h)?h.replace(/<li class="lk">[\s\S]*?<\/li>/,''):h}}
+
+/* ═══ v67: the right rail is only for Saved for later. What is running is one small status on the Activity line,
+   amber and shimmering while Zero works, green when it is done; tap it and Activity opens with the tasks under Now. ═══ */
+function f2Rail(){const L=Object.values(f2L()).sort((a,b)=>a.due-b.due);if(!L.length)return'';
+ return`<aside class="f2-side" aria-label="Saved for later"><section class="f2-sv"><h2 class="f2-k">Saved for later <span class="f2-c">${L.length}</span></h2><div class="f2-svl">${L.map(x=>{const d=f2Left(x);return`<button type="button" class="f2-si" data-a="f2back" data-id="${x.id}" title="Bring it back to your to-dos">${x.lead?`<span class="f2-sl">${x.lead}</span>`:''}<span class="grow f2-sb"><span class="f2-st">${esc(f2Txt(x.title))}</span><span class="f2-dl ${d<=1?'soon':''}">${ic('clock')}${d<=1?'1 day to go':`${d} days to go`}</span></span></button>`}).join('')}</div></section></aside>`}
+const f7Chip=L=>{const run=L.filter(x=>!x.done&&!x.wait),q=L.filter(x=>x.wait).length;if(!run.length&&!q){if(!L.length)return'';return`<button type="button" class="f7-run ok" data-a="f2act" aria-label="Done, open Activity"><span class="f7-ck">${ic('check')}</span><span>Done</span></button>`}
+ const n=run.length+q,lab=n>1?`${n} tasks running`:esc((run[0]||L.find(x=>x.wait)).t);return`<button type="button" class="f7-run" data-a="f2act" aria-label="${n>1?`${n} tasks running`:'One task running'}, open Activity"><span class="f7-dot"></span><span class="f7-t">${lab}</span></button>`};
+{const f=f2Activity;f2Activity=function(){const L=f6Live();let h=f();const chip=f7Chip(L);if(!chip)return h;
+ if(!h)h=`<section class="f3-act"><button type="button" class="f3-ah" data-a="f2act" aria-expanded="${!!S.f2act}"><span class="f2-k">Activity</span><span class="f2-cv">${ic('chevron-down')}</span></button></section>`;
+ h=h.replace(/(<button type="button" class="f3-ah"[\s\S]*?<\/button>)/,`<div class="f7-ahr">$1<span class="grow"></span>${chip}</div>`);
+ if(S.f2act&&L.length){const now=`<div class="f3-d"><p class="f3-day">Now</p>${L.map(x=>`<div class="f3-i"><div class="f3-ih" tabindex="-1"><span class="f3-il">${x.lead}</span><span class="grow">${esc(x.t)}</span><span class="f7-st ${x.done?'ok':''}">${x.done?`${ic('check')}Done`:`<span class="f7-t">${esc(x.step)}</span>`}</span></div></div>`).join('')}</div>`;
+  h=h.includes('<div class="f3-tl">')?h.replace('<div class="f3-tl">',`<div class="f3-tl">${now}`):h.replace(/<\/section>$/,`<div class="f3-tl">${now}</div></section>`)}
+ return h}}
+setInterval(()=>{if(document.hidden||S.mode!=='student'||S.page.student!=='home'||S.lu)return;if(S.qa||(S.qq||[]).length)render()},400);
 
 /* ═══════════ PORTFOLIO: generated by pf_build.py from zero-portfolio/v36 (Slate 9). Do not edit by hand:
    edit pf_page.js or pf_page.css, then run python3 next/pf_build.py. One IIFE, so nothing here is a global
