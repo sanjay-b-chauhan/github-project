@@ -29,8 +29,8 @@
     function showPage(k) {
       pi = k; var p = pages[k];
       var html = L.w.slice(p[0], p[1] + 1).map(function (w) { return '<span>' + esc(w[2]) + '</span>'; }).join(' ');
-      cap.classList.remove('nv-in'); cap.classList.add('nv-swap');
-      setTimeout(function () { cap.innerHTML = '<p>' + html + '</p>'; spans = $$('span', cap); sp = p[0]; cap.classList.remove('nv-swap'); cap.classList.add('nv-in'); }, k === 0 ? 0 : 180);
+      cap.classList.remove('nv-cin'); cap.classList.add('nv-swap');
+      setTimeout(function () { cap.innerHTML = '<p>' + html + '</p>'; spans = $$('span', cap); sp = p[0]; cap.classList.remove('nv-swap'); cap.classList.add('nv-cin'); }, k === 0 ? 0 : 180);
     }
     var a = null, an = null, buf = null;
     if (NV.sound) {
