@@ -1,0 +1,87 @@
+/* Zero b8: the app canvas, shared tokens and pieces. Screens add their own files (s-*.css), each scoped under .sc-<screen>. */
+:root{
+  --f:'Inter',-apple-system,system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  --serif:'STK Bureau Serif',Georgia,serif;
+  --o:cubic-bezier(.16,1,.3,1); --e:cubic-bezier(.2,0,0,1);
+  /* the real app, dark */
+  --bg:#1A1A1A; --bg2:#202020; --card:#242424; --card2:#2B2B2B; --hair:rgba(255,255,255,.08); --hair2:rgba(255,255,255,.13);
+  --t1:#EDEDED; --t2:#A8A8A8; --t3:#7C7C7C; --t4:#555;
+  /* light screens */
+  --lbg:#F5F4F0; --lcard:#FFFFFF; --lhair:rgba(20,22,26,.08); --l1:#16171A; --l2:#4F535B; --l3:#878B94; --l4:#B7BAC1;
+  --green:#3CC878; --green2:#1F8A4C; --amber:#E39A2B; --red:#E5484D; --gold:#E9B949;
+}
+@font-face{font-family:'STK Bureau Serif';src:url(STKBureau-SerifBook.otf) format('opentype');font-weight:400;font-display:swap}
+@property --p{syntax:'<number>';inherits:true;initial-value:0}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{overflow:hidden;background:#0B0B0C;color:var(--t1);font:400 13px/18px var(--f);letter-spacing:-.006em;-webkit-font-smoothing:antialiased;font-feature-settings:'cv11' 1}
+button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left;letter-spacing:inherit;text-decoration:none}
+img,video{display:block}
+svg{display:block;flex-shrink:0}
+:focus-visible{outline:2px solid #3B82F6;outline-offset:2px}
+
+/* the app: one canvas, zoomed to the screen (engine.js fit) */
+#app{position:fixed;left:0;top:0;overflow:hidden;background:var(--bg);isolation:isolate}
+#app[data-theme=light]{background:var(--lbg);color:var(--l1)}
+#scr{position:absolute;inset:0}
+.sc{position:absolute;inset:0;overflow:hidden}
+.sc.enter{animation:scin .5s var(--o) both}
+.sc.leave{animation:scout .45s var(--e) both;pointer-events:none;z-index:0}
+@keyframes scin{from{opacity:0}}
+@keyframes scout{to{opacity:0}}
+.missing{display:grid;place-items:center;height:100%;font:400 12px var(--mono);color:var(--t3);text-transform:uppercase;letter-spacing:.12em}
+
+/* shared pieces */
+.lab{font:400 11px/14px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--t3)}
+#app[data-theme=light] .lab{color:var(--l3)}
+.lg{position:relative;display:inline-grid;place-items:center;width:var(--l,24px);height:var(--l,24px);border-radius:99px;background:#fff;box-shadow:0 0 0 1px rgba(20,22,26,.08);overflow:hidden;flex-shrink:0}
+.lg.png img{width:100%;height:100%;object-fit:cover}
+.lg .mk{display:block;width:58%;height:58%;background:var(--c,#111);-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat}
+.lg.ltr{background:var(--c,#111);box-shadow:none}
+.lg .lt{font-weight:500;font-size:calc(var(--l,24px)*.42);color:#fff}
+.stk{display:inline-flex;align-items:center}
+.stk .lg{margin-left:-7px;box-shadow:0 0 0 2px var(--stk-ring,#fff),0 0 0 2.5px rgba(20,22,26,.06)}
+.stk .lg:first-child{margin-left:0}
+.bdg{display:block;object-fit:contain;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}
+.fc{display:block;width:var(--f,36px);height:var(--f,36px);border-radius:99px;object-fit:cover;flex-shrink:0}
+.typing::after{content:'';display:inline-block;width:1.5px;height:1.05em;margin-left:1px;vertical-align:-.15em;background:currentColor;animation:caret 1s steps(1) infinite}
+@keyframes caret{50%{opacity:0}}
+.pressed{transform:scale(.95)!important;transition:transform .12s var(--e)!important}
+
+/* the pointer that shows what Sanjay does */
+.cur{position:absolute;left:0;top:0;z-index:90;width:22px;height:22px;margin:-3px 0 0 -5px;pointer-events:none;opacity:0;transition:transform .55s var(--o),opacity .25s var(--e);filter:drop-shadow(0 3px 6px rgba(0,0,0,.35))}
+.cur.on{opacity:1}
+.cur svg{width:22px;height:22px}
+
+/* the prototype bar: apart from the app, under it */
+#ctl{position:fixed;left:0;right:0;bottom:0;height:56px;z-index:100;display:flex;align-items:center;gap:14px;padding:0 14px;background:#0B0B0C;box-shadow:inset 0 1px 0 rgba(255,255,255,.07);color:#fff;font-size:12px}
+.ct-case{display:flex;gap:2px;padding:3px;border-radius:99px;background:rgba(255,255,255,.07)}
+.ct-case button{height:30px;padding:0 13px;border-radius:99px;color:rgba(255,255,255,.62);white-space:nowrap;transition:background-color .2s var(--e),color .2s var(--e)}
+.ct-case button:hover{color:#fff}
+.ct-case button.on{background:#fff;color:#111}
+.ct-tr{display:flex;gap:2px}
+.ct-tr button{display:grid;place-items:center;width:32px;height:32px;border-radius:99px;color:rgba(255,255,255,.75)}
+.ct-tr button:hover{background:rgba(255,255,255,.1);color:#fff}
+.ct-tr svg{width:11px;height:11px}
+.ct-cap{flex:1 1 auto;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:rgba(255,255,255,.88)}
+.ct-cap span{color:rgba(255,255,255,.45);margin-right:8px}
+.ct-ch{display:flex;align-items:center;gap:3px}
+.ct-ch button{position:relative;display:flex;align-items:center;gap:6px;height:30px;padding:0 9px 0 5px;border-radius:99px;color:rgba(255,255,255,.55);white-space:nowrap}
+.ct-ch button:hover{background:rgba(255,255,255,.07);color:#fff}
+.ct-ch button.on{background:rgba(255,255,255,.12);color:#fff}
+.ct-ch button.past{color:rgba(255,255,255,.8)}
+.ct-ch .lg{--l:20px}
+.ct-ch .ji{display:grid;place-items:center;width:20px;height:20px;border-radius:99px;background:rgba(255,255,255,.14)}
+.ct-ch .ji svg{width:11px;height:11px}
+.ct-ch i.bar{position:absolute;left:8px;right:8px;bottom:3px;height:2px;border-radius:2px;background:rgba(255,255,255,.1);overflow:hidden}
+.ct-ch i.bar b{display:block;height:100%;width:var(--w,0%);background:#fff;transition:width .3s var(--e)}
+.ct-sp{height:30px;padding:0 10px;border-radius:99px;color:rgba(255,255,255,.6)}
+.ct-sp:hover{color:#fff;background:rgba(255,255,255,.07)}
+.ct-v{font-size:11px;color:rgba(255,255,255,.35)}
+@media (max-width:1300px){.ct-ch .nm{display:none}.ct-ch button{padding:0 5px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+.ct-doc{height:30px;line-height:30px;padding:0 12px;border-radius:99px;color:rgba(255,255,255,.75);white-space:nowrap;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+.ct-doc:hover{color:#fff;background:rgba(255,255,255,.07)}
+.ct-note{font-size:11.5px;color:rgba(255,255,255,.4);white-space:nowrap}
+@media (max-width:1400px){.ct-note{display:none}}
