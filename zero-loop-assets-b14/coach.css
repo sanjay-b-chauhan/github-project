@@ -1,0 +1,128 @@
+/* Zero b11: Navid beside your work. The language of the in-app tutorial: its easing, its serif for what he says,
+   its white keys for what you answer, its ring that moves with his voice. */
+:root{--zt-ease:cubic-bezier(.625,.05,0,1);
+  --key-light:linear-gradient(#FFFFFF,#EDEDEA);
+  --key-light-sh:inset 0 1px 0 #fff,inset 0 -3px 0 rgba(0,0,0,.1),0 0 0 1px rgba(0,0,0,.18),0 14px 24px -14px rgba(0,0,0,.5);
+  --key-dark:linear-gradient(#303432,#181A19);
+  --key-dark-sh:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -3px 0 rgba(0,0,0,.5),0 0 0 1px #121413,0 14px 24px -14px rgba(18,20,19,.5)}
+
+/* the app is one piece: it slides left as a whole when Navid talks */
+#skin{position:absolute;inset:0;transform-origin:0 0;overflow:hidden;transition:transform .9s var(--zt-ease),border-radius .9s var(--zt-ease),box-shadow .9s var(--zt-ease),filter .9s var(--zt-ease)}
+#app.nv-open{background:#060607}
+#app.nv-open #skin{transform:translate(var(--skx),var(--sky)) scale(var(--sk));border-radius:calc(22px / var(--sk));box-shadow:0 0 0 calc(1px / var(--sk)) rgba(255,255,255,.08),0 40px 120px -30px rgba(0,0,0,.9);filter:brightness(.82) saturate(.92)}
+#app.nv-open #skin *{pointer-events:none}
+
+/* the face in the pill: grey when there is nothing, lit and blinking when there is */
+.dk .seg.co .me img{transition:filter .5s var(--e),opacity .5s var(--e)}
+.dk:not(.open) .seg.co .me:not(.nv-has) img{filter:grayscale(1) contrast(.9);opacity:.55}
+.dk .seg.co .me .dot{display:none}
+.dk .seg.co .me.nv-has img{animation:nvblink 2.4s ease-in-out infinite}
+@keyframes nvblink{0%,100%{opacity:1}50%{opacity:.62}}
+.dk .seg.co .me.nv-has::before,.dk .seg.co .me.nv-has::after{content:'';position:absolute;inset:-2px;border-radius:99px;box-shadow:0 0 0 2px #fff;animation:nvp 2s var(--zt-ease) infinite;pointer-events:none}
+.dk .seg.co .me.nv-has::after{animation-delay:1s}
+#app[data-theme=light] .dk .seg.co .me.nv-has::before,#app[data-theme=light] .dk .seg.co .me.nv-has::after{box-shadow:0 0 0 2px #131315}
+@keyframes nvp{0%{transform:scale(1);opacity:.95}100%{transform:scale(1.75);opacity:0}}
+.dk .seg.co .me.nv-gone{opacity:0}
+.seg.co .upt.nv-tag{padding-right:12px}
+.seg.co .upt.nv-tag b{font-weight:500;font-size:13px;white-space:nowrap}
+.dk.solo .seg.co{display:none}
+
+/* his face on the way from the pill to the panel */
+.nv-fly{position:absolute;z-index:92;border-radius:99px;overflow:hidden;pointer-events:none;transform-origin:0 0;transition:transform .8s var(--zt-ease)}
+.nv-fly img{width:100%;height:100%;object-fit:cover}
+
+/* the panel: the right 30%, black, centred */
+.nv-side{position:absolute;top:0;right:0;bottom:0;width:var(--side,30%);z-index:80;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 36px;color:#F4F4F3;text-align:center;
+  background:#060607;pointer-events:none;opacity:0;transition:opacity .4s var(--zt-ease)}
+#app.nv-open .nv-side{opacity:1;pointer-events:auto}
+.nv-in{display:flex;flex-direction:column;align-items:center;width:100%;max-width:400px;min-height:72%;margin-top:-2%}
+.nv-face{position:relative;width:92px;height:92px;border-radius:99px;opacity:0;transform:scale(.9);transition:opacity .3s var(--zt-ease) .5s,transform .7s var(--zt-ease) .3s}
+.nv-side.nv-on .nv-face{opacity:1;transform:none}
+.nv-face img{position:relative;width:92px;height:92px;border-radius:99px;object-fit:cover}
+.nv-ring{position:absolute;inset:0;border-radius:99px;box-shadow:0 0 0 calc(2px + var(--amp,0) * 5px) rgba(255,255,255,calc(.18 + var(--amp,0) * .6));transition:box-shadow .09s linear}
+.nv-tag2{margin-top:14px;opacity:0;transform:translateY(6px);transition:opacity .4s var(--zt-ease) .55s,transform .6s var(--zt-ease) .55s}
+.nv-side.nv-on .nv-tag2{opacity:1;transform:none}
+.nv-tag2 b{display:block;font-weight:600;font-size:14px;letter-spacing:-.01em}
+.nv-tag2 span{display:block;margin-top:2px;font-size:12.5px;color:#A6A6AC}
+.nv-cap{display:grid;place-items:center;width:100%;min-height:130px;margin-top:26px;font:400 25px/34px var(--serif);letter-spacing:-.015em;text-wrap:balance;transition:opacity .18s var(--zt-ease),filter .18s var(--zt-ease),transform .3s var(--zt-ease)}
+.nv-cap.nv-swap{opacity:0;filter:blur(4px);transform:translateY(-4px)}
+.nv-cap span{opacity:.24;transition:opacity .16s linear}
+.nv-cap span.on{opacity:1}
+.nv-x{width:100%;opacity:0;transform:translateY(8px);transition:opacity .35s var(--zt-ease),transform .5s var(--zt-ease)}
+.nv-x.nv-xin{opacity:1;transform:none}
+.nv-x:empty{display:none}
+.nv-act{display:flex;justify-content:center;width:100%;min-height:52px;margin-top:22px}
+
+/* what you answer: keys */
+.nv-keys{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.nv-key{height:46px;padding:0 20px;border-radius:14px;font:500 14px/1 var(--f);letter-spacing:-.01em;color:#F4F4F3;background:var(--key-dark);box-shadow:var(--key-dark-sh);
+  opacity:0;transform:translateY(8px);transition:opacity .3s var(--zt-ease),transform .5s var(--zt-ease),background .2s}
+.nv-key.in{opacity:1;transform:none}
+.nv-key.pri{color:#131315;background:var(--key-light);box-shadow:var(--key-light-sh)}
+.nv-key:hover{transform:translateY(-2px)}
+.nv-key.pressed,.nv-key.chosen{transform:translateY(1px)!important}
+.nv-key.chosen{outline:2px solid rgba(255,255,255,.5);outline-offset:3px}
+
+/* the path */
+.nv-path{margin-top:6px;padding:16px 18px 14px;border-radius:18px;background:#141416;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);text-align:left}
+.nv-pt{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:#A6A6AC}
+.nv-pt b{font-weight:500;color:#F4F4F3}
+.nv-pf{position:relative;height:16px;margin:14px 6px 0}
+.nv-pf::before{content:'';position:absolute;left:0;right:0;top:7px;height:2px;border-radius:2px;background:rgba(255,255,255,.12)}
+.nv-pf>i{position:absolute;left:0;top:7px;height:2px;width:0;border-radius:2px;background:#fff;transition:width 1.4s var(--zt-ease) .3s}
+.nv-pf span{position:absolute;top:3px;width:10px;height:10px;margin-left:-5px;border-radius:99px;background:#141416;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.3)}
+.nv-pf span.got{background:#fff;box-shadow:none}
+.nv-pf span.goal{top:0;width:16px;height:16px;margin-left:-8px;box-shadow:inset 0 0 0 2px #fff}
+.nv-pe{margin-top:12px;font-weight:500;font-size:15px;letter-spacing:-.01em}
+
+/* practice */
+.nv-drill{padding:14px 14px 14px;border-radius:18px;background:#F4F4F2;color:#131315;text-align:left}
+.nv-dh{display:flex;align-items:center;gap:8px}
+.nv-dh span{font:400 10.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#77777E}
+.nv-dh b{font-weight:500;font-size:13px}
+.nv-dq{display:flex;align-items:flex-start;gap:8px;margin-top:10px}
+.nv-dq p{padding:7px 11px;border-radius:12px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.07);font-size:13px;line-height:18px}
+.nv-dx{margin-top:10px;font-size:12px;line-height:17px;color:#8a8a90;text-decoration:line-through;text-decoration-color:rgba(0,0,0,.25)}
+.nv-din{margin-top:10px;min-height:58px;padding:10px 12px;border-radius:12px;background:#fff;box-shadow:0 0 0 1.5px #131315}
+.nv-dt{font-size:13.5px;line-height:19px;min-height:19px}
+.nv-dk{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.nv-dk span{display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 10px 0 7px;border-radius:99px;background:rgba(0,0,0,.06);font-size:12px;color:#8a8a90;transition:background .3s,color .3s}
+.nv-dk span svg{width:11px;height:11px;opacity:.35}
+.nv-dk span.on{background:#E3F4E8;color:#1F7A44}
+.nv-dk span.on svg{opacity:1}
+
+/* how has Zero been */
+.nv-fbo{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.nv-fbo button{height:40px;padding:0 15px;border-radius:12px;font:500 13.5px/1 var(--f);color:#F4F4F3;background:var(--key-dark);box-shadow:var(--key-dark-sh)}
+.nv-fbo button.on{color:#131315;background:var(--key-light);box-shadow:var(--key-light-sh)}
+.nv-fin{display:flex;align-items:flex-end;gap:8px;margin-top:12px;padding:10px 10px 10px 14px;border-radius:16px;background:#141416;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);text-align:left}
+.nv-ft{flex:1;min-height:20px;font-size:14px;line-height:20px}
+.nv-send{height:34px;padding:0 14px;border-radius:10px;color:#131315;background:var(--key-light);box-shadow:var(--key-light-sh);font:500 13px/1 var(--f)}
+.nv-sent{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 14px;border-radius:12px;background:#141416;font-size:13.5px;color:#A6A6AC}
+.nv-sent svg{width:13px;height:13px;color:#49BA61}
+
+/* ask him: three questions now, your own later */
+.nv-ask{display:flex;flex-direction:column;gap:8px}
+.nv-ask button{min-height:44px;padding:10px 16px;border-radius:14px;font:500 14px/19px var(--f);color:#F4F4F3;background:var(--key-dark);box-shadow:var(--key-dark-sh);text-align:center}
+.nv-soon{display:flex;align-items:center;gap:8px;height:44px;margin-top:4px;padding:0 14px;border-radius:14px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);color:#77777E;font-size:13.5px}
+.nv-soon svg{width:15px;height:15px}
+.nv-soon span{flex:1;text-align:left}
+.nv-soon em{font-style:normal;font-size:11px;padding:3px 8px;border-radius:99px;background:rgba(255,255,255,.08);color:#A6A6AC}
+.nv-me{display:flex;justify-content:flex-end}
+.nv-me p{max-width:86%;padding:9px 13px;border-radius:14px 14px 4px 14px;background:#F4F4F3;color:#131315;font-size:14px;line-height:19px;text-align:left}
+
+/* the first screen: sound on */
+.nv-gate{position:absolute;inset:0;z-index:95;display:grid;place-items:center;background:#060607;color:#fff;text-align:center}
+.nv-gate img{width:88px;height:88px;margin:0 auto;border-radius:99px;object-fit:cover;filter:grayscale(1);opacity:.75}
+.nv-gate h1{margin-top:22px;font:400 30px/38px var(--serif);letter-spacing:-.02em}
+.nv-gate p{margin-top:8px;font-size:14px;color:rgba(255,255,255,.55)}
+.nv-gate .row{display:flex;justify-content:center;gap:10px;margin-top:26px}
+.nv-gate button{height:46px;padding:0 20px;border-radius:14px;font:500 14px/1 var(--f);color:#F4F4F3;background:var(--key-dark);box-shadow:var(--key-dark-sh)}
+.nv-gate button.pri{color:#131315;background:var(--key-light);box-shadow:var(--key-light-sh)}
+.nv-cap p{margin:0;max-width:100%}
+/* the stack sits in the middle of the panel and never jumps: face, name, two or three lines, the keys */
+.nv-in{justify-content:center;min-height:0;height:100%;margin-top:0}
+/* his face, a little smaller */
+.nv-face,.nv-face img{width:64px;height:64px}
+.nv-tag2{margin-top:10px}
+.nv-cap{margin-top:20px}
