@@ -1,0 +1,235 @@
+/* ================= b20: played by hand, and the real kickoff =================
+   Every kickoff rule is scoped under .kx (the scene) and every class is prefixed kx-.
+   Values come from the real app: canvas #F2F0ED, top bar 88, grid 30 / 30 / 30, columns 1.8fr / 0.8fr,
+   back button 56 #E8E4DF, deck #222 radius 24, notes radius 24 with a #FCF2D3 head, landing card 760 radius 32 padding 64. */
+
+:root{--kxs:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;--kxm:'IBM Plex Mono',ui-monospace,Menlo,monospace;--kxd:'Plus Jakarta Sans',var(--sans);--kxe:cubic-bezier(.22,1,.36,1)}
+
+/* ---------- the one thing to click breathes; a stray click points back at it ---------- */
+.want{outline:2px solid transparent;outline-offset:2px;animation:kxWant 1.5s cubic-bezier(.3,.7,.2,1) infinite}
+@keyframes kxWant{0%{outline-color:transparent;outline-offset:1px}14%{outline-color:var(--wantc,rgba(255,255,255,.8))}100%{outline-color:transparent;outline-offset:10px}}
+.want.kx-nudge{animation:kxWant 1.5s cubic-bezier(.3,.7,.2,1) infinite,kxNudge .42s cubic-bezier(.36,.07,.19,.97)}
+@keyframes kxNudge{20%{transform:translateX(-3px)}40%{transform:translateX(3px)}60%{transform:translateX(-2px)}80%{transform:translateX(2px)}}
+.screen.kxl .want,.kx-card .want,.kx-notes .want{--wantc:rgba(31,29,30,.5)}
+.tap{animation:press .35s var(--out)}
+#run .st.cap{max-width:620px;font-weight:600;color:#1A1917}
+
+/* the HUD on a light scene: the real rank pill is a soft grey with white type */
+.screen.kxl .hud{background:rgba(112,108,104,.4);box-shadow:none;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.screen .hud{transition:transform .5s var(--kxe),box-shadow .3s}
+.screen.kx-nohud .hud{transform:translateY(-96px)}
+
+/* ---------- the scene ---------- */
+.scene.kx{animation:none;background:#F2F0ED;color:#1F1D1E;overflow:hidden}
+.kx button{font:inherit;color:inherit}
+.kx-back{position:absolute;left:32px;top:21px;z-index:3;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:#E8E4DF;color:#1F1D1E}
+.kx-back svg{width:18px;height:18px}
+
+/* ---------- 1. the project card (ref 03) ---------- */
+.scene.kx-land{background:#1B1815;animation:kxOpen .8s var(--kxe) both}
+@keyframes kxOpen{from{clip-path:circle(0 at var(--ox,82%) var(--oy,76%))}to{clip-path:circle(150% at var(--ox,82%) var(--oy,76%))}}
+.kx-bg{position:absolute;inset:0;overflow:hidden}
+.kx-bg img{width:100%;height:100%;object-fit:cover;filter:blur(42px);transform:scale(1.1)}
+.kx-bg::after{content:'';position:absolute;inset:0;background:rgba(27,24,21,.86)}
+.kx-land .kx-back{background:rgba(255,255,255,.1);color:#fff}
+.kx-card{position:absolute;left:50%;top:50%;width:760px;max-width:calc(100% - 64px);transform:translate(-50%,-50%);padding:64px;border-radius:32px;background:#fff;
+  display:flex;flex-direction:column;align-items:center;text-align:center;color:#2A2118;box-shadow:0 40px 90px -30px rgba(0,0,0,.7);animation:kxCard .9s var(--kxe) .12s both}
+@keyframes kxCard{from{transform:translate(-50%,calc(-50% + 56px)) scale(.96)}}
+.kx-card.kx-down{transform:translate(-50%,-50%) scale(.985);transition:transform .3s var(--kxe)}
+.kx-eb{font:500 13px/18.2px var(--kxm);letter-spacing:.16em;text-transform:uppercase;color:rgba(31,29,30,.45)}
+.kx-h{margin-top:20px;max-width:520px;font:400 40px/1.18 var(--serif);letter-spacing:-.01em;color:#2A2118;text-wrap:balance}
+.kx-av{margin-top:48px;width:76px;height:76px;padding:6px;border-radius:50%;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.06),0 4px 12px -6px rgba(0,0,0,.2)}
+.kx-av img{width:64px;height:64px;border-radius:50%;object-fit:cover}
+.kx-nm{margin-top:12px;font:500 16px/22px var(--sans);color:#2A2118}
+.kx-tl{margin-top:2px;font:400 15px/20px var(--sans);color:rgba(0,0,0,.4)}
+.kx-tm{margin-top:48px;display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:99px;background:#F7F7F6;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);
+  font:500 13px/1 var(--kxm);letter-spacing:.14em;text-transform:uppercase;color:rgba(31,29,30,.7)}
+.kx-tm svg{width:15px;height:15px}
+.kx-join{margin-top:16px;padding:19px 48px;border-radius:999px;background:#1F1D1E;color:#fff!important;font:500 16px/1 var(--sans)!important;
+  box-shadow:0 14px 26px -10px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.14);transition:transform .15s var(--kxe)}
+.kx-join:active{transform:scale(.96)}
+
+/* ---------- 2. Jay on video (ref 04) ---------- */
+.kx-vid{position:absolute;inset:0;z-index:4;overflow:hidden;background:#0E0D0C}
+.kx-vid>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 16%;transform-origin:50% 30%;animation:kxPush 16s linear both}
+@keyframes kxPush{to{transform:scale(1.08)}}
+.kx-vsh{position:absolute;inset:0;pointer-events:none;background:linear-gradient(0deg,rgba(0,0,0,.6) 0,rgba(0,0,0,.2) 160px,rgba(0,0,0,0) 300px),linear-gradient(180deg,rgba(0,0,0,.28),rgba(0,0,0,0) 120px)}
+.kx-vid .kx-back{background:rgba(60,58,56,.42);color:#fff;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.kx-skip{position:absolute;right:32px;top:28px;z-index:3;display:flex;align-items:center;gap:8px;height:40px;padding:0 18px 0 15px;border-radius:99px;background:rgba(60,58,56,.42);color:#fff!important;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);font:600 15px/1 var(--sans)!important}
+.kx-skip svg{width:11px;height:11px}
+.kx-cap{position:absolute;left:50%;bottom:60px;transform:translateX(-50%);width:min(860px,70%);display:flex;justify-content:center;pointer-events:none}
+.kx-cap span{display:inline-block;padding:9px 18px 10px;border-radius:12px;background:rgba(10,10,10,.6);color:#fff;font:500 22px/31px var(--sans);letter-spacing:-.01em;text-align:center;text-wrap:balance}
+.kx-cap span:empty{display:none}
+/* the progress strip: one bar per part of the meeting, flush with the bottom of the player */
+.kx-strip{position:absolute;z-index:2;left:45px;right:45px;bottom:0;height:6px;display:flex;gap:3px;pointer-events:none}
+.kx-strip i,.kx-trk i{position:relative;flex:var(--g,1) 1 0;height:6px;min-width:0;border-radius:52px;overflow:hidden;background:rgba(255,255,255,.25)}
+.kx-strip b,.kx-trk b{position:absolute;left:0;top:0;height:100%;width:0;border-radius:52px;background:#fff}
+
+/* ---------- 3. the meeting (refs 05 to 07) ---------- */
+.kx-meet{position:absolute;inset:0}
+.kx-grid{position:absolute;left:30px;right:30px;top:88px;bottom:30px;display:grid;grid-template-columns:minmax(0,1.8fr) minmax(300px,.8fr);gap:30px}
+.kx-deck{position:relative;border-radius:24px;background:#222;overflow:hidden;color:#fff;container-type:size;font-family:var(--kxd);box-shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px -1px rgba(0,0,0,.1)}
+.kx-wm{position:absolute;z-index:2;top:26px;left:26px;height:24px;display:flex;align-items:center;gap:6px}
+.kx-wm img{height:100%;width:auto;filter:brightness(0) invert(1)}
+.kx-wm b{font:800 19px/1 var(--kxd);letter-spacing:-.04em}
+/* slides: lines rise in their own masks, the old slide's lines rise out first */
+.kx-sl{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 7cqw;visibility:hidden}
+.kx-sl.on,.kx-sl.out{visibility:visible}
+.kx-sl.kx-hero{background:linear-gradient(135deg,#FF385C 0%,#BF2A45 100%)}
+.kx-sl.kx-hero:not(.on){visibility:hidden}
+.kx-ln{display:block;overflow:hidden;padding:.06em .04em .1em}
+.kx-u{display:block;transform:translateY(110%);transition:transform 0s .45s}
+.kx-sl.on .kx-u{transform:none;transition:transform .62s cubic-bezier(.165,.84,.44,1) calc(.08s + var(--i,0)*.09s)}
+.kx-sl.out .kx-u{transform:translateY(-110%);transition:transform .34s cubic-bezier(.5,0,.75,0)}
+.kx-sl.on .kx-num{transition:transform .72s cubic-bezier(.34,1.4,.64,1) .14s}
+.kx-big{font-weight:800;font-size:clamp(40px,min(9cqw,15cqh),124px);letter-spacing:-.045em;line-height:.98}
+.kx-sub{margin-top:clamp(10px,2.4cqh,26px);font-weight:600;font-size:clamp(15px,2.6cqw,28px);letter-spacing:-.02em;color:rgba(255,255,255,.85)}
+.kx-st{font-weight:800;font-size:clamp(18px,2.9cqw,34px);letter-spacing:-.035em;line-height:1.1}
+.kx-chart{position:relative;width:min(690px,70cqw);margin-top:clamp(36px,8cqh,84px)}
+.kx-chart svg{display:block;width:100%;height:auto;overflow:visible}
+.kx-v{position:absolute;font-weight:800;line-height:1;letter-spacing:-.03em;white-space:nowrap}
+.kx-vl{left:1%;top:47%;font-size:clamp(17px,2.9cqw,30px)}
+.kx-vr{right:-2%;top:-6%;font-size:clamp(22px,3.9cqw,40px)}
+.kx-vr .kx-u{transform:translateY(110%)}
+.kx-v.in .kx-u{transform:none;transition:transform .55s cubic-bezier(.165,.84,.44,1)}
+.kx-sl.out .kx-v .kx-u{transform:translateY(-110%)}
+.kx-xl{display:flex;justify-content:space-between;margin-top:18px;font:500 clamp(12px,1.6cqw,15px)/1 var(--kxd);color:#9A9A9A}
+.kx-pre{font-weight:800;font-size:clamp(16px,2.5cqw,28px);letter-spacing:-.03em;line-height:1.15}
+.kx-num{font-weight:800;font-size:clamp(56px,min(15.6cqw,26cqh),220px);letter-spacing:-.05em;line-height:.9;font-variant-numeric:tabular-nums}
+.kx-post{margin-top:clamp(6px,1.4cqh,14px);font-weight:700;font-size:clamp(14px,2cqw,22px);letter-spacing:-.02em;color:rgba(255,255,255,.62)}
+.kx-q{font-weight:800;font-size:clamp(30px,min(6.4cqw,11cqh),84px);letter-spacing:-.045em;line-height:1.04}
+.kx-q em{font-style:normal;color:#FF385C}
+/* the end of a chapter: the player bar, and the checkpoint card on it (ref 07) */
+.kx-bar{position:absolute;z-index:3;left:0;right:0;bottom:0;display:flex;align-items:center;gap:21px;padding:30px 40px;background:rgba(0,0,0,.5);transform:translateY(101%);transition:transform .4s cubic-bezier(.32,.72,0,1)}
+.kx-end .kx-bar{transform:none}
+.kx-end .kx-dstrip{visibility:hidden}
+.kx-bb{flex:none;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.2);display:grid;place-items:center;font:600 14px/20px var(--kxs);color:#fff;opacity:.4}
+.kx-bb svg{width:13px;height:14px}
+.kx-trk{position:relative;flex:1;height:6px;display:flex;gap:3px}
+.kx-trk b{width:100%}
+.kx-pop{position:absolute;z-index:4;left:88px;bottom:62px;width:258px;padding:28px 32px;border-radius:28px;background:#1F1D1E;box-shadow:0 25px 50px -12px rgba(0,0,0,.25);
+  display:flex;flex-direction:column;align-items:center;gap:20px;transform-origin:50% 100%;transform:translateY(15px) scale(0);transition:transform .22s cubic-bezier(.6,0,1,.4)}
+.kx-end .kx-pop{transform:none;transition:transform .34s cubic-bezier(0,.7,.3,1) .12s}
+.kx-pop>img{width:48px;height:48px;border-radius:50%;object-fit:cover}
+.kx-pin{position:relative;width:100%;height:40px}
+.kx-an,.kx-cont{position:absolute;left:0;top:0;width:100%;height:40px;border-radius:999px;display:grid;place-items:center;font:500 14px/20px var(--kxs)!important}
+.kx-an{overflow:hidden;color:#fff;transition:transform .2s var(--kxe)}
+.kx-an i{position:absolute;inset:0;background:linear-gradient(to right,transparent,rgba(255,255,255,.15),transparent);background-size:200% 100%;animation:kxPill 2s ease-in-out infinite}
+.kx-an span{position:relative}
+@keyframes kxPill{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.kx-cont{background:#fff;color:#1F1D1E!important;transform:translateY(8px) scale(.9);visibility:hidden;transition:transform .22s var(--kxe),visibility 0s .2s}
+.kx-graded .kx-an{transform:translateY(-10px) scale(.9);visibility:hidden}
+.kx-graded .kx-cont{transform:none;visibility:visible;transition:transform .26s var(--kxe) .08s}
+.kx-cont.want{--wantc:rgba(255,255,255,.75)}
+
+/* ---------- Meeting Notes (refs 05 to 08) ---------- */
+.kx-notes{position:relative;min-height:0;display:flex;flex-direction:column;border-radius:24px;border:1px solid #fff;background:#fff;overflow:hidden;color:#1F1D1E}
+.kx-meet .kx-notes{transform:translateX(calc(100% + 40px));transition:transform .95s cubic-bezier(.16,1,.3,1)}
+.kx-meet.kx-nin .kx-notes{transform:none}
+.kx-nh{flex:none;min-height:52px;padding:14px 24px;display:flex;align-items:center;gap:10px;background:#FCF2D3;font:500 14px/20px var(--kxs);color:#423200}
+.kx-ni{display:grid;width:18px;height:18px}
+.kx-ni svg{width:18px;height:18px}
+.kx-nh>span{visibility:hidden}
+.kx-ready .kx-nh>span{visibility:visible;animation:kxHd .5s var(--kxe) both}
+.kx-ready .kx-nh>span+span{animation-delay:.08s}
+@keyframes kxHd{from{transform:translateY(14px)}}
+/* the in-panel intro, drawn at 0.65 as the app sets it */
+.kx-intro{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;transform:translateY(-43px)}
+.kx-ic{width:98px;height:98px;border-radius:50%;background:#FCF2D3;display:grid;place-items:center}
+.kx-ic svg{width:38px;height:38px;opacity:.8}
+.kx-it{margin-top:6.5px;font:400 36.4px/1.3 var(--serif);letter-spacing:-1.1px;white-space:nowrap;color:#433D40}
+.kx-is{margin-top:19.5px;width:238px;max-width:100%;font:500 15.6px/1.4 var(--sans);color:#433D40;opacity:.6}
+.kx-rd{margin-top:19.5px;height:58.5px;padding:0 39px;border-radius:99px;background:#1F1D1E;color:#fff!important;font:600 19.5px/1.5 var(--sans)!important;letter-spacing:-.4px;
+  box-shadow:0 3.9px 5.2px -1.3px rgba(0,0,0,.15),0 0 0 1.3px #d4d4d4,inset 0 1.3px 0 rgba(255,255,255,.33);transition:transform .12s ease-out}
+.kx-rd.tap{animation:none;transform:translateY(2px) scale(.955)}
+.kx-nin .kx-ic{animation:kxLine .7s .3s backwards}
+.kx-nin .kx-it{animation:kxLine .7s .52s backwards}
+.kx-nin .kx-is{animation:kxLine .7s .74s backwards}
+.kx-nin .kx-rd{animation:kxLine .7s .96s backwards}
+.kx-nin .kx-rd.want{animation:kxLine .7s .96s backwards,kxWant 1.5s cubic-bezier(.3,.7,.2,1) 1.7s infinite}
+@keyframes kxLine{0%{filter:blur(10px);transform:translateY(35px);animation-timing-function:cubic-bezier(.22,1,.36,1)}50%{filter:blur(5px);transform:translateY(-5px);animation-timing-function:cubic-bezier(.22,1,.36,1)}100%{filter:none;transform:none}}
+.kx-going .kx-ic,.kx-going .kx-rd{transform:scale(0);transition:transform .32s ease-in}
+.kx-going .kx-it,.kx-going .kx-is{filter:blur(8px);transform:translateY(-12px);transition:filter .3s,transform .32s ease-in}
+.kx-nb{display:none;flex:1;min-height:0;padding:24px 32px;overflow-y:auto;scrollbar-width:none}
+.kx-nb::-webkit-scrollbar{display:none}
+.kx-ready .kx-intro{display:none}
+.kx-ready .kx-nb{display:block}
+.kx-seg{margin-bottom:16px;padding-bottom:12px}
+.kx-seg[hidden]{display:none}
+.kx-seg h3{font:600 16px/24px var(--sans);color:#2A2118}
+.kx-hr{display:block;margin-top:12px;border-bottom:1px solid #E5E7EB}
+.kx-ul{list-style:none;display:flex;flex-direction:column;gap:4px;margin-top:16px}
+.kx-row{position:relative;display:flex;align-items:flex-start;gap:12px;padding:2px 8px;margin:0 -8px;border-radius:8px}
+.kx-new{animation:kxIn .4s var(--kxe) both}
+@keyframes kxIn{from{transform:translateY(8px)}}
+.kx-pt{flex:none;width:20px;height:20px;margin-top:2px;display:grid;place-items:center}
+.kx-dot{display:block;width:7px;height:7px;border-radius:50%;background:#1F1D1E}
+.kx-p{flex:1;min-width:0;min-height:24px;font:400 14px/1.625 var(--kxs);color:#1E2939;overflow-wrap:anywhere}
+.kx-auto .kx-p{color:#4B5563}
+.kx-by{display:inline-block;margin-left:4px;padding:0 7px;border-radius:99px;background:rgba(31,29,30,.06);font:500 10.5px/18px var(--sans);font-style:normal;color:#8A8783;white-space:nowrap;vertical-align:1px}
+/* the line to write on: empty, it waits for you */
+.kx-wr{box-shadow:inset 0 0 0 1px rgba(31,29,30,.12);padding:6px 8px;cursor:text}
+.kx-wr .kx-dot{background:transparent;box-shadow:inset 0 0 0 1.5px #A3A09C}
+.kx-ph{color:#A3A09C}
+.kx-typing .kx-p::after{content:'';display:inline-block;width:1.5px;height:15px;margin-left:1px;vertical-align:-2px;background:#1F1D1E;animation:blink 1s infinite}
+/* graded right: the ring pops, the tick draws */
+.kx-okc{width:20px;height:20px;animation:kxPop .3s cubic-bezier(.34,1.56,.64,1) both}
+.kx-okt{stroke-dasharray:20;animation:kxDraw .35s ease-out backwards}
+@keyframes kxPop{from{transform:scale(.35)}}
+@keyframes kxDraw{from{stroke-dashoffset:20}}
+.kx-ok .kx-p{color:#4B5563}
+
+/* ---------- 4. the understanding check (ref 08) ---------- */
+.kx-mast{position:absolute;left:50%;top:19px;z-index:3;transform:translateX(-50%);display:flex;align-items:center;gap:18px;width:344px;height:60px;padding:0 20px;border-radius:99px;background:#fff;box-shadow:0 6px 20px -12px rgba(31,29,30,.25)}
+.kx-mtr{flex:1;height:10px;border-radius:9px;background:#F1F1F1;overflow:hidden}
+.kx-mtr i{display:block;height:100%;width:8%;border-radius:9px;background:linear-gradient(90deg,#5BCB45,#44B35E);transition:width 1s var(--kxe)}
+.kx-brain{width:30px;height:30px;color:#6B6B6B}
+.kx-brain svg{width:30px;height:30px}
+.kx-ug{position:absolute;left:0;right:30px;top:0;bottom:30px;display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,430px);gap:30px}
+.kx-chk .kx-notes{margin-top:150px}
+.kx-chk .kx-seg h3{font:400 20px/24px var(--serif);letter-spacing:-.005em}
+.kx-col{position:relative;display:flex;flex-direction:column;min-height:0}
+.kx-chat{flex:1;min-height:0;margin-top:96px;overflow-y:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 46px,#000 calc(100% - 10px),transparent);mask-image:linear-gradient(180deg,transparent 0,#000 46px,#000 calc(100% - 10px),transparent)}
+.kx-chat::-webkit-scrollbar{display:none}
+.kx-th{width:600px;max-width:calc(100% - 48px);min-height:100%;margin:0 auto;padding:40px 0 20px;display:flex;flex-direction:column;justify-content:flex-end;gap:30px}
+.kx-vn{position:relative;display:flex;flex-direction:column;animation:kxIn .45s var(--kxe) both}
+.kx-vn.kx-jay{align-items:flex-start;padding-left:52px}
+.kx-vn.kx-me{align-items:flex-end}
+.kx-vav{position:absolute;left:0;top:11px;width:40px;height:40px;border-radius:50%;object-fit:cover}
+.kx-vb{position:relative;display:flex;align-items:center;gap:10px;width:256px;height:62px;padding:0 22px 0 10px;border-radius:99px;background:#fff}
+.kx-me .kx-vb{background:#EAE8E6;box-shadow:inset 0 0 0 1px #DEDBD7}
+.kx-pl{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#E9E9E9;color:#6E6E6E}
+.kx-me .kx-pl{background:#DCD9D6}
+.kx-pl svg{width:14px;height:14px;margin-left:2px}
+.kx-pl.kx-live{background:#1F1D1E}
+.kx-pl.kx-live::before{content:'';width:10px;height:10px;border-radius:50%;background:#FF5A4E;animation:blink 1.2s infinite}
+.kx-wv{flex:1;display:flex;align-items:center;gap:4px;height:28px}
+.kx-wv i{flex:none;width:3px;border-radius:2px;background:#ABA7A4;transition:background-color .15s}
+.kx-wv i.on{background:#4A4847}
+.kx-wv i.kx-off{visibility:hidden}
+.kx-du{flex:none;font:400 15px/1 var(--kxs);color:#6D6D6D;font-variant-numeric:tabular-nums}
+.kx-tr{display:flex;align-items:center;gap:6px;margin-top:9px;padding:0 10px;font:500 12px/16px var(--kxm)!important;letter-spacing:.06em;text-transform:uppercase;color:#8A8785!important}
+.kx-tr svg{width:12px;height:12px;transition:transform .3s var(--kxe)}
+.kx-open .kx-tr svg{transform:rotate(180deg)}
+.kx-tx{display:none;max-width:430px;margin-top:6px;padding:0 10px;font:400 14px/20px var(--kxs);color:#3F3D3C;text-wrap:pretty}
+.kx-me .kx-tx{text-align:right}
+.kx-open .kx-tx{display:block}
+.kx-rx{position:absolute;right:-4px;bottom:-20px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#fff;font-size:17px;line-height:1;box-shadow:0 2px 8px -4px rgba(0,0,0,.25);animation:kxRx .5s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes kxRx{from{transform:scale(.2)}}
+/* an answer the coach held */
+.kx-held .kx-vb{box-shadow:inset 0 0 0 1.5px #FF6B54;animation:kxNudge .42s cubic-bezier(.36,.07,.19,.97)}
+.kx-hold{margin-top:8px;padding-right:12px;font:500 12px/16px var(--sans);color:#C2553F}
+.kx-drop{transform:scale(0);transform-origin:100% 0;transition:transform .3s ease-in}
+.kx-micw{flex:none;display:flex;flex-direction:column;align-items:center;gap:12px;padding:18px 0 4px}
+.kx-mic{width:98px;height:56px;border-radius:99px;display:grid;place-items:center;background:#F7F6F4;color:#1F1D1E!important;box-shadow:0 12px 26px -12px rgba(31,29,30,.35),0 0 0 1px rgba(31,29,30,.04);transition:background-color .2s,color .2s}
+.kx-mic svg{width:19px;height:19px}
+.kx-mic.kx-rec{background:#1F1D1E;color:#fff!important}
+.kx-mh{font:500 11.5px/14px var(--kxm);letter-spacing:.1em;text-transform:uppercase;color:#6D6B69}
+
+/* ---------- the coach panel bits b20 adds ---------- */
+.sd-face{cursor:pointer}
+.sd-dr .ph{color:rgba(255,255,255,.4)}
+.sd-dr{cursor:text}
+.kx-me .kx-tr{margin-top:22px;padding-right:14px}
+.kx-me .kx-tx{padding-right:14px}
