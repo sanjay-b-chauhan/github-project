@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>For you, rebuilt</title>
+<link rel="stylesheet" href="../zero-jobs.css">
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="../zero-jobs.js"></script>
+</head>
+<body class="zj">
+<div class="zj-app">
+  <div class="zj-strip">
+    <div class="zj-strip-l">
+      <button class="zj-ghost zj-sq" type="button" aria-label="Pause"><i data-lucide="pause"></i></button>
+      <span class="zj-dot"></span>
+      <span class="zj-ink">Mon 12 Oct</span>
+    </div>
+    <div class="zj-strip-r">
+      <button class="zj-tool" type="button" aria-label="Settings"><i data-lucide="settings"></i></button>
+      <button class="zj-ghost" type="button"><i data-lucide="rotate-ccw"></i>Start over</button>
+    </div>
+  </div>
+  <div class="zj-stage">
+    <div class="zj-sheet">
+      <header class="zj-top">
+        <div class="zj-top-l">
+          <span data-zj-logo></span>
+          <div class="zj-mode"><button type="button">Learn</button><button type="button" class="zj-on">Jobs</button></div>
+        </div>
+        <nav class="zj-tabs">
+          <button type="button" class="zj-on">For you</button>
+          <button type="button">Jobs</button>
+          <button type="button">Inbox<span class="zj-count">1</span><span class="zj-new"></span></button>
+        </nav>
+        <div class="zj-top-r">
+          <button class="zj-round" type="button" aria-label="Sound"><i data-lucide="volume-2"></i></button>
+          <button class="zj-level" type="button"><span class="zj-level-t"><i data-lucide="award"></i><span>Level 5</span><span class="zj-level-bar"><i style="width:14px"></i></span></span></button>
+          <button class="zj-who" type="button"><span>Sanjay</span><span class="zj-av"><img src="../assets/face-student.jpg" alt=""></span></button>
+        </div>
+      </header>
+      <main class="zj-body">
+        <div class="zj-page">
+          <div class="zj-col">
+            <header class="zj-say">
+              <span data-zj-orb="36"></span>
+              <p><b>Kwame at Webflow</b> wants to meet you. I could not get <b>Clari</b> through. Can you help me with these eight?</p>
+            </header>
+            <section>
+              <div class="zj-sh">
+                <h2 class="zj-sh-t">To-dos</h2>
+                <span class="zj-pager"><button class="zj-arrow" type="button" disabled aria-label="Previous"><i data-lucide="chevron-left"></i></button><span>1 of 8</span><button class="zj-arrow" type="button" aria-label="Next"><i data-lucide="chevron-right"></i></button></span>
+              </div>
+              <div class="zj-stack">
+                <div class="zj-stack-bk zj-b2"></div>
+                <div class="zj-stack-bk"></div>
+                <article class="zj-card">
+                  <h3 class="zj-card-title"><span data-zj-face="../assets/face-kwame.webp" data-domain="webflow.com"></span><span>Kwame at Webflow wants to meet you</span><span class="zj-due zj-soon" title="Due Wed 14 Oct"><i data-lucide="timer"></i>2 days left</span></h3>
+                  <div class="zj-card-foot">
+                    <button class="zj-quiet" type="button"><i data-lucide="bookmark"></i>Later</button>
+                    <span class="zj-grow"></span>
+                    <button class="zj-ghost" type="button">Reply myself</button>
+                    <button class="zj-ghost" type="button">Not interested</button>
+                    <button class="zj-key" type="button"><i data-lucide="check"></i>Accept</button>
+                  </div>
+                </article>
+              </div>
+            </section>
+            <section>
+              <div class="zj-act-head">
+                <button class="zj-act-btn" type="button" aria-expanded="false"><span class="zj-sh-t">Activity</span><span class="zj-m">4 today</span><span class="zj-chev"><i data-lucide="chevron-down"></i></span></button>
+                <span class="zj-grow"></span>
+                <button class="zj-run" type="button"><span class="zj-run-dot"></span><span class="zj-run-t">Reading new postings</span></button>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+<script>
+document.querySelectorAll('[data-zj-logo]').forEach(e=>{e.outerHTML=zj.logoMark()});
+document.querySelectorAll('[data-zj-orb]').forEach(e=>{const l=(e.dataset.look||'0,0').split(',').map(Number);e.outerHTML=zj.orb(+e.dataset.zjOrb,e.dataset.m||'idle',{look:l,still:'still' in e.dataset})});
+document.querySelectorAll('[data-zj-face]').forEach(e=>{e.outerHTML=zj.faceAt(e.dataset.zjFace,e.dataset.domain)});
+zj.icons();
+</script>
+</body>
+</html>

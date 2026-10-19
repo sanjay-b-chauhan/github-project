@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zero starter</title>
+<link rel="stylesheet" href="zero-jobs.css">
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="zero-jobs.js"></script>
+</head>
+<body class="zj">
+<!--
+  Zero Jobs starter. Three page types, one shell. Keep the shell, change the pages.
+  1. A column page (For you): Zero says one thing, then the decisions as cards.
+  2. A table page (Jobs): one list of the same thing, filters on top.
+  3. A fill page (Inbox): list on the left, the thread on the right, both scroll inside.
+  Rules live in DESIGN.md. Every class is in zero-jobs.css.
+-->
+<div class="zj-app">
+  <!-- prototype controls only. Delete this strip in anything a student will use -->
+  <div class="zj-strip">
+    <div class="zj-strip-l"><span class="zj-dot"></span><span class="zj-ink" id="today">Mon 12 Oct</span></div>
+    <div class="zj-strip-r"><button class="zj-ghost" type="button" onclick="location.reload()"><i data-lucide="rotate-ccw"></i>Start over</button></div>
+  </div>
+  <div class="zj-stage">
+    <div class="zj-sheet">
+      <header class="zj-top">
+        <div class="zj-top-l"><span data-zj-logo></span></div>
+        <nav class="zj-tabs" id="tabs">
+          <button type="button" class="zj-on" data-p="col">For you</button>
+          <button type="button" data-p="table">Jobs</button>
+          <button type="button" data-p="fill">Inbox<span class="zj-count">1</span></button>
+        </nav>
+        <div class="zj-top-r"><button class="zj-who" type="button"><span>Sanjay</span><span class="zj-av"><img src="assets/face-student.jpg" alt=""></span></button></div>
+      </header>
+
+      <!-- 1. a column page -->
+      <main class="zj-body" data-page="col">
+        <div class="zj-page zj-in">
+          <div class="zj-col">
+            <header class="zj-say"><span data-zj-orb="36"></span><p>Morning, Sanjay. <b>Noa at Gong</b> opened your work. One thing needs you today.</p></header>
+            <section>
+              <div class="zj-sh"><h2 class="zj-sh-t">To-dos</h2></div>
+              <article class="zj-card">
+                <h3 class="zj-card-title"><span data-zj-face="assets/face-noa.webp" data-domain="gong.io"></span><span>Noa at Gong wants one more example</span><span class="zj-due"><i data-lucide="timer"></i>4 days left</span></h3>
+                <div class="zj-card-foot"><button class="zj-quiet" type="button"><i data-lucide="bookmark"></i>Later</button><span class="zj-grow"></span><button class="zj-ghost" type="button">Reply myself</button><button class="zj-key" type="button" id="send"><i data-lucide="send"></i>Send one</button></div>
+              </article>
+            </section>
+          </div>
+        </div>
+      </main>
+
+      <!-- 2. a table page -->
+      <main class="zj-body" data-page="table" hidden>
+        <div class="zj-page">
+          <div class="zj-tbw"><div class="zj-tablewrap">
+            <div class="zj-toolbar"><div class="zj-filter" role="group"><button type="button" class="zj-on">All</button><button type="button">Liked</button><button type="button">Applied<span class="zj-n">1</span></button></div><span class="zj-grow"></span><button class="zj-ib" type="button" aria-label="Sort"><i data-lucide="arrow-up-down"></i></button></div>
+            <table class="zj-table zj-roles">
+              <thead><tr><th><span class="zj-thsel"><button class="zj-check" type="button" role="checkbox" aria-checked="false" aria-label="Select every open role"><i data-lucide="check"></i></button><span>Role</span></span></th><th>Location</th><th><button class="zj-sort zj-on" type="button">What we think<i data-lucide="arrow-down"></i></button></th><th><button class="zj-sort" type="button"><i data-lucide="banknote"></i>Pay<i data-lucide="arrow-up-down"></i></button></th><th><button class="zj-sort" type="button"><i data-lucide="clock"></i>Posted<i data-lucide="arrow-up-down"></i></button></th><th>Action</th><th><span class="zj-hide">Like</span></th></tr></thead>
+              <tbody>
+                <tr><td><div class="zj-role"><button class="zj-check" type="button" role="checkbox" aria-checked="false"><i data-lucide="check"></i></button><span data-zj-lg="gong.io"></span><div class="zj-grow"><p class="zj-role-t">AI Automation Specialist</p><p class="zj-meta"><span class="zj-mi"><i data-lucide="building-2"></i>Gong</span></p></div></div></td><td class="zj-place"><span class="zj-clip">Remote in the US</span></td><td><span class="zj-fit zj-good" tabindex="0"><i data-lucide="thumbs-up"></i><span>Good fit</span></span></td><td class="zj-m">$98k to 125k</td><td class="zj-m">9d</td><td><span class="zj-status">Opened</span></td><td class="zj-like-col"></td></tr>
+                <tr><td><div class="zj-role"><button class="zj-check" type="button" role="checkbox" aria-checked="false"><i data-lucide="check"></i></button><span data-zj-lg="ramp.com"></span><div class="zj-grow"><p class="zj-role-t">Sales Development Representative, SMB</p><p class="zj-meta"><span class="zj-mi"><i data-lucide="building-2"></i>Ramp</span></p></div></div></td><td class="zj-place"><span class="zj-clip">New York, NY</span><span class="zj-m">Hybrid</span></td><td><span class="zj-fit zj-strong" tabindex="0"><i data-lucide="sparkle"></i><span>Strong fit</span></span></td><td class="zj-m">$85k to 105k</td><td class="zj-m">12d</td><td><button class="zj-sec zj-sm" type="button">Apply</button></td><td class="zj-like-col"><button class="zj-ghost zj-sm zj-like" type="button" aria-label="Like"><i data-lucide="heart"></i></button></td></tr>
+              </tbody>
+            </table>
+          </div></div>
+        </div>
+      </main>
+
+      <!-- 3. a fill page -->
+      <main class="zj-body zj-fill" data-page="fill" hidden>
+        <div class="zj-page">
+          <div class="zj-inbox">
+            <div class="zj-list">
+              <div class="zj-list-top"><h1>Inbox</h1><span class="zj-m">1</span></div>
+              <div class="zj-list-body">
+                <button type="button" class="zj-thread zj-on"><span data-zj-lg="gong.io"></span><span class="zj-grow"><span class="zj-thread-t"><span class="zj-clip">AI Automation Specialist</span><span class="zj-grow"></span><span class="zj-m">Today</span></span><span class="zj-thread-p zj-un">Noa wants one more example</span></span><span class="zj-unread"></span></button>
+              </div>
+            </div>
+            <div class="zj-chat">
+              <div class="zj-chat-h"><span data-zj-lg="gong.io"></span><div class="zj-grow"><p class="zj-ct zj-clip zj-w5">AI Automation Specialist</p><p class="zj-m zj-clip">Gong · Opened</p></div><button class="zj-pillbtn" type="button">Open the role<i data-lucide="chevron-right"></i></button></div>
+              <ul class="zj-msgs">
+                <li class="zj-msg"><span data-zj-orb="28" data-still></span><div><p>Noa opened your work on Thu 8 Oct and wants one more example of outbound work you ran end to end.</p></div></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+<script>
+document.querySelectorAll('[data-zj-logo]').forEach(e=>e.outerHTML=zj.logoMark());
+document.querySelectorAll('[data-zj-orb]').forEach(e=>e.outerHTML=zj.orb(+e.dataset.zjOrb,'idle',{still:'still' in e.dataset}));
+document.querySelectorAll('[data-zj-lg]').forEach(e=>e.outerHTML=zj.logo(e.dataset.zjLg,e.dataset.s||''));
+document.querySelectorAll('[data-zj-face]').forEach(e=>e.outerHTML=zj.faceAt(e.dataset.zjFace,e.dataset.domain));
+document.getElementById('today').textContent=zj.date(new Date());
+// tabs switch pages; the page rises in, nothing else moves
+document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('zj-on',x===b));
+  document.querySelectorAll('[data-page]').forEach(m=>{const on=m.dataset.page===b.dataset.p;m.hidden=!on;if(on){const p=m.querySelector('.zj-page');p.classList.remove('zj-in');void p.offsetWidth;p.classList.add('zj-in')}})});
+document.getElementById('send').onclick=()=>zj.toast('Sent. Gong has it.',{icon:'check',action:'Undo',actionIcon:'undo-2'});
+zj.icons();
+</script>
+</body>
+</html>

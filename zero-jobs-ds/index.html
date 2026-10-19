@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zero Jobs design system</title>
+<meta name="description" content="The look of the ZERO Job Portal, measured on the live build and written down as tokens, components and rules.">
+<link rel="stylesheet" href="zero-jobs.css">
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="zero-jobs.js"></script>
+<style>
+/* the reference site's own layout. Everything inside a demo is the kit */
+.ds{min-height:100dvh;padding:0 14px 14px}
+.ds-head{display:flex;align-items:center;gap:12px;height:60px;padding:0 10px}
+.ds-head .zj-logo{width:52px}
+.ds-head-t{color:var(--zj-ink)}
+.ds-build{font-size:12px;line-height:16px;color:var(--zj-ink3);font-variant-numeric:tabular-nums}
+.ds-head nav{display:flex;align-items:center;gap:2px;margin-left:auto}
+.ds-sheet{display:grid;grid-template-columns:220px minmax(0,1fr);background:var(--zj-sheet);border-radius:var(--zj-r-sheet);box-shadow:var(--zj-sh-sheet)}
+.ds-rail{position:sticky;top:0;align-self:start;max-height:100dvh;overflow:auto;padding:28px 12px 28px 20px}
+.ds-rail a{display:flex;align-items:center;height:32px;padding:0 10px;border-radius:var(--zj-r-ctl);color:var(--zj-ink3);text-decoration:none;transition:background-color .12s var(--zj-e),color .12s var(--zj-e)}
+.ds-rail a:hover{color:var(--zj-ink)}
+.ds-rail a.zj-on{background:var(--zj-well2);color:var(--zj-ink)}
+.ds-rail p{margin:16px 10px 4px;font-size:12px;line-height:16px;color:var(--zj-ink4)}
+.ds-rail p:first-child{margin-top:0}
+.ds-main{min-width:0;padding:40px 48px 120px 28px;max-width:1080px}
+.ds-hero{display:flex;flex-direction:column;gap:16px;padding-bottom:0}
+.ds-hero p{max-width:620px}
+.ds-hero .zj-t16{color:var(--zj-ink2)}
+.ds-acts{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px}
+.ds-proofline{display:flex;align-items:center;gap:8px;color:var(--zj-ink3)}
+.ds-proofline svg{width:15px;height:15px;color:var(--zj-good)}
+section.ds-s{padding:56px 0 0;scroll-margin-top:16px}
+.ds-s>h2{font-size:16px;line-height:24px;font-weight:500;color:var(--zj-ink)}
+.ds-s>.ds-lead{max-width:640px;margin-top:4px;color:var(--zj-ink3)}
+.ds-s>h3{margin:28px 0 10px;font-weight:500;color:var(--zj-ink)}
+.ds-stage{position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:16px;padding:28px;border-radius:var(--zj-r-card);background:var(--zj-canvas)}
+.ds-stage.ds-white{background:#fff;box-shadow:var(--zj-sh-hair)}
+.ds-stage.ds-col{flex-direction:column;align-items:stretch}
+.ds-stage.ds-flush{padding:0;overflow:hidden}
+.ds-item{display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.ds-cap{font-size:12px;line-height:16px;color:var(--zj-ink3)}
+.ds-cap b{font-weight:500;color:var(--zj-ink)}
+.ds-grid{display:grid;gap:12px;margin-top:16px}
+.ds-g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.ds-g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.ds-g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.ds-card{display:flex;flex-direction:column;gap:12px;padding:20px;border-radius:var(--zj-r-card);background:#fff;box-shadow:var(--zj-sh-hair)}
+.ds-card .ds-show{display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-height:44px}
+.ds-spec{display:grid;grid-template-columns:max-content 1fr;column-gap:16px;row-gap:4px;font-size:12px;line-height:16px}
+.ds-spec dt{color:var(--zj-ink3)}
+.ds-spec dd{color:var(--zj-ink);font-variant-numeric:tabular-nums}
+.ds-sw{display:flex;flex-direction:column;gap:10px}
+.ds-chip{height:64px;border-radius:var(--zj-r-row);box-shadow:inset 0 0 0 1px rgba(19,20,23,.06)}
+.ds-sw .ds-t{display:flex;flex-direction:column;gap:2px}
+.ds-sw .ds-t span:first-child{color:var(--zj-ink)}
+.ds-code{margin-top:12px}
+.ds-code summary{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;margin-left:-10px;border-radius:var(--zj-r-pill);color:var(--zj-ink3);cursor:pointer;list-style:none;transition:background .15s,color .15s}
+.ds-code summary::-webkit-details-marker{display:none}
+.ds-code summary:hover{background:var(--zj-well);color:var(--zj-ink)}
+.ds-code summary svg{width:14px;height:14px}
+.ds-code pre{position:relative;margin-top:8px;padding:16px 18px;border-radius:var(--zj-r-row);background:var(--zj-ink);color:#E9EAEE;font:400 12px/18px ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;word-break:break-word;overflow:auto;max-height:420px}
+.ds-copy{position:absolute;top:10px;right:10px;display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border-radius:var(--zj-r-sm);background:rgba(255,255,255,.1);color:#fff;font:500 12px/16px var(--zj-font)}
+.ds-copy:hover{background:rgba(255,255,255,.18)}
+.ds-type{display:flex;flex-direction:column}
+.ds-type>div{display:grid;grid-template-columns:150px minmax(0,1fr);align-items:baseline;gap:20px;padding:16px 0}
+.ds-type>div+div{box-shadow:inset 0 1px 0 var(--zj-line)}
+.ds-rad{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-top:16px}
+.ds-rad>div{display:flex;flex-direction:column;gap:10px}
+.ds-rad .ds-tile{display:block;height:72px;background:#fff;box-shadow:inset 0 0 0 1px var(--zj-line2)}
+.ds-elev{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:20px;margin-top:16px;padding:28px;border-radius:var(--zj-r-card);background:var(--zj-canvas)}
+.ds-elev>div{display:flex;flex-direction:column;gap:12px}
+.ds-elev .ds-tile{display:block;height:80px;border-radius:var(--zj-r-row);background:#fff}
+.ds-ease{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
+.ds-ease svg{width:100%;height:auto;border-radius:var(--zj-r-row);background:var(--zj-well)}
+.ds-tbl{width:100%;margin-top:16px;border-collapse:separate;border-spacing:0}
+.ds-tbl th{padding:8px 12px;font-size:12px;line-height:16px;font-weight:400;color:var(--zj-ink3);text-align:left}
+.ds-tbl td{padding:10px 12px;vertical-align:top;box-shadow:inset 0 1px 0 var(--zj-line)}
+.ds-tbl td:first-child{color:var(--zj-ink);white-space:nowrap}
+.ds-tbl td.ds-n{white-space:nowrap;color:var(--zj-ink);font-variant-numeric:tabular-nums}
+.ds-icons{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px;margin-top:16px}
+.ds-icons>div{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px 12px;border-radius:var(--zj-r-row);background:#fff;box-shadow:var(--zj-sh-hair);color:var(--zj-ink2)}
+.ds-icons span{font-size:12px;line-height:16px;color:var(--zj-ink3)}
+.ds-law{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
+.ds-law>div{display:flex;gap:14px;padding:18px 20px;border-radius:var(--zj-r-card);background:#fff;box-shadow:var(--zj-sh-hair)}
+.ds-law .ds-li{display:grid;place-items:center;width:32px;height:32px;flex-shrink:0;border-radius:var(--zj-r-ctl);background:var(--zj-well);color:var(--zj-ink2)}
+.ds-law b{display:block;margin-bottom:2px}
+.ds-do{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
+.ds-do>div{display:flex;flex-direction:column;gap:6px;padding:16px 18px;border-radius:var(--zj-r-row);background:#fff;box-shadow:var(--zj-sh-hair)}
+.ds-do .ds-k{display:flex;align-items:center;gap:6px;font-size:12px;line-height:16px}
+.ds-do .ds-k svg{width:14px;height:14px}
+.ds-do .ds-yes .ds-k{color:var(--zj-good)}
+.ds-do .ds-no .ds-k{color:var(--zj-due)}
+.ds-do .ds-no p{color:var(--zj-ink3)}
+.ds-do p{color:var(--zj-ink)}
+.ds-proof{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-top:16px}
+.ds-proof figure{display:flex;flex-direction:column;gap:10px}
+.ds-pair{position:relative;border-radius:var(--zj-r-row);overflow:hidden;box-shadow:var(--zj-sh-hair);background:var(--zj-canvas);aspect-ratio:1512/773}
+.ds-pair img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ds-pair .ds-top{clip-path:inset(0 0 0 var(--cut,50%))}
+.ds-pair input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize}
+.ds-pair .ds-line{position:absolute;top:0;bottom:0;left:var(--cut,50%);width:2px;margin-left:-1px;background:var(--zj-ink);pointer-events:none}
+.ds-pair .ds-tag{position:absolute;bottom:10px;padding:2px 8px;border-radius:var(--zj-r-pill);background:rgba(19,20,23,.78);color:#fff;font-size:12px;line-height:16px;pointer-events:none}
+.ds-pair .ds-tag.l{left:10px}.ds-pair .ds-tag.r{right:10px}
+.ds-proof figcaption{display:flex;align-items:center;gap:8px;font-size:12px;line-height:16px;color:var(--zj-ink3)}
+.ds-proof figcaption b{font-weight:500;color:var(--zj-ink)}
+.ds-shots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
+.ds-shots figure{display:flex;flex-direction:column;gap:8px}
+.ds-shots img{display:block;width:100%;height:auto;border-radius:var(--zj-r-row);box-shadow:var(--zj-sh-hair)}
+.ds-shots figcaption{font-size:12px;line-height:16px;color:var(--zj-ink3)}
+.ds-files{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
+.ds-files a{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:var(--zj-r-row);background:#fff;box-shadow:var(--zj-sh-hair);color:var(--zj-ink2);text-decoration:none;transition:box-shadow .12s var(--zj-e)}
+.ds-files a:hover{box-shadow:inset 0 0 0 1.5px var(--zj-ink)}
+.ds-files a b{display:block}
+.ds-files .ds-fi{display:grid;place-items:center;width:36px;height:36px;flex-shrink:0;border-radius:var(--zj-r-ctl);background:var(--zj-well);color:var(--zj-ink2)}
+.ds-foot{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:72px;font-size:12px;line-height:16px;color:var(--zj-ink3)}
+.ds-mini{width:100%;border-radius:var(--zj-r-card);overflow:hidden;background:var(--zj-canvas);box-shadow:var(--zj-sh-hair)}
+.ds-mini .zj-sheet{height:auto;margin:0 14px 14px}
+.ds-local{position:relative;width:100%;min-height:360px;display:grid;place-items:center;border-radius:var(--zj-r-card);overflow:hidden}
+.ds-local .zj-scrim{position:absolute}
+.ds-moods{display:flex;flex-wrap:wrap;gap:20px}
+.ds-moods>div{display:flex;flex-direction:column;align-items:center;gap:10px}
+@media (max-width:1000px){.ds-sheet{grid-template-columns:minmax(0,1fr)}.ds-rail{display:none}.ds-main{padding:28px 20px 80px}.ds-g4{grid-template-columns:repeat(2,minmax(0,1fr))}.ds-g3{grid-template-columns:minmax(0,1fr)}.ds-ease{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:700px){.ds{padding:0 8px 8px}.ds-head nav{display:none}.ds-g2,.ds-law,.ds-do,.ds-proof,.ds-files,.ds-shots{grid-template-columns:minmax(0,1fr)}.ds-g4{grid-template-columns:minmax(0,1fr)}.ds-type>div{grid-template-columns:minmax(0,1fr);gap:6px}.ds-stage{padding:18px}.ds-main{padding:24px 16px 64px}}
+</style>
+</head>
+<body class="zj">
+<div class="ds">
+  <header class="ds-head">
+    <span data-zj-logo></span>
+    <span class="ds-head-t">Design system</span>
+    <span class="ds-build">v1 · build 1</span>
+    <nav>
+      <a class="zj-ghost zj-sm" href="DESIGN.md">DESIGN.md</a>
+      <a class="zj-ghost zj-sm" href="zero-jobs.css">zero-jobs.css</a>
+      <a class="zj-ghost zj-sm" href="zero-jobs.js">zero-jobs.js</a>
+      <a class="zj-ghost zj-sm" href="starter.html">Starter</a>
+    </nav>
+  </header>
+
+  <div class="ds-sheet">
+    <aside class="ds-rail" aria-label="Sections">
+      <p>Start</p>
+      <a href="#start">Use it</a>
+      <a href="#laws">Laws</a>
+      <a href="#proof">Proof</a>
+      <p>Foundations</p>
+      <a href="#color">Colour</a>
+      <a href="#type">Type</a>
+      <a href="#shape">Radius and depth</a>
+      <a href="#space">Spacing</a>
+      <a href="#motion">Motion</a>
+      <a href="#icons">Icons</a>
+      <p>Components</p>
+      <a href="#shell">Shell</a>
+      <a href="#nav">Navigation</a>
+      <a href="#buttons">Buttons</a>
+      <a href="#signals">Pills and signals</a>
+      <a href="#people">People and companies</a>
+      <a href="#zero">Zero</a>
+      <a href="#cards">Cards</a>
+      <a href="#activity">Activity</a>
+      <a href="#table">Table</a>
+      <a href="#inbox">Inbox</a>
+      <a href="#role">A role, opened</a>
+      <a href="#files">Files</a>
+      <a href="#overlays">Popover, toast, dialog</a>
+      <p>Words and moments</p>
+      <a href="#voice">Voice</a>
+      <a href="#moments">Moments</a>
+      <a href="#kit">The kit</a>
+    </aside>
+
+    <main class="ds-main">
+      <div class="ds-hero">
+        <h1 class="zj-t28">Zero Jobs design system</h1>
+        <p class="zj-t16">The look of the ZERO Job Portal, taken apart and written down. Every value here was measured on the live build (v82), so anything you make with it looks, reads and moves like the portal.</p>
+        <div class="ds-acts">
+          <a class="zj-key" href="zero-jobs-design-system-v1.zip" download><i data-lucide="download"></i>Download the kit</a>
+          <a class="zj-sec" href="starter.html"><i data-lucide="layout-template"></i>Open the starter</a>
+          <a class="zj-ghost" href="DESIGN.md"><i data-lucide="file-text"></i>DESIGN.md</a>
+        </div>
+        <p class="ds-proofline zj-t12"><i data-lucide="badge-check"></i>Four portal screens rebuilt from these parts match the real ones to within 0.02% of pixels, and 125 parts match property by property.</p>
+      </div>
+
+      <!-- START -->
+      <section class="ds-s" id="start">
+        <h2>Use it</h2>
+        <p class="ds-lead">Two files and one class. Start from the starter page or from one of the rebuilt screens, never from a blank file.</p>
+        <div class="ds-code" style="margin-top:16px"><pre><button class="ds-copy" type="button">Copy</button>&lt;link rel="stylesheet" href="zero-jobs.css"&gt;
+&lt;script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"&gt;&lt;/script&gt;
+&lt;script src="zero-jobs.js"&gt;&lt;/script&gt;
+
+&lt;body class="zj"&gt;
+  &lt;!-- build with zj- classes. Icons: &lt;i data-lucide="check"&gt;&lt;/i&gt;, then zj.icons() --&gt;
+&lt;/body&gt;</pre></div>
+        <div class="ds-grid ds-g3">
+          <div class="ds-card"><b class="zj-ink">For a person</b><p>Read this page top to bottom once. Copy a rebuilt screen that is closest to what you are making and change the content.</p></div>
+          <div class="ds-card"><b class="zj-ink">For an AI</b><p>Hand it DESIGN.md. Every value, rule and banned move is in plain text, with the class to use for each part.</p></div>
+          <div class="ds-card"><b class="zj-ink">For a developer</b><p>zero-jobs.css is the source of truth. Tokens sit on :root as --zj-*, components are zj- classes, nothing leaks into a host app.</p></div>
+        </div>
+      </section>
+
+      <!-- LAWS -->
+      <section class="ds-s" id="laws">
+        <h2>Laws</h2>
+        <p class="ds-lead">The few rules that make it feel like the portal. Break one and it stops feeling like Zero.</p>
+        <div class="ds-law">
+          <div><span class="ds-li"><i data-lucide="circle-dot"></i></span><p><b>Colour only when it means something</b>The page is white and grey. Green means verified, amber means it needs you, red means due, lime means now. Nothing is colourful for decoration.</p></div>
+          <div><span class="ds-li"><i data-lucide="type"></i></span><p><b>Three sizes, two weights</b>12 for meta, 14 to read, 16 for titles and for Zero. 400 to read, 500 for names and titles. Nothing bold, nothing italic.</p></div>
+          <div><span class="ds-li"><i data-lucide="zap"></i></span><p><b>One key per view</b>The black key is the thing you came to do. Everything else is a white button, a ghost or a quiet link.</p></div>
+          <div><span class="ds-li"><i data-lucide="thumbs-up"></i></span><p><b>Words, not scores</b>Fit is Strong fit or Good fit, with the reasons on hover. Never a percentage.</p></div>
+          <div><span class="ds-li"><i data-lucide="users"></i></span><p><b>A face beside every person, a logo beside every company</b>Real company logos, generated faces. Never initials when a face exists.</p></div>
+          <div><span class="ds-li"><i data-lucide="smile"></i></span><p><b>Zero sits beside the work</b>A green orb with two white eyes. The body stays still, only the eyes move. It never covers the page.</p></div>
+          <div><span class="ds-li"><i data-lucide="arrow-right"></i></span><p><b>Every action says what happens next</b>Sent. Airtable has it. Then the next step and the date to expect a reply.</p></div>
+          <div><span class="ds-li"><i data-lucide="activity"></i></span><p><b>Nothing flickers</b>Redraws patch the page. Arrivals rise 8px. Presses go down 1px. Nothing bounces.</p></div>
+        </div>
+      </section>
+
+      <!-- PROOF -->
+      <section class="ds-s" id="proof">
+        <h2>Proof</h2>
+        <p class="ds-lead">Each screen below was rebuilt only from the kit, then screenshotted next to the real v82 at 1512 by 860 and compared pixel by pixel. Drag across a screen to compare.</p>
+        <div class="ds-proof">
+          <figure><div class="ds-pair"><img src="assets/proof/real-for-you.webp" alt="For you in the real portal"><img class="ds-top" src="assets/proof/rebuilt-for-you.webp" alt="For you rebuilt from the kit"><span class="ds-line"></span><span class="ds-tag l">v82</span><span class="ds-tag r">Kit</span><input type="range" min="0" max="100" value="50" aria-label="Compare For you"></div><figcaption><b>For you</b> 201 of 1,168,776 pixels differ (0.017%), all in Zero's live eyes and the moving sheen. <a class="zj-quiet" href="screens/for-you.html">Open</a></figcaption></figure>
+          <figure><div class="ds-pair"><img src="assets/proof/real-jobs.webp" alt="Jobs in the real portal"><img class="ds-top" src="assets/proof/rebuilt-jobs.webp" alt="Jobs rebuilt from the kit"><span class="ds-line"></span><span class="ds-tag l">v82</span><span class="ds-tag r">Kit</span><input type="range" min="0" max="100" value="50" aria-label="Compare Jobs"></div><figcaption><b>Jobs</b> 0 pixels differ. <a class="zj-quiet" href="screens/jobs.html">Open</a></figcaption></figure>
+          <figure><div class="ds-pair"><img src="assets/proof/real-inbox.webp" alt="Inbox in the real portal"><img class="ds-top" src="assets/proof/rebuilt-inbox.webp" alt="Inbox rebuilt from the kit"><span class="ds-line"></span><span class="ds-tag l">v82</span><span class="ds-tag r">Kit</span><input type="range" min="0" max="100" value="50" aria-label="Compare Inbox"></div><figcaption><b>Inbox</b> 4 pixels differ (0.000%). <a class="zj-quiet" href="screens/inbox.html">Open</a></figcaption></figure>
+          <figure><div class="ds-pair"><img src="assets/proof/real-role.webp" alt="A role opened in the real portal"><img class="ds-top" src="assets/proof/rebuilt-role.webp" alt="A role opened, rebuilt from the kit"><span class="ds-line"></span><span class="ds-tag l">v82</span><span class="ds-tag r">Kit</span><input type="range" min="0" max="100" value="50" aria-label="Compare a role"></div><figcaption><b>A role, opened</b> 0 pixels differ. <a class="zj-quiet" href="screens/role.html">Open</a></figcaption></figure>
+        </div>
+      </section>
+
+      <!-- COLOUR -->
+      <section class="ds-s" id="color">
+        <h2>Colour</h2>
+        <p class="ds-lead">A cool grey canvas, a white sheet, one ink ramp. Meaning colours are small and rare.</p>
+        <h3>Surfaces</h3>
+        <div class="ds-grid ds-g3" data-sw="canvas:F3F3F5:The page behind the sheet|sheet:FFFFFF:Where the product sits|well:F6F6F8:Hover, bubbles, tab tracks|well2:EDEDF0:Selected rows, mode track|line:E7E7EB:Hairlines inside a surface|line2:D4D5DA:Hairlines around controls and cards"></div>
+        <h3>Ink</h3>
+        <div class="ds-grid ds-g4" data-sw="ink:131417:Titles, values, names|ink2:4E525C:Body text|ink3:6A6F7A:Meta, labels, quiet buttons|ink4:A6A9B2:Times, day labels, small icons"></div>
+        <h3>Meaning</h3>
+        <div class="ds-grid ds-g4" data-sw="good:12733F:Verified, sent, wants to meet|goodbg:E7F6ED:Behind good|warn:8A5306:Action needed|warnbg:FCF1DC:Behind warn|due:C4271B:A deadline|due-soon:B42318:Two days or less|lime:B7F06A:Now: new dot, tracker now|live:1FB45A:A task is running|unread:2DB869:An unread thread|like:E5484D:A liked heart|select:D2F59B:Text selection"></div>
+        <h3>Why it fits</h3>
+        <div class="ds-grid ds-g3">
+          <div class="ds-sw"><div class="ds-chip" style="background:var(--zj-fit-st-bg)"></div><div class="ds-t zj-t12"><span>Strong fit</span><span class="zj-ink3">#E8F8EF to #E3F6F5 · text #0F7A47 · icon #12A05C</span></div></div>
+          <div class="ds-sw"><div class="ds-chip" style="background:var(--zj-fit-gd-bg)"></div><div class="ds-t zj-t12"><span>Good fit</span><span class="zj-ink3">#EAF3FF to #EEECFF · text #2851C8 · icon #3E7BF5</span></div></div>
+          <div class="ds-sw"><div class="ds-chip" style="background:var(--zj-well2)"></div><div class="ds-t zj-t12"><span>Low fit</span><span class="zj-ink3">well2 · text ink3</span></div></div>
+        </div>
+      </section>
+
+      <!-- TYPE -->
+      <section class="ds-s" id="type">
+        <h2>Type</h2>
+        <p class="ds-lead">Inter, from Google Fonts with optical sizing on. Stylistic sets cv11 and ss01 switched on for the whole page, letter-spacing -0.006em. Money, dates and counts use tabular figures.</p>
+        <div class="ds-type ds-card" style="margin-top:16px;padding:4px 24px">
+          <div><span class="ds-cap"><b>28 / 34</b> 400 · -0.022em<br>.zj-t28 · page title, rare</span><span class="zj-t28">Your next role is waiting</span></div>
+          <div><span class="ds-cap"><b>24 / 30</b> 400 · -0.01em<br>.zj-t24 · a role in its panel</span><span class="zj-t24">RevOps Engineer</span></div>
+          <div><span class="ds-cap"><b>16 / 24</b> 500<br>card titles, section heads</span><span class="zj-t16 zj-w5 zj-ink">Kwame at Webflow wants to meet you</span></div>
+          <div><span class="ds-cap"><b>16 / 24</b> 400<br>Zero speaks at this size</span><span class="zj-t16"><b>Kwame at Webflow</b> wants to meet you. I could not get <b>Clari</b> through.</span></div>
+          <div><span class="ds-cap"><b>14 / 20</b> 400 and 500<br>everything you read</span><span>I applied to Revenue Operations Analyst for you on <b>Tue 6 Oct</b>. I am watching for the reply.</span></div>
+          <div><span class="ds-cap"><b>12 / 16</b> 400<br>.zj-m · meta, times, labels</span><span class="zj-m">Airtable · Opened · Reply by Tue 13 Oct · $85k to 105k · 12d</span></div>
+        </div>
+      </section>
+
+      <!-- SHAPE -->
+      <section class="ds-s" id="shape">
+        <h2>Radius and depth</h2>
+        <p class="ds-lead">One radius scale, nested so inner corners sit inside outer ones. Depth comes from hairlines and long soft shadows, never from glow.</p>
+        <div class="ds-rad" id="ds-rad"></div>
+        <div class="ds-elev" id="ds-elev"></div>
+      </section>
+
+      <!-- SPACE -->
+      <section class="ds-s" id="space">
+        <h2>Spacing</h2>
+        <p class="ds-lead">Space separates, never lines. These are the gaps the portal uses, and where.</p>
+        <table class="ds-tbl"><thead><tr><th>Gap</th><th>Where</th></tr></thead><tbody>
+          <tr><td class="ds-n">2</td><td>Between tabs in a track, between rows in a list</td></tr>
+          <tr><td class="ds-n">4</td><td>Inside a role tab track, between a card body and its foot</td></tr>
+          <tr><td class="ds-n">6</td><td>Icon to label in buttons, buttons in a card foot</td></tr>
+          <tr><td class="ds-n">8</td><td>Tracks in the top bar, popover rows, dialog actions</td></tr>
+          <tr><td class="ds-n">10</td><td>Face to title in a card, orb to bubble, section head to content</td></tr>
+          <tr><td class="ds-n">12</td><td>Logo to title in a row, orb to Zero's words, card padding rows</td></tr>
+          <tr><td class="ds-n">14</td><td>Between chat messages, panel head rows</td></tr>
+          <tr><td class="ds-n">16</td><td>Card padding, between list and thread, between table and panel</td></tr>
+          <tr><td class="ds-n">20</td><td>Panel padding, tracker to note, top bar gap</td></tr>
+          <tr><td class="ds-n">24 to 32</td><td>Sheet edges: top bar 24, body 32, For you column 32 on top</td></tr>
+        </tbody></table>
+      </section>
+
+      <!-- MOTION -->
+      <section class="ds-s" id="motion">
+        <h2>Motion</h2>
+        <p class="ds-lead">Fast and quiet. Hover and press take 120ms. Arrivals rise 8px. The only thing that keeps moving is Zero's eyes and a running task.</p>
+        <div class="ds-ease" id="ds-ease"></div>
+        <table class="ds-tbl"><thead><tr><th>What</th><th>How long</th><th>Curve</th><th>Move</th></tr></thead><tbody>
+          <tr><td>Hover, press, select</td><td class="ds-n">120ms</td><td>--zj-e</td><td>Colour and fill. Press moves down 1px</td></tr>
+          <tr><td>Quiet buttons</td><td class="ds-n">150ms</td><td>ease</td><td>Fill and colour</td></tr>
+          <tr><td>Why it fits popover</td><td class="ds-n">140ms</td><td>ease-out</td><td>Drops 4px into place</td></tr>
+          <tr><td>Dialog scrim</td><td class="ds-n">160ms</td><td>ease-out</td><td>Fades in</td></tr>
+          <tr><td>Chevrons</td><td class="ds-n">200ms</td><td>--zj-out</td><td>Turn 180 degrees</td></tr>
+          <tr><td>A running task appears</td><td class="ds-n">250ms</td><td>--zj-spring</td><td>Rises 4px</td></tr>
+          <tr><td>A page</td><td class="ds-n">280ms</td><td>--zj-e</td><td>Rises 8px</td></tr>
+          <tr><td>A card</td><td class="ds-n">400ms</td><td>--zj-out</td><td>Rises 8px</td></tr>
+          <tr><td>Zero's eyes look</td><td class="ds-n">450ms</td><td>--zj-out</td><td>Move up to 15px, tilt up to 9 degrees</td></tr>
+          <tr><td>Zero blinks</td><td class="ds-n">5.2s loop</td><td>ease-in-out</td><td>Twice per loop</td></tr>
+          <tr><td>A toast</td><td class="ds-n">4.2s</td><td>--zj-e</td><td>Rises 10px, holds, leaves</td></tr>
+        </tbody></table>
+        <div class="ds-stage" style="margin-top:16px">
+          <button class="zj-sec zj-sm" type="button" id="ds-replay"><i data-lucide="rotate-ccw"></i>Replay a card arriving</button>
+          <div id="ds-replay-host" style="width:100%;max-width:520px"></div>
+        </div>
+      </section>
+
+      <!-- ICONS -->
+      <section class="ds-s" id="icons">
+        <h2>Icons</h2>
+        <p class="ds-lead">Lucide 0.469.0. 16px with a 1.75 stroke by default. Inside small parts they step down: 15 in role tabs, 14 in quiet buttons and deadlines, 13 in meta lines and pills, 12 in counts.</p>
+        <div class="ds-icons" id="ds-icons"></div>
+      </section>
+
+      <!-- SHELL -->
+      <section class="ds-s" id="shell">
+        <h2>Shell</h2>
+        <p class="ds-lead">A grey canvas, a slim strip for prototype controls, then the white sheet with a 60px top bar: wordmark and mode on the left, the main tabs centred, sound, level and you on the right.</p>
+        <div class="ds-mini" style="margin-top:16px">
+          <div class="zj-strip">
+            <div class="zj-strip-l"><button class="zj-ghost zj-sq" type="button" aria-label="Pause"><i data-lucide="pause"></i></button><span class="zj-dot"></span><span class="zj-ink">Mon 12 Oct</span></div>
+            <div class="zj-strip-r"><button class="zj-tool" type="button" aria-label="Settings"><i data-lucide="settings"></i></button><button class="zj-ghost" type="button"><i data-lucide="rotate-ccw"></i>Start over</button></div>
+          </div>
+          <div class="zj-sheet">
+            <header class="zj-top">
+              <div class="zj-top-l"><span data-zj-logo></span><div class="zj-mode"><button type="button">Learn</button><button type="button" class="zj-on">Jobs</button></div></div>
+              <nav class="zj-tabs"><button type="button" class="zj-on">For you</button><button type="button">Jobs</button><button type="button">Inbox<span class="zj-count">1</span><span class="zj-new"></span></button></nav>
+              <div class="zj-top-r"><button class="zj-round" type="button" aria-label="Sound"><i data-lucide="volume-2"></i></button><button class="zj-level" type="button"><span class="zj-level-t"><i data-lucide="award"></i><span>Level 5</span><span class="zj-level-bar"><i style="width:14px"></i></span></span></button><button class="zj-who" type="button"><span>Sanjay</span><span class="zj-av"><img src="assets/face-student.jpg" alt=""></span></button></div>
+            </header>
+            <div style="height:120px"></div>
+          </div>
+        </div>
+        <dl class="ds-spec" style="margin-top:14px"><dt>Strip</dt><dd>52px · padding 0 22 · prototype controls only, never product</dd><dt>Sheet</dt><dd>white · radius 28 · inset 14 from the canvas · --zj-sh-sheet</dd><dt>Top bar</dt><dd>60px · padding 0 24 · three columns, tabs centred</dd><dt>Body</dt><dd>padding 8 32 112 · pages 1200 wide at most · For you column 688</dd></dl>
+      </section>
+
+      <!-- NAV -->
+      <section class="ds-s" id="nav">
+        <h2>Navigation</h2>
+        <p class="ds-lead">Four segmented controls. Each has one job, so do not swap them.</p>
+        <div class="ds-grid ds-g2">
+          <div class="ds-card"><div class="ds-show ds-demo" data-code><nav class="zj-tabs"><button type="button" class="zj-on">For you</button><button type="button">Jobs</button><button type="button">Inbox<span class="zj-count">1</span><span class="zj-new"></span></button></nav></div><dl class="ds-spec"><dt>.zj-tabs</dt><dd>The product's main places. Track well, 3 padding, buttons 32 high, 14px ink3, on is white with a soft lift</dd></dl></div>
+          <div class="ds-card"><div class="ds-show ds-demo" data-code><div class="zj-mode"><button type="button">Learn</button><button type="button" class="zj-on">Jobs</button></div></div><dl class="ds-spec"><dt>.zj-mode</dt><dd>A two-way mode. Deeper track (well2), 28 high, 12px</dd></dl></div>
+          <div class="ds-card"><div class="ds-show ds-demo" data-code><div class="zj-filter" role="group"><button type="button" class="zj-on">All</button><button type="button">Liked</button><button type="button">Applied<span class="zj-n">4</span></button><button type="button">Archived</button></div></div><dl class="ds-spec"><dt>.zj-filter</dt><dd>Filters a list. No track, 32 high, radius 10, 12px, counts in ink3</dd></dl></div>
+          <div class="ds-card"><div class="ds-show ds-demo" data-code><div class="zj-seg" role="tablist"><button type="button" class="zj-on"><i data-lucide="activity"></i>Application tracker</button><button type="button"><i data-lucide="briefcase"></i>Role</button></div></div><dl class="ds-spec"><dt>.zj-seg</dt><dd>Two views of one thing. 36 high, 14px, 15px icons</dd></dl></div>
+        </div>
+      </section>
+
+      <!-- BUTTONS -->
+      <section class="ds-s" id="buttons">
+        <h2>Buttons</h2>
+        <p class="ds-lead">A machined black key, a white second choice with an edge, and quieter ways down from there. Radius 10, or full round when the rounded option is on.</p>
+        <div class="ds-stage" style="justify-content:space-between">
+          <span class="ds-cap">Rounded option</span>
+          <div class="zj-mode" id="ds-round"><button type="button" class="zj-on" data-v="0">Square</button><button type="button" data-v="1">Rounded</button></div>
+        </div>
+        <div class="ds-grid ds-g3" id="ds-buttons">
+          <div class="ds-card"><div class="ds-show ds-demo" data-code><button class="zj-key" type="button"><i data-lucide="check"></i>Accept</button></div><dl class="ds-spec"><dt>.zj-key</dt><dd>The one thing to do. 36 high, 38 and 500 in a card foot</dd></dl></div>
+          <div class="ds-card"><div class="ds-show ds-demo" data-code><button class="zj-sec" type="button">Decline</button></div><dl class="ds-spec"><dt>.zj-sec</dt><dd>The second choice. White, machined edge</dd></dl></div>
+          <div class="ds-card"><div class="ds-show ds-demo" data-code><button class="zj-key zj-sm" type="button">Accept</button><button class="zj-sec zj-sm" type="button">Apply</button></div><dl class="ds-spec"><dt>.zj-sm</dt><dd>30 high, radius 8. Inside rows and notes</dd></dl></div>
+          <div class="ds-card"><div class="ds-show ds-demo" data-code><button class="zj-ghost" type="button">Reply myself</button><button class="zj-ghost" type="button">Not interested</button></div><dl class="ds-spec"><dt>.zj-ghost</dt><dd>A third choice. No box until you point</dd></dl></div>
+          <div class="ds-card"><div class="ds-show ds-demo" data-code><button class="zj-quiet" type="button"><i data-lucide="bookmark"></i>Later</button><button class="zj-quiet" type="button"><i data-lucide="link"></i>Add a link instead</button></div><dl class="ds-spec"><dt>.zj-quiet</dt><dd>A side door. 32 high, ink3, 14px icon</dd></dl></div>
+          <div class="ds-card"><div class="ds-show ds-demo" data-code><button class="zj-pillbtn" type="button">Open the role<i data-lucide="chevron-right"></i></button></div><dl class="ds-spec"><dt>.zj-pillbtn</dt><dd>Go somewhere. 38 high, round, ring darkens on hover</dd></dl></div>
+          <div class="ds-card"><div class="ds-show ds-demo" data-code><button class="zj-ib" type="button" aria-label="Search and filter"><i data-lucide="search"></i><i data-lucide="list-filter"></i></button><button class="zj-ib" type="button" aria-label="Sort"><i data-lucide="arrow-up-down"></i></button><button class="zj-round" type="button" aria-label="Sound"><i data-lucide="volume-2"></i></button><button class="zj-tool" type="button" aria-label="Settings"><i data-lucide="settings"></i></button></div><dl class="ds-spec"><dt>Icon buttons</dt><dd>.zj-ib toolbars · .zj-round 32 in the top bar · .zj-tool 36 in the strip</dd></dl></div>
+          <div class="ds-card"><div class="ds-show ds-demo" data-code><button class="zj-close" type="button" aria-label="Close"><i data-lucide="x"></i></button><button class="zj-cancel" type="button" aria-label="Cancel"><i data-lucide="x"></i></button><button class="zj-cancel zj-big" type="button" aria-label="Cancel"><i data-lucide="x"></i></button></div><dl class="ds-spec"><dt>Close and cancel</dt><dd>.zj-close floats on a panel · .zj-cancel stops one task, red on hover · .zj-big 38 beside a key</dd></dl></div>
+          <div class="ds-card"><div class="ds-show ds-demo" data-code><button class="zj-key" type="button" disabled><i data-lucide="send"></i>Send</button><button class="zj-ghost zj-sm zj-like" type="button" aria-label="Like"><i data-lucide="heart"></i></button><button class="zj-ghost zj-sm zj-like zj-on" type="button" aria-label="Liked"><i data-lucide="heart"></i></button></div><dl class="ds-spec"><dt>States</dt><dd>Disabled at 40% (30% inside a card) · .zj-like, .zj-on fills it</dd></dl></div>
+        </div>
+      </section>
+
+      <!-- SIGNALS -->
+      <section class="ds-s" id="signals">
+        <h2>Pills and signals</h2>
+        <p class="ds-lead">Small, rounded, 26 high. Words first, colour second.</p>
+        <div class="ds-grid ds-g2">
+          <div class="ds-card"><div class="ds-show ds-demo" data-code><span class="zj-fit zj-strong" tabindex="0"><i data-lucide="sparkle"></i><span>Strong fit</span></span><span class="zj-fit zj-good" tabindex="0"><i data-lucide="thumbs-up"></i><span>Good fit</span></span><span class="zj-fit zj-low" tabindex="0"><i data-lucide="minus"></i><span>Low fit</span></span></div><dl class="ds-spec"><dt>.zj-fit</dt><dd>Why it fits, in words. Hover shows the reasons. .zj-big is 38 high in a role panel</dd></dl></div>
+          <div class="ds-card"><div class="ds-show ds-demo" data-code><span class="zj-status">Applied</span><span class="zj-status">Opened</span><span class="zj-status zj-ok">Wants to meet</span><span class="zj-status zj-warn">Action needed</span><span class="zj-status zj-lock"><i data-lucide="lock"></i>Level 6</span></div><dl class="ds-spec"><dt>.zj-status</dt><dd>Where an application stands. Green only when the company said yes</dd></dl></div>
+          <div class="ds-card"><div class="ds-show ds-demo" data-code><span class="zj-due" style="margin-left:0"><i data-lucide="timer"></i>4 days left</span><span class="zj-due zj-soon" style="margin-left:0"><i data-lucide="timer"></i>2 days left</span></div><dl class="ds-spec"><dt>.zj-due</dt><dd>A deadline. Red text and a stopwatch, no box, never bold. .zj-soon at two days or less</dd></dl></div>
+          <div class="ds-card"><div class="ds-show ds-demo" data-code><span class="zj-sent"><i data-lucide="check"></i>2 sent</span><span class="zj-count">1</span><span class="zj-dot"></span><span class="zj-dot zj-go"></span><span class="zj-unread"></span></div><dl class="ds-spec"><dt>Counts and dots</dt><dd>.zj-sent · .zj-count on a tab · .zj-dot, .zj-go pulses · .zj-unread on a thread</dd></dl></div>
+          <div class="ds-card"><div class="ds-show ds-demo" data-code><button class="zj-run" type="button"><span class="zj-run-dot"></span><span class="zj-run-t">Reading new postings</span></button></div><dl class="ds-spec"><dt>.zj-run</dt><dd>A task Zero is running. A live green dot and a slow sheen on the words</dd></dl></div>
+          <div class="ds-card"><div class="ds-show ds-demo" data-code><span class="zj-spin"></span><span class="zj-m">Applying to Ramp</span></div><dl class="ds-spec"><dt>.zj-spin</dt><dd>11px, only beside a task that is working right now</dd></dl></div>
+        </div>
+      </section>
+
+      <!-- PEOPLE -->
+      <section class="ds-s" id="people">
+        <h2>People and companies</h2>
+        <p class="ds-lead">Real logos from the company's own site, at sz=128, inside a white tile. Generated faces in circles. A person at a company gets the logo as a badge.</p>
+        <div class="ds-grid ds-g3">
+          <div class="ds-card"><div class="ds-show ds-demo" data-code><span data-zj-lg="webflow.com" data-s="l"></span><span data-zj-lg="airtable.com"></span><span data-zj-lg="ramp.com" data-s="xs"></span><span data-zj-lg="miro.com" data-s="xxs"></span></div><dl class="ds-spec"><dt>.zj-lg</dt><dd>44 (.zj-l) panel · 32 rows · 24 round (.zj-xs) timeline · 20 round (.zj-xxs) stacks</dd></dl></div>
+          <div class="ds-card"><div class="ds-show ds-demo" data-code><span class="zj-lgs"><span data-zj-lg="gong.io" data-s="xxs"></span><span data-zj-lg="airtable.com" data-s="xxs"></span><span data-zj-lg="webflow.com" data-s="xxs"></span></span></div><dl class="ds-spec"><dt>.zj-lgs</dt><dd>Several companies at once. Overlap 7, ring in the canvas colour</dd></dl></div>
+          <div class="ds-card"><div class="ds-show ds-demo" data-code><span class="zj-av"><img src="assets/face-student.jpg" alt=""></span><span class="zj-av zj-sm"><img src="assets/face-noa.webp" alt=""></span><span data-zj-face="assets/face-kwame.webp" data-domain="webflow.com"></span></div><dl class="ds-spec"><dt>.zj-av, .zj-face</dt><dd>32 or 28 faces · a face at a company carries a 14px logo badge</dd></dl></div>
+        </div>
+      </section>
+
+      <!-- ZERO -->
+      <section class="ds-s" id="zero">
+        <h2>Zero</h2>
+        <p class="ds-lead">Zero is a green orb with two white pill eyes. The body never moves. The eyes blink, look toward what matters and change shape with the mood. Zero talks in first person, at 16.</p>
+        <div class="ds-stage ds-white">
+          <div class="ds-moods" id="ds-moods"></div>
+        </div>
+        <div class="ds-stage ds-white">
+          <div class="ds-moods" id="ds-sizes"></div>
+        </div>
+        <div class="ds-grid ds-g2">
+          <div class="ds-card"><div class="ds-demo" data-code><header class="zj-say"><span data-zj-orb="36"></span><p><b>Kwame at Webflow</b> wants to meet you. I could not get <b>Clari</b> through. Can you help me with these eight?</p></header></div><dl class="ds-spec"><dt>.zj-say</dt><dd>Zero opens a page. Orb 36, words at 16, names in 500</dd></dl></div>
+          <div class="ds-card"><div class="ds-demo" data-code><div class="zj-note"><span data-zj-orb="26" data-still></span><p>Kwame wants to meet you. Saying yes shares your email.</p><span class="zj-note-acts"><button class="zj-key zj-sm" type="button">Accept</button><button class="zj-sec zj-sm" type="button">Decline</button></span></div></div><dl class="ds-spec"><dt>.zj-note</dt><dd>Zero inside a card. Well, radius 14, orb 26. .zj-warn for amber</dd></dl></div>
+          <div class="ds-card"><div class="ds-demo" data-code><ul class="zj-msgs" style="padding:0"><li class="zj-msg"><span data-zj-orb="28" data-still></span><div><p>Airtable wants a short video from you. Can you fill this in?</p></div></li><li class="zj-msg zj-me"><div><p>On it, sending tonight.</p></div></li></ul></div><dl class="ds-spec"><dt>.zj-msg</dt><dd>Chat bubbles. Zero in well with the orb at the bottom, you in ink on the right</dd></dl></div>
+          <div class="ds-card"><div class="ds-code" style="margin:0"><pre><button class="ds-copy" type="button">Copy</button>zj.orb(36)                      // idle, blinks
+zj.orb(28, 'idle', {still:true}) // in lists, no blink
+zj.orb(44, 'think')              // eyes drift, thinking
+zj.orb(44, 'work')               // eyes scan, working
+zj.orb(36, 'idle', {look:[.8,.3]}) // look right and down</pre></div></div>
+        </div>
+      </section>
+
+      <!-- CARDS -->
+      <section class="ds-s" id="cards">
+        <h2>Cards</h2>
+        <p class="ds-lead">A card is one decision. White, radius 20, a hairline ring. The next two to-dos peek under the front one.</p>
+        <div class="ds-stage ds-white ds-col">
+          <div class="ds-demo" data-code style="max-width:640px;width:100%;margin:0 auto">
+            <div class="zj-sh"><h2 class="zj-sh-t">To-dos</h2><span class="zj-pager"><button class="zj-arrow" type="button" disabled aria-label="Previous"><i data-lucide="chevron-left"></i></button><span>1 of 8</span><button class="zj-arrow" type="button" aria-label="Next"><i data-lucide="chevron-right"></i></button></span></div>
+            <div class="zj-stack">
+              <div class="zj-stack-bk zj-b2"></div>
+              <div class="zj-stack-bk"></div>
+              <article class="zj-card">
+                <h3 class="zj-card-title"><span data-zj-face="assets/face-kwame.webp" data-domain="webflow.com"></span><span>Kwame at Webflow wants to meet you</span><span class="zj-due zj-soon"><i data-lucide="timer"></i>2 days left</span></h3>
+                <div class="zj-card-foot"><button class="zj-quiet" type="button"><i data-lucide="bookmark"></i>Later</button><span class="zj-grow"></span><button class="zj-ghost" type="button">Reply myself</button><button class="zj-ghost" type="button">Not interested</button><button class="zj-key" type="button"><i data-lucide="check"></i>Accept</button></div>
+              </article>
+            </div>
+          </div>
+        </div>
+        <div class="ds-stage ds-white ds-col">
+          <div class="ds-demo" data-code style="max-width:520px;width:100%;margin:0 auto">
+            <div class="zj-card">
+              <div class="zj-card-body">
+                <p class="zj-card-q">Their question: a project you are proud of, and what you would do in your first month. Two minutes at most.</p>
+                <button class="zj-drop" type="button"><i data-lucide="upload"></i>Upload a video</button>
+                <div><button class="zj-quiet" type="button"><i data-lucide="link"></i>Add a link instead</button></div>
+              </div>
+              <div class="zj-card-foot"><span class="zj-grow"></span><button class="zj-key" type="button" disabled><i data-lucide="send"></i>Send</button></div>
+            </div>
+          </div>
+        </div>
+        <dl class="ds-spec" style="margin-top:14px"><dt>.zj-card</dt><dd>padding 16 · gap 12 · rises 8px in 400ms</dd><dt>.zj-card-title</dt><dd>16/24 500, a face or logo first, the deadline pushed right</dd><dt>.zj-card-foot</dt><dd>a quiet side door on the left, choices on the right, the key last</dd><dt>.zj-stack</dt><dd>back cards at scale .965 and .93, 8 and 15 down</dd></dl>
+      </section>
+
+      <!-- ACTIVITY -->
+      <section class="ds-s" id="activity">
+        <h2>Activity</h2>
+        <p class="ds-lead">What Zero did, newest first, grouped by day. A thin line threads the icons. Anything running sits under Now with a way to cancel it.</p>
+        <div class="ds-stage ds-white ds-col">
+          <div class="ds-demo" data-code style="max-width:640px;width:100%;margin:0 auto">
+            <div class="zj-act-head"><button class="zj-act-btn" type="button" aria-expanded="true"><span class="zj-sh-t">Activity</span><span class="zj-m">4 today</span><span class="zj-chev"><i data-lucide="chevron-down"></i></span></button><span class="zj-grow"></span><button class="zj-run" type="button"><span class="zj-run-dot"></span><span class="zj-run-t">Reading new postings</span></button></div>
+            <div class="zj-tl">
+              <div class="zj-day"><p>Now</p>
+                <div class="zj-ev"><div class="zj-ev-h"><span class="zj-ev-i"><span class="zj-ev-ic zj-l"><i data-lucide="search"></i></span></span><span class="zj-grow">Reading new postings</span><span class="zj-ev-s">Scoring 732 postings against your context</span></div></div>
+              </div>
+              <div class="zj-day"><p>Today</p>
+                <div class="zj-ev"><button class="zj-ev-h" type="button"><span class="zj-ev-i"><span data-zj-lg="clari.com" data-s="xs"></span></span><span class="zj-grow">Clari did not go through. Greenhouse timed out, so nothing was sent</span><span class="zj-ev-t">9:14 am</span></button></div>
+                <div class="zj-ev"><button class="zj-ev-h" type="button"><span class="zj-ev-i"><span data-zj-lg="miro.com" data-s="xs"></span></span><span class="zj-grow">Miro asked for a few details</span><span class="zj-ev-t">9:03 am</span></button></div>
+                <div class="zj-ev"><button class="zj-ev-h" type="button"><span class="zj-ev-i"><span data-zj-orb="24" data-still></span></span><span class="zj-grow">Morning, Sanjay. 18 roles are open to you at Level 5.</span></button></div>
+              </div>
+              <div class="zj-day"><p>Tue 6 Oct</p>
+                <div class="zj-ev"><button class="zj-ev-h" type="button"><span class="zj-ev-i"><span class="zj-lgs"><span data-zj-lg="gong.io" data-s="xxs"></span><span data-zj-lg="airtable.com" data-s="xxs"></span></span></span><span class="zj-grow"><b>Zero</b> applied to <b>Gong and Airtable</b></span><span class="zj-sent"><i data-lucide="check"></i>2 sent</span><span class="zj-ev-t">9:30 am</span></button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TABLE -->
+      <section class="ds-s" id="table">
+        <h2>Table</h2>
+        <p class="ds-lead">One table, many rows of the same thing. A toolbar of filters on top, quiet headers, rows that fill on hover. The role, the place, what we think, pay, age and one action.</p>
+        <div class="ds-stage ds-flush" style="background:#fff">
+          <div class="ds-demo" data-code style="width:100%;overflow:auto">
+            <div class="zj-tablewrap" style="min-width:880px">
+              <div class="zj-toolbar"><div class="zj-filter" role="group"><button type="button" class="zj-on">All</button><button type="button">Liked</button><button type="button">Applied<span class="zj-n">4</span></button></div><span class="zj-grow"></span><button class="zj-ib" type="button" aria-label="Search and filter"><i data-lucide="search"></i><i data-lucide="list-filter"></i></button><button class="zj-ib" type="button" aria-label="Sort"><i data-lucide="arrow-up-down"></i></button></div>
+              <table class="zj-table zj-roles">
+                <thead><tr><th><span class="zj-thsel"><button class="zj-check" type="button" role="checkbox" aria-checked="false" aria-label="Select every open role"><i data-lucide="check"></i></button><span>Role</span></span></th><th>Location</th><th><button class="zj-sort zj-on" type="button">What we think<i data-lucide="arrow-down"></i></button></th><th><button class="zj-sort" type="button"><i data-lucide="banknote"></i>Pay<i data-lucide="arrow-up-down"></i></button></th><th><button class="zj-sort" type="button"><i data-lucide="clock"></i>Posted<i data-lucide="arrow-up-down"></i></button></th><th>Action</th><th><span class="zj-hide">Like</span></th></tr></thead>
+                <tbody>
+                  <tr><td><div class="zj-role"><button class="zj-check" type="button" role="checkbox" aria-checked="false"><i data-lucide="check"></i></button><span data-zj-lg="ramp.com"></span><div class="zj-grow"><p class="zj-role-t">Sales Development Representative, SMB</p><p class="zj-meta"><span class="zj-mi"><i data-lucide="building-2"></i>Ramp</span></p></div></div></td><td class="zj-place"><span class="zj-clip">New York, NY</span><span class="zj-m">Hybrid</span></td><td><span class="zj-fit zj-strong" tabindex="0"><i data-lucide="sparkle"></i><span>Strong fit</span></span></td><td class="zj-m">$85k to 105k</td><td class="zj-m">12d</td><td><button class="zj-sec zj-sm" type="button">Apply</button></td><td class="zj-like-col"><button class="zj-ghost zj-sm zj-like" type="button" aria-label="Like"><i data-lucide="heart"></i></button></td></tr>
+                  <tr><td><div class="zj-role"><span class="zj-check zj-off"></span><span data-zj-lg="webflow.com"></span><div class="zj-grow"><p class="zj-role-t">RevOps Engineer</p><p class="zj-meta"><span class="zj-mi"><i data-lucide="building-2"></i>Webflow</span></p></div></div></td><td class="zj-place"><span class="zj-clip">Remote in the US</span></td><td><span class="zj-fit zj-good" tabindex="0"><i data-lucide="thumbs-up"></i><span>Good fit</span></span></td><td class="zj-m">$100k to 128k</td><td class="zj-m">2d</td><td><span class="zj-status zj-ok">Wants to meet</span></td><td class="zj-like-col"></td></tr>
+                  <tr><td><div class="zj-role"><span class="zj-check zj-off"></span><span data-zj-lg="airtable.com"></span><div class="zj-grow"><p class="zj-role-t">Revenue Operations Analyst</p><p class="zj-meta"><span class="zj-mi"><i data-lucide="building-2"></i>Airtable</span></p></div></div></td><td class="zj-place"><span class="zj-clip">Austin, hybrid 2 days</span></td><td><span class="zj-fit zj-good" tabindex="0"><i data-lucide="thumbs-up"></i><span>Good fit</span></span></td><td class="zj-m">$85k to 105k</td><td class="zj-m">11d</td><td><span class="zj-status zj-warn">Action needed</span></td><td class="zj-like-col"></td></tr>
+                  <tr class="zj-locked"><td><div class="zj-role"><button class="zj-check" type="button" role="checkbox" aria-checked="false"><i data-lucide="check"></i></button><span data-zj-lg="linear.app"></span><div class="zj-grow"><p class="zj-role-t">GTM Engineer</p><p class="zj-meta"><span class="zj-mi"><i data-lucide="building-2"></i>Linear</span></p></div></div></td><td class="zj-place"><span class="zj-clip">Remote in the US</span></td><td><span class="zj-fit zj-good" tabindex="0"><i data-lucide="thumbs-up"></i><span>Good fit</span></span></td><td class="zj-m">$120k to 150k</td><td class="zj-m">3d</td><td><span class="zj-status zj-lock"><i data-lucide="lock"></i>Level 6</span></td><td class="zj-like-col"><button class="zj-ghost zj-sm zj-like" type="button" aria-label="Like"><i data-lucide="heart"></i></button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <dl class="ds-spec" style="margin-top:14px"><dt>Rows</dt><dd>56 high · padding 10 12 · hover fills well, an open row fills well2 · a locked row sits at 55%</dd><dt>Columns</dt><dd>Role takes the rest · Location 170 · What we think 160 · Pay 110 · Posted 150 · Action 176 · Like 44</dd><dt>Beside a panel</dt><dd>.zj-narrow: no Location column, the place moves under the company, the role and heart stay put while it scrolls sideways</dd></dl>
+      </section>
+
+      <!-- INBOX -->
+      <section class="ds-s" id="inbox">
+        <h2>Inbox</h2>
+        <p class="ds-lead">A thread per role. The list on the left, the conversation on the right, Zero's asks arrive as cards inside the thread.</p>
+        <div class="ds-stage">
+          <div class="ds-demo" data-code style="width:100%">
+            <div class="zj-inbox" style="height:auto">
+              <div class="zj-list">
+                <div class="zj-list-top"><h1>Inbox</h1><span class="zj-m">3</span></div>
+                <div class="zj-list-body">
+                  <button type="button" class="zj-thread zj-on"><span data-zj-lg="airtable.com"></span><span class="zj-grow"><span class="zj-thread-t"><span class="zj-clip">Revenue Operations Analyst</span><span class="zj-grow"></span><span class="zj-m">6 Oct</span></span><span class="zj-thread-p zj-un">Airtable needs a short video</span></span><span class="zj-unread"></span></button>
+                  <button type="button" class="zj-thread"><span data-zj-lg="miro.com"></span><span class="zj-grow"><span class="zj-thread-t"><span class="zj-clip">Product Led Sales Analyst</span><span class="zj-grow"></span><span class="zj-m">6 Oct</span></span><span class="zj-thread-p zj-un">Miro needs a few details</span></span><span class="zj-unread"></span></button>
+                  <button type="button" class="zj-thread"><span data-zj-lg="calendly.com"></span><span class="zj-grow"><span class="zj-thread-t"><span class="zj-clip">Sales Systems Analyst</span><span class="zj-grow"></span><span class="zj-m">5 Oct</span></span><span class="zj-thread-p">Calendly · Applied</span></span></button>
+                </div>
+              </div>
+              <div class="zj-chat">
+                <div class="zj-chat-h"><span data-zj-lg="airtable.com"></span><div class="zj-grow"><p class="zj-ct zj-clip zj-w5">Revenue Operations Analyst</p><p class="zj-m zj-clip">Airtable · Opened</p></div><button class="zj-pillbtn" type="button">Open the role<i data-lucide="chevron-right"></i></button></div>
+                <ul class="zj-msgs">
+                  <li class="zj-msg"><span data-zj-orb="28" data-still></span><div><p>I applied to Revenue Operations Analyst for you on Tue 6 Oct. I am watching for the reply.</p></div></li>
+                  <li class="zj-msg"><span data-zj-orb="28" data-still></span><div><p>Sent. Airtable has it.</p></div></li>
+                  <li class="zj-msg"><span data-zj-orb="28" data-still></span><div><p>What happens next: Airtable reviews it with the hiring team. Expect a reply by Tue 13 Oct.</p></div></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ROLE -->
+      <section class="ds-s" id="role">
+        <h2>A role, opened</h2>
+        <p class="ds-lead">Opens beside the table at 640 wide. The role's name at 24, the facts in one meta line, the fit, then the tracker with Zero's note on what to do now.</p>
+        <div class="ds-stage">
+          <div class="ds-demo" data-code style="width:100%;max-width:640px;margin:0 auto">
+            <aside class="zj-detail" style="position:relative;max-height:none">
+              <div class="zj-detail-x"><button class="zj-close" type="button" aria-label="Close"><i data-lucide="x"></i></button></div>
+              <div class="zj-rhead"><span data-zj-lg="webflow.com" data-s="l"></span><div class="zj-grow"><h1 class="zj-t24">RevOps Engineer</h1><p class="zj-meta"><span class="zj-mi"><i data-lucide="building-2"></i>Webflow</span><span class="zj-mi"><i data-lucide="briefcase"></i>Revenue Operations</span><span class="zj-mi"><i data-lucide="map-pin"></i>Remote in the US</span></p></div></div>
+              <div class="zj-rfit"><span class="zj-fit zj-good zj-big" tabindex="0"><i data-lucide="thumbs-up"></i><span>Good fit</span></span></div>
+              <div class="zj-seg" role="tablist"><button type="button" class="zj-on"><i data-lucide="activity"></i>Application tracker</button><button type="button"><i data-lucide="briefcase"></i>Role</button></div>
+              <article class="zj-lane">
+                <ol class="zj-track" aria-label="Where it stands"><li class="zj-done"><span>Applied</span></li><li class="zj-done"><span>Opened</span></li><li class="zj-now" aria-current="step"><span>Asked to meet</span></li><li><span>Interview</span></li><li><span>Offer</span></li></ol>
+                <div class="zj-note"><span data-zj-orb="26" data-still></span><p>Kwame wants to meet you. Saying yes shares your email.</p><span class="zj-note-acts"><button class="zj-key zj-sm" type="button">Accept</button><button class="zj-sec zj-sm" type="button">Decline</button></span></div>
+              </article>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <!-- FILES -->
+      <section class="ds-s" id="files">
+        <h2>Files</h2>
+        <p class="ds-lead">What Zero sent, as a small tree under the activity row. Each file can be seen and downloaded.</p>
+        <div class="ds-stage ds-white">
+          <div class="ds-demo" data-code style="width:100%;max-width:520px">
+            <div class="zj-tree">
+              <div class="zj-tn"><span class="zj-tn-i"><i data-lucide="file-text"></i></span><span class="zj-tn-t">Sanjay_Chauhan_Resume.pdf</span><span class="zj-tn-k">Resume</span><span class="zj-grow"></span><button class="zj-tn-b" type="button" aria-label="See it"><i data-lucide="eye"></i></button><button class="zj-tn-b" type="button" aria-label="Download"><i data-lucide="download"></i></button></div>
+              <div class="zj-tn"><span class="zj-tn-i"><i data-lucide="layout-template"></i></span><span class="zj-tn-t">Portfolio, tailored for Airtable</span><span class="zj-tn-k">Portfolio</span><span class="zj-grow"></span><button class="zj-tn-b" type="button" aria-label="See it"><i data-lucide="eye"></i></button><button class="zj-tn-b" type="button" aria-label="Download"><i data-lucide="download"></i></button></div>
+              <div class="zj-tn"><span class="zj-tn-i"><i data-lucide="mail"></i></span><span class="zj-tn-t">Cover note</span><span class="zj-tn-k">Note</span><span class="zj-grow"></span><button class="zj-tn-b" type="button" aria-label="See it"><i data-lucide="eye"></i></button><button class="zj-tn-b" type="button" aria-label="Download"><i data-lucide="download"></i></button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- OVERLAYS -->
+      <section class="ds-s" id="overlays">
+        <h2>Popover, toast, dialog</h2>
+        <p class="ds-lead">Things that sit over the page. The popover explains, the toast confirms, the dialog asks one question.</p>
+        <div class="ds-grid ds-g2">
+          <div class="ds-card"><div class="ds-show" style="min-height:200px;align-items:flex-start;padding-top:8px"><div class="ds-demo" data-code><div class="zj-pop zj-strong" style="--ax:16px"><p class="zj-pop-h"><i data-lucide="sparkle"></i>Why it is a strong fit</p><ul><li><span class="zj-k">Place</span><span>New York, one of your places</span></li><li><span class="zj-k">Pay</span><span>$85k to $105k, above your $95k floor</span></li><li><span class="zj-k">Skills</span><span>3 of 3 things they need most</span></li></ul></div></div></div><dl class="ds-spec"><dt>.zj-pop</dt><dd>On hover or focus of a fit pill, arrow on the pill's start. A gap row (.zj-gap) shows in amber. Try the pills in Table</dd></dl></div>
+          <div class="ds-card"><div class="ds-show" style="min-height:200px;flex-direction:column;align-items:flex-start;justify-content:center"><div class="ds-demo" data-code><div class="zj-toast zj-hold"><span class="zj-ti zj-heart"><i data-lucide="heart"></i></span><span class="zj-clip">Saved to Liked</span><button type="button">See all<i data-lucide="arrow-right"></i></button></div></div><button class="zj-sec zj-sm" type="button" id="ds-toast">Show a toast</button></div><dl class="ds-spec"><dt>.zj-toast</dt><dd>White, 44 high, one line, one action. zj.toast(text, {icon, action}). Leaves after 4.2s</dd></dl></div>
+        </div>
+        <div class="ds-stage" style="padding:0">
+          <div class="ds-local">
+            <div class="zj-scrim" style="animation:none"><div class="ds-demo" data-code>
+              <div class="zj-dialog" role="dialog" aria-label="Add your resume so I can apply">
+                <h2>Add your resume so I can apply</h2>
+                <div class="zj-dialog-row"><span class="zj-dialog-i"><i data-lucide="file-text"></i></span><div class="zj-dialog-m"><p class="zj-dialog-l">Resume</p><p class="zj-dialog-v zj-clip">I send it with every application</p></div><button class="zj-key zj-sm" type="button"><i data-lucide="upload"></i>Upload</button></div>
+                <div class="zj-dialog-row"><span class="zj-dialog-i"><span data-zj-lg="linkedin.com" data-s="xs"></span></span><div class="zj-dialog-m"><p class="zj-dialog-l">LinkedIn</p><input class="zj-input" type="url" placeholder="linkedin.com/in/your-name" aria-label="Your LinkedIn link"></div></div>
+                <div class="zj-dialog-f"><button class="zj-ghost" type="button">Not now</button><button class="zj-key" type="button" disabled>Save and apply</button></div>
+              </div>
+            </div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VOICE -->
+      <section class="ds-s" id="voice">
+        <h2>Voice</h2>
+        <p class="ds-lead">Zero is a smart friend who is also your coach. It says what happened, why, and what happens next. Plain verbs, real dates, no hype.</p>
+        <div class="ds-do">
+          <div class="ds-yes"><span class="ds-k"><i data-lucide="check"></i>Say what happened and why</span><p>Clari did not go through. Greenhouse timed out, so nothing was sent.</p></div>
+          <div class="ds-no"><span class="ds-k"><i data-lucide="x"></i>An empty status</span><p>Something went wrong. Please try again.</p></div>
+          <div class="ds-yes"><span class="ds-k"><i data-lucide="check"></i>Always the next step</span><p>Sent. Airtable has it. What happens next: they review it with the hiring team. Expect a reply by Tue 13 Oct.</p></div>
+          <div class="ds-no"><span class="ds-k"><i data-lucide="x"></i>Leaving them guessing</span><p>Your application has been submitted successfully!</p></div>
+          <div class="ds-yes"><span class="ds-k"><i data-lucide="check"></i>Offer help they choose</span><p>That role opens at Level 6. I can tell you the day it does.</p></div>
+          <div class="ds-no"><span class="ds-k"><i data-lucide="x"></i>A parental nudge</span><p>Go to Learn to unlock more roles.</p></div>
+          <div class="ds-yes"><span class="ds-k"><i data-lucide="check"></i>Short, real verbs on buttons</span><p>Accept · Apply · Send · Later · Not interested · Reply myself · Open the role</p></div>
+          <div class="ds-no"><span class="ds-k"><i data-lucide="x"></i>Process words</span><p>Proceed to application submission</p></div>
+        </div>
+        <table class="ds-tbl"><thead><tr><th>Write it like this</th><th>Example</th></tr></thead><tbody>
+          <tr><td>Dates</td><td>Tue 13 Oct · Mon 12 Oct · Today · Yesterday</td></tr>
+          <tr><td>Money</td><td>$85k to 105k · CA$90k to 100k · ranges say "to", never a dash</td></tr>
+          <tr><td>Age of a posting</td><td>12d</td></tr>
+          <tr><td>Deadlines</td><td>4 days left · 2 days left</td></tr>
+          <tr><td>Zero</td><td>First person: "I applied to Gong for you on Tue 6 Oct. I am watching for the reply."</td></tr>
+          <tr><td>Reasons</td><td>Asked only when you say no. Apply and Accept act at once</td></tr>
+          <tr><td>Never</td><td>Dashes as pauses. Leverage, robust, seamless, elevate, unlock, empower, journey, transform. Exclamation marks</td></tr>
+        </tbody></table>
+      </section>
+
+      <!-- MOMENTS -->
+      <section class="ds-s" id="moments">
+        <h2>Moments</h2>
+        <p class="ds-lead">Levelling up and getting hired are the two moments the calm page steps aside for. Full screen, a gradient sky, the real badge, tap to continue. These are screenshots of the portal. The celebration engine lives in the portal's own source (st25.js) and is not part of this kit yet.</p>
+        <div class="ds-shots">
+          <figure><img src="assets/moments/11-levelup-wait.webp" alt="Level up begins" loading="lazy"><figcaption>The wipe, then the old level</figcaption></figure>
+          <figure><img src="assets/moments/12-levelup-badge.webp" alt="The new badge" loading="lazy"><figcaption>The new badge lands. Tap it to spin it</figcaption></figure>
+          <figure><img src="assets/moments/13-levelup-roles.webp" alt="New roles open" loading="lazy"><figcaption>What opened: real logos, stacked</figcaption></figure>
+          <figure><img src="assets/moments/14-levelup-credits-chest.webp" alt="The reward" loading="lazy"><figcaption>The reward, coins fly to the count</figcaption></figure>
+          <figure><img src="assets/moments/15-levelup-summary.webp" alt="Summary" loading="lazy"><figcaption>The summary, then back to work</figcaption></figure>
+          <figure><img src="assets/moments/16-offer-accepted.webp" alt="Offer accepted" loading="lazy"><figcaption>Hired: the one green screen</figcaption></figure>
+        </div>
+        <div class="ds-shots" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+          <figure><img src="assets/moments/03-applying-stop-cancel.webp" alt="Zero applying, with cancel" loading="lazy"><figcaption>Zero applying: Now, with a cancel on each task</figcaption></figure>
+          <figure><img src="assets/moments/05-jobs-fit-hover.webp" alt="Why it fits on hover" loading="lazy"><figcaption>Why it fits, from the pill's start</figcaption></figure>
+        </div>
+      </section>
+
+      <!-- KIT -->
+      <section class="ds-s" id="kit">
+        <h2>The kit</h2>
+        <p class="ds-lead">Everything here, in one download.</p>
+        <div class="ds-files">
+          <a href="DESIGN.md"><span class="ds-fi"><i data-lucide="file-text"></i></span><span><b class="zj-ink">DESIGN.md</b>Every rule and value in plain text. Give it to an AI first</span></a>
+          <a href="zero-jobs.css"><span class="ds-fi"><i data-lucide="palette"></i></span><span><b class="zj-ink">zero-jobs.css</b>Tokens and every component, zj- prefixed</span></a>
+          <a href="zero-jobs.js"><span class="ds-fi"><i data-lucide="braces"></i></span><span><b class="zj-ink">zero-jobs.js</b>Zero's orb, logos, faces, toast, popover, dates, pay</span></a>
+          <a href="starter.html"><span class="ds-fi"><i data-lucide="layout-template"></i></span><span><b class="zj-ink">starter.html</b>The shell, ready for the next screen</span></a>
+          <a href="screens/for-you.html"><span class="ds-fi"><i data-lucide="layout-list"></i></span><span><b class="zj-ink">screens/</b>For you, Jobs, Inbox and an opened role, rebuilt</span></a>
+          <a href="zero-jobs-design-system-v1.zip" download><span class="ds-fi"><i data-lucide="download"></i></span><span><b class="zj-ink">Download the kit</b>All of it, with the tests that check it against v82</span></a>
+        </div>
+        <p class="ds-foot"><span>Measured on ZERO Job Portal v82 at 1512 by 860</span><span>Zero Jobs design system v1 · build 1</span><span>Inter by Rasmus Andersson, OFL · Lucide icons, ISC</span></p>
+      </section>
+    </main>
+  </div>
+</div>
+<script>
+(function(){
+  const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+  // code views: keep the markup before icons and Zero are drawn
+  const tidy=h=>h.replace(/<span data-zj-orb="(\d+)"( data-still="")?><\/span>/g,(m,n,st)=>'${zj.orb('+n+(st?", 'idle', {still:true}":'')+')}').replace(/<span data-zj-lg="([^"]+)"( data-s="([a-z]+)")?><\/span>/g,(m,d,x,s)=>'${zj.logo(\''+d+'\''+(s?", '"+s+"'":'')+')}').replace(/<span data-zj-face="([^"]+)" data-domain="([^"]+)"><\/span>/g,(m,f,d)=>"${zj.faceAt('"+f+"', '"+d+"')}").replace(/ style="[^"]*"/g,'').replace(/=""/g,'');
+  const pretty=h=>{let out='',d=0;h.replace(/>\s+</g,'><').split(/(?=<)/).forEach(t=>{if(/^<\//.test(t))d=Math.max(0,d-1);const block=/^<(div|ul|ol|li|header|article|nav|section|aside|table|thead|tbody|tr|h[1-6]|p|dl)\b/.test(t)||/^<\/(div|ul|ol|li|header|article|nav|section|aside|table|thead|tbody|tr|dl)>/.test(t);out+=(block?'\n'+'  '.repeat(d):'')+t;if(/^<(div|ul|ol|li|header|article|nav|section|aside|table|thead|tbody|tr|dl)\b/.test(t)&&!/\/>$/.test(t))d++});return out.trim()};
+  $$('.ds-demo[data-code]').forEach(el=>{const code=pretty(tidy(el.innerHTML.trim()));const det=document.createElement('details');det.className='ds-code';det.innerHTML='<summary><i data-lucide="code"></i>Code</summary><pre><button class="ds-copy" type="button">Copy</button></pre>';det.querySelector('pre').append(document.createTextNode(code));const card=el.closest('.ds-card');if(card)card.appendChild(det);else el.closest('.ds-stage').after(det)});
+  // draw the kit's own parts
+  $$('[data-zj-logo]').forEach(e=>e.outerHTML=zj.logoMark());
+  $$('[data-zj-orb]').forEach(e=>e.outerHTML=zj.orb(+e.dataset.zjOrb,e.dataset.m||'idle',{still:'still' in e.dataset}));
+  $$('[data-zj-lg]').forEach(e=>e.outerHTML=zj.logo(e.dataset.zjLg,e.dataset.s||''));
+  $$('[data-zj-face]').forEach(e=>e.outerHTML=zj.faceAt(e.dataset.zjFace,e.dataset.domain));
+  // swatches
+  $$('[data-sw]').forEach(g=>{g.innerHTML=g.dataset.sw.split('|').map(x=>{const[n,h,u]=x.split(':');return`<div class="ds-sw"><div class="ds-chip" style="background:#${h}"></div><div class="ds-t zj-t12"><span>--zj-${n}</span><span class="zj-ink3">#${h} · ${u}</span></div></div>`}).join('')});
+  // radius and elevation
+  $('#ds-rad').innerHTML=[['pill','99','Pills, tabs, toasts'],['sheet','28','The sheet'],['card','20','Cards, panels, table'],['dialog','16','Dialogs'],['row','14','Rows, bubbles, notes'],['tile','13','44 logo tile'],['ctl','10','Buttons, inputs'],['sm','8','Small buttons'],['check','6','Checkbox'],['img','5','Logo inside its tile']].map(([n,v,u])=>`<div><span class="ds-tile" style="border-radius:${v}px"></span><span class="ds-cap"><b>${v}</b> --zj-r-${n}<br>${u}</span></div>`).join('');
+  $('#ds-elev').innerHTML=[['sheet','The sheet'],['hair','Panels, tables, logo tiles'],['ring','Cards'],['on','A selected tab'],['panel','A role, opened'],['pop','Why it fits'],['toast','A toast'],['dialog','A dialog'],['float','Close on a panel']].map(([n,u])=>`<div><span class="ds-tile" style="box-shadow:var(--zj-sh-${n})"></span><span class="ds-cap"><b>--zj-sh-${n}</b><br>${u}</span></div>`).join('');
+  // easing curves
+  const curve=(x1,y1,x2,y2,name,use)=>`<div class="ds-card"><svg viewBox="-10 -10 120 120"><path d="M0 100 C${x1*100} ${100-y1*100} ${x2*100} ${100-y2*100} 100 0" fill="none" stroke="#131417" stroke-width="2" stroke-linecap="round"/><path d="M0 100 L${x1*100} ${100-y1*100} M100 0 L${x2*100} ${100-y2*100}" stroke="#A6A9B2" stroke-width="1"/><circle cx="${x1*100}" cy="${100-y1*100}" r="3" fill="#B7F06A" stroke="#131417"/><circle cx="${x2*100}" cy="${100-y2*100}" r="3" fill="#B7F06A" stroke="#131417"/></svg><dl class="ds-spec"><dt>${name}</dt><dd>${use}</dd></dl></div>`;
+  $('#ds-ease').innerHTML=curve(.2,0,0,1,'--zj-e','cubic-bezier(.2,0,0,1) · hover, press, pages')+curve(.16,1,.3,1,'--zj-out','cubic-bezier(.16,1,.3,1) · cards, eyes, chevrons')+curve(.2,.9,.3,1,'--zj-spring','cubic-bezier(.2,.9,.3,1) · a running task appears');
+  // icons
+  $('#ds-icons').innerHTML=['check','x','timer','bookmark','heart','send','upload','link','download','eye','search','list-filter','arrow-up-down','arrow-down','banknote','clock','building-2','briefcase','map-pin','sparkle','thumbs-up','minus','lock','award','volume-2','settings','rotate-ccw','pause','chevron-left','chevron-right','chevron-down','activity','file-text','circle-stop','calendar','mail'].map(n=>`<div><i data-lucide="${n}"></i><span>${n}</span></div>`).join('');
+  // Zero: moods and sizes
+  $('#ds-moods').innerHTML=[['idle','Idle, blinks'],['listen','Listening'],['think','Thinking'],['work','Working'],['alert','Needs you']].map(([m,l])=>`<div>${zj.orb(44,m)}<span class="ds-cap">${l}</span></div>`).join('')+`<div>${zj.orb(44,'idle',{look:[.8,.3]})}<span class="ds-cap">Looking right</span></div>`;
+  $('#ds-sizes').innerHTML=[60,44,36,34,28,26,24].map(n=>`<div>${zj.orb(n,'idle',{still:n<36})}<span class="ds-cap"><b>${n}</b></span></div>`).join('');
+  // replay a card
+  const host=$('#ds-replay-host');const card=()=>{host.innerHTML='<article class="zj-card"><h3 class="zj-card-title">'+zj.faceAt('assets/face-noa.webp','gong.io')+'<span>Noa at Gong opened your work</span></h3><div class="zj-card-foot"><span class="zj-grow"></span><button class="zj-key" type="button">'+zj.icon('arrow-right')+'See the role</button></div></article>';zj.icons(host)};card();$('#ds-replay').onclick=card;
+  // rounded option
+  $$('#ds-round button').forEach(b=>b.onclick=()=>{$$('#ds-round button').forEach(x=>x.classList.toggle('zj-on',x===b));$('#ds-buttons').classList.toggle('zj-rounded',b.dataset.v==='1')});
+  // toast
+  $('#ds-toast').onclick=()=>zj.toast('Saved to Liked',{icon:'heart',action:'See all',actionIcon:'arrow-right'});
+  // why it fits on the table's pills
+  const WHY={'Strong fit':[['Place','New York, one of your places'],['Pay','$85k to $105k, above your $95k floor'],['Skills','3 of 3 things they need most']],'Good fit':[['Place','Remote in the US, works for you'],['Pay','$100k to $128k, above your floor'],['Skills','2 of 3 things they need most'],['Gap','No SQL work graded yet',1]]};
+  $$('#table .zj-fit').forEach(p=>{const show=()=>{const t=p.textContent.trim(),rows=WHY[t]||WHY['Good fit'],st=t==='Strong fit';zj.pop(p,`<p class="zj-pop-h">${zj.icon(st?'sparkle':'thumbs-up')}Why it is a ${t.toLowerCase()}</p><ul>${rows.map(r=>`<li${r[2]?' class="zj-gap"':''}><span class="zj-k">${r[0]}</span><span>${r[1]}</span></li>`).join('')}</ul>`,{strong:st})};p.addEventListener('mouseenter',show);p.addEventListener('focus',show);p.addEventListener('mouseleave',zj.unpop);p.addEventListener('blur',zj.unpop)});
+  // compare sliders
+  $$('.ds-pair input').forEach(i=>{const set=()=>i.parentElement.style.setProperty('--cut',i.value+'%');i.oninput=set;set()});
+  // copy
+  document.addEventListener('click',e=>{const b=e.target.closest('.ds-copy');if(!b)return;const t=b.parentElement.textContent.replace(/^Copy/,'');navigator.clipboard&&navigator.clipboard.writeText(t).then(()=>{b.textContent='Copied';setTimeout(()=>b.textContent='Copy',1400)})});
+  // rail follows the reading
+  const links=$$('.ds-rail a');const secs=links.map(a=>$(a.getAttribute('href'))).filter(Boolean);
+  let tick=0;const mark=()=>{tick=0;let cur=secs[0];for(const s of secs){if(s.getBoundingClientRect().top<=140)cur=s}links.forEach(a=>a.classList.toggle('zj-on',a.getAttribute('href')==='#'+(cur&&cur.id)))};addEventListener('scroll',()=>{if(!tick){tick=1;requestAnimationFrame(mark)}},{passive:true});mark();
+  zj.icons();
+})();
+</script>
+</body>
+</html>
