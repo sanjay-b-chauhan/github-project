@@ -26,8 +26,8 @@
 .pz-wrap{max-width:1112px;margin:0 auto;padding:0 32px}
 .pz-id{display:flex;align-items:flex-end;gap:24px;margin-top:-72px;position:relative;z-index:3}
 .pz-av{position:relative;flex-shrink:0;width:144px;height:144px}
-.pz-av>img{width:144px;height:144px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 5px #fff,0 18px 40px -18px rgba(19,20,23,.5)}
-.pz-av .zb{position:absolute;right:-10px;bottom:-6px;--s:62px;width:62px;height:62px}
+.pz-av>.pz-photo{width:144px;height:144px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 4px #fff,0 0 0 5px rgba(19,20,23,.06),0 22px 44px -22px rgba(19,20,23,.55)}
+.pz-av .zb{position:absolute;right:-14px;bottom:-4px;--s:68px;width:68px;height:68px;filter:drop-shadow(0 8px 12px rgba(40,30,10,.32)) drop-shadow(0 1px 1px rgba(40,30,10,.25))}
 .pz-acts{display:flex;align-items:center;gap:8px;margin-left:auto;padding-bottom:8px}
 .pz-who{display:flex;flex-direction:column;gap:10px;margin-top:22px;max-width:680px}
 .pz-who .zj-meta{flex-wrap:wrap;overflow:visible;column-gap:16px;font-size:14px;line-height:20px;color:var(--zj-ink2)}
@@ -56,7 +56,7 @@
 .pz-play svg{width:22px;height:22px;margin-left:3px;fill:currentColor}
 .pz-feat:hover .pz-play{transform:scale(1.06)}
 .pz-dur{position:absolute;left:34px;bottom:34px;z-index:5;padding:2px 8px;border-radius:var(--zj-r-sm);background:rgba(19,20,23,.82);color:#fff;font-size:12px;line-height:16px;font-variant-numeric:tabular-nums}
-.pz-fb{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:32px}
+.pz-fb{max-width:640px}
 .pz-co{display:flex;align-items:center;gap:8px;font-size:12px;line-height:16px;color:var(--zj-ink3)}
 .pz-co b{font-weight:500;color:var(--zj-ink2)}
 .pz-fb h3{margin-top:10px;font-size:24px;line-height:30px;font-weight:400;letter-spacing:-.01em;color:var(--zj-ink);text-wrap:balance}
@@ -97,19 +97,27 @@
 .pz-lt.pz-s{width:20px;height:20px;border-radius:6px;font-size:12px;box-shadow:none;background:none}
 .pz-lt img.lg{border-radius:4px}
 
-/* skills and tools: plain lists, no boxes */
+/* skills: three lists, the companies that saw each one beside it */
 .pz-skills{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
 .pz-skills h3{margin-bottom:10px;font-weight:500;color:var(--zj-ink)}
-.pz-skills li{display:flex;align-items:baseline;gap:8px;padding:5px 0;color:var(--zj-ink2)}
-.pz-skills li span{font-size:12px;line-height:16px;color:var(--zj-ink4);font-variant-numeric:tabular-nums}
-.pz-tools{display:flex;flex-wrap:wrap;gap:8px;margin-top:36px}
-.pz-tool{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px 0 10px;border-radius:var(--zj-r-pill);background:var(--zj-well);color:var(--zj-ink);font-size:14px}
-.pz-tool .lg{font-size:16px}
+.pz-skills li{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:36px;padding:6px 0;color:var(--zj-ink)}
+
+.pz-at{display:flex;flex-shrink:0}
+.pz-at .pz-lt{width:22px;height:22px;border-radius:99px;background:#fff;font-size:12px;box-shadow:0 0 0 2px #fff,inset 0 0 0 1px var(--zj-line)}
+.pz-at .pz-lt+.pz-lt{margin-left:-6px}
+/* tool stack: tiles, four across */
+.pz-stack{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.pz-tk{display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--zj-r-row);background:var(--zj-canvas)}
+.pz-tk .pz-lt{width:40px;height:40px;font-size:20px;box-shadow:none}
+.pz-tk>span:last-child{display:flex;flex-direction:column;min-width:0}
+.pz-tk b{font-weight:500;color:var(--zj-ink)}
 
 /* background */
-.pz-bg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:36px 28px}
-.pz-item{display:flex;gap:14px}
-.pz-item>div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.pz-bg{display:flex;flex-direction:column;gap:28px}
+.pz-item{display:flex;gap:16px}
+.pz-ib{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.pz-it{display:flex;align-items:baseline;gap:12px}
+.pz-it .zj-m{margin-left:auto;flex-shrink:0;font-variant-numeric:tabular-nums}
 .pz-item b{font-weight:500;color:var(--zj-ink)}
 .pz-item p{margin-top:6px;color:var(--zj-ink2);text-wrap:pretty}
 .pz-item ul{display:flex;flex-direction:column;gap:4px;margin-top:8px}
@@ -137,6 +145,20 @@
 .pz-first li i{display:grid;place-items:center;flex-shrink:0;width:20px;height:20px;border-radius:99px;background:var(--zj-well);font-style:normal;font-size:12px;line-height:16px;color:var(--zj-ink2);font-variant-numeric:tabular-nums}
 .pz-note{padding:0 6px;font-size:12px;line-height:16px;color:var(--zj-ink3)}
 
+
+/* quick chips: jump to a section */
+.pz-qnavs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.pz-qnavs::-webkit-scrollbar{display:none}
+.pz-q{display:inline-flex;align-items:center;gap:6px;flex-shrink:0;height:36px;padding:0 14px;border-radius:var(--zj-r-pill);background:var(--zj-well);color:var(--zj-ink2);white-space:nowrap;transition:background-color .12s var(--zj-e),color .12s var(--zj-e)}
+.pz-q span{font-size:12px;line-height:16px;color:var(--zj-ink3);font-variant-numeric:tabular-nums}
+.pz-q:hover{background:var(--zj-well2);color:var(--zj-ink)}
+.pz-q.zj-on{background:var(--zj-ink);color:#fff}
+.pz-q.zj-on span{color:rgba(255,255,255,.62)}
+.pz-chips-hero{margin-top:28px}
+.pz-chips-hero .pz-q.zj-on{background:var(--zj-well);color:var(--zj-ink2)}
+.pz-chips-hero .pz-q.zj-on span{color:var(--zj-ink3)}
+.pz-chips-dock{display:none}
+.pz-why{display:none;margin-top:10px}
 /* the dock: slides down once the banner has gone */
 .pz-dock{position:fixed;top:0;left:14px;right:14px;z-index:40;transform:translateY(-110%);transition:transform .3s var(--zj-out);pointer-events:none}
 .pz-dock.pz-on{transform:none;pointer-events:auto}
@@ -191,21 +213,48 @@
   .pz-mr{overflow:visible}
 }
 @media (max-width:700px){
+  .pz-btop .zj-sec{display:none}
+  .pz-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+  .pz-stat b{font-size:16px;line-height:24px;font-weight:500}
+  .pz-chips-hero{margin:24px -18px 0;padding:0 18px}
+  .pz-grid{margin-top:32px;gap:40px}
+  .pz-main{gap:56px}
+  .pz-read{padding:18px}
+  .pz-why{display:inline-flex;margin-left:-6px}
+  .pz-read:not(.pz-open) .pz-fit,.pz-read:not(.pz-open) .pz-first{display:none}
+  .pz-note{display:none}
+  .pz-fb h3{font-size:16px;line-height:24px;font-weight:500;letter-spacing:0}
+  .pz-feat{gap:14px}
+  .pz-work{gap:28px}
+  .pz-tile{gap:10px}
+  .pz-play{width:52px;height:52px;margin:-26px 0 0 -26px}
+  .pz-stack{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .pz-tk{padding:10px;gap:10px}
+  .pz-tk .pz-lt{width:32px;height:32px;font-size:16px}
+  .pz-skills{gap:24px}
+  .pz-item{gap:12px}
+  .pz-dock>div{display:flex;flex-wrap:wrap;height:auto;padding:10px 12px 10px 16px;gap:10px;border-radius:0 0 18px 18px}
+  .pz-dme{flex:1}
+  .pz-dshare{width:36px;padding:0;justify-content:center}.pz-dshare span{display:none}
+  .pz-chips-dock{display:flex;flex-basis:100%;margin:0 -12px 0 -16px;padding:0 12px 0 16px;gap:6px}
+  .pz-chips-dock .pz-q{height:32px;padding:0 12px}
   .pz{padding:8px}
   .pz-banner{height:240px}
   .pz-btop{padding:0 18px}.pz-btop .pz-dim,.pz-btop .pz-b{display:none}
   .pz-bline{display:none}
   .pz-wrap{padding:0 18px}
   .pz-id{flex-wrap:wrap;margin-top:-56px}
-  .pz-av,.pz-av>img{width:112px;height:112px}
-  .pz-av .zb{--s:50px;width:50px;height:50px}
+  .pz-av,.pz-av>.pz-photo{width:112px;height:112px}
+  .pz-av .zb{--s:54px;width:54px;height:54px;right:-10px}
   .pz-acts{width:100%;margin-left:0;padding-bottom:0}
   .pz-stats{gap:16px 28px}
-  .pz-fb,.pz-work,.pz-skills,.pz-bg{grid-template-columns:minmax(0,1fr)}
+  .pz-work,.pz-skills{grid-template-columns:minmax(0,1fr)}
+  .pz-sec{scroll-margin-top:124px}
+  .pz-it{flex-direction:column;gap:0}.pz-it .zj-m{margin-left:0}
   .pz-stage{padding:12px}
   .pz-dur{left:22px;bottom:22px}
   .pz-quote blockquote{font-size:16px;line-height:24px;min-height:0}
-  .pz-dock>div{grid-template-columns:minmax(0,1fr) auto;padding:0 16px}.pz-dock .zj-tabs{display:none}
+  .pz-dock .zj-tabs{display:none}
   .pz-scrim{padding:0}
   .pz-modal{max-height:100dvh;height:100dvh;border-radius:0}
   .pz-intro{border-radius:0}

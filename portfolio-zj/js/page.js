@@ -27,13 +27,17 @@
 
   $('#banner').innerHTML = `
     <div class="pz-wall" aria-hidden="true">${wallIds.map(row).join('')}</div>
-    <div class="pz-btop"><span data-zj-logo></span><span class="pz-dim">Portfolio</span><span class="pz-b">b1</span><button class="zj-sec zj-sm" type="button" data-share>${ic('link')}Share</button></div>
+    <div class="pz-btop"><span data-zj-logo></span><span class="pz-dim">Portfolio</span><span class="pz-b">b2</span><button class="zj-sec zj-sm" type="button" data-share>${ic('link')}Share</button></div>
     <div class="pz-bline"><span class="zj-lgs">${cos.slice(0, 7).map(k => tile(k, 's')).join('')}</span><span>${PR.length} projects, each one recorded and reviewed by a manager</span></div>`;
+
+  /* quick chips: jump straight to a section */
+  const NAV = [['work', 'Work', PR.length], ['reviews', 'Reviews', PR.filter(p => p.quote).length], ['skills', 'Skills', (Z.skillCols3 || Z.skillCols || Z.skills).reduce((a, g) => a + g.items.length, 0)], ['tools', 'Tools', Z.tools.length], ['background', 'Background', 0]];
+  const chipsNav = cls => `<nav class="pz-qnavs ${cls}" aria-label="Go to a section">${NAV.map(([id, t, n], i) => `<button type="button" class="pz-q${i ? '' : ' zj-on'}" data-sec="${id}">${t}${n ? `<span>${n}</span>` : ''}</button>`).join('')}</nav>`;
 
   /* who she is */
   $('#id').innerHTML = `
     <div class="pz-id">
-      <div class="pz-av"><img src="${P.photo}" alt="${P.name}">${Z.badge(P.level, 62)}</div>
+      <div class="pz-av"><img class="pz-photo" src="${P.photo}" alt="${P.name}">${Z.badge(P.level, 68)}</div>
       <div class="pz-acts"><button class="zj-key" type="button" id="introBtn">${ic('play')}Watch her intro</button><button class="zj-sec" type="button" data-share>${ic('link')}Share</button></div>
     </div>
     <div class="pz-who">
@@ -46,7 +50,8 @@
       <div class="pz-stat"><b>${PR.length}</b><span class="zj-m">projects on Zero</span></div>
       <div class="pz-stat"><b>${high} of ${PR.length}</b><span class="zj-m">rated Exceeds or higher</span></div>
       <div class="pz-stat"><b>${hm}</b><span class="zj-m">of recorded presentations</span></div>
-    </div>`;
+    </div>
+    ${chipsNav('pz-chips-hero')}`;
 
   /* the featured project */
   const feat = `
@@ -54,17 +59,14 @@
       <div class="pz-h"><h2>Featured</h2></div>
       <article class="pz-feat" tabindex="0" role="button" data-p="${F.id}" aria-label="Open ${F.short}">
         <div class="pz-stage">${Z.meet(F, { bare: true, eager: true })}<span class="pz-play">${play}</span><span class="pz-dur">${F.dur}</span></div>
-        <div class="pz-fb">
-          <div><span class="pz-co">${tile(F.co, 's')}<b>${F.coName}</b>${F.cat} · ${F.date}</span><h3>${F.title}</h3><p>${F.me}</p>${rate(F)}</div>
-          <div class="pz-big"><b>${F.big}</b><span class="zj-m">${F.bigL}</span></div>
-        </div>
+        <div class="pz-fb"><span class="pz-co">${tile(F.co, 's')}<b>${F.coName}</b>${F.cat} · ${F.date}</span><h3>${F.title}</h3><p>${F.me}</p>${rate(F)}</div>
       </article>
     </section>`;
 
   const tileCard = (p, i) => `
     <article class="pz-tile${i >= SHOW ? ' pz-hide' : ''}" tabindex="0" role="button" data-p="${p.id}" aria-label="Open ${p.short}">
       <div class="pz-stage">${Z.meet(p, { bare: true, thumb: true })}</div>
-      <div class="pz-tb"><span class="pz-co">${tile(p.co, 's')}<b>${p.coName}</b>${p.date}</span><h3>${p.title}</h3><span class="pz-num"><b>${p.big}</b><span class="zj-m">${p.bigL}</span></span></div>
+      <div class="pz-tb"><span class="pz-co">${tile(p.co, 's')}<b>${p.coName}</b>${p.date}</span><h3>${p.title}</h3>${rate(p)}</div>
     </article>`;
   const work = `
     <section class="pz-sec">
@@ -81,24 +83,33 @@
       <figure class="pz-quote" id="quote"></figure>
     </section>`;
 
-  /* skills and tools */
+  /* skills: what she can do, with the companies whose projects show it */
   const cols = Z.skillCols3 || Z.skillCols || Z.skills, proof = Z.proof || {};
+  const shownAt = n => [...new Set((proof[n] || []).map(id => byId[id] && byId[id].co).filter(Boolean))];
   const skills = `
     <section class="pz-sec" id="skills">
-      <div class="pz-h"><h2>Skills and tools</h2><span class="zj-m">Each one shown in a project</span></div>
-      <div class="pz-skills">${cols.map(g => `<div><h3>${g.g}</h3><ul>${g.items.map(([n]) => `<li>${n}${proof[n] ? `<span>${proof[n].length}</span>` : ''}</li>`).join('')}</ul></div>`).join('')}</div>
-      <div class="pz-tools">${Z.tools.map(k => `<span class="pz-tool">${Z.logo(k)}${Z.name(k)}</span>`).join('')}</div>
+      <div class="pz-h"><h2>Skills</h2><span class="zj-m">Each one shown in a project</span></div>
+      <div class="pz-skills">${cols.map(g => `<div class="pz-sg"><h3>${g.g}</h3><ul>${g.items.map(([n]) => `<li><span>${n}</span><span class="pz-at" title="Shown at ${shownAt(n).map(Z.name).join(', ')}">${shownAt(n).map(k => tile(k, 's')).join('')}</span></li>`).join('')}</ul></div>`).join('')}</div>
     </section>`;
 
-  /* background */
+  /* tool stack: every tool as a tile, with how many of her projects used it */
+  const used = k => PR.filter(p => (p.tools || []).includes(k)).length;
+  const tools = `
+    <section class="pz-sec" id="tools">
+      <div class="pz-h"><h2>Tool stack</h2><span class="zj-m">${Z.tools.length} tools</span></div>
+      <div class="pz-stack">${Z.tools.map(k => { const n = used(k); return `<div class="pz-tk"><span class="pz-lt">${Z.logo(k)}</span><span><b>${Z.name(k)}</b><span class="zj-m">${n ? `In ${n} project${n > 1 ? 's' : ''}` : 'Before Zero'}</span></span></div>`; }).join('')}</div>
+    </section>`;
+
+  /* background: one below the other */
+  const bgItem = (lt, title, sub, when, body) => `<div class="pz-item">${lt}<div class="pz-ib"><div class="pz-it"><b>${title}</b><span class="zj-m">${when}</span></div><span class="zj-m">${sub}</span>${body}</div></div>`;
   const bg = `
     <section class="pz-sec" id="background">
       <div class="pz-h"><h2>Background</h2></div>
       <div class="pz-bg">
-        ${Z.work.map(w => `<div class="pz-item">${tile(w.co)}<div><b>${w.role}</b><span class="zj-m">${w.org} · ${w.when} · ${w.where}</span><ul>${w.points.map(x => `<li>${x}</li>`).join('')}</ul></div></div>`).join('')}
-        ${Z.school.map(s => `<div class="pz-item">${tile(s.co)}<div><b>${s.role}</b><span class="zj-m">${s.org} · ${s.when}</span><ul><li>GPA ${s.gpa}</li><li>${s.honours}</li><li>${s.courses}</li></ul></div></div>`).join('')}
-        <div class="pz-item">${tile(Z.certs[0].co)}<div><b>Certificates</b>${Z.certs.map(c => `<span class="zj-m">${c.role}, ${c.org} · ${c.when}</span>`).join('')}</div></div>
-        ${(Z.awards || []).length ? `<div class="pz-item"><span class="pz-lt">${ic('medal')}</span><div><b>Awards</b>${Z.awards.map(a => `<span class="zj-m">${a.t}, ${a.s}</span>`).join('')}</div></div>` : ''}
+        ${Z.work.map(w => bgItem(tile(w.co), w.role, `${w.org} · ${w.where}`, w.when, `<ul>${w.points.map(x => `<li>${x}</li>`).join('')}</ul>`)).join('')}
+        ${Z.school.map(x => bgItem(tile(x.co), x.role, x.org, x.when, `<ul><li>GPA ${x.gpa}</li><li>${x.honours}</li><li>${x.courses}</li></ul>`)).join('')}
+        ${Z.certs.map(c => bgItem(tile(c.co), c.role, c.org, c.when, '')).join('')}
+        ${(Z.awards || []).map(a => bgItem(`<span class="pz-lt">${ic('medal')}</span>`, a.t, a.s, '', '')).join('')}
       </div>
     </section>`;
 
@@ -110,22 +121,24 @@
         <div class="pz-rh">${zj.logo('ramp.com')}<div><span class="zj-ink zj-w5">${I.role} at ${I.co}</span><span class="zj-m">Zero's read for this role</span></div>${zj.orb(28, 'idle', { still: true })}</div>
         <span class="zj-fit zj-strong zj-big">${ic('sparkle')}<span>${I.verdict}</span></span>
         <p class="pz-sum">${I.sum}</p>
+        <button class="zj-quiet pz-why" type="button" aria-expanded="false">See why${ic('chevron-down')}</button>
         <ul class="pz-fit">${I.fit.map(([t, s]) => `<li class="${mark[s][0]}">${ic(mark[s][1])}<span>${t}</span></li>`).join('')}</ul>
         <div class="pz-first"><h3>Before you talk to her</h3><ol>${I.first.map((t, i) => `<li><i>${i + 1}</i><span>${t}</span></li>`).join('')}</ol></div>
       </div>
       <p class="pz-note">${I.note}</p>
     </aside>`;
 
-  $('#body').innerHTML = `<div class="pz-main">${feat}${work}${reviews}${skills}${bg}</div>${side}`;
+  $('#body').innerHTML = `<div class="pz-main">${feat}${work}${reviews}${skills}${tools}${bg}</div>${side}`;
   $$('[data-zj-logo]').forEach(e => e.outerHTML = zj.logoMark());
 
   /* the dock */
-  $('#dock').innerHTML = `<div><span class="pz-dme"><img src="${P.photoS || P.photo}" alt=""><span><span class="zj-ink zj-w5">${P.name}</span><span class="zj-m">${P.role}</span></span></span><nav class="zj-tabs" id="tabs"><button type="button" class="zj-on" data-go="work">Work</button><button type="button" data-go="reviews">Reviews</button><button type="button" data-go="skills">Skills</button><button type="button" data-go="background">Background</button></nav><button class="zj-sec zj-sm" type="button" data-share>${ic('link')}Share</button></div>`;
-  const dock = $('#dock'), tabs = $$('#tabs button'), secIds = ['work', 'reviews', 'skills', 'background'];
+  $('#dock').innerHTML = `<div><span class="pz-dme"><img src="${P.photoS || P.photo}" alt=""><span><span class="zj-ink zj-w5">${P.name}</span><span class="zj-m">${P.role}</span></span></span><nav class="zj-tabs" id="tabs">${NAV.map(([id, t], i) => `<button type="button"${i ? '' : ' class="zj-on"'} data-sec="${id}">${t}</button>`).join('')}</nav><button class="zj-sec zj-sm pz-dshare" type="button" data-share aria-label="Share">${ic('link')}<span>Share</span></button>${chipsNav('pz-chips-dock')}</div>`;
+  const dock = $('#dock'), secIds = NAV.map(n => n[0]);
   let tick = 0;
-  const onScroll = () => { tick = 0; const b = $('#banner').getBoundingClientRect().bottom; dock.classList.toggle('pz-on', b < 0); let cur = 'work'; secIds.forEach(id => { const s = document.getElementById(id); if (s && s.getBoundingClientRect().top < 180) cur = id; }); tabs.forEach(t => t.classList.toggle('zj-on', t.dataset.go === cur)); };
+  const onScroll = () => { tick = 0; const b = $('#banner').getBoundingClientRect().bottom; dock.classList.toggle('pz-on', b < 0); let cur = 'work'; secIds.forEach(id => { const s = document.getElementById(id); if (s && s.getBoundingClientRect().top < 180) cur = id; }); $$('[data-sec]').forEach(t => t.classList.toggle('zj-on', t.dataset.sec === cur)); const on = $('.pz-chips-dock .zj-on'); if (on && dock.classList.contains('pz-on') && cur !== lastSec) { lastSec = cur; on.scrollIntoView({ block: 'nearest', inline: 'center' }); } };
+  let lastSec = '';
   addEventListener('scroll', () => { if (!tick) { tick = 1; requestAnimationFrame(onScroll); } }, { passive: true });
-  tabs.forEach(t => t.onclick = () => document.getElementById(t.dataset.go).scrollIntoView({ behavior: 'smooth' }));
+  document.addEventListener('click', e => { const t = e.target.closest('[data-sec]'); if (!t) return; document.getElementById(t.dataset.sec).scrollIntoView({ behavior: 'smooth' }); });
 
   /* reviews, one at a time */
   let qi = 0;
@@ -158,7 +171,6 @@
       <div class="pz-mr">
         <span class="pz-co">${tile(p.co, 's')}<b>${p.coName}</b>${p.cat} · ${p.date}</span>
         <h3>${p.title}</h3>
-        <div class="pz-big"><b>${p.big}</b><span class="zj-m">${p.bigL}</span></div>
         <p>${p.me || p.sum}</p>
         ${p.quote ? `<div class="pz-says">${rate(p)}<p>“${p.quote}”</p><span class="zj-m">${p.by}, ${p.byRole}. Her manager in this project</span></div>` : ''}
         ${p.tools ? `<div class="pz-chips">${p.tools.map(t => `<span>${Z.logo(t)}${Z.name(t)}</span>`).join('')}</div>` : ''}
@@ -194,5 +206,6 @@
     it = setInterval(() => { const k = Math.min(1, (performance.now() - s0) / dur); bar.style.width = (k * 100) + '%'; sub.textContent = V.lines[Math.min(V.lines.length - 1, Math.floor(k * V.lines.length))]; if (k >= 1) stopIntro(); }, 100);
   };
 
+  $('.pz-why').onclick = e => { const r = $('.pz-read'), on = !r.classList.contains('pz-open'); r.classList.toggle('pz-open', on); e.currentTarget.setAttribute('aria-expanded', on); e.currentTarget.innerHTML = (on ? 'Show less' : 'See why') + ic(on ? 'chevron-up' : 'chevron-down'); zj.icons(e.currentTarget); };
   zj.icons(); onScroll();
 })();
