@@ -1,0 +1,251 @@
+/* Zero b11: Navid beside your work. The language of the in-app tutorial: its easing, its serif for what he says,
+   its white keys for what you answer, its ring that moves with his voice. */
+:root{--zt-ease:cubic-bezier(.625,.05,0,1);
+  --key-light:linear-gradient(#FFFFFF,#EDEDEA);
+  --key-light-sh:inset 0 1px 0 #fff,inset 0 -3px 0 rgba(0,0,0,.1),0 0 0 1px rgba(0,0,0,.18),0 14px 24px -14px rgba(0,0,0,.5);
+  --key-dark:linear-gradient(#303432,#181A19);
+  --key-dark-sh:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -3px 0 rgba(0,0,0,.5),0 0 0 1px #121413,0 14px 24px -14px rgba(18,20,19,.5)}
+
+/* the app is one piece: it slides left as a whole when Navid talks */
+#skin{position:absolute;inset:0;overflow:hidden;transition:transform .85s var(--zt-ease),box-shadow .85s var(--zt-ease),border-radius .85s var(--zt-ease)}
+#app.nv-open{background:#060607}
+#app.nv-open #skin{transform:translateX(var(--skx));box-shadow:1px 0 0 rgba(255,255,255,.08)}
+#app.nv-open #skin *{pointer-events:none}
+
+/* the face in the pill: grey when there is nothing, lit and blinking when there is */
+.dk .seg.co .me img{transition:filter .5s var(--e),opacity .5s var(--e)}
+.dk:not(.open) .seg.co .me:not(.nv-has) img{filter:grayscale(1) contrast(.9);opacity:.55}
+.dk .seg.co .me .dot{display:none}
+.dk .seg.co{--nvk:#FF6A4D}
+.dk .seg.co .me.nv-has img{animation:nvbreath 1.5s var(--zt-ease) infinite;box-shadow:0 0 0 2px var(--nvk)!important}
+@keyframes nvbreath{0%,100%{transform:scale(1)}45%{transform:scale(1.09)}}
+.dk .seg.co .me.nv-has::before,.dk .seg.co .me.nv-has::after{content:'';position:absolute;inset:-2px;border-radius:99px;border:2px solid var(--nvk);animation:nvp 1.5s cubic-bezier(.2,.7,.3,1) infinite;pointer-events:none}
+.dk .seg.co .me.nv-has::after{animation-delay:.75s}
+@keyframes nvp{0%{transform:scale(1);opacity:1}100%{transform:scale(2.15);opacity:0}}
+.dk:not(.open) .seg.co.nv-wants{background:color-mix(in srgb,var(--nvk) 16%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--nvk) 45%,transparent)}
+.dk:not(.open) .seg.co.nv-wants .upt i{color:var(--nvk)}
+#app[data-theme=light] .dk:not(.open) .seg.co.nv-wants[data-kind=brief]{background:rgba(20,22,26,.06)}
+#app[data-theme=light] .dk .seg.co[data-kind=brief]{--nvk:#131315!important}
+.dk .seg.co .me.nv-gone{opacity:0}
+.seg.co .upt.nv-tag{padding-right:13px;gap:3px}
+.seg.co .upt.nv-tag i{font-size:10.5px;font-variant-numeric:tabular-nums}
+.seg.co .upt.nv-tag b{font-weight:500;font-size:13px;white-space:nowrap}
+.dk.solo .seg.co{display:none}
+
+/* his face on the way from the pill to the panel */
+.nv-fly{position:absolute;z-index:92;border-radius:99px;overflow:hidden;pointer-events:none;transform-origin:0 0;transition:transform .8s var(--zt-ease)}
+.nv-fly img{width:100%;height:100%;object-fit:cover}
+
+/* the panel: the right 30%, black, centred */
+.nv-side{position:absolute;top:0;right:0;bottom:0;width:var(--side,30%);z-index:80;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 36px;color:#F4F4F3;text-align:center;
+  background:#060607;pointer-events:none;transform:translateX(100%);transition:transform .85s var(--zt-ease)}
+#app.nv-open .nv-side{transform:none;pointer-events:auto}
+.nv-in{display:flex;flex-direction:column;align-items:center;width:100%;max-width:400px;min-height:72%;margin-top:-2%}
+.nv-face{position:relative;width:92px;height:92px;border-radius:99px;visibility:hidden;transform:scale(.6);transition:transform .7s var(--zt-ease) .25s,visibility 0s linear .62s}
+.nv-side.nv-on .nv-face{visibility:visible;transform:none}
+.nv-face img{position:relative;width:92px;height:92px;border-radius:99px;object-fit:cover}
+.nv-ring{position:absolute;inset:0;border-radius:99px;box-shadow:0 0 0 calc(2px + var(--amp,0) * 5px) rgba(255,255,255,calc(.18 + var(--amp,0) * .6));transition:box-shadow .09s linear}
+.nv-tag2{margin-top:14px;clip-path:inset(0 0 100% 0);transform:translateY(8px);transition:clip-path .5s var(--zt-ease) .5s,transform .6s var(--zt-ease) .5s}
+.nv-side.nv-on .nv-tag2{clip-path:inset(-4px -40px -4px -40px);transform:none}
+.nv-tag2 b{display:block;font-weight:600;font-size:14px;letter-spacing:-.01em}
+.nv-tag2 span{display:block;margin-top:2px;font-size:12.5px;color:#A6A6AC}
+.nv-cap{display:grid;place-items:center;width:100%;min-height:130px;margin-top:26px;font:400 25px/34px var(--serif);letter-spacing:-.015em;text-wrap:balance;clip-path:inset(0 0 0 0);transition:clip-path .2s var(--zt-ease),transform .35s var(--zt-ease)}
+.nv-cap.nv-swap{clip-path:inset(0 0 100% 0);transform:translateY(-6px)}
+.nv-cap span{opacity:.24;transition:opacity .16s linear}
+.nv-cap span.on{opacity:1}
+.nv-x{width:100%;clip-path:inset(0 0 100% 0);transform:translateY(10px);transition:clip-path .5s var(--zt-ease),transform .6s var(--zt-ease)}
+.nv-x.nv-xin{clip-path:inset(-20px -20px -20px -20px);transform:none}
+.nv-x:empty{display:none}
+.nv-act{display:flex;justify-content:center;width:100%;min-height:52px;margin-top:22px}
+
+/* what you answer: keys */
+.nv-keys{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.nv-key{height:46px;padding:0 20px;border-radius:14px;font:500 14px/1 var(--f);letter-spacing:-.01em;color:#F4F4F3;background:var(--key-dark);box-shadow:var(--key-dark-sh);
+  transform:translateY(14px) scale(.94);clip-path:inset(0 0 100% 0 round 14px);transition:clip-path .4s var(--zt-ease),transform .55s var(--zt-ease),background .2s}
+.nv-key.in{transform:none;clip-path:inset(-8px -8px -8px -8px round 14px)}
+.nv-key.pri{color:#131315;background:var(--key-light);box-shadow:var(--key-light-sh)}
+.nv-key:hover{transform:translateY(-2px)}
+.nv-key.pressed,.nv-key.chosen{transform:translateY(1px)!important}
+.nv-key.chosen{outline:2px solid rgba(255,255,255,.5);outline-offset:3px}
+
+/* the path */
+.nv-path{margin-top:6px;padding:16px 18px 14px;border-radius:18px;background:#141416;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);text-align:left}
+.nv-pt{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:#A6A6AC}
+.nv-pt b{font-weight:500;color:#F4F4F3}
+.nv-pf{position:relative;height:16px;margin:14px 6px 0}
+.nv-pf::before{content:'';position:absolute;left:0;right:0;top:7px;height:2px;border-radius:2px;background:rgba(255,255,255,.12)}
+.nv-pf>i{position:absolute;left:0;top:7px;height:2px;width:0;border-radius:2px;background:#fff;transition:width 1.4s var(--zt-ease) .3s}
+.nv-pf span{position:absolute;top:3px;width:10px;height:10px;margin-left:-5px;border-radius:99px;background:#141416;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.3)}
+.nv-pf span.got{background:#fff;box-shadow:none}
+.nv-pf span.goal{top:0;width:16px;height:16px;margin-left:-8px;box-shadow:inset 0 0 0 2px #fff}
+.nv-pe{margin-top:12px;font-weight:500;font-size:15px;letter-spacing:-.01em}
+
+/* practice */
+.nv-drill{padding:14px 14px 14px;border-radius:18px;background:#F4F4F2;color:#131315;text-align:left}
+.nv-dh{display:flex;align-items:center;gap:8px}
+.nv-dh span{font:400 10.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#77777E}
+.nv-dh b{font-weight:500;font-size:13px}
+.nv-dq{display:flex;align-items:flex-start;gap:8px;margin-top:10px}
+.nv-dq p{padding:7px 11px;border-radius:12px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.07);font-size:13px;line-height:18px}
+.nv-dx{margin-top:10px;font-size:12px;line-height:17px;color:#8a8a90;text-decoration:line-through;text-decoration-color:rgba(0,0,0,.25)}
+.nv-din{margin-top:10px;min-height:58px;padding:10px 12px;border-radius:12px;background:#fff;box-shadow:0 0 0 1.5px #131315}
+.nv-dt{font-size:13.5px;line-height:19px;min-height:19px}
+.nv-dk{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.nv-dk span{display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 10px 0 7px;border-radius:99px;background:rgba(0,0,0,.06);font-size:12px;color:#8a8a90;transition:background .3s,color .3s}
+.nv-dk span svg{width:11px;height:11px;opacity:.35}
+.nv-dk span.on{background:#E3F4E8;color:#1F7A44}
+.nv-dk span.on svg{opacity:1}
+
+/* how has Zero been */
+.nv-fbo{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.nv-fbo button{height:40px;padding:0 15px;border-radius:12px;font:500 13.5px/1 var(--f);color:#F4F4F3;background:var(--key-dark);box-shadow:var(--key-dark-sh)}
+.nv-fbo button.on{color:#131315;background:var(--key-light);box-shadow:var(--key-light-sh)}
+.nv-fin{display:flex;align-items:flex-end;gap:8px;margin-top:12px;padding:10px 10px 10px 14px;border-radius:16px;background:#141416;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);text-align:left}
+.nv-ft{flex:1;min-height:20px;font-size:14px;line-height:20px}
+.nv-send{height:34px;padding:0 14px;border-radius:10px;color:#131315;background:var(--key-light);box-shadow:var(--key-light-sh);font:500 13px/1 var(--f)}
+.nv-sent{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 14px;border-radius:12px;background:#141416;font-size:13.5px;color:#A6A6AC}
+.nv-sent svg{width:13px;height:13px;color:#49BA61}
+
+/* ask him: three questions now, your own later */
+.nv-ask{display:flex;flex-direction:column;gap:8px}
+.nv-ask button{min-height:44px;padding:10px 16px;border-radius:14px;font:500 14px/19px var(--f);color:#F4F4F3;background:var(--key-dark);box-shadow:var(--key-dark-sh);text-align:center}
+.nv-soon{display:flex;align-items:center;gap:8px;height:44px;margin-top:4px;padding:0 14px;border-radius:14px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);color:#77777E;font-size:13.5px}
+.nv-soon svg{width:15px;height:15px}
+.nv-soon span{flex:1;text-align:left}
+.nv-soon em{font-style:normal;font-size:11px;padding:3px 8px;border-radius:99px;background:rgba(255,255,255,.08);color:#A6A6AC}
+.nv-me{display:flex;justify-content:flex-end}
+.nv-me p{max-width:86%;padding:9px 13px;border-radius:14px 14px 4px 14px;background:#F4F4F3;color:#131315;font-size:14px;line-height:19px;text-align:left}
+
+/* the first screen: sound on */
+.nv-gate{position:absolute;inset:0;z-index:95;display:grid;place-items:center;background:#060607;color:#fff;text-align:center}
+.nv-gate img{width:88px;height:88px;margin:0 auto;border-radius:99px;object-fit:cover;filter:grayscale(1);opacity:.75}
+.nv-gate h1{margin-top:22px;font:400 30px/38px var(--serif);letter-spacing:-.02em}
+.nv-gate p{margin-top:8px;font-size:14px;color:rgba(255,255,255,.55)}
+.nv-gate .row{display:flex;justify-content:center;gap:10px;margin-top:26px}
+.nv-gate button{height:46px;padding:0 20px;border-radius:14px;font:500 14px/1 var(--f);color:#F4F4F3;background:var(--key-dark);box-shadow:var(--key-dark-sh)}
+.nv-gate button.pri{color:#131315;background:var(--key-light);box-shadow:var(--key-light-sh)}
+.nv-cap p{margin:0;max-width:100%}
+/* the stack sits in the middle of the panel and never jumps: face, name, two or three lines, the keys */
+.nv-in{justify-content:center;min-height:0;height:100%;margin-top:0}
+/* his face, a little smaller */
+.nv-face,.nv-face img{width:64px;height:64px}
+.nv-tag2{margin-top:10px}
+.nv-cap{margin-top:20px}
+
+/* ================= b15 ================= */
+/* the timer around his face: the ring counts down how long this takes */
+.nv-face{width:64px;height:64px}
+.nv-tm{position:absolute;left:-14px;top:-14px;width:92px;height:92px;transform:rotate(-90deg);pointer-events:none}
+.nv-tm circle{fill:none;stroke-width:2.5}
+.nv-tb{stroke:rgba(255,255,255,.1)}
+.nv-tf{stroke:#FF6A4D;stroke-linecap:round;stroke-dashoffset:0;transition:stroke-dashoffset .12s linear}
+.nv-tl{display:block;margin-top:3px;font-size:12.5px;color:#A6A6AC;font-variant-numeric:tabular-nums}
+.nv-tl.nv-plus{animation:nvplus 1.2s var(--zt-ease)}
+@keyframes nvplus{0%,40%{color:#fff}}
+.nv-tag2{margin-top:20px}
+.nv-ring{box-shadow:0 0 0 calc(var(--amp,0) * 5px) rgba(255,255,255,calc(var(--amp,0) * .55))}
+
+/* what is at stake: skill points, in the reward colour (the only one allowed to glow) */
+.nv-stk{display:inline-flex;align-items:center;gap:8px;max-width:100%;margin-top:6px;height:34px;padding:0 14px 0 10px;border-radius:99px;font-size:13px;line-height:1;
+  color:#FACC15;background:rgba(250,204,21,.12);box-shadow:inset 0 0 0 1px rgba(250,204,21,.28),0 0 22px -6px rgba(250,204,21,.35);
+  transform:translateY(10px) scale(.94);clip-path:inset(0 0 100% 0 round 99px);transition:clip-path .45s var(--zt-ease),transform .6s var(--zt-ease),background .4s,color .4s,box-shadow .4s}
+.nv-stk:empty{display:none}
+.nv-stk.in{transform:none;clip-path:inset(-30px -30px -30px -30px round 99px)}
+.nv-stk svg{flex:none;width:16px;height:16px}
+.nv-stk b{font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.nv-stk span{color:rgba(250,204,21,.78);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nv-stk.nv-kept{color:#4ADE80;background:rgba(74,222,128,.12);box-shadow:inset 0 0 0 1px rgba(74,222,128,.32)}
+.nv-stk.nv-kept span{color:rgba(74,222,128,.8)}
+.nv-stk.nv-kept svg{width:14px;height:14px}
+.nv-act{margin-top:20px}
+.nv-x{margin-top:16px}
+
+/* what good looks like */
+.nv-good,.nv-grade{padding:14px 14px 14px;border-radius:18px;background:#141416;box-shadow:inset 0 0 0 1px rgba(255,255,255,.09);text-align:left}
+.nv-gh{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.nv-gh span{font-size:12px;color:#A6A6AC}
+.nv-gh em,.nv-gr em{display:inline-flex;align-items:center;gap:5px;font-style:normal;font-weight:600;font-size:12.5px;color:#FACC15;font-variant-numeric:tabular-nums;white-space:nowrap}
+.nv-gh em svg,.nv-gr em svg{width:13px;height:13px}
+.nv-gmsg{margin-left:auto;max-width:92%;padding:9px 12px;border-radius:14px 14px 4px 14px;background:#F4F4F3;color:#131315;font-size:13.5px;line-height:19px}
+.nv-gmsg p{margin:0}
+.nv-gf{display:inline-flex;align-items:center;gap:6px;margin-bottom:6px;padding:4px 8px;border-radius:8px;background:rgba(20,22,26,.07);font-size:12px;color:#4F535B}
+.nv-gf svg{width:13px;height:13px}
+.nv-gq{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px}
+.nv-gq p{padding:7px 11px;border-radius:12px;background:rgba(255,255,255,.07);font-size:13px;line-height:18px;color:#E6E6E8}
+.nv-gnote{display:flex;align-items:flex-start;gap:9px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.05)}
+.nv-gnote i{display:grid;place-items:center;flex:none;width:18px;height:18px;margin-top:1px;border-radius:99px;background:#3FB968;color:#fff}
+.nv-gnote i svg{width:11px;height:11px}
+.nv-gnote p{font-size:13.5px;line-height:19px;color:#F4F4F3}
+.nv-gpg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.nv-gpg span{display:flex;flex-direction:column;gap:8px;min-height:92px;padding:10px 10px;border-radius:8px;background:#F4F4F3;color:#131315;font-size:12px;line-height:16px}
+.nv-gpg em{font-style:normal;font-size:11px;color:#878B94}
+.nv-gsay{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.nv-gsay p{font:400 16px/22px var(--serif);color:#F4F4F3}
+.nv-gsay i{font-style:normal;font-size:11px;padding:2px 8px;border-radius:99px;background:rgba(255,255,255,.08);color:#A6A6AC}
+
+/* what Jay grades: the three things, before he starts */
+.nv-gr{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0}
+.nv-gr+.nv-gr{box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}
+.nv-gr b{display:block;font-weight:500;font-size:14px;color:#F4F4F3}
+.nv-gr span{display:block;margin-top:2px;font-size:12px;color:#8E8E95}
+.nv-gt{margin-top:8px;font-size:12.5px;color:#A6A6AC}
+.nv-gt b{font-weight:600;color:#FACC15}
+
+/* the coin that flies into the level pill */
+.nv-coin{position:absolute;z-index:93;display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 11px 0 8px;border-radius:99px;background:#FACC15;color:#131315;font-weight:600;font-size:13px;
+  box-shadow:0 0 18px -2px rgba(250,204,21,.6);pointer-events:none;transform-origin:0 50%;transition:transform .85s cubic-bezier(.5,0,.2,1)}
+.nv-coin svg{width:14px;height:14px}
+
+/* ================= b16 ================= */
+/* the app keeps its rounded corner where it meets Navid */
+#app.nv-open #skin{border-radius:0 26px 26px 0;box-shadow:none}
+.nv-hint{font-size:13px;color:#A6A6AC}
+
+/* b21: with no face to fly from, his face scales in inside the panel */
+.nv-side .nv-face{transform:scale(.7)}
+.nv-side.nv-on .nv-face{transform:none}
+
+/* ================= b21: a side panel that slides in over the app ================= */
+/* the app stays where it is; a scrim holds it while Navid talks, so you can only listen and answer */
+#app.nv-open #skin{transform:none!important;border-radius:0!important;box-shadow:none!important}
+#app.nv-open{background:transparent}
+.nv-scrim{position:absolute;inset:0;z-index:79;background:rgba(6,6,7,0);pointer-events:none;transition:background-color .5s var(--zt-ease)}
+#app.nv-open .nv-scrim{background:rgba(6,6,7,.42);pointer-events:auto}
+.nv-side{top:12px;right:12px;bottom:12px;border-radius:28px;background:#0B0B0C;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 30px 80px -20px rgba(0,0,0,.7);
+  transform:translateX(calc(100% + 24px));transition:transform .7s var(--zt-ease)}
+#app.nv-open .nv-side{transform:none}
+/* the coin from what you fixed to the rank pill */
+.nv-coin{transform:scale(.6);transition:transform .45s var(--zt-ease)}
+.nv-coin.nv-pop{transform:none}
+.nv-coin span{font-weight:500;opacity:.75}
+.nv-coin.nv-pop[style*="translate"]{transition:transform .85s cubic-bezier(.5,0,.2,1)}
+
+/* ================= b22: the app masks away from the right, Navid is behind it ================= */
+/* no overlay: the panel sits under the app; the app's right side wipes away (rounded edge) and reveals him */
+#skin{z-index:2;clip-path:inset(0 0 0 0 round 0 0 0 0);transition:clip-path .8s var(--zt-ease)}
+#app.nv-open #skin{clip-path:inset(0 var(--side) 0 0 round 0 26px 26px 0)}
+#app.nv-open{background:#060607}
+.nv-side{z-index:1;top:0;right:0;bottom:0;border-radius:0;background:#060607;box-shadow:none;transform:translateX(48px);transition:transform .8s var(--zt-ease)}
+#app.nv-open .nv-side{transform:none}
+/* the app still waits while he talks, without a dim: an invisible hold over the part you can see */
+.nv-scrim{z-index:3;right:var(--side,30%);background:transparent!important}
+#app:not(.nv-open) .nv-scrim{pointer-events:none}
+/* his name only: the ring says how long, the countdown text is gone */
+.nv-tl{display:none}
+.nv-tm{left:-6px;top:-6px;width:76px;height:76px}
+.nv-tm circle{stroke-width:2.5}
+.nv-tag2 .nv-tl{display:none}
+
+/* ================= b23: his face and the ring, no name under it ================= */
+.nv-tag2{display:none}
+.nv-cap{margin-top:28px}
+
+/* b24: the ring fills back up when you ask Why */
+.nv-tf.nv-refill{transition:stroke-dashoffset .4s var(--zt-ease)}
+
+/* ================= b25: back to the push ================= */
+#skin{clip-path:none!important;transition:transform .85s var(--zt-ease),border-radius .85s var(--zt-ease)!important}
+#app.nv-open #skin{transform:translateX(var(--skx))!important;border-radius:0 26px 26px 0!important;clip-path:none!important;box-shadow:none!important}
+#app.nv-open{background:#060607}
+.nv-side{z-index:1;top:0;right:0;bottom:0;width:var(--side);border-radius:0;background:#060607;transform:none!important;transition:none}
+.nv-scrim{display:none!important}
