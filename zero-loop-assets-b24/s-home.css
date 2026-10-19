@@ -1,0 +1,121 @@
+/* s-home: the Zero world (refs 01, 02, 02c, 21). Every rule scoped under .sc-home, every class prefixed hm-. */
+
+.sc-home{background:#1d2a22;color:#fff}
+
+/* the world: one picture, framed on the scenario's building */
+.sc-home .hm-world{position:absolute;inset:0;overflow:hidden}
+.sc-home .hm-w{position:absolute;width:145%;aspect-ratio:1920/1071;transition:left 1.8s var(--o),top 1.8s var(--o),transform 1.8s var(--o)}
+.sc-home .hm-w>img{position:absolute;inset:0;width:100%;height:100%;display:block;user-select:none}
+.sc-home .hm-w.hm-in{animation:hmzoom 1.2s var(--o) both}
+@keyframes hmzoom{from{scale:1.03}}
+.sc-home .hm-w.hm-zoom{scale:1.05;transition:scale 1.4s var(--o)}
+/* a scenario on the map: a white marker with the company, the current one has the light beam */
+.sc-home .hm-mk{position:absolute;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:99px;display:grid;place-items:center;background:rgba(255,255,255,.55);box-shadow:0 0 0 5px rgba(255,255,255,.18),0 6px 16px rgba(0,0,0,.28);transition:opacity .6s var(--e)}
+.sc-home .hm-mk .lg{--l:26px;box-shadow:none}
+.sc-home .hm-mk .hm-mck{position:absolute;right:-4px;bottom:-4px;width:15px;height:15px;border-radius:99px;display:grid;place-items:center;background:#3CC878;color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.9)}
+.sc-home .hm-mk .hm-mck svg{width:9px;height:9px}
+.sc-home .hm-mk.hm-off{opacity:0}
+.sc-home .hm-beam{position:absolute;width:64px;height:900px;margin-left:-32px;transform:translateY(-100%);pointer-events:none;opacity:0;transition:opacity .9s var(--e);
+  background:linear-gradient(90deg,rgba(120,255,170,0),rgba(150,255,190,.38) 35%,rgba(220,255,230,.62) 50%,rgba(150,255,190,.38) 65%,rgba(120,255,170,0));
+  -webkit-mask-image:linear-gradient(0deg,#000 0,#000 40%,transparent);mask-image:linear-gradient(0deg,#000 0,#000 40%,transparent)}
+.sc-home .hm-beam.on{opacity:1}
+
+/* the frosted band on the left, and a little shade top and bottom */
+.sc-home .hm-blur{position:absolute;left:0;top:0;bottom:0;width:184px;backdrop-filter:blur(7px) saturate(110%);-webkit-backdrop-filter:blur(7px) saturate(110%);
+  -webkit-mask-image:linear-gradient(90deg,#000 82%,transparent);mask-image:linear-gradient(90deg,#000 82%,transparent);pointer-events:none}
+.sc-home .hm-shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.28),rgba(0,0,0,0) 120px),linear-gradient(0deg,rgba(0,0,0,.26),rgba(0,0,0,0) 140px)}
+
+/* wordmark, rail, gear */
+.sc-home .hm-word{position:absolute;left:44px;top:30px;width:70px;height:21px;background:#fff;-webkit-mask:url(zero-wordmark.svg) left center/contain no-repeat;mask:url(zero-wordmark.svg) left center/contain no-repeat}
+.sc-home .hm-rail{position:absolute;left:40px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:12px;padding:5px;border-radius:24px;background:rgba(26,26,28,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.sc-home .hm-rail>span{display:grid;place-items:center;width:36px;height:36px;border-radius:11px;color:rgba(255,255,255,.72)}
+.sc-home .hm-rail>span.on{background:#fff;color:#111}
+.sc-home .hm-rail svg{width:18px;height:18px}
+.sc-home .hm-rail>span.on svg{width:20px;height:20px}
+.sc-home .hm-gear{position:absolute;left:51px;bottom:30px;width:24px;height:24px;color:rgba(255,255,255,.78)}
+.sc-home .hm-gear svg{width:24px;height:24px}
+
+/* the road: done scenarios, the current one with its name, the ones to come, then jobs */
+.sc-home .hm-road{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;height:52px;padding:0 7px;border-radius:99px;
+  background:rgba(22,26,23,.62);backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.09),0 10px 28px -12px rgba(0,0,0,.5);z-index:3}
+.sc-home .hm-st{position:relative;display:flex;align-items:center;gap:0;height:38px;padding:0 5px;border-radius:99px;transition:padding .5s var(--o),background-color .4s var(--e),box-shadow .4s var(--e),opacity .4s var(--e)}
+.sc-home .hm-st>.lg{--l:28px;box-shadow:none}
+.sc-home .hm-st>b{font-weight:500;font-size:14px;color:#fff;white-space:nowrap;max-width:0;overflow:hidden;opacity:0;transition:max-width .5s var(--o),opacity .35s var(--e)}
+.sc-home .hm-st.hm-done{background:rgba(70,160,90,.30)}
+.sc-home .hm-st.hm-done>.hm-sck{display:grid;place-items:center;width:15px;height:15px;color:#7EE2A0;margin:0 3px 0 -3px}
+.sc-home .hm-st.hm-done>.hm-sck svg{width:13px;height:13px}
+.sc-home .hm-st>.hm-sck{display:none}
+.sc-home .hm-st.hm-cur{padding:0 16px 0 5px;background:rgba(58,58,58,.82);box-shadow:inset 0 0 0 2px #46C46E,0 0 0 3px rgba(70,196,110,.18)}
+.sc-home .hm-st.hm-cur>b{max-width:120px;opacity:1;margin-left:9px}
+.sc-home .hm-st.hm-fut{opacity:.48}
+.sc-home .hm-st.hm-fut>.lg{filter:grayscale(1)}
+.sc-home .hm-st.hm-pop{animation:hmpop .7s var(--o)}
+@keyframes hmpop{40%{transform:scale(1.08)}}
+.sc-home .hm-ln{width:14px;height:3px;border-radius:2px;background:rgba(255,255,255,.22);transition:background-color .5s var(--e)}
+.sc-home .hm-ln.on{background:#46C46E}
+.sc-home .hm-bag{display:grid;place-items:center;width:38px;height:38px;border-radius:99px;background:rgba(70,160,90,.42);color:#BFF2CF;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.sc-home .hm-bag svg{width:17px;height:17px}
+
+/* the brief, shown when Sanjay hovers the road (ref 02) */
+.sc-home .hm-brief{position:absolute;left:-6px;bottom:calc(100% + 16px);width:292px;padding:15px 16px 16px;border-radius:14px;background:rgba(26,26,26,.94);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),0 20px 40px -16px rgba(0,0,0,.6);
+  opacity:0;transform:translateY(6px);pointer-events:none;transition:opacity .25s var(--e),transform .35s var(--o);text-align:left}
+.sc-home .hm-brief.on{opacity:1;transform:none}
+.sc-home .hm-bt{display:block;font-weight:500;font-size:13.5px;line-height:18px;color:#fff}
+.sc-home .hm-bm{display:flex;gap:14px;margin-top:7px;font-size:11.5px;color:rgba(255,255,255,.72)}
+.sc-home .hm-bm>span{display:flex;align-items:center;gap:4px}
+.sc-home .hm-bm svg{width:12px;height:12px}
+.sc-home .hm-bp{display:flex;align-items:center;gap:8px;margin-top:9px}
+.sc-home .hm-bp .fc{--f:24px}
+.sc-home .hm-bp b{display:block;font-weight:500;font-size:11.5px;line-height:14px;color:#fff}
+.sc-home .hm-bp div>span{display:block;font-size:10.5px;line-height:13px;color:rgba(255,255,255,.55)}
+.sc-home .hm-bl{margin:13px 0 7px;padding-top:11px;border-top:1px solid rgba(255,255,255,.08);font:400 10px/12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+.sc-home .hm-tools{display:flex;flex-wrap:wrap;gap:6px}
+.sc-home .hm-tools>span{display:flex;align-items:center;gap:6px;height:26px;padding:0 10px 0 6px;border-radius:7px;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);font-size:11.5px;color:rgba(255,255,255,.9)}
+.sc-home .hm-tools .lg{--l:16px;box-shadow:none}
+.sc-home .hm-brief p{font-size:12px;line-height:17px;color:rgba(255,255,255,.82);text-wrap:pretty}
+
+/* the scenario card on the right (refs 01, 02c, 21) */
+.sc-home .hm-card{position:absolute;right:24px;top:84px;width:340px;padding:14px 14px 14px;border-radius:30px;z-index:2;
+  background:rgba(48,48,48,.5);backdrop-filter:blur(28px) saturate(115%);-webkit-backdrop-filter:blur(28px) saturate(115%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 24px 60px -24px rgba(0,0,0,.55)}
+.sc-home .hm-nav{display:flex;align-items:center;justify-content:space-between;height:36px;padding:0 6px}
+.sc-home .hm-ar{display:grid;place-items:center;width:24px;height:24px;color:rgba(255,255,255,.75)}
+.sc-home .hm-ar svg{width:16px;height:16px}
+.sc-home .hm-ar.hm-dim{color:rgba(255,255,255,.22)}
+.sc-home .hm-pg{display:grid;place-items:center;height:36px;padding:0 16px;border-radius:99px;background:rgba(255,255,255,.08);font:500 13px/1 var(--mono);letter-spacing:.06em;color:#fff}
+.sc-home .hm-pg em{font-style:normal;color:rgba(255,255,255,.45)}
+.sc-home .hm-bodyw{position:relative}
+.sc-home .hm-body{display:flex;flex-direction:column;align-items:stretch}
+.sc-home .hm-body.hm-out{animation:hmout .45s var(--e) both;position:absolute;left:0;right:0;top:0}
+.sc-home .hm-body.hm-in{animation:hmin .6s var(--o) .12s both}
+@keyframes hmout{to{opacity:0;transform:translateX(-26px)}}
+@keyframes hmin{from{opacity:0;transform:translateX(26px)}}
+
+/* the art title: big chunky letters, like the real cards */
+.sc-home .hm-art{position:relative;margin:20px auto 0;text-align:center;font:800 var(--as,54px)/.92 'Rubik','Inter',sans-serif;letter-spacing:-.01em;text-transform:uppercase;white-space:nowrap}
+.sc-home .hm-art span{display:block}
+.sc-home .hm-art .hm-a-sh{position:absolute;inset:0;color:var(--ax,#8E2F14);text-shadow:0 1px 0 var(--ax),0 2px 0 var(--ax),0 3px 0 var(--ax),0 4px 0 var(--ax),0 5px 0 var(--ax),0 6px 0 var(--ax),0 9px 14px rgba(0,0,0,.45)}
+.sc-home .hm-art .hm-a-fg{position:relative;background:var(--ag);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.sc-home .hm-art[data-sc=router]{--ag:linear-gradient(180deg,#FFE0C8 0%,#FFA27A 38%,#FF7A4C 62%,#E5542A 100%);--ax:#8A3017}
+.sc-home .hm-art[data-sc=waterfall]{--ag:linear-gradient(180deg,#E3ECFF 0%,#9DB3FF 38%,#6F86FF 62%,#4E5EE6 100%);--ax:#232B86}
+.sc-home .hm-art[data-sc=evals]{--ag:linear-gradient(180deg,#E8FBD8 0%,#A9EC86 38%,#6FD452 62%,#3FA83F 100%);--ax:#1E5A23}
+.sc-home .hm-tt{margin:20px 10px 0;text-align:center;font-weight:500;font-size:19px;line-height:24px;letter-spacing:-.01em;color:#fff;text-wrap:balance}
+.sc-home .hm-ds{margin:9px 12px 0;text-align:center;font-size:14px;line-height:20px;color:rgba(255,255,255,.78);text-wrap:pretty}
+.sc-home .hm-rows{margin:18px 2px 0;padding:6px 0 4px;border-top:1px solid rgba(255,255,255,.1)}
+.sc-home .hm-row{display:flex;align-items:center;gap:10px;height:39px;padding:0 14px}
+.sc-home .hm-lb{flex:1 1 auto;font:400 12.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.55);white-space:nowrap}
+.sc-home .hm-v{font-size:14.5px;color:#fff;white-space:nowrap}
+.sc-home .hm-xp{display:flex;align-items:center;gap:6px;height:30px;padding:0 11px 0 9px;border-radius:99px;background:rgba(233,185,73,.16);box-shadow:inset 0 0 0 1px rgba(233,200,120,.42);font:500 13.5px/1 var(--mono);color:#FBEFC4}
+.sc-home .hm-xp svg{width:14px;height:14px;color:#F3C64A}
+.sc-home .hm-df{display:flex;gap:3px;margin-right:8px}
+.sc-home .hm-df i{width:18px;height:8px;border-radius:5px;background:rgba(255,255,255,.2)}
+.sc-home .hm-df i.on{background:#fff}
+.sc-home .hm-go{display:flex;align-items:center;justify-content:center;gap:10px;height:50px;margin-top:10px;border-radius:99px;font-weight:600;font-size:18px;color:#151515;
+  background:linear-gradient(180deg,#F6F6F6,#DCDCDC);box-shadow:0 4px 0 #9C9C9C,inset 0 1px 0 #fff,0 8px 18px -8px rgba(0,0,0,.5);transition:transform .15s var(--e)}
+.sc-home .hm-go svg{width:11px;height:11px}
+.sc-home .hm-go.pressed{transform:translateY(3px)!important;box-shadow:0 1px 0 #9C9C9C,inset 0 1px 0 #fff}
+
+/* confetti, once, when the next scenario unlocks (ref 21) */
+.sc-home .hm-conf{position:absolute;right:0;top:0;width:420px;height:100%;pointer-events:none;overflow:hidden;z-index:4}
+.sc-home .hm-conf i{position:absolute;top:-20px;width:8px;height:12px;border-radius:2px;animation:hmfall var(--d,3s) cubic-bezier(.25,.4,.4,1) var(--dl,0s) both}
+@keyframes hmfall{0%{transform:translate(0,0) rotate(0);opacity:1}85%{opacity:1}100%{transform:translate(var(--x,0),var(--y,600px)) rotate(var(--r,360deg));opacity:0}}
