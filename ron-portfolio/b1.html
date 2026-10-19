@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ron Robinson, Business Analyst</title>
+<meta name="description" content="Ron Robinson's work on Zero: seven real business briefs, reviewed by the people who set them.">
+<link rel="stylesheet" href="kit/zero-jobs.css">
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="kit/zero-jobs.js"></script>
+<script src="data.js"></script>
+<style>
+/* Ron's portfolio, built on the Zero Jobs design system. Everything new is rp- and made of --zj- tokens */
+.rp{min-height:100dvh;padding:0 14px 14px}
+.rp-sheet{position:relative;margin-top:14px;background:var(--zj-sheet);border-radius:var(--zj-r-sheet);box-shadow:var(--zj-sh-sheet)}
+.rp-top{position:sticky;top:0;z-index:20;border-radius:var(--zj-r-sheet) var(--zj-r-sheet) 0 0;background:rgba(255,255,255,.96)}
+.rp-top::after{content:"";position:absolute;left:24px;right:24px;bottom:0;height:1px;background:var(--zj-line);opacity:0;transition:opacity .12s var(--zj-e)}
+.rp-top.rp-on::after{opacity:1}
+.rp-brand{display:flex;align-items:center;gap:10px}
+.rp-brand .zj-m{color:var(--zj-ink4)}
+.rp-body{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:28px;max-width:1112px;margin:0 auto;padding:24px 32px 96px;align-items:start}
+.rp-main{min-width:0;display:flex;flex-direction:column;gap:56px}
+.rp-sec{scroll-margin-top:84px}
+.rp-sec>.zj-sh{margin-bottom:16px}
+.rp-sec>.zj-sh .zj-m{margin-left:auto}
+
+/* the hero: the person first */
+.rp-hero{display:grid;grid-template-columns:176px minmax(0,1fr);gap:28px;align-items:start}
+.rp-photo{position:relative;width:176px;height:206px;border-radius:var(--zj-r-card);overflow:hidden;background:var(--zj-well2);box-shadow:inset 0 0 0 1px rgba(19,20,23,.06)}
+.rp-photo img{display:block;width:100%;height:100%;object-fit:cover}
+.rp-who{display:flex;flex-direction:column;gap:12px;min-width:0;padding-top:2px}
+.rp-lvl{display:flex;align-items:center;gap:10px;color:var(--zj-ink)}
+.rp-lvl img{width:38px;height:auto;margin:-6px 0;filter:drop-shadow(0 4px 6px rgba(19,20,23,.18))}
+.rp-who .zj-meta{flex-wrap:wrap;overflow:visible;column-gap:14px}
+.rp-words{font-size:16px;line-height:24px;color:var(--zj-ink2);text-wrap:pretty;max-width:560px}
+.rp-proof{display:flex;align-items:center;gap:10px;margin-top:4px}
+.rp-read{margin-top:24px;align-items:flex-start;padding:12px 12px 10px 12px}
+.rp-read>.zj-orb{margin-top:-3px}
+.rp-read>p{flex:1 1 calc(100% - 38px)}
+.rp-read .zj-note-acts{width:100%;justify-content:flex-start;padding-left:38px;gap:8px}
+.rp-read .rp-more{flex-basis:100%;padding-left:38px;margin-top:0}
+.rp-read p{color:var(--zj-ink2)}
+.rp-read p b{font-weight:500;color:var(--zj-ink)}
+.rp-more{font-size:14px;line-height:20px;color:var(--zj-ink2);display:none}
+.rp-read.rp-open .rp-more{display:block}
+
+/* the track: seven done, the next one now */
+.rp-track{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));padding:22px 20px 18px;border-radius:var(--zj-r-card);background:#fff;box-shadow:0 0 0 1px var(--zj-line)}
+.rp-st{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:10px;min-width:0}
+.rp-st::after{content:"";position:absolute;top:11px;left:24px;right:0;height:2px;background:var(--zj-line)}
+.rp-st:last-child::after{display:none}
+.rp-st.rp-done::after{background:var(--zj-ink)}
+.rp-dot{position:relative;z-index:1;display:grid;place-items:center;width:24px;height:24px;border-radius:var(--zj-r-pill);background:#fff;box-shadow:inset 0 0 0 2px var(--zj-line2);font-size:12px;line-height:16px;color:var(--zj-ink3);font-variant-numeric:tabular-nums}
+.rp-st .zj-lg{box-shadow:0 0 0 2px #fff,inset 0 0 0 1px var(--zj-line)}
+.rp-st.rp-now .rp-dot{background:var(--zj-lime);color:var(--zj-ink);box-shadow:inset 0 0 0 2px var(--zj-ink),0 0 0 5px rgba(183,240,106,.4)}
+.rp-st span.rp-l{font-size:12px;line-height:16px;color:var(--zj-ink3);white-space:nowrap}
+.rp-st:last-child{align-items:flex-end}
+.rp-st:last-child span.rp-l{text-align:right}
+.rp-st.rp-now span.rp-l{color:var(--zj-ink)}
+
+/* a project: its number on the left, the work and the reviewer on the right */
+.rp-list{display:flex;flex-direction:column;gap:16px}
+.rp-proj{display:grid;grid-template-columns:200px minmax(0,1fr);gap:20px;padding:12px 20px 12px 12px;border-radius:var(--zj-r-card);background:#fff;box-shadow:0 0 0 1px var(--zj-line2);cursor:pointer;text-align:left;width:100%;transition:box-shadow .12s var(--zj-e)}
+.rp-proj:hover{box-shadow:0 0 0 1px var(--zj-ink3),0 14px 26px -20px rgba(19,20,23,.35)}
+.rp-proj.zj-on{box-shadow:inset 0 0 0 1.5px var(--zj-ink)}
+.rp-num{display:flex;flex-direction:column;justify-content:space-between;gap:28px;padding:14px;border-radius:var(--zj-r-row);background:var(--zj-canvas)}
+.rp-co{display:flex;align-items:center;gap:8px;font-size:12px;line-height:16px;color:var(--zj-ink2)}
+.rp-fig{font-size:24px;line-height:30px;letter-spacing:-.01em;color:var(--zj-ink);font-variant-numeric:tabular-nums;text-wrap:balance}
+.rp-fig+.zj-m{display:block;margin-top:4px;text-wrap:pretty}
+.rp-pb{display:flex;flex-direction:column;gap:10px;min-width:0;padding:8px 0 6px}
+.rp-pt{font-size:16px;line-height:24px;font-weight:500;color:var(--zj-ink);text-wrap:pretty}
+.rp-pd{color:var(--zj-ink2);text-wrap:pretty}
+.rp-tags{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.rp-say{display:flex;align-items:flex-end;gap:10px;margin-top:2px}
+.rp-say .zj-av{width:28px;height:28px}
+.rp-say>div{display:flex;flex-direction:column;gap:4px;min-width:0}
+.rp-say p{padding:8px 12px;border-radius:var(--zj-r-row);background:var(--zj-well);color:var(--zj-ink);text-wrap:pretty}
+.rp-pf{display:flex;align-items:center;gap:8px;margin-top:2px}
+.rp-pf .zj-m{white-space:nowrap}
+.rp-pf .zj-pillbtn{margin-left:auto;height:32px;white-space:nowrap;flex-shrink:0}
+
+/* skills */
+.rp-groups{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.rp-group{display:flex;flex-direction:column;gap:2px;padding:16px 8px 8px;border-radius:var(--zj-r-card);background:#fff;box-shadow:var(--zj-sh-hair)}
+.rp-gh{display:flex;align-items:center;gap:8px;padding:0 8px 8px;color:var(--zj-ink)}
+.rp-gh .zj-status{margin-left:auto;height:22px;padding:0 8px}
+.rp-sk{display:flex;flex-direction:column;gap:6px;padding:8px;border-radius:12px}
+.rp-sk:hover{background:var(--zj-well)}
+.rp-sk>span:first-child{color:var(--zj-ink)}
+.rp-sk .rp-src{display:flex;align-items:center;gap:8px}
+.rp-rows{display:flex;flex-direction:column;gap:4px;margin-top:12px}
+.rp-row{display:grid;grid-template-columns:150px minmax(0,1fr);gap:20px;padding:14px 16px;border-radius:var(--zj-r-row);background:#fff;box-shadow:var(--zj-sh-hair)}
+.rp-row b{display:block;margin-bottom:2px}
+.rp-row .zj-m{display:block;margin-top:6px}
+.rp-sub{margin:28px 0 0;font-weight:500;color:var(--zj-ink);padding:0 4px}
+.rp-tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}
+.rp-tool{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:var(--zj-r-card);background:#fff;box-shadow:var(--zj-sh-hair)}
+.rp-tool header{display:flex;align-items:center;gap:12px}
+.rp-tool header>div{display:flex;flex-direction:column}
+.rp-tool ul{display:flex;flex-direction:column;gap:8px}
+.rp-tool li b{display:block;font-size:12px;line-height:16px;font-weight:500;color:var(--zj-ink)}
+.rp-tool li span{display:block;font-size:12px;line-height:16px;color:var(--zj-ink3)}
+
+/* background */
+.rp-bg{display:flex;flex-direction:column;gap:4px}
+.rp-bgi{display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:var(--zj-r-row)}
+.rp-bgi:hover{background:var(--zj-well)}
+.rp-bgi .zj-grow{display:flex;flex-direction:column;gap:2px}
+.rp-bgi .rp-t{display:flex;align-items:center;gap:8px;color:var(--zj-ink)}
+.rp-bgi .rp-t .zj-status{height:22px;padding:0 8px}
+.rp-bgi p{margin-top:6px;color:var(--zj-ink2)}
+.rp-bgi .rp-tags{margin-top:8px}
+.rp-gpa{color:var(--zj-ink);font-variant-numeric:tabular-nums}
+
+/* the rail: Zero's read for one role, or one project's review */
+.rp-rail{position:sticky;top:84px;max-height:calc(100dvh - 104px);overflow:auto;padding:22px 22px 24px;border-radius:var(--zj-r-card);background:#fff;box-shadow:var(--zj-sh-panel);overscroll-behavior:contain}
+.rp-rail>.rp-in{animation:zj-card-in .4s var(--zj-out) both}
+.rp-rh{display:flex;align-items:center;gap:12px}
+.rp-rh>div{display:flex;flex-direction:column;min-width:0}
+.rp-bar{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;margin-top:14px}
+.rp-bar i{height:6px;border-radius:99px;background:var(--zj-line)}
+.rp-bar i.rp-a{background:var(--zj-good)}
+.rp-bar i.rp-b{background:var(--zj-ink)}
+.rp-legend{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:10px;font-size:12px;line-height:16px;color:var(--zj-ink3)}
+.rp-legend span{display:inline-flex;align-items:center;gap:6px}
+.rp-legend span::before{content:"";width:8px;height:8px;border-radius:99px;background:var(--zj-line)}
+.rp-legend .rp-a::before{background:var(--zj-good)}
+.rp-legend .rp-b::before{background:var(--zj-ink)}
+.rp-rs{margin-top:24px}
+.rp-rs>h3{margin:0 0 8px;font-weight:500;color:var(--zj-ink)}
+.rp-req{display:flex;flex-direction:column;border-radius:12px;transition:background-color .12s var(--zj-e)}
+.rp-req:hover,.rp-req.rp-open{background:var(--zj-well)}
+.rp-req>button{display:flex;align-items:flex-start;gap:10px;width:100%;padding:8px 10px;border-radius:12px;color:var(--zj-ink)}
+.rp-req>button svg{width:16px;height:16px;margin-top:2px}
+.rp-req .rp-ok{color:var(--zj-good)}
+.rp-req .rp-mid{color:var(--zj-ink)}
+.rp-req .rp-no{color:var(--zj-ink4)}
+.rp-req.rp-not>button{color:var(--zj-ink3)}
+.rp-req .rp-ev{display:none;flex-direction:column;gap:8px;padding:0 10px 12px 36px;color:var(--zj-ink2)}
+.rp-req.rp-open .rp-ev{display:flex}
+.rp-req .zj-lgs{margin-top:2px}
+.rp-why{display:flex;flex-direction:column;gap:12px}
+.rp-why>div{display:flex;flex-direction:column;gap:6px;padding:14px;border-radius:var(--zj-r-row);background:var(--zj-canvas)}
+.rp-why b{color:var(--zj-ink)}
+.rp-why p{color:var(--zj-ink2)}
+.rp-why .zj-status{align-self:flex-start;background:#fff}
+.rp-hire{display:flex;flex-direction:column;gap:8px}
+.rp-hire>div{display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:var(--zj-r-row);box-shadow:var(--zj-sh-hair)}
+.rp-hire header{display:flex;align-items:center;gap:10px}
+.rp-hire header>div{display:flex;flex-direction:column;min-width:0;flex:1}
+.rp-hire p{color:var(--zj-ink2)}
+
+/* one project's review, in the rail */
+.rp-pr .zj-detail-x{position:sticky;top:-22px;margin:0 -8px 0 0}
+.rp-pr h2{margin-top:14px;font-size:16px;line-height:24px;font-weight:500;color:var(--zj-ink);text-wrap:pretty;padding-right:28px}
+.rp-pr .rp-num{margin-top:16px;gap:16px}
+.rp-pr .rp-sum{margin-top:16px;color:var(--zj-ink2)}
+.rp-pts{display:flex;flex-direction:column;gap:10px}
+.rp-pts li{display:flex;gap:10px;color:var(--zj-ink)}
+.rp-pts li svg{width:16px;height:16px;margin-top:2px;flex-shrink:0}
+.rp-pts .rp-y svg{color:var(--zj-good)}
+.rp-pts .rp-n svg{color:var(--zj-warn)}
+.rp-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.rp-facts>div{display:flex;flex-direction:column;gap:2px;padding:12px;border-radius:var(--zj-r-row);background:var(--zj-canvas)}
+.rp-facts b{color:var(--zj-ink);font-variant-numeric:tabular-nums}
+.rp-tu{display:flex;flex-direction:column;gap:10px}
+.rp-tu>div{display:flex;align-items:flex-start;gap:10px}
+.rp-tu>div>div{display:flex;flex-direction:column;min-width:0}
+.rp-pr .zj-tree{margin:0 0 0 6px}
+.rp-pr .zj-tn{min-height:32px}
+.rp-full{display:flex;gap:10px;align-items:flex-end}
+.rp-full .zj-av{width:28px;height:28px}
+.rp-full>div{display:flex;flex-direction:column;gap:4px;min-width:0}
+.rp-full p{padding:10px 12px;border-radius:var(--zj-r-row);background:var(--zj-well);color:var(--zj-ink);text-wrap:pretty}
+
+.rp-foot{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;max-width:1112px;margin:0 auto;padding:0 32px 32px;font-size:12px;line-height:16px;color:var(--zj-ink3)}
+.rp-foot .zj-orb{margin-right:-6px}
+
+/* phones and narrow windows: one column, the role read after the hero, a review opens full screen */
+@media (max-width:1100px){
+  .rp-body{grid-template-columns:minmax(0,1fr);padding:20px 20px 80px}
+  .rp-rail{position:static;max-height:none;overflow:visible;box-shadow:0 0 0 1px var(--zj-line);order:1}
+  .rp-main{display:contents}
+  .rp-hero-wrap{order:0}.rp-main>.rp-sec{order:2}
+  .rp-rail.rp-full-open{position:fixed;inset:0;z-index:60;max-height:none;overflow:auto;border-radius:0;box-shadow:none;padding:20px}
+  .rp-groups,.rp-tools{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:700px){
+  .rp{padding:0 8px 8px}.rp-sheet{margin-top:8px;border-radius:24px}
+  .rp-top .zj-tabs{display:none}
+  .rp-hero{grid-template-columns:minmax(0,1fr);gap:18px}
+  .rp-photo{width:120px;height:140px}
+  .rp-proj{grid-template-columns:minmax(0,1fr);gap:4px;padding:12px}
+  .rp-num{gap:14px}
+  .rp-pb{padding:8px 4px 4px}
+  .rp-row{grid-template-columns:minmax(0,1fr);gap:4px}
+  .rp-track{grid-template-columns:repeat(12,minmax(0,1fr));padding:18px 12px 14px}
+  .rp-st .zj-lg,.rp-dot{width:20px;height:20px}
+  .rp-st::after{top:9px;left:20px}
+  .rp-st span.rp-l{display:none}
+  .rp-st.rp-now span.rp-l{display:block;position:relative}
+  .rp-foot{padding:0 20px 24px}
+}
+</style>
+</head>
+<body class="zj">
+<div class="rp">
+  <div class="rp-sheet">
+    <header class="zj-top rp-top" id="top">
+      <div class="zj-top-l rp-brand"><span data-zj-logo></span><span class="zj-ink3">Portfolio</span><span class="zj-m">b1</span></div>
+      <nav class="zj-tabs" id="tabs"><button type="button" class="zj-on" data-go="work">Work</button><button type="button" data-go="skills">Skills</button><button type="button" data-go="background">Background</button></nav>
+      <div class="zj-top-r"><button class="zj-sec zj-sm" type="button" id="share"><i data-lucide="link"></i>Share</button></div>
+    </header>
+
+    <div class="rp-body">
+      <main class="rp-main" id="main"></main>
+      <aside class="rp-rail" id="rail" aria-live="polite"></aside>
+    </div>
+    <footer class="rp-foot" id="foot"></footer>
+  </div>
+</div>
+<script>
+(function(){
+const R=window.RON,$=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ic=n=>`<i data-lucide="${n}"></i>`;
+const P=R.projects,byCo={};P.forEach(p=>byCo[p.company]=p);
+const lg=(d,s='')=>zj.logo(d,s);
+const stack=names=>`<span class="zj-lgs">${names.map(n=>byCo[n]?`<span title="${esc(n)}">${lg(byCo[n].domain,'xxs')}</span>`:'').join('')}</span>`;
+const stackText=names=>names.length?names.join(', '):'';
+
+/* ── the page ── */
+const p0=R.person;
+const portrait=p0.portrait.split('. ');
+const hero=`
+<div class="rp-hero-wrap">
+  <section class="rp-hero">
+    <div class="rp-photo"><img src="img/ron.webp" alt="Ron Robinson"></div>
+    <div class="rp-who">
+      <div class="rp-lvl"><img src="img/level-4.webp" alt=""><span class="zj-w5">Level ${p0.level}</span><span class="zj-status">${esc(p0.mastery)}</span></div>
+      <h1 class="zj-t28">${esc(p0.name)}</h1>
+      <p class="zj-meta"><span class="zj-mi">${ic('briefcase')}${esc(p0.track)}</span><span class="zj-mi">${ic('map-pin')}${esc(p0.city)}</span><span class="zj-mi">${ic('graduation-cap')}Toronto Metropolitan University, 2025</span></p>
+      <p class="rp-words">${esc(p0.intro)}</p>
+      <div class="rp-proof">${stack(P.map(p=>p.company))}<span class="zj-m">7 real briefs on Zero's Business Analyst track</span></div>
+    </div>
+  </section>
+  <div class="zj-note rp-read" id="read">
+    ${zj.orb(26,'idle',{still:true})}
+    <p><b>Zero's read.</b> ${esc(portrait[0])}. ${esc(portrait[1])}.</p>
+    <p class="rp-more">${esc(portrait.slice(2).join('. '))}</p>
+    <span class="zj-note-acts"><span class="zj-status zj-ok">${ic('badge-check')}Seen in his work</span><button class="zj-quiet" type="button" id="readmore">Read all</button></span>
+  </div>
+</div>`;
+
+const track=`
+<section class="rp-sec" id="track" aria-label="His track">
+  <div class="zj-sh"><h2 class="zj-sh-t">His track</h2><span class="zj-m">7 done, measurement design next</span></div>
+  <ol class="rp-track">
+    ${P.map(p=>`<li class="rp-st rp-done" title="${esc(p.company)}: ${esc(p.title)}">${lg(p.domain,'xs')}<span class="rp-l">${esc(p.company)}</span></li>`).join('')}
+    <li class="rp-st rp-now" aria-current="step"><span class="rp-dot">8</span><span class="rp-l">Measurement design</span></li>
+    <li class="rp-st"><span class="rp-dot">9</span></li><li class="rp-st"><span class="rp-dot">10</span></li><li class="rp-st"><span class="rp-dot">11</span></li>
+    <li class="rp-st"><span class="rp-dot">12</span><span class="rp-l">AI workflows</span></li>
+  </ol>
+</section>`;
+
+const card=p=>`
+<article class="rp-proj" tabindex="0" role="button" data-p="${p.id}" aria-label="Read the review of ${esc(p.company)}">
+  <div class="rp-num"><span class="rp-co">${lg(p.domain,'xs')}${esc(p.company)}</span><span><span class="rp-fig">${esc(p.num)}</span><span class="zj-m">${esc(p.numLabel)}</span></span></div>
+  <div class="rp-pb">
+    <h3 class="rp-pt">${esc(p.title)}</h3>
+    <p class="rp-pd">${esc(p.brief)}</p>
+    <div class="rp-say"><span class="zj-av"><img src="${p.reviewer.face}" alt=""></span><div><p>${esc(p.quote)}</p><span class="zj-m">${esc(p.reviewer.name)}, ${esc(p.reviewer.role)} at ${esc(p.company)}</span></div></div>
+    <div class="rp-pf"><span class="zj-status">${esc(p.tag)}</span><span class="zj-m">${p.deliverables.length} handed in</span><button class="zj-pillbtn" type="button" tabindex="-1">Read the review${ic('chevron-right')}</button></div>
+  </div>
+</article>`;
+const work=`
+<section class="rp-sec" id="work">
+  <div class="zj-sh"><h2 class="zj-sh-t">Work</h2><span class="zj-m">Each one reviewed by the person who set the brief</span></div>
+  <div class="rp-list">${P.map(card).join('')}</div>
+</section>`;
+
+const okPill=s=>s==='demonstrated'?`<span class="zj-status zj-ok">${ic('check')}Shown</span>`:`<span class="zj-status">Not yet</span>`;
+const skills=`
+<section class="rp-sec" id="skills">
+  <div class="zj-sh"><h2 class="zj-sh-t">Skills</h2><span class="zj-m">Only what his projects show</span></div>
+  <div class="rp-groups">${R.skills.map(g=>`<div class="rp-group"><div class="rp-gh"><span class="zj-w5">${esc(g.cat)}</span><span class="zj-status">${esc(g.tag)}</span></div>${g.items.map(k=>`<div class="rp-sk"><span>${esc(k.name)}</span><span class="rp-src">${stack(k.from)}<span class="zj-m">${k.from.length===1?'1 project':k.from.length+' projects'}</span></span></div>`).join('')}</div>`).join('')}</div>
+  <h3 class="rp-sub">How he communicates</h3>
+  <div class="rp-rows">${R.comms.map(c=>`<div class="rp-row"><span>${okPill(c.status)}</span><div><b class="zj-ink zj-w5">${esc(c.name)}</b><span>${esc(c.summary)}</span><span class="zj-m">${esc(c.note)}</span></div></div>`).join('')}</div>
+  <h3 class="rp-sub">How he works</h3>
+  <div class="rp-rows">${R.patterns.map(w=>`<div class="rp-row"><span class="rp-src" style="display:flex;align-items:flex-start">${stack(w.from)}</span><div><b class="zj-ink zj-w5">${esc(w.name)}</b><span>${esc(w.summary)}</span><span class="zj-m">${esc(w.evidence)}</span></div></div>`).join('')}</div>
+  <h3 class="rp-sub">Tool stack</h3>
+  <div class="rp-tools">${R.tools.map(t=>`<div class="rp-tool"><header>${lg(t.domain)}<div><span class="zj-ink zj-w5">${esc(t.name)}</span><span class="zj-m">In ${t.count} of 7 projects</span></div></header><ul>${t.groups.map(g=>`<li><b>${esc(g.name)}</b>${g.uses.map(u=>`<span>${esc(u)}</span>`).join('')}</li>`).join('')}</ul></div>`).join('')}</div>
+</section>`;
+
+const bg=`
+<section class="rp-sec" id="background">
+  <div class="zj-sh"><h2 class="zj-sh-t">Background</h2></div>
+  <div class="rp-bg">
+    ${R.experience.map(e=>`<div class="rp-bgi">${lg(e.domain)}<div class="zj-grow"><span class="rp-t"><span class="zj-w5">${esc(e.title)}</span><span class="zj-status">${esc(e.type)}</span></span><span class="zj-m">${esc(e.org)} · ${esc(e.period)} · ${esc(e.place)}</span><p>${esc(e.text)}</p><div class="rp-tags">${e.skills.map(s=>`<span class="zj-status">${esc(s)}</span>`).join('')}</div></div></div>`).join('')}
+    ${R.school.map(s=>`<div class="rp-bgi">${lg(s.domain)}<div class="zj-grow"><span class="rp-t"><span class="zj-w5">${esc(s.degree)}</span></span><span class="zj-m">${esc(s.name)} · ${esc(s.period)}</span></div><span class="rp-gpa">${esc(s.gpa)} GPA</span></div>`).join('')}
+    ${R.certs.map(c=>`<div class="rp-bgi">${lg(c.domain)}<div class="zj-grow"><span class="rp-t"><span class="zj-w5">${esc(c.title)}</span></span><span class="zj-m">${esc(c.by)} · ${esc(c.date)}</span></div></div>`).join('')}
+  </div>
+</section>`;
+
+$('#main').innerHTML=hero+track+work+skills+bg;
+$('#foot').innerHTML=`${zj.orb(24,'idle',{still:true})}<span>Every line on this page comes from Ron's work on Zero, read and checked by Zero</span><span>Built on the Zero Jobs design system</span><span>b1</span>`;
+$$('[data-zj-logo]').forEach(e=>e.outerHTML=zj.logoMark());
+
+/* ── the rail ── */
+const rl=R.role,V=rl.verdict;
+const stIcon={'high-performer':`<span class="rp-ok">${ic('circle-check')}</span>`,threshold:`<span class="rp-mid">${ic('check')}</span>`,'not-yet':`<span class="rp-no">${ic('circle-dashed')}</span>`};
+const roleHTML=()=>`<div class="rp-in">
+  <div class="rp-rh">${lg(rl.domain)}<div><span class="zj-ink zj-w5">${esc(rl.title)} at ${esc(rl.company)}</span><span class="zj-m">${esc(rl.team)} · Zero's read for this role</span></div></div>
+  <p class="zj-t16 zj-ink" style="margin-top:18px">He has shown ${V.demonstrated} of the ${V.total} things this role asks for.</p>
+  <div class="rp-bar">${Array.from({length:V.total},(_,i)=>`<i class="${i<V.atHighPerformer?'rp-a':i<V.demonstrated?'rp-b':''}"></i>`).join('')}</div>
+  <div class="rp-legend"><span class="rp-a">${V.atHighPerformer} above the bar</span><span class="rp-b">${V.atThreshold} at the bar</span><span>${V.notYet} not yet</span></div>
+  <div class="rp-rs"><h3>What the role asks for</h3>${rl.reqs.map((q,i)=>`<div class="rp-req${q.status==='not-yet'?' rp-not':''}"><button type="button" aria-expanded="false" data-r="${i}">${stIcon[q.status]}<span>${esc(q.label)}</span></button><div class="rp-ev"><span>${esc(q.evidence)}</span>${q.from.length?`<span style="display:flex;align-items:center;gap:8px">${stack(q.from)}<span class="zj-m">${esc(stackText(q.from))}</span></span>`:''}</div></div>`).join('')}</div>
+  <div class="rp-rs"><h3>Why he fits</h3><div class="rp-why">${rl.why.map(w=>`<div><b>${esc(w.label)}</b><p>${esc(w.body)}</p><span class="zj-status">${esc(w.tag)}</span></div>`).join('')}</div></div>
+  <div class="rp-rs"><h3>Ask him about</h3>${rl.probes.map((q,i)=>`<div class="rp-req"><button type="button" aria-expanded="false">${`<span class="rp-mid">${ic('message-circle')}</span>`}<span>${esc(q.label)}</span></button><div class="rp-ev"><span>${esc(q.pattern)}</span><span class="zj-m">${esc(q.why)}</span></div></div>`).join('')}</div>
+  <div class="rp-rs"><h3>Would they hire him again</h3><div class="rp-hire">${rl.rehire.map(h=>`<div><header><span class="zj-av zj-sm"><img src="${h.face}" alt=""></span><div><span class="zj-ink zj-w5">${esc(h.name)}</span><span class="zj-m">${esc(h.company)}</span></div>${h.yes?`<span class="zj-status zj-ok">${ic('check')}Yes</span>`:`<span class="zj-status zj-warn">Not yet</span>`}</header><p>${esc(h.reason)}</p></div>`).join('')}</div></div>
+</div>`;
+
+const projHTML=p=>`<div class="rp-in rp-pr">
+  <div class="zj-detail-x"><button class="zj-close" type="button" id="close" aria-label="Back to Zero's read for Ramp">${ic('x')}</button></div>
+  <div class="rp-rh">${lg(p.domain,'l')}<div><span class="zj-ink zj-w5">${esc(p.company)}</span><span class="zj-m">Project ${p.id} of 7 · ${esc(p.tag)}</span></div></div>
+  <h2>${esc(p.title)}</h2>
+  <div class="rp-tags" style="margin-top:10px"><span class="zj-status">${esc(p.verdict)}</span></div>
+  <div class="rp-num"><span class="rp-co">What it came to</span><span><span class="rp-fig">${esc(p.num)}</span><span class="zj-m">${esc(p.numLabel)}</span></span></div>
+  <p class="rp-sum">${esc(p.summary)}</p>
+  <div class="rp-rs"><h3>What landed</h3><ul class="rp-pts">${p.landed.map(t=>`<li class="rp-y">${ic('circle-check')}<span>${esc(t)}</span></li>`).join('')}</ul></div>
+  <div class="rp-rs"><h3>What to work on</h3><ul class="rp-pts">${p.missed.map(t=>`<li class="rp-n">${ic('circle-alert')}<span>${esc(t)}</span></li>`).join('')}</ul></div>
+  <div class="rp-rs"><div class="zj-note">${zj.orb(26,'idle',{still:true})}<p>${esc(p.fits)}</p></div></div>
+  <div class="rp-rs"><h3>In numbers</h3><div class="rp-facts">${p.counts.map(c=>`<div><b>${esc(c[1])}</b><span class="zj-m">${esc(c[0])}</span></div>`).join('')}</div></div>
+  <div class="rp-rs"><h3>Handed in</h3><div class="zj-tree">${p.deliverables.map(d=>`<div class="zj-tn"><span class="zj-tn-i">${ic('file-text')}</span><span class="zj-tn-t">${esc(d)}</span></div>`).join('')}</div></div>
+  <div class="rp-rs"><h3>Tools</h3><div class="rp-tu">${p.tools.map(t=>`<div>${lg(t.domain,'xs')}<div><span class="zj-ink zj-w5">${esc(t.name)}</span><span class="zj-m">${esc(t.use)}</span></div></div>`).join('')}</div></div>
+  <div class="rp-rs"><h3>From the reviewer</h3><div class="rp-full"><span class="zj-av"><img src="${p.reviewer.face}" alt=""></span><div><p>${esc(p.reviewer.text)}</p><span class="zj-m">${esc(p.reviewer.name)}, ${esc(p.reviewer.role)} at ${esc(p.company)}</span></div></div></div>
+</div>`;
+
+const rail=$('#rail');
+let open=null;
+function show(id){
+  open=id;const p=P.find(x=>x.id===id);
+  rail.innerHTML=p?projHTML(p):roleHTML();rail.scrollTop=0;
+  rail.classList.toggle('rp-full-open',!!p&&matchMedia('(max-width:1100px)').matches);
+  document.body.style.overflow=rail.classList.contains('rp-full-open')?'hidden':'';
+  $$('.rp-proj').forEach(c=>c.classList.toggle('zj-on',+c.dataset.p===id));
+  zj.icons(rail);
+  const x=$('#close',rail);if(x){x.onclick=()=>{const back=open;show(null);const c=$(`.rp-proj[data-p="${back}"]`);if(c&&matchMedia('(max-width:1100px)').matches)c.scrollIntoView({block:'center'})};x.focus({preventScroll:true})}
+}
+rail.addEventListener('click',e=>{const b=e.target.closest('.rp-req>button');if(!b)return;const r=b.parentElement;const on=!r.classList.contains('rp-open');r.classList.toggle('rp-open',on);b.setAttribute('aria-expanded',on)});
+$('#main').addEventListener('click',e=>{const c=e.target.closest('.rp-proj');if(c)show(+c.dataset.p)});
+$('#main').addEventListener('keydown',e=>{const c=e.target.closest('.rp-proj');if(c&&(e.key==='Enter'||e.key===' ')){e.preventDefault();show(+c.dataset.p)}});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&open)$('#close',rail)&&$('#close',rail).click()});
+$('#readmore').onclick=()=>{const r=$('#read');const on=!r.classList.contains('rp-open');r.classList.toggle('rp-open',on);$('#readmore').textContent=on?'Show less':'Read all'};
+
+/* tabs follow the reading, and take you there */
+const top=$('#top'),tabs=$$('#tabs button'),secs=['work','skills','background'].map(id=>document.getElementById(id));
+let tick=0;const mark=()=>{tick=0;top.classList.toggle('rp-on',scrollY>8);let cur='work';secs.forEach(s=>{if(s.getBoundingClientRect().top<=160)cur=s.id});tabs.forEach(t=>t.classList.toggle('zj-on',t.dataset.go===cur))};
+addEventListener('scroll',()=>{if(!tick){tick=1;requestAnimationFrame(mark)}},{passive:true});
+tabs.forEach(t=>t.onclick=()=>document.getElementById(t.dataset.go).scrollIntoView({behavior:'smooth'}));
+
+$('#share').onclick=()=>{const done=()=>zj.toast('Link copied. Anyone with it sees this page.',{icon:'check'});navigator.clipboard?navigator.clipboard.writeText(location.href.split('#')[0]).then(done,done):done()};
+
+show(null);mark();zj.icons();
+})();
+</script>
+</body>
+</html>
