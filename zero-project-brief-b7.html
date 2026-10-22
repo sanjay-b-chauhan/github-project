@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zero project brief</title>
+<meta name="description" content="The project brief, opened from the world: everything at a glance, the detail one Read more away.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,300..800&display=swap">
+<style>
+/* b7 (22 Oct), Sanjay on b6: the brief makes sense, show more of it. The stages are the opened list only, one line each
+   (number, name, time), no bar and no description. One colour only for the text, not grey and white: the hierarchy
+   comes from size and weight. A little scroll is fine; the majority shows in one go.
+   b6 (22 Oct), Sanjay on b5: the stages are the scenario's own work (draft the proposal to present to the team), not
+   the kickoff and workspace steps; body type about 13px; the art on the left and the title on its right; dividers
+   between sections; a darker glass; more space, tighter tracking. On the map, the locked companies stay quiet: a lock
+   only, its name on hover, and on click when it opens. Everything else as b5.
+   The project brief, b5. Desktop only (Zero is a desktop app).
+   Sanjay on b4 (22 Oct): back to the blur glass (the app's own, as in b3), not the solid black. At a glance, much of the
+   data should show in one view. Company, project type and manager in three clear boxes. The brief, the stages and what
+   you'll cover condensed, with Read more for the rest ("it feels like everything is important"). What you get moves to
+   the right, one line with an icon each. The streak goes (we don't have it). No mono, as b4.
+   So the left reads in one pass: title, the three boxes, the brief in two lines, the stages as one bar where each
+   part is as long as its time, and what you'll cover in three short columns. The detail (the full brief, each stage
+   in a line) opens under Read more. The right: Earn up to, time and difficulty, what you get, Start.
+   The glass is the app's (rgba(18,18,18,.62), blur 16, saturate 1.1, radius 42, scrim .36). It opens as b4 did,
+   but the grown shape is the glass itself: a window-sized glass layer clipped to the card's box grows to the brief's,
+   420ms on a quick-out curve, while the content is revealed by the same edge. No layout while it moves, no fades. */
+:root{--sans:'Google Sans Flex','Google Sans',-apple-system,system-ui,sans-serif;--ease:cubic-bezier(.32,.72,0,1);--green:#4ade80;
+  --ink:rgba(255,255,255,.94);--ink2:var(--ink);--ink3:var(--ink);--tile:rgba(255,255,255,.055);--line:rgba(255,255,255,.1);--line2:rgba(255,255,255,.16)}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#101112;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;margin:0;padding:0;cursor:pointer;-webkit-appearance:none;appearance:none}
+ul,ol{list-style:none;margin:0;padding:0}
+
+/* ---------------- the world (cover) and the app's canvas (contain) ---------------- */
+#world{position:fixed;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0}
+#app{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;font-family:var(--sans);color:#fff;pointer-events:none}
+#app>*{pointer-events:auto}
+.map{position:absolute;inset:0;overflow:hidden;background:#131514}
+.cam{position:absolute;inset:0;transform-origin:56% 64%;transition:transform 1s var(--ease)}
+.city{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;user-select:none}
+body.picked .cam{transform:translate(-140px,-60px) scale(1.2)}
+.mk{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(18,20,26,.84);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.34),0 3px 10px rgba(0,0,0,.35);color:rgba(255,255,255,.78)}
+.mk svg{width:15px;height:15px}
+.mk.go{background:radial-gradient(circle,#1c1a18 0 4px,#fff 4.8px);box-shadow:0 0 0 3px rgba(255,255,255,.3),0 3px 10px rgba(0,0,0,.35)}
+.mk.go::after{content:'';position:absolute;inset:0;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.85);animation:ring 2.2s cubic-bezier(0,0,.2,1) infinite}
+@keyframes ring{0%{transform:scale(.9);opacity:0}18%{opacity:.85}100%{transform:scale(3.1);opacity:0}}
+.chip{position:absolute;display:flex;align-items:center;gap:8px;height:36px;padding:0 14px 0 11px;border-radius:999px;white-space:nowrap;font:600 15px/1 var(--sans);
+  background:rgba(18,20,26,.78);color:rgba(255,255,255,.92);box-shadow:0 6px 20px rgba(0,0,0,.3),inset 0 0 0 1px rgba(255,255,255,.12)}
+.chip img{width:17px;height:17px;display:block;filter:brightness(0) invert(1);opacity:.85}
+.chip em{font:500 14px/1 var(--sans);font-style:normal;color:rgba(255,255,255,.6);margin-left:2px}
+.chip.go{background:rgba(255,255,255,.96);color:#1c1a18;box-shadow:0 8px 22px rgba(0,0,0,.28);cursor:pointer}
+.chip.go img{filter:none;opacity:1}
+.chip.go em{display:inline-flex;align-items:center;gap:6px;color:#1f7a36;font-weight:600}
+.chip.go em::before{content:'';width:7px;height:7px;border-radius:50%;background:#49BA61}
+.chip.t{transform:translate(-50%,-100%)}.chip.b{transform:translate(-50%,0)}
+.mk.lk{cursor:pointer;transition:transform .2s var(--ease),background-color .2s}
+.mk.lk:hover,.mk.lk.open{z-index:6;background:rgba(18,20,26,.96);transform:scale(1.12)}
+.tip{position:absolute;left:50%;bottom:calc(100% + 10px);display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:10px 14px 10px 12px;border-radius:14px;
+  white-space:nowrap;text-align:left;background:rgba(18,20,26,.92);box-shadow:0 10px 24px rgba(0,0,0,.35),inset 0 0 0 1px rgba(255,255,255,.12);
+  transform-origin:50% 100%;transform:translate(-50%,0) scale(.6);visibility:hidden;transition:transform .18s var(--ease),visibility 0s linear .18s;pointer-events:none}
+.mk.lk:hover .tip,.mk.lk.open .tip{transform:translate(-50%,0) scale(.893);visibility:visible;transition:transform .22s var(--ease),visibility 0s}
+.tip b{display:flex;align-items:center;gap:8px;font:600 15px/1 var(--sans);color:#fff}
+.tip b img{width:16px;height:16px;filter:brightness(0) invert(1)}
+.tip em{display:none;align-items:center;gap:6px;font:500 13px/1 var(--sans);font-style:normal;color:rgba(255,255,255,.62)}
+.tip em svg{width:12px;height:12px}
+.mk.lk.open .tip em{display:flex}
+.hit{position:absolute;left:52.3%;top:55.5%;width:7.6%;height:13.8%;border-radius:30px;cursor:pointer;transition:background .2s,box-shadow .2s}
+.hit:hover{background:rgba(255,255,255,.1);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.7)}
+body.picked .hit,body.picked .chip.go{pointer-events:none}
+.hint{position:absolute;left:50%;bottom:64px;transform:translateX(-50%);display:flex;align-items:center;height:48px;padding:0 20px;border-radius:999px;
+  background:rgba(18,20,26,.78);font:500 17px/1 var(--sans);color:rgba(255,255,255,.85);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);transition:transform .4s var(--ease),opacity .3s}
+body.picked .hint{transform:translate(-50%,40px);opacity:0}
+
+/* ---------------- the scenario card on the right (the app's ScenarioIntroV1, set in the one sans) ---------------- */
+.card{position:absolute;right:40px;top:50%;width:470px;padding:20px;transform:translate(560px,-50%);visibility:hidden;
+  transition:transform .6s var(--ease),visibility 0s linear .6s}
+body.picked .card{transform:translate(0,-50%);visibility:visible;transition:transform .6s var(--ease) .1s,visibility 0s}
+.c-body{position:relative;overflow:hidden;border-radius:42px;background:rgba(0,0,0,.5);-webkit-backdrop-filter:blur(16px) saturate(1.1);backdrop-filter:blur(16px) saturate(1.1);box-shadow:0 44px 90px -24px rgba(0,0,0,.5)}
+.c-in{display:flex;flex-direction:column;align-items:center;gap:34px;padding:20px}
+.c-nav{display:flex;align-items:center;justify-content:space-between;width:100%}
+.c-chev{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;color:rgba(255,255,255,.7)}
+.c-chev svg{width:24px;height:24px}.c-chev.off{opacity:.2}
+.c-count{display:flex;height:46px;align-items:center;gap:8px;border-radius:999px;background:rgba(255,255,255,.1);padding:0 20px;font:500 16px/1 var(--sans);font-variant-numeric:tabular-nums}
+.c-count i{font-style:normal;color:rgba(255,255,255,.4)}.c-count em{font-style:normal;color:rgba(255,255,255,.6)}
+.c-art{width:336px;height:210px;object-fit:contain;display:block}
+.c-desc{margin:0;max-width:360px;padding:0 10px;font:500 24px/1.35 var(--sans);text-align:center}
+.c-meta{display:flex;flex-direction:column;align-items:center;gap:26px;width:100%}
+.c-rule{width:100%;height:1px;background:rgba(255,255,255,.12)}
+.c-rows{display:flex;flex-direction:column;gap:20px;width:100%}
+.c-row{display:flex;height:30px;align-items:center;justify-content:space-between;padding:0 20px}
+.c-row>span:first-child{font:500 16px/1 var(--sans);color:rgba(255,255,255,.55)}
+.c-row>b,.c-diff b{font:500 18px/1 var(--sans)}
+.c-xp{display:inline-flex;align-items:center;gap:6px;border-radius:40px;padding:6px 10px;background:rgba(255,224,107,.12);box-shadow:0 0 0 1px rgba(255,225,127,.4)}
+.c-xp img{width:18px;height:18px;display:block}.c-xp b{font:600 18px/1.2 var(--sans);font-variant-numeric:tabular-nums;color:#fff9d5}
+.c-diff{display:flex;align-items:center;gap:20px}
+.c-bars{display:inline-flex;gap:2px}.c-bars i{display:block;width:23px;height:10px;border-radius:30px;background:#fff}.c-bars i.dim{opacity:.1}
+/* the app's StartButtonV1 */
+.start{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:62px;padding:15px 40px;border-radius:100px;
+  background-image:linear-gradient(90deg,rgba(255,255,255,.4),rgba(255,255,255,.4)),linear-gradient(180deg,rgba(229,229,229,.8),rgb(226,226,226));
+  box-shadow:0 6px 0 #c8c8c8,0 12px 18px -6px rgba(0,0,0,.4),0 0 0 1.33px #e6e6e6,inset 0 1.33px 0 rgba(255,255,255,.75);transition:transform .1s cubic-bezier(.34,1.56,.64,1),box-shadow .1s}
+.start:hover{transform:translateY(-1px)}
+.start:active,.start.down{transform:translateY(5px);box-shadow:0 1px 0 #c8c8c8,0 3px 8px -4px rgba(0,0,0,.4),0 0 0 1.33px #e6e6e6,inset 0 1.33px 0 rgba(255,255,255,.75)}
+.start svg{width:7.8px;height:9.9px;margin-right:3.5px;position:relative;z-index:2}
+.start b{position:relative;z-index:2;font:600 23px/1.2 var(--sans);letter-spacing:-.48px;
+  background:linear-gradient(100deg,#121212 0%,#121212 34%,#ff5ec0 42%,#8b7bff 50%,#37dcc4 58%,#121212 66%,#121212 100%);background-size:300% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;animation:holo 3s ease-in-out infinite}
+@keyframes holo{0%{background-position:130% 0}55%,100%{background-position:-30% 0}}
+
+/* ---------------- the brief: the app's glass, grown from the card ---------------- */
+.scrim{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.36);opacity:0;visibility:hidden;transition:opacity .32s var(--ease),visibility 0s linear .32s}
+body.open .scrim{opacity:1;visibility:visible;transition:opacity .32s var(--ease),visibility 0s}
+.glass{position:fixed;inset:0;z-index:21;visibility:hidden;background:rgba(10,10,11,.76);-webkit-backdrop-filter:blur(16px) saturate(1.1);backdrop-filter:blur(16px) saturate(1.1)}
+.ov{position:fixed;z-index:22;overflow:hidden;border-radius:42px;visibility:hidden;display:flex;font-family:var(--sans);color:var(--ink);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+body.open .glass,body.open .ov{visibility:visible}
+.ov-x{position:fixed;z-index:23;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.2);color:#fff;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.15);transform:scale(.6);opacity:0;visibility:hidden;transition:transform .2s var(--ease),opacity .2s,background-color .15s,visibility 0s linear .2s}
+.ov-x:hover{background:rgba(255,255,255,.3)}
+.ov-x svg{width:20px;height:20px}
+body.shown .ov-x{transform:none;opacity:1;visibility:visible;transition:transform .3s var(--ease),opacity .2s,background-color .15s,visibility 0s}
+.ov-x.inside{background:var(--tile)}
+.scroll{overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
+.scroll::-webkit-scrollbar{width:8px}.scroll::-webkit-scrollbar-thumb{background:var(--line2);border-radius:8px;border:2px solid transparent;background-clip:padding-box}
+
+/* the left: one pass from top to bottom */
+.story{flex:1 1 auto;min-width:0;padding:34px 52px 24px}
+/* the content scales with the card (1 at 1512, up to 1.2 on a big screen) so a big window shows the same view, larger */
+.col,.rail-sc,.act{zoom:var(--z,1)}
+.col{max-width:760px;margin:0 auto}
+.top{display:flex;align-items:center;gap:22px}
+.st-art{display:block;flex:none;height:68px;width:auto;max-width:160px;object-fit:contain}
+.st-title{margin:0;font:500 28px/1.12 var(--sans);letter-spacing:-.032em}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:26px}
+.fact{display:flex;align-items:center;gap:12px;min-width:0;padding:10px 14px;border-radius:18px;background:var(--tile);box-shadow:inset 0 0 0 1px var(--line)}
+.f-ic{flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;color:var(--ink)}
+.f-ic.lg{background:#fff}.f-ic.lg img{width:20px;height:20px;display:block}
+.f-ic.ty{background:rgba(255,255,255,.1)}.f-ic.ty svg{width:18px;height:18px}
+img.f-ic{object-fit:cover;object-position:top}
+.fact>span:last-child{display:flex;flex-direction:column;gap:3px;min-width:0}
+.fact i{font:400 12px/1.2 var(--sans);font-style:normal;color:var(--ink3)}
+.fact b{font:500 14px/1.2 var(--sans);letter-spacing:-.012em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sec{margin-top:22px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08)}
+.sh{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:0 0 12px}
+.sh h3{margin:0;font:500 15px/1.3 var(--sans);letter-spacing:-.018em}
+.shr{display:flex;align-items:baseline;gap:16px}
+.sh .n{font:400 12px/1 var(--sans);color:var(--ink3);font-variant-numeric:tabular-nums}
+.sh .rm{margin-top:0}
+.lead{margin:0;font:400 13px/1.65 var(--sans);letter-spacing:-.006em;color:var(--ink2)}
+.lead b{font-weight:600;color:var(--ink)}
+.lead2{margin-top:8px}
+/* Read more: the rest opens under it (the row grows; nothing fades) */
+.more{display:grid;grid-template-rows:0fr;transition:grid-template-rows .36s var(--ease)}
+.more>div{overflow:hidden;min-height:0}
+.sec.on .more{grid-template-rows:1fr}
+.rm{display:inline-flex;align-items:center;gap:4px;margin-top:10px;font:500 13px/1 var(--sans);letter-spacing:-.006em;color:var(--ink2);border-radius:6px}
+.rm:hover{color:var(--ink)}
+.rm svg{width:15px;height:15px;transition:transform .3s var(--ease)}
+.sec.on .rm svg{transform:rotate(180deg)}
+.full{padding-top:12px}
+.full p{margin:0 0 10px;font:400 13px/1.65 var(--sans);letter-spacing:-.006em;color:var(--ink2)}
+.full p b{font-weight:500;color:var(--ink)}
+/* the stages: one bar, each part as long as its time */
+.sgl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(4,auto);grid-auto-flow:column;column-gap:44px}
+.strip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.seg{display:flex;flex-direction:column;gap:8px;min-width:0}
+.seg>i{display:block;height:4px;border-radius:4px;background:rgba(255,255,255,.24)}
+.seg .sm{display:flex;align-items:baseline;gap:8px}
+.seg em{font:500 11px/1 var(--sans);font-style:normal;color:var(--ink3);font-variant-numeric:tabular-nums}
+.seg b{min-height:2.6em;font:500 13px/1.3 var(--sans);letter-spacing:-.012em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.seg .sm span{font:400 11px/1 var(--sans);color:var(--ink3);font-variant-numeric:tabular-nums;white-space:nowrap}
+.sgl li{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:7px 0}
+.sgl em{font:500 12px/1 var(--sans);font-style:normal;color:var(--ink3);font-variant-numeric:tabular-nums}
+.sgl b{font:500 13px/1.45 var(--sans);letter-spacing:-.008em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sgl b i{font-weight:400;font-style:normal;color:var(--ink3);margin-left:6px}
+.sgl span{font:400 12px/1 var(--sans);color:var(--ink3);font-variant-numeric:tabular-nums}
+/* what you'll cover: three short columns */
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:14px}
+.cl{display:block;margin-bottom:12px;font:400 12px/1.2 var(--sans);font-style:normal;color:var(--ink3)}
+.cols li{display:flex;align-items:center;gap:9px;min-height:22px;font:500 13px/1.3 var(--sans);letter-spacing:-.008em;color:var(--ink)}
+.cols li+li{margin-top:6px}
+.cols li img{width:20px;height:20px;flex:none;border-radius:6px;background:#fff;padding:2px;object-fit:contain}
+.cols li em{flex:none;display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.1);font:500 11px/1 var(--sans);font-style:normal;color:var(--ink2)}
+.cols li .dot{flex:none;width:5px;height:5px;margin:0 7px;border-radius:50%;background:var(--ink3)}
+
+/* the right: what you earn, how long, how hard, what you get, Start */
+.rail{flex:none;display:flex;flex-direction:column;min-height:0;border-left:1px solid var(--line)}
+.rail-sc{flex:1 1 auto;min-height:0;padding:36px 28px 12px;display:flex;flex-direction:column;gap:12px;
+  -webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 20px),transparent);mask-image:linear-gradient(to bottom,#000 calc(100% - 20px),transparent)}
+.blk{padding:18px 20px;border-radius:20px;background:var(--tile);box-shadow:inset 0 0 0 1px var(--line)}
+.lbl{margin:0 0 14px;font:400 13px/1.2 var(--sans);color:var(--ink3)}
+.tiers{display:flex;flex-direction:column;gap:12px}
+.tier{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.tier span.x{display:flex;align-items:center;gap:9px;white-space:nowrap}
+.tier img{width:20px;height:20px;display:block}
+.tier .xp{font:500 20px/1 var(--sans);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.tier:not(:first-child) .xp{color:var(--ink2)}
+.tier .nm{font:400 13px/1.2 var(--sans);color:var(--ink2);text-align:right}
+.tier:first-child .nm{color:var(--ink)}
+.lvlup{display:inline-flex;align-items:center;gap:3px;height:22px;padding:0 8px;border-radius:30px;font:600 12px/1 var(--sans);color:var(--green);
+  background:color-mix(in srgb,var(--green) 16%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--green) 40%,transparent)}
+.lvlup svg{width:12px;height:12px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pair .lbl{margin-bottom:10px}
+.val{display:block;font:500 17px/1.2 var(--sans);letter-spacing:-.015em;font-variant-numeric:tabular-nums}
+.val+i{display:block;margin-top:5px;font:400 12px/1.2 var(--sans);font-style:normal;color:var(--ink3)}
+.diffs{display:flex;gap:3px;margin-top:8px}
+.diffs i{display:block;width:18px;height:7px;border-radius:30px;background:#fff}.diffs i.dim{opacity:.2}
+.get li{display:flex;align-items:center;gap:12px;font:500 13px/1.3 var(--sans);letter-spacing:-.008em}
+.get li+li{margin-top:14px}
+.get svg{width:18px;height:18px;flex:none;color:var(--ink2)}
+.lgs{display:flex;align-items:center;margin-left:auto}
+.lgs span{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px rgba(40,40,41,1)}
+.lgs span+span{margin-left:-5px}
+.lgs img{width:14px;height:14px;display:block;border-radius:3px}
+.act{flex:none;padding:12px 28px 28px}
+.rail .start{height:58px}
+.rail .start b{font-size:21px}
+
+.toast{position:fixed;left:50%;bottom:36px;z-index:30;display:flex;align-items:center;gap:12px;height:48px;padding:0 20px 0 12px;border-radius:999px;background:#fff;color:#131417;
+  font:500 15px/1 var(--sans);box-shadow:0 0 0 1px rgba(19,20,23,.1),0 20px 40px -18px rgba(0,0,0,.4);transform:translate(-50%,90px);pointer-events:none;transition:transform .4s var(--ease)}
+.toast.on{transform:translate(-50%,0)}
+.toast i{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#131417;color:#fff}
+.toast svg{width:14px;height:14px}
+.proto{position:fixed;left:14px;bottom:12px;z-index:50;display:flex;align-items:center;gap:2px;padding:3px;border-radius:999px;background:rgba(20,21,23,.82);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);font:500 12px/1 system-ui,sans-serif;color:rgba(255,255,255,.62)}
+.proto button{height:28px;padding:0 12px;border-radius:999px}.proto button:hover{color:#fff}
+.proto span{padding:0 10px 0 6px;color:rgba(255,255,255,.4)}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01s!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="app"></div>
+<div class="scrim"></div>
+<div class="glass"></div>
+<div class="ov" role="dialog" aria-modal="true" aria-label="Project brief"></div>
+<button class="ov-x" type="button" aria-label="Close the brief"></button>
+<div class="toast" role="status"></div>
+<nav class="proto" aria-label="Prototype"><button data-r>Start over</button><span>b7</span></nav>
+<script>
+(function () {
+  'use strict';
+  var A = 'zero-project-brief-assets-b7/';
+  function ic(d, w) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (w || 1.75) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>'; }
+  var I = {
+    lock: '<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.1" y="6.3" width="7.8" height="5.7" rx="1.7"/><path d="M4.9 6.3V4.6a2.1 2.1 0 014.2 0v1.7"/></svg>',
+    prev: ic('<path d="m15 18-6-6 6-6"/>', 2.4), next: ic('<path d="m9 18 6-6-6-6"/>', 2.4),
+    play: '<svg viewBox="8 5 11 14" aria-hidden="true"><path fill="#121212" d="M8 5v14l11-7z"/></svg>',
+    x: ic('<path d="M18 6 6 18"/><path d="m6 6 12 12"/>', 2.4), chev: ic('<path d="m6 9 6 6 6-6"/>', 2),
+    up: ic('<path d="m5 12 7-7 7 7"/><path d="M12 19V5"/>', 2.6), check: ic('<path d="M20 6 9 17l-5-5"/>', 2),
+    down: ic('<path d="M16 17h6v-6"/><path d="m22 17-8.5-8.5-5 5L2 7"/>'),
+    folder: ic('<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>'),
+    video: ic('<path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/>'),
+    bag: ic('<rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>')
+  };
+  /* the scenario's own stages (Sanjay, 22 Oct; the kickoff and the workspace are how you enter, not stages):
+     name, one line, minutes (placeholders until the backend sends real ones; they add up to the card's 2h 45m) */
+  var stages = [
+    ['Draft proposal', '', 25],
+    ['Executive summary', '', 15],
+    ['Execute the plan', '', 40],
+    ['Impact and deliverables', '', 25],
+    ['Prepare', '', 20],
+    ['Final submission', '', 10],
+    ['Present to the team', '', 30]
+  ];
+  var total = stages.reduce(function (a, s) { return a + s[2]; }, 0);
+  function hm(m) { var h = Math.floor(m / 60), r = m % 60; return (h ? h + 'h' : '') + (h && r ? ' ' : '') + (r ? r + 'm' : ''); }
+
+  /* ---- the world and the card ---- */
+  var SC = [['Airbnb', 'img/sc-logo-airbnb.svg', 56.2, 64.4, [56.2, 66.6, 'b'], 0], ['DoorDash', 'img/sc-logo-doordash.svg', 54.62, 34.98, [54.76, 28.3, 't'], 1],
+    ['Netflix', 'img/sc-logo-netflix.svg', 61.49, 46.26, [61.66, 36.2, 't'], 2], ['Spotify', 'img/logo-spotify.svg', 62.31, 59.26, [63.85, 61.1, 'b'], 4]];
+  document.getElementById('world').innerHTML = '<div class="map"><div class="cam"><img class="city" alt="" src="' + A + 'img/si-city.webp">' +
+    SC.map(function (s, i) {
+      var go = !i;
+      if (!go) return '<button class="mk lk" type="button" aria-label="' + s[0] + ', locked" style="left:' + s[2] + '%;top:' + s[3] + '%">' + I.lock +
+        '<span class="tip"><b><img alt="" src="' + A + s[1] + '">' + s[0] + '</b><em>' + I.lock + 'Unlocks after ' + s[5] + ' scenario' + (s[5] > 1 ? 's' : '') + '</em></span></button>';
+      return '<div class="mk go" style="left:' + s[2] + '%;top:' + s[3] + '%"></div>' +
+        '<div class="chip ' + s[4][2] + ' go" style="left:' + s[4][0] + '%;top:' + s[4][1] + '%" data-pick><img alt="" src="' + A + s[1] + '"><b>' + s[0] + '</b><em>Ready</em></div>';
+    }).join('') + '<button class="hit" type="button" aria-label="Airbnb, your first scenario" data-pick></button></div></div>';
+  var app = document.getElementById('app');
+  app.innerHTML = '<div class="hint">Click Airbnb to see your first scenario</div>' +
+    '<aside class="card" aria-label="Scenario"><div class="c-body"><div class="c-in">' +
+      '<div class="c-nav"><span class="c-chev off">' + I.prev + '</span><span class="c-count"><b>1</b><i>/</i><em>4</em></span><span class="c-chev">' + I.next + '</span></div>' +
+      '<img class="c-art" alt="Cancel Crisis" src="' + A + 'img/airbnb-art.webp">' +
+      '<p class="c-desc">Reducing Host Cancellations at Airbnb</p>' +
+      '<div class="c-meta"><div class="c-rule"></div><div class="c-rows">' +
+        '<div class="c-row"><span>Earn up to</span><span class="c-xp"><img alt="" src="' + A + 'img/xp-star.webp"><b>300</b></span></div>' +
+        '<div class="c-row"><span>Time</span><b>' + hm(total) + '</b></div>' +
+        '<div class="c-row"><span>Difficulty</span><span class="c-diff"><span class="c-bars"><i></i><i></i><i></i><i class="dim"></i></span><b>Intermediate</b></span></div>' +
+      '</div></div>' +
+      '<button class="start" type="button" data-open>' + I.play + '<b>Start</b></button>' +
+    '</div></div></aside>';
+
+  /* ---- the brief ---- */
+  function logo(p) { return '<img alt="" src="' + A + p + '">'; }
+  var rm = '<button class="rm" type="button" aria-expanded="false"><span>Read more</span>' + I.chev + '</button>';
+  var story =
+    '<div class="story scroll"><div class="col">' +
+      '<div class="top"><img class="st-art" alt="Cancel Crisis" src="' + A + 'img/airbnb-art.webp">' +
+      '<h2 class="st-title">Reducing Host Cancellations</h2></div>' +
+      '<div class="facts">' +
+        '<div class="fact"><span class="f-ic lg">' + logo('img/sc-logo-airbnb.svg') + '</span><span><i>Company</i><b>Airbnb</b></span></div>' +
+        '<div class="fact"><span class="f-ic ty">' + I.down + '</span><span><i>Project type</i><b>Cost reduction</b></span></div>' +
+        '<div class="fact"><img class="f-ic" alt="" src="' + A + 'img/navid-face.jpg"><span><i>Manager</i><b>Navid</b></span></div>' +
+      '</div>' +
+
+      '<section class="sec"><div class="sh"><h3>The brief</h3></div>' +
+        '<p class="lead">Hosts now cancel <b>14%</b> of confirmed stays, up from 11% six months ago, and it costs Airbnb <b>$3M a year</b>. Find out why, and bring Navid a plan that gets it back to <b>10%</b>.</p>' +
+        '<p class="lead lead2">You join the host team as its Business Analyst. Sort the cancellations by reason, put a number on what fixing the top one saves, and walk the team through a rollout they can ship.</p>' +
+        '<div class="more"><div><div class="full">' +
+          '<p>Each cancellation means a refund, a scramble to rebook and a guest who may not come back. That is why the rate matters more than the count: a small rise turns into millions.</p>' +
+        '</div></div></div>' + rm +
+      '</section>' +
+
+      '<section class="sec"><div class="sh"><h3>Stages</h3><div class="shr"><span class="n">' + stages.length + ' stages · ' + hm(total) + '</span></div></div>' +
+        '<ol class="sgl">' + stages.map(function (s, i) {
+          return '<li><em>' + (i + 1) + '</em><b>' + s[0] + '</b><span>' + s[2] + ' min</span></li>'; }).join('') + '</ol>' +
+      '</section>' +
+
+      '<section class="sec"><div class="sh"><h3>What you\'ll cover</h3></div>' +
+        '<p class="lead">Why it matters: this is the work analyst teams at Airbnb, Uber and DoorDash hire for.</p>' +
+        '<div class="cols">' +
+          '<div><i class="cl">Workflows</i><ul><li><em>1</em>Group the reasons with AI</li><li><em>2</em>Price it in a sheet</li><li><em>3</em>Pressure test the plan</li></ul></div>' +
+          '<div><i class="cl">Skills</i><ul>' + ['Root cause analysis', 'Trend analysis', 'Financial modelling', 'Presenting'].map(function (k) { return '<li><span class="dot"></span>' + k + '</li>'; }).join('') + '</ul></div>' +
+          '<div><i class="cl">Tool stack</i><ul><li>' + logo('img/logo-claude.svg') + 'Claude</li><li>' + logo('img/logo-sheets.svg') + 'Google Sheets</li><li>' + logo('img/logo-chatgpt.svg') + 'ChatGPT</li></ul></div>' +
+        '</div>' +
+      '</section>' +
+    '</div></div>';
+  var star = '<img alt="" src="' + A + 'img/xp-star.webp">';
+  var rail =
+    '<aside class="rail"><div class="rail-sc scroll">' +
+      '<section class="blk"><h3 class="lbl">Earn up to</h3><div class="tiers">' +
+        '<div class="tier"><span class="x">' + star + '<span class="xp">300</span><span class="lvlup">' + I.up + 'Rank 1</span></span><span class="nm">Exceeds</span></div>' +
+        '<div class="tier"><span class="x">' + star + '<span class="xp">220</span></span><span class="nm">Meets</span></div>' +
+        '<div class="tier"><span class="x">' + star + '<span class="xp">140</span></span><span class="nm">Complete</span></div>' +
+      '</div></section>' +
+      '<div class="pair">' +
+        '<section class="blk"><h3 class="lbl">Time</h3><b class="val">' + hm(total) + '</b><i>' + stages.length + ' stages</i></section>' +
+        '<section class="blk"><h3 class="lbl">Difficulty</h3><b class="val">Intermediate</b><span class="diffs"><i></i><i></i><i></i><i class="dim"></i></span></section>' +
+      '</div>' +
+      '<section class="blk"><h3 class="lbl">What you get</h3><ul class="get">' +
+        '<li>' + I.folder + 'A real project on your portfolio</li>' +
+        '<li>' + I.video + 'A recording of you presenting it</li>' +
+        '<li>' + I.bag + 'Rank 1 roles open<span class="lgs"><span>' + logo('img/jb-logo-ramp.png') + '</span><span>' + logo('img/jb-logo-perplexity.png') + '</span><span>' + logo('img/jb-logo-lyft.png') + '</span></span></li>' +
+      '</ul></section>' +
+    '</div>' +
+    '<div class="act"><button class="start" type="button" data-go>' + I.play + '<b>Start</b></button></div></aside>';
+  var B = document.body, glass = document.querySelector('.glass'), ov = document.querySelector('.ov'), ox = document.querySelector('.ov-x'), toast = document.querySelector('.toast');
+  ov.innerHTML = story + rail; ox.innerHTML = I.x;
+  toast.innerHTML = '<i>' + I.check + '</i>Next, the kickoff meeting with Navid';
+  Array.prototype.forEach.call(ov.querySelectorAll('.rm'), function (b) {
+    b.addEventListener('click', function () {
+      var on = b.closest('.sec').classList.toggle('on');
+      b.setAttribute('aria-expanded', on); b.firstChild.textContent = on ? 'Show less' : 'Read more';
+    });
+  });
+
+  /* ---- sizes: the world covers the window, the canvas fits it, the brief takes about 80% of it ---- */
+  var world = document.getElementById('world'), card = app.querySelector('.c-body'), railEl = ov.querySelector('.rail'), R = null, busy = false;
+  function layout() {
+    var w = innerWidth, h = innerHeight;
+    var width = Math.round(Math.min(1480, w - 48, Math.max(960, w * .8)));
+    var height = Math.round(Math.min(h - 44, width * .66));
+    return { left: Math.round((w - width) / 2), top: Math.round((h - height) / 2), width: width, height: height, rail: Math.round(Math.min(460, Math.max(360, width * .32))) };
+  }
+  function place(el, r) { el.style.left = r.left + 'px'; el.style.top = r.top + 'px'; el.style.width = r.width + 'px'; el.style.height = r.height + 'px'; }
+  /* the glass covers the window and is clipped to a box, so growing it is a clip, not a resize */
+  function inset(r, rad) { return 'inset(' + [r.top, innerWidth - r.left - r.width, innerHeight - r.top - r.height, r.left].map(function (v) { return v.toFixed(1) + 'px'; }).join(' ') + ' round ' + rad.toFixed(1) + 'px)'; }
+  function fit() {
+    var S = Math.min(innerWidth / 1920, innerHeight / 1080), C = Math.max(innerWidth / 1920, innerHeight / 1080);
+    app.style.transform = 'scale(' + S + ')'; app.style.left = Math.round((innerWidth - 1920 * S) / 2) + 'px'; app.style.top = Math.round((innerHeight - 1080 * S) / 2) + 'px';
+    world.style.transform = 'scale(' + C + ')'; world.style.left = Math.round((innerWidth - 1920 * C) / 2) + 'px'; world.style.top = Math.round((innerHeight - 1080 * C) / 2) + 'px';
+    R = layout(); railEl.style.width = R.rail + 'px';
+    ov.style.setProperty('--z', Math.max(1, Math.min(1.2, R.width / 1210, R.height / 744)).toFixed(3));
+    if (!busy) { place(ov, R); glass.style.clipPath = inset(R, 42); }
+    var out = R.left + R.width + 16 + 44 <= innerWidth - 8;
+    ox.classList.toggle('inside', !out);
+    ox.style.left = (out ? R.left + R.width + 16 : R.left + R.width - 64) + 'px'; ox.style.top = (out ? R.top : R.top + 20) + 'px';
+  }
+  fit(); addEventListener('resize', fit);
+
+  /* ---- open and close: the glass grows from the card's box to the brief's, 420ms on a quick-out curve, and the
+     content (already laid out at its size) is revealed by the same edge ---- */
+  var DUR_IN = 420, DUR_OUT = 340, EASE = 'cubic-bezier(.32,.72,0,1)';
+  function frames() {
+    var c = card.getBoundingClientRect(), r0 = 42 * c.width / card.offsetWidth; R = layout();
+    var ins = [Math.max(0, c.top - R.top), Math.max(0, R.left + R.width - c.right), Math.max(0, R.top + R.height - c.bottom), Math.max(0, c.left - R.left)];
+    return {
+      glass: [{ clipPath: inset({ left: c.left, top: c.top, width: c.width, height: c.height }, r0) }, { clipPath: inset(R, 42) }],
+      clip: [{ clipPath: 'inset(' + ins.map(function (v) { return v.toFixed(1) + 'px'; }).join(' ') + ' round ' + r0.toFixed(1) + 'px)' },
+             { clipPath: 'inset(0px 0px 0px 0px round 42px)' }]
+    };
+  }
+  function open() {
+    if (busy || B.classList.contains('open')) return; busy = true;
+    var key = app.querySelector('.start'); key.classList.add('down');
+    setTimeout(function () {
+      key.classList.remove('down');
+      var k = frames(); place(ov, R); glass.style.clipPath = inset(R, 42);
+      ov.querySelector('.story').scrollTop = 0;
+      B.classList.add('open'); card.style.visibility = 'hidden';
+      glass.animate(k.glass, { duration: DUR_IN, easing: EASE });
+      ov.animate(k.clip, { duration: DUR_IN, easing: EASE }).onfinish = function () { B.classList.add('shown'); busy = false; };
+    }, 90);
+  }
+  function close() {
+    if (busy || !B.classList.contains('open')) return; busy = true;
+    B.classList.remove('shown');
+    var k = frames();
+    var a = glass.animate(k.glass.slice().reverse(), { duration: DUR_OUT, easing: EASE, fill: 'forwards' });
+    var b = ov.animate(k.clip.slice().reverse(), { duration: DUR_OUT, easing: EASE, fill: 'forwards' });
+    b.onfinish = function () { card.style.visibility = ''; B.classList.remove('open'); a.cancel(); b.cancel(); busy = false; };
+  }
+  function startOver() {
+    glass.getAnimations().concat(ov.getAnimations()).forEach(function (a) { a.cancel(); });
+    B.classList.remove('open', 'shown', 'picked'); card.style.visibility = ''; busy = false; toast.classList.remove('on');
+    Array.prototype.forEach.call(ov.querySelectorAll('.sec.on'), function (s) { s.classList.remove('on'); s.querySelector('.rm').firstChild.textContent = 'Read more'; });
+  }
+
+  document.addEventListener('click', function (e) {
+    var lk = e.target.closest('.mk.lk');
+    Array.prototype.forEach.call(document.querySelectorAll('.mk.lk.open'), function (m) { if (m !== lk) m.classList.remove('open'); });
+    if (lk) { lk.classList.toggle('open'); return; }
+    var t = e.target.closest('[data-pick],[data-open],.ov-x,[data-go],[data-r],.scrim');
+    if (!t) return;
+    if (t.hasAttribute('data-pick')) B.classList.add('picked');
+    else if (t.hasAttribute('data-open')) open();
+    else if (t.classList.contains('ov-x') || t.classList.contains('scrim')) close();
+    else if (t.hasAttribute('data-go')) { t.classList.add('down'); setTimeout(function () { t.classList.remove('down'); }, 160); toast.classList.remove('on'); void toast.offsetWidth; toast.classList.add('on'); setTimeout(function () { toast.classList.remove('on'); }, 2600); }
+    else if (t.hasAttribute('data-r')) startOver();
+  });
+  addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+})();
+</script>
+</body>
+</html>
