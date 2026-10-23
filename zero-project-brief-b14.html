@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zero project brief</title>
+<meta name="description" content="The project brief, opened from the world: content on the left, what you earn on the right.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,300..800&display=swap">
+<style>
+/* b14 (23 Oct), Sanjay on b13: outlines only on the company, the project type and the manager, nowhere else (no
+   outlined numbers, no outlined lists, no "bill" table). The brief is a paragraph, the numbers, then more to read, so
+   it scrolls. The card keeps one height; what does not fit scrolls inside it (the tabs stay put). A big Start. The
+   light version is a bluish off-white, not beige. More content from the data we have: the tutorial's case (Navid's
+   own words, the five steps from kickoff to presentation, why it matters, the deliverables, skill and tool lines).
+/* b13 (22 Oct), Sanjay on b12: the same inner space on every side; no surface colour anywhere, outlines only; no
+   underline, the selected tab gets an outline; no body text in the brief; charcoal, not pure black; fewer and smaller
+   type sizes. So the card wraps its content with 48px all round and grows or shrinks with the tab (top and height
+   move together, 380ms); type is four sizes, 24 title, 20 numbers, 14 reading, 12 labels; the brief is the three
+   numbers plus the role, the goal and the ask, one line each (the backend's overview fields).
+/* b12 (22 Oct). Sanjay's board of what he likes: b4 exactly (its type, its air, the art on top with the title under it,
+   "loved that effect"); the company, project type and manager as small text in OUTLINE boxes (no fill); What you'll
+   cover as the three columns, workflows, skills, tool stack; What you get as one line and an icon each, with the Rank 1
+   logos; the stages with a one line each and their time ("those parts are why it feels like this"). No bold, no
+   underline except under the selected tab. Start stays top right. No zoom: b4's sizes at every screen (b10's 1.25 zoom
+   on his 2560 screen is what read as "super zoomed in"). Think Apple or Airbnb: clean, spaced out.
+/* b10 (22 Oct), Sanjay on b9: the brief is a tab too, and the tabs are only words with an underline under the open one,
+   no pill. The brief keeps its design (the two paragraphs and the three numbers) inside its tab.
+/* b9 (22 Oct). Sanjay: b4 was the one (clean, the hierarchy right, super clean), so b9 is b4 again with tabs to make
+   it clear. The right side goes completely: there is no time, no difficulty, no points and no streak in the product.
+   Under the title: the company, the project type, the manager, then the brief. Then three tabs, Stages, What you'll
+   cover, What you get: click, click, click. What you'll cover is skills, condensed, two or three things (the founders'
+   call, 22 Oct). And one backend project: the page is drawn from ONE record in the shape the backend already sends,
+   project_brief (title, description, overview, skills, tools, deliverables, team) plus the scenario's stages
+   (stage_title, sequence_order), so it can be wired to the real row field for field. The map keeps b6's quiet locks.
+/* The project brief, b4. Desktop only (Zero is a desktop app).
+   b3 was the app's own Scenario Overview (zero-core-ui dev, ScenarioOverviewV1). Sanjay on b3 (22 Oct): no mono fonts;
+   bigger, with the whole type and spacing redone and more air; "This scenario takes you to Rank 1" and "What you'll
+   unlock" go; "Earn up to" and the streak stay; a solid black or off-white surface instead of the see-through glass;
+   a faster, smoother open and close.
+   So: one family (Google Sans Flex) on one scale, 36 title, 20 section heads, 16 body, 14 meta; space instead of rules
+   between sections; the card grows to about 80% of the window (up to 1480 by 977); two surfaces on a switch, black and
+   off-white (the job portal's light inks). The open is a solid shell growing from the scenario card while the content is
+   revealed by its edge, 420ms on a quick-out curve; no blur on a moving layer, no fades on the content. */
+:root{--sans:'Google Sans Flex','Google Sans',-apple-system,system-ui,sans-serif;--ease:cubic-bezier(.32,.72,0,1);--green:#4ade80}
+body{--pill:rgba(255,255,255,.1);--sf:#1C1C1E;--rail:#161617;--ink:#F3F3F1;--ink2:rgba(243,243,241,.7);--ink3:rgba(243,243,241,.5);--tile:rgba(255,255,255,.045);
+  --line:rgba(255,255,255,.1);--line2:rgba(255,255,255,.15);--dim:.2}
+body.t-white{--pill:#FFFFFF;--sf:#F3F6FA;--rail:#E9EEF5;--ink:#101828;--ink2:#475467;--ink3:#7A8699;--tile:#FFFFFF;--line:rgba(16,24,40,.08);--line2:rgba(16,24,40,.14);--dim:.16}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#101112;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;margin:0;padding:0;cursor:pointer;-webkit-appearance:none;appearance:none}
+
+/* ---------------- the world (cover) and the app's canvas (contain) ---------------- */
+#world{position:fixed;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0}
+#app{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;font-family:var(--sans);color:#fff;pointer-events:none}
+#app>*{pointer-events:auto}
+.map{position:absolute;inset:0;overflow:hidden;background:#131514}
+.cam{position:absolute;inset:0;transform-origin:56% 64%;transition:transform 1s var(--ease)}
+.city{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;user-select:none}
+body.picked .cam{transform:translate(-140px,-60px) scale(1.2)}
+.mk{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(18,20,26,.84);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.34),0 3px 10px rgba(0,0,0,.35);color:rgba(255,255,255,.78)}
+.mk svg{width:15px;height:15px}
+.mk.go{background:radial-gradient(circle,#1c1a18 0 4px,#fff 4.8px);box-shadow:0 0 0 3px rgba(255,255,255,.3),0 3px 10px rgba(0,0,0,.35)}
+.mk.go::after{content:'';position:absolute;inset:0;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.85);animation:ring 2.2s cubic-bezier(0,0,.2,1) infinite}
+@keyframes ring{0%{transform:scale(.9);opacity:0}18%{opacity:.85}100%{transform:scale(3.1);opacity:0}}
+.chip{position:absolute;display:flex;align-items:center;gap:8px;height:36px;padding:0 14px 0 11px;border-radius:999px;white-space:nowrap;font:600 15px/1 var(--sans);
+  background:rgba(18,20,26,.78);color:rgba(255,255,255,.92);box-shadow:0 6px 20px rgba(0,0,0,.3),inset 0 0 0 1px rgba(255,255,255,.12)}
+.chip img{width:17px;height:17px;display:block;filter:brightness(0) invert(1);opacity:.85}
+.chip em{font:500 14px/1 var(--sans);font-style:normal;color:rgba(255,255,255,.6);margin-left:2px}
+.chip.go{background:rgba(255,255,255,.96);color:#1c1a18;box-shadow:0 8px 22px rgba(0,0,0,.28);cursor:pointer}
+.chip.go img{filter:none;opacity:1}
+.chip.go em{display:inline-flex;align-items:center;gap:6px;color:#1f7a36;font-weight:600}
+.chip.go em::before{content:'';width:7px;height:7px;border-radius:50%;background:#49BA61}
+.chip.t{transform:translate(-50%,-100%)}.chip.b{transform:translate(-50%,0)}
+.mk.lk{cursor:pointer;transition:transform .2s var(--ease),background-color .2s}
+.mk.lk:hover,.mk.lk.open{z-index:6;background:rgba(18,20,26,.96);transform:scale(1.12)}
+.tip{position:absolute;left:50%;bottom:calc(100% + 10px);display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:10px 14px 10px 12px;border-radius:14px;
+  white-space:nowrap;text-align:left;background:rgba(18,20,26,.92);box-shadow:0 10px 24px rgba(0,0,0,.35),inset 0 0 0 1px rgba(255,255,255,.12);
+  transform-origin:50% 100%;transform:translate(-50%,0) scale(.6);visibility:hidden;transition:transform .18s var(--ease),visibility 0s linear .18s;pointer-events:none}
+.mk.lk:hover .tip,.mk.lk.open .tip{transform:translate(-50%,0) scale(.893);visibility:visible;transition:transform .22s var(--ease),visibility 0s}
+.tip b{display:flex;align-items:center;gap:8px;font:600 15px/1 var(--sans);color:#fff}
+.tip b img{width:16px;height:16px;filter:brightness(0) invert(1)}
+.tip em{display:none;align-items:center;gap:6px;font:500 13px/1 var(--sans);font-style:normal;color:rgba(255,255,255,.62)}
+.tip em svg{width:12px;height:12px}
+.mk.lk.open .tip em{display:flex}
+.hit{position:absolute;left:52.3%;top:55.5%;width:7.6%;height:13.8%;border-radius:30px;cursor:pointer;transition:background .2s,box-shadow .2s}
+.hit:hover{background:rgba(255,255,255,.1);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.7)}
+body.picked .hit,body.picked .chip.go{pointer-events:none}
+.hint{position:absolute;left:50%;bottom:64px;transform:translateX(-50%);display:flex;align-items:center;height:48px;padding:0 20px;border-radius:999px;
+  background:rgba(18,20,26,.78);font:500 17px/1 var(--sans);color:rgba(255,255,255,.85);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);transition:transform .4s var(--ease),opacity .3s}
+body.picked .hint{transform:translate(-50%,40px);opacity:0}
+
+/* ---------------- the scenario card on the right (the app's ScenarioIntroV1, set in the one sans) ---------------- */
+.card{position:absolute;right:40px;top:50%;width:470px;padding:20px;transform:translate(560px,-50%);visibility:hidden;
+  transition:transform .6s var(--ease),visibility 0s linear .6s}
+body.picked .card{transform:translate(0,-50%);visibility:visible;transition:transform .6s var(--ease) .1s,visibility 0s}
+.c-body{position:relative;overflow:hidden;border-radius:42px;background:rgba(0,0,0,.5);-webkit-backdrop-filter:blur(16px) saturate(1.1);backdrop-filter:blur(16px) saturate(1.1);box-shadow:0 44px 90px -24px rgba(0,0,0,.5)}
+.c-in{display:flex;flex-direction:column;align-items:center;gap:34px;padding:20px}
+.c-nav{display:flex;align-items:center;justify-content:space-between;width:100%}
+.c-chev{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;color:rgba(255,255,255,.7)}
+.c-chev svg{width:24px;height:24px}.c-chev.off{opacity:.2}
+.c-count{display:flex;height:46px;align-items:center;gap:8px;border-radius:999px;background:rgba(255,255,255,.1);padding:0 20px;font:500 16px/1 var(--sans);font-variant-numeric:tabular-nums}
+.c-count i{font-style:normal;color:rgba(255,255,255,.4)}.c-count em{font-style:normal;color:rgba(255,255,255,.6)}
+.c-art{width:336px;height:210px;object-fit:contain;display:block}
+.c-desc{margin:0;max-width:360px;padding:0 10px;font:500 24px/1.35 var(--sans);text-align:center}
+.c-meta{display:flex;flex-direction:column;align-items:center;gap:26px;width:100%}
+.c-rule{width:100%;height:1px;background:rgba(255,255,255,.12)}
+.c-rows{display:flex;flex-direction:column;gap:20px;width:100%}
+.c-row{display:flex;height:30px;align-items:center;justify-content:space-between;padding:0 20px}
+.c-row>span:first-child{font:500 16px/1 var(--sans);color:rgba(255,255,255,.55)}
+.c-row>b,.c-diff b{font:500 18px/1 var(--sans)}
+.c-xp{display:inline-flex;align-items:center;gap:6px;border-radius:40px;padding:6px 10px;background:rgba(255,224,107,.12);box-shadow:0 0 0 1px rgba(255,225,127,.4)}
+.c-xp img{width:18px;height:18px;display:block}.c-xp b{font:600 18px/1.2 var(--sans);font-variant-numeric:tabular-nums;color:#fff9d5}
+.c-diff{display:flex;align-items:center;gap:20px}
+.c-bars{display:inline-flex;gap:2px}.c-bars i{display:block;width:23px;height:10px;border-radius:30px;background:#fff}.c-bars i.dim{opacity:.1}
+/* the app's StartButtonV1 */
+.start{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:62px;padding:15px 40px;border-radius:100px;
+  background-image:linear-gradient(90deg,rgba(255,255,255,.4),rgba(255,255,255,.4)),linear-gradient(180deg,rgba(229,229,229,.8),rgb(226,226,226));
+  box-shadow:0 6px 0 #c8c8c8,0 12px 18px -6px rgba(0,0,0,.4),0 0 0 1.33px #e6e6e6,inset 0 1.33px 0 rgba(255,255,255,.75);transition:transform .1s cubic-bezier(.34,1.56,.64,1),box-shadow .1s}
+.start:hover{transform:translateY(-1px)}
+.start:active,.start.down{transform:translateY(5px);box-shadow:0 1px 0 #c8c8c8,0 3px 8px -4px rgba(0,0,0,.4),0 0 0 1.33px #e6e6e6,inset 0 1.33px 0 rgba(255,255,255,.75)}
+.start svg{width:7.8px;height:9.9px;margin-right:3.5px;position:relative;z-index:2}
+.start b{position:relative;z-index:2;font:600 23px/1.2 var(--sans);letter-spacing:-.48px;
+  background:linear-gradient(100deg,#121212 0%,#121212 34%,#ff5ec0 42%,#8b7bff 50%,#37dcc4 58%,#121212 66%,#121212 100%);background-size:300% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;animation:holo 3s ease-in-out infinite}
+@keyframes holo{0%{background-position:130% 0}55%,100%{background-position:-30% 0}}
+
+/* ---------------- the brief: a solid shell that grows from the card, the content revealed by its edge ---------------- */
+.scrim{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.5);opacity:0;visibility:hidden;transition:opacity .32s var(--ease),visibility 0s linear .32s}
+body.open .scrim{opacity:1;visibility:visible;transition:opacity .32s var(--ease),visibility 0s}
+.shell{position:fixed;z-index:21;border-radius:42px;background:var(--sf);visibility:hidden;box-shadow:0 50px 100px -30px rgba(0,0,0,.6),0 0 0 1px var(--line)}
+.ov{position:fixed;z-index:22;overflow:hidden;border-radius:42px;visibility:hidden;font-family:var(--sans);color:var(--ink);display:flex;flex-direction:column}
+body.open .shell,body.open .ov{visibility:visible}
+.ov-x{position:fixed;z-index:23;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.2);color:#fff;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.15);transform:scale(.6);opacity:0;visibility:hidden;transition:transform .2s var(--ease),opacity .2s,background-color .15s,visibility 0s linear .2s}
+.ov-x:hover{background:rgba(255,255,255,.3)}
+.ov-x svg{width:20px;height:20px}
+body.shown .ov-x{transform:none;opacity:1;visibility:visible;transition:transform .3s var(--ease),opacity .2s,background-color .15s,visibility 0s,top .38s var(--ease)}
+
+.ov-x.inside{background:var(--tile);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line2)}
+.scroll{overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
+.scroll::-webkit-scrollbar{width:8px}.scroll::-webkit-scrollbar-thumb{background:var(--line2);border-radius:8px;border:2px solid transparent;background-clip:padding-box}
+
+/* the sheet: 48px on every side, one height; it scrolls, the tabs stay at the top */
+.sheet{flex:1 1 auto;min-height:0;padding:48px;-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(to bottom,#000 calc(100% - 36px),transparent)}
+.col{zoom:var(--z,1)}
+.head{display:flex;align-items:flex-start;justify-content:space-between;gap:24px}
+.st-art{display:block;height:84px;width:auto;max-width:240px;object-fit:contain}
+/* Start: the app's key at its own full size */
+.head .start{flex:none;width:200px;height:60px;padding:0 28px}
+.head .start b{font-size:22px}
+.st-title{margin:20px 0 0;font:500 24px/1.2 var(--sans);letter-spacing:-.024em;color:var(--ink)}
+/* company, project type, manager: the only outlines */
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:22px}
+.fact{display:flex;align-items:center;gap:12px;min-width:0;padding:12px 14px;border-radius:14px;box-shadow:inset 0 0 0 1px var(--line2)}
+.fact .ic{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;color:var(--ink)}
+.fact .ic.lg{background:#fff;box-shadow:0 0 0 1px var(--line)}.fact .ic.lg img{width:16px;height:16px;display:block}
+.fact .ic.ty{background:var(--line)}.fact .ic.ty svg{width:15px;height:15px}
+.fact img.ic{object-fit:cover;object-position:top}
+.fact .t{display:flex;flex-direction:column;gap:4px;min-width:0}
+.fact i{font:400 12px/1.2 var(--sans);font-style:normal;color:var(--ink3)}
+.fact b{font:400 14px/1.25 var(--sans);letter-spacing:-.008em;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* the tabs: words; the selected one sits in a thin outline that slides; the bar stays at the top as you scroll */
+.tabbed{margin-top:22px}
+.tabbar{position:sticky;top:-48px;z-index:3;margin:0 -14px;padding:14px 14px 12px;background:var(--sf)}
+.tabbar::after{content:'';position:absolute;left:0;right:0;top:100%;height:18px;background:linear-gradient(var(--sf),transparent);pointer-events:none}
+.tabs{position:relative;display:flex;gap:4px;margin-left:-14px}
+.tab{position:relative;z-index:1;height:34px;padding:0 14px;border-radius:999px;font:400 14px/1 var(--sans);letter-spacing:-.006em;color:var(--ink3);transition:color .2s}
+.tab:hover{color:var(--ink2)}
+.tab.on{color:var(--ink)}
+.tab-pill{position:absolute;left:0;top:0;height:34px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--line2);transition:transform .38s var(--ease),width .38s var(--ease)}
+.tmeta{margin-left:auto;align-self:center;font:400 12px/1 var(--sans);color:var(--ink3);font-variant-numeric:tabular-nums;visibility:hidden}
+.tabs[data-cur="1"] .tmeta{visibility:visible}
+.panes{margin-top:14px;overflow:hidden;transition:height .38s var(--ease)}
+.track{display:flex;align-items:flex-start;transition:transform .42s var(--ease)}
+.pane{flex:0 0 100%;min-width:0}
+/* reading */
+.h{margin:36px 0 12px;font:500 14px/1.3 var(--sans);letter-spacing:-.008em;color:var(--ink)}
+.p{margin:0;font:400 14px/1.75 var(--sans);letter-spacing:-.004em;color:var(--ink2)}
+.p b{font-weight:400;color:var(--ink)}
+/* the numbers: no box, just the figure and what it means */
+.nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:28px}
+.num b{display:block;font:500 24px/1 var(--sans);letter-spacing:-.022em;font-variant-numeric:tabular-nums;color:var(--ink)}
+.num span{display:block;margin-top:8px;font:400 12px/1.45 var(--sans);color:var(--ink3)}
+/* Navid's own words */
+.quote{display:flex;gap:14px;margin:36px 0 0}
+.quote img{flex:none;width:36px;height:36px;border-radius:50%;object-fit:cover;object-position:top}
+.quote blockquote{margin:0;font:400 14px/1.7 var(--sans);letter-spacing:-.004em;color:var(--ink)}
+.quote figcaption{margin-top:6px;font:400 12px/1.3 var(--sans);color:var(--ink3)}
+/* how it works: five steps */
+.flow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+.flow li{display:flex;flex-direction:column;gap:6px;min-width:0}
+.flow em{font:400 12px/1 var(--sans);font-style:normal;color:var(--ink3);font-variant-numeric:tabular-nums}
+.flow b{font:400 14px/1.3 var(--sans);letter-spacing:-.006em;color:var(--ink)}
+.flow span{font:400 12px/1.45 var(--sans);color:var(--ink3)}
+/* the stages: a number, a line, a time */
+.stages{list-style:none;margin:0;padding:0}
+.sg{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:14px;align-items:baseline;padding:10px 0}
+.sg-n{font:400 12px/1 var(--sans);color:var(--ink3);font-variant-numeric:tabular-nums}
+.sg-t{display:flex;flex-direction:column;gap:4px;min-width:0}
+.sg-t b{font:400 14px/1.3 var(--sans);letter-spacing:-.006em;color:var(--ink)}
+.sg-t span{font:400 12px/1.45 var(--sans);color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sg-m{font:400 12px/1 var(--sans);color:var(--ink2);font-variant-numeric:tabular-nums;white-space:nowrap}
+/* what you'll cover */
+.why{list-style:none;margin:0;padding:0}
+.why li{position:relative;padding-left:18px;font:400 14px/1.7 var(--sans);letter-spacing:-.004em;color:var(--ink2)}
+.why li+li{margin-top:6px}
+.why li::before{content:'';position:absolute;left:2px;top:.75em;width:4px;height:4px;border-radius:50%;background:var(--ink3)}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.cl{display:block;margin-bottom:12px;font:400 12px/1.2 var(--sans);font-style:normal;color:var(--ink3)}
+.cols ul{list-style:none;margin:0;padding:0}
+.cols li{display:flex;align-items:flex-start;gap:10px;font:400 14px/1.3 var(--sans);letter-spacing:-.006em;color:var(--ink)}
+.cols li+li{margin-top:14px}
+.cols li .tt{display:flex;flex-direction:column;gap:4px;min-width:0}
+.cols li i{font:400 12px/1.45 var(--sans);font-style:normal;color:var(--ink3)}
+.cols li img{width:22px;height:22px;flex:none;border-radius:6px;background:#fff;padding:3px;object-fit:contain}
+.cols li .no{flex:none;width:14px;font:400 12px/1.5 var(--sans);color:var(--ink3);font-variant-numeric:tabular-nums}
+/* what you get */
+.get{list-style:none;margin:0;padding:0}
+.get li{display:flex;align-items:center;gap:14px;padding:9px 0;font:400 14px/1.35 var(--sans);letter-spacing:-.006em;color:var(--ink)}
+.get svg{width:16px;height:16px;flex:none;color:var(--ink3)}
+.lgs{display:flex;align-items:center;margin-left:auto}
+.lgs span{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px var(--sf)}
+.lgs span+span{margin-left:-5px}
+.lgs img{width:14px;height:14px;display:block;border-radius:3px}
+body.t-white .lgs span{box-shadow:0 0 0 2px var(--sf),0 0 0 3px var(--line2)}
+.pane>.h:first-child,.pane>:first-child{margin-top:0}
+/* on off-white the key is the job portal's black key */
+body.t-white .head .start{background:linear-gradient(#313337,#17181B);box-shadow:0 6px 0 #0F1012,0 12px 18px -8px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.12)}
+body.t-white .head .start.down,body.t-white .head .start:active{box-shadow:0 1px 0 #0F1012,0 3px 8px -4px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.12)}
+body.t-white .head .start b{background:none;color:#fff;animation:none}
+body.t-white .head .start svg path{fill:#fff}
+
+.toast{position:fixed;left:50%;bottom:36px;z-index:30;display:flex;align-items:center;gap:12px;height:48px;padding:0 20px 0 12px;border-radius:999px;background:#fff;color:#131417;
+  font:500 15px/1 var(--sans);box-shadow:0 0 0 1px rgba(19,20,23,.1),0 20px 40px -18px rgba(0,0,0,.4);transform:translate(-50%,90px);pointer-events:none;transition:transform .4s var(--ease)}
+.toast.on{transform:translate(-50%,0)}
+.toast i{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#131417;color:#fff}
+.toast svg{width:14px;height:14px}
+.proto{position:fixed;left:14px;bottom:12px;z-index:50;display:flex;align-items:center;gap:2px;padding:3px;border-radius:999px;background:rgba(20,21,23,.82);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);font:500 12px/1 system-ui,sans-serif;color:rgba(255,255,255,.62)}
+.proto button{height:28px;padding:0 12px;border-radius:999px}.proto button:hover{color:#fff}
+.proto button.on{background:rgba(255,255,255,.14);color:#fff}
+.proto span{padding:0 10px 0 6px;color:rgba(255,255,255,.4)}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01s!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="app"></div>
+<div class="scrim"></div>
+<div class="shell"></div>
+<div class="ov" role="dialog" aria-modal="true" aria-label="Project brief"></div>
+<button class="ov-x" type="button" aria-label="Close the brief"></button>
+<div class="toast" role="status"></div>
+<nav class="proto" aria-label="Prototype"><button data-r>Start over</button><button data-t="black">Black</button><button data-t="white">Off-white</button><span>b14</span></nav>
+<script>
+(function () {
+  'use strict';
+  var A = 'zero-project-brief-assets-b14/';
+  function ic(d, w) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (w || 1.75) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>'; }
+  var I = {
+    lock: '<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.1" y="6.3" width="7.8" height="5.7" rx="1.7"/><path d="M4.9 6.3V4.6a2.1 2.1 0 014.2 0v1.7"/></svg>',
+    prev: ic('<path d="m15 18-6-6 6-6"/>', 2.4), next: ic('<path d="m9 18 6-6-6-6"/>', 2.4),
+    play: '<svg viewBox="8 5 11 14" aria-hidden="true"><path fill="#121212" d="M8 5v14l11-7z"/></svg>',
+    x: ic('<path d="M18 6 6 18"/><path d="m6 6 12 12"/>', 2.4),
+    up: ic('<path d="m5 12 7-7 7 7"/><path d="M12 19V5"/>', 2.6), check: ic('<path d="M20 6 9 17l-5-5"/>', 2),
+    folder: ic('<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>'),
+    bag: ic('<rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>'),
+    down: ic('<path d="M16 17h6v-6"/><path d="m22 17-8.5-8.5-5 5L2 7"/>'),
+    video: ic('<path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/>'),
+    spark: ic('<path d="M9.94 15.5A2 2 0 0 0 8.5 14.06l-6.13-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.13a.5.5 0 0 1 .96 0L14.06 8.5A2 2 0 0 0 15.5 9.94l6.13 1.58a.5.5 0 0 1 0 .96L15.5 14.06a2 2 0 0 0-1.44 1.44l-1.58 6.13a.5.5 0 0 1-.96 0z"/>'),
+    search: ic('<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>'),
+    mic: ic('<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/>'),
+    doc: ic('<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 13H8"/><path d="M16 17H8"/><path d="M16 13h-2"/>'),
+    pres: ic('<path d="M2 3h20"/><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3"/><path d="m7 21 5-5 5 5"/>'),
+    medal: ic('<path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15"/><path d="M11 12 5.12 2.2"/><path d="m13 12 5.88-9.8"/><path d="M8 7h8"/><circle cx="12" cy="17" r="5"/>'),
+    flame: '<svg class="flame" viewBox="0 0 34 40" aria-hidden="true"><defs><linearGradient id="fl1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD36B"/><stop offset=".55" stop-color="#FF8A3D"/><stop offset="1" stop-color="#F0442E"/></linearGradient><linearGradient id="fl2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF4C2"/><stop offset="1" stop-color="#FFC14D"/></linearGradient></defs><path fill="url(#fl1)" d="M17 1c2 7 9 10.5 9 20.5C26 32 22 39 17 39S6 33.5 6 24c0-6 3.5-9 5.5-12 .6 3.5 2.2 5.4 3.8 6.4C15 12 15 6 17 1z"/><path fill="url(#fl2)" d="M17 20c1.2 3.6 4.6 5.2 4.6 9.6 0 4.6-2.2 7.8-4.6 7.8s-4.8-2.6-4.8-6.8c0-3 1.8-4.4 2.8-6 .4 1.6 1.2 2.4 2 2.8-.2-2.8-.2-5 0-7.4z"/></svg>'
+  };
+  var stages = [
+    ['Kickoff meeting', 'Navid walks you through the brief. Take notes on the numbers.', 15],
+    ['Find why hosts cancel', 'Sort the cancellations by reason and name the top one.', 25],
+    ['Forecast the impact', 'Put a number on what fixing it saves, in rate and in dollars.', 45],
+    ['Build the rollout plan', 'Who does what, in what order, and what it costs.', 50],
+    ['Present to the team', 'Ten minutes on your plan, then their questions.', 30]
+  ];
+  var total = stages.reduce(function (a, s) { return a + s[2]; }, 0);
+  function hm(m) { var h = Math.floor(m / 60), r = m % 60; return (h ? h + 'h' : '') + (h && r ? ' ' : '') + (r ? r + 'm' : ''); }
+
+  /* ---- the world and the card ---- */
+  var SC = [['Airbnb', 'img/sc-logo-airbnb.svg', 56.2, 64.4, [56.2, 66.6, 'b'], 0], ['DoorDash', 'img/sc-logo-doordash.svg', 54.62, 34.98, [54.76, 28.3, 't'], 1],
+    ['Netflix', 'img/sc-logo-netflix.svg', 61.49, 46.26, [61.66, 36.2, 't'], 2], ['Spotify', 'img/logo-spotify.svg', 62.31, 59.26, [63.85, 61.1, 'b'], 4]];
+  document.getElementById('world').innerHTML = '<div class="map"><div class="cam"><img class="city" alt="" src="' + A + 'img/si-city.webp">' +
+    SC.map(function (s, i) {
+      var go = !i;
+      if (!go) return '<button class="mk lk" type="button" aria-label="' + s[0] + ', locked" style="left:' + s[2] + '%;top:' + s[3] + '%">' + I.lock +
+        '<span class="tip"><b><img alt="" src="' + A + s[1] + '">' + s[0] + '</b><em>' + I.lock + 'Unlocks after ' + s[5] + ' scenario' + (s[5] > 1 ? 's' : '') + '</em></span></button>';
+      return '<div class="mk go" style="left:' + s[2] + '%;top:' + s[3] + '%"></div>' +
+        '<div class="chip ' + s[4][2] + ' go" style="left:' + s[4][0] + '%;top:' + s[4][1] + '%" data-pick><img alt="" src="' + A + s[1] + '"><b>' + s[0] + '</b><em>Ready</em></div>';
+    }).join('') + '<button class="hit" type="button" aria-label="Airbnb, your first scenario" data-pick></button></div></div>';
+  var app = document.getElementById('app');
+  app.innerHTML = '<div class="hint">Click Airbnb to see your first scenario</div>' +
+    '<aside class="card" aria-label="Scenario"><div class="c-body"><div class="c-in">' +
+      '<div class="c-nav"><span class="c-chev off">' + I.prev + '</span><span class="c-count"><b>1</b><i>/</i><em>4</em></span><span class="c-chev">' + I.next + '</span></div>' +
+      '<img class="c-art" alt="Cancel Crisis" src="' + A + 'img/airbnb-art.webp">' +
+      '<p class="c-desc">Reducing Host Cancellations at Airbnb</p>' +
+      '<div class="c-meta"><div class="c-rule"></div><div class="c-rows">' +
+        '<div class="c-row"><span>Earn up to</span><span class="c-xp"><img alt="" src="' + A + 'img/xp-star.webp"><b>300</b></span></div>' +
+        '<div class="c-row"><span>Time</span><b>' + hm(total) + '</b></div>' +
+        '<div class="c-row"><span>Difficulty</span><span class="c-diff"><span class="c-bars"><i></i><i></i><i></i><i class="dim"></i></span><b>Intermediate</b></span></div>' +
+      '</div></div>' +
+      '<button class="start" type="button" data-open>' + I.play + '<b>Start</b></button>' +
+    '</div></div></aside>';
+
+  /* ---- one backend project: the record the page is drawn from, in the shape the backend sends ---- */
+  /* project_brief row (title, description, overview, skills, tools, deliverables, team) + the scenario's stages.
+     Content is the Airbnb scenario as Navid's script and Sanjay's stage list describe it; swap in the real row. */
+  var PROJECT = {
+    scenario: { title: 'Reducing Host Cancellations at Airbnb', company: 'Airbnb', category: 'Cost reduction' },
+    project_brief: {
+      title: 'Reducing Host Cancellations',
+      description: 'Airbnb hosts are cancelling on their guests more often. 14% of confirmed stays are now cancelled by the host, up from 11% six months ago. Each one means a refund, a scramble to rebook and a guest who may not come back. Together it costs Airbnb $3 million a year.',
+      overview: {
+        role: 'Business Analyst on the host team',
+        goal: 'Bring the host cancellation rate back down to 10%.',
+        challenge: 'Find why hosts cancel and bring Navid a plan the team can ship.'
+      },
+      emphasis: ['14% of confirmed stays', '$3 million a year'],
+      quote: 'Fourteen percent of our hosts cancel on their guests. It\'s costing us $3 million a year. I need that down to 10%.',
+      flow: [['Kickoff', 'Navid briefs you'], ['Say it back', 'You show you understood'], ['Workspace', 'You do the work, stage by stage'], ['Feedback', 'He reviews, you improve'], ['Present', 'You present to your team']],
+      why: ['Every marketplace loses money when hosts cancel. Finding why is core analyst work.', 'You size a real cost and defend a fix, which is what analyst interviews test.', 'The finished project goes on your portfolio, which is what companies see.'],
+      skill_lines: { 'Root cause analysis': 'Find the one reason under the numbers', 'Trend analysis': 'See what changed, and when', 'Financial modelling': 'Put a cost on the problem and the fix', 'Presenting': 'Ten minutes, then the questions' },
+      tool_lines: { 'Claude': 'Reads the data with you', 'Google Sheets': 'Sort, sum and chart it', 'ChatGPT': 'Drafts and checks your writing' },
+      numbers: [['14%', 'of confirmed stays cancelled by the host'], ['$3M', 'what it costs Airbnb every year'], ['10%', 'where Navid needs the rate']],
+      workflows: ['Group the reasons with AI', 'Price it in a sheet', 'Pressure test the plan'],
+      skills: ['Root cause analysis', 'Trend analysis', 'Financial modelling', 'Presenting'],
+      tools: ['Claude', 'Google Sheets', 'ChatGPT'],
+      deliverables: ['Why hosts cancel, a short report for Navid', 'A forecast of what the fix saves', 'The rollout plan for the fix', 'Slides for your team'],
+      team: [{ name: 'Navid', role: 'Your manager', avatar: 'img/navid-face.jpg' }]
+    },
+    /* stage_title, stage_description, minutes (the minutes are placeholders; they add up to the card's 2h 45m) */
+    stages: [
+      ['Draft proposal', 'Your first take on why hosts cancel and what to do.', 25],
+      ['Executive summary', 'The whole plan on one page for leadership.', 15],
+      ['Execute the plan', 'Run the analysis and build the money model.', 40],
+      ['Impact and deliverables', 'What the fix saves, and what you hand over.', 25],
+      ['Prepare', 'Build the deck and rehearse the story.', 20],
+      ['Final submission', 'Hand in the plan, the model and the deck.', 10],
+      ['Present to the team', 'Ten minutes, then their questions.', 30]
+    ].map(function (s, i) { return { stage_title: s[0], stage_description: s[1], minutes: s[2], sequence_order: i + 1 }; })
+  };
+  var TOOL_LOGO = { 'Claude': 'img/logo-claude.svg', 'Google Sheets': 'img/logo-sheets.svg', 'ChatGPT': 'img/logo-chatgpt.svg' };
+  var SKILL_ICON = [I.spark, I.search, I.mic];
+  var GET_ICON = [I.doc, I.pres];
+
+  function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function bold(t, marks) { var h = esc(t); (marks || []).forEach(function (m) { h = h.replace(esc(m), '<b>' + esc(m) + '</b>'); }); return h; }
+  function render(P) {
+    var pb = P.project_brief, mgr = pb.team[0], o = pb.overview;
+    var stages = P.stages.slice().sort(function (a, b) { return a.sequence_order - b.sequence_order; });
+    var total = stages.reduce(function (a, s) { return a + s.minutes; }, 0);
+    var tabs = [['brief', 'The brief'], ['stages', 'Stages'], ['cover', 'What you\'ll cover'], ['get', 'What you get']];
+    var panes = {
+      brief: '<p class="p">' + bold(pb.description, pb.emphasis) + '</p>' +
+        '<div class="nums">' + pb.numbers.map(function (n) { return '<div class="num"><b>' + esc(n[0]) + '</b><span>' + esc(n[1]) + '</span></div>'; }).join('') + '</div>' +
+        '<figure class="quote"><img alt="" src="' + A + mgr.avatar + '"><span><blockquote>“' + esc(pb.quote) + '”</blockquote><figcaption>' + esc(mgr.name) + ', your manager, in the kickoff</figcaption></span></figure>' +
+        '<h4 class="h">Your role</h4><p class="p">You\'re the ' + esc(o.role) + '. ' + esc(o.challenge) + ' Navid needs the rate back down to <b>10%</b>.</p>' +
+        '<h4 class="h">How it works</h4><ol class="flow">' + pb.flow.map(function (f, i) { return '<li><em>' + (i + 1) + '</em><b>' + esc(f[0]) + '</b><span>' + esc(f[1]) + '</span></li>'; }).join('') + '</ol>',
+      stages: '<ol class="stages">' + stages.map(function (s) {
+          return '<li class="sg"><span class="sg-n">' + s.sequence_order + '</span><span class="sg-t"><b>' + esc(s.stage_title) + '</b><span>' + esc(s.stage_description) + '</span></span><span class="sg-m">' + s.minutes + ' min</span></li>'; }).join('') + '</ol>',
+      cover: '<h4 class="h">Why it matters</h4><ul class="why">' + pb.why.map(function (w) { return '<li>' + esc(w) + '</li>'; }).join('') + '</ul>' +
+        '<h4 class="h">What you\'ll learn</h4><div class="cols">' +
+        '<div><i class="cl">Workflows</i><ul>' + pb.workflows.map(function (w, i) { return '<li><span class="no">' + (i + 1) + '</span>' + esc(w) + '</li>'; }).join('') + '</ul></div>' +
+        '<div><i class="cl">Skills</i><ul>' + pb.skills.map(function (k) { return '<li><span class="tt">' + esc(k) + '<i>' + esc(pb.skill_lines[k] || '') + '</i></span></li>'; }).join('') + '</ul></div>' +
+        '<div><i class="cl">Tool stack</i><ul>' + pb.tools.map(function (t) { return '<li>' + (TOOL_LOGO[t] ? '<img alt="" src="' + A + TOOL_LOGO[t] + '">' : '') + '<span class="tt">' + esc(t) + '<i>' + esc(pb.tool_lines[t] || '') + '</i></span></li>'; }).join('') + '</ul></div>' +
+      '</div>',
+      get: '<h4 class="h">You hand in</h4><ul class="get">' + pb.deliverables.map(function (d, i) { return '<li>' + (i === 3 ? GET_ICON[1] : GET_ICON[0]) + esc(d) + '</li>'; }).join('') + '</ul>' +
+        '<h4 class="h">You keep</h4><ul class="get">' +
+          '<li>' + I.folder + 'A real project on your portfolio</li>' +
+          '<li>' + I.video + 'A recording of you presenting it</li>' +
+          '<li>' + I.bag + 'Rank 1 roles open<span class="lgs"><span><img alt="" src="' + A + 'img/jb-logo-ramp.png"></span><span><img alt="" src="' + A + 'img/jb-logo-perplexity.png"></span><span><img alt="" src="' + A + 'img/jb-logo-lyft.png"></span></span></li>' +
+        '</ul>'
+    };
+    return '<div class="sheet scroll"><div class="col">' +
+      '<header class="head"><img class="st-art" alt="Cancel Crisis" src="' + A + 'img/airbnb-art.webp">' +
+        '<button class="start" type="button" data-go>' + I.play + '<b>Start</b></button></header>' +
+      '<h2 class="st-title">' + esc(pb.title) + '</h2>' +
+      '<div class="facts">' +
+        '<div class="fact"><span class="ic lg"><img alt="" src="' + A + 'img/sc-logo-airbnb.svg"></span><span class="t"><i>Company</i><b>' + esc(P.scenario.company) + '</b></span></div>' +
+        '<div class="fact"><span class="ic ty">' + I.down + '</span><span class="t"><i>Project type</i><b>' + esc(P.scenario.category) + '</b></span></div>' +
+        '<div class="fact"><img class="ic" alt="" src="' + A + mgr.avatar + '"><span class="t"><i>Manager</i><b>' + esc(mgr.name) + '</b></span></div>' +
+      '</div>' +
+      '<section class="tabbed">' +
+        '<div class="tabbar"><div class="tabs" role="tablist"><span class="tab-pill"></span>' + tabs.map(function (t, i) { return '<button class="tab' + (i ? '' : ' on') + '" type="button" role="tab" aria-selected="' + !i + '" data-tab="' + i + '">' + t[1] + '</button>'; }).join('') + '<span class="tmeta">' + stages.length + ' stages · ' + hm(total) + '</span></div></div>' +
+        '<div class="panes"><div class="track">' + tabs.map(function (t, i) { return '<div class="pane" role="tabpanel"' + (i ? ' aria-hidden="true"' : '') + '>' + panes[t[0]] + '</div>'; }).join('') + '</div></div>' +
+      '</section>' +
+    '</div></div>';
+  }
+  var B = document.body, shell = document.querySelector('.shell'), ov = document.querySelector('.ov'), ox = document.querySelector('.ov-x'), toast = document.querySelector('.toast');
+  ov.innerHTML = render(PROJECT); ox.innerHTML = I.x;
+  toast.innerHTML = '<i>' + I.check + '</i>Next, the kickoff meeting with Navid';
+
+  /* ---- the tabs ---- */
+  var tabEls = ov.querySelectorAll('.tab'), pill = ov.querySelector('.tab-pill'), panesEl = ov.querySelector('.panes'), track = ov.querySelector('.track'), paneEls = ov.querySelectorAll('.pane'), cur = 0;
+  function setTab(n, still) {
+    cur = n; ov.querySelector('.tabs').setAttribute('data-cur', n);
+    Array.prototype.forEach.call(tabEls, function (t, i) { t.classList.toggle('on', i === n); t.setAttribute('aria-selected', i === n); });
+    Array.prototype.forEach.call(paneEls, function (p, i) { p.setAttribute('aria-hidden', i !== n); });
+    var t = tabEls[n];
+    if (still) { pill.style.transition = track.style.transition = panesEl.style.transition = 'none'; }
+    pill.style.width = t.offsetWidth + 'px'; pill.style.transform = 'translateX(' + t.offsetLeft + 'px)';
+    track.style.transform = 'translateX(' + (-100 * n) + '%)';
+    panesEl.style.height = paneEls[n].offsetHeight + 'px';
+    if (still) { void pill.offsetWidth; pill.style.transition = track.style.transition = panesEl.style.transition = ''; }
+    else { var sh = ov.querySelector('.sheet'), tb = ov.querySelector('.tabbed'); if (sh.scrollTop > tb.offsetTop - 48) sh.scrollTo({ top: tb.offsetTop - 48, behavior: 'smooth' }); }
+  }
+
+  /* ---- the two surfaces: ?v=black|white, keys 1 and 2 ---- */
+  function theme(t) {
+    B.classList.toggle('t-white', t === 'white');
+    Array.prototype.forEach.call(document.querySelectorAll('[data-t]'), function (b) { b.classList.toggle('on', b.getAttribute('data-t') === t); });
+    try { history.replaceState(null, '', '?v=' + t); } catch (e) {}
+  }
+  theme(/[?&]v=white/.test(location.search) ? 'white' : 'black');
+
+  /* ---- sizes: the world covers the window, the canvas fits it, the brief takes about 80% of it ---- */
+  var world = document.getElementById('world'), card = app.querySelector('.c-body'), R = null, busy = false;
+  function layout() {
+    var w = innerWidth, h = innerHeight, z = 1;
+    var width = Math.round(Math.min(w - 96, 880));
+    /* one height for every tab; what does not fit scrolls inside */
+    var height = Math.round(Math.min(h - 56, 800));
+    return { left: Math.round((w - width) / 2), top: Math.round((h - height) / 2), width: width, height: height, z: z };
+  }
+  function place(el, r) { el.style.left = r.left + 'px'; el.style.top = r.top + 'px'; el.style.width = r.width + 'px'; el.style.height = r.height + 'px'; }
+  function fit() {
+    var S = Math.min(innerWidth / 1920, innerHeight / 1080), C = Math.max(innerWidth / 1920, innerHeight / 1080);
+    app.style.transform = 'scale(' + S + ')'; app.style.left = Math.round((innerWidth - 1920 * S) / 2) + 'px'; app.style.top = Math.round((innerHeight - 1080 * S) / 2) + 'px';
+    world.style.transform = 'scale(' + C + ')'; world.style.left = Math.round((innerWidth - 1920 * C) / 2) + 'px'; world.style.top = Math.round((innerHeight - 1080 * C) / 2) + 'px';
+    resize();
+  }
+  function resize() {
+    R = layout(); ov.style.setProperty('--z', R.z.toFixed(3));
+    if (!busy) { place(ov, R); if (B.classList.contains('open')) place(shell, R); }
+    /* the close key sits outside the top right corner, or inside it when the window is too narrow */
+    var out = R.left + R.width + 16 + 44 <= innerWidth - 8;
+    ox.classList.toggle('inside', !out);
+    ox.style.left = (out ? R.left + R.width + 16 : R.left + R.width - 64) + 'px'; ox.style.top = (out ? R.top : R.top + 20) + 'px';
+  }
+  fit(); setTab(cur, true); addEventListener('resize', function () { fit(); setTab(cur, true); });
+
+  /* ---- open and close: the shell grows from the card's box to the brief's, 420ms on a quick-out curve; the content
+     is already laid out at its final size and is revealed by the same edge (a clip that tracks the shell), so nothing
+     reflows, nothing blurs while it moves and nothing fades ---- */
+  var DUR_IN = 420, DUR_OUT = 340, EASE = 'cubic-bezier(.32,.72,0,1)';
+  function boxes() {
+    var c = card.getBoundingClientRect(), r0 = 42 * c.width / card.offsetWidth; R = layout();
+    /* the shell starts in the card's own dark and settles into the surface, so off-white never flashes over the card */
+    var sf = getComputedStyle(B).getPropertyValue('--sf').trim(), dark = 'rgb(16,16,17)';
+    var ins = [Math.max(0, c.top - R.top), Math.max(0, R.left + R.width - c.right), Math.max(0, R.top + R.height - c.bottom), Math.max(0, c.left - R.left)];
+    return {
+      shell: [{ left: c.left + 'px', top: c.top + 'px', width: c.width + 'px', height: c.height + 'px', borderRadius: r0 + 'px', backgroundColor: dark },
+              { left: R.left + 'px', top: R.top + 'px', width: R.width + 'px', height: R.height + 'px', borderRadius: '42px', backgroundColor: sf }],
+      clip: [{ clipPath: 'inset(' + ins.map(function (v) { return v.toFixed(1) + 'px'; }).join(' ') + ' round ' + r0.toFixed(1) + 'px)' },
+             { clipPath: 'inset(0px 0px 0px 0px round 42px)' }]
+    };
+  }
+  function open() {
+    if (busy || B.classList.contains('open')) return; busy = true;
+    var key = app.querySelector('.start'); key.classList.add('down');
+    setTimeout(function () {
+      key.classList.remove('down');
+      ov.querySelector('.sheet').scrollTop = 0; setTab(0, true);
+      var k = boxes(); place(ov, R); place(shell, R); resize();
+      B.classList.add('open'); card.style.visibility = 'hidden';
+      shell.animate(k.shell, { duration: DUR_IN, easing: EASE });
+      ov.animate(k.clip, { duration: DUR_IN, easing: EASE }).onfinish = function () { B.classList.add('shown'); busy = false; };
+    }, 90);
+  }
+  function close() {
+    if (busy || !B.classList.contains('open')) return; busy = true;
+    B.classList.remove('shown');
+    var k = boxes();
+    var a = shell.animate(k.shell.slice().reverse(), { duration: DUR_OUT, easing: EASE, fill: 'forwards' });
+    var b = ov.animate(k.clip.slice().reverse(), { duration: DUR_OUT, easing: EASE, fill: 'forwards' });
+    b.onfinish = function () { card.style.visibility = ''; B.classList.remove('open'); a.cancel(); b.cancel(); busy = false; };
+  }
+  function startOver() {
+    shell.getAnimations().concat(ov.getAnimations()).forEach(function (a) { a.cancel(); });
+    B.classList.remove('open', 'shown', 'picked'); card.style.visibility = ''; busy = false; toast.classList.remove('on');
+  }
+
+  document.addEventListener('click', function (e) {
+    var lk = e.target.closest('.mk.lk');
+    Array.prototype.forEach.call(document.querySelectorAll('.mk.lk.open'), function (m) { if (m !== lk) m.classList.remove('open'); });
+    if (lk) { lk.classList.toggle('open'); return; }
+    var tb = e.target.closest('[data-tab]');
+    if (tb) { setTab(+tb.getAttribute('data-tab')); return; }
+    var t = e.target.closest('[data-pick],[data-open],.ov-x,[data-go],[data-r],[data-t],.scrim');
+    if (!t) return;
+    if (t.hasAttribute('data-pick')) B.classList.add('picked');
+    else if (t.hasAttribute('data-open')) open();
+    else if (t.classList.contains('ov-x') || t.classList.contains('scrim')) close();
+    else if (t.hasAttribute('data-go')) { t.classList.add('down'); setTimeout(function () { t.classList.remove('down'); }, 160); toast.classList.remove('on'); void toast.offsetWidth; toast.classList.add('on'); setTimeout(function () { toast.classList.remove('on'); }, 2600); }
+    else if (t.hasAttribute('data-t')) theme(t.getAttribute('data-t'));
+    else if (t.hasAttribute('data-r')) startOver();
+  });
+  addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') close();
+    else if (e.key === '1') theme('black');
+    else if (e.key === '2') theme('white');
+  });
+})();
+</script>
+</body>
+</html>
