@@ -60,6 +60,34 @@ h2.sec{margin:54px 0 18px;font:500 13px/1 var(--sans);color:var(--tx-3);letter-s
 .card .links a{display:inline-flex;align-items:center;height:28px;padding:0 11px 1px;border-radius:99px;font:500 12px/1 var(--sans);box-shadow:inset 0 0 0 1px var(--line);transition:background .2s,color .2s}
 .card .links a:first-child{background:var(--ink);color:#F6F6F4;box-shadow:none}
 .card .links a:hover{background:rgba(26,25,23,.06)} .card .links a:first-child:hover{background:#2E2D2A}
+/* everything we tried, one topic per sheet */
+.topics{display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 14px}
+.topics a{display:inline-flex;align-items:center;height:30px;padding:0 12px 1px;border-radius:99px;font:500 12.5px/1 var(--sans);box-shadow:inset 0 0 0 1px var(--line);transition:background .2s}
+.topics a:hover{background:rgba(26,25,23,.06)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-bottom:18px;font-size:12.5px;color:var(--tx-3)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.st{flex:none;display:inline-grid;place-items:center;height:20px;padding:0 7px 1px;border-radius:99px;font:500 11px/1 var(--sans);font-style:normal;white-space:nowrap}
+.st.now{background:var(--ink);color:#F6F6F4}
+.st.opt{box-shadow:inset 0 0 0 1px rgba(26,25,23,.28);color:var(--tx)}
+.st.kept,.st.liked{background:#E6E4DF;color:var(--tx)}
+.st.earlier{box-shadow:inset 0 0 0 1px var(--line);color:var(--tx-3)}
+.st.drop{background:#F4E4DF;color:#9A4636}
+.topic{scroll-margin-top:16px;margin-top:14px;padding:20px;border-radius:22px;background:var(--sheet);box-shadow:0 0 0 1px var(--line)}
+.topic .th{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:0 2px 16px}
+.topic h3{font:400 26px/1.1 var(--serif);letter-spacing:-.022em}
+.topic .th p{font-size:13px;color:var(--tx-3)}
+.topic .vs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:20px 14px}
+.topic.many .vs{grid-template-columns:repeat(5,minmax(0,1fr))}
+.v{display:block;min-width:0}
+.v .shot{border-radius:10px}
+.v:hover .shot img{transform:scale(1.03)}
+.vh{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-top:10px}
+.vh b{min-width:0;padding-top:2px;font:500 13.5px/1.25 var(--sans);letter-spacing:-.01em;text-wrap:balance}
+.vw{display:block;margin-top:4px;font-size:12.5px;line-height:1.4;color:var(--tx-2);text-wrap:pretty}
+.vw .bt{display:inline-block;margin-right:2px;font-weight:500;color:var(--tx);font-variant-numeric:tabular-nums}
+#roles{scroll-margin-top:16px} #all{scroll-margin-top:16px}
+@media (max-width:980px){.topic .vs,.topic.many .vs{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:620px){.topic{padding:14px;border-radius:18px}.topic .vs,.topic.many .vs{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 10px}.topic h3{font-size:22px}}
 footer{margin-top:60px;padding-top:18px;box-shadow:0 -1px 0 var(--line);font-size:12.5px;color:var(--tx-3)}
 @media (max-width:980px){.hero{grid-template-columns:1fr}.hero .side{padding:0 4px 4px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}h1{font-size:38px}}
 @media (max-width:620px){.wrap{padding:0 16px 56px}.grid{grid-template-columns:1fr}.hero{padding:12px;border-radius:18px}h1{font-size:32px}.hero h2{font-size:30px}.go{flex-wrap:wrap}}
@@ -70,7 +98,7 @@ footer{margin-top:60px;padding-top:18px;box-shadow:0 -1px 0 var(--line);font-siz
   <header><a class="wm" href="zero-world-map-b8.html" aria-label="Zero"><svg viewBox="0 0 333 96" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M283.572 95.9991C274.465 95.9991 266.219 93.8453 258.834 89.5377C251.45 85.2301 245.604 79.4456 241.296 72.1842C236.988 64.9228 234.834 56.9229 234.834 48.1846C234.834 39.3232 236.988 31.3234 241.296 24.185C245.604 17.0467 251.45 11.3237 258.834 7.0161C266.219 2.70849 274.465 0.554688 283.572 0.554688C292.926 0.554688 301.233 2.70849 308.495 7.0161C315.879 11.3237 321.664 17.1082 325.848 24.3696C330.156 31.508 332.31 39.4463 332.31 48.1846C332.31 56.9229 330.156 64.9228 325.848 72.1842C321.664 79.4456 315.879 85.2301 308.495 89.5377C301.11 93.8453 292.803 95.9991 283.572 95.9991ZM283.572 75.8764C288.864 75.8764 293.541 74.6457 297.603 72.1842C301.664 69.5996 304.864 66.2151 307.202 62.0305C309.664 57.846 310.895 53.2922 310.895 48.3692C310.895 43.3232 309.664 38.7079 307.202 34.5233C304.864 30.3388 301.664 27.0158 297.603 24.5543C293.541 21.9697 288.864 20.6774 283.572 20.6774C278.403 20.6774 273.726 21.9697 269.542 24.5543C265.48 27.0158 262.219 30.3388 259.757 34.5233C257.419 38.7079 256.249 43.3232 256.249 48.3692C256.249 53.2922 257.419 57.846 259.757 62.0305C262.219 66.2151 265.48 69.5996 269.542 72.1842C273.726 74.6457 278.403 75.8764 283.572 75.8764Z" fill="currentColor"/><path d="M204.893 93.7845H183.478V32.6502C183.478 16.2581 196.767 2.96973 213.159 2.96973H237.939V23.8309H212.313C208.215 23.8309 204.893 27.153 204.893 31.251V93.7845Z" fill="currentColor"/><path d="M132.213 95.9983C122.982 95.9983 114.675 93.9676 107.29 89.9061C99.9058 85.7216 94.0598 79.9986 89.7522 72.7372C85.5676 65.4758 83.4753 57.1067 83.4753 47.6299C83.4753 39.0147 85.383 31.0764 89.1983 23.815C93.1367 16.5536 98.6135 10.769 105.629 6.46142C112.644 2.15381 120.767 0 129.998 0C139.351 0 147.351 2.09227 153.997 6.27681C160.643 10.3383 165.751 15.8151 169.32 22.7073C173.012 29.5995 174.858 37.2301 174.858 45.5992V53.1683H100.275L103.967 46.153C103.598 52.0606 104.583 57.3528 106.921 62.0297C109.26 66.7065 112.583 70.3988 116.89 73.1064C121.198 75.814 126.244 77.1679 132.028 77.1679C137.444 77.1679 142.305 75.9987 146.613 73.6602C151.043 71.1987 154.489 67.6296 156.951 62.9527L173.381 71.4449C169.443 79.3217 163.905 85.4139 156.766 89.7215C149.628 93.906 141.444 95.9983 132.213 95.9983ZM105.075 40.2454H153.443C153.074 36.0609 151.843 32.3687 149.751 29.1687C147.782 25.9688 145.074 23.5073 141.628 21.7842C138.182 19.9381 134.244 19.015 129.813 19.015C125.259 19.015 121.198 19.9996 117.629 21.9688C114.182 23.815 111.413 26.338 109.321 29.5379C107.229 32.7379 105.813 36.3071 105.075 40.2454Z" fill="currentColor"/><path d="M78.8426 93.7823H20.6897C13.9206 93.7823 8.75149 92.0592 5.18233 88.6132C1.73623 85.044 0.0131865 81.0441 0.0131865 76.6134C-0.109888 72.675 0.628561 69.2904 2.22853 66.4597C3.8285 63.629 6.41307 61.0444 9.98224 58.706L55.766 26.2143C56.7506 25.3527 57.2429 24.4297 57.2429 23.4451C57.2429 22.5836 56.9353 22.0297 56.3199 21.7836C55.8276 21.4143 55.2122 21.2297 54.4738 21.2297H2.41314V2.95312H58.9045C65.6736 2.95312 70.7812 4.73771 74.2273 8.30687C77.7964 11.753 79.581 15.6914 79.581 20.1221C79.581 24.0604 78.781 27.445 77.1811 30.2757C75.7042 33.1064 73.1811 35.691 69.612 38.0294L23.8282 70.7058C22.7205 71.4442 22.1666 72.3673 22.1666 73.475C22.1666 74.2134 22.4128 74.7672 22.9051 75.1365C23.5205 75.3826 24.1974 75.5057 24.9358 75.5057H78.8426V93.7823Z" fill="currentColor"/></svg></a><span>World map, 24 versions</span></header>
   <section class="intro">
     <h1>The world map, version by version.</h1>
-    <p>Every build of the skill points world, newest first. Each one opens on its own and can be stepped through with the review key at the bottom right.</p>
+    <p>Every build of the skill points world. The newest is first, then everything we tried, topic by topic, with what stayed and what went. Every picture opens that exact version.</p>
   </section>
 
   <section class="hero">
@@ -95,7 +123,133 @@ footer{margin-top:60px;padding-top:18px;box-shadow:0 -1px 0 var(--line);font-siz
     </div>
   </section>
 
-  <h2 class="sec">b24, a world for each section</h2>
+  <h2 class="sec" id="tried">Everything we tried, by topic</h2>
+  <nav class="topics" aria-label="Topics"><a href="#t-approach">The approach</a><a href="#t-zero">Zero in the middle</a><a href="#t-size">World size</a><a href="#t-companies">The companies</a><a href="#t-light">Light</a><a href="#t-styles">Styles</a><a href="#t-ground">The ground under the road</a><a href="#t-arrive">How the world arrives</a><a href="#t-path">The path</a><a href="#t-card">The card</a><a href="#t-start">The start</a><a href="#t-portal">The job portal</a><a href="#roles">A world for each role</a><a href="#all">Every build</a></nav>
+  <div class="legend"><span><i class="st now">Now</i>in the newest build</span><span><i class="st opt">Option</i>on a switch</span><span><i class="st kept">Kept</i>still in, changed around it</span><span><i class="st liked">Liked</i>your verdict</span><span><i class="st earlier">Earlier</i>replaced by a newer idea</span><span><i class="st drop">Dropped</i>you turned it down</span></div>
+  <section class="topic many" id="t-approach">
+    <div class="th"><h3>The approach</h3><p>How the whole map should look. Nine directions so far.</p></div>
+    <div class="vs">
+      <a class="v" href="zero-world-map-b1.html"><span class="shot"><img src="zero-world-map-index-assets/b1.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Photo city</b><i class="st earlier">Earlier</i></span><span class="vw"><span class="bt">b1</span> Zero’s city picture with the road drawn on it.</span></a>
+      <a class="v" href="zero-world-map-b2.html"><span class="shot"><img src="zero-world-map-index-assets/b2.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Photo in relief</b><i class="st earlier">Earlier</i></span><span class="vw"><span class="bt">b2</span> The same picture raised into 3D.</span></a>
+      <a class="v" href="zero-world-map-b3.html"><span class="shot"><img src="zero-world-map-index-assets/b3.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>First built city</b><i class="st earlier">Earlier</i></span><span class="vw"><span class="bt">b3</span> Every building made in code.</span></a>
+      <a class="v" href="zero-world-map-b4.html"><span class="shot"><img src="zero-world-map-index-assets/b4.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Terraced city</b><i class="st earlier">Earlier</i></span><span class="vw"><span class="bt">b4</span> The road climbs where a level opens roles.</span></a>
+      <a class="v" href="zero-world-map-b5.html"><span class="shot"><img src="zero-world-map-index-assets/b5.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>An island of models</b><i class="st drop">Dropped</i></span><span class="vw"><span class="bt">b5</span> “Super kiddish”, like an island.</span></a>
+      <a class="v" href="zero-world-map-b6.html"><span class="shot"><img src="zero-world-map-index-assets/b6.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>The endless grid</b><i class="st drop">Dropped</i></span><span class="vw"><span class="bt">b6</span> Too far out. The white city confused.</span></a>
+      <a class="v" href="zero-world-map-b7.html"><span class="shot"><img src="zero-world-map-index-assets/b7.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>One road, empty land</b><i class="st drop">Dropped</i></span><span class="vw"><span class="bt">b7</span> It felt empty.</span></a>
+      <a class="v" href="zero-world-map-b8.html"><span class="shot"><img src="zero-world-map-index-assets/b8.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>City in clay</b><i class="st drop">Dropped</i></span><span class="vw"><span class="bt">b8</span> Too crowded, read as a street plan.</span></a>
+      <a class="v" href="zero-world-map-b9.html#place"><span class="shot"><img src="zero-world-map-index-assets/b9.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>A natural place, one road</b><i class="st liked">Liked</i></span><span class="vw"><span class="bt">b9</span> “Really cool.” The base for b10 to b20.</span></a>
+      <a class="v" href="zero-world-map-b24.html#place"><span class="shot"><img src="zero-world-map-index-assets/b21.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>One open world</b><i class="st now">Now</i></span><span class="vw"><span class="bt">b21</span> “A banger.” Zero in the middle, avenues as rays.</span></a>
+    </div>
+  </section>
+  <section class="topic" id="t-zero">
+    <div class="th"><h3>Zero in the middle</h3><p>The building that is the job portal. Switch it in the review key.</p></div>
+    <div class="vs">
+      <a class="v" href="zero-world-map-b21.html#world-3"><span class="shot"><img src="zero-world-map-index-assets/b21-stop.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>A plain block</b><i class="st earlier">Earlier</i></span><span class="vw"><span class="bt">b21</span> A white block with the wordmark.</span></a>
+      <a class="v" href="zero-world-map-b22.html#world-3"><span class="shot"><img src="zero-world-map-index-assets/b22.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Logos round the light</b><i class="st drop">Dropped</i></span><span class="vw"><span class="bt">b22</span> Companies turning round the cylinder. Removed in b23.</span></a>
+      <a class="v" href="zero-world-map-b24.html?z=ring#world-3"><span class="shot"><img src="zero-world-map-index-assets/v-c-ring.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>The 0</b><i class="st opt">Option</i></span><span class="vw"><span class="bt">b22</span> An upright 0 inside a cylinder of light.</span></a>
+      <a class="v" href="zero-world-map-b24.html?z=shell#world-3"><span class="shot"><img src="zero-world-map-index-assets/v-c-shell.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Shells</b><i class="st now">Now</i></span><span class="vw"><span class="bt">b23</span> Three white pods, green glass in the seams. The default.</span></a>
+      <a class="v" href="zero-world-map-b24.html?z=dome#world-3"><span class="shot"><img src="zero-world-map-index-assets/v-c-dome.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Dome</b><i class="st opt">Option</i></span><span class="vw"><span class="bt">b23</span> A white dome on a band of glass.</span></a>
+    </div>
+  </section>
+  <section class="topic" id="t-size">
+    <div class="th"><h3>World size</h3><p>How much world for how many companies.</p></div>
+    <div class="vs">
+      <a class="v" href="zero-world-map-b24.html?f=ainativeeducator&amp;ws=wide#place"><span class="shot"><img src="zero-world-map-index-assets/v-s-wide.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>One size for every role</b><i class="st opt">Option</i></span><span class="vw"><span class="bt">b21</span> Wide. Ten companies in a city built for twenty four.</span></a>
+      <a class="v" href="zero-world-map-b24.html?f=ainativeeducator#place"><span class="shot"><img src="zero-world-map-index-assets/b24.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Fits its companies</b><i class="st now">Now</i></span><span class="vw"><span class="bt">b24</span> Fit. The ring and the city shrink to the list.</span></a>
+    </div>
+  </section>
+  <section class="topic" id="t-companies">
+    <div class="th"><h3>The companies</h3><p>How a company’s building looks, locked and open.</p></div>
+    <div class="vs">
+      <a class="v" href="zero-world-map-b6.html"><span class="shot"><img src="zero-world-map-index-assets/b6-focus.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Modelled on the real place</b><i class="st earlier">Earlier</i></span><span class="vw"><span class="bt">b6</span> Apple’s ring, Google’s halls, Amazon’s spheres.</span></a>
+      <a class="v" href="zero-world-map-b13.html?f=productengineer#world-3"><span class="shot"><img src="zero-world-map-index-assets/b13.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Only yours in colour</b><i class="st drop">Dropped</i></span><span class="vw"><span class="bt">b13</span> Locked ones plain white. Changed in b17.</span></a>
+      <a class="v" href="zero-world-map-b24.html#world-3"><span class="shot"><img src="zero-world-map-index-assets/b23.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>All in colour, a lock on each</b><i class="st kept">Kept</i></span><span class="vw"><span class="bt">b17</span> A locked company keeps its colour and wears a lock.</span></a>
+      <a class="v" href="zero-world-map-b24.html#world-3"><span class="shot"><img src="zero-world-map-index-assets/v-brands.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Brand buildings</b><i class="st now">Now</i></span><span class="vw"><span class="bt">b22</span> Eighteen companies built as their brand.</span></a>
+    </div>
+  </section>
+  <section class="topic" id="t-light">
+    <div class="th"><h3>Light</h3><p>Four looks. Switching is instant and keeps the view, since b18.</p></div>
+    <div class="vs">
+      <a class="v" href="zero-world-map-b24.html#world-3"><span class="shot"><img src="zero-world-map-index-assets/v-l-day.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Day</b><i class="st now">Now</i></span><span class="vw"><span class="bt">b3</span> The default.</span></a>
+      <a class="v" href="zero-world-map-b24.html?v=golden#world-3"><span class="shot"><img src="zero-world-map-index-assets/v-l-golden.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Golden</b><i class="st opt">Option</i></span><span class="vw"><span class="bt">b23</span> A low warm sun.</span></a>
+      <a class="v" href="zero-world-map-b24.html?v=dusk#world-3"><span class="shot"><img src="zero-world-map-index-assets/v-l-dusk.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Dusk</b><i class="st opt">Option</i></span><span class="vw"><span class="bt">b9</span> Pink light, lit windows.</span></a>
+      <a class="v" href="zero-world-map-b24.html?v=night#world-3"><span class="shot"><img src="zero-world-map-index-assets/v-l-night.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Night</b><i class="st opt">Option</i></span><span class="vw"><span class="bt">b3</span> The glass in Zero’s seams glows.</span></a>
+    </div>
+  </section>
+  <section class="topic many" id="t-styles">
+    <div class="th"><h3>Styles</h3><p>Fifteen kinds of land, since b17. Each role gets its own, or pick one.</p></div>
+    <div class="vs">
+      <a class="v" href="zero-world-map-b24.html?b=meadow#place"><span class="shot"><img src="zero-world-map-index-assets/v-st-meadow.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Meadow</b><i class="st opt">Option</i></span><span class="vw"><span class="bt">b17</span></span></a>
+      <a class="v" href="zero-world-map-b24.html?b=steel#place"><span class="shot"><img src="zero-world-map-index-assets/v-st-steel.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Cool green</b><i class="st opt">Option</i></span><span class="vw"><span class="bt">b17</span></span></a>
+      <a class="v" href="zero-world-map-b24.html?b=pine#place"><span class="shot"><img src="zero-world-map-index-assets/v-st-pine.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Pine forest</b><i class="st opt">Option</i></span><span class="vw"><span class="bt">b17</span></span></a>
+      <a class="v" href="zero-world-map-b24.html?b=delta#place"><span class="shot"><img src="zero-world-map-index-assets/v-st-delta.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Delta</b><i class="st opt">Option</i></span><span class="vw"><span class="bt">b17</span></span></a>
+      <a class="v" href="zero-world-map-b24.html?b=autumn#place"><span class="shot"><img src="zero-world-map-index-assets/v-st-autumn.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Autumn</b><i class="st opt">Option</i></span><span class="vw"><span class="bt">b17</span></span></a>
+      <a class="v" href="zero-world-map-b24.html?b=stone#place"><span class="shot"><img src="zero-world-map-index-assets/v-st-stone.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Stone harbour</b><i class="st opt">Option</i></span><span class="vw"><span class="bt">b17</span></span></a>
+      <a class="v" href="zero-world-map-b24.html?b=desert#place"><span class="shot"><img src="zero-world-map-index-assets/v-st-desert.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Dry sand</b><i class="st opt">Option</i></span><span class="vw"><span class="bt">b17</span></span></a>
+      <a class="v" href="zero-world-map-b24.html?b=tropic#place"><span class="shot"><img src="zero-world-map-index-assets/v-st-tropic.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Tropics</b><i class="st opt">Option</i></span><span class="vw"><span class="bt">b17</span></span></a>
+      <a class="v" href="zero-world-map-b24.html?b=garden#place"><span class="shot"><img src="zero-world-map-index-assets/v-st-garden.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Garden in bloom</b><i class="st opt">Option</i></span><span class="vw"><span class="bt">b17</span></span></a>
+      <a class="v" href="zero-world-map-b24.html?b=snow#place"><span class="shot"><img src="zero-world-map-index-assets/v-st-snow.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Snow</b><i class="st opt">Option</i></span><span class="vw"><span class="bt">b17</span></span></a>
+      <a class="v" href="zero-world-map-b24.html?b=sakura#place"><span class="shot"><img src="zero-world-map-index-assets/v-st-sakura.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Japan in bloom</b><i class="st opt">Option</i></span><span class="vw"><span class="bt">b17</span></span></a>
+      <a class="v" href="zero-world-map-b24.html?b=canyon#place"><span class="shot"><img src="zero-world-map-index-assets/v-st-canyon.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Red canyon</b><i class="st opt">Option</i></span><span class="vw"><span class="bt">b17</span></span></a>
+      <a class="v" href="zero-world-map-b24.html?b=savanna#place"><span class="shot"><img src="zero-world-map-index-assets/v-st-savanna.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Savanna</b><i class="st opt">Option</i></span><span class="vw"><span class="bt">b17</span></span></a>
+      <a class="v" href="zero-world-map-b24.html?b=nordic#place"><span class="shot"><img src="zero-world-map-index-assets/v-st-nordic.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Nordic fjord</b><i class="st opt">Option</i></span><span class="vw"><span class="bt">b17</span></span></a>
+      <a class="v" href="zero-world-map-b24.html?b=med#place"><span class="shot"><img src="zero-world-map-index-assets/v-st-med.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Mediterranean</b><i class="st opt">Option</i></span><span class="vw"><span class="bt">b17</span></span></a>
+    </div>
+  </section>
+  <section class="topic" id="t-ground">
+    <div class="th"><h3>The ground under the road</h3><p>Before the open world, each learner had a different place.</p></div>
+    <div class="vs">
+      <a class="v" href="zero-world-map-b9.html#place"><span class="shot"><img src="zero-world-map-index-assets/b10.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Bay</b><i class="st earlier">Earlier</i></span><span class="vw"><span class="bt">b9</span> Sanjay’s road round a lagoon.</span></a>
+      <a class="v" href="zero-world-map-b9.html?u=1#place"><span class="shot"><img src="zero-world-map-index-assets/b9-river.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>River valley</b><i class="st earlier">Earlier</i></span><span class="vw"><span class="bt">b9</span> Maya’s road, with bridges.</span></a>
+      <a class="v" href="zero-world-map-b9.html?u=2#place"><span class="shot"><img src="zero-world-map-index-assets/b9-isles.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Islands</b><i class="st earlier">Earlier</i></span><span class="vw"><span class="bt">b9</span> Jordan’s road, island to island.</span></a>
+    </div>
+  </section>
+  <section class="topic" id="t-arrive">
+    <div class="th"><h3>How the world arrives</h3><p>The motion when a world appears.</p></div>
+    <div class="vs">
+      <a class="v" href="zero-world-map-b16.html?f=productengineer#place"><span class="shot"><img src="zero-world-map-index-assets/b16.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Grows in, ragged edge</b><i class="st earlier">Earlier</i></span><span class="vw"><span class="bt">b16</span> The world appeared with a torn edge.</span></a>
+      <a class="v" href="zero-world-map-b17.html?f=productengineer#world-3"><span class="shot"><img src="zero-world-map-index-assets/b17-sweep.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Straight sweep</b><i class="st drop">Dropped</i></span><span class="vw"><span class="bt">b17</span> “I hate the linear transition.”</span></a>
+      <a class="v" href="zero-world-map-b18.html?f=productengineer#world-3"><span class="shot"><img src="zero-world-map-index-assets/b18-arrive.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Grows out from a spot</b><i class="st kept">Kept</i></span><span class="vw"><span class="bt">b18</span> The one you like. In every build since.</span></a>
+      <a class="v" href="zero-world-map-b24.html#world-0"><span class="shot"><img src="zero-world-map-index-assets/b22-whole.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>First look from above</b><i class="st now">Now</i></span><span class="vw"><span class="bt">b22</span> Only the portal glows, the world grows out, the eye dives to Zero.</span></a>
+    </div>
+  </section>
+  <section class="topic" id="t-path">
+    <div class="th"><h3>The path</h3><p>How your road reads.</p></div>
+    <div class="vs">
+      <a class="v" href="zero-world-map-b13.html?f=productengineer#place"><span class="shot"><img src="zero-world-map-index-assets/b13-place.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Faint path</b><i class="st drop">Dropped</i></span><span class="vw"><span class="bt">b13</span> Too faint to follow.</span></a>
+      <a class="v" href="zero-world-map-b14.html?f=productengineer#world-3"><span class="shot"><img src="zero-world-map-index-assets/b14.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Arrowheads</b><i class="st drop">Dropped</i></span><span class="vw"><span class="bt">b14</span> “Too much for the eyes.”</span></a>
+      <a class="v" href="zero-world-map-b15.html?f=productengineer#world-3"><span class="shot"><img src="zero-world-map-index-assets/b15.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Quiet path</b><i class="st earlier">Earlier</i></span><span class="vw"><span class="bt">b15</span> No arrowheads. Kept until the open world.</span></a>
+      <a class="v" href="zero-world-map-b24.html#place"><span class="shot"><img src="zero-world-map-index-assets/b24-fit.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Avenues as rays</b><i class="st now">Now</i></span><span class="vw"><span class="bt">b21</span> Eight avenues out from Zero.</span></a>
+    </div>
+  </section>
+  <section class="topic" id="t-card">
+    <div class="th"><h3>The card</h3><p>What opens when you click a building.</p></div>
+    <div class="vs">
+      <a class="v" href="zero-world-map-b8.html#focus-6"><span class="shot"><img src="zero-world-map-index-assets/b8-focus.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Fly in beside it</b><i class="st kept">Kept</i></span><span class="vw"><span class="bt">b5</span> The eye flies down and the card opens.</span></a>
+      <a class="v" href="zero-world-map-b17.html?f=productengineer#world-3"><span class="shot"><img src="zero-world-map-index-assets/b17.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Card beside its building</b><i class="st earlier">Earlier</i></span><span class="vw"><span class="bt">b17</span> A light card standing next to it.</span></a>
+      <a class="v" href="zero-world-map-b18.html?f=productengineer#world-3"><span class="shot"><img src="zero-world-map-index-assets/b18.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Small dark card</b><i class="st drop">Dropped</i></span><span class="vw"><span class="bt">b18</span> Too thin. Details behind a toggle.</span></a>
+      <a class="v" href="zero-world-map-b24.html#world-3"><span class="shot"><img src="zero-world-map-index-assets/b19-locked.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>The app’s scenario card</b><i class="st now">Now</i></span><span class="vw"><span class="bt">b19</span> Built like the app’s own card.</span></a>
+      <a class="v" href="zero-world-map-b24.html#world-3"><span class="shot"><img src="zero-world-map-index-assets/b19-done.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Done</b><i class="st now">Now</i></span><span class="vw"><span class="bt">b19</span> The same card once a scenario is done.</span></a>
+    </div>
+  </section>
+  <section class="topic" id="t-start">
+    <div class="th"><h3>The start</h3><p>The first thing a learner sees.</p></div>
+    <div class="vs">
+      <a class="v" href="zero-world-map-b10.html"><span class="shot"><img src="zero-world-map-index-assets/b10-mist.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Where do you want to work</b><i class="st earlier">Earlier</i></span><span class="vw"><span class="bt">b10</span> Pick the company first.</span></a>
+      <a class="v" href="zero-world-map-b13.html"><span class="shot"><img src="zero-world-map-index-assets/b13-role.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>The role question</b><i class="st earlier">Earlier</i></span><span class="vw"><span class="bt">b13</span> Pick the role first.</span></a>
+      <a class="v" href="zero-world-map-b24.html"><span class="shot"><img src="zero-world-map-index-assets/b14-start.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Name and role</b><i class="st now">Now</i></span><span class="vw"><span class="bt">b14</span> Your name and the role. Still the start.</span></a>
+    </div>
+  </section>
+  <section class="topic" id="t-portal">
+    <div class="th"><h3>The job portal</h3><p>Where a learner sees the roles that are open.</p></div>
+    <div class="vs">
+      <a class="v" href="zero-world-map-b20.html?f=productengineer#world-3"><span class="shot"><img src="zero-world-map-index-assets/b20.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Learn and Jobs tabs</b><i class="st drop">Dropped</i></span><span class="vw"><span class="bt">b20</span> “We don’t have that part.” Removed in b23.</span></a>
+      <a class="v" href="zero-world-map-b24.html#world-3"><span class="shot"><img src="zero-world-map-index-assets/b21-portal.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Zero’s card</b><i class="st kept">Kept</i></span><span class="vw"><span class="bt">b21</span> How many roles are open, what opens next.</span></a>
+      <a class="v" href="zero-world-map-b24.html#world-3"><span class="shot"><img src="zero-world-map-index-assets/b24-portal.jpg" width="800" height="450" alt="" loading="lazy"></span><span class="vh"><b>Your real job portal</b><i class="st now">Now</i></span><span class="vw"><span class="bt">b24</span> Opens on a sheet over the world.</span></a>
+    </div>
+  </section>
+
+  <h2 class="sec" id="roles">b24, a world for each section</h2>
   <section class="grid">
     <article class="card">
       <a class="shot" href="zero-world-map-b24.html?f=productengineer#place" aria-label="Open the Product world"><img src="zero-world-map-index-assets/b11-productengineer.jpg" width="1200" height="675" alt="" loading="lazy"></a>
@@ -153,7 +307,7 @@ footer{margin-top:60px;padding-top:18px;box-shadow:0 -1px 0 var(--line);font-siz
     </article>
   </section>
 
-  <h2 class="sec">Earlier versions</h2>
+  <h2 class="sec" id="all">Earlier versions</h2>
   <section class="grid">
     <article class="card">
       <a class="shot" href="zero-world-map-b23.html#world-3" aria-label="Open b23"><img src="zero-world-map-index-assets/b23.jpg" width="1200" height="675" alt="" loading="lazy"></a>
