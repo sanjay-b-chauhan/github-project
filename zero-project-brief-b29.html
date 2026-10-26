@@ -1,0 +1,733 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zero project brief b29</title>
+<meta name="description" content="The project brief: the scenario card stays where it is and the brief opens beside it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,300..800&family=Inter:opsz,wght@14..32,400;14..32,500&display=swap">
+<style>
+/* b29 (26 Oct), Sanjay on b28: the tool stack in the Overview too, the same way as the deliverables, the tools in a
+   row. So under the brief: two label rows on one grid (the label in the quiet ink, a 112 column like the brief's head),
+   Deliverables in one line, then Tool stack with each tool's logo and name side by side.
+/* b28 (26 Oct), Sanjay: version 2 (the company, the manager and the project type in the card's column) is the default
+   now (?l=1 shows version 1). And the colour changes: Light, Dark and Glass in the bar. Dark is a solid charcoal
+   surface (no see-through), with the same inks as the glass; ?v=light, ?v=dark or ?v=glass, and G steps through them.
+/* b27 (26 Oct), Sanjay's values from b26's Controls: sections 40 apart, section headings 14px, 20 under a heading.
+   No hairlines between the company, the manager and the project type (the box stays). Stage 1 is not lit: nothing
+   has started yet, so every stage looks the same. A one line Deliverables under the Overview's paragraph. More space
+   between the art and the title (26, its own slider).
+/* b26 (26 Oct), Sanjay: "add the control thing too, so I can see and tell you the final". Every spacing b24 and b25
+   added is now a variable on the card and a slider in Controls (Ctrl+D, or Controls in the bar): bullet spacing, icon
+   rows, space above a label, under a heading, the stage rows, the brief rows, and the facts box (side space, row space,
+   corners). Copy values sends them back. The design is b25's, value for value.
+/* b25 (26 Oct), Sanjay on b24: the facts in the card's column need their container (bare rows looked bad): ONE outlined
+   box around the three, roomier, the short hairlines between them inside it. The workflows and the skills are bullet
+   points again (close together), and What you'll get is the report and the deck only (no portfolio line).
+/* b24 (26 Oct), Sanjay on b23: nothing the learner needs to start may go missing. What you'll get is back as the third
+   section (the report and the deck with their file icons, and the real project on your portfolio); the lists are
+   rows with an icon each, like the report (a workflow by its tool's logo, every skill by the same one mark, so it
+   scales to any project); the stages carry their estimated times again, with the total. Inside a section the content
+   sits closer (rows 32, labels 22 above), and the sections stand further apart (48). Body type 12px, lines 13px.
+   And, on the facts in the card's column: no box around each one, the three are one list with a short hairline between
+   them (starting at the words, not edge to edge). One size for every small mark: a 24 slot, so the lists line up.
+/* b23 (26 Oct), Sanjay on b22: two versions, both with more space. 1 is b22 (the brief's head in the Overview, the
+   stages in the card's column). 2 is the one they liked, with the company, the manager and the project type in the
+   card's column under the title (as b17 to b20), and the stages a tab on the left; everything else is b22's (one
+   paragraph and the deliverables, the tool stack first, plain bullets, no numbers, no quote, no time). More space:
+   56 inside, 40 between sections, a 400 column, taller rows. The switch is in the bar at the bottom (or ?l=2).
+/* b22 (26 Oct), Navid and Sanjay's call on b21 (the layout stays: "very easy to my eyes"). Only the brief changes:
+   the company, the manager and the project type read like a brief, one line each, so a project type of five or six
+   words still fits; their pictures are ones every project has (the company's logo, the manager's face, one project mark
+   for every type). No big numbers and no quote. The brief is one paragraph, with Deliverables under it in the same
+   type, the two things you hand in. What you'll cover opens with the tool stack (the eye catcher), then the workflows
+   and the skills and concepts as plain bullets, no icons (they would not scale). No time anywhere (no minutes on the
+   stages). What you get is gone: the deliverables live in the Overview now.
+/* b21 (23 Oct), Sanjay on b20: one version with the stages on the right. The left has three tabs, Overview, What
+   you'll cover, What you get; the company, the project type and the manager open the Overview. The right column is the
+   card: art, title, the seven stages joined with their times, Start. The stages use his own names (short enough for
+   the column); the morph is b19's, with the stages rising in once the edge has passed.
+/* b20 (23 Oct), Sanjay on b19: What you'll cover = the workflows you'll learn, the skills you'll learn, and the tool
+   stack with its count. What you get = one list, the two things you hand in and the real project on your portfolio.
+/* b19 (23 Oct), Sanjay on b18: the art stretched in the flight (the flying copy lost its object-fit, so it took the
+   column's box); the text should come in faster and better. So the art flies at its own shape, and the text arrives
+   by line: GSAP SplitText (free since 3.13) masks each line and lifts it from below its own edge, 35ms apart, starting a
+   fifth of the way into the morph; the figures rise out of their own mask while they count; the morph is 0.64s.
+/* b18 (23 Oct), Sanjay on b17: it feels like a second layer arriving; the full card has the same content as the
+   scenario card plus the company, the project type and the rest, so it should feel like that card becoming bigger.
+   So it is a shared element transition on one GSAP timeline: the art, the title and Start lift off the small card and
+   fly to their places in the right column (laid out like the card now: art and title centred, the same two lines);
+   the surface grows from the card's own box and colour into the full card; the card's 1 / 4 bar wipes away; then the
+   company, project type and manager, the tabs and the overview rise in behind, and the figures count up. Close plays
+   the same timeline backwards. Glass is the default now (the card's own material, so the growth is seamless).
+/* b17 (23 Oct), Sanjay on b16: one full card, in the centre, the scenario card and the brief joined into it; more
+   space; Earn up to, Time and Difficulty gone; and controls for the spacing and the type. So Start lifts the card to
+   the middle and it grows into one surface: the card's identity (art, title, company, project type, manager, Start)
+   becomes the right column, the brief the left. The surface grows from the card's own box (a window wide layer
+   clipped to it, 460ms) while the content is revealed by the same edge. Ctrl+D (or Controls) opens a panel of
+   sliders: card size, column, inner space, section space, radius, every type size, line height, tracking, font. It
+   remembers them on this machine and copies the values to send back.
+/* b16 (23 Oct), Sanjay on b15: "we already have this screen" (the scenario card on the map). Click it and it stays
+   where it is; the brief opens on its left: overview, stages, what you'll cover, what you get, divided by hairlines.
+   Type, size and spacing from the job portal and the portfolio (zero-portfolio max26-v95, measured headless): Inter
+   with cv11 and ss01 at -0.006em, 12px body in #4E525C, 14/500 item lines, 16/500 section heads, 24 for figures,
+   #E7E7EB hairlines. Every item one line, never a title over a body. Nothing that does not help: no meta sentences.
+   Two surfaces on the switch: light (the portfolio's) and glass (the card's own material).
+/* b15 (23 Oct), Sanjay on b14: keep the art, the title and the company row; the top a black part, the bottom another
+   surface; the selected tab keeps its outline pill AND its words go a touch heavier; "Overview", not "The brief"; no
+   How it works; the stages one line each, joined from 1 to 7; What you'll cover and What you get more engaging; a max
+   width, more air, tighter tracking; three versions: A tabs on top, B tabs on the right, C my own (a poster: the
+   identity and Start stay on the left in black, the right reads as one page with a nav that follows you).
+/* b14 (23 Oct), Sanjay on b13: outlines only on the company, the project type and the manager, nowhere else (no
+   outlined numbers, no outlined lists, no "bill" table). The brief is a paragraph, the numbers, then more to read, so
+   it scrolls. The card keeps one height; what does not fit scrolls inside it (the tabs stay put). A big Start. The
+   light version is a bluish off-white, not beige. More content from the data we have: the tutorial's case (Navid's
+   own words, the five steps from kickoff to presentation, why it matters, the deliverables, skill and tool lines).
+/* b13 (22 Oct), Sanjay on b12: the same inner space on every side; no surface colour anywhere, outlines only; no
+   underline, the selected tab gets an outline; no body text in the brief; charcoal, not pure black; fewer and smaller
+   type sizes. So the card wraps its content with 48px all round and grows or shrinks with the tab (top and height
+   move together, 380ms); type is four sizes, 24 title, 20 numbers, 14 reading, 12 labels; the brief is the three
+   numbers plus the role, the goal and the ask, one line each (the backend's overview fields).
+/* b12 (22 Oct). Sanjay's board of what he likes: b4 exactly (its type, its air, the art on top with the title under it,
+   "loved that effect"); the company, project type and manager as small text in OUTLINE boxes (no fill); What you'll
+   cover as the three columns, workflows, skills, tool stack; What you get as one line and an icon each, with the Rank 1
+   logos; the stages with a one line each and their time ("those parts are why it feels like this"). No bold, no
+   underline except under the selected tab. Start stays top right. No zoom: b4's sizes at every screen (b10's 1.25 zoom
+   on his 2560 screen is what read as "super zoomed in"). Think Apple or Airbnb: clean, spaced out.
+/* b10 (22 Oct), Sanjay on b9: the brief is a tab too, and the tabs are only words with an underline under the open one,
+   no pill. The brief keeps its design (the two paragraphs and the three numbers) inside its tab.
+/* b9 (22 Oct). Sanjay: b4 was the one (clean, the hierarchy right, super clean), so b9 is b4 again with tabs to make
+   it clear. The right side goes completely: there is no time, no difficulty, no points and no streak in the product.
+   Under the title: the company, the project type, the manager, then the brief. Then three tabs, Stages, What you'll
+   cover, What you get: click, click, click. What you'll cover is skills, condensed, two or three things (the founders'
+   call, 22 Oct). And one backend project: the page is drawn from ONE record in the shape the backend already sends,
+   project_brief (title, description, overview, skills, tools, deliverables, team) plus the scenario's stages
+   (stage_title, sequence_order), so it can be wired to the real row field for field. The map keeps b6's quiet locks.
+/* The project brief, b4. Desktop only (Zero is a desktop app).
+   b3 was the app's own Scenario Overview (zero-core-ui dev, ScenarioOverviewV1). Sanjay on b3 (22 Oct): no mono fonts;
+   bigger, with the whole type and spacing redone and more air; "This scenario takes you to Rank 1" and "What you'll
+   unlock" go; "Earn up to" and the streak stay; a solid black or off-white surface instead of the see-through glass;
+   a faster, smoother open and close.
+   So: one family (Google Sans Flex) on one scale, 36 title, 20 section heads, 16 body, 14 meta; space instead of rules
+   between sections; the card grows to about 80% of the window (up to 1480 by 977); two surfaces on a switch, black and
+   off-white (the job portal's light inks). The open is a solid shell growing from the scenario card while the content is
+   revealed by its edge, 420ms on a quick-out curve; no blur on a moving layer, no fades on the content. */
+:root{--sans:'Google Sans Flex','Google Sans',-apple-system,system-ui,sans-serif;--ease:cubic-bezier(.32,.72,0,1);--green:#4ade80}
+body{--hd:#0B0B0C;--pill:rgba(255,255,255,.1);--sf:#19191B;--rail:#161617;--ink:#F3F3F1;--ink2:rgba(243,243,241,.7);--ink3:rgba(243,243,241,.5);--tile:rgba(255,255,255,.045);
+  --line:rgba(255,255,255,.1);--line2:rgba(255,255,255,.15);--dim:.2}
+body.t-white{--hd:#E7EDF5;--pill:#FFFFFF;--sf:#F5F8FC;--rail:#E9EEF5;--ink:#101828;--ink2:#475467;--ink3:#7A8699;--tile:#FFFFFF;--line:rgba(16,24,40,.08);--line2:rgba(16,24,40,.14);--dim:.16}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#101112;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;margin:0;padding:0;cursor:pointer;-webkit-appearance:none;appearance:none}
+
+/* ---------------- the world (cover) and the app's canvas (contain) ---------------- */
+#world{position:fixed;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0}
+#app{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;font-family:var(--sans);color:#fff;pointer-events:none}
+#app>*{pointer-events:auto}
+.map{position:absolute;inset:0;overflow:hidden;background:#131514}
+.cam{position:absolute;inset:0;transform-origin:56% 64%;transition:transform 1s var(--ease)}
+.city{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;user-select:none}
+body.picked .cam{transform:translate(-140px,-60px) scale(1.2)}
+.mk{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(18,20,26,.84);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.34),0 3px 10px rgba(0,0,0,.35);color:rgba(255,255,255,.78)}
+.mk svg{width:15px;height:15px}
+.mk.go{background:radial-gradient(circle,#1c1a18 0 4px,#fff 4.8px);box-shadow:0 0 0 3px rgba(255,255,255,.3),0 3px 10px rgba(0,0,0,.35)}
+.mk.go::after{content:'';position:absolute;inset:0;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.85);animation:ring 2.2s cubic-bezier(0,0,.2,1) infinite}
+@keyframes ring{0%{transform:scale(.9);opacity:0}18%{opacity:.85}100%{transform:scale(3.1);opacity:0}}
+.chip{position:absolute;display:flex;align-items:center;gap:8px;height:36px;padding:0 14px 0 11px;border-radius:999px;white-space:nowrap;font:600 15px/1 var(--sans);
+  background:rgba(18,20,26,.78);color:rgba(255,255,255,.92);box-shadow:0 6px 20px rgba(0,0,0,.3),inset 0 0 0 1px rgba(255,255,255,.12)}
+.chip img{width:17px;height:17px;display:block;filter:brightness(0) invert(1);opacity:.85}
+.chip em{font:500 14px/1 var(--sans);font-style:normal;color:rgba(255,255,255,.6);margin-left:2px}
+.chip.go{background:rgba(255,255,255,.96);color:#1c1a18;box-shadow:0 8px 22px rgba(0,0,0,.28);cursor:pointer}
+.chip.go img{filter:none;opacity:1}
+.chip.go em{display:inline-flex;align-items:center;gap:6px;color:#1f7a36;font-weight:600}
+.chip.go em::before{content:'';width:7px;height:7px;border-radius:50%;background:#49BA61}
+.chip.t{transform:translate(-50%,-100%)}.chip.b{transform:translate(-50%,0)}
+.mk.lk{cursor:pointer;transition:transform .2s var(--ease),background-color .2s}
+.mk.lk:hover,.mk.lk.open{z-index:6;background:rgba(18,20,26,.96);transform:scale(1.12)}
+.tip{position:absolute;left:50%;bottom:calc(100% + 10px);display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:10px 14px 10px 12px;border-radius:14px;
+  white-space:nowrap;text-align:left;background:rgba(18,20,26,.92);box-shadow:0 10px 24px rgba(0,0,0,.35),inset 0 0 0 1px rgba(255,255,255,.12);
+  transform-origin:50% 100%;transform:translate(-50%,0) scale(.6);visibility:hidden;transition:transform .18s var(--ease),visibility 0s linear .18s;pointer-events:none}
+.mk.lk:hover .tip,.mk.lk.open .tip{transform:translate(-50%,0) scale(.893);visibility:visible;transition:transform .22s var(--ease),visibility 0s}
+.tip b{display:flex;align-items:center;gap:8px;font:600 15px/1 var(--sans);color:#fff}
+.tip b img{width:16px;height:16px;filter:brightness(0) invert(1)}
+.tip em{display:none;align-items:center;gap:6px;font:500 13px/1 var(--sans);font-style:normal;color:rgba(255,255,255,.62)}
+.tip em svg{width:12px;height:12px}
+.mk.lk.open .tip em{display:flex}
+.hit{position:absolute;left:52.3%;top:55.5%;width:7.6%;height:13.8%;border-radius:30px;cursor:pointer;transition:background .2s,box-shadow .2s}
+.hit:hover{background:rgba(255,255,255,.1);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.7)}
+body.picked .hit,body.picked .chip.go{pointer-events:none}
+.hint{position:absolute;left:50%;bottom:64px;transform:translateX(-50%);display:flex;align-items:center;height:48px;padding:0 20px;border-radius:999px;
+  background:rgba(18,20,26,.78);font:500 17px/1 var(--sans);color:rgba(255,255,255,.85);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);transition:transform .4s var(--ease),opacity .3s}
+body.picked .hint{transform:translate(-50%,40px);opacity:0}
+
+/* ---------------- the scenario card on the right (the app's ScenarioIntroV1, set in the one sans) ---------------- */
+.card{position:absolute;right:40px;top:50%;width:470px;padding:20px;transform:translate(560px,-50%);visibility:hidden;
+  transition:transform .6s var(--ease),visibility 0s linear .6s}
+body.picked .card{transform:translate(0,-50%);visibility:visible;transition:transform .6s var(--ease) .1s,visibility 0s}
+.c-body{position:relative;overflow:hidden;border-radius:42px;background:rgba(0,0,0,.5);-webkit-backdrop-filter:blur(16px) saturate(1.1);backdrop-filter:blur(16px) saturate(1.1);box-shadow:0 44px 90px -24px rgba(0,0,0,.5)}
+.c-in{display:flex;flex-direction:column;align-items:center;gap:34px;padding:20px}
+.c-nav{display:flex;align-items:center;justify-content:space-between;width:100%}
+.c-chev{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;color:rgba(255,255,255,.7)}
+.c-chev svg{width:24px;height:24px}.c-chev.off{opacity:.2}
+.c-count{display:flex;height:46px;align-items:center;gap:8px;border-radius:999px;background:rgba(255,255,255,.1);padding:0 20px;font:500 16px/1 var(--sans);font-variant-numeric:tabular-nums}
+.c-count i{font-style:normal;color:rgba(255,255,255,.4)}.c-count em{font-style:normal;color:rgba(255,255,255,.6)}
+.c-art{width:336px;height:210px;object-fit:contain;display:block}
+.c-desc{margin:0;max-width:360px;padding:0 10px;font:500 24px/1.35 var(--sans);text-align:center}
+.c-meta{display:flex;flex-direction:column;align-items:center;gap:26px;width:100%}
+.c-rule{width:100%;height:1px;background:rgba(255,255,255,.12)}
+.c-rows{display:flex;flex-direction:column;gap:20px;width:100%}
+.c-row{display:flex;height:30px;align-items:center;justify-content:space-between;padding:0 20px}
+.c-row>span:first-child{font:500 16px/1 var(--sans);color:rgba(255,255,255,.55)}
+.c-row>b,.c-diff b{font:500 18px/1 var(--sans)}
+.c-xp{display:inline-flex;align-items:center;gap:6px;border-radius:40px;padding:6px 10px;background:rgba(255,224,107,.12);box-shadow:0 0 0 1px rgba(255,225,127,.4)}
+.c-xp img{width:18px;height:18px;display:block}.c-xp b{font:600 18px/1.2 var(--sans);font-variant-numeric:tabular-nums;color:#fff9d5}
+.c-diff{display:flex;align-items:center;gap:20px}
+.c-bars{display:inline-flex;gap:2px}.c-bars i{display:block;width:23px;height:10px;border-radius:30px;background:#fff}.c-bars i.dim{opacity:.1}
+/* the app's StartButtonV1 */
+.start{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:62px;padding:15px 40px;border-radius:100px;
+  background-image:linear-gradient(90deg,rgba(255,255,255,.4),rgba(255,255,255,.4)),linear-gradient(180deg,rgba(229,229,229,.8),rgb(226,226,226));
+  box-shadow:0 6px 0 #c8c8c8,0 12px 18px -6px rgba(0,0,0,.4),0 0 0 1.33px #e6e6e6,inset 0 1.33px 0 rgba(255,255,255,.75);transition:transform .1s cubic-bezier(.34,1.56,.64,1),box-shadow .1s}
+.start:hover{transform:translateY(-1px)}
+.start:active,.start.down{transform:translateY(5px);box-shadow:0 1px 0 #c8c8c8,0 3px 8px -4px rgba(0,0,0,.4),0 0 0 1.33px #e6e6e6,inset 0 1.33px 0 rgba(255,255,255,.75)}
+.start svg{width:7.8px;height:9.9px;margin-right:3.5px;position:relative;z-index:2}
+.start b{position:relative;z-index:2;font:600 23px/1.2 var(--sans);letter-spacing:-.48px;
+  background:linear-gradient(100deg,#121212 0%,#121212 34%,#ff5ec0 42%,#8b7bff 50%,#37dcc4 58%,#121212 66%,#121212 100%);background-size:300% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;animation:holo 3s ease-in-out infinite}
+@keyframes holo{0%{background-position:130% 0}55%,100%{background-position:-30% 0}}
+
+/* ---------------- the full card: one surface in the centre, grown from the scenario card ---------------- */
+.scrim{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.4);opacity:0;visibility:hidden;transition:opacity .32s var(--ease),visibility 0s linear .32s}
+body.open .scrim{opacity:1;visibility:visible;transition:opacity .32s var(--ease),visibility 0s}
+body{--k-surface:#F7F9FC;--k-ink:#131417;--k-ink2:#4E525C;--k-ink3:#6A6F7A;--k-line:#E7E7EB;--k-line2:#D4D5DA}
+body.t-glass{--k-surface:rgba(16,16,18,.72);--k-ink:rgba(255,255,255,.94);--k-ink2:rgba(255,255,255,.66);--k-ink3:rgba(255,255,255,.48);--k-line:rgba(255,255,255,.1);--k-line2:rgba(255,255,255,.16)}
+/* the surface covers the window and is clipped to a box, so growing it is a clip, not a resize */
+.surface{position:fixed;inset:0;z-index:21;visibility:hidden;background:var(--k-surface)}
+body.t-glass .surface{-webkit-backdrop-filter:blur(18px) saturate(1.1);backdrop-filter:blur(18px) saturate(1.1)}
+body.t-dark{--k-surface:#18181B}
+body.t-dark .surface{-webkit-backdrop-filter:none;backdrop-filter:none}
+body.t-dark .node{background:#222225}
+.ov{--tgap:26px;--bul:5px;--row:32px;--sub:22px;--head:20px;--stage:38px;--brief:38px;--fbox:20px;--frow:16px;--frad:20px;--pad:56px;--gap:40px;--colw:400px;--radius:32px;--fs:12px;--lh:1.6;--fs-item:13px;--fs-h:14px;--fs-fig:26px;--fs-title:20px;--ls:-.006em;
+  --font:'Inter',-apple-system,system-ui,sans-serif;--ink:var(--k-ink);--ink2:var(--k-ink2);--ink3:var(--k-ink3);--line:var(--k-line);--line2:var(--k-line2);
+  position:fixed;z-index:22;visibility:hidden;display:flex;overflow:hidden;border-radius:var(--radius);
+  font-family:var(--font);font-size:var(--fs);line-height:var(--lh);letter-spacing:var(--ls);color:var(--ink2);font-feature-settings:'cv11','ss01';-webkit-font-smoothing:antialiased}
+body.open .surface,body.open .ov{visibility:visible}
+.ov button{font:inherit;letter-spacing:inherit;color:inherit}
+.ov-x{position:fixed;z-index:23;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.2);color:#fff;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.15);transform:scale(.6);opacity:0;visibility:hidden;transition:transform .2s var(--ease),opacity .2s,background-color .15s,visibility 0s linear .2s}
+.ov-x:hover{background:rgba(255,255,255,.3)}
+.ov-x svg{width:20px;height:20px}
+body.shown .ov-x{transform:none;opacity:1;visibility:visible;transition:transform .3s var(--ease),opacity .2s,background-color .15s,visibility 0s}
+/* left: the brief */
+.lft{flex:1 1 auto;min-width:0;display:flex;flex-direction:column}
+.tabs{position:relative;flex:none;display:flex;gap:2px;padding:calc(var(--pad) - 10px) var(--pad) 10px calc(var(--pad) - 12px)}
+.tab{position:relative;z-index:1;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;height:34px;padding:0 12px;border-radius:99px;
+  font-size:var(--fs-item);line-height:1;color:var(--ink3);transition:color .2s}
+.tab::after{content:attr(data-l);height:0;overflow:hidden;visibility:hidden;font-weight:500}
+.tab:hover{color:var(--ink2)}
+.tab.on{color:var(--ink);font-weight:500}
+.tab-pill{position:absolute;left:0;top:0;border-radius:99px;box-shadow:inset 0 0 0 1px var(--line2);transition:transform .38s var(--ease),width .38s var(--ease)}
+.read{position:relative;flex:1 1 auto;min-height:0;overflow-y:auto;padding:0 var(--pad) var(--pad);scrollbar-width:thin;scrollbar-color:var(--line2) transparent;
+  -webkit-mask-image:linear-gradient(to bottom,transparent,#000 16px,#000 calc(100% - 32px),transparent);mask-image:linear-gradient(to bottom,transparent,#000 16px,#000 calc(100% - 32px),transparent)}
+.sec{padding:var(--gap) 0}
+.sec+.sec{border-top:1px solid var(--line)}
+.sh{display:flex;align-items:baseline;justify-content:space-between;margin:0 0 var(--head)}
+.sh h3{margin:0;font-weight:500;font-size:var(--fs-h);line-height:1.4;letter-spacing:-.012em;color:var(--ink)}
+.sh>span{color:var(--ink3);font-variant-numeric:tabular-nums}
+.sub{display:block;margin:var(--sub) 0 6px;color:var(--ink3)}
+.sh+.sub,.sh+.subrow{margin-top:0}
+.p{margin:0;color:var(--ink2)}
+.p+.p{margin-top:.8em}
+.p em{font-style:normal;color:var(--ink)}
+/* the deliverables in one line under the brief: the label in the quiet ink, the two things in the full one */
+.kv{margin:16px 0 0}
+.kv>div{display:grid;grid-template-columns:112px minmax(0,1fr);align-items:center;gap:12px;min-height:34px}
+.kv dt{color:var(--ink3)}
+.kv dd{margin:0;min-width:0;color:var(--ink)}
+.kv .tools-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px 20px}
+.kv .tools-row>span{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.kv .lg{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:7px;background:#fff;box-shadow:0 0 0 1px var(--line)}
+.kv .lg img{width:15px;height:15px;display:block}
+/* the brief's head: a label and the thing itself with its own picture, one line each */
+.brief{margin:0 0 18px;padding:0;list-style:none}
+.brief li{display:grid;grid-template-columns:112px minmax(0,1fr);align-items:center;gap:12px;min-height:var(--brief)}
+.brief li>span{color:var(--ink3)}
+.brief b{display:flex;align-items:center;gap:10px;min-width:0;font-weight:500;font-size:var(--fs-item);line-height:1.4;color:var(--ink)}
+.brief .lg{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:7px;background:#fff;box-shadow:0 0 0 1px var(--line)}
+.brief .lg img{width:15px;height:15px;display:block}
+.brief img.fc{flex:none;width:24px;height:24px;border-radius:50%;object-fit:cover;object-position:top}
+.brief .pj{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;box-shadow:inset 0 0 0 1px var(--line2);color:var(--ink2)}
+.brief .pj svg{width:13px;height:13px}
+/* rows with an icon each (b21's What you get): one thing a line, close together */
+.lines{list-style:none;margin:0;padding:0}
+.lines li{display:flex;align-items:center;gap:12px;min-height:var(--row);font-size:var(--fs-item);line-height:1.4;color:var(--ink)}
+.lines li>svg{flex:none;width:16px;height:16px;margin:0 4px;color:var(--ink3)}
+.lines li>.lg{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:7px;background:#fff;box-shadow:0 0 0 1px var(--line)}
+.lines li>.lg img{width:15px;height:15px;display:block}
+/* plain bullets, one thing a line */
+.bul{margin:0;padding:0;list-style:none}
+.bul li{position:relative;display:block;padding:var(--bul) 0 var(--bul) 18px;font-size:var(--fs-item);line-height:1.4;color:var(--ink)}
+.bul li::before{content:'';position:absolute;left:3px;top:calc(var(--bul) + 7px);width:4px;height:4px;border-radius:50%;background:var(--ink3)}
+.tl{list-style:none;margin:0;padding:0;position:relative}
+.tl::before{content:'';position:absolute;left:10.5px;top:calc(var(--stage) / 2);bottom:calc(var(--stage) / 2);width:1px;background:var(--line2)}
+.tl li{position:relative;display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:14px;align-items:center;min-height:var(--stage)}
+.node{position:relative;z-index:1;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--k-surface);box-shadow:inset 0 0 0 1px var(--line2);
+  font-size:11px;line-height:1;letter-spacing:0;color:var(--ink3);font-variant-numeric:tabular-nums}
+body.t-glass .node{background:#232325}
+.tl .tx{font-size:var(--fs-item);line-height:1.4;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tl .tm{color:var(--ink3);font-variant-numeric:tabular-nums;white-space:nowrap}
+/* the tool stack: a label with its count, then the tools in a row, the portfolio's way (logo and name, no box) */
+.subrow{display:flex;align-items:baseline;justify-content:space-between;margin:var(--sub) 0 10px}
+.subrow .sub{margin:0}
+.subrow .cnt{color:var(--ink3);font-variant-numeric:tabular-nums}
+.tools{display:flex;flex-wrap:wrap;gap:14px 32px;margin:0;padding:0;list-style:none}
+.tools li{display:inline-flex;align-items:center;gap:10px;font-size:var(--fs-item);line-height:1.4;color:var(--ink)}
+.tools .lg{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:7px;background:#fff;box-shadow:0 0 0 1px var(--line)}
+.tools .lg img{width:15px;height:15px;display:block}
+.lgs{display:flex;align-items:center;margin-left:auto}
+.lgs i{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px var(--k-surface),0 0 0 3px var(--line)}
+.lgs i+i{margin-left:-5px}
+.lgs img{width:14px;height:14px;display:block;border-radius:3px}
+/* right: the card's identity, joined to the brief */
+.rt{flex:none;width:var(--colw);display:flex;flex-direction:column;padding:var(--pad) calc(var(--pad) - 8px);border-left:1px solid var(--line)}
+.rt .art{display:block;width:100%;height:118px;flex:none;object-fit:contain;object-position:center}
+.rt .title{margin:var(--tgap) 0 0;font-weight:500;font-size:var(--fs-title);line-height:1.35;letter-spacing:-.018em;color:var(--ink);text-align:center}
+.fly-layer{position:fixed;inset:0;z-index:25;pointer-events:none}
+.fly{position:fixed;margin:0;transform-origin:50% 50%;will-change:transform}
+img.fly{object-fit:contain;object-position:center}
+.ln{will-change:transform}
+/* the stages in the card's column */
+.rail-st{margin-top:calc(var(--gap) * .85)}
+.rail-h{display:flex;align-items:baseline;justify-content:space-between;margin:0 0 6px}
+.rail-h b{font-weight:500;font-size:var(--fs-item);color:var(--ink)}
+.rail-h span{color:var(--ink3);font-variant-numeric:tabular-nums}
+.rt .tl li{min-height:calc(var(--stage) - 2px)}
+.rt .tl::before{top:calc(var(--stage) / 2 - 1px);bottom:calc(var(--stage) / 2 - 1px);transform-origin:50% 0;transform:scaleY(var(--rail-line,1))}
+/* version 2: the company, the manager and the project type in the card's column, one under the other; a project type
+   of five or six words wraps inside its own row */
+.rfacts{display:flex;flex-direction:column;margin-top:calc(var(--gap) * .7);padding:6px var(--fbox);border-radius:var(--frad);box-shadow:inset 0 0 0 1px var(--line2)}
+.rfact{position:relative;display:flex;align-items:center;gap:14px;min-width:0;padding:var(--frow) 0}
+.rfact .t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.rfact i{font-style:normal;font-size:12px;line-height:1.3;color:var(--ink3)}
+.rfact b{font-weight:500;font-size:var(--fs-item);line-height:1.4;color:var(--ink)}
+.rfact .lg{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:#fff;box-shadow:0 0 0 1px var(--line)}
+.rfact .lg img{width:17px;height:17px;display:block}
+.rfact img.fc{flex:none;width:30px;height:30px;border-radius:50%;object-fit:cover;object-position:top}
+.rfact .pj{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;box-shadow:inset 0 0 0 1px var(--line2);color:var(--ink2)}
+.rfact .pj svg{width:14px;height:14px}
+.rt .start{margin-top:auto;width:100%;height:56px;flex:none}
+.rt .start b{font-size:20px}
+body:not(.t-glass) .rt .start{background:linear-gradient(#313337,#17181B);box-shadow:0 5px 0 #0F1012,0 12px 18px -8px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.12)}
+body:not(.t-glass) .rt .start.down,body:not(.t-glass) .rt .start:active{box-shadow:0 1px 0 #0F1012,0 3px 8px -4px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.12)}
+body:not(.t-glass) .rt .start b{background:none;color:#fff;animation:none}
+body:not(.t-glass) .rt .start svg path{fill:#fff}
+
+/* ---------------- controls (Ctrl+D): a dev panel, never part of the product ---------------- */
+.ctl{position:fixed;left:12px;top:12px;z-index:60;width:252px;max-height:calc(100vh - 24px);overflow:auto;padding:12px;border-radius:14px;background:#161618;
+  box-shadow:0 0 0 1px rgba(255,255,255,.1),0 20px 40px -16px rgba(0,0,0,.6);font:400 12px/16px -apple-system,system-ui,sans-serif;color:rgba(255,255,255,.72)}
+.ctl[hidden]{display:none}
+.ctl h4{display:flex;align-items:center;justify-content:space-between;margin:0 0 10px;font:500 12px/16px -apple-system,system-ui,sans-serif;color:#fff}
+.ctl h4 button{height:24px;padding:0 8px;border-radius:6px;color:rgba(255,255,255,.6)}
+.ctl h4 button:hover{background:rgba(255,255,255,.08);color:#fff}
+.ctl .row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 8px;margin:0 0 10px}
+.ctl .row output{font-variant-numeric:tabular-nums;color:#fff}
+.ctl input[type=range]{grid-column:1/-1;width:100%;height:18px;margin:0;accent-color:#fff}
+.ctl select{grid-column:1/-1;height:28px;padding:0 6px;border-radius:7px;border:0;background:#232326;color:#fff;font:inherit}
+.ctl .acts{display:flex;gap:6px;margin-top:4px}
+.ctl .acts button{flex:1;height:30px;border-radius:8px;background:#232326;color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.ctl .acts button:hover{background:#2C2C30}
+.ctl .note{margin-top:8px;color:rgba(255,255,255,.45)}
+
+.toast{position:fixed;left:50%;bottom:36px;z-index:30;display:flex;align-items:center;gap:12px;height:48px;padding:0 20px 0 12px;border-radius:999px;background:#fff;color:#131417;
+  font:500 15px/1 var(--sans);box-shadow:0 0 0 1px rgba(19,20,23,.1),0 20px 40px -18px rgba(0,0,0,.4);transform:translate(-50%,90px);pointer-events:none;transition:transform .4s var(--ease)}
+.toast.on{transform:translate(-50%,0)}
+.toast i{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#131417;color:#fff}
+.toast svg{width:14px;height:14px}
+.proto{position:fixed;left:14px;bottom:12px;z-index:50;display:flex;align-items:center;gap:2px;padding:3px;border-radius:999px;background:rgba(20,21,23,.82);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);font:500 12px/1 system-ui,sans-serif;color:rgba(255,255,255,.62)}
+.proto button{height:28px;padding:0 12px;border-radius:999px}.proto button:hover{color:#fff}
+.proto button.on{background:rgba(255,255,255,.14);color:#fff}
+.proto span{padding:0 10px 0 6px;color:rgba(255,255,255,.4)}
+.proto .sep{width:1px;height:16px;margin:0 4px;padding:0;background:rgba(255,255,255,.14)}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01s!important;animation:none!important}}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/SplitText.min.js"></script>
+</head>
+<body>
+<div id="world"></div>
+<div id="app"></div>
+<div class="scrim"></div>
+<div class="surface"></div>
+<div class="ov" role="dialog" aria-label="Project brief"></div>
+<button class="ov-x" type="button" aria-label="Close the brief" data-close></button>
+<aside class="ctl" hidden aria-label="Controls"></aside>
+<div class="toast" role="status"></div>
+<nav class="proto" aria-label="Prototype"><button data-r>Start over</button><span class="sep"></span><button data-lay="2">Facts right</button><button data-lay="1">Stages right</button><span class="sep"></span><button data-t="light">Light</button><button data-t="dark">Dark</button><button data-t="glass">Glass</button><span class="sep"></span><button data-ctl>Controls</button><span>b29</span></nav>
+<script>
+(function () {
+  'use strict';
+  var A = 'zero-project-brief-assets-b29/';
+  function ic(d, w) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (w || 1.75) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>'; }
+  var I = {
+    lock: '<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.1" y="6.3" width="7.8" height="5.7" rx="1.7"/><path d="M4.9 6.3V4.6a2.1 2.1 0 014.2 0v1.7"/></svg>',
+    prev: ic('<path d="m15 18-6-6 6-6"/>', 2.4), next: ic('<path d="m9 18 6-6-6-6"/>', 2.4),
+    play: '<svg viewBox="8 5 11 14" aria-hidden="true"><path fill="#121212" d="M8 5v14l11-7z"/></svg>',
+    x: ic('<path d="M18 6 6 18"/><path d="m6 6 12 12"/>', 2.4),
+    up: ic('<path d="m5 12 7-7 7 7"/><path d="M12 19V5"/>', 2.6), check: ic('<path d="M20 6 9 17l-5-5"/>', 2),
+    folder: ic('<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>'),
+    bag: ic('<rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>'),
+    down: ic('<path d="M16 17h6v-6"/><path d="m22 17-8.5-8.5-5 5L2 7"/>'),
+    video: ic('<path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/>'),
+    file: ic('<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 13H8"/><path d="M16 17H8"/><path d="M16 13h-2"/>'),
+    chat: ic('<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>'),
+    trend: ic('<path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/>'),
+    calc: ic('<rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/>'),
+    spark: ic('<path d="M9.94 15.5A2 2 0 0 0 8.5 14.06l-6.13-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.13a.5.5 0 0 1 .96 0L14.06 8.5A2 2 0 0 0 15.5 9.94l6.13 1.58a.5.5 0 0 1 0 .96L15.5 14.06a2 2 0 0 0-1.44 1.44l-1.58 6.13a.5.5 0 0 1-.96 0z"/>'),
+    search: ic('<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>'),
+    mic: ic('<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/>'),
+    doc: ic('<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 13H8"/><path d="M16 17H8"/><path d="M16 13h-2"/>'),
+    pres: ic('<path d="M2 3h20"/><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3"/><path d="m7 21 5-5 5 5"/>'),
+    medal: ic('<path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15"/><path d="M11 12 5.12 2.2"/><path d="m13 12 5.88-9.8"/><path d="M8 7h8"/><circle cx="12" cy="17" r="5"/>'),
+    flame: '<svg class="flame" viewBox="0 0 34 40" aria-hidden="true"><defs><linearGradient id="fl1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD36B"/><stop offset=".55" stop-color="#FF8A3D"/><stop offset="1" stop-color="#F0442E"/></linearGradient><linearGradient id="fl2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF4C2"/><stop offset="1" stop-color="#FFC14D"/></linearGradient></defs><path fill="url(#fl1)" d="M17 1c2 7 9 10.5 9 20.5C26 32 22 39 17 39S6 33.5 6 24c0-6 3.5-9 5.5-12 .6 3.5 2.2 5.4 3.8 6.4C15 12 15 6 17 1z"/><path fill="url(#fl2)" d="M17 20c1.2 3.6 4.6 5.2 4.6 9.6 0 4.6-2.2 7.8-4.6 7.8s-4.8-2.6-4.8-6.8c0-3 1.8-4.4 2.8-6 .4 1.6 1.2 2.4 2 2.8-.2-2.8-.2-5 0-7.4z"/></svg>'
+  };
+
+  /* ---- the world and the card ---- */
+  var SC = [['Airbnb', 'img/sc-logo-airbnb.svg', 56.2, 64.4, [56.2, 66.6, 'b'], 0], ['DoorDash', 'img/sc-logo-doordash.svg', 54.62, 34.98, [54.76, 28.3, 't'], 1],
+    ['Netflix', 'img/sc-logo-netflix.svg', 61.49, 46.26, [61.66, 36.2, 't'], 2], ['Spotify', 'img/logo-spotify.svg', 62.31, 59.26, [63.85, 61.1, 'b'], 4]];
+  document.getElementById('world').innerHTML = '<div class="map"><div class="cam"><img class="city" alt="" src="' + A + 'img/si-city.webp">' +
+    SC.map(function (s, i) {
+      var go = !i;
+      if (!go) return '<button class="mk lk" type="button" aria-label="' + s[0] + ', locked" style="left:' + s[2] + '%;top:' + s[3] + '%">' + I.lock +
+        '<span class="tip"><b><img alt="" src="' + A + s[1] + '">' + s[0] + '</b><em>' + I.lock + 'Unlocks after ' + s[5] + ' scenario' + (s[5] > 1 ? 's' : '') + '</em></span></button>';
+      return '<div class="mk go" style="left:' + s[2] + '%;top:' + s[3] + '%"></div>' +
+        '<div class="chip ' + s[4][2] + ' go" style="left:' + s[4][0] + '%;top:' + s[4][1] + '%" data-pick><img alt="" src="' + A + s[1] + '"><b>' + s[0] + '</b><em>Ready</em></div>';
+    }).join('') + '<button class="hit" type="button" aria-label="Airbnb, your first scenario" data-pick></button></div></div>';
+  var app = document.getElementById('app');
+  app.innerHTML = '<div class="hint">Click Airbnb to see your first scenario</div>' +
+    '<aside class="card" aria-label="Scenario"><div class="c-body"><div class="c-in">' +
+      '<div class="c-nav"><span class="c-chev off">' + I.prev + '</span><span class="c-count"><b>1</b><i>/</i><em>4</em></span><span class="c-chev">' + I.next + '</span></div>' +
+      '<img class="c-art" alt="Cancel Crisis" src="' + A + 'img/airbnb-art.webp">' +
+      '<p class="c-desc">Reducing Host Cancellations at Airbnb</p>' +
+      '<button class="start" type="button" data-open>' + I.play + '<b>Start</b></button>' +
+    '</div></div></aside>';
+
+  /* ---- one backend project: the record the brief is drawn from (project_brief + the scenario's stages) ---- */
+  var PROJECT = {
+    scenario: { title: 'Reducing Host Cancellations at Airbnb', company: 'Airbnb', logo: 'img/sc-logo-airbnb.svg', category: 'Cost reduction' },
+    project_brief: {
+      description: 'Airbnb hosts are cancelling on their guests more often: 14% of confirmed stays are now cancelled by the host, up from 11% six months ago, and it costs Airbnb $3 million a year. You join the host team as its Business Analyst. Find out why hosts cancel, and bring Navid a plan that gets the rate back to 10%.',
+      emphasis: ['14% of confirmed stays', '$3 million a year', '10%'],
+      workflow: [['Claude', 'Group the cancellations by reason with Claude'], ['Google Sheets', 'Price the problem and the fix in Google Sheets'], ['ChatGPT', 'Pressure test your plan with ChatGPT']],
+      skills: ['Root cause analysis', 'Trend analysis', 'Financial modelling', 'Presenting to a team'],
+      tools: ['Claude', 'Google Sheets', 'ChatGPT'],
+      deliverables: [['pdf', 'A report on why hosts cancel'], ['pptx', 'A deck you present to the team']],
+      team: [{ name: 'Navid', role: 'Your manager', avatar: 'img/navid-face.jpg' }]
+    },
+    /* one line each with its estimated time (the minutes are placeholders; they add up to 2h 45m) */
+    stages: [['Draft proposal', 25], ['Executive summary', 15], ['Execute the plan', 40], ['Impact and deliverables', 25],
+             ['Prepare', 20], ['Final submission', 10], ['Present to the team', 30]]
+      .map(function (s, i) { return { stage_title: s[0], minutes: s[1], sequence_order: i + 1 }; })
+  };
+  var FILE_TINT = { pdf: '#E5484D', xlsx: '#30A46C', pptx: '#F76B15' };
+  function hm(m) { var h = Math.floor(m / 60), r = m % 60; return (h ? h + 'h' : '') + (h && r ? ' ' : '') + (r ? r + 'm' : ''); }
+  var TOOL_LOGO = { 'Claude': 'img/logo-claude.svg', 'Google Sheets': 'img/logo-sheets.svg', 'ChatGPT': 'img/logo-chatgpt.svg' };
+  function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function em(t, marks) { var h = esc(t); (marks || []).forEach(function (m) { h = h.split(esc(m)).join('<em>' + esc(m) + '</em>'); }); return h; }
+  function img(p, cls) { return '<img alt=""' + (cls ? ' class="' + cls + '"' : '') + ' src="' + A + p + '">'; }
+
+  /* L 1: the brief's head in the Overview, the stages in the card's column (b22). L 2: the head in the card's column,
+     the stages a tab (b17 to b20's place for it) */
+  function render(P, L) {
+    var pb = P.project_brief, mgr = pb.team[0];
+    var st = P.stages.slice().sort(function (a, b) { return a.sequence_order - b.sequence_order; });
+    var head = [['Company', '<span class="lg">' + img(P.scenario.logo) + '</span>', P.scenario.company],
+                ['Manager', img(mgr.avatar, 'fc'), mgr.name],
+                ['Project type', '<span class="pj">' + I.bag + '</span>', P.scenario.category]];
+    var mins = st.reduce(function (a, s) { return a + s.minutes; }, 0), count = st.length + ' stages · est. ' + hm(mins);
+    var stages = '<ol class="tl">' + st.map(function (s) { return '<li><span class="node">' + s.sequence_order + '</span><span class="tx">' + esc(s.stage_title) + '</span><span class="tm">' + s.minutes + ' min</span></li>'; }).join('') + '</ol>';
+    var body = {
+      /* like a brief: who, for whom, what kind of project. Then the brief, and what you hand in */
+      overview: (L === 1 ? '<ul class="brief">' + head.map(function (h) { return '<li><span>' + h[0] + '</span><b>' + h[1] + esc(h[2]) + '</b></li>'; }).join('') + '</ul>' : '') +
+        '<p class="p">' + em(pb.description, pb.emphasis) + '</p>' +
+        '<dl class="kv"><div><dt>Deliverables</dt><dd>' + pb.deliverables.map(function (d, i) { var t = esc(d[1]); return i ? t.charAt(0).toLowerCase() + t.slice(1) : t; }).join(', and ') + '</dd></div>' +
+          '<div><dt>Tool stack</dt><dd class="tools-row">' + pb.tools.map(function (t) { return '<span><span class="lg">' + img(TOOL_LOGO[t]) + '</span>' + esc(t) + '</span>'; }).join('') + '</dd></div></dl>',
+      stages: stages,
+      /* the tool stack leads (it is what catches the eye), then the workflows and the skills as plain bullets */
+      cover: '<div class="subrow"><span class="sub">Tool stack</span><span class="cnt">' + pb.tools.length + ' tools</span></div>' +
+        '<ul class="tools">' + pb.tools.map(function (t) { return '<li><span class="lg">' + img(TOOL_LOGO[t]) + '</span>' + esc(t) + '</li>'; }).join('') + '</ul>' +
+        '<span class="sub">Workflows you\'ll learn</span><ul class="bul">' + pb.workflow.map(function (w) { return '<li>' + esc(w[1]) + '</li>'; }).join('') + '</ul>' +
+        '<span class="sub">Skills and concepts you\'ll cover</span><ul class="bul">' + pb.skills.map(function (k) { return '<li>' + esc(k) + '</li>'; }).join('') + '</ul>',
+      /* what you hand in, each by its file */
+      get: '<ul class="lines">' + pb.deliverables.map(function (d) { return '<li>' + I.file.replace('<svg ', '<svg style="color:' + FILE_TINT[d[0]] + '" ') + esc(d[1]) + '</li>'; }).join('') + '</ul>'
+    };
+    var nav = [['overview', 'Overview']].concat(L === 1 ? [] : [['stages', 'Stages']], [['cover', 'What you\'ll cover'], ['get', 'What you\'ll get']]);
+    var right = { stages: count };
+    return '<div class="lft">' +
+        '<nav class="tabs" role="tablist"><span class="tab-pill"></span>' + nav.map(function (n, i) { return '<button class="tab' + (i ? '' : ' on') + '" type="button" role="tab" data-tab="' + i + '" data-l="' + n[1] + '">' + n[1] + '</button>'; }).join('') + '</nav>' +
+        '<div class="read">' + nav.map(function (n) {
+          return '<section class="sec" data-sec="' + n[0] + '"><div class="sh"><h3>' + n[1] + '</h3>' + (right[n[0]] ? '<span>' + right[n[0]] + '</span>' : '') + '</div>' + body[n[0]] + '</section>'; }).join('') + '</div>' +
+      '</div>' +
+      '<aside class="rt">' + img('img/airbnb-art.webp', 'art') +
+        '<h2 class="title">' + esc(P.scenario.title).replace(' at ', '<br>at ') + '</h2>' +
+        (L === 1 ? '<div class="rail-st"><div class="rail-h"><b>Stages</b><span>' + count + '</span></div>' + stages + '</div>'
+                 : '<div class="rfacts">' + head.map(function (h) { return '<div class="rfact">' + h[1] + '<span class="t"><i>' + h[0] + '</i><b>' + esc(h[2]) + '</b></span></div>'; }).join('') + '</div>') +
+        '<button class="start" type="button" data-go>' + I.play + '<b>Start</b></button>' +
+      '</aside>';
+  }
+
+  var B = document.body, surface = document.querySelector('.surface'), ov = document.querySelector('.ov'), ox = document.querySelector('.ov-x'), toast = document.querySelector('.toast'),
+      card = app.querySelector('.c-body'), world = document.getElementById('world'), ctl = document.querySelector('.ctl');
+  ox.innerHTML = I.x;
+  toast.innerHTML = '<i>' + I.check + '</i>Next, the kickoff meeting with Navid';
+  var LAY = /[?&]l=1/.test(location.search) ? 1 : 2;
+  var tabEls, pill, read, secEls, cur = 0, jumping = 0;
+
+  /* ---- the tabs follow the reading and jump on click ---- */
+  function mark(n, still) {
+    cur = n;
+    Array.prototype.forEach.call(tabEls, function (t, i) { t.classList.toggle('on', i === n); t.setAttribute('aria-selected', i === n); });
+    var t = tabEls[n];
+    pill.style.transition = 'none'; pill.style.height = t.offsetHeight + 'px';
+    if (window.gsap) gsap.to(pill, { x: t.offsetLeft, y: t.offsetTop, width: t.offsetWidth, duration: still ? 0 : .45, ease: 'power3.out', overwrite: true });
+    else { pill.style.width = t.offsetWidth + 'px'; pill.style.transform = 'translate(' + t.offsetLeft + 'px,' + t.offsetTop + 'px)'; }
+  }
+  function jumpTo(n) {
+    mark(n);
+    clearTimeout(jumping); jumping = setTimeout(function () { jumping = 0; }, 700);
+    read.scrollTo({ top: n ? secEls[n].offsetTop : 0, behavior: 'smooth' });
+  }
+  function onRead() {
+    if (jumping) return;
+    var y = read.scrollTop + 60, n = 0;
+    Array.prototype.forEach.call(secEls, function (s, i) { if (s.offsetTop <= y) n = i; });
+    if (read.scrollTop + read.clientHeight >= read.scrollHeight - 2) n = secEls.length - 1;
+    if (n !== cur) mark(n);
+  }
+  /* draw the brief for the version on the switch */
+  function mount() {
+    ov.innerHTML = render(PROJECT, LAY);
+    tabEls = ov.querySelectorAll('.tab'); pill = ov.querySelector('.tab-pill'); read = ov.querySelector('.read'); secEls = ov.querySelectorAll('.sec'); cur = 0;
+    read.addEventListener('scroll', onRead, { passive: true });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-lay]'), function (b) { b.classList.toggle('on', +b.getAttribute('data-lay') === LAY); });
+  }
+  mount();
+
+  /* ---- controls: every number the card is made of, live, remembered on this machine ---- */
+  var CTL = [
+    ['w', 'Card width', 820, 1400, 10, 1120, 'px'], ['h', 'Card height', 520, 960, 10, 760, 'px'], ['colw', 'Card column', 300, 480, 4, 400, 'px'],
+    ['pad', 'Inner space', 24, 88, 2, 56, 'px'], ['gap', 'Section space', 12, 72, 2, 40, 'px'], ['radius', 'Corners', 12, 48, 1, 32, 'px'],
+    ['fs', 'Body size', 11, 17, .5, 12, 'px'], ['lh', 'Line height', 1.3, 2, .05, 1.6, ''], ['fs-item', 'Line size', 12, 18, .5, 13, 'px'],
+    ['fs-h', 'Heading size', 12, 24, .5, 14, 'px'], ['fs-title', 'Title size', 16, 30, 1, 20, 'px'], ['tgap', 'Art to title', 8, 48, 1, 26, 'px'],
+    ['ls', 'Tracking', -.03, .02, .002, -.006, 'em'],
+    ['head', 'Under a heading', 4, 32, 1, 20, 'px'], ['sub', 'Above a label', 8, 40, 1, 22, 'px'], ['bul', 'Bullet spacing', 0, 14, .5, 5, 'px'],
+    ['row', 'Icon row height', 24, 48, 1, 32, 'px'], ['stage', 'Stage row height', 28, 52, 1, 38, 'px'], ['brief', 'Brief row height', 28, 56, 1, 38, 'px'],
+    ['fbox', 'Facts box side space', 8, 36, 1, 20, 'px'], ['frow', 'Facts row space', 6, 28, 1, 16, 'px'], ['frad', 'Facts box corners', 6, 32, 1, 20, 'px']];
+  var FONTS = { 'Inter': "'Inter',-apple-system,system-ui,sans-serif", 'Google Sans Flex': "'Google Sans Flex','Google Sans',system-ui,sans-serif", 'System': "-apple-system,'SF Pro Text',system-ui,sans-serif" };
+  var V = {};
+  CTL.forEach(function (c) { V[c[0]] = c[5]; }); V.font = 'Inter';
+  try { var saved = JSON.parse(localStorage.getItem('zpb-controls-b29') || 'null'); if (saved) Object.keys(saved).forEach(function (k) { if (k in V) V[k] = saved[k]; }); } catch (e) {}
+  function applyV(save) {
+    CTL.forEach(function (c) { if (c[0] !== 'w' && c[0] !== 'h') ov.style.setProperty('--' + c[0], V[c[0]] + c[6]); });
+    ov.style.setProperty('--font', FONTS[V.font] || FONTS.Inter);
+    if (save) { try { localStorage.setItem('zpb-controls-b29', JSON.stringify(V)); } catch (e) {} }
+  }
+  function fmt(c, v) { return (c[6] === 'em' ? (+v).toFixed(3) : c[4] < 1 ? (+v).toFixed(2) : v) + c[6]; }
+  function buildCtl() {
+    ctl.innerHTML = '<h4>Controls<button type="button" data-ctl>Close</button></h4>' +
+      CTL.map(function (c) { return '<label class="row"><span>' + c[1] + '</span><output data-o="' + c[0] + '">' + fmt(c, V[c[0]]) + '</output><input type="range" min="' + c[2] + '" max="' + c[3] + '" step="' + c[4] + '" value="' + V[c[0]] + '" data-k="' + c[0] + '"></label>'; }).join('') +
+      '<label class="row"><span>Font</span><output></output><select data-font>' + Object.keys(FONTS).map(function (f) { return '<option' + (f === V.font ? ' selected' : '') + '>' + f + '</option>'; }).join('') + '</select></label>' +
+      '<div class="acts"><button type="button" data-copy>Copy values</button><button type="button" data-reset>Reset</button></div><p class="note">Ctrl+D shows and hides this.</p>';
+  }
+  buildCtl();
+  ctl.addEventListener('input', function (e) {
+    var k = e.target.getAttribute('data-k');
+    if (k) { V[k] = +e.target.value; var c = CTL.filter(function (x) { return x[0] === k; })[0]; ctl.querySelector('[data-o="' + k + '"]').textContent = fmt(c, V[k]); }
+    if (e.target.hasAttribute('data-font')) V.font = e.target.value;
+    applyV(true); resize(); mark(cur, true);
+  });
+  ctl.addEventListener('click', function (e) {
+    if (e.target.closest('[data-copy]')) {
+      var txt = JSON.stringify(V);
+      var done = function () { e.target.textContent = 'Copied'; setTimeout(function () { e.target.textContent = 'Copy values'; }, 1400); };
+      if (navigator.clipboard) navigator.clipboard.writeText(txt).then(done, function () { prompt('Copy these values', txt); });
+      else prompt('Copy these values', txt);
+    } else if (e.target.closest('[data-reset]')) {
+      CTL.forEach(function (c) { V[c[0]] = c[5]; }); V.font = 'Inter'; buildCtl(); applyV(true); resize(); mark(cur, true);
+    }
+  });
+  function toggleCtl() { ctl.hidden = !ctl.hidden; document.querySelector('.proto [data-ctl]').classList.toggle('on', !ctl.hidden); }
+  applyV(false);
+
+  /* ---- the surface: ?v=glass for the card's own material ---- */
+  function url() {
+    var q = [], v = B.classList.contains('t-dark') ? 'dark' : B.classList.contains('t-glass') ? '' : 'light'; if (v) q.push('v=' + v); if (LAY === 1) q.push('l=1');
+    try { history.replaceState(null, '', q.length ? '?' + q.join('&') : location.pathname); } catch (e) {}
+  }
+  function setLay(l) {
+    if (busy || l === LAY) return;
+    LAY = l; mount(); resize(); mark(0, true); url();
+  }
+  function theme(t) {
+    B.classList.toggle('t-glass', t === 'glass' || t === 'dark'); B.classList.toggle('t-dark', t === 'dark');
+    Array.prototype.forEach.call(document.querySelectorAll('[data-t]'), function (b) { b.classList.toggle('on', b.getAttribute('data-t') === t); });
+    url();
+  }
+  var V0 = (location.search.match(/[?&]v=(light|dark|glass)/) || [])[1];
+  theme(V0 || 'glass');
+
+  /* ---- sizes: the world covers the window, the canvas fits it, the full card sits in the middle ---- */
+  var R = null, busy = false;
+  function layout() {
+    var w = innerWidth, h = innerHeight, width = Math.round(Math.min(w - 96, V.w)), height = Math.round(Math.min(h - 64, V.h));
+    return { left: Math.round((w - width) / 2), top: Math.round((h - height) / 2), width: width, height: height };
+  }
+  function place(el, r) { el.style.left = r.left + 'px'; el.style.top = r.top + 'px'; el.style.width = r.width + 'px'; el.style.height = r.height + 'px'; }
+  function inset(r, rad) { return 'inset(' + [r.top, innerWidth - r.left - r.width, innerHeight - r.top - r.height, r.left].map(function (v) { return v.toFixed(1) + 'px'; }).join(' ') + ' round ' + (+rad).toFixed(1) + 'px)'; }
+  function resize() {
+    R = layout();
+    if (!busy) { place(ov, R); surface.style.clipPath = inset(R, V.radius); }
+    var out = R.left + R.width + 16 + 44 <= innerWidth - 8;
+    ox.style.left = (out ? R.left + R.width + 16 : R.left + R.width - 64) + 'px'; ox.style.top = (out ? R.top : R.top + 20) + 'px';
+  }
+  function fit() {
+    var S = Math.min(innerWidth / 1920, innerHeight / 1080), C = Math.max(innerWidth / 1920, innerHeight / 1080);
+    app.style.transform = 'scale(' + S + ')'; app.style.left = Math.round((innerWidth - 1920 * S) / 2) + 'px'; app.style.top = Math.round((innerHeight - 1080 * S) / 2) + 'px';
+    world.style.transform = 'scale(' + C + ')'; world.style.left = Math.round((innerWidth - 1920 * C) / 2) + 'px'; world.style.top = Math.round((innerHeight - 1080 * C) / 2) + 'px';
+    resize();
+  }
+  fit(); mark(0, true); addEventListener('resize', function () { fit(); mark(cur, true); });
+
+  /* ---- open and close: one GSAP timeline. The card becomes the full card: its art, title and Start fly to their
+     places, its surface grows into the centre, then the new parts rise in behind ---- */
+  var D = .64, EASE = 'power3.inOut', tl = null, splits = [];
+  if (window.SplitText) gsap.registerPlugin(SplitText);
+  var layer = document.createElement('div'); layer.className = 'fly-layer'; document.body.appendChild(layer);
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function lerpRect(a, b, t) { return { left: lerp(a.left, b.left, t), top: lerp(a.top, b.top, t), width: lerp(a.width, b.width, t), height: lerp(a.height, b.height, t) }; }
+  function shown(img) { var r = img.getBoundingClientRect(), k = (img.naturalWidth / img.naturalHeight) || 1.6, w = Math.min(r.width, r.height * k); return { cx: r.left + r.width / 2, cy: r.top + r.height / 2, w: w }; }
+  function fixAt(el, r) { el.style.left = r.left + 'px'; el.style.top = r.top + 'px'; el.style.width = r.width + 'px'; el.style.height = r.height + 'px'; }
+  function build() {
+    var S = card.getBoundingClientRect().width / card.offsetWidth;
+    var c = card.getBoundingClientRect(), r0 = 42 * S; R = layout(); place(ov, R); resize();
+    var cRect = { left: c.left, top: c.top, width: c.width, height: c.height };
+    var glass = B.classList.contains('t-glass'), from = glass ? 'rgba(0,0,0,0.5)' : 'rgba(24,24,26,0.62)', to = getComputedStyle(B).getPropertyValue('--k-surface').trim();
+    var bgAt = gsap.utils.interpolate(from, to);
+    var srcArt = card.querySelector('.c-art'), srcTitle = card.querySelector('.c-desc'), srcStart = card.querySelector('.start'), srcNav = card.querySelector('.c-nav');
+    var tArt = ov.querySelector('.rt .art'), tTitle = ov.querySelector('.rt .title'), tStart = ov.querySelector('.rt .start');
+    var t = gsap.timeline({ paused: true, defaults: { ease: EASE } });
+    /* the surface: a window wide layer clipped from the card's box to the centre; the content shares the edge */
+    var p = { v: 0 };
+    function frame(v) {
+      var r = lerpRect(cRect, R, v), rad = lerp(r0, V.radius, v);
+      surface.style.clipPath = inset(r, rad); surface.style.backgroundColor = bgAt(v);
+      var ins = [Math.max(0, r.top - R.top), Math.max(0, R.left + R.width - r.left - r.width), Math.max(0, R.top + R.height - r.top - r.height), Math.max(0, r.left - R.left)];
+      ov.style.clipPath = 'inset(' + ins.map(function (x) { return x.toFixed(1) + 'px'; }).join(' ') + ' round ' + rad.toFixed(1) + 'px)';
+    }
+    frame(0);
+    t.to(p, { v: 1, duration: D, onUpdate: function () { frame(p.v); } }, 0);
+    /* the art: the same picture, from where it sits in the card to the column */
+    var a = shown(srcArt), b = shown(tArt), ta = tArt.getBoundingClientRect();
+    var art = tArt.cloneNode(true); art.className = 'fly'; fixAt(art, ta); art.style.objectFit = 'contain'; layer.appendChild(art);
+    t.fromTo(art, { x: a.cx - b.cx, y: a.cy - b.cy, scale: a.w / b.w }, { x: 0, y: 0, scale: 1, duration: D }, 0);
+    /* the title: same two lines, from the card's size to the column's */
+    var sa = srcTitle.getBoundingClientRect(), tb = tTitle.getBoundingClientRect();
+    var title = tTitle.cloneNode(true); title.className = 'fly title'; fixAt(title, tb); title.style.height = 'auto'; title.style.transformOrigin = '50% 0';
+    var tc = getComputedStyle(tTitle);
+    ['fontFamily', 'fontSize', 'fontWeight', 'lineHeight', 'letterSpacing', 'fontFeatureSettings'].forEach(function (k) { title.style[k] = tc[k]; });
+    title.style.textAlign = 'center'; title.style.whiteSpace = 'nowrap'; title.style.padding = '0';
+    layer.appendChild(title);
+    var fsA = parseFloat(getComputedStyle(srcTitle).fontSize) * S, fsB = parseFloat(getComputedStyle(tTitle).fontSize);
+    t.fromTo(title, { x: (sa.left + sa.width / 2) - (tb.left + tb.width / 2), y: sa.top - tb.top, scale: fsA / fsB, color: '#ffffff' },
+                    { x: 0, y: 0, scale: 1, color: getComputedStyle(tTitle).color, duration: D }, 0);
+    /* Start: the card's own key, travelling to the bottom of the column */
+    var ss = srcStart.getBoundingClientRect(), ts = tStart.getBoundingClientRect();
+    var key = srcStart.cloneNode(true); key.className = 'start fly'; key.removeAttribute('data-open'); fixAt(key, ss); layer.appendChild(key);
+    var kb = key.querySelector('b'), ksv = key.querySelector('svg');
+    t.fromTo(key, { left: ss.left, top: ss.top, width: ss.width, height: ss.height }, { left: ts.left, top: ts.top, width: ts.width, height: ts.height, duration: D }, 0);
+    t.fromTo(kb, { fontSize: 23 * S }, { fontSize: parseFloat(getComputedStyle(tStart.querySelector('b')).fontSize), duration: D }, 0);
+    /* the card's 1 / 4 bar has no place in the full card: it wipes away upwards */
+    var nr = srcNav.getBoundingClientRect(), nav = srcNav.cloneNode(true); nav.className = 'fly c-nav';
+    nav.style.left = nr.left + 'px'; nav.style.top = nr.top + 'px'; nav.style.width = (nr.width / S) + 'px'; nav.style.transformOrigin = '0 0'; nav.style.color = '#fff';
+    layer.appendChild(nav);
+    t.fromTo(nav, { scale: S, clipPath: 'inset(0% 0% 0% 0%)', y: 0 }, { scale: S, clipPath: 'inset(0% 0% 100% 0%)', y: -10, duration: .3, ease: 'power2.in' }, 0);
+    /* the new parts rise in behind, revealed by the growing edge (no fades) */
+    /* the text arrives by line: each line lifts from below its own edge (a line mask), in reading order */
+    splits.forEach(function (sp) { sp.revert(); }); splits = [];
+    t.fromTo(tabEls, { y: 14 }, { y: 0, duration: .42, ease: 'power3.out', stagger: .03 }, D * .18);
+    var lines = [];
+    [].forEach.call(ov.querySelectorAll('.sec:first-child .sh h3, .sec:first-child .p, .sec:first-child .sub'), function (el) {
+      if (window.SplitText) { var sp = SplitText.create(el, { type: 'lines', mask: 'lines', linesClass: 'ln', tag: 'span' }); splits.push(sp); lines = lines.concat(sp.lines); }
+      else lines.push(el);
+    });
+    t.fromTo(lines, { yPercent: 110 }, { yPercent: 0, duration: .5, ease: 'power3.out', stagger: .035 }, D * .22);
+    var head = ov.querySelectorAll('.sec:first-child .brief li'), buls = ov.querySelectorAll('.sec:first-child .bul li');
+    if (head.length) t.fromTo(head, { y: 16 }, { y: 0, duration: .5, ease: 'power3.out', stagger: .04 }, D * .2);
+    if (buls.length) t.fromTo(buls, { y: 14 }, { y: 0, duration: .45, ease: 'power3.out', stagger: .04 }, D * .42);
+    /* the stages sit where the small card was: they come in, top to bottom, once the edge has passed */
+    var rail = [ov.querySelector('.rail-h')].concat([].slice.call(ov.querySelectorAll('.rt .tl li, .rt .rfact'))).filter(Boolean);
+    t.fromTo(rail, { y: 16, visibility: 'hidden' }, { y: 0, visibility: 'visible', duration: .45, ease: 'power3.out', stagger: .035 }, D * .5);
+    if (ov.querySelector('.rt .tl')) t.fromTo(ov.querySelector('.rt .tl'), { '--rail-line': 0 }, { '--rail-line': 1, duration: .5, ease: 'power2.out' }, D * .5);
+    t.eventCallback('onStart', function () { [tArt, tTitle, tStart].forEach(function (el) { el.style.visibility = 'hidden'; }); });
+    function settle() { [tArt, tTitle, tStart].forEach(function (el) { el.style.visibility = ''; }); layer.innerHTML = ''; }
+    return { t: t, settle: settle, hideTargets: function () { [tArt, tTitle, tStart].forEach(function (el) { el.style.visibility = 'hidden'; }); } };
+  }
+  function open() {
+    if (busy || B.classList.contains('open') || !window.gsap) return; busy = true;
+    var k0 = app.querySelector('.start'); k0.classList.add('down');
+    setTimeout(function () {
+      k0.classList.remove('down');
+      read.scrollTop = 0; mark(0, true);
+      var f = build(); tl = f;
+      B.classList.add('open'); card.style.visibility = 'hidden'; f.hideTargets();
+      f.t.eventCallback('onComplete', function () { f.settle(); surface.style.backgroundColor = ''; surface.style.clipPath = inset(R, V.radius); ov.style.clipPath = ''; B.classList.add('shown'); busy = false; mark(cur, true); });
+      f.t.play(0);
+    }, 90);
+  }
+  function close() {
+    if (busy || !B.classList.contains('open')) return; busy = true;
+    B.classList.remove('shown');
+    var f = build(); tl = f; f.hideTargets();
+    f.t.progress(1).pause();
+    f.t.eventCallback('onReverseComplete', function () { f.settle(); card.style.visibility = ''; B.classList.remove('open'); surface.style.backgroundColor = ''; ov.style.clipPath = ''; busy = false; });
+    /* closing is quicker than opening */
+    f.t.timeScale(1.8).reverse();
+  }
+  function startOver() {
+    if (tl) { tl.t.kill(); tl.settle(); }
+    surface.style.backgroundColor = ''; ov.style.clipPath = '';
+    B.classList.remove('open', 'shown', 'picked'); card.style.visibility = ''; busy = false; toast.classList.remove('on');
+  }
+
+  document.addEventListener('click', function (e) {
+    var lk = e.target.closest('.mk.lk');
+    Array.prototype.forEach.call(document.querySelectorAll('.mk.lk.open'), function (m) { if (m !== lk) m.classList.remove('open'); });
+    if (lk) { lk.classList.toggle('open'); return; }
+    if (e.target.closest('.ctl') && !e.target.closest('[data-ctl]')) return;
+    var tb = e.target.closest('[data-tab]');
+    if (tb) { jumpTo(+tb.getAttribute('data-tab')); return; }
+    var ly = e.target.closest('[data-lay]');
+    if (ly) { setLay(+ly.getAttribute('data-lay')); return; }
+    var t = e.target.closest('[data-pick],[data-open],[data-close],[data-go],[data-r],[data-t],[data-ctl],.scrim');
+    if (!t) return;
+    if (t.hasAttribute('data-pick')) B.classList.add('picked');
+    else if (t.hasAttribute('data-open')) open();
+    else if (t.hasAttribute('data-close') || t.classList.contains('scrim')) close();
+    else if (t.hasAttribute('data-go')) { t.classList.add('down'); setTimeout(function () { t.classList.remove('down'); }, 160); toast.classList.remove('on'); void toast.offsetWidth; toast.classList.add('on'); setTimeout(function () { toast.classList.remove('on'); }, 2600); }
+    else if (t.hasAttribute('data-t')) theme(t.getAttribute('data-t'));
+    else if (t.hasAttribute('data-ctl')) toggleCtl();
+    else if (t.hasAttribute('data-r')) startOver();
+  });
+  addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'd' || e.key === 'D')) { e.preventDefault(); toggleCtl(); return; }
+    if (e.target.closest && e.target.closest('.ctl')) return;
+    if (e.key === 'Escape') close();
+    else if (e.key === 'g') theme(B.classList.contains('t-dark') ? 'glass' : B.classList.contains('t-glass') ? 'light' : 'dark');
+    else if (e.key === '1' || e.key === '2') setLay(+e.key);
+  });
+})();
+</script>
+</body>
+</html>
