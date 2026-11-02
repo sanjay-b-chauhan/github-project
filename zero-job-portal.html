@@ -5242,6 +5242,22 @@ html.zr-round .f10-ic{border-radius:999px}
 @media(max-width:600px){.eg th.eg-loc,.eg td.eg-loc{display:none}.eg:not(.split) th:nth-child(3),.eg:not(.split) td:nth-child(3){display:table-cell}}
 @media (prefers-reduced-motion:reduce){.f10-spin{animation:none}}
 
+/* ═══ v83: no strip, the sheet keeps one margin all round; settings is one button bottom right ═══ */
+.strip{display:none}
+.stagewrap{padding:14px}
+.zc-fab{position:fixed;z-index:390;right:24px;bottom:24px;margin:0;width:40px;height:40px;border-radius:12px}
+.zc-fab svg{width:18px;height:18px}
+.zcfg.zc-up{transform-origin:100% 100%;animation:zc-up .22s cubic-bezier(.2,.8,.2,1) both}
+@keyframes zc-up{from{transform:translateY(8px) scale(.97)}to{transform:none}}
+.zc-sm{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px;border-radius:9px;background:#fff;color:var(--ink);font:inherit;box-shadow:inset 0 0 0 1px var(--line2);cursor:pointer}
+.zc-sm:hover{box-shadow:inset 0 0 0 1px var(--ink3)}
+.zc-sm svg{width:13px;height:13px}
+#zcDay{font-variant-numeric:tabular-nums}
+@media(max-width:1024px){
+  .stagewrap{padding:8px}
+  .zc-fab{right:16px;bottom:16px}
+}
+
 </style>
 </head>
 <body>
@@ -6146,7 +6162,7 @@ const PF='https://zero-portfolio-six.vercel.app/';
 const LINK='ramp-gtm';                       /* the one role both sides share: Sanjay applies, the Ramp recruiter decides */
 const CO=id=>DATA.companies[id];
 const ROLE=id=>DATA.roles.find(r=>r.id===id);
-const ME={name:'Sanjay Chauhan',first:'Sanjay',masked:'Sanjay C.',ini:'SC',tone:'e',role:'GTM AI Engineer',city:'Austin, Texas',level:8,email:'sanjay.chauhan@mail.example',photo:PF+'img/maya-s.jpg',
+const ME={name:'Sanjay Chauhan',first:'Sanjay',masked:'Sanjay C.',ini:'SC',tone:'e',role:'GTM AI Engineer',city:'Austin, Texas',level:8,email:'sanjay.chauhan@mail.example',photo:'https://sanjay-b-chauhan.github.io/github-project/zero-job-portal-img/sanjay-chauhan-s.jpg',
  projects:[['router','Inbound lead router','HubSpot','hubspot.com','Exceptional'],['waterfall','Enrichment waterfall','Notion','notion.so','Exceeds'],['evals','Outbound agent with evals','Shopify','shopify.com','Exceptional'],['intent','Intent signal scoring','Stripe','stripe.com','Exceeds'],['pql','Product qualified lead score','Figma','figma.com','Exceeds'],['notes','Call notes agent','Slack','slack.com','Exceeds'],['model','CRM data model','Canva','canva.com','Meets']]};
 const PROJ=id=>ME.projects.find(p=>p[0]===id);
 const face=(k='')=>`<span class="av face ${k}"><img src="${ME.photo}" alt=""></span>`;
@@ -11574,7 +11590,7 @@ ZP.person = {
   first: 'Sanjay',
   role: 'GTM AI Engineer',
   place: 'Austin, Texas',
-  photo: 'img/maya.jpg', photoS: 'img/maya-s.jpg',
+  photo: 'https://sanjay-b-chauhan.github.io/github-project/zero-job-portal-img/sanjay-chauhan.jpg', photoS: 'https://sanjay-b-chauhan.github.io/github-project/zero-job-portal-img/sanjay-chauhan-s.jpg',
   level: 8,
   levelLine: 'Delivers on his own',
   open: 'Open to GTM engineering roles. Remote in the US, or Austin.',
@@ -11611,7 +11627,7 @@ ZP.projects = [
     result: 'Median first reply fell from 4 h 12 min to 1 min 34 s on 1,200 replayed leads.',
     sum: 'An n8n workflow reads each form fill, has Claude score the fit, and sends it to the right rep with a drafted reply. Anything the model is unsure about goes to a person.',
     tools: ['n8n', 'claude', 'hubspot', 'slack'],
-    dur: '6:48', date: 'Sep 2026', verdict: 'Exceptional', cam: 'img/cam-1.jpg', camS: 'img/cam-1-s.jpg', camX: 55, screen: 'n8n',
+    dur: '6:48', date: 'Sep 2026', verdict: 'Exceptional', cam: 'https://sanjay-b-chauhan.github.io/github-project/zero-job-portal-img/sanjay-cam.jpg', camS: 'https://sanjay-b-chauhan.github.io/github-project/zero-job-portal-img/sanjay-cam-s.jpg', camX: 55, screen: 'n8n',
     by: 'Dana Whitfield', byRole: 'Director of Revenue Operations',
     quote: 'He replayed last quarter’s real leads through the router before he showed it to anyone. The human queue for unsure scores is the part I would ship first.',
     files: ['lead-router.json', 'replay-1200-leads.csv'],
@@ -11626,7 +11642,7 @@ ZP.projects = [
     result: 'Verified email coverage went from 54% to 91% at $0.07 a contact.',
     sum: 'A Clay table tries four data providers in order of cost and stops at the first verified hit. Claude writes one line on why each account fits.',
     tools: ['clay', 'apollo', 'claude', 'hubspot'],
-    dur: '5:21', date: 'Aug 2026', verdict: 'Exceeds', cam: 'img/cam-2.jpg', camS: 'img/cam-2-s.jpg', camX: 62, screen: 'clay',
+    dur: '5:21', date: 'Aug 2026', verdict: 'Exceeds', cam: 'https://sanjay-b-chauhan.github.io/github-project/zero-job-portal-img/sanjay-cam.jpg', camS: 'https://sanjay-b-chauhan.github.io/github-project/zero-job-portal-img/sanjay-cam-s.jpg', camX: 62, screen: 'clay',
     by: 'Marcus Hale', byRole: 'Head of Growth',
     quote: 'Cheapest provider first, stop at the first verified hit. He priced every step, so I could see what a contact costs before we ran it.',
     files: ['waterfall-table.csv', 'coverage-report.pdf'],
@@ -11641,7 +11657,7 @@ ZP.projects = [
     result: 'Passed 46 of 50 rubric checks, and positive replies rose from 2.1% to 5.4% in the simulated send.',
     sum: 'Claude drafts each first email from the account brief. A set of 50 test cases checks facts, tone and length before anything is queued in Instantly.',
     tools: ['claude', 'instantly', 'cursor', 'python'],
-    dur: '8:12', date: 'Sep 2026', verdict: 'Exceptional', cam: 'img/cam-4.jpg', camS: 'img/cam-4-s.jpg', camX: 60, screen: 'evals',
+    dur: '8:12', date: 'Sep 2026', verdict: 'Exceptional', cam: 'https://sanjay-b-chauhan.github.io/github-project/zero-job-portal-img/sanjay-cam.jpg', camS: 'https://sanjay-b-chauhan.github.io/github-project/zero-job-portal-img/sanjay-cam-s.jpg', camX: 60, screen: 'evals',
     by: 'Tom Becker', byRole: 'VP, Sales Development',
     quote: 'Most people show me their best email. He showed me the four that failed and what he changed because of them.',
     files: ['eval-run-14.pdf', 'outbound-agent.py'],
@@ -11656,7 +11672,7 @@ ZP.projects = [
     result: 'The top tenth of scored accounts booked meetings at 3.1x the base rate in a four week backtest.',
     sum: 'Pricing page visits, new sales hires and funding news roll into one account score. The top ten land in Slack at 8 am with the reason attached.',
     tools: ['clay', 'snowflake', 'claude', 'slack'],
-    dur: '7:05', date: 'Jul 2026', verdict: 'Exceeds', cam: 'img/cam-3.jpg', camS: 'img/cam-3-s.jpg', camX: 50, screen: 'slack',
+    dur: '7:05', date: 'Jul 2026', verdict: 'Exceeds', cam: 'https://sanjay-b-chauhan.github.io/github-project/zero-job-portal-img/sanjay-cam.jpg', camS: 'https://sanjay-b-chauhan.github.io/github-project/zero-job-portal-img/sanjay-cam-s.jpg', camX: 50, screen: 'slack',
     by: 'Priya Nair', byRole: 'Senior Manager, Sales Strategy',
     quote: 'Reps do not read dashboards. Putting ten accounts and a reason in Slack at 8 am was the right call.',
     files: ['signal-score.sql', 'backtest-4-weeks.pdf'],
@@ -11671,7 +11687,7 @@ ZP.projects = [
     result: 'The top 5% of scored workspaces held 38% of upgrades in the holdout month.',
     sum: 'A SQL model in Snowflake turns seats, shared files and editor activity into one score. Hightouch syncs it to HubSpot so reps see it on the account.',
     tools: ['snowflake', 'hightouch', 'hubspot', 'python'],
-    dur: '6:02', date: 'Jul 2026', verdict: 'Exceeds', cam: 'img/cam-5.jpg', camS: 'img/cam-5-s.jpg', camX: 50, screen: 'lift',
+    dur: '6:02', date: 'Jul 2026', verdict: 'Exceeds', cam: 'https://sanjay-b-chauhan.github.io/github-project/zero-job-portal-img/sanjay-cam.jpg', camS: 'https://sanjay-b-chauhan.github.io/github-project/zero-job-portal-img/sanjay-cam-s.jpg', camX: 50, screen: 'lift',
     by: 'Elena Sokolova', byRole: 'Growth Analytics Lead',
     quote: 'He held out a full month and scored it blind. That is the only number I trust.',
     files: ['pql-score.sql', 'holdout-month.pdf'],
@@ -11686,7 +11702,7 @@ ZP.projects = [
     result: 'Filled seven deal fields per call at 94% agreement with two human reviewers across 60 calls.',
     sum: 'After each sales call, Claude reads the transcript, fills the deal fields in HubSpot and links every answer to the line it came from.',
     tools: ['claude', 'hubspot', 'n8n', 'python'],
-    dur: '7:36', date: 'Jun 2026', verdict: 'Exceeds', cam: 'img/cam-7.jpg', camS: 'img/cam-7-s.jpg', camX: 55, screen: 'crm',
+    dur: '7:36', date: 'Jun 2026', verdict: 'Exceeds', cam: 'https://sanjay-b-chauhan.github.io/github-project/zero-job-portal-img/sanjay-cam.jpg', camS: 'https://sanjay-b-chauhan.github.io/github-project/zero-job-portal-img/sanjay-cam-s.jpg', camX: 55, screen: 'crm',
     by: 'Rachel Kim', byRole: 'Director of Sales Enablement',
     quote: 'Every field links to the line in the call. My managers stopped asking where the answer came from.',
     files: ['notes-agent.py', 'reviewer-agreement.csv'],
@@ -11701,7 +11717,7 @@ ZP.projects = [
     result: 'Merged 3,180 duplicate accounts and cut accounts with no owner from 22% to 3%.',
     sum: 'Three match rules and a parent and child account structure in HubSpot, with a weekly check that flags new duplicates.',
     tools: ['hubspot', 'snowflake', 'n8n'],
-    dur: '5:40', date: 'May 2026', verdict: 'Meets', cam: 'img/cam-6.jpg', camS: 'img/cam-6-s.jpg', camX: 68, screen: 'erd',
+    dur: '5:40', date: 'May 2026', verdict: 'Meets', cam: 'https://sanjay-b-chauhan.github.io/github-project/zero-job-portal-img/sanjay-cam.jpg', camS: 'https://sanjay-b-chauhan.github.io/github-project/zero-job-portal-img/sanjay-cam-s.jpg', camX: 68, screen: 'erd',
     by: 'James Okafor', byRole: 'RevOps Manager',
     quote: 'The model is right. The rollout plan needed owners and dates, and he added them after the review.',
     files: ['account-model.pdf', 'match-rules.md'],
@@ -11781,7 +11797,7 @@ ZP.profile = {
     dbt: { t: 'dbt Labs', mask: 'logos/si-dbt.svg', c: '#FF694B' },
     langchain: { t: 'LangChain', mask: 'logos/si-langchain.svg', c: '#1C3C3C' }
   });
-  const cam = n => ({ cam: `img/cam-${n}.jpg`, camS: `img/cam-${n}-s.jpg` });
+  const cam = n => ({ cam: 'https://sanjay-b-chauhan.github.io/github-project/zero-job-portal-img/sanjay-cam.jpg', camS: 'https://sanjay-b-chauhan.github.io/github-project/zero-job-portal-img/sanjay-cam-s.jpg' });
   Z.projects.push(
     Object.assign({ id: 'churn', co: 'vercel', coName: 'Vercel', cat: 'Customer health',
       title: 'Churn alerts that reach the account owner a month early', short: 'Churn risk alerts',
@@ -11919,7 +11935,7 @@ ZP.profile = {
   Z.tools = Z.tools.concat(['salesforce', 'zapier']);
 
   /* his intro: a short talking head every student records. Here it is a still with his words, played like a story. */
-  Z.intro = { img: 'img/cam-1.jpg', at: '55% 40%', dur: 16, lines: ['Hi, I’m Sanjay. I build the agents and data pipelines that sales teams run on.', 'I was an SDR for two years, so I start from the rep’s day.', 'Then I wire the data and put a number on what changed.', 'Start with my lead router. It is the featured project here.'] };
+  Z.intro = { img: 'https://sanjay-b-chauhan.github.io/github-project/zero-job-portal-img/sanjay-chauhan.jpg', at: '55% 40%', dur: 16, lines: ['Hi, I’m Sanjay. I build the agents and data pipelines that sales teams run on.', 'I was an SDR for two years, so I start from the rep’s day.', 'Then I wire the data and put a number on what changed.', 'Start with my lead router. It is the featured project here.'] };
 
   const n = Z.projects.length, high = Z.projects.filter(p => p.verdict !== 'Meets').length;
   Z.insight = {
@@ -12912,6 +12928,24 @@ function f10Next(id){const r=ROLE(id),c=APP(id)||{},co=coName(r),st=c.st||'',mgr
 {const f=PAGES.student.inbox;PAGES.student.inbox=function(){let h=f.apply(this,arguments);const id=S.thread,r=ROLE(id);if(!r||!S.apps[id])return h;
  const sent=`<p>Sent. ${coName(r)} has it.</p></div></li>`,i=h.lastIndexOf(sent);if(i<0)return h;const at=i+sent.length;
  return h.slice(0,at)+f3Z(esc(f10Next(id)))+h.slice(at)}}
+
+/* ═══ v83 (2 Nov): no Learn and Jobs switch, no strip above the sheet. One settings button sits
+   bottom right and its panel opens upward. The strip's day, pause and Start over live in that panel. ═══ */
+{const f=topHTML;topHTML=function(){return f().replace(/<div class="seg st-lm"[\s\S]*?<\/div>/,'')}}
+/* the candidate's full name beside his photo, top right */
+{const f=topHTML;topHTML=function(){const t=f();return S.mode==='student'?t.replace(`<span class="i">${ME.first}</span>`,`<span class="i">${ME.name}</span>`):t}}
+{const f=stripHTML;stripHTML=function(){return f().replace(/<button type="button" id="zcfgB"[\s\S]*?<\/button>/,'')}}
+const zcDayT=()=>`${today()}${S.paused?' · Paused':''}`;
+const zcPauseB=()=>`<button type="button" class="zc-sm" data-a="pause" aria-label="${S.paused?'Resume time':'Pause time'}">${ic(S.paused?'play':'pause')}${S.paused?'Resume':'Pause'}</button>`;
+{const f=zcfgHTML;zcfgHTML=function(){const t=f(),cut=t.indexOf('</div>')+6;
+ return t.slice(0,cut)+`<div class="zc-sec"><p class="zc-k">Prototype</p><div class="zc-row"><span id="zcDay">${zcDayT()}</span><span id="zcPause">${zcPauseB()}</span></div>
+  <div class="zc-go"><button type="button" class="s" data-a="restart">${ic('rotate-ccw')}Start over</button></div></div>`+t.slice(cut)}}
+{const f=zcfgToggle;zcfgToggle=function(on){f(on);const b=document.getElementById('zcfgB');if(!zcfg.el||!b)return;const r=b.getBoundingClientRect();
+ zcfg.el.classList.add('zc-up');zcfg.el.style.top='auto';zcfg.el.style.bottom=`${Math.round(innerHeight-r.top+10)}px`;zcfg.el.style.right=`${Math.max(12,Math.round(innerWidth-r.right))}px`}}
+(function(){const b=document.createElement('button');b.type='button';b.id='zcfgB';b.className='zc-gear zc-fab';b.setAttribute('aria-label','Settings');b.title='Settings';b.innerHTML=ic('settings');document.body.appendChild(b)})();
+/* patch the panel's day and pause in place after each render, never redraw it */
+AFTER.push(()=>{const d=document.getElementById('zcDay'),p=document.getElementById('zcPause');if(d&&d.textContent!==zcDayT())d.textContent=zcDayT();
+ if(p){const h=zcPauseB();if(p.dataset.h!==h){p.dataset.h=h;p.innerHTML=h;icons()}}});
 
 if(typeof rcSeed==='function')rcSeed();render(true);
 
